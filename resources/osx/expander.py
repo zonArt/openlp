@@ -1,9 +1,33 @@
 #!/usr/bin/python
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 
 # TODOs:
 # - defaults for non-supplied expansions:
-#   template contains 
+#   template contains
 
 import ConfigParser
 import logging
@@ -20,7 +44,7 @@ import sys
 # - %(dog=cat) --- if there is an expansion for dog, dog will be used;
 #                  otherwise "cat" will be used
 # re_conf = re.compile(r'(?<!%)%\((?P<key>[^\(]+?)\)s')
-re_conf = re.compile(r'(?P<verbatim>%?)%\((?P<key>[^+=:&\)]+?)' 
+re_conf = re.compile(r'(?P<verbatim>%?)%\((?P<key>[^+=:&\)]+?)'
     + '(?:(?P<kind>[+=:&])(?P<default>[^\)]+))?\)(?P<type>s|d)')
 
 def expand_variable(match, expansions, errors):
@@ -65,7 +89,7 @@ def expand_variable(match, expansions, errors):
 
     if key in expansions:
         return expansions[key]
-        
+
     if not match.group(0) in errors:
         errors.append(match.group(0))
 
@@ -122,7 +146,7 @@ if __name__ == '__main__':
     for override in args:
         if not '=' in override:
             continue
-        
+
         (k, v) = override.split('=', 2)
         expansions[k] = v
 
@@ -136,7 +160,7 @@ if __name__ == '__main__':
     # closure to capture expansions and errors variable
     errors = []
     expanded = []
-    
+
     try:
         # try to expand the template
         line = 0
@@ -148,7 +172,7 @@ if __name__ == '__main__':
 
         def _expand(m):
             return expand_variable(m, expansions = expansions, errors = errors)
-    
+
         for l in raw:
             line += 1
             exp = re_conf.sub(_expand, l)
@@ -196,7 +220,7 @@ if __name__ == '__main__':
 
         logging.info('[expander] expanded "%s" to "%s"',
                      options.template, options.expanded)
-    
+
     except:
         pass
 

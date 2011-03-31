@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,20 @@
 
 from PyQt4 import QtCore, QtGui
 
+import sys
+
 from openlp.core.lib import translate
+from openlp.core.lib.ui import add_welcome_page
+
+class FirstTimePage(object):
+    Welcome = 0
+    Plugins = 1
+    NoInternet = 2
+    Songs = 3
+    Bibles = 4
+    Themes = 5
+    Defaults = 6
+    Progress = 7
 
 
 class Ui_FirstTimeWizard(object):
@@ -36,140 +49,145 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages|
-            QtGui.QWizard.NoBackButtonOnStartPage)
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setTitle(u'')
-        self.welcomePage.setSubTitle(u'')
-        self.welcomePage.setObjectName(u'welcomePage')
-        self.welcomeLayout = QtGui.QHBoxLayout(self.welcomePage)
-        self.welcomeLayout.setSpacing(8)
-        self.welcomeLayout.setMargin(0)
-        self.welcomeLayout.setObjectName(u'welcomeLayout')
-        self.importBibleImage = QtGui.QLabel(self.welcomePage)
-        self.importBibleImage.setMinimumSize(QtCore.QSize(163, 0))
-        self.importBibleImage.setMaximumSize(QtCore.QSize(163, 16777215))
-        self.importBibleImage.setLineWidth(0)
-        self.importBibleImage.setText(u'')
-        self.importBibleImage.setPixmap(
-            QtGui.QPixmap(u':/wizards/wizard_importbible.bmp'))
-        self.importBibleImage.setIndent(0)
-        self.importBibleImage.setObjectName(u'importBibleImage')
-        self.welcomeLayout.addWidget(self.importBibleImage)
-        self.welcomePageLayout = QtGui.QVBoxLayout()
-        self.welcomePageLayout.setSpacing(8)
-        self.welcomePageLayout.setObjectName(u'welcomePageLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'titleLabel')
-        self.welcomePageLayout.addWidget(self.titleLabel)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        self.welcomePageLayout.addItem(spacerItem)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setMargin(10)
-        self.informationLabel.setObjectName(u'informationLabel')
-        self.welcomePageLayout.addWidget(self.informationLabel)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Expanding)
-        self.welcomePageLayout.addItem(spacerItem1)
-        self.welcomeLayout.addLayout(self.welcomePageLayout)
-        FirstTimeWizard.addPage(self.welcomePage)
-        self.PluginPagePage = QtGui.QWizardPage()
-        self.PluginPagePage.setObjectName(u'PluginPagePage')
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.PluginPagePage)
-        self.verticalLayout_2.setObjectName(u'verticalLayout_2')
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.songsCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+            QtGui.QWizard.NoBackButtonOnStartPage |
+            QtGui.QWizard.NoBackButtonOnLastPage)
+        self.finishButton = self.button(QtGui.QWizard.FinishButton)
+        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
+        self.nextButton = self.button(QtGui.QWizard.NextButton)
+        self.backButton = self.button(QtGui.QWizard.BackButton)
+        add_welcome_page(FirstTimeWizard, u':/wizards/wizard_firsttime.bmp')
+        # The plugins page
+        self.pluginPage = QtGui.QWizardPage()
+        self.pluginPage.setObjectName(u'pluginPage')
+        self.pluginLayout = QtGui.QVBoxLayout(self.pluginPage)
+        self.pluginLayout.setContentsMargins(40, 15, 40, 0)
+        self.pluginLayout.setObjectName(u'pluginLayout')
+        self.songsCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.songsCheckBox.setChecked(True)
         self.songsCheckBox.setObjectName(u'songsCheckBox')
-        self.verticalLayout.addWidget(self.songsCheckBox)
-        self.customCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.songsCheckBox)
+        self.customCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.customCheckBox.setChecked(True)
         self.customCheckBox.setObjectName(u'customCheckBox')
-        self.verticalLayout.addWidget(self.customCheckBox)
-        self.bibleCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.customCheckBox)
+        self.bibleCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.bibleCheckBox.setChecked(True)
         self.bibleCheckBox.setObjectName(u'bibleCheckBox')
-        self.verticalLayout.addWidget(self.bibleCheckBox)
-        self.imageCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.bibleCheckBox)
+        self.imageCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.imageCheckBox.setChecked(True)
         self.imageCheckBox.setObjectName(u'imageCheckBox')
-        self.verticalLayout.addWidget(self.imageCheckBox)
-        self.presentationCheckBox = QtGui.QCheckBox(self.PluginPagePage)
-        self.presentationCheckBox.setChecked(True)
+        self.pluginLayout.addWidget(self.imageCheckBox)
+        self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
+        if sys.platform == "darwin":
+             self.presentationCheckBox.setChecked(False)
+        else:
+             self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
-        self.verticalLayout.addWidget(self.presentationCheckBox)
-        self.mediaCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.presentationCheckBox)
+        self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.mediaCheckBox.setChecked(True)
         self.mediaCheckBox.setObjectName(u'mediaCheckBox')
-        self.verticalLayout.addWidget(self.mediaCheckBox)
-        self.remoteCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.mediaCheckBox)
+        self.remoteCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.remoteCheckBox.setObjectName(u'remoteCheckBox')
-        self.verticalLayout.addWidget(self.remoteCheckBox)
-        self.songUsageCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.remoteCheckBox)
+        self.songUsageCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.songUsageCheckBox.setChecked(True)
         self.songUsageCheckBox.setObjectName(u'songUsageCheckBox')
-        self.verticalLayout.addWidget(self.songUsageCheckBox)
-        self.alertCheckBox = QtGui.QCheckBox(self.PluginPagePage)
+        self.pluginLayout.addWidget(self.songUsageCheckBox)
+        self.alertCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.alertCheckBox.setChecked(True)
         self.alertCheckBox.setObjectName(u'alertCheckBox')
-        self.verticalLayout.addWidget(self.alertCheckBox)
-        self.verticalLayout_2.addLayout(self.verticalLayout)
-        FirstTimeWizard.addPage(self.PluginPagePage)
-        self.downloadDefaultsPage = QtGui.QWizardPage()
-        self.downloadDefaultsPage.setObjectName(u'downloadDefaultsPage')
-        self.noInternetLabel = QtGui.QLabel(self.downloadDefaultsPage)
-        self.noInternetLabel.setGeometry(QtCore.QRect(20, 20, 461, 17))
+        self.pluginLayout.addWidget(self.alertCheckBox)
+        FirstTimeWizard.setPage(FirstTimePage.Plugins, self.pluginPage)
+        # The "you don't have an internet connection" page.
+        self.noInternetPage = QtGui.QWizardPage()
+        self.noInternetPage.setObjectName(u'noInternetPage')
+        self.noInternetLayout = QtGui.QVBoxLayout(self.noInternetPage)
+        self.noInternetLayout.setContentsMargins(50, 30, 50, 40)
+        self.noInternetLayout.setObjectName(u'noInternetLayout')
+        self.noInternetLabel = QtGui.QLabel(self.noInternetPage)
+        self.noInternetLabel.setWordWrap(True)
         self.noInternetLabel.setObjectName(u'noInternetLabel')
-        self.internetGroupBox = QtGui.QGroupBox(self.downloadDefaultsPage)
-        self.internetGroupBox.setGeometry(QtCore.QRect(20, 10, 501, 271))
-        self.internetGroupBox.setObjectName(u'internetGroupBox')
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.internetGroupBox)
-        self.verticalLayout_4.setObjectName(u'verticalLayout_4')
-        self.selectionTreeWidget = QtGui.QTreeWidget(self.internetGroupBox)
-        self.selectionTreeWidget.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.selectionTreeWidget.setProperty(u'showDropIndicator', False)
-        self.selectionTreeWidget.setAlternatingRowColors(True)
-        self.selectionTreeWidget.setObjectName(u'selectionTreeWidget')
-        self.selectionTreeWidget.headerItem().setText(0, u'1')
-        self.selectionTreeWidget.header().setVisible(False)
-        self.verticalLayout_4.addWidget(self.selectionTreeWidget)
-        FirstTimeWizard.addPage(self.downloadDefaultsPage)
-        self.DefaultsPage = QtGui.QWizardPage()
-        self.DefaultsPage.setObjectName(u'DefaultsPage')
-        self.layoutWidget = QtGui.QWidget(self.DefaultsPage)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 20, 491, 113))
-        self.layoutWidget.setObjectName(u'layoutWidget')
-        self.gridLayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridLayout.setMargin(0)
-        self.gridLayout.setObjectName(u'gridLayout')
-        self.displaySelectionLabel = QtGui.QLabel(self.layoutWidget)
-        self.displaySelectionLabel.setObjectName(u'displaySelectionLabel')
-        self.gridLayout.addWidget(self.displaySelectionLabel, 0, 0, 1, 1)
-        self.displaySelectionComboBox = QtGui.QComboBox(self.layoutWidget)
-        self.displaySelectionComboBox.setEditable(False)
-        self.displaySelectionComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.displaySelectionComboBox.setSizeAdjustPolicy(
+        self.noInternetLayout.addWidget(self.noInternetLabel)
+        FirstTimeWizard.setPage(FirstTimePage.NoInternet, self.noInternetPage)
+        # The song samples page
+        self.songsPage = QtGui.QWizardPage()
+        self.songsPage.setObjectName(u'songsPage')
+        self.songsLayout = QtGui.QVBoxLayout(self.songsPage)
+        self.songsLayout.setContentsMargins(50, 20, 50, 20)
+        self.songsLayout.setObjectName(u'songsLayout')
+        self.songsListWidget = QtGui.QListWidget(self.songsPage)
+        self.songsListWidget.setAlternatingRowColors(True)
+        self.songsListWidget.setObjectName(u'songsListWidget')
+        self.songsLayout.addWidget(self.songsListWidget)
+        FirstTimeWizard.setPage(FirstTimePage.Songs, self.songsPage)
+        # The Bible samples page
+        self.biblesPage = QtGui.QWizardPage()
+        self.biblesPage.setObjectName(u'biblesPage')
+        self.biblesLayout = QtGui.QVBoxLayout(self.biblesPage)
+        self.biblesLayout.setContentsMargins(50, 20, 50, 20)
+        self.biblesLayout.setObjectName(u'biblesLayout')
+        self.biblesTreeWidget = QtGui.QTreeWidget(self.biblesPage)
+        self.biblesTreeWidget.setAlternatingRowColors(True)
+        self.biblesTreeWidget.header().setVisible(False)
+        self.biblesTreeWidget.setObjectName(u'biblesTreeWidget')
+        self.biblesLayout.addWidget(self.biblesTreeWidget)
+        FirstTimeWizard.setPage(FirstTimePage.Bibles, self.biblesPage)
+        # The theme samples page
+        self.themesPage = QtGui.QWizardPage()
+        self.themesPage.setObjectName(u'themesPage')
+        self.themesLayout = QtGui.QVBoxLayout(self.themesPage)
+        self.themesLayout.setContentsMargins(20, 50, 20, 60)
+        self.themesLayout.setObjectName(u'themesLayout')
+        self.themesListWidget = QtGui.QListWidget(self.themesPage)
+        self.themesListWidget.setViewMode(QtGui.QListView.IconMode)
+        self.themesListWidget.setMovement(QtGui.QListView.Static)
+        self.themesListWidget.setFlow(QtGui.QListView.LeftToRight)
+        self.themesListWidget.setSpacing(4)
+        self.themesListWidget.setUniformItemSizes(True)
+        self.themesListWidget.setIconSize(QtCore.QSize(133, 100))
+        self.themesListWidget.setWrapping(False)
+        self.themesListWidget.setObjectName(u'themesListWidget')
+        self.themesLayout.addWidget(self.themesListWidget)
+        FirstTimeWizard.setPage(FirstTimePage.Themes, self.themesPage)
+        # the default settings page
+        self.defaultsPage = QtGui.QWizardPage()
+        self.defaultsPage.setObjectName(u'defaultsPage')
+        self.defaultsLayout = QtGui.QFormLayout(self.defaultsPage)
+        self.defaultsLayout.setContentsMargins(50, 20, 50, 20)
+        self.defaultsLayout.setObjectName(u'defaultsLayout')
+        self.displayLabel = QtGui.QLabel(self.defaultsPage)
+        self.displayLabel.setObjectName(u'displayLabel')
+        self.displayComboBox = QtGui.QComboBox(self.defaultsPage)
+        self.displayComboBox.setEditable(False)
+        self.displayComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
+        self.displayComboBox.setObjectName(u'displayComboBox')
+        self.defaultsLayout.addRow(self.displayLabel, self.displayComboBox)
+        self.themeLabel = QtGui.QLabel(self.defaultsPage)
+        self.themeLabel.setObjectName(u'themeLabel')
+        self.themeComboBox = QtGui.QComboBox(self.defaultsPage)
+        self.themeComboBox.setEditable(False)
+        self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
+        self.themeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
-        self.displaySelectionComboBox.setObjectName(u'displaySelectionComboBox')
-        self.gridLayout.addWidget(self.displaySelectionComboBox, 0, 1, 1, 1)
-        self.themeSelectionLabel = QtGui.QLabel(self.layoutWidget)
-        self.themeSelectionLabel.setObjectName(u'themeSelectionLabel')
-        self.gridLayout.addWidget(self.themeSelectionLabel, 1, 0, 1, 1)
-        self.themeSelectionComboBox = QtGui.QComboBox(self.layoutWidget)
-        self.themeSelectionComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
-        self.themeSelectionComboBox.setObjectName(u'themeSelectionComboBox')
-        self.gridLayout.addWidget(self.themeSelectionComboBox, 1, 1, 1, 1)
-        self.messageLabel = QtGui.QLabel(self.DefaultsPage)
-        self.messageLabel.setGeometry(QtCore.QRect(60, 160, 471, 17))
-        self.messageLabel.setObjectName(u'messageLabel')
-        self.updateLabel = QtGui.QLabel(self.DefaultsPage)
-        self.updateLabel.setGeometry(QtCore.QRect(60, 220, 351, 17))
-        self.updateLabel.setObjectName(u'updateLabel')
-        FirstTimeWizard.addPage(self.DefaultsPage)
+        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.defaultsLayout.addRow(self.themeLabel, self.themeComboBox)
+        FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
+        # Progress page
+        self.progressPage = QtGui.QWizardPage()
+        self.progressPage.setObjectName(u'progressPage')
+        self.progressLayout = QtGui.QVBoxLayout(self.progressPage)
+        self.progressLayout.setMargin(48)
+        self.progressLayout.setObjectName(u'progressLayout')
+        self.progressLabel = QtGui.QLabel(self.progressPage)
+        self.progressLabel.setObjectName(u'progressLabel')
+        self.progressLayout.addWidget(self.progressLabel)
+        self.progressBar = QtGui.QProgressBar(self.progressPage)
+        self.progressBar.setObjectName(u'progressBar')
+        self.progressLayout.addWidget(self.progressBar)
+        FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
 
         self.retranslateUi(FirstTimeWizard)
         QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
@@ -182,12 +200,12 @@ class Ui_FirstTimeWizard(object):
             translate('OpenLP.FirstTimeWizard',
             'Welcome to the First Time Wizard'))
         self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'This wizard will help you to configure OpenLP for initial use .'
+            'This wizard will help you to configure OpenLP for initial use.'
             ' Click the next button below to start the process of selection '
             'your initial options. '))
-        self.PluginPagePage.setTitle(translate('OpenLP.FirstTimeWizard',
+        self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Activate required Plugins'))
-        self.PluginPagePage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+        self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
         self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard',
@@ -197,6 +215,8 @@ class Ui_FirstTimeWizard(object):
             'Images'))
         self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Presentations'))
+        if sys.platform == "darwin":
+            self.presentationCheckBox.setEnabled(False)
         self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Media (Audio and Video)'))
         self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',
@@ -205,23 +225,42 @@ class Ui_FirstTimeWizard(object):
             'Monitor Song Usage'))
         self.alertCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Allow Alerts'))
-        self.downloadDefaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Download Samples from OpenLP.org'))
-        self.downloadDefaultsPage.setSubTitle(translate(
+        self.noInternetPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'No Internet Connection'))
+        self.noInternetPage.setSubTitle(translate(
             'OpenLP.FirstTimeWizard',
-            'Select samples to downlaod and install for use.'))
+            'Unable to detect an Internet connection.'))
         self.noInternetLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'No Internet connection found so unable to download any default'
-            ' files.'))
-        self.internetGroupBox.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Download Example Files'))
-        self.DefaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'No Internet connection was found. The First Time Wizard needs an '
+            'Internet connection in order to be able to download sample '
+            'songs, Bibles and themes.\n\nTo re-run the First Time Wizard and '
+            'import this sample data at a later stage, press the cancel '
+            'button now, check your Internet connection, and restart OpenLP.'
+            '\n\nTo cancel the First Time Wizard completely, press the finish '
+            'button now.'))
+        self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Songs'))
+        self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Select and download public domain songs.'))
+        self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Bibles'))
+        self.biblesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Select and download free Bibles.'))
+        self.themesPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Themes'))
+        self.themesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Select and download sample themes.'))
+        self.defaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Default Settings'))
-        self.DefaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Set up default values to be used by OpenLP'))
-        self.displaySelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Default output display'))
-        self.themeSelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Select the default Theme'))
-        self.messageLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Press Finish to apply all you changes and start OpenLP'))
+        self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Set up default settings to be used by OpenLP.'))
+        self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Setting Up And Importing'))
+        self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Please wait while OpenLP is set up and your data is imported.'))
+        self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Default output display:'))
+        self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Select default theme:'))
+        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Starting configuration process...'))

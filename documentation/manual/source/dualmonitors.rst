@@ -180,3 +180,42 @@ on :guilabel:`Save to X Configuration File`.
 Click :guilabel:`Save` and you should be set. You may want to restart X or
 your machine just to make sure all the settings carry over the next time you log
 in.
+
+Linux Systems With Intel Video
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Generally systems with Intel video cards work very well. They are well supported
+by open source drivers. There are, however, a couple of issues that may require
+some work arounds.
+
+**Resolution Issue**
+
+There is a limitation with certain cards which limits the total resolution to
+2048x2048, so both monitors can not have a total resolution totaling more than
+that. To work around this it may be necessary to position your monitor as a top
+or bottom monitor as opposed to the typical side by side setup. This can easily
+be accomplished through your desktop's control of monitors. Please see the 
+sections on dual monitors with KDE and GNOME above.
+
+**Primary Monitor Issues**
+
+With certain cards your system may get confused on what is the primary display.
+For example many users will be using a laptop. You will want your laptop screen 
+to be the primary screen, and your projector to be the secondary monitor.
+Certain Intel cards reverse this. To work around this you will need to know the
+name of your monitor. If you are a KDE user this info is given to you in the 
+display settings. If you are not using KDE enter the following in a terminal
+without your projector connected to your computer::
+
+  user@linux:~ $ xrandr -q
+  
+This will give you a long string of output. Screen names will be something along 
+the lines of LVDM, VGA-0 or some convention similar to that. Without your
+projector connected to your computer only one monitor will show as being
+connected. That will be the monitor you will need to use as the primary. Now
+connect your projector and enter::
+
+  user@linux:~ $ xrandr --output LVDM --primary
+
+**Note** it has been reported that when this issue is occurring you will not 
+want to connect your projector until your desktop is running. 

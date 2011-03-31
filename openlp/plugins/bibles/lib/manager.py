@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,14 +25,14 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -144,6 +144,10 @@ class BibleManager(object):
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
+            # Remove corrupted files.
+            if name is None:
+                delete_file(os.path.join(self.path, filename))
+                continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.

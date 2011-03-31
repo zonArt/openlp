@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -84,7 +84,8 @@ class PptviewController(PresentationController):
             dllpath = os.path.join(self.plugin.pluginManager.basepath,
                 u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dllpath)
-            #self.process.SetDebug(1)
+            if log.isEnabledFor(logging.DEBUG):
+                self.process.SetDebug(1)
 
         def kill(self):
             """
@@ -140,8 +141,10 @@ class PptviewDocument(PresentationDocument):
         PPTviewLib creates large BMP's, but we want small PNG's for consistency.
         Convert them here.
         """
+        log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
+        log.debug(u'create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
             path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
                 unicode(idx + 1))

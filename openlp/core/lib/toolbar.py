@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -48,7 +48,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
-        log.debug(u'Init done')
+        log.debug(u'Init done for %s' % parent.__class__.__name__)
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
         checkable=False, shortcut=0, alternate=0,
