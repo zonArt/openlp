@@ -129,4 +129,50 @@ you can not see this your theme probably has the text size too small for the
 info to be seen. See the section of the manual on themes if you need more info
 on text sizes in themes.
 
+I am running Mac OS X and I do not have a presentations plugin
+==============================================================
+
+Due to software limitations with Keynote and OpenOffice Impress the
+presentations plugin on OS X is not currently available.
+
+I am using PowerPoint 2010 or PowerPoint Viewer 2010 and presentations do not work
+==================================================================================
+
+Currently OpenLP does not support PowerPont 2010. We suggest using the
+PowerPoint 2003 or 2007 Viewer. Download the PowerPoint 2007 viewer here:
+`<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_.
+
+I have PowerPoint installed but it does not show as a presentation option
+=========================================================================
+
+Try installing the Visual C++ Runtime Redistrutable you can find it here:
+`<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&displaylang=en>`_
+
+I have JPG images and they will not work on my system
+=====================================================
+
+This is a known issue on some Mac OS X 10.5 systems and on a few Windows XP 
+systems. Currently the only solution is to convert your images into another
+format. We would suggest using PNG images when possible with OpenLP.
+
+I am running a Linux Distro and can not see the menus
+=====================================================
+
+This may be an issue with only XFCE the following commands have been known to 
+resolve the problem::
+
+  gconftool-2 --type boolean --set /desktop/gnome/interface/buttons_have_icons true
+  
+  gconftool-2 --type boolean --set /desktop/gnome/interface/menus_have_icons true
+
+I chose to use a web Bible but it did not download the entire Bible
+===================================================================
+
+Due to copyright restrictions OpenLP can not download an entire Bible. It can
+only download the section you search for. If you do not have an internet 
+connection where you intend to use OpenLP you will need to have another source
+for scripture. For more information please see :ref:`bibleimporter` for more 
+options to acquire Bibles.
+
+
 
