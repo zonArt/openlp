@@ -29,8 +29,6 @@ by the shortcuts system.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a

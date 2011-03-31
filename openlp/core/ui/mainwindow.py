@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
-    icon_action
+    icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
@@ -161,18 +161,32 @@ class Ui_MainWindow(object):
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.themeManagerDock)
         # Create the menu items
-        self.FileNewItem = icon_action(mainWindow, u'FileNewItem',
+        self.FileNewItem = shortcut_action(mainWindow, u'FileNewItem',
+            [QtGui.QKeySequence(u'Ctrl+N')],
+            self.ServiceManagerContents.onNewServiceClicked,
             u':/general/general_new.png', category=u'File')
-        self.FileOpenItem = icon_action(mainWindow, u'FileOpenItem',
+        self.FileNewItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.FileOpenItem = shortcut_action(mainWindow, u'FileOpenItem',
+            [QtGui.QKeySequence(u'Ctrl+O')],
+            self.ServiceManagerContents.onLoadServiceClicked,
             u':/general/general_open.png', category=u'File')
-        self.FileSaveItem = icon_action(mainWindow, u'FileSaveItem',
+        self.FileOpenItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.FileSaveItem = shortcut_action(mainWindow, u'FileSaveItem',
+            [QtGui.QKeySequence(u'Ctrl+S')],
+            self.ServiceManagerContents.saveFile,
             u':/general/general_save.png', category=u'File')
-        self.FileSaveAsItem = base_action(
-            mainWindow, u'FileSaveAsItem', u'File')
-        self.printServiceOrderItem = base_action(
-            mainWindow, u'printServiceItem', u'File')
-        self.FileExitItem = icon_action(mainWindow, u'FileExitItem',
+        self.FileSaveItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.FileSaveAsItem = shortcut_action(mainWindow, u'FileSaveAsItem',
+            [QtGui.QKeySequence(u'Ctrl+Shift+S')],
+            self.ServiceManagerContents.saveFileAs, category=u'File')
+        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.printServiceOrderItem = shortcut_action(mainWindow,
+            u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
+            self.ServiceManagerContents.printServiceOrder,  category=u'File')
+        self.FileExitItem = shortcut_action(mainWindow, u'FileExitItem',
+            [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=u'File')
+        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.ImportThemeItem = base_action(
             mainWindow, u'ImportThemeItem', u'Import')
         self.ImportLanguageItem = base_action(
@@ -181,15 +195,21 @@ class Ui_MainWindow(object):
             mainWindow, u'ExportThemeItem', u'Export')
         self.ExportLanguageItem = base_action(
             mainWindow, u'ExportLanguageItem')#, u'Export')
-        self.ViewMediaManagerItem = icon_action(mainWindow,
-            u'ViewMediaManagerItem', u':/system/system_mediamanager.png',
+        self.ViewMediaManagerItem = shortcut_action(mainWindow,
+            u'ViewMediaManagerItem', [QtGui.QKeySequence(u'F8')],
+            self.toggleMediaManager, u':/system/system_mediamanager.png',
             self.mediaManagerDock.isVisible(), u'View')
-        self.ViewThemeManagerItem = icon_action(mainWindow,
-            u'ViewThemeManagerItem', u':/system/system_thememanager.png',
+        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.ViewThemeManagerItem = shortcut_action(mainWindow,
+            u'ViewThemeManagerItem', [QtGui.QKeySequence(u'F9')],
+            self.toggleThemeManager,  u':/system/system_thememanager.png',
             self.themeManagerDock.isVisible(), u'View')
-        self.ViewServiceManagerItem = icon_action(mainWindow,
-            u'ViewServiceManagerItem', u':/system/system_servicemanager.png',
+        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
+        self.ViewServiceManagerItem = shortcut_action(mainWindow,
+            u'ViewServiceManagerItem', [QtGui.QKeySequence(u'F10')],
+            self.toggleServiceManager, u':/system/system_servicemanager.png',
             self.serviceManagerDock.isVisible(), u'View')
+        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.ViewPreviewPanel = checkable_action(mainWindow,
             u'ViewPreviewPanel', previewVisible, u'View')
         self.ViewLivePanel = checkable_action(
@@ -278,8 +298,6 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileMenu,
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
-        QtCore.QObject.connect(self.FileExitItem,
-            QtCore.SIGNAL(u'triggered()'), mainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
         self.ToolsAddToolItem.setVisible(False)
@@ -312,36 +330,27 @@ class Ui_MainWindow(object):
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
         self.FileNewItem.setToolTip(UiStrings.NewService)
         self.FileNewItem.setStatusTip(UiStrings.CreateService)
-        self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
         self.FileOpenItem.setToolTip(UiStrings.OpenService)
         self.FileOpenItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Open an existing service.'))
-        self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
         self.FileSaveItem.setToolTip(UiStrings.SaveService)
         self.FileSaveItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Save the current service to disk.'))
-        self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))
         self.FileSaveAsItem.setText(
             translate('OpenLP.MainWindow', 'Save &As...'))
         self.FileSaveAsItem.setToolTip(
             translate('OpenLP.MainWindow', 'Save Service As'))
         self.FileSaveAsItem.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
-        self.FileSaveAsItem.setShortcut(
-            translate('OpenLP.MainWindow', 'Ctrl+Shift+S'))
         self.printServiceOrderItem.setText(UiStrings.PrintServiceOrder)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
             'Print the current Service Order.'))
-        self.printServiceOrderItem.setShortcut(
-            translate('OpenLP.MainWindow', 'Ctrl+P'))
         self.FileExitItem.setText(
             translate('OpenLP.MainWindow', 'E&xit'))
         self.FileExitItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Quit OpenLP'))
-        self.FileExitItem.setShortcut(
-            translate('OpenLP.MainWindow', 'Alt+F4'))
         self.ImportThemeItem.setText(
             translate('OpenLP.MainWindow', '&Theme'))
         self.ImportLanguageItem.setText(
@@ -362,24 +371,18 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Toggle Media Manager'))
         self.ViewMediaManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the media manager.'))
-        self.ViewMediaManagerItem.setShortcut(
-            translate('OpenLP.MainWindow', 'F8'))
         self.ViewThemeManagerItem.setText(
             translate('OpenLP.MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
             translate('OpenLP.MainWindow', 'Toggle Theme Manager'))
         self.ViewThemeManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the theme manager.'))
-        self.ViewThemeManagerItem.setShortcut(
-            translate('OpenLP.MainWindow', 'F10'))
         self.ViewServiceManagerItem.setText(
             translate('OpenLP.MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
             translate('OpenLP.MainWindow', 'Toggle Service Manager'))
         self.ViewServiceManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the service manager.'))
-        self.ViewServiceManagerItem.setShortcut(
-            translate('OpenLP.MainWindow', 'F9'))
         self.ViewPreviewPanel.setText(
             translate('OpenLP.MainWindow', '&Preview Panel'))
         self.ViewPreviewPanel.setToolTip(
@@ -409,6 +412,7 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
         self.HelpAboutItem.setShortcut(
             translate('OpenLP.MainWindow', 'Ctrl+F1'))
+        print self.HelpAboutItem.shortcuts()
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         # Uncomment after 1.9.5 beta string freeze
@@ -490,12 +494,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.ExportThemeItem,
             QtCore.SIGNAL(u'triggered()'),
             self.themeManagerContents.onExportTheme)
-        QtCore.QObject.connect(self.ViewMediaManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.toggleMediaManager)
-        QtCore.QObject.connect(self.ViewServiceManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.toggleServiceManager)
-        QtCore.QObject.connect(self.ViewThemeManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'), self.toggleThemeManager)
         QtCore.QObject.connect(self.ViewPreviewPanel,
             QtCore.SIGNAL(u'toggled(bool)'), self.setPreviewPanelVisibility)
         QtCore.QObject.connect(self.ViewLivePanel,
@@ -525,20 +523,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onSettingsConfigureItemClicked)
         QtCore.QObject.connect(self.SettingsShortcutsItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsShortcutsItemClicked)
-        QtCore.QObject.connect(self.FileNewItem, QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onNewServiceClicked)
-        QtCore.QObject.connect(self.FileOpenItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onLoadServiceClicked)
-        QtCore.QObject.connect(self.FileSaveItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.saveFile)
-        QtCore.QObject.connect(self.FileSaveAsItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.saveFileAs)
-        QtCore.QObject.connect(self.printServiceOrderItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.printServiceOrder)
         # i18n set signals for languages
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
@@ -909,17 +893,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
                 theme)
 
-    def toggleMediaManager(self, visible):
-        if self.mediaManagerDock.isVisible() != visible:
-            self.mediaManagerDock.setVisible(visible)
+    def toggleMediaManager(self):
+        self.mediaManagerDock.setVisible(not self.mediaManagerDock.isVisible())
 
-    def toggleServiceManager(self, visible):
-        if self.serviceManagerDock.isVisible() != visible:
-            self.serviceManagerDock.setVisible(visible)
+    def toggleServiceManager(self):
+        self.serviceManagerDock.setVisible(not self.serviceManagerDock.isVisible())
 
-    def toggleThemeManager(self, visible):
-        if self.themeManagerDock.isVisible() != visible:
-            self.themeManagerDock.setVisible(visible)
+    def toggleThemeManager(self):
+        self.themeManagerDock.setVisible(not self.themeManagerDock.isVisible())
 
     def setPreviewPanelVisibility(self, visible):
         """
