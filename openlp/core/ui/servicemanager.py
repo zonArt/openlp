@@ -40,7 +40,7 @@ from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -316,15 +316,15 @@ class ServiceManager(QtGui.QWidget):
         self.configUpdated()
 
     def setServiceHotkeys(self):
-        actionList.add_action(self.serviceManagerList.moveDown, u'Service')
-        actionList.add_action(self.serviceManagerList.moveUp, u'Service')
-        actionList.add_action(self.serviceManagerList.moveTop, u'Service')
-        actionList.add_action(self.serviceManagerList.moveBottom, u'Service')
-        actionList.add_action(self.serviceManagerList.makeLive, u'Service')
-        actionList.add_action(self.serviceManagerList.up, u'Service')
-        actionList.add_action(self.serviceManagerList.down, u'Service')
-        actionList.add_action(self.serviceManagerList.expand, u'Service')
-        actionList.add_action(self.serviceManagerList.collapse, u'Service')
+        ActionList.add_action(self.serviceManagerList.moveDown, u'Service')
+        ActionList.add_action(self.serviceManagerList.moveUp, u'Service')
+        ActionList.add_action(self.serviceManagerList.moveTop, u'Service')
+        ActionList.add_action(self.serviceManagerList.moveBottom, u'Service')
+        ActionList.add_action(self.serviceManagerList.makeLive, u'Service')
+        ActionList.add_action(self.serviceManagerList.up, u'Service')
+        ActionList.add_action(self.serviceManagerList.down, u'Service')
+        ActionList.add_action(self.serviceManagerList.expand, u'Service')
+        ActionList.add_action(self.serviceManagerList.collapse, u'Service')
 
 
     def setModified(self, modified=True):

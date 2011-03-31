@@ -34,7 +34,7 @@ from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 from openlp.core.lib.ui import icon_action, UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -364,18 +364,18 @@ class SlideController(QtGui.QWidget):
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, 0])
-        actionList.add_action(self.previousItem, u'Preview Toolbar')
+        ActionList.add_action(self.previousItem, u'Preview Toolbar')
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, 0])
-        actionList.add_action(self.nextItem, u'Preview Toolbar')
+        ActionList.add_action(self.nextItem, u'Preview Toolbar')
 
     def setLiveHotkeys(self, parent=None):
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
         self.previousItem.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.previousItem, u'Live Toolbar')
+        ActionList.add_action(self.previousItem, u'Live Toolbar')
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
         self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.nextItem, u'Live Toolbar')
+        ActionList.add_action(self.nextItem, u'Live Toolbar')
         self.previousService = shortcut_action(parent,
             translate('OpenLP.SlideController', 'Previous Service'),
             [QtCore.Qt.Key_Left, 0], self.servicePrevious, u'Live Toolbar')

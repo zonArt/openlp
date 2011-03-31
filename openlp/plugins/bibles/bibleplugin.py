@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import base_action
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -52,9 +52,9 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
-        actionList.add_action(self.importBibleItem, u'Import')
+        ActionList.add_action(self.importBibleItem, u'Import')
         # Do not add the action to the list yet.
-        #actionList.add_action(self.exportBibleItem, u'Export')
+        #ActionList.add_action(self.exportBibleItem, u'Export')
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
 

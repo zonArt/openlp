@@ -34,7 +34,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, base_action, icon_action
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -66,9 +66,9 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.toolsReindexItem.setVisible(True)
-        actionList.add_action(self.SongImportItem, u'Import')
-        actionList.add_action(self.SongExportItem, u'Export')
-        actionList.add_action(self.toolsReindexItem, u'Tools')
+        ActionList.add_action(self.SongImportItem, u'Import')
+        ActionList.add_action(self.SongExportItem, u'Export')
+        ActionList.add_action(self.toolsReindexItem, u'Tools')
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
@@ -258,7 +258,7 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Finalising')
         self.manager.finalise()
         self.toolsReindexItem.setVisible(False)
-        actionList.remove_action(self.SongImportItem, u'Import')
-        actionList.remove_action(self.SongExportItem, u'Export')
-        actionList.remove_action(self.toolsReindexItem, u'Tools')
+        ActionList.remove_action(self.SongImportItem, u'Import')
+        ActionList.remove_action(self.SongExportItem, u'Export')
+        ActionList.remove_action(self.toolsReindexItem, u'Tools')
         Plugin.finalise(self)

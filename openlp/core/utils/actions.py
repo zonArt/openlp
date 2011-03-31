@@ -183,17 +183,17 @@ class ActionList(object):
     has a weight by which it is sorted when iterating through the list of
     actions or categories.
     """
-    def __init__(self):
-        self.categories = CategoryList()
+    categories = CategoryList()
 
-    def add_action(self, action, category, weight=None):
-        if category not in self.categories:
-            self.categories.append(category)
+    @staticmethod
+    def add_action(action, category, weight=None):
+        if category not in ActionList.categories:
+            ActionList.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
         if weight is None:
-            self.categories[category].actions.append(action)
+            ActionList.categories[category].actions.append(action)
         else:
-            self.categories[category].actions.add(action, weight)
+            ActionList.categories[category].actions.add(action, weight)
         # Load the shortcut from the config.
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
@@ -203,9 +203,8 @@ class ActionList(object):
             [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
         settings.endGroup()
 
-    def remove_action(self, action, category):
-        if category not in self.categories:
+    @staticmethod
+    def remove_action(action, category):
+        if category not in ActionList.categories:
             return
-        self.categories[category].actions.remove(action)
-
-actionList = ActionList()
+        ActionList.categories[category].actions.remove(action)

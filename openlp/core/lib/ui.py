@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver, translate
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -251,7 +251,7 @@ def base_action(parent, name, category=None):
     action = QtGui.QAction(parent)
     action.setObjectName(name)
     if category is not None:
-        actionList.add_action(action, category)
+        ActionList.add_action(action, category)
     return action
 
 def checkable_action(parent, name, checked=None, category=None):

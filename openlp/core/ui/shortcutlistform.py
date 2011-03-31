@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import translate
-from openlp.core.utils.actions import actionList
+from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
 
 REMOVE_AMPERSAND = re.compile(r'&{1}')
@@ -96,7 +96,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         self.assingedShortcuts = []
         self.treeWidget.clear()
-        for category in actionList.categories:
+        for category in ActionList.categories:
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
                 self.assingedShortcuts.extend(action.shortcuts())
@@ -172,7 +172,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
-        for category in actionList.categories:
+        for category in ActionList.categories:
             for action in category.actions:
                 settings.setValue(
                     action.objectName(), QtCore.QVariant(action.shortcuts()))
