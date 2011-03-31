@@ -14,14 +14,14 @@ hundreds of churches around the world.
 OpenLP has searchable databases of songs and Bible verses allowing them to be
 projected instantly or saved in a pre-prepared order of service file. Themes
 allow for a variety of presentation options and allow you to add attractive
-visuals to enhance your presentations. PowerPoint and OpenOffice presentations
+visuals to enhance your presentations. PowerPoint and OpenOffice presentations,
 videos and audio files can be run from within the program removing the need to
 switch between different programs. Alert messages can be displayed so the
 nursery or car park stewards can notify the congregation easily. Remote
 capability allows the worship leader to change songs, or for alert messages to
 be sent from anywhere on the network, even via a smart phone or tablet.
 
-Being free, this software can be installed on as many PC's as required, 
+Being free, this software can be installed on as many PCs as required, 
 including the home PCs of worship leader(s) at no additional cost. Compared to
 the expensive site licenses and restrictions of commercial software we believe 
 OpenLP is the perfect choice for quality and value. Still in active development
