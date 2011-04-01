@@ -157,16 +157,20 @@ class SlideController(QtGui.QWidget):
             self.toolbar.addToolbarWidget(u'Hide Menu', self.hideMenu)
             self.hideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
-            self.blankScreen = icon_action(self.hideMenu, u'Blank Screen',
+            self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
+                [QtCore.Qt.Key_Period], self.onBlankDisplay,
                 u':/slides/slide_blank.png', False, u'Live Toolbar')
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
-            self.themeScreen = icon_action(self.hideMenu, u'Blank Theme',
+            self.themeScreen = shortcut_action(self.hideMenu, u'themeScreen',
+                [QtGui.QKeySequence(u'T')], self.onThemeDisplay,
                 u':/slides/slide_theme.png', False, u'Live Toolbar')
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
-            self.desktopScreen = icon_action(self.hideMenu, u'Desktop Screen',
-                u':/slides/slide_desktop.png', False, u'Live Toolbar')
+            self.desktopScreen = shortcut_action(self.hideMenu,
+                u'desktopScreen', [QtGui.QKeySequence(u'D')],
+                self.onHideDisplay, u':/slides/slide_desktop.png', False,
+                u'Live Toolbar')
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
@@ -294,12 +298,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.previewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
-            QtCore.QObject.connect(self.blankScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onBlankDisplay)
-            QtCore.QObject.connect(self.themeScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onThemeDisplay)
-            QtCore.QObject.connect(self.desktopScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -380,14 +378,17 @@ class SlideController(QtGui.QWidget):
         ActionList.add_action(self.nextItem, u'Live Toolbar')
         self.previousService = shortcut_action(parent, u'previousService',
             [QtCore.Qt.Key_Left], self.servicePrevious, u'Live Toolbar')
+        self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.previousService.setText(
             translate('OpenLP.SlideController', 'Previous Service'))
         self.nextService = shortcut_action(parent, 'nextService',
             [QtCore.Qt.Key_Right], self.serviceNext, u'Live Toolbar')
+        self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextService.setText(
             translate('OpenLP.SlideController', 'Next Service'))
         self.escapeItem = shortcut_action(parent, 'escapeItem',
             [QtCore.Qt.Key_Escape], self.liveEscape, u'Live Toolbar')
+        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.escapeItem.setText(
             translate('OpenLP.SlideController', 'Escape Item'))
 
@@ -742,10 +743,12 @@ class SlideController(QtGui.QWidget):
         """
         self.onBlankDisplay(False)
 
-    def onBlankDisplay(self, checked):
+    def onBlankDisplay(self, checked=None):
         """
         Handle the blank screen button actions
         """
+        if checked is None:
+            checked = self.blankScreen.isChecked()
         log.debug(u'onBlankDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.blankScreen)
         self.blankScreen.setChecked(checked)
@@ -763,10 +766,12 @@ class SlideController(QtGui.QWidget):
         self.blankPlugin(checked)
         self.updatePreview()
 
-    def onThemeDisplay(self, checked):
+    def onThemeDisplay(self, checked=None):
         """
         Handle the Theme screen button
         """
+        if checked is None:
+            checked = self.themeScreen.isChecked()
         log.debug(u'onThemeDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.themeScreen)
         self.blankScreen.setChecked(False)
@@ -784,10 +789,12 @@ class SlideController(QtGui.QWidget):
         self.blankPlugin(checked)
         self.updatePreview()
 
-    def onHideDisplay(self, checked):
+    def onHideDisplay(self, checked=None):
         """
         Handle the Hide screen button
         """
+        if checked is None:
+            checked = self.desktopScreen.isChecked()
         log.debug(u'onHideDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.desktopScreen)
         self.blankScreen.setChecked(False)
@@ -1102,11 +1109,11 @@ class SlideController(QtGui.QWidget):
         screen hide attributes
         """
         blank = None
-        if self.blankScreen.isChecked:
+        if self.blankScreen.isChecked():
             blank = self.blankScreen
-        if self.themeScreen.isChecked:
+        if self.themeScreen.isChecked():
             blank = self.themeScreen
-        if self.desktopScreen.isChecked:
+        if self.desktopScreen.isChecked():
             blank = self.desktopScreen
         if blank:
             blank.setChecked(False)

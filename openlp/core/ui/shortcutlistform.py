@@ -42,13 +42,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     The shortcut list dialog
     """
 #TODO: do not close on ESC
-#TODO: Fix Preview/Live controller (have the same shortcut
+#TODO: Fix Preview/Live controller (have the same shortcut)
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.assingedShortcuts = []
         self.column = -1
         self.shortcutButton.setText(u'')
+        self.shortcutButton.setEnabled(False)
         QtCore.QObject.connect(self.shortcutButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.onShortcutButtonClicked)
         QtCore.QObject.connect(self.treeWidget,
@@ -76,7 +76,27 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
-        if key_sequence in self.assingedShortcuts:
+        # The item/action we are attempting to change.
+        changing_item = self.treeWidget.currentItem()
+        changing_action = changing_item.data(0, QtCore.Qt.UserRole).toPyObject()
+        shortcut_valid = True
+        for category in ActionList.categories:
+            for action in category.actions:
+                shortcuts = action.shortcuts()
+                if key_sequence not in shortcuts:
+                    continue
+                if action is changing_action:
+                    continue
+                # Have the same parentWidget, thus they cannot have the same
+                # shortcut.
+                #TODO: Does not fully work right now.
+                if action.parentWidget() is changing_action.parentWidget():
+                    shortcut_valid = False
+                if action.shortcutContext() == QtCore.Qt.WindowShortcut:
+                    shortcut_valid = False
+                if changing_action.shortcutContext() == QtCore.Qt.WindowShortcut:
+                    shortcut_valid = False
+        if not shortcut_valid:
             QtGui.QMessageBox.warning(self,
                 translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
                 unicode(translate('OpenLP.ShortcutListDialog', 'The shortcut '
@@ -91,6 +111,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def exec_(self):
         self.reloadShortcutList()
+        self.shortcutButton.setChecked(False)
+        self.shortcutButton.setEnabled(False)
+        self.shortcutButton.setText(u'')
         return QtGui.QDialog.exec_(self)
 
     def reloadShortcutList(self):
@@ -116,7 +139,6 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         This refreshes the item's shortcuts shown in the list. Note, this
         neither adds new actions nor removes old actions.
         """
-        self.assingedShortcuts = []
         iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget)
         while iterator.value():
             item = iterator.value()
@@ -124,7 +146,6 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             action = item.data(0, QtCore.Qt.UserRole).toPyObject()
             if action is None:
                 continue
-            self.assingedShortcuts.extend(action.shortcuts())
             if len(action.shortcuts()) == 0:
                 item.setText(1, u'')
                 item.setText(2, u'')
@@ -142,6 +163,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if toggled:
             return
         item = self.treeWidget.currentItem()
+        if item is None:
+            return
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         if action is None:
             return
@@ -163,12 +186,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def onItemDoubleClicked(self, item, column):
         """
+        A item has been double clicked. ``The shortcutButton`` will be checked
+        and the item's shortcut will be displayed.
         """
-        item = self.treeWidget.currentItem()
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        if action is None:
+            return
         self.shortcutButton.setChecked(True)
-        if action is None or column not in [1, 2]:
-            self.shortcutButton.setChecked(False)
         self.onItemPressed(item, column)
 
     def onItemPressed(self, item, column):
@@ -177,11 +201,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         shortcut which is encapsulate in the item.
         """
         self.column = column
-        item = self.treeWidget.currentItem()
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         self.shortcutButton.setEnabled(True)
         text = u''
         if action is None or column not in [1, 2]:
+            self.shortcutButton.setChecked(False)
             self.shortcutButton.setEnabled(False)
         elif column == 1 and len(action.shortcuts()) != 0:
             text = action.shortcuts()[0].toString()
@@ -194,16 +218,15 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Restore the defaults of this 
         """
         item = self.treeWidget.currentItem()
+        self.shortcutButton.setChecked(False)
         if item is None:
             return
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         if action is None:
             return
-        #FIXME: defaultShortcuts
         action.setShortcuts(action.defaultShortcuts)
-        self.shortcutButton.setChecked(False)
-        self.shortcutButton.setText(u'')
         self.refreshShortcutList()
+        self.onItemPressed(item, self.column)
 
     def save(self):
         """

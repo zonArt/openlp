@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
+from openlp.core.lib.ui import icon_action
 
 log = logging.getLogger(__name__)
 
@@ -132,7 +133,7 @@ class SearchEdit(QtGui.QLineEdit):
         menu = QtGui.QMenu(self)
         first = None
         for identifier, icon, title in items:
-            action = QtGui.QAction(build_icon(icon), title, menu)
+            action = icon_action(menu, title, icon)
             action.setData(QtCore.QVariant(identifier))
             menu.addAction(action)
             QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),

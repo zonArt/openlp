@@ -165,28 +165,23 @@ class Ui_MainWindow(object):
             [QtGui.QKeySequence(u'Ctrl+N')],
             self.ServiceManagerContents.onNewServiceClicked,
             u':/general/general_new.png', category=u'File')
-        self.FileNewItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.FileOpenItem = shortcut_action(mainWindow, u'FileOpenItem',
             [QtGui.QKeySequence(u'Ctrl+O')],
             self.ServiceManagerContents.onLoadServiceClicked,
             u':/general/general_open.png', category=u'File')
-        self.FileOpenItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.FileSaveItem = shortcut_action(mainWindow, u'FileSaveItem',
             [QtGui.QKeySequence(u'Ctrl+S')],
             self.ServiceManagerContents.saveFile,
             u':/general/general_save.png', category=u'File')
-        self.FileSaveItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.FileSaveAsItem = shortcut_action(mainWindow, u'FileSaveAsItem',
             [QtGui.QKeySequence(u'Ctrl+Shift+S')],
             self.ServiceManagerContents.saveFileAs, category=u'File')
-        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.printServiceOrderItem = shortcut_action(mainWindow,
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.ServiceManagerContents.printServiceOrder,  category=u'File')
         self.FileExitItem = shortcut_action(mainWindow, u'FileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=u'File')
-        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.ImportThemeItem = base_action(
             mainWindow, u'ImportThemeItem', u'Import')
         self.ImportLanguageItem = base_action(
@@ -199,21 +194,20 @@ class Ui_MainWindow(object):
             u'ViewMediaManagerItem', [QtGui.QKeySequence(u'F8')],
             self.toggleMediaManager, u':/system/system_mediamanager.png',
             self.mediaManagerDock.isVisible(), u'View')
-        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.ViewThemeManagerItem = shortcut_action(mainWindow,
-            u'ViewThemeManagerItem', [QtGui.QKeySequence(u'F9')],
+            u'ViewThemeManagerItem', [QtGui.QKeySequence(u'F10')],
             self.toggleThemeManager,  u':/system/system_thememanager.png',
             self.themeManagerDock.isVisible(), u'View')
-        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
         self.ViewServiceManagerItem = shortcut_action(mainWindow,
-            u'ViewServiceManagerItem', [QtGui.QKeySequence(u'F10')],
+            u'ViewServiceManagerItem', [QtGui.QKeySequence(u'F9')],
             self.toggleServiceManager, u':/system/system_servicemanager.png',
             self.serviceManagerDock.isVisible(), u'View')
-        self.FileSaveAsItem.setShortcutContext(QtCore.Qt.WindowShortcut)
-        self.ViewPreviewPanel = checkable_action(mainWindow,
-            u'ViewPreviewPanel', previewVisible, u'View')
-        self.ViewLivePanel = checkable_action(
-            mainWindow, u'ViewLivePanel', liveVisible, u'View')
+        self.ViewPreviewPanel = shortcut_action(mainWindow,
+            u'ViewPreviewPanel', [QtGui.QKeySequence(u'F11')],
+            self.setPreviewPanelVisibility, checked=previewVisible, category=u'View')
+        self.ViewLivePanel = shortcut_action(mainWindow, u'ViewLivePanel',
+            [QtGui.QKeySequence(u'F12')], self.setLivePanelVisibility,
+            checked=liveVisible, category=u'View')
         self.ModeDefaultItem = checkable_action(
             mainWindow, u'ModeDefaultItem', category=u'View Mode')
         self.ModeSetupItem = checkable_action(
@@ -229,8 +223,9 @@ class Ui_MainWindow(object):
             u':/tools/tools_add.png', category=u'Tools')
         self.ToolsOpenDataFolder = icon_action(mainWindow, u'ToolsOpenDataFolder',
             u':/general/general_open.png', category=u'Tools')
-        self.settingsPluginListItem = icon_action(mainWindow,
-            u'settingsPluginListItem', u':/system/settings_plugin_list.png',
+        self.settingsPluginListItem = shortcut_action(mainWindow,
+            u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
+            self.onPluginItemClicked, u':/system/settings_plugin_list.png',
             category=u'Settings')
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
@@ -257,7 +252,8 @@ class Ui_MainWindow(object):
             u'HelpDocumentationItem', u':/system/system_help_contents.png',
             category=None)#u'Help')
         self.HelpDocumentationItem.setEnabled(False)
-        self.HelpAboutItem = icon_action(mainWindow, u'HelpAboutItem',
+        self.HelpAboutItem = shortcut_action(mainWindow, u'HelpAboutItem',
+            [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=u'Help')
         self.HelpOnlineHelpItem = base_action(
             mainWindow, u'HelpOnlineHelpItem', category=u'Help')
@@ -389,30 +385,21 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Toggle Preview Panel'))
         self.ViewPreviewPanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the preview panel.'))
-        self.ViewPreviewPanel.setShortcut(
-            translate('OpenLP.MainWindow', 'F11'))
         self.ViewLivePanel.setText(
             translate('OpenLP.MainWindow', '&Live Panel'))
         self.ViewLivePanel.setToolTip(
             translate('OpenLP.MainWindow', 'Toggle Live Panel'))
         self.ViewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the live panel.'))
-        self.ViewLivePanel.setShortcut(
-            translate('OpenLP.MainWindow', 'F12'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow',
             '&Plugin List'))
         self.settingsPluginListItem.setStatusTip(
             translate('OpenLP.MainWindow', 'List the Plugins'))
-        self.settingsPluginListItem.setShortcut(
-            translate('OpenLP.MainWindow', 'Alt+F7'))
         self.HelpDocumentationItem.setText(
             translate('OpenLP.MainWindow', '&User Guide'))
         self.HelpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(
-            translate('OpenLP.MainWindow', 'Ctrl+F1'))
-        print self.HelpAboutItem.shortcuts()
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         # Uncomment after 1.9.5 beta string freeze
@@ -494,10 +481,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.ExportThemeItem,
             QtCore.SIGNAL(u'triggered()'),
             self.themeManagerContents.onExportTheme)
-        QtCore.QObject.connect(self.ViewPreviewPanel,
-            QtCore.SIGNAL(u'toggled(bool)'), self.setPreviewPanelVisibility)
-        QtCore.QObject.connect(self.ViewLivePanel,
-            QtCore.SIGNAL(u'toggled(bool)'), self.setLivePanelVisibility)
         QtCore.QObject.connect(self.mediaManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.ViewMediaManagerItem.setChecked)
@@ -511,12 +494,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpOnlineHelpItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
-        QtCore.QObject.connect(self.HelpAboutItem,
-            QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
-        QtCore.QObject.connect(self.settingsPluginListItem,
-            QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.DisplayTagItem,
             QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -902,7 +881,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def toggleThemeManager(self):
         self.themeManagerDock.setVisible(not self.themeManagerDock.isVisible())
 
-    def setPreviewPanelVisibility(self, visible):
+    def setPreviewPanelVisibility(self, visible=None):
         """
         Sets the visibility of the preview panel including saving the setting
         and updating the menu.
@@ -912,12 +891,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
+        if visible is None:
+            visible = self.ViewPreviewPanel.isVisible()
         self.previewController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
 
-    def setLivePanelVisibility(self, visible):
+    def setLivePanelVisibility(self, visible=None):
         """
         Sets the visibility of the live panel including saving the setting and
         updating the menu.
@@ -927,6 +908,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
+        if visible is None:
+            visible = self.ViewLivePanel.isVisible()
         self.liveController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/live panel',
             QtCore.QVariant(visible))
@@ -984,8 +967,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.FileMenu.addSeparator()
             for fileId, filename in enumerate(recentFilesToDisplay):
                 log.debug('Recent file name: %s', filename)
-                action = QtGui.QAction(u'&%d %s' % (fileId + 1,
-                    QtCore.QFileInfo(filename).fileName()), self)
+                action =  base_action(self, u'&%d %s' % (fileId + 1,
+                    QtCore.QFileInfo(filename).fileName()))
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
                     self.ServiceManagerContents.onRecentServiceClicked)

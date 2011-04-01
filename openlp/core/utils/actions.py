@@ -173,6 +173,11 @@ class CategoryList(object):
         self.categories.append(category)
         self.categories.sort(key=lambda cat: cat.weight)
 
+    def remove(self, name):
+        for category in self.categories:
+            if category.name == name:
+                self.categories.remove(category)
+
 
 class ActionList(object):
     """
@@ -206,3 +211,6 @@ class ActionList(object):
         if category not in ActionList.categories:
             return
         ActionList.categories[category].actions.remove(action)
+        # Remove empty categories.
+        if len(ActionList.categories[category].actions) == 0:
+            ActionList.categories.remove(category)
