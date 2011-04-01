@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -105,6 +105,9 @@ class GeneralTab(SettingsTab):
         self.saveCheckServiceCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.saveCheckServiceCheckBox.setObjectName(u'saveCheckServiceCheckBox')
         self.settingsLayout.addRow(self.saveCheckServiceCheckBox)
+        self.autoUnblankCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
+        self.autoUnblankCheckBox.setObjectName(u'autoUnblankCheckBox')
+        self.settingsLayout.addRow(self.autoUnblankCheckBox)
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
         self.settingsLayout.addRow(self.autoPreviewCheckBox)
@@ -224,6 +227,8 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.saveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
             'Prompt to save before starting a new service'))
+        self.autoUnblankCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Unblank display when adding new live item'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
@@ -261,6 +266,8 @@ class GeneralTab(SettingsTab):
         self.passwordEdit.setText(unicode(settings.value(
             u'songselect password', QtCore.QVariant(u'')).toString()))
         self.saveCheckServiceCheckBox.setChecked(settings.value(u'save prompt',
+            QtCore.QVariant(False)).toBool())
+        self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank',
             QtCore.QVariant(False)).toBool())
         self.monitorComboBox.setCurrentIndex(self.monitorNumber)
         self.displayOnMonitorCheck.setChecked(self.screens.display)
@@ -312,6 +319,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.checkForUpdatesCheckBox.isChecked()))
         settings.setValue(u'save prompt',
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
+        settings.setValue(u'auto unblank',
+            QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
         settings.setValue(u'loop delay',

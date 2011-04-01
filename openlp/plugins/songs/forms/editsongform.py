@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -269,6 +269,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if index is None:
                     index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
+                if verse[0][u'label'] == u'':
+                    verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
