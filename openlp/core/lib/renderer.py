@@ -120,7 +120,7 @@ class Renderer(object):
         self.service_theme = service_theme
         self.theme_data = None
 
-    def set_override_theme(self, theme, overrideLevels=False):
+    def set_override_theme(self, theme, override_levels=False):
         """
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
@@ -129,13 +129,13 @@ class Renderer(object):
             The name of the song-level theme. None means the service
             item wants to use the given value.
 
-        ``overrideLevels``
+        ``override_levels``
             Used to force the theme data passed in to be used.
 
         """
         log.debug(u'set override theme to %s', theme)
         theme_level = self.theme_level
-        if overrideLevels:
+        if override_levels:
             theme_level = ThemeLevel.Song
         if theme_level == ThemeLevel.Global:
             self.theme = self.global_theme
@@ -158,7 +158,7 @@ class Renderer(object):
                 self.theme = self.global_theme
         log.debug(u'theme is now %s', self.theme)
         # Force the theme to be the one passed in.
-        if overrideLevels:
+        if override_levels:
             self.theme_data = theme
         else:
             self.theme_data = self.theme_manager.getThemeData(self.theme)
@@ -216,9 +216,13 @@ class Renderer(object):
         log.debug(u'format slide')
         # clean up line endings
         slide = slide.replace(u'\r\n', u'\n')
+        print "###############"
+        print [slide]
         lines = self._lines(slide)
         pages = self._paginate_slide(lines, line_break, self.force_page)
+        print len(pages)
         if len(pages) > 1:
+            # Songs and Custom
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
                 # do not forget the line breaks !
                 slides = slide.split(u'\n[---]\n')
@@ -229,9 +233,11 @@ class Renderer(object):
                         self.force_page)
                     for page in new_pages:
                         pages.append(page)
+#            # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
                 lines = self._words(slide)
-                pages = self._paginate_slide(lines, False, self.force_page)
+                pages = self._paginate_slide(lines, False)
+        print pages
         return pages
 
     def _calculate_default(self, screen):
@@ -352,12 +358,50 @@ class Renderer(object):
         log.debug(u'format_slide - End')
         return formatted
 
+    def _paginate_slide_words(self, lines, line_break):
+        """
+        Figure out how much text can appear on a slide, using the current
+        theme settings.
+
+        ``lines``
+            The words to be fitted on the slide split into lines.
+        """
+        log.debug(u'format_slide - Start')
+        line_end = u''
+        if line_break:
+            line_end = u'<br>'
+        formatted = []
+        html_text = u''
+        styled_text = u''
+        for line in lines:
+            styled_line = expand_tags(line)
+            if line.startswith(u'{su}'):
+                styled_line = line_end + styled_line
+            styled_text += styled_line
+            html = self.page_shell + styled_text + u'</div></body></html>'
+            self.web.setHtml(html)
+            # Text too long so go to next page
+            if self.web_frame.contentsSize().height() > self.page_height:
+                #split
+                if html_text.endswith(u'<br>'):
+                    html_text = html_text[:len(html_text)-4]
+                formatted.append(html_text)
+                html_text = u''
+                styled_text = styled_line
+            html_text += line# + line_end
+        if html_text.endswith(u'<br>'):
+            html_text = html_text[:len(html_text)-4]
+        formatted.append(html_text)
+        log.debug(u'format_slide - End')
+        return formatted
+
+
     def _lines(self, words):
         """
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        words = words.replace(u'[---]', u'')
+        words = words.replace(u'\n[---]\n', u'')
         verses_text = words.split(u'\n')
         text = []
         for verse in verses_text:
@@ -371,6 +415,7 @@ class Renderer(object):
         Split the slide up by word so can wrap better
         """
         # this parse we are wordy
+        words = words.replace(u'[---]', u'').lstrip()
         words = words.replace(u'\n', u' ')
         verses_text = words.split(u' ')
         text = []
@@ -379,4 +424,3 @@ class Renderer(object):
             for line in lines:
                 text.append(line + u' ')
         return text
-

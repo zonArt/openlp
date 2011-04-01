@@ -153,7 +153,7 @@ class ServiceItem(object):
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self, useOverride=False):
+    def render(self, use_override=False):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderemanager.
@@ -168,7 +168,7 @@ class ServiceItem(object):
             line_break = False
         theme = self.theme if self.theme else None
         self.main, self.footer = \
-            self.renderer.set_override_theme(theme, useOverride)
+            self.renderer.set_override_theme(theme, use_override)
         self.themedata = self.renderer.theme_data
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
