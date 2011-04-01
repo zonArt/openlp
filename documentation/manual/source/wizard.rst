@@ -28,7 +28,7 @@ Activate required Plugins
 OpenLP has several plugins to choose from. By default, all plugins are enabled, 
 except the *Remote Access* plugin. For more information on these plugins, please 
 read the :doc:`mediamanager` section in the manual. If you are not sure of which 
-plugins to enable or disable, leave the selection as-is. You can easily activate 
+plugins to enable or disable, leave the selection as is. You can easily activate 
 or deactivate plugins later, when OpenLP is running, by going to 
 :menuselection:`Settings --> Plugin List`. Click :guilabel:`Next` to continue.
 

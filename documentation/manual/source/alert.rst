@@ -5,10 +5,11 @@ Alert
 :menuselection:`Tools --> Alert`
 --------------------------------
 
-You may find it necessary to display an Alert on your screen, ie: car headlights 
-left on, parent needed in nursery, or anything else somebody may need notified 
-about. This is easily accomplished using the Alert, which is accessible from the 
-top Menu under :menuselection:`Tools --> Alert`.
+From time to time it may be necessary to display a small unobtrusive message to 
+the congregation. In OpenLP this is known as an `Alert`. Examples could be a car 
+with the headlights left on, a parent needed in nursery, or anything else 
+somebody may need notified about. This is easily accomplished using the Alert, 
+which is accessible from the top Menu under :menuselection:`Tools --> Alert`.
 
 .. image:: pics/alert.png
 
@@ -43,8 +44,8 @@ You could also reverse this example:
 `Will display like this:` HNN432 left their lights on.
 
 If you use the same alerts on a regular basis, Save your Alert and you will have 
-access to the alert with a click of the mouse. You may also click on New for a 
-new alert or Delete an alert you do not need.
+access to the alert with a click of the mouse. You may also click on `New` to 
+make a new alert or `Delete` an alert you do not need.
 
 When you are ready to Display your Alert you have two options. Clicking on 
 Display will display the Alert and the Alert Message window will remain open. 
@@ -56,4 +57,4 @@ top Menu item :menuselection:`Settings --> Configure OpenLP`, Alert tab and the
 instructions here. :doc:`configure`
 
 **Please note:** Alert Message is a Plugin that needs to be Active in the Plugin 
-List for use. 
+List for use.
