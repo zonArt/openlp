@@ -139,8 +139,8 @@ I am using PowerPoint 2010 or PowerPoint Viewer 2010 and presentations do not wo
 
 Currently OpenLP does not support PowerPoint Viewer 2010. PowerPoint 2010 should
 work correctly but there have been some issues when it does not work. If you 
-have issues with PowerPoint 2010 or PowerPoint Viewer 2010 try PowerPoint 2003
-or 2007 Viewer. `Download the PowerPoint 2007 viewer for free.
+have issues with PowerPoint 2010 or PowerPoint Viewer 2010 try the PowerPoint
+2003 or 2007 Viewers. `Download the PowerPoint 2007 viewer for free.
 <http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_
 
 I have PowerPoint installed but it does not show as a presentation option

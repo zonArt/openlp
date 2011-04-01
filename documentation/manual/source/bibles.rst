@@ -62,8 +62,8 @@ Importing OSIS Bibles
 
 **About OSIS Formatted Bibles**
 
-OSIS is a format intended to provide a common format for Bibles. More
-information can be found out at the `Bible Technologies website. 
+OSIS was designed to provide a common format for distribution of electronic
+Bibles. More information can be found out at the `Bible Technologies website. 
 <http://www.bibletechnologies.net/>`_ 
 
 If you have any software installed that is part of the `Sword Project 
