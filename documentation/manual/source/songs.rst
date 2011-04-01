@@ -71,8 +71,8 @@ Importing from CCLI Song Select
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To import from CCLI Song Select you must be a CCLI Subscriber and also a 
-subscriber of the Song Select service. For info on that go to: 
-http://www.ccli.com 
+subscriber of the Song Select service. For check out the `CCLI website.
+<http://www.ccli.com>`_ 
 
 The first step for importing from CCLI Song Select is to log into your account.
 Then search for your desired song. For this example we will be adding the song
