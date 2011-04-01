@@ -32,7 +32,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
-from openlp.core.lib.ui import icon_action, UiStrings, shortcut_action
+from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.utils.actions import ActionList
 
@@ -143,12 +143,17 @@ class SlideController(QtGui.QWidget):
             translate('OpenLP.SlideController', 'Move to previous'),
             self.onSlideSelectedPrevious)
         self.previousItem.setObjectName(u'previousItem')
+        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
+        self.previousItem.setShortcutContext(
+            QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
         self.nextItem.setObjectName(u'nextItem')
+        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
+        self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
             self.hideMenu = QtGui.QToolButton(self.toolbar)
@@ -363,18 +368,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
-        self.previousItem.setShortcuts([QtCore.Qt.Key_Up])
         ActionList.add_action(self.previousItem, u'Preview Toolbar')
-        self.nextItem.setShortcuts([QtCore.Qt.Key_Down])
         ActionList.add_action(self.nextItem, u'Preview Toolbar')
 
     def setLiveHotkeys(self, parent=None):
-        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
-        self.previousItem.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
         ActionList.add_action(self.previousItem, u'Live Toolbar')
-        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
-        self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         ActionList.add_action(self.nextItem, u'Live Toolbar')
         self.previousService = shortcut_action(parent, u'previousService',
             [QtCore.Qt.Key_Left], self.servicePrevious, u'Live Toolbar')
