@@ -103,7 +103,8 @@ After enabling the rpmfusion repository you will want to refresh your package
 list, perform any updates and search for gstreamer-good, bad, and ugly and
 install.
 
-`Here <http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories>`_ is a good tutorial video on the rpmfusion repository 
+Follow the tutorial`using the rpmfusion repository <http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories>`_ 
+to enable extra audio and video formats on Fedora
 
 The Media Manager appears to be missing some features
 -----------------------------------------------------
@@ -138,15 +139,16 @@ I am using PowerPoint 2010 or PowerPoint Viewer 2010 and presentations do not wo
 ----------------------------------------------------------------------------------
 
 Currently OpenLP does not support PowerPoint Viewer 2010. PowerPoint 2010 should
-work correctly but there have been some issues when it does not work. If you 
-have issues with PowerPoint 2010 or PowerPoint Viewer 2010 try the PowerPoint
-2003 or 2007 Viewers. `Download the PowerPoint 2007 viewer for free.
-<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_
+work correctly, although some users have reported problems.If you have issues
+with PowerPoint 2010 or PowerPoint Viewer 2010 try the PowerPoint 2003 or 2007
+Viewers. `Download the PowerPoint 2007 viewer for free
+<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_.
 
 I have PowerPoint installed but it does not show as a presentation option
 -------------------------------------------------------------------------
 
-Try installing the `Visual C++ Runtime Redistributable. <http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&displaylang=en>`_
+Installing the `Visual C++ Runtime Redistributable. <http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&displaylang=en>`_
+has fixed this problem according to some of our users.
 
 I have JPG images and they will not work on my system
 -----------------------------------------------------

@@ -62,9 +62,9 @@ Importing OSIS Bibles
 
 **About OSIS Formatted Bibles**
 
-OSIS was designed to provide a common format for distribution of electronic
-Bibles. More information can be found out at the `Bible Technologies website. 
-<http://www.bibletechnologies.net/>`_ 
+The OSIS XML standard was designed to provide a common format for distribution
+of electronic Bibles. More information can be found out at the `Bible Technologies website 
+<http://www.bibletechnologies.net/>`_. 
 
 If you have any software installed that is part of the `Sword Project 
 <http://www.crosswire.org/sword/index.jsp>`_ it can be easily converted.
