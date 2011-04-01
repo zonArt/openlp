@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,34 +25,49 @@
 ###############################################################################
 
 """
-Forms in OpenLP are made up of two classes. One class holds all the graphical
-elements, like buttons and lists, and the other class holds all the functional
-code, like slots and loading and saving.
-
-The first class, commonly known as the **Dialog** class, is typically named
-``Ui_<name>Dialog``. It is a slightly modified version of the class that the
-``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
-converting most strings from "" to u'' and using OpenLP's ``translate()``
-function for translating strings.
-
-The second class, commonly known as the **Form** class, is typically named
-``<name>Form``. This class is the one which is instantiated and used. It uses
-dual inheritance to inherit from (usually) QtGui.QDialog and the Ui class
-mentioned above, like so::
-
-    class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
-
-        def __init__(self, parent, manager, bibleplugin):
-            QtGui.QWizard.__init__(self, parent)
-            self.setupUi(self)
-
-This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
-them separate from the functionality, so that it is easier to recreate the GUI
-from the .ui files later if necessary.
+Module implementing BookNameForm.
 """
+import logging
 
-from bibleimportform import BibleImportForm
-from booknameform import BookNameForm
-from languageform import LanguageForm
+from PyQt4.QtGui import QDialog
 
-__all__ = ['BibleImportForm']
+from openlp.core.lib import translate
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.plugins.bibles.forms.booknamedialog import \
+    Ui_BookNameDialog
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+
+log = logging.getLogger(__name__)
+
+class BookNameForm(QDialog, Ui_BookNameDialog):
+    """
+    Class documentation goes here.
+    """
+    log.info(u'BookNameForm loaded')
+    
+    def __init__(self, parent = None):
+        """
+        Constructor
+        """
+        QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def exec_(self, name):
+        items = []
+        self.requestComboBox.addItem(u'')
+        self.requestLabel.setText(
+            translate("BiblesPlugin.BookNameForm", name))
+        items = BiblesResourcesDB.get_books()
+        for item in items:
+            self.requestComboBox.addItem(item[u'name'])
+        return QDialog.exec_(self)
+    
+    def accept(self):
+        if self.requestComboBox.currentText() == u"":
+            critical_error_message_box(
+                message=translate('BiblesPlugin.BookNameForm',
+                'You need to choose a book.'))
+            self.requestComboBox.setFocus()
+            return False
+        else:
+            return QDialog.accept(self)

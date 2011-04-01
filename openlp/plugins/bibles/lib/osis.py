@@ -107,7 +107,7 @@ class OSISBible(BibleDB):
             if detect_file:
                 detect_file.close()
         # Set meta language_id
-        language = self.parent.mediaItem.importRequest(u'language')
+        language = self.parent.mediaItem.languageDialog()
         if not language:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)
@@ -128,7 +128,7 @@ class OSISBible(BibleDB):
                     verse = int(match.group(3))
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
-                        log.debug(u'New book: "%s"', self.books[book][0])
+                        log.debug(u'New book: "%s"' % self.books[book][0])
                         #TODO: Delete unused code
                         #if book == u'Matt' or book == u'Jdt':
                         #    testament += 1

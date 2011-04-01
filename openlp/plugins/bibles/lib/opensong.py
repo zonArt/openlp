@@ -62,7 +62,7 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
-            language = self.parent.mediaItem.importRequest(u'language')
+            language = self.parent.mediaItem.languageDialog()
             if not language:
                 log.exception(u'Importing books from %s   " '\
                     'failed' % self.filename)

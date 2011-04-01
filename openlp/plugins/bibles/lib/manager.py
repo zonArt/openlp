@@ -121,7 +121,7 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
-        self.settingsSection = u'bibles'
+        self.settingsSection = u'bibles/bibles'
         self.web = u'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
@@ -131,7 +131,8 @@ class BibleManager(object):
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
-        self.reload_alternative_book_names()
+        #TODO: Delete unused code
+        #self.reload_alternative_book_names()
         self.media = None
 
     def reload_bibles(self):
@@ -169,6 +170,8 @@ class BibleManager(object):
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
+    #TODO: Delete unused code
+    '''
     def reload_alternative_book_names(self):
         """
         Reloads the alternative book names from the local alternative book names
@@ -178,6 +181,7 @@ class BibleManager(object):
         self.alternative_book_names_cache = AlternativeBookNamesDB(self.parent, 
             path=self.path)
         log.debug(u'AlternativeBookNames reloaded')
+    '''
 
     def set_process_dialog(self, wizard):
         """
@@ -331,6 +335,8 @@ class BibleManager(object):
     def get_book_ref_id_by_name(self, book, language_id=None):
         log.debug(u'BibleManager.get_book_ref_id_by_name:("%s", "%s")', book, 
             language_id)
+        self.alternative_book_names_cache = AlternativeBookNamesDB(self.parent, 
+            path=self.path)
         if BiblesResourcesDB.get_book(book):
             book_temp = BiblesResourcesDB.get_book(book)
             book_id = book_temp[u'id']
@@ -342,7 +348,7 @@ class BibleManager(object):
             book_id = self.alternative_book_names_cache.get_book_reference_id(
                 book, language_id)
         else:   
-            book_ref = self.parent.mediaItem.importRequest(u'book', book)
+            book_ref = self.parent.mediaItem.bookNameDialog(book)
             log.debug(book_ref)
             book_temp = BiblesResourcesDB.get_book(book_ref)
             log.debug(book_temp)

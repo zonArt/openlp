@@ -29,18 +29,18 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_accept_reject_button_box
 
-class Ui_BibleImportRequest(object):
-    def setupUi(self, bibleImportRequest):
-        bibleImportRequest.setObjectName("BibleImportRequest")
-        bibleImportRequest.resize(400, 175)
+class Ui_LanguageDialog(object):
+    def setupUi(self, languageDialog):
+        languageDialog.setObjectName("LanugageDialog")
+        languageDialog.resize(400, 175)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, 
             QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(bibleImportRequest.sizePolicy()
+        sizePolicy.setHeightForWidth(languageDialog.sizePolicy()
             .hasHeightForWidth())
-        bibleImportRequest.setSizePolicy(sizePolicy)
-        self.widget = QtGui.QWidget(bibleImportRequest)
+        languageDialog.setSizePolicy(sizePolicy)
+        self.widget = QtGui.QWidget(languageDialog)
         self.widget.setGeometry(QtCore.QRect(10, 15, 381, 151))
         self.widget.setObjectName("widget")
         self.verticalLayout = QtGui.QVBoxLayout(self.widget)
@@ -79,17 +79,16 @@ class Ui_BibleImportRequest(object):
             QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.formLayout.addWidget(
-            create_accept_reject_button_box(bibleImportRequest))
-        self.retranslateUi(bibleImportRequest)
-        QtCore.QMetaObject.connectSlotsByName(bibleImportRequest)
+            create_accept_reject_button_box(languageDialog))
+        self.retranslateUi(languageDialog)
+        QtCore.QMetaObject.connectSlotsByName(languageDialog)
 
-    def retranslateUi(self, bibleImportRequest):
-        bibleImportRequest.setWindowTitle(
-            translate("BiblesPlugin.bibleImportRequest", "Dialog"))
+    def retranslateUi(self, languageDialog):
+        languageDialog.setWindowTitle(
+            translate("BiblesPlugin.LanguageDialog", "Choose Language"))
         self.headlineLabel.setText(
-            translate("BiblesPlugin.bibleImportRequest", "Choose Book:"))
-        self.infoLabel.setText(translate("BiblesPlugin.bibleImportRequest", 
-            "The following books cannot be clearly attributed. \n"
-            "Please choose the book it is."))
-        self.requestLabel.setText(translate("BiblesPlugin.bibleImportRequest", 
-            "Book:"))
+            translate("BiblesPlugin.LanguageDialog", "Choose Language:"))
+        self.infoLabel.setText(translate("BiblesPlugin.LanguageDialog", 
+            "Please choose the language the bible is."))
+        self.requestLabel.setText(translate("BiblesPlugin.languageDialog", 
+            "Language:"))

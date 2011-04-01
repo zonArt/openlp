@@ -198,7 +198,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.file = self.clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
-        Manager.__init__(self, u'bibles', init_schema, self.file)
+        Manager.__init__(self, u'bibles/bibles', init_schema, self.file)
         if u'file' in kwargs:
             self.get_name()
         self.wizard = None

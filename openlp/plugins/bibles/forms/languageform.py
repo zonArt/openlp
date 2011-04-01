@@ -25,7 +25,7 @@
 ###############################################################################
 
 """
-Module implementing BibleImportRequest.
+Module implementing BookNameForm.
 """
 import logging
 
@@ -33,17 +33,17 @@ from PyQt4.QtGui import QDialog
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.bibles.forms.bibleimportrequestdialog import \
-    Ui_BibleImportRequest
+from openlp.plugins.bibles.forms.languagedialog import \
+    Ui_LanguageDialog
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
-class BibleImportRequest(QDialog, Ui_BibleImportRequest):
+class LanguageForm(QDialog, Ui_LanguageDialog):
     """
     Class documentation goes here.
     """
-    log.info(u'BibleImportRequest loaded')
+    log.info(u'LanguageForm loaded')
     
     def __init__(self, parent = None):
         """
@@ -52,21 +52,10 @@ class BibleImportRequest(QDialog, Ui_BibleImportRequest):
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def exec_(self, case,  name=None):
+    def exec_(self):
         items = []
         self.requestComboBox.addItem(u'')
-        if case == u'language':
-            self.headlineLabel.setText(translate(
-                "BiblesPlugin.BibleImportRequest", "Choose Language:"))
-            self.infoLabel.setText(translate("BiblesPlugin.BibleImportRequest", 
-                "Please choose the language the bible is."))
-            self.requestLabel.setText(
-                translate("BiblesPlugin.BibleImportRequest", "Language:"))
-            items = BiblesResourcesDB.get_languages()
-        elif case == u'book':
-            self.requestLabel.setText(
-                translate("BiblesPlugin.BibleImportRequest", name))
-            items = BiblesResourcesDB.get_books()
+        items = BiblesResourcesDB.get_languages()
         for item in items:
             self.requestComboBox.addItem(item[u'name'])
         return QDialog.exec_(self)
@@ -74,8 +63,8 @@ class BibleImportRequest(QDialog, Ui_BibleImportRequest):
     def accept(self):
         if self.requestComboBox.currentText() == u"":
             critical_error_message_box(
-                message=translate('BiblesPlugin.BibleImportRequest',
-                'You need to choose an item.'))
+                message=translate('BiblesPlugin.LanguageForm',
+                'You need to choose a language.'))
             self.requestComboBox.setFocus()
             return False
         else:
