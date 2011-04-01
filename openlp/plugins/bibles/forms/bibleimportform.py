@@ -114,9 +114,10 @@ class BibleImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.osisBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOsisBrowseButtonClicked)
-        QtCore.QObject.connect(self.csvTestamentsButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onCsvTestamentsBrowseButtonClicked)
+        #TODO: Delete unused code
+        #QtCore.QObject.connect(self.csvTestamentsButton,
+        #    QtCore.SIGNAL(u'clicked()'),
+        #    self.onCsvTestamentsBrowseButtonClicked)
         QtCore.QObject.connect(self.csvBooksButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onCsvBooksBrowseButtonClicked)
@@ -177,6 +178,8 @@ class BibleImportForm(OpenLPWizard):
         self.csvLayout = QtGui.QFormLayout(self.csvWidget)
         self.csvLayout.setMargin(0)
         self.csvLayout.setObjectName(u'CsvLayout')
+        #TODO: Delete unused code
+        '''
         self.csvTestamentsLabel = QtGui.QLabel(self.csvWidget)
         self.csvTestamentsLabel.setObjectName(u'CsvTestamentsLabel')
         self.csvTestamentsLayout = QtGui.QHBoxLayout()
@@ -184,11 +187,13 @@ class BibleImportForm(OpenLPWizard):
         self.csvTestamentsEdit = QtGui.QLineEdit(self.csvWidget)
         self.csvTestamentsEdit.setObjectName(u'CsvTestamentsEdit')
         self.csvTestamentsLayout.addWidget(self.csvTestamentsEdit)
+        
         self.csvTestamentsButton = QtGui.QToolButton(self.csvWidget)
         self.csvTestamentsButton.setIcon(self.openIcon)
         self.csvTestamentsButton.setObjectName(u'CsvTestamentsButton')
         self.csvTestamentsLayout.addWidget(self.csvTestamentsButton)
         self.csvLayout.addRow(self.csvTestamentsLabel, self.csvTestamentsLayout)
+        '''
         self.csvBooksLabel = QtGui.QLabel(self.csvWidget)
         self.csvBooksLabel.setObjectName(u'CsvBooksLabel')
         self.csvBooksLayout = QtGui.QHBoxLayout()
@@ -373,8 +378,9 @@ class BibleImportForm(OpenLPWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.osisFileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
-        self.csvTestamentsLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Testaments file:'))
+        #TODO: Delete unused code
+        #self.csvTestamentsLabel.setText(
+        #    translate('BiblesPlugin.ImportWizardForm', 'Testaments file:'))
         self.csvBooksLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Books file:'))
         self.csvVersesLabel.setText(
@@ -425,7 +431,8 @@ class BibleImportForm(OpenLPWizard):
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.formatLabel.minimumSizeHint().width(),
             self.osisFileLabel.minimumSizeHint().width(),
-            self.csvTestamentsLabel.minimumSizeHint().width(),
+            #TODO: Delete unused code
+            #self.csvTestamentsLabel.minimumSizeHint().width(),
             self.csvBooksLabel.minimumSizeHint().width(),
             self.csvVersesLabel.minimumSizeHint().width(),
             self.openSongFileLabel.minimumSizeHint().width(),
@@ -447,6 +454,8 @@ class BibleImportForm(OpenLPWizard):
                     self.osisFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
+                #TODO: Delete unused code
+                '''
                 if not self.field(u'csv_testamentsfile').toString():
                     answer = critical_error_message_box(UiStrings.NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
@@ -455,6 +464,7 @@ class BibleImportForm(OpenLPWizard):
                     if answer == QtGui.QMessageBox.No:
                         self.csvTestamentsEdit.setFocus()
                         return False
+                '''
                 if not self.field(u'csv_booksfile').toString():
                     critical_error_message_box(UiStrings.NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
@@ -531,7 +541,8 @@ class BibleImportForm(OpenLPWizard):
         """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS,
             self.osisFileEdit)
-
+    #TODO: Delete unused code
+    '''
     def onCsvTestamentsBrowseButtonClicked(self):
         """
         Show the file open dialog for the testaments CSV file.
@@ -539,7 +550,7 @@ class BibleImportForm(OpenLPWizard):
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV,
             self.csvTestamentsEdit, u'%s (*.csv)'
             % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
-
+    '''
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
@@ -578,8 +589,9 @@ class BibleImportForm(OpenLPWizard):
         """
         self.selectPage.registerField(u'source_format', self.formatComboBox)
         self.selectPage.registerField(u'osis_location', self.osisFileEdit)
-        self.selectPage.registerField(
-            u'csv_testamentsfile', self.csvTestamentsEdit)
+        #TODO: Delete unused code
+        #self.selectPage.registerField(
+        #    u'csv_testamentsfile', self.csvTestamentsEdit)
         self.selectPage.registerField(u'csv_booksfile', self.csvBooksEdit)
         self.selectPage.registerField(u'csv_versefile', self.csvVersesEdit)
         self.selectPage.registerField(u'opensong_file', self.openSongFileEdit)
@@ -608,7 +620,8 @@ class BibleImportForm(OpenLPWizard):
         self.cancelButton.setVisible(True)
         self.setField(u'source_format', QtCore.QVariant(0))
         self.setField(u'osis_location', QtCore.QVariant(''))
-        self.setField(u'csv_testamentsfile', QtCore.QVariant(''))
+        #TODO: Delete unused code
+        #self.setField(u'csv_testamentsfile', QtCore.QVariant(''))
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
         self.setField(u'csv_versefile', QtCore.QVariant(''))
         self.setField(u'opensong_file', QtCore.QVariant(''))
@@ -689,9 +702,16 @@ class BibleImportForm(OpenLPWizard):
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
+            #TODO: Delete unused code
+            '''
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version, testamentsfile=unicode(
                 self.field(u'csv_testamentsfile').toString()),
+                booksfile=unicode(self.field(u'csv_booksfile').toString()),
+                versefile=unicode(self.field(u'csv_versefile').toString())
+            '''
+            importer = self.manager.import_bible(BibleFormat.CSV,
+                name=license_version, 
                 booksfile=unicode(self.field(u'csv_booksfile').toString()),
                 versefile=unicode(self.field(u'csv_versefile').toString())
             )

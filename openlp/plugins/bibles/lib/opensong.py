@@ -66,7 +66,7 @@ class OpenSongBible(BibleDB):
             if not language:
                 log.exception(u'Importing books from %s   " '\
                     'failed' % self.filename)
-            return False
+                return False
             language = BiblesResourcesDB.get_language(language)
             language_id = language[u'id']
             self.create_meta(u'language_id', language_id)
