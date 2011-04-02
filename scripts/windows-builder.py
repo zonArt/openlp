@@ -94,6 +94,8 @@ from subprocess import Popen, PIPE
 python_exe = sys.executable
 innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
     u'ISCC.exe')
+sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
+    u'sphinx-build.exe')
 hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
     u'hhc.exe')
 
@@ -246,7 +248,8 @@ def compile_translations():
 def run_sphinx():
     print u'Running Sphinx...'
     os.chdir(manual_path)
-    sphinx = Popen((u'make', u'htmlhelp'), stdout=PIPE)
+    sphinx = Popen((sphinx_exe, u'-b', u'htmlhelp', u'-d', u'build/doctrees',
+        u'source', u'build/htmlhelp'), stdout=PIPE)
     output, error = sphinx.communicate()
     code = sphinx.wait()
     if code != 0:
@@ -259,7 +262,8 @@ def run_htmlhelp():
     hhc = Popen((hhc_exe, u'OpenLP.chm'), stdout=PIPE)
     output, error = hhc.communicate()
     code = hhc.wait()
-    if code != 0:
+    if code != 1:
+        print u'Exit code:', code
         print output
         raise Exception(u'Error running HTML Help Workshop')
     else:
