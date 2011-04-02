@@ -63,11 +63,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onRestoreDefaultsClicked)
 
     def keyPressEvent(self, event):
-        if self.shortcutButton.isChecked():
-            event.ignore()
-        elif event.key() == QtCore.Qt.Key_Escape:
-            event.accept()
-            self.close()
+        event.ignore()
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
