@@ -294,6 +294,8 @@ def main():
     copy_windows_files()
     update_translations()
     compile_translations()
+    run_sphinx()
+    run_htmlhelp()
     run_innosetup()
     print "Done."
 
