@@ -79,7 +79,6 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``context``
             Specify the context in which this shortcut is valid
         """
-        newAction = None
         if icon:
             actionIcon = build_icon(icon)
             if slot and not checkable:
@@ -88,7 +87,7 @@ class OpenLPToolbar(QtGui.QToolBar):
                 newAction = self.addAction(actionIcon, title)
             self.icons[title] = actionIcon
         else:
-            newAction = QtGui.QAction(title, newAction)
+            newAction = QtGui.QAction(title, self)
             self.addAction(newAction)
             QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)

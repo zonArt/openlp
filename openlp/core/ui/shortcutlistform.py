@@ -42,7 +42,6 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     The shortcut list dialog
     """
 #TODO: do not close on ESC
-#TODO: Fix Preview/Live controller (have the same shortcut)
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -89,12 +88,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     continue
                 # Have the same parentWidget, thus they cannot have the same
                 # shortcut.
-                #TODO: Does not fully work right now.
-                if action.parentWidget() is changing_action.parentWidget():
+                if action.parent() is changing_action.parent():
                     shortcut_valid = False
-                if action.shortcutContext() == QtCore.Qt.WindowShortcut:
+                if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
+                    QtCore.Qt.ApplicationShortcut]:
                     shortcut_valid = False
-                if changing_action.shortcutContext() == QtCore.Qt.WindowShortcut:
+                if changing_action.shortcutContext() in \
+                    [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     shortcut_valid = False
         if not shortcut_valid:
             QtGui.QMessageBox.warning(self,
@@ -193,6 +193,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if action is None:
             return
         self.shortcutButton.setChecked(True)
+        self.shortcutButton.setFocus(QtCore.Qt.OtherFocusReason)
         self.onItemPressed(item, column)
 
     def onItemPressed(self, item, column):
