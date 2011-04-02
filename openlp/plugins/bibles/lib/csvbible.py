@@ -139,7 +139,7 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
-        language = self.parent.mediaItem.languageDialog()
+        language = self.parent.manager.import_wizard.languageDialog()
         if not language:
             log.exception(u'Importing books from %s " '\
                 'failed' % self.booksfile)

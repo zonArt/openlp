@@ -50,9 +50,8 @@ This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
 them separate from the functionality, so that it is easier to recreate the GUI
 from the .ui files later if necessary.
 """
-
-from bibleimportform import BibleImportForm
 from booknameform import BookNameForm
 from languageform import LanguageForm
+from bibleimportform import BibleImportForm
 
 __all__ = ['BibleImportForm']

@@ -41,7 +41,8 @@ log = logging.getLogger(__name__)
 
 class BookNameForm(QDialog, Ui_BookNameDialog):
     """
-    Class documentation goes here.
+    Class to manage a dialog which help the user to refer a book name a 
+    to a english book name
     """
     log.info(u'BookNameForm loaded')
     
@@ -56,14 +57,14 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         items = []
         self.requestComboBox.addItem(u'')
         self.requestLabel.setText(
-            translate("BiblesPlugin.BookNameForm", name))
+            translate('BiblesPlugin.BookNameForm', name))
         items = BiblesResourcesDB.get_books()
         for item in items:
             self.requestComboBox.addItem(item[u'name'])
         return QDialog.exec_(self)
     
     def accept(self):
-        if self.requestComboBox.currentText() == u"":
+        if self.requestComboBox.currentText() == u'':
             critical_error_message_box(
                 message=translate('BiblesPlugin.BookNameForm',
                 'You need to choose a book.'))

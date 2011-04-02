@@ -31,7 +31,7 @@ from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_BookNameDialog(object):
     def setupUi(self, bookNameDialog):
-        bookNameDialog.setObjectName("BookNameDialog")
+        bookNameDialog.setObjectName(u'BookNameDialog')
         bookNameDialog.resize(400, 175)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, 
             QtGui.QSizePolicy.MinimumExpanding)
@@ -42,25 +42,25 @@ class Ui_BookNameDialog(object):
         bookNameDialog.setSizePolicy(sizePolicy)
         self.widget = QtGui.QWidget(bookNameDialog)
         self.widget.setGeometry(QtCore.QRect(10, 15, 381, 151))
-        self.widget.setObjectName("widget")
+        self.widget.setObjectName(u'widget')
         self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.setObjectName(u'verticalLayout')
         self.headlineLabel = QtGui.QLabel(self.widget)
         font = QtGui.QFont()
-        font.setFamily("Arial")
+        font.setFamily(u'Arial')
         font.setPointSize(11)
         font.setWeight(75)
         font.setBold(True)
         self.headlineLabel.setFont(font)
-        self.headlineLabel.setObjectName("HeadlineLabel")
+        self.headlineLabel.setObjectName(u'HeadlineLabel')
         self.verticalLayout.addWidget(self.headlineLabel)
         self.infoLabel = QtGui.QLabel(self.widget)
-        self.infoLabel.setObjectName("InfoLabel")
+        self.infoLabel.setObjectName(u'InfoLabel')
         self.verticalLayout.addWidget(self.infoLabel)
         self.formLayout = QtGui.QFormLayout()
-        self.formLayout.setObjectName("formLayout")
+        self.formLayout.setObjectName(u'formLayout')
         self.requestLabel = QtGui.QLabel(self.widget)
-        self.requestLabel.setObjectName("RequestLabel")
+        self.requestLabel.setObjectName(u'RequestLabel')
         self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, 
             self.requestLabel)
         self.requestComboBox = QtGui.QComboBox(self.widget)
@@ -71,7 +71,7 @@ class Ui_BookNameDialog(object):
         sizePolicy.setHeightForWidth(self.requestComboBox.sizePolicy()
             .hasHeightForWidth())
         self.requestComboBox.setSizePolicy(sizePolicy)
-        self.requestComboBox.setObjectName("RequestComboBox")
+        self.requestComboBox.setObjectName(u'RequestComboBox')
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, 
             self.requestComboBox)
         self.verticalLayout.addLayout(self.formLayout)
@@ -85,11 +85,11 @@ class Ui_BookNameDialog(object):
 
     def retranslateUi(self, bookNameDialog):
         bookNameDialog.setWindowTitle(
-            translate("BiblesPlugin.BookNameDialog", "Choose Book"))
+            translate('BiblesPlugin.BookNameDialog', 'Choose Book'))
         self.headlineLabel.setText(
-            translate("BiblesPlugin.BookNameDialog", "Choose Book:"))
-        self.infoLabel.setText(translate("BiblesPlugin.BookNameDialog", 
-            "The following books cannot be clearly attributed. \n"
-            "Please choose the book it is."))
-        self.requestLabel.setText(translate("BiblesPlugin.BookNameDialog", 
-            "Book:"))
+            translate('BiblesPlugin.BookNameDialog', 'Choose Book:'))
+        self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+            'The following books cannot be clearly attributed. \n'
+            'Please choose the book it is.'))
+        self.requestLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+            'Book:'))

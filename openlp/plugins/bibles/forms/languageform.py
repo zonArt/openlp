@@ -41,7 +41,7 @@ log = logging.getLogger(__name__)
 
 class LanguageForm(QDialog, Ui_LanguageDialog):
     """
-    Class documentation goes here.
+    Class to manage a dialog which ask the user for a language.
     """
     log.info(u'LanguageForm loaded')
     
@@ -61,7 +61,7 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         return QDialog.exec_(self)
     
     def accept(self):
-        if self.requestComboBox.currentText() == u"":
+        if self.requestComboBox.currentText() == u'':
             critical_error_message_box(
                 message=translate('BiblesPlugin.LanguageForm',
                 'You need to choose a language.'))

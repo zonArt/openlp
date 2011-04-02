@@ -348,7 +348,7 @@ class BibleManager(object):
             book_id = self.alternative_book_names_cache.get_book_reference_id(
                 book, language_id)
         else:   
-            book_ref = self.parent.mediaItem.bookNameDialog(book)
+            book_ref = self.import_wizard.bookNameDialog(book)
             log.debug(book_ref)
             book_temp = BiblesResourcesDB.get_book(book_ref)
             log.debug(book_temp)

@@ -414,7 +414,7 @@ class HTTPBible(BibleDB):
         if bible[u'language_id']:
             language_id = bible[u'language_id']
         else:
-            language = self.parent.mediaItem.languageDialog()
+            language = self.parent.manager.import_wizard.languageDialog()
             if not language:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source,  self.download_name))

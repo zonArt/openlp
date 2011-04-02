@@ -785,7 +785,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ``name``
             The name or abbreviation of the language.
         """
-        log.debug(u'BiblesResourcesDB.get_language("%s", "%s")', name)
+        log.debug(u'BiblesResourcesDB.get_language("%s")', name)
         if not isinstance(name, unicode):
             name = unicode(name)
         name = name.title()

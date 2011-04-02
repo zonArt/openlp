@@ -33,8 +33,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
-from openlp.plugins.bibles.forms import BibleImportForm, BookNameForm, \
-    LanguageForm
+from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
 
@@ -286,16 +285,6 @@ class BibleMediaItem(MediaManagerItem):
         # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
             self.reloadBibles()
-
-    def bookNameDialog(self, name):
-        self.book_name = BookNameForm(self)
-        if self.book_name.exec_(name):
-            return unicode(self.book_name.requestComboBox.currentText())
-
-    def languageDialog(self):
-        self.language = LanguageForm(self)
-        if self.language.exec_():
-            return unicode(self.language.requestComboBox.currentText())
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')

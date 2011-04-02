@@ -58,7 +58,7 @@ class OpenLP1Bible(BibleDB):
         except:
             return False
         #Create the bible language
-        language = self.parent.mediaItem.languageDialog()
+        language = self.parent.manager.import_wizard.languageDialog()
         if not language:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)
