@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,6 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 import os
 
@@ -53,9 +54,6 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -124,35 +122,66 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        if os.path.exists(filename):
-            self.mediaState = None
-            self.mediaObject.stop()
-            self.mediaObject.clearQueue()
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-            self.mediaObject.play()
-            service_item.title = unicode(self.plugin.nameStrings[u'singular'])
-            service_item.add_capability(ItemCapabilities.RequiresMedia)
-            # force a nonexistent theme
-            service_item.theme = -1
-            frame = u':/media/image_clapperboard.png'
-            (path, name) = os.path.split(filename)
-            file_size = os.path.getsize(filename)
-            # File too big for processing
-            if file_size <= 52428800: # 50MiB
-                while not self.mediaState:
-                    Receiver.send_message(u'openlp_process_events')
-                service_item.media_length = self.mediaLength
-                service_item.add_capability(
-                    ItemCapabilities.AllowsVariableStartTime)
-            service_item.add_from_command(path, name, frame)
-            return True
-        else:
+        if not os.path.exists(filename):
             # File is no longer present
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Missing Media File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
+        self.mediaObject.stop()
+        self.mediaObject.clearQueue()
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
+        if not self.mediaStateWait(Phonon.StoppedState):
+            # Due to string freeze, borrow a message from presentations
+            # This will be corrected in 1.9.6
+            critical_error_message_box(
+                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('PresentationPlugin.MediaItem',
+                'Unsupported File')))
+            return False
+        # File too big for processing
+        if os.path.getsize(filename) <= 52428800: # 50MiB
+            self.mediaObject.play()
+            if not self.mediaStateWait(Phonon.PlayingState) \
+                or self.mediaObject.currentSource().type() \
+                == Phonon.MediaSource.Invalid:
+                # Due to string freeze, borrow a message from presentations
+                # This will be corrected in 1.9.6
+                self.mediaObject.stop()
+                critical_error_message_box(
+                    translate('PresentationPlugin.MediaItem',
+                    'Unsupported File'),
+                    unicode(translate('PresentationPlugin.MediaItem',
+                    'Unsupported File')))
+                return False
+            self.mediaLength = self.mediaObject.totalTime() / 1000
+            self.mediaObject.stop()
+            service_item.media_length = self.mediaLength
+            service_item.add_capability(
+                ItemCapabilities.AllowsVariableStartTime)
+        service_item.title = unicode(self.plugin.nameStrings[u'singular'])
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+        # force a non-existent theme
+        service_item.theme = -1
+        frame = u':/media/image_clapperboard.png'
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
+        return True
+
+    def mediaStateWait(self, mediaState):
+        """
+        Wait for the video to change its state
+        Wait no longer than 5 seconds.
+        """
+        start = datetime.now()
+        while self.mediaObject.state() != mediaState:
+            if self.mediaObject.state() == Phonon.ErrorState:
+                return False
+            Receiver.send_message(u'openlp_process_events')
+            if (datetime.now() - start).seconds > 5:
+                return False
+        return True
 
     def initialise(self):
         self.listView.clear()
@@ -181,12 +210,3 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
-
-    def videoStart(self, newState, oldState):
-        """
-        Start the video at a predetermined point.
-        """
-        if newState == Phonon.PlayingState:
-            self.mediaState = newState
-            self.mediaLength = self.mediaObject.totalTime()/1000
-            self.mediaObject.stop()

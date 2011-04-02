@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -109,7 +109,9 @@ class ServiceItem(object):
         self.edit_id = None
         self.xml_version = None
         self.start_time = 0
+        self.end_time = 0
         self.media_length = 0
+        self.from_service = False
         self._new_item()
 
     def _new_item(self):
@@ -183,8 +185,9 @@ class ServiceItem(object):
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        # The footer should never be None, but to be compatible with older
-        # release of OpenLP, we have to correct this to avoid tracebacks.
+        # The footer should never be None, but to be compatible with a few
+        # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
+        # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = \
@@ -260,6 +263,7 @@ class ServiceItem(object):
             u'data': self.data_string,
             u'xml_version': self.xml_version,
             u'start_time': self.start_time,
+            u'end_time': self.end_time,
             u'media_length': self.media_length
         }
         service_data = []
@@ -306,6 +310,8 @@ class ServiceItem(object):
             self.xml_version = header[u'xml_version']
         if u'start_time' in header:
             self.start_time = header[u'start_time']
+        if u'end_time' in header:
+            self.end_time = header[u'end_time']
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:

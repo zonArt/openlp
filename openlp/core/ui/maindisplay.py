@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -110,7 +110,7 @@ class MainDisplay(DisplayWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
+            self.videoState)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'),
             self.videoFinished)
@@ -367,7 +367,7 @@ class MainDisplay(DisplayWidget):
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
             # Need the timer to trigger set the trigger to 200ms
             # Value taken from web documentation.
-            if self.serviceItem.start_time != 0:
+            if self.serviceItem.end_time != 0:
                 self.mediaObject.setTickInterval(200)
             self.mediaObject.play()
             self.webView.setVisible(False)
@@ -378,11 +378,13 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
-    def videoStart(self, newState, oldState):
+    def videoState(self, newState, oldState):
         """
         Start the video at a predetermined point.
         """
-        if newState == Phonon.PlayingState:
+        if newState == Phonon.PlayingState \
+            and oldState != Phonon.PausedState \
+            and self.serviceItem.start_time > 0:
             # set start time in milliseconds
             self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
@@ -399,9 +401,9 @@ class MainDisplay(DisplayWidget):
     def videoTick(self, tick):
         """
         Triggered on video tick every 200 milli seconds
-        Will be used to manage stop time later
         """
-        pass
+        if tick > self.serviceItem.end_time * 1000:
+            self.videoFinished()
 
     def isWebLoaded(self):
         """
@@ -487,7 +489,11 @@ class MainDisplay(DisplayWidget):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                Receiver.send_message(u'slidecontroller_live_unblank')
+            else:
+                self.hideDisplay(self.hideMode)
         # display hidden for video end we have a new item so must be shown
         if self.videoHide and self.isLive:
             self.videoHide = False
