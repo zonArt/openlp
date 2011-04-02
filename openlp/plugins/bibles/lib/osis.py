@@ -107,14 +107,11 @@ class OSISBible(BibleDB):
             if detect_file:
                 detect_file.close()
         # Set meta language_id
-        language = self.parent.manager.import_wizard.languageDialog()
-        if not language:
+        language_id = self.get_language()
+        if not language_id:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)
             return False
-        language = BiblesResourcesDB.get_language(language)
-        language_id = language[u'id']
-        self.create_meta(u'language_id', language_id)
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             for file_record in osis:

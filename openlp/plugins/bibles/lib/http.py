@@ -413,16 +413,13 @@ class HTTPBible(BibleDB):
                 self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
+            self.create_meta(u'language_id', language_id)
         else:
-            language = self.parent.manager.import_wizard.languageDialog()
-            if not language:
-                log.exception(u'Importing books from %s - download name: "%s" '\
-                    'failed' % (self.download_source,  self.download_name))
-                return False
-            language = BiblesResourcesDB.get_language(language)
-            language_id = language[u'id']
-        # Store the language_id.
-        self.create_meta(u'language_id', language_id)
+            language_id = self.get_language()
+        if not language_id:
+            log.exception(u'Importing books from %s   " '\
+                'failed' % self.filename)
+            return False
         for book in books:
             self.wizard.incrementProgressBar(unicode(translate(
                             'BiblesPlugin.HTTPBible', 'Importing %s...',

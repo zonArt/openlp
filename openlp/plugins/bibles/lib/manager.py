@@ -349,9 +349,7 @@ class BibleManager(object):
                 book, language_id)
         else:   
             book_ref = self.import_wizard.bookNameDialog(book)
-            log.debug(book_ref)
             book_temp = BiblesResourcesDB.get_book(book_ref)
-            log.debug(book_temp)
             if book_temp:
                 book_id = book_temp[u'id']
             else:

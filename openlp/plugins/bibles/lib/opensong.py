@@ -62,14 +62,11 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
-            language = self.parent.manager.import_wizard.languageDialog()
-            if not language:
+            language_id = self.get_language()
+            if not language_id:
                 log.exception(u'Importing books from %s   " '\
                     'failed' % self.filename)
                 return False
-            language = BiblesResourcesDB.get_language(language)
-            language_id = language[u'id']
-            self.create_meta(u'language_id', language_id)
             for book in bible.b:
                 if self.stop_import_flag:
                     break

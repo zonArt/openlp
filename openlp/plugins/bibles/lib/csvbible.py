@@ -139,14 +139,11 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
-        language = self.parent.manager.import_wizard.languageDialog()
-        if not language:
-            log.exception(u'Importing books from %s " '\
-                'failed' % self.booksfile)
+        language_id = self.get_language()
+        if not language_id:
+            log.exception(u'Importing books from %s   " '\
+                'failed' % self.filename)
             return False
-        language = BiblesResourcesDB.get_language(language)
-        language_id = language[u'id']
-        self.create_meta(u'language_id', language_id)
         books_file = None
         book_list = {}
         # Populate the Tables

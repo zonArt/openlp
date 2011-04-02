@@ -58,14 +58,11 @@ class OpenLP1Bible(BibleDB):
         except:
             return False
         #Create the bible language
-        language = self.parent.manager.import_wizard.languageDialog()
-        if not language:
+        language_id = self.get_language()
+        if not language_id:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)
             return False
-        language = BiblesResourcesDB.get_language(language)
-        language_id = language[u'id']
-        self.create_meta(u'language_id', language_id)
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()

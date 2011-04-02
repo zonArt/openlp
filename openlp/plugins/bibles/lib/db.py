@@ -489,6 +489,22 @@ class BibleDB(QtCore.QObject, Manager):
         else:
             return count
 
+    def get_language(self):
+        """
+        Return the language of a bible.
+
+        ``book``
+            The language the bible is.
+        """
+        log.debug(u'BibleDB.get_language()')
+        language = self.bible_plugin.manager.import_wizard.languageDialog()
+        if not language:
+            return False
+        language = BiblesResourcesDB.get_language(language)
+        language_id = language[u'id']
+        self.create_meta(u'language_id', language_id)
+        return language_id
+
     def dump_bible(self):
         """
         Utility debugging method to dump the contents of a bible.
