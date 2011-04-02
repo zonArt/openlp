@@ -240,6 +240,29 @@ def compile_translations():
             if code != 0:
                 raise Exception('Error running lconvert on %s' % source_path)
 
+def run_sphinx():
+    print u'Running Sphinx...'
+    os.chdir(manual_path)
+    sphinx = Popen((u'make', u'htmlhelp'), stdout=PIPE)
+    output, error = sphinx.communicate()
+    code = sphinx.wait()
+    if code != 0:
+        print output
+        raise Exception(u'Error running Sphinx')
+
+def run_htmlhelp():
+    print u'Running HTML Help Workshop...'
+    os.chdir(os.path.join(manual_path, u'build', u'htmlhelp'))
+    hhc = Popen((hhc_exe, u'OpenLP.chm'), stdout=PIPE)
+    output, error = hhc.communicate()
+    code = hhc.wait()
+    if code != 0:
+        print output
+        raise Exception(u'Error running HTML Help Workshop')
+    else:
+        copy(os.path.join(manual_path, u'build', 'htmlhelp', u'OpenLP.chm'),
+            os.path.join(dest_path, u'OpenLP.chm'))
+
 def run_innosetup():
     print u'Running Inno Setup...'
     os.chdir(winres_path)
@@ -260,7 +283,7 @@ def main():
        print "Inno Setup path:", innosetup_path
        print "Windows resources:", winres_path
     update_code()
-    #clean_build_directories()
+    clean_build_directories()
     run_pyinstaller()
     write_version_file()
     copy_enchant()
