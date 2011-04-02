@@ -280,17 +280,18 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     """
     Return a shortcut enabled action.
     """
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
     if icon is not None:
-        action = icon_action(parent, name, icon, checked, category)
-    elif checked is not None:
-        action = checkable_action(parent, name, checked, category)
-    else:
-        action = base_action(parent, name, category)
+        action.setIcon(build_icon(icon))
+    if checked is not None:
+        action.setCheckable(True)
+        action.setChecked(checked)
+    action.setCheckable(True)
     action.setShortcuts(shortcuts)
     action.setShortcutContext(QtCore.Qt.WindowShortcut)
-    # We have to save the default shortcut again, as the action's shortcut was
-    # set after adding the shortcut to the action list.
-    action.defaultShortcuts = action.shortcuts()
+    if category is not None:
+        ActionList.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
     return action
 

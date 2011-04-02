@@ -144,7 +144,6 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelectedPrevious,
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.previousItem.setObjectName(u'previousItem')           
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
@@ -152,7 +151,6 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelectedNext,
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.nextItem.setObjectName(u'nextItem')
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
             self.hideMenu = QtGui.QToolButton(self.toolbar)
@@ -367,10 +365,14 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
+        self.previousItem.setObjectName(u'previousItemPreview')         
+        self.nextItem.setObjectName(u'nextItemPreview')
         ActionList.add_action(self.previousItem, u'Preview Toolbar')
         ActionList.add_action(self.nextItem, u'Preview Toolbar')
 
     def setLiveHotkeys(self, parent=None):
+        self.previousItem.setObjectName(u'previousItemLive')         
+        self.nextItem.setObjectName(u'nextItemLive')
         ActionList.add_action(self.previousItem, u'Live Toolbar')
         ActionList.add_action(self.nextItem, u'Live Toolbar')
         self.previousService = shortcut_action(parent, u'previousService',
