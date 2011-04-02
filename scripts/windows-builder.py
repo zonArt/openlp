@@ -264,7 +264,7 @@ def run_htmlhelp():
         raise Exception(u'Error running HTML Help Workshop')
     else:
         copy(os.path.join(manual_path, u'build', 'htmlhelp', u'OpenLP.chm'),
-            os.path.join(dest_path, u'OpenLP.chm'))
+            os.path.join(dist_path, u'OpenLP.chm'))
 
 def run_innosetup():
     print u'Running Inno Setup...'
