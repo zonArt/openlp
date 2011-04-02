@@ -41,7 +41,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
     """
-#TODO: do not close on ESC
+
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -58,6 +58,16 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onItemDoubleClicked)
         QtCore.QObject.connect(self.clearShortcutButton,
             QtCore.SIGNAL(u'clicked(bool)'), self.onClearShortcutButtonClicked)
+        QtCore.QObject.connect(self.buttonBox,
+            QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+            self.onRestoreDefaultsClicked)
+
+    def keyPressEvent(self, event):
+        if self.shortcutButton.isChecked():
+            event.ignore()
+        elif event.key() == QtCore.Qt.Key_Escape:
+            event.accept()
+            self.close()
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
@@ -228,6 +238,26 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action.setShortcuts(action.defaultShortcuts)
         self.refreshShortcutList()
         self.onItemPressed(item, self.column)
+
+    def onRestoreDefaultsClicked(self, button):
+        """
+        Restores all default shortcuts.
+        """
+        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+            return
+        if QtGui.QMessageBox.question(self,
+            translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
+            translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
+            'shortcuts to their defaults?'), QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
+            return
+        self.shortcutButton.setChecked(False)
+        self.shortcutButton.setText(u'')
+        for category in ActionList.categories:
+            for action in category.actions:
+                action.setShortcuts(action.defaultShortcuts)
+        self.refreshShortcutList()
 
     def save(self):
         """

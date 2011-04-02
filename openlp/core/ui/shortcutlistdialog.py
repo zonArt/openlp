@@ -58,7 +58,7 @@ class Ui_ShortcutListDialog(object):
         self.dialogLayout.addLayout(self.customLayout)
         self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Reset)
+            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults)
         self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)

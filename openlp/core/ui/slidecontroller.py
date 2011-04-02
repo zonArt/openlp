@@ -141,19 +141,18 @@ class SlideController(QtGui.QWidget):
             translate('OpenLP.SlideController', 'Previous Slide'),
             u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous'),
-            self.onSlideSelectedPrevious)
-        self.previousItem.setObjectName(u'previousItem')
-        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
-        self.previousItem.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
+            self.onSlideSelectedPrevious,
+            shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.previousItem.setObjectName(u'previousItem')           
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
-            self.onSlideSelectedNext)
+            self.onSlideSelectedNext,
+            shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem.setObjectName(u'nextItem')
-        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
-        self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
             self.hideMenu = QtGui.QToolButton(self.toolbar)
