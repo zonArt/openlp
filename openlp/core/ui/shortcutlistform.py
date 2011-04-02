@@ -186,7 +186,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 shortcuts.append(action.shortcuts()[1])
         # We are changing the secondary shortcut.
         elif self.column == 2:
-            if len(action.shortcuts()) == 1:
+            if len(action.shortcuts()) != 0:
                 shortcuts.append(action.shortcuts()[0])
             shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
         else:
