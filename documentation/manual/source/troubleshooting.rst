@@ -139,7 +139,7 @@ I am using PowerPoint 2010 or PowerPoint Viewer 2010 and presentations do not wo
 ----------------------------------------------------------------------------------
 
 Currently OpenLP does not support PowerPoint Viewer 2010. PowerPoint 2010 should
-work correctly, although some users have reported problems.If you have issues
+work correctly, although some users have reported problems. If you have issues
 with PowerPoint 2010 or PowerPoint Viewer 2010 try the PowerPoint 2003 or 2007
 Viewers. `Download the PowerPoint 2007 viewer for free
 <http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_.
@@ -160,8 +160,8 @@ format. We would suggest using PNG images when possible with OpenLP.
 I am running a Linux Distro and can not see the menus
 -----------------------------------------------------
 
-This may be an issue with only XFCE the following commands have been known to 
-resolve the problem::
+This only seems to be a problem with only XFCE the following commands have been
+known to resolve the problem::
 
   gconftool-2 --type boolean --set /desktop/gnome/interface/buttons_have_icons true
   
