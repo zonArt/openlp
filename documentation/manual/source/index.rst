@@ -21,4 +21,5 @@ Contents:
    mediamanager
    songs
    alert
+   faq
    troubleshooting
