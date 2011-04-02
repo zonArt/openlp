@@ -137,21 +137,6 @@ def update_code():
        print output
        raise Exception(u'Error updating the code')
 
-def clean_build_directories():
-    dist_dir = os.path.join(build_path, u'dist')
-    build_dir = os.path.join(build_path, u'build')
-    if os.path.exists(dist_dir):
-        for root, dirs, files in os.walk(dist_dir, topdown=False):
-            print root
-            for file in files:
-                os.remove(os.path.join(root, file))
-        os.removedirs(dist_dir)
-    if os.path.exists(build_dir):
-        for root, dirs, files in os.walk(build_dir, topdown=False):
-            for file in files:
-                os.remove(os.path.join(root, file))
-        os.removedirs(build_dir)
-
 def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
@@ -290,7 +275,6 @@ def main():
        print "Inno Setup path:", innosetup_path
        print "Windows resources:", winres_path
     update_code()
-    clean_build_directories()
     run_pyinstaller()
     write_version_file()
     copy_enchant()
@@ -301,7 +285,6 @@ def main():
     run_sphinx()
     run_htmlhelp()
     run_innosetup()
-    clean_build_directories()
     print "Done."
 
 if __name__ == u'__main__':
