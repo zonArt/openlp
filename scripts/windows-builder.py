@@ -301,6 +301,7 @@ def main():
     run_sphinx()
     run_htmlhelp()
     run_innosetup()
+    clean_build_directories()
     print "Done."
 
 if __name__ == u'__main__':
