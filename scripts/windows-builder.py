@@ -94,6 +94,8 @@ from subprocess import Popen, PIPE
 python_exe = sys.executable
 innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
     u'ISCC.exe')
+hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
+    u'hhc.exe')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
@@ -109,6 +111,7 @@ i18n_utils = os.path.join(script_path, u'translation_utils.py')
 
 # Paths
 source_path = os.path.join(branch_path, u'openlp')
+manual_path = os.path.join(branch_path, u'documentation', u'manual')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
