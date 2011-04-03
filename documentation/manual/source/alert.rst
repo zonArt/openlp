@@ -2,9 +2,6 @@
 Alert
 =====
 
-:menuselection:`Tools --> Alert`
---------------------------------
-
 From time to time it may be necessary to display a small unobtrusive message to 
 the congregation. In OpenLP this is known as an `Alert`. Examples could be a car 
 with the headlights left on, a parent needed in nursery, or anything else 
