@@ -78,6 +78,8 @@ class CSVBible(BibleDB):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
+    log.info(u'CSVBible loaded')
+
     def __init__(self, parent, **kwargs):
         """
         Loads a Bible from a set of CVS files.

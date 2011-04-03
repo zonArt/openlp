@@ -168,6 +168,7 @@ class BibleDB(QtCore.QObject, Manager):
     methods, but benefit from the database methods in here via inheritance,
     rather than depending on yet another object.
     """
+    log.info(u'BibleDB loaded')
 
     def __init__(self, parent, **kwargs):
         """
@@ -491,13 +492,19 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_language(self):
         """
-        Return the language of a bible.
+        If no language is given it calls a dialog window where the user could 
+        choose the bible language.
+        Return the language id of a bible.
 
         ``book``
             The language the bible is.
         """
         log.debug(u'BibleDB.get_language()')
-        language = self.bible_plugin.manager.import_wizard.languageDialog()
+        from openlp.plugins.bibles.forms import LanguageForm
+        language = None
+        lang = LanguageForm(self.wizard)
+        if lang.exec_():
+            language = unicode(lang.requestComboBox.currentText())
         if not language:
             return False
         language = BiblesResourcesDB.get_language(language)
