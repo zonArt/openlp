@@ -295,7 +295,6 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    action.setCheckable(True)
     action.setShortcuts(shortcuts)
     action.setShortcutContext(QtCore.Qt.WindowShortcut)
     if category is not None:
