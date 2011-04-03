@@ -189,8 +189,26 @@ class ActionList(object):
     categories = CategoryList()
 
     @staticmethod
-    def add_action(action, category, weight=None):
-        category = unicode(category)
+    def add_action(action, category=None, weight=None):
+        """
+        Add an action to the list of actions.
+
+        ``action``
+            The action to add (QAction).
+
+        ``category``
+            The category this action belongs to. The category can be a QString
+            or python unicode string. **Note**, if the category is ``None``, the
+            category and its actions are being hidden in the shortcut dialog.
+            However, if they are added, it is possible to avoid assigning
+            shortcuts twice, which is important.
+
+        ``weight``
+            The weight specifies how important a category is. However, this only
+            has an impact on the order the categories are displayed.
+        """
+        if category is not None:
+            category = unicode(category)
         if category not in ActionList.categories:
             ActionList.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
@@ -198,6 +216,9 @@ class ActionList(object):
             ActionList.categories[category].actions.append(action)
         else:
             ActionList.categories[category].actions.add(action, weight)
+        if category is None:
+            # Stop here, as this action is not configurable.
+            return
         # Load the shortcut from the config.
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
@@ -208,8 +229,9 @@ class ActionList(object):
         settings.endGroup()
 
     @staticmethod
-    def remove_action(action, category):
-        category = unicode(category)
+    def remove_action(action, category=None):
+        if category is not None:
+            category = unicode(category)
         if category not in ActionList.categories:
             return
         ActionList.categories[category].actions.remove(action)

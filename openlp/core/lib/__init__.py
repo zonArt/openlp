@@ -186,8 +186,9 @@ def context_menu_action(base, icon, text, slot, shortcuts=None):
     if icon:
         action.setIcon(build_icon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-    if shortcuts:
+    if shortcuts is not None:
         action.setShortcuts(shortcuts)
+        ActionList.add_action(action)
     return action
 
 def context_menu(base, icon, text):
@@ -343,3 +344,4 @@ from dockwidget import OpenLPDockWidget
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from openlp.core.utils.actions import ActionList

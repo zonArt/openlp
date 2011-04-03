@@ -202,7 +202,7 @@ class ServiceManager(QtGui.QWidget):
             'Moves the selection down the window.'),
             self.onMoveSelectionDown, shortcuts=[QtCore.Qt.Key_Down])
         self.serviceManagerList.down.setObjectName(u'down')
-        ActionList.add_action(self.serviceManagerList.down, UiStrings.Service)
+        ActionList.add_action(self.serviceManagerList.down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
@@ -211,7 +211,7 @@ class ServiceManager(QtGui.QWidget):
             'Moves the selection up the window.'),
             self.onMoveSelectionUp, shortcuts=[QtCore.Qt.Key_Up])
         self.serviceManagerList.up.setObjectName(u'up')
-        ActionList.add_action(self.serviceManagerList.up, UiStrings.Service)
+        ActionList.add_action(self.serviceManagerList.up)
         self.serviceManagerList.up.setVisible(False)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.delete = self.orderToolbar.addToolbarButton(

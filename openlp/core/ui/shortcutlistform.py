@@ -134,6 +134,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         self.treeWidget.clear()
         for category in ActionList.categories:
+            # Check if the category is for internal use only.
+            if category.name is None:
+                continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
@@ -218,7 +221,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.column = column
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         text = u''
-        if action is None:# or column not in [1, 2]:
+        if action is None:
             self.shortcutButton.setChecked(False)
             self.shortcutButton.setEnabled(False)
         else:
@@ -273,6 +276,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
         for category in ActionList.categories:
+            # Check if the category is for internal use only.
+            if category.name is None:
+                continue
             for action in category.actions:
                 if self.changedActions .has_key(action):
                     action.setShortcuts(self.changedActions[action])
