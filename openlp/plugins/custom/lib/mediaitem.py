@@ -46,6 +46,7 @@ class CustomMediaItem(MediaManagerItem):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
+        self.quickPreviewAllowed = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
