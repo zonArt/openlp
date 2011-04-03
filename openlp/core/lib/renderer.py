@@ -45,6 +45,8 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
+HTML_END = u'</div></body></html>'
+
 class Renderer(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
@@ -72,7 +74,6 @@ class Renderer(object):
         self.display = MainDisplay(self, screens, False)
         self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
-        self.theme = u''
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
@@ -120,7 +121,7 @@ class Renderer(object):
         self.service_theme = service_theme
         self.theme_data = None
 
-    def set_override_theme(self, theme, override_levels=False):
+    def set_override_theme(self, override_theme, override_levels=False):
         """
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
@@ -133,35 +134,35 @@ class Renderer(object):
             Used to force the theme data passed in to be used.
 
         """
-        log.debug(u'set override theme to %s', theme)
+        log.debug(u'set override theme to %s', override_theme)
         theme_level = self.theme_level
         if override_levels:
             theme_level = ThemeLevel.Song
         if theme_level == ThemeLevel.Global:
-            self.theme = self.global_theme
+            theme = self.global_theme
         elif theme_level == ThemeLevel.Service:
             if self.service_theme == u'':
-                self.theme = self.global_theme
+                theme = self.global_theme
             else:
-                self.theme = self.service_theme
+                theme = self.service_theme
         else:
             # Images have a theme of -1
-            if theme and theme != -1:
-                self.theme = theme
+            if override_theme and override_theme != -1:
+                theme = override_theme
             elif theme_level == ThemeLevel.Song or \
                 theme_level == ThemeLevel.Service:
                 if self.service_theme == u'':
-                    self.theme = self.global_theme
+                    theme = self.global_theme
                 else:
-                    self.theme = self.service_theme
+                    theme = self.service_theme
             else:
-                self.theme = self.global_theme
-        log.debug(u'theme is now %s', self.theme)
+                theme = self.global_theme
+        log.debug(u'theme is now %s', theme)
         # Force the theme to be the one passed in.
         if override_levels:
-            self.theme_data = theme
+            self.theme_data = override_theme
         else:
-            self.theme_data = self.theme_manager.getThemeData(self.theme)
+            self.theme_data = self.theme_manager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
         self.image_manager.add_image(self.theme_data.theme_name,
@@ -203,11 +204,11 @@ class Renderer(object):
             self._calculate_default(self.screens.current[u'size'])
             return preview
 
-    def format_slide(self, slide, line_break, item):
+    def format_slide(self, text, line_break, item):
         """
         Calculate how much text can fit on a slide.
 
-        ``slide``
+        ``text``
             The words to go on the slides.
 
         ``line_break``
@@ -215,17 +216,13 @@ class Renderer(object):
         """
         log.debug(u'format slide')
         # clean up line endings
-        slide = slide.replace(u'\r\n', u'\n')
-        print "###############"
-        print [slide]
-        lines = self._lines(slide)
+        lines = self._lines(text)
         pages = self._paginate_slide(lines, line_break, self.force_page)
-        print len(pages)
         if len(pages) > 1:
             # Songs and Custom
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
                 # do not forget the line breaks !
-                slides = slide.split(u'\n[---]\n')
+                slides = text.split(u'\n[---]\n')
                 pages = []
                 for slide in slides:
                     lines = self._lines(slide)
@@ -235,9 +232,7 @@ class Renderer(object):
                         pages.append(page)
 #            # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-                lines = self._words(slide)
-                pages = self._paginate_slide(lines, False)
-        print pages
+                pages = self._paginate_slide_words(text, line_break)
         return pages
 
     def _calculate_default(self, screen):
@@ -339,7 +334,7 @@ class Renderer(object):
                 line_count += 1
             styled_line = expand_tags(line) + line_end
             styled_text += styled_line
-            html = self.page_shell + styled_text + u'</div></body></html>'
+            html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
@@ -358,14 +353,20 @@ class Renderer(object):
         log.debug(u'format_slide - End')
         return formatted
 
-    def _paginate_slide_words(self, lines, line_break):
+    def _paginate_slide_words(self, text, line_break):
         """
         Figure out how much text can appear on a slide, using the current
-        theme settings.
+        theme settings. This version is to handle text which needs to be split
+        into words to get it to fit.
 
-        ``lines``
+        ``text``
             The words to be fitted on the slide split into lines.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+
         """
+        print [text]
         log.debug(u'format_slide - Start')
         line_end = u''
         if line_break:
@@ -373,35 +374,69 @@ class Renderer(object):
         formatted = []
         html_text = u''
         styled_text = u''
+        line_count = 0
+        force_current = False
+        lines = self._lines(text, u'[---]')
+        # Loop through the lines
         for line in lines:
+            line_count += 1
             styled_line = expand_tags(line)
-            if line.startswith(u'{su}'):
-                styled_line = line_end + styled_line
+            styled_line = line_end + styled_line
             styled_text += styled_line
-            html = self.page_shell + styled_text + u'</div></body></html>'
+            html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
             # Text too long so go to next page
+            print self.web_frame.contentsSize().height() , self.page_height, [line]
             if self.web_frame.contentsSize().height() > self.page_height:
-                #split
-                if html_text.endswith(u'<br>'):
-                    html_text = html_text[:len(html_text)-4]
-                formatted.append(html_text)
+                # we have more than 1 verse on the slide
+                print "A", line_count
+                if line_count > 1:
+                    if html_text.endswith(u'<br>'):
+                        html_text = html_text[:len(html_text)-4]
+                    formatted.append(html_text)
+                    force_current = True
+                    print "##### > 1"
+                    print [html_text]
                 html_text = u''
-                styled_text = styled_line
-            html_text += line# + line_end
+                # only one block on page so lets make it words.
+                if line_count == 1 or force_current:
+                    print "##### = 1"
+                    print [line]
+                    force_current = False
+                    styled_text = u''
+                    words = self._words(line)
+                    styled_text = u''
+                    for word in words:
+                        styled_line = expand_tags(word)
+                        styled_text += styled_line
+                        html = self.page_shell + styled_text + HTML_END
+                        self.web.setHtml(html)
+                        # Text too long so go to next page
+                        print "B", self.web_frame.contentsSize().height() , self.page_height
+                        if self.web_frame.contentsSize().height() > self.page_height:
+                            if html_text.endswith(u'<br>'):
+                                html_text = html_text[:len(html_text)-4]
+                            print "c", [html_text]
+                            formatted.append(html_text)
+                            html_text = u''
+
+                            styled_text = styled_line
+                        html_text += word
+                line_count = 0
+            styled_text = styled_line
+            html_text += line + line_end
         if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
 
-
-    def _lines(self, words):
+    def _lines(self, words, split=u'\n[---]\n'):
         """
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        words = words.replace(u'\n[---]\n', u'')
+        words = words.replace(split, u'')
         verses_text = words.split(u'\n')
         text = []
         for verse in verses_text:
@@ -415,7 +450,6 @@ class Renderer(object):
         Split the slide up by word so can wrap better
         """
         # this parse we are wordy
-        words = words.replace(u'[---]', u'').lstrip()
         words = words.replace(u'\n', u' ')
         verses_text = words.split(u' ')
         text = []
