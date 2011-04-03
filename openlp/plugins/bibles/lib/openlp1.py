@@ -75,8 +75,7 @@ class OpenLP1Bible(BibleDB):
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
-            book_ref_id = self.parent.manager.get_book_ref_id_by_name(name, 
-                language_id)
+            book_ref_id = self.get_book_ref_id_by_name(name, language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s " '\
                     'failed' % self.filename)

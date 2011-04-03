@@ -70,7 +70,7 @@ class OpenSongBible(BibleDB):
             for book in bible.b:
                 if self.stop_import_flag:
                     break
-                book_ref_id = self.parent.manager.get_book_ref_id_by_name(
+                book_ref_id = self.get_book_ref_id_by_name(
                     unicode(book.attrib[u'n']), language_id)
                 if not book_ref_id:
                     log.exception(u'Importing books from %s " '\

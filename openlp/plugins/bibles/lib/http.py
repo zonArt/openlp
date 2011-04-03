@@ -424,8 +424,7 @@ class HTTPBible(BibleDB):
             self.wizard.incrementProgressBar(unicode(translate(
                             'BiblesPlugin.HTTPBible', 'Importing %s...',
                             'Importing <book name>...')) % book)
-            book_ref_id = self.parent.manager.get_book_ref_id_by_name(book, 
-                language_id)
+            book_ref_id = self.get_book_ref_id_by_name(book, language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source,  self.download_name))

@@ -33,8 +33,7 @@ from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, \
-    AlternativeBookNamesDB, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -169,19 +168,6 @@ class BibleManager(object):
                     web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
-
-    #TODO: Delete unused code
-    '''
-    def reload_alternative_book_names(self):
-        """
-        Reloads the alternative book names from the local alternative book names
-        database on disk.
-        """
-        log.debug(u'Reload AlternativeBookNames')
-        self.alternative_book_names_cache = AlternativeBookNamesDB(self.parent, 
-            path=self.path)
-        log.debug(u'AlternativeBookNames reloaded')
-    '''
 
     def set_process_dialog(self, wizard):
         """
@@ -322,44 +308,6 @@ class BibleManager(object):
                 'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
                 'Book Chapter:Verse-Chapter:Verse')
                 })
-            return None
-
-    def get_book_ref(self, book,  language_id=None):
-        log.debug(u'BibleManager.get_book_ref("%s", "%s")', book, language_id)
-        book_id = self.get_book_ref_id_by_name(book, language_id)
-        book_temp = BiblesResourcesDB.get_book_by_id(book_id)
-        log.debug(u'BibleManager.get_book_ref("Return: %s")', 
-            book_temp[u'name'])
-        return book_temp[u'name']
-
-    def get_book_ref_id_by_name(self, book, language_id=None):
-        log.debug(u'BibleManager.get_book_ref_id_by_name:("%s", "%s")', book, 
-            language_id)
-        self.alternative_book_names_cache = AlternativeBookNamesDB(self.parent, 
-            path=self.path)
-        if BiblesResourcesDB.get_book(book):
-            book_temp = BiblesResourcesDB.get_book(book)
-            book_id = book_temp[u'id']
-        elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
-            book_id = BiblesResourcesDB.get_alternative_book_name(book, 
-                language_id)
-        elif self.alternative_book_names_cache.get_book_reference_id(book, 
-            language_id):
-            book_id = self.alternative_book_names_cache.get_book_reference_id(
-                book, language_id)
-        else:   
-            book_ref = self.import_wizard.bookNameDialog(book)
-            book_temp = BiblesResourcesDB.get_book(book_ref)
-            if book_temp:
-                book_id = book_temp[u'id']
-            else:
-                return None
-            if book_id:
-                self.alternative_book_names_cache.create_alternative_book_name(
-                    book, book_id, language_id)
-        if book_id:
-            return book_id
-        else:
             return None
 
     def verse_search(self, bible, second_bible, text):

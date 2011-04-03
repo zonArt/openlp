@@ -25,7 +25,7 @@
 ###############################################################################
 
 """
-Module implementing BookNameForm.
+Module implementing LanguageForm.
 """
 import logging
 

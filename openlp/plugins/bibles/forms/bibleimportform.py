@@ -40,7 +40,6 @@ from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
-from openlp.plugins.bibles.forms import BookNameForm
 
 log = logging.getLogger(__name__)
 
@@ -759,8 +758,3 @@ class BibleImportForm(OpenLPWizard):
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
             delete_database(self.plugin.settingsSection, importer.file)
-
-    def bookNameDialog(self, name):
-        self.book_name = BookNameForm(self)
-        if self.book_name.exec_(name):
-            return unicode(self.book_name.requestComboBox.currentText())

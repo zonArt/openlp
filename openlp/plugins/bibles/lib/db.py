@@ -202,6 +202,8 @@ class BibleDB(QtCore.QObject, Manager):
         Manager.__init__(self, u'bibles/bibles', init_schema, self.file)
         if u'file' in kwargs:
             self.get_name()
+        if u'path' in kwargs:
+            self.path = kwargs[u'path']
         self.wizard = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
@@ -382,6 +384,43 @@ class BibleDB(QtCore.QObject, Manager):
         db_book = self.get_object_filtered(Book, 
             Book.book_reference_id.like(id))
         return db_book
+
+    def get_book_ref_id_by_name(self, book, language_id=None):
+        log.debug(u'BibleManager.get_book_ref_id_by_name:("%s", "%s")', book, 
+            language_id)
+        self.alternative_book_names_cache = AlternativeBookNamesDB(self.bible_plugin, 
+            path=self.path)
+        if BiblesResourcesDB.get_book(book):
+            book_temp = BiblesResourcesDB.get_book(book)
+            book_id = book_temp[u'id']
+        elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
+            book_id = BiblesResourcesDB.get_alternative_book_name(book, 
+                language_id)
+        elif self.alternative_book_names_cache.get_book_reference_id(book, 
+            language_id):
+            book_id = self.alternative_book_names_cache.get_book_reference_id(
+                book, language_id)
+        else:
+            from openlp.plugins.bibles.forms import BookNameForm
+            book_ref = None
+            book_name = BookNameForm(self.wizard)
+            if book_name.exec_(book):
+                book_ref = unicode(book_name.requestComboBox.currentText())
+            if not book_ref:
+                return None
+            else:
+                book_temp = BiblesResourcesDB.get_book(book_ref)
+            if book_temp:
+                book_id = book_temp[u'id']
+            else:
+                return None
+            if book_id:
+                self.alternative_book_names_cache.create_alternative_book_name(
+                    book, book_id, language_id)
+        if book_id:
+            return book_id
+        else:
+            return None
 
     def get_verses(self, reference_list):
         """

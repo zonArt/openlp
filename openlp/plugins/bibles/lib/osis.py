@@ -129,8 +129,7 @@ class OSISBible(BibleDB):
                         #TODO: Delete unused code
                         #if book == u'Matt' or book == u'Jdt':
                         #    testament += 1
-                        book_ref_id = self.parent.manager.\
-                            get_book_ref_id_by_name(
+                        book_ref_id = self.get_book_ref_id_by_name(
                             unicode(self.books[book][0]), language_id)
                         if not book_ref_id:
                             log.exception(u'Importing books from %s " '\
