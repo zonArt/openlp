@@ -1108,11 +1108,11 @@ class SlideController(QtGui.QWidget):
         screen hide attributes
         """
         blank = None
-        if self.blankScreen.isChecked():
+        if self.blankScreen.isChecked:
             blank = self.blankScreen
-        if self.themeScreen.isChecked():
+        if self.themeScreen.isChecked:
             blank = self.themeScreen
-        if self.desktopScreen.isChecked():
+        if self.desktopScreen.isChecked:
             blank = self.desktopScreen
         if blank:
             blank.setChecked(False)
