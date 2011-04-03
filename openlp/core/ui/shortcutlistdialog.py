@@ -34,6 +34,10 @@ class Ui_ShortcutListDialog(object):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
         self.dialogLayout = QtGui.QVBoxLayout(shortcutListDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
+        self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
+        self.descriptionLabel.setObjectName(u'descriptionLabel')
+        self.descriptionLabel.setWordWrap(True)
+        self.dialogLayout.addWidget(self.descriptionLabel)
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
         self.treeWidget.setAlternatingRowColors(True)
         self.treeWidget.setObjectName(u'treeWidget')
@@ -41,6 +45,9 @@ class Ui_ShortcutListDialog(object):
         self.dialogLayout.addWidget(self.treeWidget)
         self.customLayout = QtGui.QHBoxLayout()
         self.customLayout.setObjectName(u'customLayout')
+        self.shortcutButtonLabel = QtGui.QLabel(shortcutListDialog)
+        self.shortcutButtonLabel.setObjectName(u'descriptionLabel')
+        self.customLayout.addWidget(self.shortcutButtonLabel)
         self.shortcutButton = QtGui.QPushButton(shortcutListDialog)
         self.shortcutButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
@@ -57,8 +64,8 @@ class Ui_ShortcutListDialog(object):
         self.customLayout.addStretch()
         self.dialogLayout.addLayout(self.customLayout)
         self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok |
-            QtGui.QDialogButtonBox.RestoreDefaults)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults)
         self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)
@@ -71,9 +78,15 @@ class Ui_ShortcutListDialog(object):
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
+        self.descriptionLabel.setText(translate('OpenLP.ShortcutListDialog',
+            'Select an action and click the button below to start capturing '
+            'a new shortcut.'))
         self.treeWidget.setHeaderLabels([
             translate('OpenLP.ShortcutListDialog', 'Action'),
             translate('OpenLP.ShortcutListDialog', 'Shortcut'),
             translate('OpenLP.ShortcutListDialog', 'Alternate')])
-        self.shortcutButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'None'))
+        self.shortcutButtonLabel.setText(
+            translate('OpenLP.ShortcutListDialog', 'Capture shortcut:'))
+        self.clearShortcutButton.setToolTip(
+            translate('OpenLP.ShortcutListDialog',
+            'Restore the default shortcut(s) of this action.'))

@@ -46,6 +46,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.column = -1
+        self.changedActions = {}
         self.shortcutButton.setText(u'')
         self.shortcutButton.setEnabled(False)
         QtCore.QObject.connect(self.shortcutButton,
@@ -63,7 +64,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onRestoreDefaultsClicked)
 
     def keyPressEvent(self, event):
-        event.ignore()
+        if self.shortcutButton.isChecked():
+            event.ignore()
+        elif event.key() == QtCore.Qt.Key_Escape:
+            event.accept()
+            self.close()
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
@@ -87,7 +92,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         shortcut_valid = True
         for category in ActionList.categories:
             for action in category.actions:
-                shortcuts = action.shortcuts()
+                shortcuts = self._actionShortcuts(action)
                 if key_sequence not in shortcuts:
                     continue
                 if action is changing_action:
@@ -116,6 +121,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.shortcutButton.setChecked(False)
 
     def exec_(self):
+        self.changedActions = {}
         self.reloadShortcutList()
         self.shortcutButton.setChecked(False)
         self.shortcutButton.setEnabled(False)
@@ -152,15 +158,16 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             action = item.data(0, QtCore.Qt.UserRole).toPyObject()
             if action is None:
                 continue
-            if len(action.shortcuts()) == 0:
+            shortcuts = self._actionShortcuts(action)
+            if len(shortcuts) == 0:
                 item.setText(1, u'')
                 item.setText(2, u'')
-            elif len(action.shortcuts()) == 1:
-                item.setText(1, action.shortcuts()[0].toString())
+            elif len(shortcuts) == 1:
+                item.setText(1, shortcuts[0].toString())
                 item.setText(2, u'')
             else:
-                item.setText(1, action.shortcuts()[0].toString())
-                item.setText(2, action.shortcuts()[1].toString())
+                item.setText(1, shortcuts[0].toString())
+                item.setText(2, shortcuts[1].toString())
 
     def onShortcutButtonClicked(self, toggled):
         """
@@ -174,20 +181,21 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         if action is None:
             return
-        shortcuts = []
+        shortcuts = self._actionShortcuts(action)
+        new_shortcuts = []
         # We are changing the primary shortcut.
-        if self.column == 1:
-            shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
-            if len(action.shortcuts()) == 2:
-                shortcuts.append(action.shortcuts()[1])
+        if self.column in [0, 1]:
+            new_shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
+            if len(shortcuts) == 2:
+                new_shortcuts.append(shortcuts[1])
         # We are changing the secondary shortcut.
         elif self.column == 2:
-            if len(action.shortcuts()) != 0:
-                shortcuts.append(action.shortcuts()[0])
-            shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
+            if len(shortcuts) != 0:
+                new_shortcuts.append(shortcuts[0])
+            new_shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
         else:
             return
-        action.setShortcuts(shortcuts)
+        self.changedActions[action] = new_shortcuts
         self.refreshShortcutList()
 
     def onItemDoubleClicked(self, item, column):
@@ -209,15 +217,17 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         self.column = column
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
-        self.shortcutButton.setEnabled(True)
         text = u''
-        if action is None or column not in [1, 2]:
+        if action is None:# or column not in [1, 2]:
             self.shortcutButton.setChecked(False)
             self.shortcutButton.setEnabled(False)
-        elif column == 1 and len(action.shortcuts()) != 0:
-            text = action.shortcuts()[0].toString()
-        elif len(action.shortcuts()) == 2 and len(action.shortcuts()) != 0:
-            text = action.shortcuts()[1].toString()
+        else:
+            self.shortcutButton.setEnabled(True)
+            shortcuts = self._actionShortcuts(action)
+            if column != 2 and len(shortcuts) != 0:
+                text = shortcuts[0].toString()
+            elif len(shortcuts) == 2:
+                text = shortcuts[1].toString()
         self.shortcutButton.setText(text)
 
     def onClearShortcutButtonClicked(self, toggled):
@@ -231,7 +241,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         if action is None:
             return
-        action.setShortcuts(action.defaultShortcuts)
+        self.changedActions[action] = action.defaultShortcuts
         self.refreshShortcutList()
         self.onItemPressed(item, self.column)
 
@@ -252,7 +262,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.shortcutButton.setText(u'')
         for category in ActionList.categories:
             for action in category.actions:
-                action.setShortcuts(action.defaultShortcuts)
+                self.changedActions[action] = action.defaultShortcuts
         self.refreshShortcutList()
 
     def save(self):
@@ -264,6 +274,18 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         settings.beginGroup(u'shortcuts')
         for category in ActionList.categories:
             for action in category.actions:
+                if self.changedActions .has_key(action):
+                    action.setShortcuts(self.changedActions[action])
                 settings.setValue(
                     action.objectName(), QtCore.QVariant(action.shortcuts()))
         settings.endGroup()
+
+    def _actionShortcuts(self, action):
+        """
+        This returns the shortcuts for the given ``action``, which also includes
+        those shortcuts which are not yet assigned to an action (as changes are
+        applied when closing the dialog).
+        """
+        if self.changedActions.has_key(action):
+            return self.changedActions[action]
+        return action.shortcuts()
