@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import icon_action
+from openlp.core.lib.ui import icon_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -75,7 +75,7 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
-        ActionList.add_action(self.toolsAlertItem, u'Tools')
+        ActionList.add_action(self.toolsAlertItem, UiStrings.Tools)
         self.liveController.alertTab = self.settings_tab
 
     def finalise(self):

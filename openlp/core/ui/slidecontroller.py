@@ -161,18 +161,18 @@ class SlideController(QtGui.QWidget):
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
                 [QtCore.Qt.Key_Period], self.onBlankDisplay,
-                u':/slides/slide_blank.png', False, u'Live Toolbar')
+                u':/slides/slide_blank.png', False, UiStrings.LiveToolbar)
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
             self.themeScreen = shortcut_action(self.hideMenu, u'themeScreen',
                 [QtGui.QKeySequence(u'T')], self.onThemeDisplay,
-                u':/slides/slide_theme.png', False, u'Live Toolbar')
+                u':/slides/slide_theme.png', False, UiStrings.LiveToolbar)
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
             self.desktopScreen = shortcut_action(self.hideMenu,
                 u'desktopScreen', [QtGui.QKeySequence(u'D')],
                 self.onHideDisplay, u':/slides/slide_desktop.png', False,
-                u'Live Toolbar')
+                UiStrings.LiveToolbar)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
@@ -367,26 +367,26 @@ class SlideController(QtGui.QWidget):
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')         
         self.nextItem.setObjectName(u'nextItemPreview')
-        ActionList.add_action(self.previousItem, u'Preview Toolbar')
-        ActionList.add_action(self.nextItem, u'Preview Toolbar')
+        ActionList.add_action(self.previousItem, UiStrings.PreviewToolbar)
+        ActionList.add_action(self.nextItem, UiStrings.PreviewToolbar)
 
     def setLiveHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemLive')         
         self.nextItem.setObjectName(u'nextItemLive')
-        ActionList.add_action(self.previousItem, u'Live Toolbar')
-        ActionList.add_action(self.nextItem, u'Live Toolbar')
+        ActionList.add_action(self.previousItem, UiStrings.LiveToolbar)
+        ActionList.add_action(self.nextItem, UiStrings.LiveToolbar)
         self.previousService = shortcut_action(parent, u'previousService',
-            [QtCore.Qt.Key_Left], self.servicePrevious, u'Live Toolbar')
+            [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings.LiveToolbar)
         self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.previousService.setText(
             translate('OpenLP.SlideController', 'Previous Service'))
         self.nextService = shortcut_action(parent, 'nextService',
-            [QtCore.Qt.Key_Right], self.serviceNext, u'Live Toolbar')
+            [QtCore.Qt.Key_Right], self.serviceNext, UiStrings.LiveToolbar)
         self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextService.setText(
             translate('OpenLP.SlideController', 'Next Service'))
         self.escapeItem = shortcut_action(parent, 'escapeItem',
-            [QtCore.Qt.Key_Escape], self.liveEscape, u'Live Toolbar')
+            [QtCore.Qt.Key_Escape], self.liveEscape, UiStrings.LiveToolbar)
         self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.escapeItem.setText(
             translate('OpenLP.SlideController', 'Escape Item'))

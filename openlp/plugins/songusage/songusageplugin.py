@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import base_action, shortcut_action
+from openlp.core.lib.ui import base_action, shortcut_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -110,9 +110,12 @@ class SongUsagePlugin(Plugin):
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
-        ActionList.add_action(self.SongUsageDelete, u'Song Usage')
-        ActionList.add_action(self.SongUsageReport, u'Song Usage')
-        ActionList.add_action(self.SongUsageStatus, u'Song Usage')
+        ActionList.add_action(self.SongUsageDelete,
+            translate('SongUsagePlugin', 'Song Usage'))
+        ActionList.add_action(self.SongUsageReport,
+            translate('SongUsagePlugin', 'Song Usage'))
+        ActionList.add_action(self.SongUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         if self.manager is None:
             self.manager = Manager(u'songusage', init_schema)
         self.SongUsagedeleteform = SongUsageDeleteForm(self.manager,
@@ -128,9 +131,12 @@ class SongUsagePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.SongUsageMenu.menuAction().setVisible(False)
-        ActionList.remove_action(self.SongUsageDelete, u'Song Usage')
-        ActionList.remove_action(self.SongUsageReport, u'Song Usage')
-        ActionList.remove_action(self.SongUsageStatus, u'Song Usage')
+        ActionList.remove_action(self.SongUsageDelete,
+            translate('SongUsagePlugin', 'Song Usage'))
+        ActionList.remove_action(self.SongUsageReport,
+            translate('SongUsagePlugin', 'Song Usage'))
+        ActionList.remove_action(self.SongUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         #stop any events being processed
         self.SongUsageActive = False
 

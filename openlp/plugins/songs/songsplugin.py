@@ -66,9 +66,9 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.toolsReindexItem.setVisible(True)
-        ActionList.add_action(self.SongImportItem, u'Import')
-        ActionList.add_action(self.SongExportItem, u'Export')
-        ActionList.add_action(self.toolsReindexItem, u'Tools')
+        ActionList.add_action(self.SongImportItem, UiStrings.Import)
+        ActionList.add_action(self.SongExportItem, UiStrings.Export)
+        ActionList.add_action(self.toolsReindexItem, UiStrings.Tools)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
@@ -258,7 +258,7 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Finalising')
         self.manager.finalise()
         self.toolsReindexItem.setVisible(False)
-        ActionList.remove_action(self.SongImportItem, u'Import')
-        ActionList.remove_action(self.SongExportItem, u'Export')
-        ActionList.remove_action(self.toolsReindexItem, u'Tools')
+        ActionList.remove_action(self.SongImportItem, UiStrings.Import)
+        ActionList.remove_action(self.SongExportItem, UiStrings.Export)
+        ActionList.remove_action(self.toolsReindexItem, UiStrings.Tools)
         Plugin.finalise(self)

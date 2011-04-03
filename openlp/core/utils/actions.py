@@ -190,6 +190,7 @@ class ActionList(object):
 
     @staticmethod
     def add_action(action, category, weight=None):
+        category = unicode(category)
         if category not in ActionList.categories:
             ActionList.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
@@ -208,6 +209,7 @@ class ActionList(object):
 
     @staticmethod
     def remove_action(action, category):
+        category = unicode(category)
         if category not in ActionList.categories:
             return
         ActionList.categories[category].actions.remove(action)
