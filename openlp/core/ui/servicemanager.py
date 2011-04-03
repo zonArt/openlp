@@ -1133,6 +1133,9 @@ class ServiceManager(QtGui.QWidget):
             -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
+        # No items in service
+        if item == -1:
+            return
         if row != -1:
             child = row
         if self.serviceItems[item][u'service_item'].is_valid:
