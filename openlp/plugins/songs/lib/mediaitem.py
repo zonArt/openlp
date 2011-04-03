@@ -73,6 +73,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.quickPreviewAllowed = True
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
