@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,8 +28,8 @@ import logging
 
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import BackgroundType, BackgroundGradientType, \
-    VerticalType
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
+    VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
 
@@ -85,7 +85,12 @@ body {
 }
 /* lyric css */
 %s
-
+sup {
+    font-size:0.6em;
+    vertical-align:top;
+    position:relative;
+    top:-0.3em;
+}
 </style>
 <script language="javascript">
     var timer = null;
@@ -531,13 +536,8 @@ def build_lyrics_format_css(theme, width, height):
         Height of the lyrics block
 
     """
-    if theme.display_horizontal_align == 2:
-        align = u'center'
-    elif theme.display_horizontal_align == 1:
-        align = u'right'
-    else:
-        align = u'left'
-    valign = VerticalType.to_string(theme.display_vertical_align)
+    align = HorizontalType.Names[theme.display_horizontal_align]
+    valign = VerticalType.Names[theme.display_vertical_align]
     if theme.font_main_outline:
         left_margin = int(theme.font_main_outline_size) * 2
     else:
@@ -630,7 +630,7 @@ def build_alert_css(alertTab, width):
     """
     if not alertTab:
         return u''
-    align = VerticalType.to_string(alertTab.location)
+    align = VerticalType.Names[alertTab.location]
     alert = style % (width, align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

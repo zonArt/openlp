@@ -5,10 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,7 @@ import os
 
 from lxml import etree
 
-from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib import OpenLyrics
 
@@ -43,18 +43,13 @@ class OpenLyricsImport(SongImport):
     """
     This provides the Openlyrics import.
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
+        Initialise the Open Lyrics importer.
         """
         log.debug(u'initialise OpenLyricsImport')
-        SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
-        self.openLyrics = OpenLyrics(master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
+        SongImport.__init__(self, manager, **kwargs)
+        self.openLyrics = OpenLyrics(self.manager)
 
     def do_import(self):
         """
@@ -65,9 +60,8 @@ class OpenLyricsImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return False
-            self.import_wizard.incrementProgressBar(unicode(translate(
-                'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
-                os.path.basename(file_path))
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))

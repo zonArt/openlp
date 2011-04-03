@@ -4,13 +4,11 @@ recursive-include openlp *.csv
 recursive-include openlp *.html
 recursive-include openlp *.js
 recursive-include openlp *.css
-recursive-include openlp *.qm
+recursive-include openlp *.png
 recursive-include documentation *
-recursive-include resources/forms *
-recursive-include resources/i18n *
-recursive-include resources/images *
-recursive-include scripts *.py
-include resources/*.desktop
+recursive-include resources *
+recursive-include scripts *
 include copyright.txt
 include LICENSE
+include README.txt
 include openlp/.version

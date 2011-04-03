@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,32 +33,33 @@ import logging
 import os
 import re
 
-from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
 class SongBeamerTypes(object):
     MarkTypes = {
-        u'Refrain': u'C',
-        u'Chorus': u'C',
-        u'Vers': u'V',
-        u'Verse': u'V',
-        u'Strophe': u'V',
-        u'Intro': u'I',
-        u'Coda': u'E',
-        u'Ending': u'E',
-        u'Bridge': u'B',
-        u'Interlude': u'B',
-        u'Zwischenspiel': u'B',
-        u'Pre-Chorus': u'P',
-        u'Pre-Refrain': u'P',
-        u'Pre-Bridge': u'O',
-        u'Pre-Coda': u'O',
-        u'Unbekannt': u'O',
-        u'Unknown': u'O',
-        u'Unbenannt': u'O'
-        }
+        u'Refrain': VerseType.Tags[VerseType.Chorus],
+        u'Chorus': VerseType.Tags[VerseType.Chorus],
+        u'Vers': VerseType.Tags[VerseType.Verse],
+        u'Verse': VerseType.Tags[VerseType.Verse],
+        u'Strophe': VerseType.Tags[VerseType.Verse],
+        u'Intro': VerseType.Tags[VerseType.Intro],
+        u'Coda': VerseType.Tags[VerseType.Ending],
+        u'Ending': VerseType.Tags[VerseType.Ending],
+        u'Bridge': VerseType.Tags[VerseType.Bridge],
+        u'Interlude': VerseType.Tags[VerseType.Bridge],
+        u'Zwischenspiel': VerseType.Tags[VerseType.Bridge],
+        u'Pre-Chorus': VerseType.Tags[VerseType.PreChorus],
+        u'Pre-Refrain': VerseType.Tags[VerseType.PreChorus],
+        u'Pre-Bridge': VerseType.Tags[VerseType.Other],
+        u'Pre-Coda': VerseType.Tags[VerseType.Other],
+        u'Unbekannt': VerseType.Tags[VerseType.Other],
+        u'Unknown': VerseType.Tags[VerseType.Other],
+        u'Unbenannt': VerseType.Tags[VerseType.Other]
+    }
 
 
 class SongBeamerImport(SongImport):
@@ -67,19 +68,11 @@ class SongBeamerImport(SongImport):
     Song Beamer file format is text based
     in the beginning are one or more control tags written
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the Song Beamer importer.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
@@ -92,11 +85,11 @@ class SongBeamerImport(SongImport):
                 # TODO: check that it is a valid SongBeamer file
                 self.set_defaults()
                 self.current_verse = u''
-                self.current_verse_type = u'V'
+                self.current_verse_type = VerseType.Tags[VerseType.Verse]
                 read_verses = False
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))
@@ -119,7 +112,7 @@ class SongBeamerImport(SongImport):
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
                             self.current_verse = u''
-                            self.current_verse_type = u'V'
+                            self.current_verse_type = VerseType.Tags[VerseType.Verse]
                         read_verses = True
                         verse_start = True
                     elif read_verses:
@@ -134,9 +127,8 @@ class SongBeamerImport(SongImport):
                     self.add_verse(self.current_verse, self.current_verse_type)
                 if self.check_complete():
                     self.finish()
-                self.import_wizard.incrementProgressBar(unicode(translate(
-                    'SongsPlugin.SongBeamerImport', 'Importing %s...')) %
-                    file_name)
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % file_name)
             return True
 
     def replace_html_tags(self):
@@ -166,7 +158,7 @@ class SongBeamerImport(SongImport):
             (u'<[/]?c.*?>', u''),
             (u'<align.*?>', u''),
             (u'<valign.*?>', u'')
-            ]
+        ]
         for pair in tag_pairs:
             self.current_verse = re.compile(pair[0]).sub(pair[1],
                 self.current_verse)
@@ -250,6 +242,8 @@ class SongBeamerImport(SongImport):
             if len(book_num) == book_num[1]:
                 self.song_number = u''
         elif tag_val[0] == u'#Speed':
+            pass
+        elif tag_val[0] == u'Tempo':
             pass
         elif tag_val[0] == u'#TextAlign':
             pass

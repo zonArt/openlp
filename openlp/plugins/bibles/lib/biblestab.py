@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
+from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle
 
 log = logging.getLogger(__name__)
 
@@ -122,19 +123,19 @@ class BiblesTab(SettingsTab):
             translate('BiblesPlugin.BiblesTab', 'Display style:'))
         self.BibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
-        self.LayoutStyleComboBox.setItemText(0,
+        self.LayoutStyleComboBox.setItemText(LayoutStyle.VersePerSlide,
             translate('BiblesPlugin.BiblesTab', 'Verse Per Slide'))
-        self.LayoutStyleComboBox.setItemText(1,
+        self.LayoutStyleComboBox.setItemText(LayoutStyle.VersePerLine,
             translate('BiblesPlugin.BiblesTab', 'Verse Per Line'))
-        self.LayoutStyleComboBox.setItemText(2,
+        self.LayoutStyleComboBox.setItemText(LayoutStyle.Continuous,
             translate('BiblesPlugin.BiblesTab', 'Continuous'))
-        self.DisplayStyleComboBox.setItemText(0,
+        self.DisplayStyleComboBox.setItemText(DisplayStyle.NoBrackets,
             translate('BiblesPlugin.BiblesTab', 'No Brackets'))
-        self.DisplayStyleComboBox.setItemText(1,
+        self.DisplayStyleComboBox.setItemText(DisplayStyle.Round,
             translate('BiblesPlugin.BiblesTab', '( And )'))
-        self.DisplayStyleComboBox.setItemText(2,
+        self.DisplayStyleComboBox.setItemText(DisplayStyle.Curly,
             translate('BiblesPlugin.BiblesTab', '{ And }'))
-        self.DisplayStyleComboBox.setItemText(3,
+        self.DisplayStyleComboBox.setItemText(DisplayStyle.Square,
             translate('BiblesPlugin.BiblesTab', '[ And ]'))
         self.ChangeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
             'Note:\nChanges do not affect verses already in the service.'))

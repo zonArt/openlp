@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,14 +25,14 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -40,21 +40,11 @@ from osis import OSISBible
 # Imports that might fail.
 try:
     from openlp1 import OpenLP1Bible
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 
 log = logging.getLogger(__name__)
-
-class BibleMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Full = 1
-    Partial = 2
-
 
 class BibleFormat(object):
     """
@@ -154,6 +144,10 @@ class BibleManager(object):
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
+            # Remove corrupted files.
+            if name is None:
+                delete_file(os.path.join(self.path, filename))
+                continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
@@ -260,7 +254,7 @@ class BibleManager(object):
         if not bible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'No Bibles available'),
+                'No Bibles Available'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'There are no Bibles currently installed. Please use the '
                 'Import Wizard to install one or more Bibles.')
@@ -275,7 +269,7 @@ class BibleManager(object):
                 'Scripture Reference Error'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'Your scripture reference is either not supported by OpenLP '
-                'or is invalid.  Please make sure your reference conforms to '
+                'or is invalid. Please make sure your reference conforms to '
                 'one of the following patterns:\n\n'
                 'Book Chapter\n'
                 'Book Chapter-Chapter\n'
@@ -367,6 +361,6 @@ class BibleManager(object):
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -80,7 +80,8 @@ class Controller(object):
         if self.doc.is_active():
             return
         if not self.doc.is_loaded():
-            self.doc.load_presentation()
+            if not self.doc.load_presentation():
+                return
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
@@ -212,6 +213,7 @@ class Controller(object):
 
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
+
 
 class MessageListener(object):
     """

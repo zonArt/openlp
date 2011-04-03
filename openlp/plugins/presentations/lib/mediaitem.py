@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +31,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities
-from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         The name of the plugin media displayed in UI
         """
-        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+        self.onNewPrompt = translate('PresentationPlugin.MediaItem',
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
@@ -79,7 +80,7 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
     def requiredIcons(self):
@@ -188,7 +189,7 @@ class PresentationMediaItem(MediaManagerItem):
                     icon = build_icon(u':/general/general_delete.png')
                 else:
                     critical_error_message_box(
-                        self, translate('PresentationPlugin.MediaItem',
+                        translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
                         'This type of presentation is not supported.'))
@@ -202,9 +203,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if check_item_selected(self.listView,
-            translate('PresentationPlugin.MediaItem',
-            'You must select an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
