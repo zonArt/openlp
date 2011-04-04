@@ -133,7 +133,8 @@ class SearchEdit(QtGui.QLineEdit):
         menu = QtGui.QMenu(self)
         first = None
         for identifier, icon, title in items:
-            action = icon_action(menu, title, icon)
+            action = icon_action(menu, u'', icon)
+            action.setText(title)
             action.setData(QtCore.QVariant(identifier))
             menu.addAction(action)
             QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
