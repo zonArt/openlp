@@ -572,31 +572,12 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_command():
                 Receiver.send_message(u'%s_stop' %
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
-            # If the old item had its own display, we have to restore the menu.
-            if self.isLive and self.serviceItem.is_capable(
-                ItemCapabilities.ProvidesOwnDisplay):
-                self.toolbar.actions[u'Hide Menu'].setVisible(True)
-                action = self.hideMenu.defaultAction()
-                # Re check the current blank mode, so that the current item will
-                # not ignore it.
-                if self.blankScreen == action:
-                    self.onBlankDisplay(action.isChecked())
-                elif self.themeScreen == action:
-                    self.onThemeDisplay(action.isChecked())
-                elif self.desktopScreen == action:
-                    self.onHideDisplay(action.isChecked())
             if self.serviceItem.is_media():
                 self.onMediaClose()
-        blanked = False
         if self.isLive:
-            if serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-                # Hide the menu and the screen. Note, that we do not want to use
-                # onHideDisplay, as we want to be able to restore the current
-                # hide mode.
-                self.toolbar.actions[u'Hide Menu'].setVisible(False)
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
-            else:
-                blanked = self.blankScreen.isChecked()
+            blanked = self.blankScreen.isChecked()
+        else:
+            blanked = False
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
