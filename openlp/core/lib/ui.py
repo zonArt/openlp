@@ -284,7 +284,7 @@ def icon_action(parent, name, icon, checked=None, category=None):
     return action
 
 def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None):
+    category=None, context=QtCore.Qt.WindowShortcut):
     """
     Return a shortcut enabled action.
     """
@@ -296,10 +296,74 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
         action.setCheckable(True)
         action.setChecked(checked)
     action.setShortcuts(shortcuts)
-    action.setShortcutContext(QtCore.Qt.WindowShortcut)
-    if category is not None:
-        ActionList.add_action(action, category)
+    action.setShortcutContext(context)
+    ActionList.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
+    return action
+
+def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
+    context=QtCore.Qt.WindowShortcut):
+    """
+    Utility method to help build context menus for plugins
+
+    ``base``
+        The parent menu to add this menu item to
+
+    ``icon``
+        An icon for this action
+
+    ``text``
+        The text to display for this action
+
+    ``slot``
+        The code to run when this action is triggered
+
+    ``shortcuts``
+        The action's shortcuts.
+
+    ``category``
+        The category the shortcut should be listed in the shortcut dialog. If
+        left to None, then the action will be hidden in the shortcut dialog.
+    
+    ``context``
+        The context the shortcut is valid.
+    """
+    action = QtGui.QAction(text, base)
+    if icon:
+        action.setIcon(build_icon(icon))
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
+    if shortcuts is not None:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
+        ActionList.add_action(action)
+    return action
+
+def context_menu(base, icon, text):
+    """
+    Utility method to help build context menus for plugins
+
+    ``base``
+        The parent object to add this menu to
+
+    ``icon``
+        An icon for this menu
+
+    ``text``
+        The text to display for this menu
+    """
+    action = QtGui.QMenu(text, base)
+    action.setIcon(build_icon(icon))
+    return action
+
+def context_menu_separator(base):
+    """
+    Add a separator to a context menu
+
+    ``base``
+        The menu object to add the separator to
+    """
+    action = QtGui.QAction(u'', base)
+    action.setSeparator(True)
     return action
 
 def add_widget_completer(cache, widget):

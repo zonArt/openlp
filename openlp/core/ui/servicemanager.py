@@ -32,10 +32,10 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
+    ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, context_menu_action
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -1267,7 +1267,7 @@ class ServiceManager(QtGui.QWidget):
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
             action = context_menu_action(self.serviceManagerList, None, theme,
-                self.onThemeChangeAction)
+                self.onThemeChangeAction, context=QtCore.Qt.WidgetShortcut)
             self.themeMenu.addAction(action)
         index = self.themeComboBox.findText(self.service_theme,
             QtCore.Qt.MatchExactly)
