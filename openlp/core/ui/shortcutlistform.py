@@ -145,8 +145,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 actionItem.setData(0,
                     QtCore.Qt.UserRole, QtCore.QVariant(action))
                 item.addChild(actionItem)
-            item.setExpanded(True)
             self.treeWidget.addTopLevelItem(item)
+            item.setExpanded(True)
         self.refreshShortcutList()
 
     def refreshShortcutList(self):
