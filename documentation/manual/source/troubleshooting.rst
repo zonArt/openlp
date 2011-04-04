@@ -103,7 +103,7 @@ After enabling the rpmfusion repository you will want to refresh your package
 list, perform any updates and search for gstreamer-good, bad, and ugly and
 install.
 
-Follow the tutorial`using the rpmfusion repository <http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories>`_ 
+Follow the tutorial `using the rpmfusion repository <http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories>`_ 
 to enable extra audio and video formats on Fedora
 
 The Media Manager appears to be missing some features
@@ -160,8 +160,8 @@ format. We would suggest using PNG images when possible with OpenLP.
 I am running a Linux Distro and can not see the menus
 -----------------------------------------------------
 
-This only seems to be a problem with only XFCE the following commands have been
-known to resolve the problem::
+This seems to be a problem with XFCE and some versions of Gnome too. To correct
+this problem, open  a terminal and type in the following commands::
 
   gconftool-2 --type boolean --set /desktop/gnome/interface/buttons_have_icons true
   
@@ -172,6 +172,5 @@ I chose to use a web Bible but it did not download the entire Bible
 
 Due to copyright restrictions OpenLP cannot download an entire Bible. It can
 only download the section you search for. If you do not have an internet 
-connection where you intend to use OpenLP you will need to have another source
-for scripture. For more information and options on acquiring bibles please see
-:ref:`bibleimporter`.
+connection where you intend to use OpenLP you will need another scripture
+source. For more information about acquiring bibles please see :ref:`bibleimporter`.
