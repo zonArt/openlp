@@ -13,6 +13,13 @@ Contents:
 
    introduction
    glossary
+   wizard
    dualmonitors
+   configure
+   bibles
+   themes
    mediamanager
    songs
+   alert
+   faq
+   troubleshooting

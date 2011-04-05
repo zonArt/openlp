@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -166,7 +166,7 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
-def context_menu_action(base, icon, text, slot):
+def context_menu_action(base, icon, text, slot, shortcuts=None):
     """
     Utility method to help build context menus for plugins
 
@@ -186,6 +186,8 @@ def context_menu_action(base, icon, text, slot):
     if icon:
         action.setIcon(build_icon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
     return action
 
 def context_menu(base, icon, text):
@@ -316,8 +318,11 @@ def check_directory_exists(dir):
         Theme directory to make sure exists
     """
     log.debug(u'check_directory_exists %s' % dir)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    try:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+    except IOError:
+        pass
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
