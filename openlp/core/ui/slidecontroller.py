@@ -567,14 +567,16 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
+        # If old item was a command tell it to stop
         if self.serviceItem:
-            # If old item was a command tell it to stop.
             if self.serviceItem.is_command():
                 Receiver.send_message(u'%s_stop' %
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
             if self.serviceItem.is_media():
                 self.onMediaClose()
         if self.isLive:
+            if serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
+                self._forceUnblank()
             blanked = self.blankScreen.isChecked()
         else:
             blanked = False
@@ -1092,3 +1094,21 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.slidePreview.clear()
         self.slidePreview.show()
+
+    def _forceUnblank(self):
+        """
+        Used by command items which provide their own displays to reset the
+        screen hide attributes
+        """
+        blank = None
+        if self.blankScreen.isChecked:
+            blank = self.blankScreen
+        if self.themeScreen.isChecked:
+            blank = self.themeScreen
+        if self.desktopScreen.isChecked:
+            blank = self.desktopScreen
+        if blank:
+            blank.setChecked(False)
+            self.hideMenu.setDefaultAction(blank)
+            QtCore.QSettings().remove(
+                self.parent.generalSettingsSection + u'/screen blank')

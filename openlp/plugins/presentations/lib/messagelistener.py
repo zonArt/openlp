@@ -333,6 +333,7 @@ class MessageListener(object):
         """
         is_live = message[1]
         if is_live:
+            Receiver.send_message(u'maindisplay_show')
             self.live_handler.shutdown()
         else:
             self.preview_handler.shutdown()
