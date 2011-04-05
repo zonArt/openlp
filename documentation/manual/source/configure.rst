@@ -67,10 +67,11 @@ Preview pane.
 
 **Unblank display when adding new live item**
 
-When this box is selected and you are using the "blank to" button to blank the 
-screen, blank to theme or Show Desktop, if you select your next item in your 
-service, it will automatically turn off the "blank to". If this box is not 
-selected you will have to click the blank button to turn off the "blank to".
+When this box is selected and you are using the "blank to" button to blank or 
+hide the screen, when you next go live on an item it will automatically 
+re-enable the screen. If this box is not selected you will need to click the 
+"blank to" button again to reverse the action.
+
 
 **Slide loop delay** 
 
