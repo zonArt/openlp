@@ -44,7 +44,7 @@ working on when you closed the program.
 **Show the splash screen:**
 
 The OpenLP logo is displayed while OpenLP loads when this checkbox is checked.
-This is useful to know if the program is opening.
+This is useful to give some indication that the program is loading.
 
 **Check for updates to OpenLP**
 
