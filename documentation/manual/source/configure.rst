@@ -43,9 +43,14 @@ working on when you closed the program.
 
 **Show the splash screen:**
 
-When this box it selected, the OpenLP logo will be displayed in the center of 
+When this box is selected, the OpenLP logo will be displayed in the center of 
 the screen until the program opens. This is useful to know if the program is 
 opening.
+
+**Check for updates to OpenLP**
+
+When this box is selected, OpenLP will verify that you have the latest version 
+installed. Note: This requires internet access.
 
 Application Settings
 ^^^^^^^^^^^^^^^^^^^^
@@ -59,6 +64,13 @@ working on before starting a new service.
 
 When this box is selected, the next item in the Service Manager will show in the
 Preview pane.
+
+**Unblank display when adding new live item**
+
+When this box is selected and you are using the "blank to" button to blank the 
+screen, blank to theme or Show Desktop, if you select your next item in your 
+service, it will automatically turn off the "blank to". If this box is not 
+selected you will have to click the blank button to turn off the "blank to".
 
 **Slide loop delay** 
 
