@@ -43,9 +43,14 @@ working on when you closed the program.
 
 **Show the splash screen:**
 
-When this box it selected, the OpenLP logo will be displayed in the center of 
-the screen until the program opens. This is useful to know if the program is 
-opening.
+The OpenLP logo is displayed while OpenLP loads when this checkbox is checked.
+This is useful to give some indication that the program is loading.
+
+**Check for updates to OpenLP**
+
+OpenLP will check to see if there is a newer version available on a regular 
+basis when this checkbox is checked. Please note that this requires Internet 
+access.
 
 Application Settings
 ^^^^^^^^^^^^^^^^^^^^
@@ -59,6 +64,14 @@ working on before starting a new service.
 
 When this box is selected, the next item in the Service Manager will show in the
 Preview pane.
+
+**Unblank display when adding new live item**
+
+When using the :guilabel:`blank to` button with this checkbox checked, on going 
+live with the next item, the screen will be automatically re-enabled. If this 
+checkbox is not checked you will need to click the :guilabel:`blank to` button 
+again to reverse the action.
+
 
 **Slide loop delay** 
 
