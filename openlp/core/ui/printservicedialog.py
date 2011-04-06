@@ -132,6 +132,8 @@ class Ui_PrintServiceDialog(object):
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
+        self.pageBreakAfterText = QtGui.QCheckBox()
+        self.groupLayout.addWidget(self.pageBreakAfterText)
         self.notesCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.notesCheckBox)
         self.metaDataCheckBox = QtGui.QCheckBox()
@@ -149,6 +151,8 @@ class Ui_PrintServiceDialog(object):
         printServiceDialog.setWindowTitle(UiStrings.PrintServiceOrder)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
+        self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
+            'break'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
