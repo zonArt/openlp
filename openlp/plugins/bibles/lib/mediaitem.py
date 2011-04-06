@@ -58,6 +58,7 @@ class BibleMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.settings = self.parent.settings_tab
+        self.quickPreviewAllowed = True
         self.search_results = {}
         self.second_search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),

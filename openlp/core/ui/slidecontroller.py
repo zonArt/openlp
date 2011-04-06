@@ -569,19 +569,18 @@ class SlideController(QtGui.QWidget):
         self.onStopLoop()
         # If old item was a command tell it to stop
         if self.serviceItem:
-            if self.serviceItem.is_command():
+            oldItem = self.serviceItem
+            self.serviceItem = None
+            if oldItem.is_command():
                 Receiver.send_message(u'%s_stop' %
-                    self.serviceItem.name.lower(), [serviceItem, self.isLive])
-            if self.serviceItem.is_media():
+                    oldItem.name.lower(), [oldItem, self.isLive])
+            if oldItem.is_media():
                 self.onMediaClose()
-        if self.isLive:
-            if serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-                self._forceUnblank()
-            blanked = self.blankScreen.isChecked()
-        else:
-            blanked = False
+            if self.isLive and oldItem.is_capable(
+                ItemCapabilities.ProvidesOwnDisplay):
+                self._resetBlank()
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-            [serviceItem, self.isLive, blanked, slideno])
+            [serviceItem, self.isLive, self.display.hideMode, slideno])
         self.slideList = {}
         width = self.parent.controlSplitter.sizes()[self.split]
         self.serviceItem = serviceItem
@@ -1095,20 +1094,14 @@ class SlideController(QtGui.QWidget):
         self.slidePreview.clear()
         self.slidePreview.show()
 
-    def _forceUnblank(self):
+    def _resetBlank(self):
         """
         Used by command items which provide their own displays to reset the
         screen hide attributes
         """
-        blank = None
-        if self.blankScreen.isChecked:
-            blank = self.blankScreen
-        if self.themeScreen.isChecked:
-            blank = self.themeScreen
-        if self.desktopScreen.isChecked:
-            blank = self.desktopScreen
-        if blank:
-            blank.setChecked(False)
-            self.hideMenu.setDefaultAction(blank)
-            QtCore.QSettings().remove(
-                self.parent.generalSettingsSection + u'/screen blank')
+        if self.blankScreen.isChecked():
+            self.onBlankDisplay(True)
+        elif self.themeScreen.isChecked():
+            self.onThemeDisplay(True)
+        elif self.desktopScreen.isChecked():
+            self.onHideDisplay(True)

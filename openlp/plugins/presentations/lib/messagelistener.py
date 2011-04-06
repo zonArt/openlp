@@ -49,7 +49,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def add_handler(self, controller, file, is_blank):
+    def add_handler(self, controller, file, hide_mode):
         """
         Add a handler, which is an instance of a presentation and
         slidecontroller combination. If the slidecontroller has a display
@@ -66,9 +66,17 @@ class Controller(object):
             return
         if self.is_live:
             self.doc.start_presentation()
-            if is_blank:
+            if hide_mode == HideMode.Screen:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                self.stop()
+            elif hide_mode == HideMode.Theme:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
                 self.blank()
-            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            elif hide_mode == HideMode.Blank:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                self.blank()
+            else:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         self.doc.slidenumber = 0
 
     def activate(self):
@@ -261,7 +269,7 @@ class MessageListener(object):
         is_live = message[1]
         item = message[0]
         log.debug(u'Startup called with message %s' % message)
-        is_blank = message[2]
+        hide_mode = message[2]
         file = os.path.join(item.get_frame_path(),
             item.get_frame_title())
         self.handler = item.title
@@ -273,7 +281,7 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, is_blank)
+        controller.add_handler(self.controllers[self.handler], file, hide_mode)
 
     def slide(self, message):
         """
