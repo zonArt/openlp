@@ -45,6 +45,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     Spell checking widget based on QPlanTextEdit.
     """
     def __init__(self, *args):
+        global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
@@ -53,6 +54,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 self.highlighter = Highlighter(self.document())
                 self.highlighter.spellingDictionary = self.dictionary
             except DictNotFoundError:
+                ENCHANT_AVAILABLE = False
                 log.debug(u'Could not load default dictionary')
 
     def mousePressEvent(self, event):
@@ -80,8 +82,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
-        if ENCHANT_AVAILABLE and hasattr(self, u'dictionary') and \
-            self.textCursor().hasSelection():
+        if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dictionary.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
