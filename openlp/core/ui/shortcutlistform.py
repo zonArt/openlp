@@ -47,24 +47,28 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.column = -1
         self.changedActions = {}
-        self.shortcutButton.setText(u'')
-        self.shortcutButton.setEnabled(False)
-        QtCore.QObject.connect(self.shortcutButton,
-            QtCore.SIGNAL(u'toggled(bool)'), self.onShortcutButtonClicked)
+        self.primaryPushButton.setText(u'')
+        self.alternatePushButton.setText(u'')
+        self.primaryPushButton.setEnabled(False)
+        self.alternatePushButton.setEnabled(False)
+        QtCore.QObject.connect(self.primaryPushButton,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
         QtCore.QObject.connect(self.treeWidget,
             QtCore.SIGNAL(u'itemPressed(QTreeWidgetItem*, int)'),
             self.onItemPressed)
         QtCore.QObject.connect(self.treeWidget,
             QtCore.SIGNAL(u'itemDoubleClicked(QTreeWidgetItem*, int)'),
             self.onItemDoubleClicked)
-        QtCore.QObject.connect(self.clearShortcutButton,
-            QtCore.SIGNAL(u'clicked(bool)'), self.onClearShortcutButtonClicked)
+        QtCore.QObject.connect(self.clearPrimaryButton,
+            QtCore.SIGNAL(u'clicked(bool)'), self.onClearPrimaryButtonClicked)
+#        QtCore.QObject.connect(self.clearShortcutButton,
+#            QtCore.SIGNAL(u'clicked(bool)'), self.onClearPrimaryButtonClicked)
         QtCore.QObject.connect(self.buttonBox,
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onRestoreDefaultsClicked)
 
     def keyPressEvent(self, event):
-        if self.shortcutButton.isChecked():
+        if self.primaryPushButton.isChecked():
             event.ignore()
         elif event.key() == QtCore.Qt.Key_Escape:
             event.accept()
@@ -72,7 +76,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
-        if not self.shortcutButton.isChecked():
+        if not self.primaryPushButton.isChecked():
             return
         key = event.key()
         if key == Qt.Key_Shift or key == Qt.Key_Control or \
@@ -117,15 +121,15 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 QtGui.QMessageBox.Ok
             )
         else:
-            self.shortcutButton.setText(key_sequence.toString())
-            self.shortcutButton.setChecked(False)
+            self.primaryPushButton.setText(key_sequence.toString())
+            self.primaryPushButton.setChecked(False)
 
     def exec_(self):
         self.changedActions = {}
         self.reloadShortcutList()
-        self.shortcutButton.setChecked(False)
-        self.shortcutButton.setEnabled(False)
-        self.shortcutButton.setText(u'')
+        self.primaryPushButton.setChecked(False)
+        self.primaryPushButton.setEnabled(False)
+        self.primaryPushButton.setText(u'')
         return QtGui.QDialog.exec_(self)
 
     def reloadShortcutList(self):
@@ -172,7 +176,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 item.setText(1, shortcuts[0].toString())
                 item.setText(2, shortcuts[1].toString())
 
-    def onShortcutButtonClicked(self, toggled):
+    def onPrimaryPushButtonClicked(self, toggled):
         """
         Save the new shortcut to the action if the button is unchanged.
         """
@@ -188,14 +192,16 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         new_shortcuts = []
         # We are changing the primary shortcut.
         if self.column in [0, 1]:
-            new_shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
+            new_shortcuts.append(
+                QtGui.QKeySequence(self.primaryPushButton.text()))
             if len(shortcuts) == 2:
                 new_shortcuts.append(shortcuts[1])
         # We are changing the secondary shortcut.
         elif self.column == 2:
             if len(shortcuts) != 0:
                 new_shortcuts.append(shortcuts[0])
-            new_shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
+            new_shortcuts.append(
+                QtGui.QKeySequence(self.primaryPushButton.text()))
         else:
             return
         self.changedActions[action] = new_shortcuts
@@ -203,14 +209,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def onItemDoubleClicked(self, item, column):
         """
-        A item has been double clicked. ``The shortcutButton`` will be checked
-        and the item's shortcut will be displayed.
+        A item has been double clicked. ``The primaryPushButton`` will be
+        checked and the item's shortcut will be displayed.
         """
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         if action is None:
             return
-        self.shortcutButton.setChecked(True)
-        self.shortcutButton.setFocus(QtCore.Qt.OtherFocusReason)
+        self.primaryPushButton.setChecked(True)
+        self.primaryPushButton.setFocus(QtCore.Qt.OtherFocusReason)
         self.onItemPressed(item, column)
 
     def onItemPressed(self, item, column):
@@ -222,23 +228,23 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         text = u''
         if action is None:
-            self.shortcutButton.setChecked(False)
-            self.shortcutButton.setEnabled(False)
+            self.primaryPushButton.setChecked(False)
+            self.primaryPushButton.setEnabled(False)
         else:
-            self.shortcutButton.setEnabled(True)
+            self.primaryPushButton.setEnabled(True)
             shortcuts = self._actionShortcuts(action)
             if column != 2 and len(shortcuts) != 0:
                 text = shortcuts[0].toString()
             elif len(shortcuts) == 2:
                 text = shortcuts[1].toString()
-        self.shortcutButton.setText(text)
+        self.primaryPushButton.setText(text)
 
-    def onClearShortcutButtonClicked(self, toggled):
+    def onClearPrimaryButtonClicked(self, toggled):
         """
         Restore the defaults of this 
         """
         item = self.treeWidget.currentItem()
-        self.shortcutButton.setChecked(False)
+        self.primaryPushButton.setChecked(False)
         if item is None:
             return
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
@@ -261,8 +267,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
-        self.shortcutButton.setChecked(False)
-        self.shortcutButton.setText(u'')
+        self.primaryPushButton.setChecked(False)
+        self.primaryPushButton.setText(u'')
         for category in ActionList.categories:
             for action in category.actions:
                 self.changedActions[action] = action.defaultShortcuts
