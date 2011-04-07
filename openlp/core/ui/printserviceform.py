@@ -24,12 +24,65 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 import datetime
+import os
 
 from PyQt4 import QtCore, QtGui
+from lxml import html
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
+from openlp.core.utils import AppLocation
+
+DEFAULT_CSS = """/*
+Edit this file to customize the service order print. Note, that not all CSS
+properties are supported. See:
+http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
+*/
+
+.serviceTitle {
+   font-weight:600;
+   font-size:x-large;
+   color:black;
+}
+
+.itemTitle {
+   font-weight:600;
+   font-size:large;
+   color:black;
+}
+
+.itemText {
+   color:black;
+}
+
+.itemFooter {
+   font-size:8px;
+   color:black;
+}
+
+.itemNotesTitle {
+   font-weight:bold;
+   font-size:12px;
+   color:black;
+}
+
+.itemNotesText {
+   font-size:11px;
+   color:black;
+}
+
+.customNotesTitle {
+   font-weight:bold;
+   font-size:11px;
+   color:black;
+}
+
+.customNotesText {
+   font-size:11px;
+   color:black;
+}
+"""
 
 class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
@@ -50,6 +103,10 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.beginGroup(u'advanced')
         self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
+        self.pageBreakAfterText.setChecked(settings.value(
+            u'enable page break', QtCore.QVariant(False)).toBool())
+        if not self.slideTextCheckBox.isChecked():
+            self.pageBreakAfterText.setDisabled(True)
         self.metaDataCheckBox.setChecked(settings.value(
             u'print file meta data', QtCore.QVariant(False)).toBool())
         self.notesCheckBox.setChecked(settings.value(
@@ -76,6 +133,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             QtCore.SIGNAL(u'triggered()'), self.copyText)
         QtCore.QObject.connect(self.htmlCopy,
             QtCore.SIGNAL(u'triggered()'), self.copyHtmlText)
+        QtCore.QObject.connect(self.slideTextCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSlideTextCheckBoxChanged)
         self.updatePreviewText()
 
     def toggleOptions(self, checked):
@@ -93,57 +153,105 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Creates the html text and updates the html of *self.document*.
         """
-        text = u''
-        if self.titleLineEdit.text():
-            text += u'<h2>%s</h2>' % unicode(self.titleLineEdit.text())
-        for item in self.serviceManager.serviceItems:
+        html_data = html.fromstring(
+            u'<title>%s</title>' % unicode(self.titleLineEdit.text()))
+        style = html.Element(u'style')
+        style.set(u'type', u'text/css')
+        css_path = os.path.join(
+            AppLocation.get_data_path(), u'servicePrint.css')
+        if not os.path.isfile(css_path):
+            # Create default css file.
+            css_file = open(css_path, u'w')
+            css_file.write(DEFAULT_CSS)
+            css_file.close()
+        css_file = open(css_path, u'r')
+        style.text = u' '.join(css_file.readlines())
+        css_file.close()
+        html_data.head.append(style)
+        html_data.append(html.Element(u'body'))
+        service_title = html.Element(u'span')
+        service_title.set(u'class', u'serviceTitle')
+        service_title.text = unicode(self.titleLineEdit.text())
+        html_data.body.append(service_title)
+        for index, item in enumerate(self.serviceManager.serviceItems):
             item = item[u'service_item']
+            div = html.Element(u'div')
             # Add the title of the service item.
-            text += u'<h3><img src="%s" /> %s</h3>' % (item.icon,
-                item.get_display_title())
-            # Add slide text of the service item.
+            item_title = html.Element(u'h2')
+            item_title.set(u'class', u'itemTitle')
+            icon = html.Element(u'img')
+            icon.set(u'src', item.icon)
+            item_title.append(icon)
+            item_title.append(html.fromstring(
+                u'<span> %s</span>' % item.get_display_title()))
+            div.append(item_title)
             if self.slideTextCheckBox.isChecked():
+                # Add the text of the service item.
                 if item.is_text():
-                    # Add the text of the service item.
-                    verse = None
+                    verse_def = None
                     for slide in item.get_frames():
-                        if not verse:
-                            text += u'<p>' + slide[u'html']
-                            verse = slide[u'verseTag']
-                        elif verse != slide[u'verseTag']:
-                            text += u'<\p><p>' + slide[u'html']
-                            verse = slide[u'verseTag']
+                        if not verse_def or verse_def != slide[u'verseTag']:
+                            p = html.Element(u'p')
+                            p.set(u'class', u'itemText')
+                            div.append(p)
                         else:
-                            text += u'<br/>' + slide[u'html']
-                    text += u'</p>'
+                            p.append(html.Element(u'br'))
+                        p.append(html.fromstring(
+                            u'<span>%s</span>' % slide[u'html']))
+                        verse_def = slide[u'verseTag']
+                    # Break the page before the div element.
+                    if index != 0 and self.pageBreakAfterText.isChecked():
+                        div.set(u'style', u'page-break-before:always')
+                # Add the image names of the service item.
                 elif item.is_image():
-                    # Add the image names of the service item.
-                    text += u'<ol>'
+                    ol = html.Element(u'ol')
                     for slide in range(len(item.get_frames())):
-                        text += u'<li><p>%s</p></li>' % \
-                            item.get_frame_title(slide)
-                    text += u'</ol>'
+                        li = html.Element(u'li')
+                        li.text = item.get_frame_title(slide)
+                        ol.append(li)
+                    div.append(ol)
+                # add footer
                 if item.foot_text:
-                    # add footer
-                    text += u'<p>%s</p>' % item.foot_text
+                    p = html.fromstring(item.foot_text)
+                    p.set(u'class', u'itemFooter')
+                    div.append(p)
             # Add service items' notes.
             if self.notesCheckBox.isChecked():
                 if item.notes:
-                    text += u'<p><strong>%s</strong></p>%s' % (translate(
-                        'OpenLP.ServiceManager', 'Notes:'),
+                    p = html.Element(u'p')
+                    title = html.Element(u'span')
+                    title.set(u'class', u'itemNotesTitle')
+                    title.text = unicode(
+                        translate('OpenLP.ServiceManager', 'Notes:'))
+                    p.append(title)
+                    text = html.fromstring(u'<span> %s</span>' %
                         item.notes.replace(u'\n', u'<br />'))
+                    text.set(u'class', u'itemNotesText')
+                    p.append(text)
+                    div.append(p)
             # Add play length of media files.
             if item.is_media() and self.metaDataCheckBox.isChecked():
                 tme = item.media_length
                 if item.end_time > 0:
                     tme = item.end_time - item.start_time
-                text += u'<p><strong>%s</strong> %s</p>' % (translate(
-                    'OpenLP.ServiceManager', u'Playing time:'),
-                    unicode(datetime.timedelta(seconds=tme)))
-        if self.footerTextEdit.toPlainText():
-            text += u'<h4>%s</h4>%s' % (translate('OpenLP.ServiceManager',
-                u'Custom Service Notes:'), self.footerTextEdit.toPlainText())
-        self.document.setHtml(text)
+                p = html.fromstring(u'<p><strong>%s</strong> </p>' % 
+                    translate('OpenLP.ServiceManager', 'Playing time:'))
+                p.append(html.fromstring(u'<span>%s</span>' %
+                    unicode(datetime.timedelta(seconds=tme))))
+                div.append(p)
+            html_data.body.append(div)
+        # Add the custom service notes:
+        if self.footerTextEdit.toPlainText():            
+            title = html.Element(u'span')
+            title.set(u'class', u'customNotesTitle')
+            title.text = unicode(
+                translate('OpenLP.ServiceManager', u'Custom Service Notes:'))
+            div.append(title)
+            text = html.Element(u'span')
+            text.set(u'class', u'customNotesText')
+            text.text = u' %s' % self.footerTextEdit.toPlainText()
+            div.append(text)
+        self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
 
     def paintRequested(self, printer):
@@ -232,6 +340,13 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         else:
             self.copyTextButton.setText(UiStrings.CopyToText)
 
+    def onSlideTextCheckBoxChanged(self, state):
+        """
+        Disable or enable the ``pageBreakAfterText`` checkbox  as it should only
+        be enabled, when the ``slideTextCheckBox`` is enabled.
+        """
+        self.pageBreakAfterText.setDisabled(state == QtCore.Qt.Unchecked)
+
     def saveOptions(self):
         """
         Save the settings and close the dialog.
@@ -241,6 +356,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
             QtCore.QVariant(self.slideTextCheckBox.isChecked()))
+        settings.setValue(u'enable page break',
+            QtCore.QVariant(self.pageBreakAfterText.isChecked()))
         settings.setValue(u'print file meta data',
             QtCore.QVariant(self.metaDataCheckBox.isChecked()))
         settings.setValue(u'print notes',
