@@ -23,7 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import re
 try:
     import enchant
@@ -38,6 +38,8 @@ except ImportError:
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, DisplayTags
 
+log = logging.getLogger(__name__)
+
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
@@ -48,10 +50,10 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
+                self.highlighter = Highlighter(self.document())
+                self.highlighter.spellingDictionary = self.dictionary
             except DictNotFoundError:
-                self.dictionary = enchant.Dict(u'en_US')
-            self.highlighter = Highlighter(self.document())
-            self.highlighter.spellingDictionary = self.dictionary
+                log.debug(u'Could not load default dictionary')
 
     def mousePressEvent(self, event):
         """
@@ -78,7 +80,8 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
-        if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
+        if ENCHANT_AVAILABLE and hasattr(self, u'dictionary') and \
+            self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dictionary.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
