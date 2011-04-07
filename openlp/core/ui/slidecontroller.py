@@ -646,7 +646,7 @@ class SlideController(QtGui.QWidget):
         self.display.buildHtml(self.serviceItem)
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
-        self.onSlideSelected()
+        self.onSlideSelected(True)
         self.previewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
@@ -833,7 +833,7 @@ class SlideController(QtGui.QWidget):
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
 
-    def onSlideSelected(self):
+    def onSlideSelected(self, start=False):
         """
         Generate the preview when you click on a slide.
         if this is the Live Controller also display on the screen
@@ -842,7 +842,7 @@ class SlideController(QtGui.QWidget):
         self.selectedRow = 0
         if row > -1 and row < self.previewListWidget.rowCount():
             if self.serviceItem.is_command():
-                if self.isLive:
+                if self.isLive and not start:
                     Receiver.send_message(
                         u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
