@@ -127,21 +127,17 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             )
         else:
             if self.primaryPushButton.isChecked():
-                self.primaryPushButton.setText(key_sequence.toString())
-                self.primaryPushButton.setChecked(False)
+                self._adjustButton(self.primaryPushButton,
+                    checked=False, text=key_sequence.toString())
             elif self.alternatePushButton.isChecked():
-                self.alternatePushButton.setText(key_sequence.toString())
-                self.alternatePushButton.setChecked(False)
+                self._adjustButton(self.alternatePushButton,
+                    checked=False, text=key_sequence.toString())
 
     def exec_(self):
         self.changedActions = {}
         self.reloadShortcutList()
-        self.primaryPushButton.setChecked(False)
-        self.primaryPushButton.setEnabled(False)
-        self.primaryPushButton.setText(u'')
-        self.alternatePushButton.setChecked(False)
-        self.alternatePushButton.setEnabled(False)
-        self.alternatePushButton.setText(u'')
+        self._adjustButton(self.primaryPushButton, False, False, u'')
+        self._adjustButton(self.alternatePushButton, False, False, u'')
         return QtGui.QDialog.exec_(self)
 
     def reloadShortcutList(self):
@@ -227,7 +223,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def onItemDoubleClicked(self, item, column):
         """
-        A item has been double clicked. ``The primaryPushButton`` will be
+        A item has been double clicked. The ``primaryPushButton`` will be
         checked and the item's shortcut will be displayed.
         """
         action = self._currentItemAction(item)
@@ -251,18 +247,30 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.alternatePushButton.setEnabled(action is not None)
         primary_text = u''
         alternate_text = u''
+        primary_label_text = u''
+        alternate_label_text = u''
         if action is None:
             self.primaryPushButton.setChecked(False)
             self.alternatePushButton.setChecked(False)
         else:
+            if len(action.defaultShortcuts) != 0:
+                primary_label_text = action.defaultShortcuts[0].toString()
+                if len(action.defaultShortcuts) == 2:
+                    alternate_label_text = action.defaultShortcuts[1].toString()
             shortcuts = self._actionShortcuts(action)
-            if len(shortcuts) == 1:
-                primary_text = shortcuts[0].toString()
-            elif len(shortcuts) == 2:
-                primary_text = shortcuts[0].toString()
-                alternate_text = shortcuts[1].toString()
+            if shortcuts != action.defaultShortcuts:
+                self.customRadioButton.setChecked(True)
+                if len(shortcuts) == 1:
+                    primary_text = shortcuts[0].toString()
+                elif len(shortcuts) == 2:
+                    primary_text = shortcuts[0].toString()
+                    alternate_text = shortcuts[1].toString()
+            else:
+                self.defaultRadioButton.setChecked(True)
         self.primaryPushButton.setText(primary_text)
         self.alternatePushButton.setText(alternate_text)
+        self.primaryLabel.setText(primary_label_text)
+        self.alternateLabel.setText(alternate_label_text)
 
     def onRestoreDefaultsClicked(self, button):
         """
@@ -277,10 +285,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
-        self.primaryPushButton.setChecked(False)
-        self.primaryPushButton.setText(u'')
-        self.alternatePushButton.setChecked(False)
-        self.alternatePushButton.setText(u'')
+        self._adjustButton(self.primaryPushButton, False, text=u'')
+        self._adjustButton(self.alternatePushButton, False, text=u'')
         for category in ActionList.categories:
             for action in category.actions:
                 self.changedActions[action] = action.defaultShortcuts
@@ -318,7 +324,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def _clearButtonClicked(self, button):
         """
-        Restore the defaults of this action. The given button will be unchecked.
+        Restore the defaults of this action. The given ``button`` will be
+        unchecked.
         """
         button.setChecked(False)
         action = self._currentItemAction()
@@ -331,8 +338,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     def _actionShortcuts(self, action):
         """
         This returns the shortcuts for the given ``action``, which also includes
-        those shortcuts which are not yet assigned to an action (as changes are
-        applied when closing the dialog).
+        those shortcuts which are not saved yet but already assigned (as changes
+        are applied when closing the dialog).
         """
         if self.changedActions.has_key(action):
             return self.changedActions[action]
@@ -340,11 +347,22 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 
     def _currentItemAction(self, item=None):
         """
-        Returns the action of the current item if no item is given, otherwise
-        we return the action of the given item.
+        Returns the action of the given ``item``. If no item is given, we return
+        the action of the current item of the ``treeWidget``.
         """
         if item is None:
             item = self.treeWidget.currentItem()
             if item is None:
                 return
         return item.data(0, QtCore.Qt.UserRole).toPyObject()
+
+    def _adjustButton(self, button, checked=None, enabled=None, text=None):
+        """
+        Can be called to adjust more properties of the given ``button`` at once.
+        """
+        if checked is not None:
+            button.setChecked(checked)
+        if enabled is not None:
+            button.setEnabled(enabled)
+        if text is not None:
+            button.setText(text)
