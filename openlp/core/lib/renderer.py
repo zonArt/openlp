@@ -214,9 +214,10 @@ class Renderer(object):
         ``line_break``
             Add line endings after each line of text used for bibles.
         """
+        print [text]
         log.debug(u'format slide')
         # clean up line endings
-        lines = self._lines(text)
+        lines = self._lines_split(text)
         pages = self._paginate_slide(lines, line_break, self.force_page)
         if len(pages) > 1:
             # Songs and Custom
@@ -377,66 +378,99 @@ class Renderer(object):
         line_count = 0
         force_current = False
         lines = self._lines(text, u'[---]')
+        previous_line = u''
         # Loop through the lines
         for line in lines:
-            line_count += 1
-            styled_line = expand_tags(line)
-            styled_line = line_end + styled_line
-            styled_text += styled_line
-            html = self.page_shell + styled_text + HTML_END
-            self.web.setHtml(html)
-            # Text too long so go to next page
-            print self.web_frame.contentsSize().height() , self.page_height, [line]
-            if self.web_frame.contentsSize().height() > self.page_height:
-                # we have more than 1 verse on the slide
-                print "A", line_count
-                if line_count > 1:
-                    if html_text.endswith(u'<br>'):
-                        html_text = html_text[:len(html_text)-4]
-                    formatted.append(html_text)
-                    force_current = True
-                    print "##### > 1"
-                    print [html_text]
-                html_text = u''
+            line_added = False
+            while not line_added:
+                line_added = True
+                line_count += 1
+                styled_line = expand_tags(line)
+                styled_line = line_end + styled_line
+                previous_line = line
+                previous_styled = styled_line
+                styled_text += styled_line
+                html = self.page_shell + styled_text + HTML_END
+                self.web.setHtml(html)
+                # Text too long so go to next page
+                print self.web_frame.contentsSize().height() , self.page_height, [line]
+                if self.web_frame.contentsSize().height() > self.page_height:
+                    # we have more than 1 verse on the slide
+                    print "A", line_count
+                    print "AA", [previous_line]
+                    print "AAA", [styled_text]
+                    if line_count > 1:
+                        if html_text.endswith(u'<br>'):
+                            html_text = html_text[:len(html_text)-4]
+                        formatted.append(html_text)
+                        line_added = False
+                        line = previous_line
+                        line_count = 0
+                        html_text = u''
+                        print "c", [html_text]
+                    if line_count == 1:
+                        words = self._words_split(line)
+                        for word in words:
+                            styled_word = expand_tags(word)
+                            styled_line = styled_word
+                            #previous_line = line
+                            #previous_styled = styled_line
+                            styled_text += styled_word
+                            html = self.page_shell + styled_text + HTML_END
+                            self.web.setHtml(html)
+                            # Text too long so go to next page
+                            print self.web_frame.contentsSize().height() , self.page_height, [line]
+                            if self.web_frame.contentsSize().height() > self.page_height:
+                                if html_text.endswith(u'<br>'):
+                                    html_text = html_text[:len(html_text)-4]
+                                formatted.append(html_text)
+                                html_text = u''
+                            html_text += word
+                            pass
+                print "##### > 1"
+                print [html_text]
                 # only one block on page so lets make it words.
-                if line_count == 1 or force_current:
-                    print "##### = 1"
-                    print [line]
-                    force_current = False
-                    styled_text = u''
-                    words = self._words(line)
-                    styled_text = u''
-                    for word in words:
-                        styled_line = expand_tags(word)
-                        styled_text += styled_line
-                        html = self.page_shell + styled_text + HTML_END
-                        self.web.setHtml(html)
-                        # Text too long so go to next page
-                        print "B", self.web_frame.contentsSize().height() , self.page_height
-                        if self.web_frame.contentsSize().height() > self.page_height:
-                            if html_text.endswith(u'<br>'):
-                                html_text = html_text[:len(html_text)-4]
-                            print "c", [html_text]
-                            formatted.append(html_text)
-                            html_text = u''
-
-                            styled_text = styled_line
-                        html_text += word
-                line_count = 0
+#                if line_count == 1 or force_current:
+#                    print "##### = 1"
+#                    print [line]
+#                    print [styled_text]
+#                    print [previous_line]
+#                    force_current = False
+#                    #styled_text = u''
+#                    words = self._words(previous_line)
+#                    styled_text = u''
+#                    for word in words:
+#                        styled_line = expand_tags(word)
+#                        styled_text += styled_line
+#                        html = self.page_shell + styled_text + HTML_END
+#                        self.web.setHtml(html)
+#                        # Text too long so go to next page
+#                        print "B", self.web_frame.contentsSize().height() , self.page_height
+#                        if self.web_frame.contentsSize().height() > self.page_height:
+#                            if html_text.endswith(u'<br>'):
+#                                html_text = html_text[:len(html_text)-4]
+#                            print "c", [html_text]
+#                            formatted.append(html_text)
+#                            html_text = u''
+#
+#                            styled_text = styled_line
+#                        html_text += word
+                #line_count = 0
             styled_text = styled_line
             html_text += line + line_end
+            previous_line = line
         if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
 
-    def _lines(self, words, split=u'\n[---]\n'):
+    def _lines(self, words, split=u'n[---]n'):
         """
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        words = words.replace(split, u'')
+        #words = words.replace(split, u'')
         verses_text = words.split(u'\n')
         text = []
         for verse in verses_text:
@@ -445,11 +479,11 @@ class Renderer(object):
                 text.append(line)
         return text
 
-    def _words(self, words):
+    def _words_split(self, words):
         """
         Split the slide up by word so can wrap better
         """
-        # this parse we are wordy
+        # this parse we are to be wordy
         words = words.replace(u'\n', u' ')
         verses_text = words.split(u' ')
         text = []
@@ -458,3 +492,17 @@ class Renderer(object):
             for line in lines:
                 text.append(line + u' ')
         return text
+
+    def _lines_split(self, text):
+        """
+        Split the slide up by physical line
+        """
+        # this parse we do not want to use this so remove it
+        lines = text.split(u'\n')
+        real_lines = []
+        for line in lines:
+            line = line.replace(u' [---]', u'[---]')
+            sub_lines = line.split(u'\n')
+            for sub_line in sub_lines:
+                real_lines.append(sub_line)
+        return real_lines
