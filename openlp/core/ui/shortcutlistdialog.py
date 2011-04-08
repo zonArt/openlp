@@ -119,7 +119,7 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Capture shortcut.'))
         self.clearPrimaryButton.setToolTip(
             translate('OpenLP.ShortcutListDialog',
-            'Restore the default shortcut(s) of this action.'))
+            'Restore the default shortcut of this action.'))
         self.clearAlternateButton.setToolTip(
             translate('OpenLP.ShortcutListDialog',
-            'Restore the default shortcut(s) of this action.'))
+            'Restore the default shortcut of this action.'))
