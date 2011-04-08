@@ -1021,7 +1021,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].edit_id = editId
+                item[u'service_item'].edit_id = int(editId)
         self.setModified(True)
 
     def replaceServiceItem(self, newItem):
