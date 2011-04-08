@@ -405,14 +405,16 @@ class Renderer(object):
                         formatted.append(html_text)
                         line_added = False
                         line = previous_line
-                        line_count = 0
+                        line_count = 1
                         html_text = u''
                         print "c", [html_text]
                     if line_count == 1:
+                        line_count = 0
                         words = self._words_split(line)
+                        styled_text = u''
                         for word in words:
                             styled_word = expand_tags(word)
-                            styled_line = styled_word
+                            #styled_line = styled_word
                             #previous_line = line
                             #previous_styled = styled_line
                             styled_text += styled_word
@@ -420,42 +422,13 @@ class Renderer(object):
                             self.web.setHtml(html)
                             # Text too long so go to next page
                             print self.web_frame.contentsSize().height() , self.page_height, [line]
-                            if self.web_frame.contentsSize().height() > self.page_height:
+                            if self.web_frame.contentsSize().height() >= self.page_height:
                                 if html_text.endswith(u'<br>'):
                                     html_text = html_text[:len(html_text)-4]
                                 formatted.append(html_text)
                                 html_text = u''
+                                styled_text = u''
                             html_text += word
-                            pass
-                print "##### > 1"
-                print [html_text]
-                # only one block on page so lets make it words.
-#                if line_count == 1 or force_current:
-#                    print "##### = 1"
-#                    print [line]
-#                    print [styled_text]
-#                    print [previous_line]
-#                    force_current = False
-#                    #styled_text = u''
-#                    words = self._words(previous_line)
-#                    styled_text = u''
-#                    for word in words:
-#                        styled_line = expand_tags(word)
-#                        styled_text += styled_line
-#                        html = self.page_shell + styled_text + HTML_END
-#                        self.web.setHtml(html)
-#                        # Text too long so go to next page
-#                        print "B", self.web_frame.contentsSize().height() , self.page_height
-#                        if self.web_frame.contentsSize().height() > self.page_height:
-#                            if html_text.endswith(u'<br>'):
-#                                html_text = html_text[:len(html_text)-4]
-#                            print "c", [html_text]
-#                            formatted.append(html_text)
-#                            html_text = u''
-#
-#                            styled_text = styled_line
-#                        html_text += word
-                #line_count = 0
             styled_text = styled_line
             html_text += line + line_end
             previous_line = line
