@@ -75,7 +75,8 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
-        ActionList.add_action(self.toolsAlertItem, UiStrings.Tools)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.toolsAlertItem, UiStrings.Tools)
         self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
@@ -86,7 +87,8 @@ class AlertsPlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
-        ActionList.remove_action(self.toolsAlertItem, u'Tools')
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.toolsAlertItem, u'Tools')
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive

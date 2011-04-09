@@ -39,7 +39,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version
-from openlp.core.utils.actions import ActionList
+from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
@@ -162,7 +162,8 @@ class Ui_MainWindow(object):
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.themeManagerDock)
         # Create the menu items
-        ActionList.add_category(UiStrings.File, 100)
+        action_list = ActionList.get_instance()
+        action_list.add_category(UiStrings.File, CategoryOrder.standardMenu)
         self.FileNewItem = shortcut_action(mainWindow, u'FileNewItem',
             [QtGui.QKeySequence(u'Ctrl+N')],
             self.ServiceManagerContents.onNewServiceClicked,
@@ -185,17 +186,17 @@ class Ui_MainWindow(object):
         self.FileExitItem = shortcut_action(mainWindow, u'FileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings.File)
-        ActionList.add_category(UiStrings.Import, 95)
+        action_list.add_category(UiStrings.Import, CategoryOrder.standardMenu)
         self.ImportThemeItem = base_action(
             mainWindow, u'ImportThemeItem', UiStrings.Import)
         self.ImportLanguageItem = base_action(
             mainWindow, u'ImportLanguageItem')#, UiStrings.Import)
-        ActionList.add_category(UiStrings.Export, 90)
+        action_list.add_category(UiStrings.Export, CategoryOrder.standardMenu)
         self.ExportThemeItem = base_action(
             mainWindow, u'ExportThemeItem', UiStrings.Export)
         self.ExportLanguageItem = base_action(
             mainWindow, u'ExportLanguageItem')#, UiStrings.Export)
-        ActionList.add_category(UiStrings.View, 85)
+        action_list.add_category(UiStrings.View, CategoryOrder.standardMenu)
         self.ViewMediaManagerItem = shortcut_action(mainWindow,
             u'ViewMediaManagerItem', [QtGui.QKeySequence(u'F8')],
             self.toggleMediaManager, u':/system/system_mediamanager.png',
@@ -215,7 +216,7 @@ class Ui_MainWindow(object):
         self.ViewLivePanel = shortcut_action(mainWindow, u'ViewLivePanel',
             [QtGui.QKeySequence(u'F12')], self.setLivePanelVisibility,
             checked=liveVisible, category=UiStrings.View)
-        ActionList.add_category(UiStrings.ViewMode, 80)
+        action_list.add_category(UiStrings.ViewMode, CategoryOrder.standardMenu)
         self.ModeDefaultItem = checkable_action(
             mainWindow, u'ModeDefaultItem', category=UiStrings.ViewMode)
         self.ModeSetupItem = checkable_action(
@@ -227,13 +228,13 @@ class Ui_MainWindow(object):
         self.ModeGroup.addAction(self.ModeSetupItem)
         self.ModeGroup.addAction(self.ModeLiveItem)
         self.ModeDefaultItem.setChecked(True)
-        ActionList.add_category(UiStrings.Tools, 75)
+        action_list.add_category(UiStrings.Tools, CategoryOrder.standardMenu)
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png', category=UiStrings.Tools)
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings.Tools)
-        ActionList.add_category(UiStrings.Settings, 70)
+        action_list.add_category(UiStrings.Settings, CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
             self.onPluginItemClicked, u':/system/settings_plugin_list.png',
@@ -261,7 +262,7 @@ class Ui_MainWindow(object):
         self.SettingsConfigureItem = icon_action(mainWindow,
             u'SettingsConfigureItem', u':/system/system_settings.png',
             category=UiStrings.Settings)
-        ActionList.add_category(UiStrings.Help, 65)
+        action_list.add_category(UiStrings.Help, CategoryOrder.standardMenu)
         self.HelpDocumentationItem = icon_action(mainWindow,
             u'HelpDocumentationItem', u':/system/system_help_contents.png',
             category=None)#UiStrings.Help)

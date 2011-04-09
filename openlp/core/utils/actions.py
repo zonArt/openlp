@@ -183,10 +183,18 @@ class ActionList(object):
     has a weight by which it is sorted when iterating through the list of
     actions or categories.
     """
-    categories = CategoryList()
+    instance = None
+
+    def __init__(self):
+        self.categories = CategoryList()
 
     @staticmethod
-    def add_action(action, category=None, weight=None):
+    def get_instance():
+        if ActionList.instance is None:
+            ActionList.instance = ActionList()
+        return ActionList.instance
+
+    def add_action(self, action, category=None, weight=None):
         """
         Add an action to the list of actions.
 
@@ -206,13 +214,13 @@ class ActionList(object):
         """
         if category is not None:
             category = unicode(category)
-        if category not in ActionList.categories:
-            ActionList.categories.append(category)
+        if category not in self.categories:
+            self.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
         if weight is None:
-            ActionList.categories[category].actions.append(action)
+            self.categories[category].actions.append(action)
         else:
-            ActionList.categories[category].actions.add(action, weight)
+            self.categories[category].actions.add(action, weight)
         if category is None:
             # Stop here, as this action is not configurable.
             return
@@ -225,8 +233,7 @@ class ActionList(object):
             [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
         settings.endGroup()
 
-    @staticmethod
-    def remove_action(action, category=None):
+    def remove_action(self, action, category=None):
         """
         This removes an action from its category. Empty categories are
         automatically removed.
@@ -240,15 +247,14 @@ class ActionList(object):
         """
         if category is not None:
             category = unicode(category)
-        if category not in ActionList.categories:
+        if category not in self.categories:
             return
-        ActionList.categories[category].actions.remove(action)
+        self.categories[category].actions.remove(action)
         # Remove empty categories.
-        if len(ActionList.categories[category].actions) == 0:
-            ActionList.categories.remove(category)
+        if len(self.categories[category].actions) == 0:
+            self.categories.remove(category)
 
-    @staticmethod
-    def add_category(name, weight):
+    def add_category(self, name, weight):
         """
         Add an empty category to the list of categories. This is ony convenient
         for categories with a given weight.
@@ -259,12 +265,20 @@ class ActionList(object):
         ``weight``
             The category's weight (int).
         """
-        if name in ActionList.categories:
+        if name in self.categories:
             # Only change the weight and resort the categories again.
-            for category in ActionList.categories:
+            for category in self.categories:
                 if category.name == name:
                     category.weight = weight
-            ActionList.categories.categories.sort(
+            self.categories.categories.sort(
                 key=lambda cat: cat.weight, reverse=True)
             return
-        ActionList.categories.add(name, weight)
+        self.categories.add(name, weight)
+
+
+class CategoryOrder(object):
+    """
+    An enumeration class for category weights.
+    """
+    standardMenu = 100
+    standardToolbar = 90

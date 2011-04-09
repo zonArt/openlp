@@ -46,6 +46,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.changedActions = {}
+        self.action_list = ActionList.get_instance()
         QtCore.QObject.connect(self.primaryPushButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
         QtCore.QObject.connect(self.alternatePushButton,
@@ -96,7 +97,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         # The action we are attempting to change.
         changing_action = self._currentItemAction()
         shortcut_valid = True
-        for category in ActionList.categories:
+        for category in self.action_list.categories:
             for action in category.actions:
                 shortcuts = self._actionShortcuts(action)
                 if key_sequence not in shortcuts:
@@ -149,7 +150,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Reload the ``treeWidget`` list to add new and remove old actions.
         """
         self.treeWidget.clear()
-        for category in ActionList.categories:
+        for category in self.action_list.categories:
             # Check if the category is for internal use only.
             if category.name is None:
                 continue
@@ -303,7 +304,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         self._adjustButton(self.primaryPushButton, False, text=u'')
         self._adjustButton(self.alternatePushButton, False, text=u'')
-        for category in ActionList.categories:
+        for category in self.action_list.categories:
             for action in category.actions:
                 self.changedActions[action] = action.defaultShortcuts
         self.refreshShortcutList()
@@ -349,7 +350,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
-        for category in ActionList.categories:
+        for category in self.action_list.categories:
             # Check if the category is for internal use only.
             if category.name is None:
                 continue

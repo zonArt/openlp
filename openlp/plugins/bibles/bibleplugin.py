@@ -52,9 +52,10 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
-        ActionList.add_action(self.importBibleItem, UiStrings.Import)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.importBibleItem, UiStrings.Import)
         # Do not add the action to the list yet.
-        #ActionList.add_action(self.exportBibleItem, UiStrings.Export)
+        #action_list.add_action(self.exportBibleItem, UiStrings.Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
 
@@ -65,9 +66,10 @@ class BiblePlugin(Plugin):
         log.info(u'Plugin Finalise')
         self.manager.finalise()
         Plugin.finalise(self)
-        ActionList.remove_action(self.importBibleItem, UiStrings.Import)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.importBibleItem, UiStrings.Import)
         self.importBibleItem.setVisible(False)
-        #ActionList.remove_action(self.exportBibleItem, UiStrings.Export)
+        #action_list.remove_action(self.exportBibleItem, UiStrings.Export)
         self.exportBibleItem.setVisible(False)
 
     def addImportMenuItem(self, import_menu):

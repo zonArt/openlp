@@ -110,11 +110,12 @@ class SongUsagePlugin(Plugin):
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
-        ActionList.add_action(self.SongUsageDelete,
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.SongUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
-        ActionList.add_action(self.SongUsageReport,
+        action_list.add_action(self.SongUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        ActionList.add_action(self.SongUsageStatus,
+        action_list.add_action(self.SongUsageStatus,
             translate('SongUsagePlugin', 'Song Usage'))
         if self.manager is None:
             self.manager = Manager(u'songusage', init_schema)
@@ -131,11 +132,12 @@ class SongUsagePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.SongUsageMenu.menuAction().setVisible(False)
-        ActionList.remove_action(self.SongUsageDelete,
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.SongUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
-        ActionList.remove_action(self.SongUsageReport,
+        action_list.remove_action(self.SongUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        ActionList.remove_action(self.SongUsageStatus,
+        action_list.remove_action(self.SongUsageStatus,
             translate('SongUsagePlugin', 'Song Usage'))
         #stop any events being processed
         self.SongUsageActive = False

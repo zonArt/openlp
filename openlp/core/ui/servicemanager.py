@@ -40,7 +40,7 @@ from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
-from openlp.core.utils.actions import ActionList
+from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -167,8 +167,9 @@ class ServiceManager(QtGui.QWidget):
             'Move item to the top of the service.'),
             self.onServiceTop, shortcuts=[QtCore.Qt.Key_Home])
         self.serviceManagerList.moveTop.setObjectName(u'moveTop')
-        ActionList.add_category(UiStrings.Service, 45)
-        ActionList.add_action(
+        action_list = ActionList.get_instance()
+        action_list.add_category(UiStrings.Service, CategoryOrder.standardToolbar)
+        action_list.add_action(
             self.serviceManagerList.moveTop, UiStrings.Service)
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &up'),
@@ -177,7 +178,7 @@ class ServiceManager(QtGui.QWidget):
             'Move item up one position in the service.'),
             self.onServiceUp, shortcuts=[QtCore.Qt.Key_PageUp])
         self.serviceManagerList.moveUp.setObjectName(u'moveUp')
-        ActionList.add_action(self.serviceManagerList.moveUp, UiStrings.Service)
+        action_list.add_action(self.serviceManagerList.moveUp, UiStrings.Service)
         self.serviceManagerList.moveDown = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
@@ -185,7 +186,7 @@ class ServiceManager(QtGui.QWidget):
             'Move item down one position in the service.'),
             self.onServiceDown, shortcuts=[QtCore.Qt.Key_PageDown])
         self.serviceManagerList.moveDown.setObjectName(u'moveDown')
-        ActionList.add_action(
+        action_list.add_action(
             self.serviceManagerList.moveDown, UiStrings.Service)
         self.serviceManagerList.moveBottom = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move to &bottom'),
@@ -194,7 +195,7 @@ class ServiceManager(QtGui.QWidget):
             'Move item to the end of the service.'),
             self.onServiceEnd, shortcuts=[QtCore.Qt.Key_End])
         self.serviceManagerList.moveBottom.setObjectName(u'moveBottom')
-        ActionList.add_action(
+        action_list.add_action(
             self.serviceManagerList.moveBottom, UiStrings.Service)
         self.serviceManagerList.down = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
@@ -203,7 +204,7 @@ class ServiceManager(QtGui.QWidget):
             'Moves the selection down the window.'),
             self.onMoveSelectionDown, shortcuts=[QtCore.Qt.Key_Down])
         self.serviceManagerList.down.setObjectName(u'down')
-        ActionList.add_action(self.serviceManagerList.down)
+        action_list.add_action(self.serviceManagerList.down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
@@ -212,7 +213,7 @@ class ServiceManager(QtGui.QWidget):
             'Moves the selection up the window.'),
             self.onMoveSelectionUp, shortcuts=[QtCore.Qt.Key_Up])
         self.serviceManagerList.up.setObjectName(u'up')
-        ActionList.add_action(self.serviceManagerList.up)
+        action_list.add_action(self.serviceManagerList.up)
         self.serviceManagerList.up.setVisible(False)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.delete = self.orderToolbar.addToolbarButton(
@@ -229,7 +230,7 @@ class ServiceManager(QtGui.QWidget):
             'Expand all the service items.'),
             self.onExpandAll, shortcuts=[QtCore.Qt.Key_Plus])
         self.serviceManagerList.expand.setObjectName(u'expand')
-        ActionList.add_action(self.serviceManagerList.expand, UiStrings.Service)
+        action_list.add_action(self.serviceManagerList.expand, UiStrings.Service)
         self.serviceManagerList.collapse = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
             u':/services/service_collapse_all.png',
@@ -237,7 +238,7 @@ class ServiceManager(QtGui.QWidget):
             'Collapse all the service items.'),
             self.onCollapseAll, shortcuts=[QtCore.Qt.Key_Minus])
         self.serviceManagerList.collapse.setObjectName(u'collapse')
-        ActionList.add_action(
+        action_list.add_action(
             self.serviceManagerList.collapse, UiStrings.Service)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.makeLive = self.orderToolbar.addToolbarButton(
@@ -247,7 +248,7 @@ class ServiceManager(QtGui.QWidget):
             'Send the selected item to Live.'), self.makeLive,
             shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return])
         self.serviceManagerList.makeLive.setObjectName(u'orderToolbar')
-        ActionList.add_action(
+        action_list.add_action(
             self.serviceManagerList.makeLive, UiStrings.Service)
         self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots

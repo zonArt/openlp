@@ -259,7 +259,8 @@ def base_action(parent, name, category=None):
     action = QtGui.QAction(parent)
     action.setObjectName(name)
     if category is not None:
-        ActionList.add_action(action, category)
+        action_list = ActionList.get_instance()
+        action_list.add_action(action, category)
     return action
 
 def checkable_action(parent, name, checked=None, category=None):
@@ -297,7 +298,8 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
         action.setChecked(checked)
     action.setShortcuts(shortcuts)
     action.setShortcutContext(context)
-    ActionList.add_action(action, category)
+    action_list = ActionList.get_instance()
+    action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
     return action
 
@@ -335,7 +337,8 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
     if shortcuts is not None:
         action.setShortcuts(shortcuts)
         action.setShortcutContext(context)
-        ActionList.add_action(action)
+        action_list = ActionList.get_instance()
+        action_list.add_action(action)
     return action
 
 def context_menu(base, icon, text):
