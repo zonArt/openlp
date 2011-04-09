@@ -23,7 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import re
 try:
     import enchant
@@ -38,20 +38,24 @@ except ImportError:
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, DisplayTags
 
+log = logging.getLogger(__name__)
+
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
     def __init__(self, *args):
+        global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
+                self.highlighter = Highlighter(self.document())
+                self.highlighter.spellingDictionary = self.dictionary
             except DictNotFoundError:
-                self.dictionary = enchant.Dict(u'en_US')
-            self.highlighter = Highlighter(self.document())
-            self.highlighter.spellingDictionary = self.dictionary
+                ENCHANT_AVAILABLE = False
+                log.debug(u'Could not load default dictionary')
 
     def mousePressEvent(self, event):
         """
