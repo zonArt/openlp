@@ -78,20 +78,21 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.close()
 
     def keyReleaseEvent(self, event):
-        Qt = QtCore.Qt
         if not self.primaryPushButton.isChecked() and \
             not self.alternatePushButton.isChecked():
             return
         key = event.key()
-        if key == Qt.Key_Shift or key == Qt.Key_Control or \
-            key == Qt.Key_Meta or key == Qt.Key_Alt:
+        if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
+            key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
             return
         key_string = QtGui.QKeySequence(key).toString()
-        if event.modifiers() & Qt.ControlModifier == Qt.ControlModifier:
+        if event.modifiers() & QtCore.Qt.ControlModifier == \
+            QtCore.Qt.ControlModifier:
             key_string = u'Ctrl+' + key_string
-        if event.modifiers() & Qt.AltModifier == Qt.AltModifier:
+        if event.modifiers() & QtCore.Qt.AltModifier == QtCore.Qt.AltModifier:
             key_string = u'Alt+' + key_string
-        if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
+        if event.modifiers() & QtCore.Qt.ShiftModifier == \
+            QtCore.Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         # The action we are attempting to change.
@@ -377,6 +378,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             new_shortcuts.append(shortcuts[1])
         self.changedActions[action] = new_shortcuts
         self.refreshShortcutList()
+        self.onCurrentItemChanged(self.treeWidget.currentItem())
 
     def onClearAlternateButtonClicked(self, toggled):
         """
@@ -394,6 +396,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             new_shortcuts.append(action.defaultShortcuts[1])
         self.changedActions[action] = new_shortcuts
         self.refreshShortcutList()
+        self.onCurrentItemChanged(self.treeWidget.currentItem())
 
     def _actionShortcuts(self, action):
         """
