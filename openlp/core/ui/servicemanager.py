@@ -167,6 +167,7 @@ class ServiceManager(QtGui.QWidget):
             'Move item to the top of the service.'),
             self.onServiceTop, shortcuts=[QtCore.Qt.Key_Home])
         self.serviceManagerList.moveTop.setObjectName(u'moveTop')
+        ActionList.add_category(UiStrings.Service, 45)
         ActionList.add_action(
             self.serviceManagerList.moveTop, UiStrings.Service)
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(

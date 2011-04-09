@@ -154,13 +154,10 @@ class CategoryList(object):
         return False
 
     def append(self, name, actions=None):
-        weight = 0
-        if len(self.categories) > 0:
-            weight = self.categories[-1].weight + 1
         if actions:
-            self.add(name, weight, actions)
+            self.add(name, actions=actions)
         else:
-            self.add(name, weight)
+            self.add(name)
 
     def add(self, name, weight=0, actions=None):
         category = ActionCategory(name, weight)
@@ -171,7 +168,7 @@ class CategoryList(object):
                 else:
                     category.actions.append(action)
         self.categories.append(category)
-        self.categories.sort(key=lambda cat: cat.weight)
+        self.categories.sort(key=lambda cat: cat.weight, reverse=True)
 
     def remove(self, name):
         for category in self.categories:
@@ -230,6 +227,17 @@ class ActionList(object):
 
     @staticmethod
     def remove_action(action, category=None):
+        """
+        This removes an action from its category. Empty categories are
+        automatically removed.
+
+        ``action``
+            The QAction object to be removed.
+
+        ``category``
+            The name (unicode string) of the category, which contains the
+            action. Defaults to None.
+        """
         if category is not None:
             category = unicode(category)
         if category not in ActionList.categories:
@@ -238,3 +246,25 @@ class ActionList(object):
         # Remove empty categories.
         if len(ActionList.categories[category].actions) == 0:
             ActionList.categories.remove(category)
+
+    @staticmethod
+    def add_category(name, weight):
+        """
+        Add an empty category to the list of categories. This is ony convenient
+        for categories with a given weight.
+
+        ``name``
+            The category's name.
+
+        ``weight``
+            The category's weight (int).
+        """
+        if name in ActionList.categories:
+            # Only change the weight and resort the categories again.
+            for category in ActionList.categories:
+                if category.name == name:
+                    category.weight = weight
+            ActionList.categories.categories.sort(
+                key=lambda cat: cat.weight, reverse=True)
+            return
+        ActionList.categories.add(name, weight)

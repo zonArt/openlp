@@ -367,12 +367,14 @@ class SlideController(QtGui.QWidget):
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')         
         self.nextItem.setObjectName(u'nextItemPreview')
+        ActionList.add_category(UiStrings.PreviewToolbar, 55)
         ActionList.add_action(self.previousItem, UiStrings.PreviewToolbar)
         ActionList.add_action(self.nextItem, UiStrings.PreviewToolbar)
 
     def setLiveHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemLive')         
         self.nextItem.setObjectName(u'nextItemLive')
+        ActionList.add_category(UiStrings.LiveToolbar, 60)
         ActionList.add_action(self.previousItem, UiStrings.LiveToolbar)
         ActionList.add_action(self.nextItem, UiStrings.LiveToolbar)
         self.previousService = shortcut_action(parent, u'previousService',
