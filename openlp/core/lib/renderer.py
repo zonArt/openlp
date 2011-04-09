@@ -381,57 +381,53 @@ class Renderer(object):
         previous_line = u''
         # Loop through the lines
         for line in lines:
-            line_added = False
-            while not line_added:
-                line_added = True
-                line_count += 1
-                styled_line = expand_tags(line)
-                styled_line = line_end + styled_line
-                previous_line = line
-                previous_styled = styled_line
-                styled_text += styled_line
-                html = self.page_shell + styled_text + HTML_END
-                self.web.setHtml(html)
-                # Text too long so go to next page
-                print self.web_frame.contentsSize().height() , self.page_height, [line]
-                if self.web_frame.contentsSize().height() > self.page_height:
-                    # we have more than 1 verse on the slide
-                    print "A", line_count
-                    print "AA", [previous_line]
-                    print "AAA", [styled_text]
-                    if line_count > 1:
-                        if html_text.endswith(u'<br>'):
-                            html_text = html_text[:len(html_text)-4]
-                        formatted.append(html_text)
-                        line_added = False
-                        line = previous_line
-                        line_count = 1
-                        html_text = u''
-                        print "c", [html_text]
-                    if line_count == 1:
-                        line_count = 0
-                        words = self._words_split(line)
-                        styled_text = u''
-                        for word in words:
-                            styled_word = expand_tags(word)
-                            #styled_line = styled_word
-                            #previous_line = line
-                            #previous_styled = styled_line
-                            styled_text += styled_word
-                            html = self.page_shell + styled_text + HTML_END
-                            self.web.setHtml(html)
-                            # Text too long so go to next page
-                            print self.web_frame.contentsSize().height() , self.page_height, [line]
-                            if self.web_frame.contentsSize().height() >= self.page_height:
-                                if html_text.endswith(u'<br>'):
-                                    html_text = html_text[:len(html_text)-4]
-                                formatted.append(html_text)
-                                html_text = u''
-                                styled_text = u''
-                            html_text += word
-            styled_text = styled_line
-            html_text += line + line_end
+            line_count += 1
+            styled_line = expand_tags(line)
+            styled_line = line_end + styled_line
             previous_line = line
+            previous_styled = styled_line
+            styled_text += styled_line
+            html = self.page_shell + styled_text + HTML_END
+            self.web.setHtml(html)
+            # Text too long so go to next page
+            print self.web_frame.contentsSize().height() , self.page_height, [line]
+            if self.web_frame.contentsSize().height() > self.page_height:
+                # we have more than 1 verse on the slide
+                print "A", line_count
+                print "AA", [previous_line]
+                print "AAA", [styled_text]
+                if line_count > 1:
+                    if html_text.endswith(u'<br>'):
+                        html_text = html_text[:len(html_text)-4]
+                    formatted.append(html_text)
+                    line = previous_line
+                    line_count = 1
+                    html_text = u''
+                    print "c", [html_text]
+                if line_count == 1:
+                    line_count = 0
+                    words = self._words_split(line)
+                    styled_text = u''
+                    styled_line = u''
+                    for word in words:
+                        styled_word = expand_tags(word)
+                        styled_text += styled_word
+                        html = self.page_shell + styled_text + HTML_END
+                        self.web.setHtml(html)
+                        # Text too long so go to next page
+                        print self.web_frame.contentsSize().height() , self.page_height, [line]
+                        if self.web_frame.contentsSize().height() > self.page_height:
+                            if html_text.endswith(u'<br>'):
+                                html_text = html_text[:len(html_text)-4]
+                            formatted.append(html_text)
+                            html_text = u''
+                            styled_text = u''
+                        html_text += word
+                    a=1
+            else:
+                styled_text = styled_line
+                html_text += line + line_end
+                previous_line = line
         if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
