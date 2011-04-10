@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    critical_error_message_box, find_in_combo_box
+    critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -208,9 +208,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.alternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
-            find_in_combo_box(self.songBookComboBox, unicode(book_name.name))
+            find_and_set_in_combo_box(self.songBookComboBox, unicode(book_name.name))
         if self.song.theme_name:
-            find_in_combo_box(self.themeComboBox, unicode(self.song.theme_name))
+            find_and_set_in_combo_box(self.themeComboBox, unicode(self.song.theme_name))
         if self.song.copyright:
             self.copyrightEdit.setText(self.song.copyright)
         else:

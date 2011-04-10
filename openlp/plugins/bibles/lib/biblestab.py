@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle
-from openlp.core.lib.ui import UiStrings, find_in_combo_box
+from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
 log = logging.getLogger(__name__)
 
@@ -96,19 +96,19 @@ class BiblesTab(SettingsTab):
         # Signals and slots
         QtCore.QObject.connect(
             self.newChaptersCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onnewChaptersCheckBoxChanged)
+            self.onNewChaptersCheckBoxChanged)
         QtCore.QObject.connect(
             self.displayStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.ondisplayStyleComboBoxChanged)
+            self.onDisplayStyleComboBoxChanged)
         QtCore.QObject.connect(
             self.bibleThemeComboBox, QtCore.SIGNAL(u'activated(int)'),
             self.onBibleThemeComboBoxChanged)
         QtCore.QObject.connect(
             self.layoutStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onlayoutStyleComboBoxChanged)
+            self.onLayoutStyleComboBoxChanged)
         QtCore.QObject.connect(
             self.bibleSecondCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onbibleSecondCheckBox)
+            self.onBibleSecondCheckBox)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
@@ -145,19 +145,19 @@ class BiblesTab(SettingsTab):
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.bibleThemeComboBox.currentText()
 
-    def ondisplayStyleComboBoxChanged(self):
+    def onDisplayStyleComboBoxChanged(self):
         self.display_style = self.displayStyleComboBox.currentIndex()
 
-    def onlayoutStyleComboBoxChanged(self):
+    def onLayoutStyleComboBoxChanged(self):
         self.layout_style = self.layoutStyleComboBox.currentIndex()
 
-    def onnewChaptersCheckBoxChanged(self, check_state):
+    def onNewChaptersCheckBoxChanged(self, check_state):
         self.show_new_chapters = False
         # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
 
-    def onbibleSecondCheckBox(self, check_state):
+    def onBibleSecondCheckBox(self, check_state):
         self.second_bibles = False
         # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
@@ -208,4 +208,4 @@ class BiblesTab(SettingsTab):
         self.bibleThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.bibleThemeComboBox.addItem(theme)
-        find_in_combo_box(self.bibleThemeComboBox, self.bible_theme)
+        find_and_set_in_combo_box(self.bibleThemeComboBox, self.bible_theme)

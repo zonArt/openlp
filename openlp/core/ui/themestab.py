@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, find_in_combo_box
+from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
 class ThemesTab(SettingsTab):
     """
@@ -185,7 +185,7 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
-        find_in_combo_box(self.DefaultComboBox, self.global_theme)
+        find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':

@@ -320,7 +320,7 @@ def create_valign_combo(form, parent, layout):
     verticalLabel.setBuddy(form.verticalComboBox)
     layout.addRow(verticalLabel, form.verticalComboBox)
 
-def find_in_combo_box(combo_box, value_to_find):
+def find_and_set_in_combo_box(combo_box, value_to_find):
     """
     Find a string in a combo box and set it as the selected item if present
 

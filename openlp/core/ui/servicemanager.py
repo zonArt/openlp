@@ -36,7 +36,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    find_in_combo_box
+    find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -1262,7 +1262,7 @@ class ServiceManager(QtGui.QWidget):
             action = context_menu_action(self.serviceManagerList, None, theme,
                 self.onThemeChangeAction)
             self.themeMenu.addAction(action)
-        find_in_combo_box(self.themeComboBox, self.service_theme)
+        find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 

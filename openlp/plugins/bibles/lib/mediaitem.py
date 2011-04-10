@@ -32,7 +32,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    media_item_combo_box, critical_error_message_box, find_in_combo_box
+    media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -325,7 +325,7 @@ class BibleMediaItem(MediaManagerItem):
         book = QtCore.QSettings().value(
             self.settingsSection + u'/advanced bible',
             QtCore.QVariant(u'')).toString()
-        find_in_combo_box(self.advancedVersionComboBox, book)
+        find_and_set_in_combo_box(self.advancedVersionComboBox, book)
         self.initialiseAdvancedBible(unicode(book))
 
     def reloadBibles(self):
@@ -386,7 +386,7 @@ class BibleMediaItem(MediaManagerItem):
             book = QtCore.QSettings().value(
                 self.settingsSection + u'/quick bible',
                 QtCore.QVariant(u'')).toString()
-            find_in_combo_box(self.quickVersionComboBox, book)
+            find_and_set_in_combo_box(self.quickVersionComboBox, book)
         books = []
         # We have to do a 'Reference Search'.
         if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
