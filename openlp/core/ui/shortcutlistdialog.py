@@ -33,7 +33,7 @@ class Ui_ShortcutListDialog(object):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
         shortcutListDialog.resize(500, 438)
         self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
-        self.shortcutListLayout.setObjectName(u'shortcutLitLayout')
+        self.shortcutListLayout.setObjectName(u'shortcutListLayout')
         self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
         self.descriptionLabel.setObjectName(u'descriptionLabel')
         self.descriptionLabel.setWordWrap(True) 
