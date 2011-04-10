@@ -567,20 +567,12 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
-        # If old item was a command tell it to stop
-        if self.serviceItem:
-            oldItem = self.serviceItem
-            self.serviceItem = None
-            if oldItem.is_command():
-                Receiver.send_message(u'%s_stop' %
-                    oldItem.name.lower(), [oldItem, self.isLive])
-            if oldItem.is_media():
-                self.onMediaClose()
-            if self.isLive and oldItem.is_capable(
-                ItemCapabilities.ProvidesOwnDisplay):
-                self._resetBlank()
+        old_item = self.serviceItem
+        if old_item and self.isLive and old_item.is_capable(
+            ItemCapabilities.ProvidesOwnDisplay):
+            self._resetBlank()
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-            [serviceItem, self.isLive, self.display.hideMode, slideno])
+            [serviceItem, self.isLive, self.hideMode(), slideno])
         self.slideList = {}
         width = self.parent.controlSplitter.sizes()[self.split]
         self.serviceItem = serviceItem
@@ -642,12 +634,25 @@ class SlideController(QtGui.QWidget):
             self.previewListWidget.viewport().size().width())
         self.__updatePreviewSelection(slideno)
         self.enableToolBar(serviceItem)
-        # Pass to display for viewing
-        self.display.buildHtml(self.serviceItem)
+        # Pass to display for viewing.
+        # Postpone image build, we need to do this later to avoid theme
+        # flashing on the screen
+        if not self.serviceItem.is_image():
+            self.display.buildHtml(self.serviceItem)
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
         self.onSlideSelected(True)
         self.previewListWidget.setFocus()
+        if old_item:
+            # Close the old item after the new one is opened
+            # This avoids the service theme/desktop flashing on screen
+            # However opening a new item of the same type will automatically
+            # close the previous, so make sure we don't close the new one.
+            if old_item.is_command() and not serviceItem.is_command():
+                Receiver.send_message(u'%s_stop' %
+                    old_item.name.lower(), [old_item, self.isLive])
+            if old_item.is_media() and not serviceItem.is_media():
+                self.onMediaClose()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
 
@@ -852,7 +857,11 @@ class SlideController(QtGui.QWidget):
                 if self.serviceItem.is_text():
                     frame = self.display.text(toDisplay)
                 else:
-                    frame = self.display.image(toDisplay)
+                    if start:
+                        self.display.buildHtml(self.serviceItem, toDisplay)
+                        frame = self.display.preview()
+                    else:
+                        frame = self.display.image(toDisplay)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
                 self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
@@ -1099,9 +1108,25 @@ class SlideController(QtGui.QWidget):
         Used by command items which provide their own displays to reset the
         screen hide attributes
         """
-        if self.blankScreen.isChecked():
+        hide_mode = self.hideMode()
+        if hide_mode == HideMode.Blank:
             self.onBlankDisplay(True)
-        elif self.themeScreen.isChecked():
+        elif hide_mode == HideMode.Theme:
             self.onThemeDisplay(True)
-        elif self.desktopScreen.isChecked():
+        elif hide_mode == HideMode.Screen:
             self.onHideDisplay(True)
+
+    def hideMode(self):
+        """
+        Determine what the hide mode should be according to the blank button
+        """
+        if not self.isLive:
+            return None
+        elif self.blankScreen.isChecked():
+            return HideMode.Blank
+        elif self.themeScreen.isChecked():
+            return HideMode.Theme
+        elif self.desktopScreen.isChecked():
+            return HideMode.Screen
+        else:
+            return None

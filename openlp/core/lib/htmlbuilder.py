@@ -307,7 +307,7 @@ sup {
 </head>
 <body>
 <img id="bgimage" class="size" %s />
-<img id="image" class="size" style="display:none" />
+<img id="image" class="size" %s />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -320,7 +320,7 @@ sup {
 </html>
     """
 
-def build_html(item, screen, alert, islive, background):
+def build_html(item, screen, alert, islive, background, image=None):
     """
     Build the full web paged structure for display
 
@@ -332,6 +332,10 @@ def build_html(item, screen, alert, islive, background):
         Alert display display information
     `islive`
         Item is going live, rather than preview/theme building
+    `background`
+        Theme background image - bytes
+    `image`
+        Image media item - bytes
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -339,11 +343,15 @@ def build_html(item, screen, alert, islive, background):
     webkitvers = webkit_version()
     # Image generated and poked in
     if background:
-        image = u'src="data:image/png;base64,%s"' % background
+        bgimage = u'src="data:image/png;base64,%s"' % background
     elif item.bg_image_bytes:
-        image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        image = u'style="display:none;"'
+        bgimage = u'style="display:none;"'
+    if image:
+        image_src = u'src="data:image/png;base64,%s"' % image
+    else:
+        image_src = u'style="display:none;"'
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
@@ -351,7 +359,7 @@ def build_html(item, screen, alert, islive, background):
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        image,
+        bgimage, image_src,
         build_lyrics_html(item, webkitvers))
     return html
 
