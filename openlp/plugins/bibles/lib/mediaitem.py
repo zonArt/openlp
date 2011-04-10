@@ -106,6 +106,12 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Text Search'))
         ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
+        self.quickLayoutLabel = QtGui.QLabel(self.quickTab)
+        self.quickLayoutLabel.setObjectName(u'quickClearLabel')
+        self.quickLayoutComboBox = media_item_combo_box(self.quickTab,
+            u'quickLayoutComboBox')
+        self.quickLayoutComboBox.addItems([u'', u'', u''])
+        self.quickLayout.addRow(self.quickLayoutLabel, self.quickLayoutComboBox)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
         self.quickClearComboBox = media_item_combo_box(self.quickTab,
@@ -210,6 +216,9 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'searchTypeChanged(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.quickVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
+        QtCore.QObject.connect(
+            self.quickLayoutComboBox, QtCore.SIGNAL(u'activated(int)'),
+            self.onlayoutStyleComboBoxChanged)
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
@@ -234,6 +243,7 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedSecondComboBox.setVisible(False)
             self.quickSecondLabel.setVisible(False)
             self.quickSecondComboBox.setVisible(False)
+        self.quickLayoutComboBox.setCurrentIndex(self.settings.layout_style)
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
@@ -269,6 +279,13 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.advancedClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Keep'))
+        self.quickLayoutLabel.setText(UiStrings.DisplayStyle)
+        self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
+            UiStrings.VersePerSlide)
+        self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerLine,
+            UiStrings.VersePerLine)
+        self.quickLayoutComboBox.setItemText(LayoutStyle.Continuous,
+            UiStrings.Continuous)
 
     def initialise(self):
         log.debug(u'bible manager initialise')
@@ -816,3 +833,11 @@ class BibleMediaItem(MediaManagerItem):
         if self.settings.display_style == DisplayStyle.Square:
             return u'{su}[%s]{/su}' % verse_text
         return u'{su}%s{/su}' % verse_text
+
+    def onlayoutStyleComboBoxChanged(self):
+        self.settings.layout_style = self.quickLayoutComboBox.currentIndex()
+        self.settings.layoutStyleComboBox.setCurrentIndex(
+            self.settings.layout_style)
+        QtCore.QSettings().setValue(
+            self.settingsSection + u'/verse layout style',
+            QtCore.QVariant(self.settings.layout_style))
