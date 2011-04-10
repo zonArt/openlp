@@ -32,7 +32,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    media_item_combo_box, critical_error_message_box
+    media_item_combo_box, critical_error_message_box, find_in_combo_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -274,7 +274,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.parent.manager.media = self
         self.loadBibles()
-        self.updateAutoCompleter()
+        self.updateAutoCompleter(False)
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
@@ -298,23 +298,25 @@ class BibleMediaItem(MediaManagerItem):
         bibles = self.parent.manager.get_bibles().keys()
         bibles.sort()
         # Load the bibles into the combo boxes.
-        first = True
         for bible in bibles:
             if bible:
                 self.quickVersionComboBox.addItem(bible)
                 self.quickSecondComboBox.addItem(bible)
                 self.advancedVersionComboBox.addItem(bible)
                 self.advancedSecondComboBox.addItem(bible)
-                if first:
-                    first = False
-                    self.initialiseBible(bible)
+        # set the default value
+        book = QtCore.QSettings().value(
+            self.settingsSection + u'/advanced bible',
+            QtCore.QVariant(u'')).toString()
+        find_in_combo_box(self.advancedVersionComboBox, book)
+        self.initialiseAdvancedBible(unicode(book))
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
         self.parent.manager.reload_bibles()
         self.loadBibles()
 
-    def initialiseBible(self, bible):
+    def initialiseAdvancedBible(self, bible):
         """
         This initialises the given bible, which means that its book names and
         their chapter numbers is added to the combo boxes on the
@@ -324,7 +326,7 @@ class BibleMediaItem(MediaManagerItem):
         ``bible``
             The bible to initialise (unicode).
         """
-        log.debug(u'initialiseBible %s', bible)
+        log.debug(u'initialiseAdvancedBible %s', bible)
         book_data = self.parent.manager.get_books(bible)
         self.advancedBookComboBox.clear()
         first = True
@@ -354,12 +356,20 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, verse_count, self.advancedFromVerse)
             self.adjustComboBox(1, verse_count, self.advancedToVerse)
 
-    def updateAutoCompleter(self):
+    def updateAutoCompleter(self, updateConfig=True):
         """
         This updates the bible book completion list for the search field. The
         completion depends on the bible. It is only updated when we are doing a
         reference search, otherwise the auto completion list is removed.
         """
+        if updateConfig:
+            QtCore.QSettings().setValue(self.settingsSection + u'/quick bible',
+                QtCore.QVariant(self.quickVersionComboBox.currentText()))
+        else:
+            book = QtCore.QSettings().value(
+                self.settingsSection + u'/quick bible',
+                QtCore.QVariant(u'')).toString()
+            find_in_combo_box(self.quickVersionComboBox, book)
         books = []
         # We have to do a 'Reference Search'.
         if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
@@ -372,7 +382,9 @@ class BibleMediaItem(MediaManagerItem):
         add_widget_completer(books, self.quickSearchEdit)
 
     def onAdvancedVersionComboBox(self):
-        self.initialiseBible(
+        QtCore.QSettings().setValue(self.settingsSection + u'/advanced bible',
+            QtCore.QVariant(self.advancedVersionComboBox.currentText()))
+        self.initialiseAdvancedBible(
             unicode(self.advancedVersionComboBox.currentText()))
 
     def onAdvancedBookComboBox(self):

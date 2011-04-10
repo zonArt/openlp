@@ -315,3 +315,20 @@ def create_valign_combo(form, parent, layout):
     form.verticalComboBox.addItem(UiStrings.Bottom)
     verticalLabel.setBuddy(form.verticalComboBox)
     layout.addRow(verticalLabel, form.verticalComboBox)
+
+def find_in_combo_box(combo_box, value_to_find):
+    """
+    Find a string in a combo box and set it as the selected item if present
+
+    ``combo_box``
+        The combo box to check for selected items
+
+    ``value_to_find``
+        The value to find
+    """
+    index = combo_box.findText(value_to_find,
+        QtCore.Qt.MatchExactly)
+    if index == -1:
+        # Not Found.
+        index = 0
+    combo_box.setCurrentIndex(index)

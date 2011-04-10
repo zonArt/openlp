@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle
+from openlp.core.lib.ui import find_in_combo_box
 
 log = logging.getLogger(__name__)
 
@@ -208,10 +209,4 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
-        index = self.BibleThemeComboBox.findText(
-            unicode(self.bible_theme), QtCore.Qt.MatchExactly)
-        if index == -1:
-            # Not Found.
-            index = 0
-            self.bible_theme = u''
-        self.BibleThemeComboBox.setCurrentIndex(index)
+        find_in_combo_box(self.BibleThemeComboBox, self.bible_theme)
