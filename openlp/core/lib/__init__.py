@@ -166,7 +166,7 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
-def context_menu_action(base, icon, text, slot):
+def context_menu_action(base, icon, text, slot, shortcuts=None):
     """
     Utility method to help build context menus for plugins
 
@@ -186,6 +186,8 @@ def context_menu_action(base, icon, text, slot):
     if icon:
         action.setIcon(build_icon(icon))
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
     return action
 
 def context_menu(base, icon, text):

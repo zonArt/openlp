@@ -91,7 +91,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        settings = QtCore.QSettings()
         language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
