@@ -691,9 +691,9 @@ class ServiceManager(QtGui.QWidget):
         Called by the SlideController to request a preview item be made live
         and allows the next preview to be updated if relevent.
         """
-        id, row = message.split(u':')
+        uuid, row = message.split(u':')
         for sitem in self.serviceItems:
-            if sitem[u'service_item']._uuid == id:
+            if sitem[u'service_item']._uuid == uuid:
                 item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
                 self.serviceManagerList.setCurrentItem(item)
                 self.makeLive(int(row))
