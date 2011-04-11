@@ -327,7 +327,7 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.QVariant(u'')).toString()
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
-            self.initialiseAdvancedBible(unicode(book))
+            self.initialiseAdvancedBible(unicode(bible))
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
