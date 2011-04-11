@@ -386,10 +386,10 @@ class BibleDB(QtCore.QObject, Manager):
         return db_book
 
     def get_book_ref_id_by_name(self, book, language_id=None):
-        log.debug(u'BibleManager.get_book_ref_id_by_name:("%s", "%s")', book, 
+        log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
             language_id)
-        self.alternative_book_names_cache = AlternativeBookNamesDB(self.bible_plugin, 
-            path=self.path)
+        self.alternative_book_names_cache = AlternativeBookNamesDB(
+            self.bible_plugin, path=self.path)
         if BiblesResourcesDB.get_book(book):
             book_temp = BiblesResourcesDB.get_book(book)
             book_id = book_temp[u'id']

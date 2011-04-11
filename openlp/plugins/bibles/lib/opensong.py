@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+song# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -43,7 +43,6 @@ class OpenSongBible(BibleDB):
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.parent = parent
         self.filename = kwargs['filename']
 
     def do_import(self):

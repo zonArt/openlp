@@ -359,7 +359,6 @@ class HTTPBible(BibleDB):
         Init confirms the bible exists and stores the database path.
         """
         BibleDB.__init__(self, parent, **kwargs)
-        self.parent = parent
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
         # TODO: Clean up proxy stuff. We probably want one global proxy per

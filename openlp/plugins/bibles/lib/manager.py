@@ -130,8 +130,6 @@ class BibleManager(object):
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
-        #TODO: Delete unused code
-        #self.reload_alternative_book_names()
         self.media = None
 
     def reload_bibles(self):

@@ -43,7 +43,6 @@ class OpenLP1Bible(BibleDB):
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.parent = parent
         self.filename = kwargs[u'filename']
 
     def do_import(self):

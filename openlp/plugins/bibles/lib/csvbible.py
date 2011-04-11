@@ -88,7 +88,6 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.parent = parent
         #TODO: Delete unused code
         '''
         try:
@@ -98,6 +97,8 @@ class CSVBible(BibleDB):
         '''
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
+    
+    #TODO: Delete unused code
     '''
     def setup_testaments(self):
         """

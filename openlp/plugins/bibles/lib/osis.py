@@ -46,7 +46,6 @@ class OSISBible(BibleDB):
     def __init__(self, parent, **kwargs):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.parent = parent
         self.filename = kwargs[u'filename']
         fbibles = None
         self.books = {}
