@@ -96,4 +96,7 @@ class VerseReferenceList(object):
                 version[u'copyright'])
             if version[u'permission'].strip():
                 result = result + u', ' + version[u'permission']
+        result = result.rstrip()
+        if result.endswith(u','):
+            return result[:len(result)-1]
         return result
