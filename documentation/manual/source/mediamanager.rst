@@ -99,9 +99,10 @@ You will type your search query in this box for the following two searches.
 Book Chapter 
 Book Chapter-Chapter
 Book Chapter:Verse-Verse
+Book Chapter:Verse-End (this will display verses to the end of the chapter)
 Book Chapter:Verse-Verse, Verse-Verse
 Book Chapter:Verse-Verse,Chapter:Verse-Verse
-Book Chapter: Verse-Chapter:Verse
+Book Chapter:Verse-Chapter:Verse
 
 `Text Search:`
 
