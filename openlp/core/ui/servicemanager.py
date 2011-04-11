@@ -35,7 +35,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -588,6 +589,21 @@ class ServiceManager(QtGui.QWidget):
                 message=translate('OpenLP.ServiceManager',
                 'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
+        except zipfile.BadZipfile:
+            if os.path.getsize(fileName) == 0:
+                log.exception(u'Service file is zero sized: %s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Empty File'),
+                    translate('OpenLP.ServiceManager', 'This service file '
+                    'does not contain any data.'))
+            else:
+                log.exception(u'Service file is cannot be extracted as zip: '
+                    u'%s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Corrupt File'),
+                    translate('OpenLP.ServiceManager', 'This file is either'
+                    'corrupt or not an OpenLP 2.0 service file.'))
+            return
         finally:
             if fileTo:
                 fileTo.close()
@@ -1110,6 +1126,9 @@ class ServiceManager(QtGui.QWidget):
             -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
+        # No items in service
+        if item == -1:
+            return
         if row != -1:
             child = row
         if self.serviceItems[item][u'service_item'].is_valid:
@@ -1243,13 +1262,7 @@ class ServiceManager(QtGui.QWidget):
             action = context_menu_action(self.serviceManagerList, None, theme,
                 self.onThemeChangeAction)
             self.themeMenu.addAction(action)
-        index = self.themeComboBox.findText(self.service_theme,
-            QtCore.Qt.MatchExactly)
-        # Not Found
-        if index == -1:
-            index = 0
-            self.service_theme = u''
-        self.themeComboBox.setCurrentIndex(index)
+        find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 

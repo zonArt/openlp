@@ -184,14 +184,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
-        self.mainWindow.application.clipboard.setText(
+        self.mainWindow.clipboard.setText(
             self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
-        self.mainWindow.application.clipboard.setText(self.document.toHtml())
+        self.mainWindow.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
         """
