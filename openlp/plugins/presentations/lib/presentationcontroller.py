@@ -105,7 +105,7 @@ class PresentationDocument(object):
         Loads the presentation and starts it
 
         ``presentation``
-        The file name of the presentations to the run.
+            The file name of the presentations to the run.
 
         Returns False if the file could not be opened
         """

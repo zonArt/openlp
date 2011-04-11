@@ -588,6 +588,21 @@ class ServiceManager(QtGui.QWidget):
                 message=translate('OpenLP.ServiceManager',
                 'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
+        except zipfile.BadZipfile:
+            if os.path.getsize(fileName) == 0:
+                log.exception(u'Service file is zero sized: %s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Empty File'),
+                    translate('OpenLP.ServiceManager', 'This service file '
+                    'does not contain any data.'))
+            else:
+                log.exception(u'Service file is cannot be extracted as zip: '
+                    u'%s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Corrupt File'),
+                    translate('OpenLP.ServiceManager', 'This file is either'
+                    'corrupt or not an OpenLP 2.0 service file.'))
+            return
         finally:
             if fileTo:
                 fileTo.close()
@@ -1110,6 +1125,9 @@ class ServiceManager(QtGui.QWidget):
             -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
+        # No items in service
+        if item == -1:
+            return
         if row != -1:
             child = row
         if self.serviceItems[item][u'service_item'].is_valid:
