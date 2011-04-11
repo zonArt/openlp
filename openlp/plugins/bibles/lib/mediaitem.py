@@ -322,11 +322,11 @@ class BibleMediaItem(MediaManagerItem):
                 self.advancedVersionComboBox.addItem(bible)
                 self.advancedSecondComboBox.addItem(bible)
         # set the default value
-        book = QtCore.QSettings().value(
+        bible = QtCore.QSettings().value(
             self.settingsSection + u'/advanced bible',
             QtCore.QVariant(u'')).toString()
-        find_and_set_in_combo_box(self.advancedVersionComboBox, book)
-        if book:
+        if bible in bibles:
+            find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(book))
 
     def reloadBibles(self):
