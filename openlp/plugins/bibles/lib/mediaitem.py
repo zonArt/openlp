@@ -326,7 +326,7 @@ class BibleMediaItem(MediaManagerItem):
             self.settingsSection + u'/advanced bible',
             QtCore.QVariant(u'')).toString()
         find_and_set_in_combo_box(self.advancedVersionComboBox, book)
-        if book != u'':
+        if book:
             self.initialiseAdvancedBible(unicode(book))
 
     def reloadBibles(self):
