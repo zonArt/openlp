@@ -274,8 +274,8 @@ class MediaManagerItem(QtGui.QWidget):
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick, [QtCore.Qt.Key_Enter],
-                context=QtCore.Qt.WidgetShortcut))
+                self.onPreviewClick, [QtCore.Qt.Key_Enter,
+                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_live.png',
