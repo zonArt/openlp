@@ -44,6 +44,7 @@ class GeneralTab(SettingsTab):
         self.monitorNumber = 0
         # Set to True to allow PostSetup to work on application start up
         self.overrideChanged = True
+        self.icon_path = u':/icon/openlp-logo-16x16.png'
         SettingsTab.__init__(self, u'General')
 
     def preLoad(self):

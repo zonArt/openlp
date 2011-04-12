@@ -153,8 +153,7 @@ class PluginManager(object):
                 if plugin.settings_tab:
                     log.debug(u'Inserting settings tab item from %s' %
                         visible_title[u'title'])
-                    settingsform.addTab(visible_title[u'title'],
-                        plugin.settings_tab)
+                    settingsform.insertTab(plugin.settings_tab, plugin.weight)
                 else:
                     log.debug(
                         u'No tab settings in %s' % visible_title[u'title'])

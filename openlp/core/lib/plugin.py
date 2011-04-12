@@ -116,7 +116,7 @@ class Plugin(QtCore.QObject):
     log.info(u'loaded')
 
     def __init__(self, name, pluginHelpers=None, mediaItemClass=None,
-        settingsTabClass=None, version=None):
+        settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -138,7 +138,7 @@ class Plugin(QtCore.QObject):
         ``mediaItemClass``
             The class name of the plugin's media item.
 
-        ``settingsTabClass``
+        ``settings_tab_class``
             The class name of the plugin's settings tab.
         """
         QtCore.QObject.__init__(self)
@@ -153,7 +153,7 @@ class Plugin(QtCore.QObject):
         self.settingsSection = self.name.lower()
         self.icon = None
         self.mediaItemClass = mediaItemClass
-        self.settingsTabClass = settingsTabClass
+        self.settings_tab_class = settings_tab_class
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
@@ -248,9 +248,9 @@ class Plugin(QtCore.QObject):
         Create a tab for the settings window to display the configurable
         options for this plugin to the user.
         """
-        if self.settingsTabClass:
-            return self.settingsTabClass(self.name,
-                self.getString(StringContent.VisibleName)[u'title'])
+        if self.settings_tab_class:
+            return self.settings_tab_class(self.name,
+                self.getString(StringContent.VisibleName)[u'title'], self.icon_path)
         return None
 
     def addToMenu(self, menubar):

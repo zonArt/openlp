@@ -28,9 +28,9 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
@@ -48,20 +48,20 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.setupUi(self)
         # General tab
         generalTab = GeneralTab(screens)
-        self.addTab(u'General', generalTab)
+        self.insertTab(generalTab, 1)
         # Themes tab
         themesTab = ThemesTab(mainWindow)
-        self.addTab(u'Themes', themesTab)
+        self.insertTab(themesTab, 2)
         # Advanced tab
         advancedTab = AdvancedTab()
-        self.addTab(u'Advanced', advancedTab)
+        self.insertTab(advancedTab, 3)
 
-    def addTab(self, name, tab):
-        """
-        Add a tab to the form
-        """
-        log.info(u'Adding %s tab' % tab.tabTitle)
-        self.settingsTabWidget.addTab(tab, tab.tabTitleVisible)
+    def exec_(self):
+        # load all the settings
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).load()
+        return QtGui.QDialog.exec_(self)
+
 
     def insertTab(self, tab, location):
         """
@@ -71,6 +71,12 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # 14 : There are 3 tables currently and locations starts at -10
         self.settingsTabWidget.insertTab(
             location + 14, tab, tab.tabTitleVisible)
+        print tab.tabTitleVisible
+        item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
+        icon = build_icon(tab.icon_path)
+        pixmap = icon.pixmap(QtCore.QSize(88, 50))
+        item_name.setIcon(icon)
+        self.settingListWidget.insertItem(14 + location, item_name)
 
     def removeTab(self, tab):
         """

@@ -37,6 +37,7 @@ class ThemesTab(SettingsTab):
     def __init__(self, parent):
         self.parent = parent
         SettingsTab.__init__(self, u'Themes')
+        self.icon_path =  u':/themes/theme_new.png'
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')

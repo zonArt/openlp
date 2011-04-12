@@ -40,11 +40,11 @@ class BiblesTab(SettingsTab):
     """
     log.info(u'Bible Tab loaded')
 
-    def __init__(self, title, visible_title):
+    def __init__(self, title, visible_title, icon_path):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        SettingsTab.__init__(self, title, visible_title)
+        SettingsTab.__init__(self, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')

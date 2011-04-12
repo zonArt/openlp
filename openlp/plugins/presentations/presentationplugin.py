@@ -62,7 +62,7 @@ class PresentationPlugin(Plugin):
         """
         visible_name = self.getString(StringContent.VisibleName)
         return PresentationTab(self.name, visible_name[u'title'],
-            self.controllers)
+            self.controllers, self.icon_path)
 
     def initialise(self):
         """
@@ -71,7 +71,6 @@ class PresentationPlugin(Plugin):
         """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
-        self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 try:

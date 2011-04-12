@@ -32,16 +32,19 @@ from openlp.core.lib.ui import create_accept_reject_button_box
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(700, 500)
+        settingsDialog.resize(800, 500)
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
+        self.settingsLayout = QtGui.QGridLayout(settingsDialog)
         self.settingsLayout.setObjectName(u'settingsLayout')
+        self.settingListWidget = QtGui.QListWidget(settingsDialog)
+        self.settingListWidget.setObjectName(u'settingListWidget')
+        self.settingsLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
         self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget)
+        self.settingsLayout.addWidget(self.settingsTabWidget, 0, 1, 1, 1)
         self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
-        self.settingsLayout.addWidget(self.buttonBox)
+        self.settingsLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
 
