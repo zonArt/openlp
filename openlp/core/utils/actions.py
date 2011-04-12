@@ -154,10 +154,13 @@ class CategoryList(object):
         return False
 
     def append(self, name, actions=None):
+        weight = 0
+        if len(self.categories) > 0:
+            weight = self.categories[-1].weight + 1
         if actions:
-            self.add(name, actions=actions)
+            self.add(name, weight, actions)
         else:
-            self.add(name)
+            self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
         category = ActionCategory(name, weight)
@@ -168,7 +171,7 @@ class CategoryList(object):
                 else:
                     category.actions.append(action)
         self.categories.append(category)
-        self.categories.sort(key=lambda cat: cat.weight, reverse=True)
+        self.categories.sort(key=lambda cat: cat.weight)
 
     def remove(self, name):
         for category in self.categories:
@@ -270,8 +273,7 @@ class ActionList(object):
             for category in self.categories:
                 if category.name == name:
                     category.weight = weight
-            self.categories.categories.sort(
-                key=lambda cat: cat.weight, reverse=True)
+            self.categories.categories.sort(key=lambda cat: cat.weight)
             return
         self.categories.add(name, weight)
 
@@ -280,5 +282,5 @@ class CategoryOrder(object):
     """
     An enumeration class for category weights.
     """
-    standardMenu = 100
-    standardToolbar = 90
+    standardMenu = -20
+    standardToolbar = -10
