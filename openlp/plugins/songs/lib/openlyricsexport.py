@@ -73,8 +73,8 @@ class OpenLyricsExport(object):
                 u', '.join([author.display_name for author in song.authors]))
             filename = re.sub(
                 r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
-            file_object = open(os.path.join(self.save_path, filename), u'w')
-            tree.write(file_object,
+            # Pass a file object, because lxml does not cope with some special
+            # characters in the path (see lp:757673 and lp:744337).
+            tree.write(open(os.path.join(self.save_path, filename), u'w'),
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
-            file_object.close()
         return True
