@@ -38,15 +38,20 @@ class Ui_SettingsDialog(object):
         self.settingsLayout = QtGui.QGridLayout(settingsDialog)
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.settingListWidget = QtGui.QListWidget(settingsDialog)
+        self.settingListWidget.setIconSize(QtCore.QSize(32, 32))
         self.settingListWidget.setObjectName(u'settingListWidget')
         self.settingsLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
-        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget, 0, 1, 1, 1)
+        self.stackedLayout = QtGui.QStackedLayout()
+        self.stackedLayout.setObjectName(u'stackedLayout')
+        self.settingsLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
         self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
         self.settingsLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
+        self.stackedLayout.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
+        QtCore.QObject.connect(self.settingListWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'),
+            self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, settingsDialog):
         settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',

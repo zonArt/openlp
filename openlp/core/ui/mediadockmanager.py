@@ -84,5 +84,5 @@ class MediaDockManager(object):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settingsSection == \
                     media_item.plugin.name.lower():
-                    self.media_dock.widget(dock_index).hide()
+                    self.media_dock.widget(dock_index).setVisible(False)
                     self.media_dock.removeItem(dock_index)

@@ -38,9 +38,9 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', plugin_helpers,
-            settingsTabClass=RemoteTab)
-        self.icon = build_icon(u':/plugins/plugin_remote.png')
+        Plugin.__init__(self, u'Remotes', plugin_helpers)
+        self.icon_path = u':/plugins/plugin_remote.png'
+        self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
 
@@ -50,7 +50,6 @@ class RemotesPlugin(Plugin):
         """
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.insertToolboxItem()
         self.server = HttpServer(self)
 
     def finalise(self):

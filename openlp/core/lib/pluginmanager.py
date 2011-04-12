@@ -206,8 +206,6 @@ class PluginManager(object):
             if plugin.isActive():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
-            if not plugin.isActive():
-                plugin.removeToolboxItem()
         log.info(u'Initialise Plugins - Finished')
 
     def finalise_plugins(self):

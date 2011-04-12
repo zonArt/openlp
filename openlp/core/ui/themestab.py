@@ -36,7 +36,8 @@ class ThemesTab(SettingsTab):
     """
     def __init__(self, parent):
         self.parent = parent
-        SettingsTab.__init__(self, u'Themes')
+        generalTranslated = translate('ThemeTab', 'Themes')
+        SettingsTab.__init__(self, u'Themes', generalTranslated)
         self.icon_path =  u':/themes/theme_new.png'
 
     def setupUi(self):

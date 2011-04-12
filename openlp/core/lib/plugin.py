@@ -141,6 +141,7 @@ class Plugin(QtCore.QObject):
         ``settings_tab_class``
             The class name of the plugin's settings tab.
         """
+        log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
         self.textStrings = {}
@@ -250,7 +251,8 @@ class Plugin(QtCore.QObject):
         """
         if self.settings_tab_class:
             return self.settings_tab_class(self.name,
-                self.getString(StringContent.VisibleName)[u'title'], self.icon_path)
+                self.getString(StringContent.VisibleName)[u'title'],
+                self.icon_path)
         return None
 
     def addToMenu(self, menubar):
@@ -287,31 +289,18 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-        self.insertToolboxItem()
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
+        if self.settings_tab:
+            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        self.removeToolboxItem()
-
-    def removeToolboxItem(self):
-        """
-        Called by the plugin to remove toolbar
-        """
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
         if self.settings_tab:
             self.settingsForm.removeTab(self.settings_tab)
-
-    def insertToolboxItem(self):
-        """
-        Called by plugin to replace toolbar
-        """
-        if self.mediaItem:
-            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
-        if self.settings_tab:
-            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
     def usesTheme(self, theme):
         """

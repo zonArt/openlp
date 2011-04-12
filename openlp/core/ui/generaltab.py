@@ -45,7 +45,8 @@ class GeneralTab(SettingsTab):
         # Set to True to allow PostSetup to work on application start up
         self.overrideChanged = True
         self.icon_path = u':/icon/openlp-logo-16x16.png'
-        SettingsTab.__init__(self, u'General')
+        generalTranslated = translate('GeneralTab', 'General')
+        SettingsTab.__init__(self, u'General', generalTranslated)
 
     def preLoad(self):
         """

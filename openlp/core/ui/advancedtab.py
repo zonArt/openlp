@@ -41,7 +41,8 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        SettingsTab.__init__(self, u'Advanced')
+        generalTranslated = translate('AdvancedTab', 'Advanced')
+        SettingsTab.__init__(self, u'Advanced', generalTranslated)
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.icon_path = u':/icon/openlp-logo-16x16.png'

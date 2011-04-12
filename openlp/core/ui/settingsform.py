@@ -58,8 +58,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def exec_(self):
         # load all the settings
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).load()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).load()
         return QtGui.QDialog.exec_(self)
 
 
@@ -69,32 +69,39 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
         # 14 : There are 3 tables currently and locations starts at -10
-        self.settingsTabWidget.insertTab(
-            location + 14, tab, tab.tabTitleVisible)
-        print tab.tabTitleVisible
-        item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
-        icon = build_icon(tab.icon_path)
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        item_name.setIcon(icon)
-        self.settingListWidget.insertItem(14 + location, item_name)
+        match = False
+        for tabIndex in range(0, self.stackedLayout.count()):
+            if self.stackedLayout.widget(tabIndex):
+                if self.stackedLayout.widget(tabIndex).tabTitleVisible == \
+                    tab.tabTitleVisible:
+                    print tab.tabTitleVisible
+                    self.stackedLayout.widget(tabIndex).setHidden(False)
+                    match = True
+                    break
+        if not match:
+            self.stackedLayout.addWidget(tab)
+            item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
+            icon = build_icon(tab.icon_path)
+            item_name.setIcon(icon)
+            self.settingListWidget.insertItem(14 + location, item_name)
 
     def removeTab(self, tab):
         """
         Remove a tab from the form
         """
         log.debug(u'remove %s tab' % tab.tabTitleVisible)
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            if self.settingsTabWidget.widget(tabIndex):
-                if self.settingsTabWidget.widget(tabIndex).tabTitleVisible == \
+        for tabIndex in range(0, self.stackedLayout.count()):
+            if self.stackedLayout.widget(tabIndex):
+                if self.stackedLayout.widget(tabIndex).tabTitleVisible == \
                     tab.tabTitleVisible:
-                    self.settingsTabWidget.removeTab(tabIndex)
+                    self.settingListWidget.item(tabIndex).setHidden(True)
 
     def accept(self):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).save()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
@@ -103,13 +110,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).cancel()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
     def postSetUp(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).postSetUp()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).postSetUp()
