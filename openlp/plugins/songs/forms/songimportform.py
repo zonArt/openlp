@@ -66,7 +66,17 @@ class SongImportForm(OpenLPWizard):
         self.formatStack.setCurrentIndex(0)
         QtCore.QObject.connect(self.formatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.formatStack.setCurrentIndex)
+            self.onCurrentIndexChanged)
+
+    def onCurrentIndexChanged(self, index):
+        """
+        Called when the format combo box's index changed. We have to check if
+        the import is available and accordingly to disable or enable the next
+        button.
+        """
+        self.formatStack.setCurrentIndex(index)
+        next_button = self.button(QtGui.QWizard.NextButton)
+        next_button.setEnabled(SongFormat.get_availability(index))
 
     def customInit(self):
         """

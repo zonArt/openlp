@@ -126,7 +126,7 @@ I can not see the book, chapter, and verse when I display scripture
 
 The book, chapter, and verse should be displayed when you display scripture. If
 you can not see this your theme probably has the text size too small for the 
-info to be seen. See the section of the manual on themes if you need more info
+info to be seen. See the section of the manual on :ref:`themes` if you need more info
 on text sizes in themes.
 
 I am running Mac OS X and I do not have a presentations plugin
@@ -173,4 +173,5 @@ I chose to use a web Bible but it did not download the entire Bible
 Due to copyright restrictions OpenLP cannot download an entire Bible. It can
 only download the section you search for. If you do not have an internet 
 connection where you intend to use OpenLP you will need another scripture
-source. For more information about acquiring bibles please see :ref:`bibleimporter`.
+source. For more information about acquiring Bibles please see :ref:`bibleimporter`.
+
