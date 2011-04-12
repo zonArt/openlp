@@ -214,6 +214,7 @@ class BibleManager(object):
             books.append(
             {
                 u'name': book.name,
+                u'book_reference_id': book.book_reference_id, 
                 u'chapters': self.db_cache[bible].get_chapter_count(book.book_reference_id)
             })
         return books
