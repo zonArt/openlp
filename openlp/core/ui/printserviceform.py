@@ -163,20 +163,19 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             css_file.write(DEFAULT_CSS)
             css_file.close()
         custom_css = get_text_file_string(css_path)
-        style = self._addChildToParent(u'style', custom_css, html_data.head)
-        style.set(u'type', u'text/css')
+        self._addChildToParent(
+            u'style', custom_css, html_data.head, u'type', u'text/css')
         self._addChildToParent(u'body', parent=html_data)
-        service_title = self._addChildToParent(
-            u'span', unicode(self.titleLineEdit.text()), html_data.body)
-        service_title.set(u'class', u'serviceTitle')
+        self._addChildToParent(u'span', unicode(self.titleLineEdit.text()),
+            html_data.body, u'class', u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             item = item[u'service_item']
             div = self._addChildToParent(u'div', parent=html_data.body)
             # Add the title of the service item.
-            item_title = self._addChildToParent(u'h2', parent=div)
-            item_title.set(u'class', u'itemTitle')
-            icon = self._addChildToParent(u'img', parent=item_title)
-            icon.set(u'src', item.icon)
+            item_title = self._addChildToParent(
+                u'h2', parent=div, attribute=u'class', value=u'itemTitle')
+            self._addChildToParent(
+                u'img', parent=item_title, attribute=u'src', value=item.icon)
             self._fromstring(
                 u'<span> %s</span>' % item.get_display_title(), item_title)
             if self.slideTextCheckBox.isChecked():
@@ -185,8 +184,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     verse_def = None
                     for slide in item.get_frames():
                         if not verse_def or verse_def != slide[u'verseTag']:
-                            p = self._addChildToParent(u'p', parent=div)
-                            p.set(u'class', u'itemText')
+                            p = self._addChildToParent(u'p', parent=div,
+                                attribute=u'class', value=u'itemText')
                         else:
                             self._addChildToParent(u'br', parent=p)
                         self._fromstring(u'<span>%s</span>' % slide[u'html'], p)
@@ -201,18 +200,17 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                         self._addChildToParent(u'li', item.get_frame_title(slide), ol)
                 # add footer
                 if item.foot_text:
-                    p = self._fromstring(item.foot_text, div)
-                    p.set(u'class', u'itemFooter')
+                    self._fromstring(
+                        item.foot_text, div, u'class', u'itemFooter')
             # Add service items' notes.
             if self.notesCheckBox.isChecked():
                 if item.notes:
                     p = self._addChildToParent(u'p', parent=div)
-                    title = self._addChildToParent(u'span', unicode(
-                        translate('OpenLP.ServiceManager', 'Notes:')), p)
-                    title.set(u'class', u'itemNotesTitle')
-                    text = self._fromstring(u'<span> %s</span>' %
-                        item.notes.replace(u'\n', u'<br />'), p)
-                    text.set(u'class', u'itemNotesText')
+                    self._addChildToParent(u'span', unicode(
+                        translate('OpenLP.ServiceManager', 'Notes:')), p,
+                        u'class', u'itemNotesTitle')
+                    self._fromstring(u'<span> %s</span>' % item.notes.replace(
+                        u'\n', u'<br />'), p, u'class', u'itemNotesText')
             # Add play length of media files.
             if item.is_media() and self.metaDataCheckBox.isChecked():
                 tme = item.media_length
@@ -224,25 +222,43 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     unicode(datetime.timedelta(seconds=tme)), title)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
-            footer_title = self._addChildToParent(u'span', translate(
-                'OpenLP.ServiceManager', u'Custom Service Notes:'), div)
-            footer_title.set(u'class', u'customNotesTitle')
-            footer_text = self._addChildToParent(u'span',
-                u' %s' % self.footerTextEdit.toPlainText(), div)
-            footer_text.set(u'class', u'customNotesText')
+            self._addChildToParent(u'span', translate('OpenLP.ServiceManager',
+                u'Custom Service Notes:'), div, u'class', u'customNotesTitle')
+            self._addChildToParent(
+                u'span', u' %s' % self.footerTextEdit.toPlainText(), div,
+                u'class', u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
 
-    def _addChildToParent(self, tag, text=None, parent=None):
+    def _addChildToParent(self, tag, text=None, parent=None, attribute=None,
+        value=None):
         """
         Creates a html element. If ``text`` is given, the element's text will
         set and if a ``parent`` is given, the element is appended.
+
+        ``tag``
+            The html tag, e. g. ``u'span'``. Defaults to ``None``.
+
+        ``text``
+            The text for the tag. Defaults to ``None``.
+
+        ``parent``
+            The parent element. Defaults to ``None``.
+
+        ``attribute``
+            An optional attribute, for instance ``u'class``.
+
+        ``value``
+            The value for the given ``attribute``. It does not have and meaning,
+            if the attribute is left to its default.
         """
         element = html.Element(tag)
         if text is not None:
             element.text = text
         if parent is not None:
             parent.append(element)
+        if attribute is not None:
+            element.set(attribute, value if value is not None else u'')
         return element
 
     def _fromstring(self, string, parent):
