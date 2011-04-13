@@ -254,7 +254,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         element = html.Element(tag)
         if text is not None:
-            element.text = text
+            element.text = unicode(text)
         if parent is not None:
             parent.append(element)
         if attribute is not None:
