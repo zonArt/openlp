@@ -39,12 +39,8 @@ if os.name == u'nt':
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    try:
-        import uno
-        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
-            PAGE_BOTH
-    except ImportError:
-        pass
+    import uno
+    from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 
 class OooImport(SongImport):
     """
