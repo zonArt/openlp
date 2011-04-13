@@ -249,7 +249,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             An optional attribute, for instance ``u'class``.
 
         ``value``
-            The value for the given ``attribute``. It does not have and meaning,
+            The value for the given ``attribute``. It does not have a meaning,
             if the attribute is left to its default.
         """
         element = html.Element(tag)
