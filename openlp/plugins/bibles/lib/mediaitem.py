@@ -328,6 +328,8 @@ class BibleMediaItem(MediaManagerItem):
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))
+        elif len(bibles):
+            self.initialiseAdvancedBible(bibles[0])
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
@@ -395,7 +397,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
                 book_data = bibles[bible].get_books()
-                books = [book.name for book in book_data]
+                books = [book.name + u' ' for book in book_data]
                 books.sort()
         add_widget_completer(books, self.quickSearchEdit)
 
