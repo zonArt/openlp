@@ -34,10 +34,10 @@ class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def __init__(self, parent):
-        self.parent = parent
+    def __init__(self, parent, mainwindow):
+        self.mainwindow = mainwindow
         generalTranslated = translate('ThemeTab', 'Themes')
-        SettingsTab.__init__(self, u'Themes', generalTranslated)
+        SettingsTab.__init__(self, parent, u'Themes', generalTranslated)
         self.icon_path =  u':/themes/theme_new.png'
 
     def setupUi(self):
@@ -149,7 +149,7 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.parent.renderManager.set_global_theme(
+        self.mainwindow.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -167,7 +167,7 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.parent.renderManager.set_global_theme(
+        self.mainwindow.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         self.__previewGlobalTheme()
 
@@ -188,7 +188,7 @@ class ThemesTab(SettingsTab):
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.parent.renderManager.set_global_theme(
+        self.mainwindow.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
@@ -197,7 +197,7 @@ class ThemesTab(SettingsTab):
         """
         Utility method to update the global theme preview image.
         """
-        image = self.parent.themeManagerContents.getPreviewImage(
+        image = self.mainwindow.themeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         if not preview.isNull():

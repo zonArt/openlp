@@ -148,7 +148,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.getSettingsTab()
+                plugin.settings_tab = plugin.getSettingsTab(settingsform)
                 visible_title = plugin.getString(StringContent.VisibleName)
                 if plugin.settings_tab and plugin.isActive():
                     log.debug(u'Inserting settings tab item from %s' %

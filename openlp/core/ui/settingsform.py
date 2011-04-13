@@ -47,13 +47,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        generalTab = GeneralTab(screens)
+        generalTab = GeneralTab(self, screens)
         self.insertTab(generalTab, 1)
         # Themes tab
-        themesTab = ThemesTab(mainWindow)
+        themesTab = ThemesTab(self, mainWindow)
         self.insertTab(themesTab, 2)
         # Advanced tab
-        advancedTab = AdvancedTab()
+        advancedTab = AdvancedTab(self, )
         self.insertTab(advancedTab, 3)
 
     def exec_(self):

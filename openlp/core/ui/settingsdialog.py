@@ -39,6 +39,7 @@ class Ui_SettingsDialog(object):
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.dialogLayout.setMargin(0)
         self.settingListWidget = QtGui.QListWidget(settingsDialog)
+        self.settingListWidget.setUniformItemSizes(True)
         self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
         self.settingListWidget.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)

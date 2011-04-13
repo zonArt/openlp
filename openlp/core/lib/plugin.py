@@ -244,13 +244,13 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def getSettingsTab(self):
+    def getSettingsTab(self, parent):
         """
         Create a tab for the settings window to display the configurable
         options for this plugin to the user.
         """
         if self.settings_tab_class:
-            return self.settings_tab_class(self.name,
+            return self.settings_tab_class(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
                 self.icon_path)
         return None
