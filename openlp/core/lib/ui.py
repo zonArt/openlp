@@ -62,6 +62,7 @@ class UiStrings(object):
     Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
+    LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')

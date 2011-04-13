@@ -118,8 +118,7 @@ class BiblesTab(SettingsTab):
         self.newChaptersCheckBox.setText(
             translate('BiblesPlugin.BiblesTab',
             'Only show new chapter numbers'))
-        self.layoutStyleLabel.setText(
-            translate('BiblesPlugin.BiblesTab', 'Layout style:'))
+        self.layoutStyleLabel.setText(UiStrings.LayoutStyle)
         self.displayStyleLabel.setText(UiStrings.DisplayStyle)
         self.bibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))

@@ -279,7 +279,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.advancedClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Keep'))
-        self.quickLayoutLabel.setText(UiStrings.DisplayStyle)
+        self.quickLayoutLabel.setText(UiStrings.LayoutStyle)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
             UiStrings.VersePerSlide)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerLine,
@@ -835,9 +835,6 @@ class BibleMediaItem(MediaManagerItem):
         return u'{su}%s{/su}' % verse_text
 
     def onlayoutStyleComboBoxChanged(self):
-        self.settings.layout_style = self.quickLayoutComboBox.currentIndex()
-        self.settings.layoutStyleComboBox.setCurrentIndex(
-            self.settings.layout_style)
         QtCore.QSettings().setValue(
             self.settingsSection + u'/verse layout style',
             QtCore.QVariant(self.settings.layout_style))
