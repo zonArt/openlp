@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -101,6 +101,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.toolbar = None
         self.remoteTriggered = None
         self.singleServiceItem = True
+        self.quickPreviewAllowed = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
@@ -220,8 +221,6 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasDeleteIcon:
             toolbar_actions.append([StringContent.Delete,
                 u':/general/general_delete.png', self.onDeleteClick])
-        ## Separator Line ##
-        self.addToolbarSeparator()
         ## Preview ##
         toolbar_actions.append([StringContent.Preview,
             u':/general/general_preview.png', self.onPreviewClick])
@@ -232,6 +231,8 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions.append([StringContent.Service,
             u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
+            if action[0] == StringContent.Preview:
+                self.addToolbarSeparator()
             self.addToolbarButton(
                 self.plugin.getString(action[0])[u'title'],
                 self.plugin.getString(action[0])[u'tooltip'],
@@ -266,23 +267,25 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
                     self.plugin.getString(StringContent.Delete)[u'title'],
-                    self.onDeleteClick))
+                    self.onDeleteClick, [QtCore.Qt.Key_Delete]))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick))
+                self.onPreviewClick, [QtCore.Qt.Key_Enter]))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_live.png',
                 self.plugin.getString(StringContent.Live)[u'title'],
-                self.onLiveClick))
+                self.onLiveClick, [QtCore.Qt.ShiftModifier + \
+                QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
+                QtCore.Qt.Key_Return]))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_add.png',
                 self.plugin.getString(StringContent.Service)[u'title'],
-                self.onAddClick))
+                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal]))
         if self.addToServiceItem:
             self.listView.addAction(
                 context_menu_action(
@@ -293,6 +296,9 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onClickPressed)
+        QtCore.QObject.connect(self.listView,
+            QtCore.SIGNAL(u'itemSelectionChanged()'),
+            self.onSelectionChange)
 
     def initialise(self):
         """
@@ -349,11 +355,11 @@ class MediaManagerItem(QtGui.QWidget):
         Validates whether an image still exists and, if it does, is the
         thumbnail representation of the image up to date.
         """
-        if not os.path.exists(image):
+        if not os.path.exists(unicode(image)):
             return False
         if os.path.exists(thumb):
-            imageDate = os.stat(image).st_mtime
-            thumbDate = os.stat(thumb).st_mtime
+            imageDate = os.stat(unicode(image)).st_mtime
+            thumbDate = os.stat(unicode(thumb)).st_mtime
             # If image has been updated rebuild icon
             if imageDate > thumbDate:
                 self.iconFromFile(image, thumb)
@@ -411,7 +417,16 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.onPreviewClick()
 
-    def onPreviewClick(self):
+    def onSelectionChange(self):
+        """
+        Allows the change of current item in the list to be actioned
+        """
+        if QtCore.QSettings().value(u'advanced/single click preview',
+            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
+            and self.listView.selectedIndexes():
+            self.onPreviewClick(True)
+
+    def onPreviewClick(self, keepFocus=False):
         """
         Preview an item by building a service item then adding that service
         item to the preview slide controller.
@@ -426,6 +441,8 @@ class MediaManagerItem(QtGui.QWidget):
             if serviceItem:
                 serviceItem.from_plugin = True
                 self.parent.previewController.addServiceItem(serviceItem)
+                if keepFocus:
+                    self.listView.setFocus()
 
     def onLiveClick(self):
         """

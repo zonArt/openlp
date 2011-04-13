@@ -3,8 +3,9 @@
  * ------------------------------------------------------------------------- *
  * Copyright (c) 2008-2010 Raoul Snyman                                      *
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
- * Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin    *
- * Thompson, Jon Tibble, Carsten Tinggaard                                   *
+ * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
+ * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
+ * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -20,13 +21,10 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA                     *
  *****************************************************************************/
 
-/**
- * init.js - In certain browsers (yes, IE, I'm looking at you!), DocumentReady
- * JavaScript functions can only be run very last on the page. This file is the
- * last JavaScript file to be included on the page, and provides a work-around
- * for this bug in certain browsers.
- */
+.ui-icon-blank {
+  background-image: url(images/ui-icon-blank.png);
+}
 
-$(document).ready(function () {
-  OpenLP.Events.init();
-});
+.ui-icon-unblank {
+  background-image: url(images/ui-icon-unblank.png);
+}

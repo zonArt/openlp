@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,13 +49,17 @@ class UiStrings(object):
     Cancel = translate('OpenLP.Ui', 'Cancel')
     CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
     CreateService = translate('OpenLP.Ui', 'Create a new service.')
+    Continuous = translate('OpenLP.Ui', 'Continuous')
+    Default = unicode(translate('OpenLP.Ui', 'Default'))
     Delete = translate('OpenLP.Ui', '&Delete')
+    DisplayStyle = translate('OpenLP.Ui', 'Display style:')
     Edit = translate('OpenLP.Ui', '&Edit')
     EmptyField = translate('OpenLP.Ui', 'Empty Field')
     Error = translate('OpenLP.Ui', 'Error')
     Export = translate('OpenLP.Ui', 'Export')
     FontSizePtUnit = translate('OpenLP.Ui', 'pt',
         'Abbreviated font pointsize unit')
+    Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
@@ -63,6 +67,7 @@ class UiStrings(object):
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
+    Minutes = translate('OpenLP.Ui', 'm', 'The abbreviated unit for minutes')
     Middle = translate('OpenLP.Ui', 'Middle')
     New = translate('OpenLP.Ui', 'New')
     NewService = translate('OpenLP.Ui', 'New Service')
@@ -73,6 +78,8 @@ class UiStrings(object):
     NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
     OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you '
+        'wish to continue?')
     OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
@@ -81,7 +88,7 @@ class UiStrings(object):
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
     ResetBG = translate('OpenLP.Ui', 'Reset Background')
     ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
-    S = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')
+    Seconds = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')
     SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
     Search = translate('OpenLP.Ui', 'Search')
     SelectDelete = translate('OpenLP.Ui', 'You must select an item to delete.')
@@ -92,6 +99,8 @@ class UiStrings(object):
     Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
     Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
     Top = translate('OpenLP.Ui', 'Top')
+    VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
+    VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
     Version = translate('OpenLP.Ui', 'Version')
 
 def add_welcome_page(parent, image):
@@ -310,3 +319,20 @@ def create_valign_combo(form, parent, layout):
     form.verticalComboBox.addItem(UiStrings.Bottom)
     verticalLabel.setBuddy(form.verticalComboBox)
     layout.addRow(verticalLabel, form.verticalComboBox)
+
+def find_and_set_in_combo_box(combo_box, value_to_find):
+    """
+    Find a string in a combo box and set it as the selected item if present
+
+    ``combo_box``
+        The combo box to check for selected items
+
+    ``value_to_find``
+        The value to find
+    """
+    index = combo_box.findText(value_to_find,
+        QtCore.Qt.MatchExactly)
+    if index == -1:
+        # Not Found.
+        index = 0
+    combo_box.setCurrentIndex(index)

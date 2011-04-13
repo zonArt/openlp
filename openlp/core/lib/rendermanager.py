@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -69,7 +69,6 @@ class RenderManager(object):
         self.image_manager = ImageManager()
         self.display = MainDisplay(self, screens, False)
         self.display.imageManager = self.image_manager
-        self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
         self.calculate_default(self.screens.current[u'size'])
@@ -146,7 +145,8 @@ class RenderManager(object):
             else:
                 self.theme = self.service_theme
         else:
-            if theme:
+            # Images have a theme of -1
+            if theme and theme != -1:
                 self.theme = theme
             elif theme_level == ThemeLevel.Song or \
                 theme_level == ThemeLevel.Service:

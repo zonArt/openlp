@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,8 +85,18 @@ class BibleImportForm(OpenLPWizard):
         """
         OpenLPWizard.setupUi(self, image)
         QtCore.QObject.connect(self.formatComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.selectStack,
-            QtCore.SLOT(u'setCurrentIndex(int)'))
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onCurrentIndexChanged)
+
+    def onCurrentIndexChanged(self, index):
+        """
+        Called when the format combo box's index changed. We have to check if
+        the import is available and accordingly to disable or enable the next
+        button.
+        """
+        self.selectStack.setCurrentIndex(index)
+        next_button = self.button(QtGui.QWizard.NextButton)
+        next_button.setEnabled(BibleFormat.get_availability(index))
 
     def customInit(self):
         """
@@ -568,7 +578,8 @@ class BibleImportForm(OpenLPWizard):
         """
         self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
             self.openlp1FileEdit, u'%s (*.bible)' %
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x bible'))
+            translate('BiblesPlugin.ImportWizardForm',
+            'openlp.org 1.x Bible Files'))
 
     def registerFields(self):
         """

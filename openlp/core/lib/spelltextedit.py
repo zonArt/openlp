@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,7 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import re
 try:
     import enchant
@@ -38,20 +38,24 @@ except ImportError:
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, DisplayTags
 
+log = logging.getLogger(__name__)
+
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
     def __init__(self, *args):
+        global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
+                self.highlighter = Highlighter(self.document())
+                self.highlighter.spellingDictionary = self.dictionary
             except DictNotFoundError:
-                self.dictionary = enchant.Dict(u'en_US')
-            self.highlighter = Highlighter(self.document())
-            self.highlighter.spellingDictionary = self.dictionary
+                ENCHANT_AVAILABLE = False
+                log.debug(u'Could not load default dictionary')
 
     def mousePressEvent(self, event):
         """

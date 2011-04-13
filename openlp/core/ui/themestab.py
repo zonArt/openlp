@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
 class ThemesTab(SettingsTab):
     """
@@ -185,12 +185,7 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
-        id = self.DefaultComboBox.findText(
-            self.global_theme, QtCore.Qt.MatchExactly)
-        if id == -1:
-            id = 0 # Not Found
-            self.global_theme = u''
-        self.DefaultComboBox.setCurrentIndex(id)
+        find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':

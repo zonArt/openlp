@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -62,7 +62,7 @@ class ItemCapabilities(object):
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
     AllowsDetailedTitleDisplay = 11
-    AllowsVarableStartTime = 12
+    AllowsVariableStartTime = 12
 
 
 class ServiceItem(object):
@@ -88,8 +88,8 @@ class ServiceItem(object):
         self.audit = u''
         self.items = []
         self.iconic_representation = None
-        self.raw_footer = None
-        self.foot_text = None
+        self.raw_footer = []
+        self.foot_text = u''
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
@@ -109,7 +109,9 @@ class ServiceItem(object):
         self.edit_id = None
         self.xml_version = None
         self.start_time = 0
+        self.end_time = 0
         self.media_length = 0
+        self.from_service = False
         self._new_item()
 
     def _new_item(self):
@@ -162,9 +164,7 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
-        theme = None
-        if self.theme:
-            theme = self.theme
+        theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.render_manager.set_override_theme(theme, useOverride)
         self.themedata = self.render_manager.renderer._theme
@@ -185,13 +185,13 @@ class ServiceItem(object):
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        self.foot_text = None
-        if self.raw_footer:
-            for foot in self.raw_footer:
-                if not self.foot_text:
-                    self.foot_text = foot
-                else:
-                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
+        # The footer should never be None, but to be compatible with a few
+        # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
+        # avoid tracebacks.
+        if self.raw_footer is None:
+            self.raw_footer = []
+        self.foot_text = \
+            u'<br>'.join([footer for footer in self.raw_footer if footer])
 
     def add_from_image(self, path, title):
         """
@@ -204,8 +204,7 @@ class ServiceItem(object):
             A title for the slide in the service item.
         """
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append(
-            {u'title': title, u'path': path})
+        self._raw_frames.append({u'title': title, u'path': path})
         self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
@@ -264,6 +263,7 @@ class ServiceItem(object):
             u'data': self.data_string,
             u'xml_version': self.xml_version,
             u'start_time': self.start_time,
+            u'end_time': self.end_time,
             u'media_length': self.media_length
         }
         service_data = []
@@ -310,6 +310,8 @@ class ServiceItem(object):
             self.xml_version = header[u'xml_version']
         if u'start_time' in header:
             self.start_time = header[u'start_time']
+        if u'end_time' in header:
+            self.end_time = header[u'end_time']
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:

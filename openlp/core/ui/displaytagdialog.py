@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -143,11 +143,11 @@ class Ui_DisplayTagDialog(object):
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagDialog', 'Tag id'))
+            translate('OpenLP.DisplayTagDialog', 'Tag Id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagDialog', 'Start Html'))
+            translate('OpenLP.DisplayTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagDialog', 'End Html'))
+            translate('OpenLP.DisplayTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)
