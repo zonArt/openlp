@@ -35,7 +35,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -231,13 +232,15 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.serviceManagerList,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
         QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_preview_live'), self.previewLive)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -561,6 +564,7 @@ class ServiceManager(QtGui.QWidget):
                 self.newFile()
                 for item in items:
                     serviceItem = ServiceItem()
+                    serviceItem.from_service = True
                     serviceItem.render_manager = self.mainwindow.renderManager
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
@@ -585,6 +589,21 @@ class ServiceManager(QtGui.QWidget):
                 message=translate('OpenLP.ServiceManager',
                 'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
+        except zipfile.BadZipfile:
+            if os.path.getsize(fileName) == 0:
+                log.exception(u'Service file is zero sized: %s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Empty File'),
+                    translate('OpenLP.ServiceManager', 'This service file '
+                    'does not contain any data.'))
+            else:
+                log.exception(u'Service file is cannot be extracted as zip: '
+                    u'%s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Corrupt File'),
+                    translate('OpenLP.ServiceManager', 'This file is either'
+                    'corrupt or not an OpenLP 2.0 service file.'))
+            return
         finally:
             if fileTo:
                 fileTo.close()
@@ -658,10 +677,6 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
-            self.serviceItems[item][u'service_item'].start_time = \
-                self.startTimeForm.hourSpinBox.value() * 3600 + \
-                self.startTimeForm.minuteSpinBox.value() * 60 + \
-                self.startTimeForm.secondSpinBox.value()
             self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
@@ -671,6 +686,19 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
                 replace=True, expand=self.serviceItems[item][u'expanded'])
+
+    def previewLive(self, message):
+        """
+        Called by the SlideController to request a preview item be made live
+        and allows the next preview to be updated if relevent.
+        """
+        uuid, row = message.split(u':')
+        for sitem in self.serviceItems:
+            if sitem[u'service_item']._uuid == uuid:
+                item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
+                self.serviceManagerList.setCurrentItem(item)
+                self.makeLive(int(row))
+                return
 
     def nextItem(self):
         """
@@ -994,7 +1022,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].edit_id = editId
+                item[u'service_item'].edit_id = int(editId)
         self.setModified(True)
 
     def replaceServiceItem(self, newItem):
@@ -1027,6 +1055,7 @@ class ServiceManager(QtGui.QWidget):
         if expand is None:
             expand = self.expandTabs
         item.render()
+        item.from_service = True
         if replace:
             sitem, child = self.findServiceItem()
             item.merge(self.serviceItems[sitem][u'service_item'])
@@ -1081,11 +1110,27 @@ class ServiceManager(QtGui.QWidget):
         else:
             return self.serviceItems[item][u'service_item']
 
-    def makeLive(self):
+    def onMakeLive(self):
+        """
+        Send the current item to the Live slide controller but triggered
+        by a tablewidget click event.
+        """
+        self.makeLive()
+
+    def makeLive(self, row=-1):
         """
         Send the current item to the Live slide controller
+
+        ``row``
+            Row number to be displayed if from preview.
+            -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
+        # No items in service
+        if item == -1:
+            return
+        if row != -1:
+            child = row
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
@@ -1217,13 +1262,7 @@ class ServiceManager(QtGui.QWidget):
             action = context_menu_action(self.serviceManagerList, None, theme,
                 self.onThemeChangeAction)
             self.themeMenu.addAction(action)
-        index = self.themeComboBox.findText(self.service_theme,
-            QtCore.Qt.MatchExactly)
-        # Not Found
-        if index == -1:
-            index = 0
-            self.service_theme = u''
-        self.themeComboBox.setCurrentIndex(index)
+        find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 

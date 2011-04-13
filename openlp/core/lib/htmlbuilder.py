@@ -85,7 +85,12 @@ body {
 }
 /* lyric css */
 %s
-
+sup {
+    font-size:0.6em;
+    vertical-align:top;
+    position:relative;
+    top:-0.3em;
+}
 </style>
 <script language="javascript">
     var timer = null;

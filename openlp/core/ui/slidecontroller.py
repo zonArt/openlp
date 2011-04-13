@@ -185,7 +185,7 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
-            self.delaySpinBox.setSuffix(UiStrings.S)
+            self.delaySpinBox.setSuffix(UiStrings.Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
@@ -1014,8 +1014,12 @@ class SlideController(QtGui.QWidget):
         """
         row = self.previewListWidget.currentRow()
         if row > -1 and row < self.previewListWidget.rowCount():
-            self.parent.liveController.addServiceManagerItem(
-                self.serviceItem, row)
+            if self.serviceItem.from_service:
+                Receiver.send_message('servicemanager_preview_live',
+                    u'%s:%s' % (self.serviceItem._uuid, row))
+            else:
+                self.parent.liveController.addServiceManagerItem(
+                    self.serviceItem, row)
 
     def onMediaStart(self, item):
         """
