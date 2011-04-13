@@ -178,7 +178,7 @@ source. For more information about acquiring Bibles please see :ref:`bibleimport
 I am using high amounts of RAM when showing PowerPoint or Impress slides
 ------------------------------------------------------------------------
 
-The reason OpenLP usa greater amounts of RAM is because it does not load the
+The reason OpenLP uses greater amounts of RAM is because it does not load the
 presentation by itself. OpenLP uses PowerPoint or Impress to load the 
 presentation. Then OpenLP displays images of each slide. This results in the 
 higher than expected RAM usage.
