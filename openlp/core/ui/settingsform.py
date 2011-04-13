@@ -60,8 +60,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # load all the settings
         for tabIndex in range(0, self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).load()
+        self.settingListWidget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
-
 
     def insertTab(self, tab, location):
         """
@@ -78,13 +78,11 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
                     match = True
                     break
         if not match:
-            self.stackedLayout.addWidget(tab)
+            pos = self.stackedLayout.addWidget(tab)
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
             icon = build_icon(tab.icon_path)
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(14 + location, item_name)
-            self.stackedLayout.addWidget(tab)
-            self.stackedLayout.setCurrentIndex(0)
 
     def removeTab(self, tab):
         """
