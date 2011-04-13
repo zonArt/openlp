@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    critical_error_message_box
+    critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -208,20 +208,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.alternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
-            id = self.songBookComboBox.findText(
-                unicode(book_name.name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-            self.songBookComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.songBookComboBox, unicode(book_name.name))
         if self.song.theme_name:
-            id = self.themeComboBox.findText(
-                unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-                self.song.theme_name = None
-            self.themeComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.themeComboBox, unicode(self.song.theme_name))
         if self.song.copyright:
             self.copyrightEdit.setText(self.song.copyright)
         else:
@@ -269,6 +258,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if index is None:
                     index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
+                if verse[0][u'label'] == u'':
+                    verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))

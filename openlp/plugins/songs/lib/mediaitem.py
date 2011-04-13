@@ -73,6 +73,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.quickPreviewAllowed = True
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -282,19 +283,20 @@ class SongMediaItem(MediaManagerItem):
         self.remoteTriggered = None
         self.remoteSong = -1
 
-    def onRemoteEdit(self, songid):
+    def onRemoteEdit(self, message):
         """
         Called by ServiceManager or SlideController by event passing
         the Song Id in the payload along with an indicator to say which
         type of display is required.
         """
-        log.debug(u'onRemoteEdit %s' % songid)
-        fields = songid.split(u':')
-        valid = self.parent.manager.get_object(Song, fields[1])
+        log.debug(u'onRemoteEdit %s' % message)
+        remote_type, song_id = message.split(u':')
+        song_id = int(song_id)
+        valid = self.parent.manager.get_object(Song, song_id)
         if valid:
-            self.remoteSong = fields[1]
-            self.remoteTriggered = fields[0]
-            self.edit_song_form.loadSong(fields[1], (fields[0] == u'P'))
+            self.remoteSong = song_id
+            self.remoteTriggered = remote_type
+            self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
             self.edit_song_form.exec_()
 
     def onEditClick(self):
