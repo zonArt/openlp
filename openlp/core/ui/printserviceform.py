@@ -104,7 +104,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
         self.pageBreakAfterText.setChecked(settings.value(
-            u'enable page break', QtCore.QVariant(False)).toBool())
+            u'add page break', QtCore.QVariant(False)).toBool())
         if not self.slideTextCheckBox.isChecked():
             self.pageBreakAfterText.setDisabled(True)
         self.metaDataCheckBox.setChecked(settings.value(
@@ -261,11 +261,13 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             element.set(attribute, value if value is not None else u'')
         return element
 
-    def _fromstring(self, string, parent):
+    def _fromstring(self, string, parent, attribute=None, value=None):
         """
         This is used to create a child html element from a string.
         """
         element = html.fromstring(string)
+        if attribute is not None:
+            element.set(attribute, value if value is not None else u'')
         parent.append(element)
         return element
 
@@ -371,7 +373,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
             QtCore.QVariant(self.slideTextCheckBox.isChecked()))
-        settings.setValue(u'enable page break',
+        settings.setValue(u'add page break',
             QtCore.QVariant(self.pageBreakAfterText.isChecked()))
         settings.setValue(u'print file meta data',
             QtCore.QVariant(self.metaDataCheckBox.isChecked()))
