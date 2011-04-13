@@ -291,7 +291,11 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.parent.manager.media = self
         self.loadBibles()
-        self.updateAutoCompleter(False)
+        bible = QtCore.QSettings().value(
+            self.settingsSection + u'/quick bible', QtCore.QVariant(
+            self.quickVersionComboBox.currentText())).toString()
+        find_and_set_in_combo_box(self.quickVersionComboBox, bible)
+        self.updateAutoCompleter()
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
@@ -328,6 +332,8 @@ class BibleMediaItem(MediaManagerItem):
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))
+        elif len(bibles):
+            self.initialiseAdvancedBible(bibles[0])
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
@@ -374,20 +380,14 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, verse_count, self.advancedFromVerse)
             self.adjustComboBox(1, verse_count, self.advancedToVerse)
 
-    def updateAutoCompleter(self, updateConfig=True):
+    def updateAutoCompleter(self):
         """
         This updates the bible book completion list for the search field. The
         completion depends on the bible. It is only updated when we are doing a
         reference search, otherwise the auto completion list is removed.
         """
-        if updateConfig:
-            QtCore.QSettings().setValue(self.settingsSection + u'/quick bible',
-                QtCore.QVariant(self.quickVersionComboBox.currentText()))
-        else:
-            book = QtCore.QSettings().value(
-                self.settingsSection + u'/quick bible',
-                QtCore.QVariant(u'')).toString()
-            find_and_set_in_combo_box(self.quickVersionComboBox, book)
+        QtCore.QSettings().setValue(self.settingsSection + u'/quick bible',
+            QtCore.QVariant(self.quickVersionComboBox.currentText()))
         books = []
         # We have to do a 'Reference Search'.
         if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
@@ -395,7 +395,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
                 book_data = bibles[bible].get_books()
-                books = [book.name for book in book_data]
+                books = [book.name + u' ' for book in book_data]
                 books.sort()
         add_widget_completer(books, self.quickSearchEdit)
 
