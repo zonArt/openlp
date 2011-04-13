@@ -460,7 +460,7 @@ def build_lyrics_css(item, webkitvers):
 .lyricsshadow {
 %s
 }
-     """
+    """
     theme = item.themedata
     lyricstable = u''
     lyrics = u''
@@ -468,8 +468,7 @@ def build_lyrics_css(item, webkitvers):
     outline = u''
     shadow = u''
     if theme and item.main:
-        lyricstable = u'left: %spx; top: %spx;' % \
-            (item.main.x(), item.main.y())
+        lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(),
             item.main.height())
         # For performance reasons we want to show as few DIV's as possible,

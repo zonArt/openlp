@@ -32,8 +32,9 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
-from openlp.core.lib.ui import icon_action, UiStrings, shortcut_action
+from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
+from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
@@ -140,12 +141,16 @@ class SlideController(QtGui.QWidget):
             translate('OpenLP.SlideController', 'Previous Slide'),
             u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous'),
-            self.onSlideSelectedPrevious)
+            self.onSlideSelectedPrevious,
+            shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
-            self.onSlideSelectedNext)
+            self.onSlideSelectedNext,
+            shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
             self.hideMenu = QtGui.QToolButton(self.toolbar)
@@ -154,16 +159,20 @@ class SlideController(QtGui.QWidget):
             self.toolbar.addToolbarWidget(u'Hide Menu', self.hideMenu)
             self.hideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
-            self.blankScreen = icon_action(self.hideMenu, u'Blank Screen',
-                u':/slides/slide_blank.png', False)
+            self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
+                [QtCore.Qt.Key_Period], self.onBlankDisplay,
+                u':/slides/slide_blank.png', False, UiStrings.LiveToolbar)
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
-            self.themeScreen = icon_action(self.hideMenu, u'Blank Theme',
-                u':/slides/slide_theme.png', False)
+            self.themeScreen = shortcut_action(self.hideMenu, u'themeScreen',
+                [QtGui.QKeySequence(u'T')], self.onThemeDisplay,
+                u':/slides/slide_theme.png', False, UiStrings.LiveToolbar)
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
-            self.desktopScreen = icon_action(self.hideMenu, u'Desktop Screen',
-                u':/slides/slide_desktop.png', False)
+            self.desktopScreen = shortcut_action(self.hideMenu,
+                u'desktopScreen', [QtGui.QKeySequence(u'D')],
+                self.onHideDisplay, u':/slides/slide_desktop.png', False,
+                UiStrings.LiveToolbar)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
@@ -291,12 +300,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.previewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
-            QtCore.QObject.connect(self.blankScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onBlankDisplay)
-            QtCore.QObject.connect(self.themeScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onThemeDisplay)
-            QtCore.QObject.connect(self.desktopScreen,
-                QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -362,33 +365,37 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
-        actionList = self.parent.actionList
-        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, 0])
-        actionList.add_action(self.previousItem, u'Preview')
-        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, 0])
-        actionList.add_action(self.nextItem, u'Preview')
+        self.previousItem.setObjectName(u'previousItemPreview')         
+        self.nextItem.setObjectName(u'nextItemPreview')
+        action_list = ActionList.get_instance()
+        action_list.add_category(
+            UiStrings.PreviewToolbar, CategoryOrder.standardToolbar)
+        action_list.add_action(self.previousItem, UiStrings.PreviewToolbar)
+        action_list.add_action(self.nextItem, UiStrings.PreviewToolbar)
 
     def setLiveHotkeys(self, parent=None):
-        actionList = self.parent.actionList
-        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
-        self.previousItem.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.previousItem, u'Live')
-        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
-        self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.nextItem, u'Live')
-        self.previousService = shortcut_action(parent,
-            translate('OpenLP.SlideController', 'Previous Service'),
-            [QtCore.Qt.Key_Left, 0], self.servicePrevious)
-        actionList.add_action(self.previousService, u'Live')
-        self.nextService = shortcut_action(parent,
-            translate('OpenLP.SlideController', 'Next Service'),
-            [QtCore.Qt.Key_Right, 0], self.serviceNext)
-        actionList.add_action(self.nextService, u'Live')
-        self.escapeItem = shortcut_action(parent,
-            translate('OpenLP.SlideController', 'Escape Item'),
-            [QtCore.Qt.Key_Escape, 0], self.liveEscape)
-        actionList.add_action(self.escapeItem, u'Live')
+        self.previousItem.setObjectName(u'previousItemLive')         
+        self.nextItem.setObjectName(u'nextItemLive')
+        action_list = ActionList.get_instance()
+        action_list.add_category(
+            UiStrings.LiveToolbar, CategoryOrder.standardToolbar)
+        action_list.add_action(self.previousItem, UiStrings.LiveToolbar)
+        action_list.add_action(self.nextItem, UiStrings.LiveToolbar)
+        self.previousService = shortcut_action(parent, u'previousService',
+            [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings.LiveToolbar)
+        self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        self.previousService.setText(
+            translate('OpenLP.SlideController', 'Previous Service'))
+        self.nextService = shortcut_action(parent, 'nextService',
+            [QtCore.Qt.Key_Right], self.serviceNext, UiStrings.LiveToolbar)
+        self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        self.nextService.setText(
+            translate('OpenLP.SlideController', 'Next Service'))
+        self.escapeItem = shortcut_action(parent, 'escapeItem',
+            [QtCore.Qt.Key_Escape], self.liveEscape, UiStrings.LiveToolbar)
+        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        self.escapeItem.setText(
+            translate('OpenLP.SlideController', 'Escape Item'))
 
     def liveEscape(self):
         self.display.setVisible(False)
@@ -745,10 +752,12 @@ class SlideController(QtGui.QWidget):
         """
         self.onBlankDisplay(False)
 
-    def onBlankDisplay(self, checked):
+    def onBlankDisplay(self, checked=None):
         """
         Handle the blank screen button actions
         """
+        if checked is None:
+            checked = self.blankScreen.isChecked()
         log.debug(u'onBlankDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.blankScreen)
         self.blankScreen.setChecked(checked)
@@ -764,10 +773,12 @@ class SlideController(QtGui.QWidget):
         self.blankPlugin()
         self.updatePreview()
 
-    def onThemeDisplay(self, checked):
+    def onThemeDisplay(self, checked=None):
         """
         Handle the Theme screen button
         """
+        if checked is None:
+            checked = self.themeScreen.isChecked()
         log.debug(u'onThemeDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.themeScreen)
         self.blankScreen.setChecked(False)
@@ -783,10 +794,12 @@ class SlideController(QtGui.QWidget):
         self.blankPlugin()
         self.updatePreview()
 
-    def onHideDisplay(self, checked):
+    def onHideDisplay(self, checked=None):
         """
         Handle the Hide screen button
         """
+        if checked is None:
+            checked = self.desktopScreen.isChecked()
         log.debug(u'onHideDisplay %s' % checked)
         self.hideMenu.setDefaultAction(self.desktopScreen)
         self.blankScreen.setChecked(False)
