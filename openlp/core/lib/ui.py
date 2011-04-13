@@ -31,6 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver, translate
+from openlp.core.utils.actions import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -57,8 +58,10 @@ class UiStrings(object):
     EmptyField = translate('OpenLP.Ui', 'Empty Field')
     Error = translate('OpenLP.Ui', 'Error')
     Export = translate('OpenLP.Ui', 'Export')
+    File = translate('OpenLP.Ui', 'File')
     FontSizePtUnit = translate('OpenLP.Ui', 'pt',
         'Abbreviated font pointsize unit')
+    Help = translate('OpenLP.Ui', 'Help')
     Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
@@ -67,6 +70,7 @@ class UiStrings(object):
     Live = translate('OpenLP.Ui', 'Live')
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
+    LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
     Load = translate('OpenLP.Ui', 'Load')
     Minutes = translate('OpenLP.Ui', 'm', 'The abbreviated unit for minutes')
     Middle = translate('OpenLP.Ui', 'Middle')
@@ -84,6 +88,7 @@ class UiStrings(object):
     OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
+    PreviewToolbar = translate('OpenLP.Ui', 'Preview Toolbar')
     PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
     ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
@@ -94,15 +99,19 @@ class UiStrings(object):
     Search = translate('OpenLP.Ui', 'Search')
     SelectDelete = translate('OpenLP.Ui', 'You must select an item to delete.')
     SelectEdit = translate('OpenLP.Ui', 'You must select an item to edit.')
+    Settings = translate('OpenLP.Ui', 'Settings')
     SaveService = translate('OpenLP.Ui', 'Save Service')
     Service = translate('OpenLP.Ui', 'Service')
     StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
     Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
     Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
+    Tools = translate('OpenLP.Ui', 'Tools')
     Top = translate('OpenLP.Ui', 'Top')
     VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
     VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
     Version = translate('OpenLP.Ui', 'Version')
+    View = translate('OpenLP.Ui', 'View')
+    ViewMode = translate('OpenLP.Ui', 'View Model')
 
 def add_welcome_page(parent, image):
     """
@@ -243,43 +252,126 @@ def create_up_down_push_button_set(parent):
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
 
-def base_action(parent, name):
+def base_action(parent, name, category=None):
     """
     Return the most basic action with the object name set.
+
+    ``category``
+        The category the action should be listed in the shortcut dialog. If you
+        not wish, that this action is added to the shortcut dialog, then do not
+        state any.
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
+    if category is not None:
+        action_list = ActionList.get_instance()
+        action_list.add_action(action, category)
     return action
 
-def checkable_action(parent, name, checked=None):
+def checkable_action(parent, name, checked=None, category=None):
     """
     Return a standard action with the checkable attribute set.
     """
-    action = base_action(parent, name)
+    action = base_action(parent, name, category)
     action.setCheckable(True)
     if checked is not None:
         action.setChecked(checked)
     return action
 
-def icon_action(parent, name, icon, checked=None):
+def icon_action(parent, name, icon, checked=None, category=None):
     """
     Return a standard action with an icon.
     """
     if checked is not None:
-        action = checkable_action(parent, name, checked)
+        action = checkable_action(parent, name, checked, category)
     else:
-        action = base_action(parent, name)
+        action = base_action(parent, name, category)
     action.setIcon(build_icon(icon))
     return action
 
-def shortcut_action(parent, text, shortcuts, function):
+def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
+    category=None, context=QtCore.Qt.WindowShortcut):
     """
     Return a shortcut enabled action.
     """
-    action = QtGui.QAction(text, parent)
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
+    if icon is not None:
+        action.setIcon(build_icon(icon))
+    if checked is not None:
+        action.setCheckable(True)
+        action.setChecked(checked)
     action.setShortcuts(shortcuts)
-    action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+    action.setShortcutContext(context)
+    action_list = ActionList.get_instance()
+    action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
+    return action
+
+def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
+    context=QtCore.Qt.WindowShortcut):
+    """
+    Utility method to help build context menus for plugins
+
+    ``base``
+        The parent menu to add this menu item to
+
+    ``icon``
+        An icon for this action
+
+    ``text``
+        The text to display for this action
+
+    ``slot``
+        The code to run when this action is triggered
+
+    ``shortcuts``
+        The action's shortcuts.
+
+    ``category``
+        The category the shortcut should be listed in the shortcut dialog. If
+        left to None, then the action will be hidden in the shortcut dialog.
+
+    ``context``
+        The context the shortcut is valid.
+    """
+    action = QtGui.QAction(text, base)
+    if icon:
+        action.setIcon(build_icon(icon))
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
+    if shortcuts is not None:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
+        action_list = ActionList.get_instance()
+        action_list.add_action(action)
+    return action
+
+def context_menu(base, icon, text):
+    """
+    Utility method to help build context menus for plugins
+
+    ``base``
+        The parent object to add this menu to
+
+    ``icon``
+        An icon for this menu
+
+    ``text``
+        The text to display for this menu
+    """
+    action = QtGui.QMenu(text, base)
+    action.setIcon(build_icon(icon))
+    return action
+
+def context_menu_separator(base):
+    """
+    Add a separator to a context menu
+
+    ``base``
+        The menu object to add the separator to
+    """
+    action = QtGui.QAction(u'', base)
+    action.setSeparator(True)
     return action
 
 def add_widget_completer(cache, widget):
