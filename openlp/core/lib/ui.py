@@ -49,8 +49,10 @@ class UiStrings(object):
     Cancel = translate('OpenLP.Ui', 'Cancel')
     CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
     CreateService = translate('OpenLP.Ui', 'Create a new service.')
+    Continuous = translate('OpenLP.Ui', 'Continuous')
     Default = unicode(translate('OpenLP.Ui', 'Default'))
     Delete = translate('OpenLP.Ui', '&Delete')
+    DisplayStyle = translate('OpenLP.Ui', 'Display style:')
     Edit = translate('OpenLP.Ui', '&Edit')
     EmptyField = translate('OpenLP.Ui', 'Empty Field')
     Error = translate('OpenLP.Ui', 'Error')
@@ -97,6 +99,8 @@ class UiStrings(object):
     Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
     Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
     Top = translate('OpenLP.Ui', 'Top')
+    VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
+    VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
     Version = translate('OpenLP.Ui', 'Version')
 
 def add_welcome_page(parent, image):
@@ -315,3 +319,20 @@ def create_valign_combo(form, parent, layout):
     form.verticalComboBox.addItem(UiStrings.Bottom)
     verticalLabel.setBuddy(form.verticalComboBox)
     layout.addRow(verticalLabel, form.verticalComboBox)
+
+def find_and_set_in_combo_box(combo_box, value_to_find):
+    """
+    Find a string in a combo box and set it as the selected item if present
+
+    ``combo_box``
+        The combo box to check for selected items
+
+    ``value_to_find``
+        The value to find
+    """
+    index = combo_box.findText(value_to_find,
+        QtCore.Qt.MatchExactly)
+    if index == -1:
+        # Not Found.
+        index = 0
+    combo_box.setCurrentIndex(index)
