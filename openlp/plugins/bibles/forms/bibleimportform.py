@@ -85,8 +85,18 @@ class BibleImportForm(OpenLPWizard):
         """
         OpenLPWizard.setupUi(self, image)
         QtCore.QObject.connect(self.formatComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.selectStack,
-            QtCore.SLOT(u'setCurrentIndex(int)'))
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onCurrentIndexChanged)
+
+    def onCurrentIndexChanged(self, index):
+        """
+        Called when the format combo box's index changed. We have to check if
+        the import is available and accordingly to disable or enable the next
+        button.
+        """
+        self.selectStack.setCurrentIndex(index)
+        next_button = self.button(QtGui.QWizard.NextButton)
+        next_button.setEnabled(BibleFormat.get_availability(index))
 
     def customInit(self):
         """

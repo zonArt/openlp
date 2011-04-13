@@ -35,7 +35,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -691,9 +692,9 @@ class ServiceManager(QtGui.QWidget):
         Called by the SlideController to request a preview item be made live
         and allows the next preview to be updated if relevent.
         """
-        id, row = message.split(u':')
+        uuid, row = message.split(u':')
         for sitem in self.serviceItems:
-            if sitem[u'service_item']._uuid == id:
+            if sitem[u'service_item']._uuid == uuid:
                 item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
                 self.serviceManagerList.setCurrentItem(item)
                 self.makeLive(int(row))
@@ -1021,7 +1022,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].edit_id = editId
+                item[u'service_item'].edit_id = int(editId)
         self.setModified(True)
 
     def replaceServiceItem(self, newItem):
@@ -1261,13 +1262,7 @@ class ServiceManager(QtGui.QWidget):
             action = context_menu_action(self.serviceManagerList, None, theme,
                 self.onThemeChangeAction)
             self.themeMenu.addAction(action)
-        index = self.themeComboBox.findText(self.service_theme,
-            QtCore.Qt.MatchExactly)
-        # Not Found
-        if index == -1:
-            index = 0
-            self.service_theme = u''
-        self.themeComboBox.setCurrentIndex(index)
+        find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
