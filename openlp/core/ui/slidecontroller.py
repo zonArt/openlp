@@ -460,7 +460,7 @@ class SlideController(QtGui.QWidget):
         request = unicode(self.sender().text())
         slideno = self.slideList[request]
         self.__updatePreviewSelection(slideno)
-        self.onSlideSelected()
+        self.slideSelected()
 
     def receiveSpinDelay(self, value):
         """
@@ -556,7 +556,7 @@ class SlideController(QtGui.QWidget):
         # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
             self.__checkUpdateSelectedSlide(slideno)
-            self.onSlideSelected()
+            self.slideSelected()
             return
         self._processItem(item, slideno)
 
@@ -641,7 +641,7 @@ class SlideController(QtGui.QWidget):
             self.display.buildHtml(self.serviceItem)
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
-        self.onSlideSelected(True)
+        self.slideSelected(True)
         self.previewListWidget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
@@ -699,7 +699,7 @@ class SlideController(QtGui.QWidget):
             self.updatePreview()
         else:
             self.previewListWidget.selectRow(0)
-            self.onSlideSelected()
+            self.slideSelected()
 
     def onSlideSelectedIndex(self, message):
         """
@@ -714,7 +714,7 @@ class SlideController(QtGui.QWidget):
             self.updatePreview()
         else:
             self.__checkUpdateSelectedSlide(index)
-            self.onSlideSelected()
+            self.slideSelected()
 
     def mainDisplaySetBackground(self):
         """
@@ -755,15 +755,13 @@ class SlideController(QtGui.QWidget):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(False)
         if checked:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
             QtCore.QSettings().setValue(
                 self.parent.generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'blanked'))
         else:
-            Receiver.send_message(u'maindisplay_show')
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
-        self.blankPlugin(checked)
+        self.blankPlugin()
         self.updatePreview()
 
     def onThemeDisplay(self, checked):
@@ -776,15 +774,13 @@ class SlideController(QtGui.QWidget):
         self.themeScreen.setChecked(checked)
         self.desktopScreen.setChecked(False)
         if checked:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
             QtCore.QSettings().setValue(
                 self.parent.generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'themed'))
         else:
-            Receiver.send_message(u'maindisplay_show')
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
-        self.blankPlugin(checked)
+        self.blankPlugin()
         self.updatePreview()
 
     def onHideDisplay(self, checked):
@@ -797,28 +793,31 @@ class SlideController(QtGui.QWidget):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(checked)
         if checked:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
             QtCore.QSettings().setValue(
                 self.parent.generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'hidden'))
         else:
-            Receiver.send_message(u'maindisplay_show')
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
 
-    def blankPlugin(self, blank):
+    def blankPlugin(self):
         """
-        Blank the display screen within a plugin if required.
+        Blank/Hide the display screen within a plugin if required.
         """
-        log.debug(u'blankPlugin %s ', blank)
+        hide_mode = self.hideMode()
+        log.debug(u'blankPlugin %s ', hide_mode)
         if self.serviceItem is not None:
-            if blank:
+            if hide_mode:
+                if not self.serviceItem.is_command():
+                    Receiver.send_message(u'maindisplay_hide', hide_mode)
                 Receiver.send_message(u'%s_blank'
                     % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
+                    [self.serviceItem, self.isLive, hide_mode])
             else:
+                if not self.serviceItem.is_command():
+                    Receiver.send_message(u'maindisplay_show')
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
@@ -830,15 +829,24 @@ class SlideController(QtGui.QWidget):
         log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
                 Receiver.send_message(u'%s_hide'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
             else:
+                if not self.serviceItem.is_command():
+                    Receiver.send_message(u'maindisplay_show')
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
 
     def onSlideSelected(self, start=False):
+        """
+        Slide selected in controller
+        """
+        self.slideSelected()
+
+    def slideSelected(self, start=False):
         """
         Generate the preview when you click on a slide.
         if this is the Live Controller also display on the screen
@@ -927,7 +935,7 @@ class SlideController(QtGui.QWidget):
                     Receiver.send_message('servicemanager_next_item')
                     return
             self.__checkUpdateSelectedSlide(row)
-            self.onSlideSelected()
+            self.slideSelected()
 
     def onSlideSelectedPreviousNoloop(self):
         self.onSlideSelectedPrevious(False)
@@ -950,7 +958,7 @@ class SlideController(QtGui.QWidget):
                 else:
                     row = 0
             self.__checkUpdateSelectedSlide(row)
-            self.onSlideSelected()
+            self.slideSelected()
 
     def __checkUpdateSelectedSlide(self, row):
         if row + 1 < self.previewListWidget.rowCount():
@@ -971,7 +979,7 @@ class SlideController(QtGui.QWidget):
         else:
             self.previewListWidget.selectRow(
                         self.previewListWidget.rowCount() - 1)
-            self.onSlideSelected()
+            self.slideSelected()
 
     def onStartLoop(self):
         """

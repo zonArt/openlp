@@ -70,11 +70,9 @@ class Controller(object):
                 Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
-                self.blank()
+                self.blank(hide_mode)
             elif hide_mode == HideMode.Blank:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
-                self.blank()
+                self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
                 Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
@@ -182,7 +180,7 @@ class Controller(object):
         #self.doc.slidenumber = 0
         #self.timer.stop()
 
-    def blank(self):
+    def blank(self, hide_mode):
         """
         Instruct the controller to blank the presentation
         """
@@ -193,6 +191,8 @@ class Controller(object):
             return
         if not self.doc.is_active():
             return
+        if hide_mode == HideMode.Theme:
+            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
         self.doc.blank_screen()
 
     def stop(self):
@@ -363,8 +363,9 @@ class MessageListener(object):
         React to the message to blank the display
         """
         is_live = message[1]
+        hide_mode = message[2]
         if is_live:
-            self.live_handler.blank()
+            self.live_handler.blank(hide_mode)
 
     def unblank(self, message):
         """
