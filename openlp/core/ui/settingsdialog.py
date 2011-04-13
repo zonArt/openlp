@@ -37,8 +37,11 @@ class Ui_SettingsDialog(object):
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QGridLayout(settingsDialog)
         self.settingsLayout.setObjectName(u'settingsLayout')
+        self.settingsLayout.setMargin(0)
         self.settingListWidget = QtGui.QListWidget(settingsDialog)
-        self.settingListWidget.setIconSize(QtCore.QSize(32, 32))
+        self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
+        self.settingListWidget.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
         self.settingListWidget.setObjectName(u'settingListWidget')
         self.settingsLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
         self.stackedLayout = QtGui.QStackedLayout()
@@ -47,7 +50,6 @@ class Ui_SettingsDialog(object):
         self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
         self.settingsLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
-        self.stackedLayout.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
         QtCore.QObject.connect(self.settingListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),

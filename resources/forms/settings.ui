@@ -17,26 +17,49 @@
    <iconset>
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>681</width>
+     <width>691</width>
      <height>441</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QListWidget" name="settingListWidget"/>
-    </item>
-    <item row="0" column="1">
      <widget class="QStackedWidget" name="tagStackedWidget">
-      <widget class="QWidget" name="page"/>
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>0</height>
+       </size>
+      </property>
+      <widget class="QWidget" name="page">
+       <widget class="QListWidget" name="settingListWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>211</width>
+          <height>409</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+       </widget>
+      </widget>
       <widget class="QWidget" name="page_2"/>
      </widget>
     </item>
-    <item row="1" column="1">
+    <item row="1" column="0">
      <widget class="QDialogButtonBox" name="ButtonsBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">

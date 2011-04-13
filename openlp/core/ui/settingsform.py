@@ -74,7 +74,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             if self.stackedLayout.widget(tabIndex):
                 if self.stackedLayout.widget(tabIndex).tabTitleVisible == \
                     tab.tabTitleVisible:
-                    print tab.tabTitleVisible
                     self.stackedLayout.widget(tabIndex).setHidden(False)
                     match = True
                     break
@@ -84,6 +83,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             icon = build_icon(tab.icon_path)
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(14 + location, item_name)
+            self.stackedLayout.addWidget(tab)
+            self.stackedLayout.setCurrentIndex(0)
 
     def removeTab(self, tab):
         """
