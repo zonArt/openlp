@@ -87,7 +87,6 @@ class UiStrings(object):
     OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
-    PreviewToolbar = translate('OpenLP.Ui', 'Preview Toolbar')
     PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
     ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
