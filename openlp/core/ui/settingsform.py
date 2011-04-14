@@ -106,5 +106,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Run any post-setup code for the tabs on the form
         """
-        for tabIndex in range(0, self.stackedLayout.count()):
-            self.stackedLayout.widget(tabIndex).postSetUp()
+        self.generalTab.postSetUp()
+        self.themesTab.postSetUp()
+        self.advancedTab.postSetUp()
+        for plugin in self.plugins:
+            if plugin.settings_tab:
+                plugin.settings_tab.postSetUp()
