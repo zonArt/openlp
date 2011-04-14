@@ -70,13 +70,6 @@ class Verse(BaseModel):
     """
     pass
 
-class AlternativeBookNames(BaseModel):
-    """
-    Alternative Book Names model
-    """
-    pass
-
-
 def init_schema(url):
     """
     Setup a bible database connection and initialise the database schema.
@@ -136,30 +129,6 @@ def init_schema(url):
     metadata.create_all(checkfirst=True)
     return session
 
-def init_schema_alternative_book_names(url):
-    """
-    Setup a alternative book names database connection and initialise the 
-    database schema.
-
-    ``url``
-        The database to setup.
-    """
-    session, metadata = init_db(url)
-
-    alternative_book_names_table = Table(u'alternative_book_names', metadata,
-        Column(u'id', types.Integer, primary_key=True),
-        Column(u'book_reference_id', types.Integer),
-        Column(u'language_id', types.Integer),
-        Column(u'name', types.Unicode(50), index=True),
-    )
-
-    try:
-        class_mapper(AlternativeBookNames)
-    except UnmappedClassError:
-        mapper(AlternativeBookNames, alternative_book_names_table)
-
-    metadata.create_all(checkfirst=True)
-    return session
 
 class BibleDB(QtCore.QObject, Manager):
     """
@@ -388,17 +357,15 @@ class BibleDB(QtCore.QObject, Manager):
     def get_book_ref_id_by_name(self, book, language_id=None):
         log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
             language_id)
-        self.alternative_book_names_cache = AlternativeBookNamesDB(
-            self.bible_plugin, path=self.path)
         if BiblesResourcesDB.get_book(book):
             book_temp = BiblesResourcesDB.get_book(book)
             book_id = book_temp[u'id']
         elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
             book_id = BiblesResourcesDB.get_alternative_book_name(book, 
                 language_id)
-        elif self.alternative_book_names_cache.get_book_reference_id(book, 
+        elif AlternativeBookNamesDB.get_book_reference_id(book, 
             language_id):
-            book_id = self.alternative_book_names_cache.get_book_reference_id(
+            book_id = AlternativeBookNamesDB.get_book_reference_id(
                 book, language_id)
         else:
             from openlp.plugins.bibles.forms import BookNameForm
@@ -415,7 +382,7 @@ class BibleDB(QtCore.QObject, Manager):
             else:
                 return None
             if book_id:
-                self.alternative_book_names_cache.create_alternative_book_name(
+                AlternativeBookNamesDB.create_alternative_book_name(
                     book, book_id, language_id)
         if book_id:
             return book_id
@@ -822,6 +789,12 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     def get_alternative_book_name(name, language_id=None):
         """
         Return a book_reference_id if the name matches.
+
+        ``name``
+            The name to search the id.
+            
+        ``language_id``
+            The language_id for which language should be searched
         """
         log.debug(u'BiblesResourcesDB.get_alternative_book_name("%s", "%s")', 
             name, language_id)
@@ -898,73 +871,85 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             })
         return testament_list
 
+
 class AlternativeBookNamesDB(QtCore.QObject, Manager):
     """
     This class represents a database-bound alternative book names system. 
     """
+    cursor = None
+    conn = None
 
-    def __init__(self, parent, **kwargs):
+    @staticmethod
+    def get_cursor():
         """
-        The constructor loads up the database and creates and initialises the
-        tables if the database doesn't exist.
-
-        **Required keyword arguments:**
-
-        ``path``
-            The path to the bible database file.
-
-        ``name``
-            The name of the database. This is also used as the file name for
-            SQLite databases.
+        Return the cursor object. Instantiate one if it doesn't exist yet.
+        If necessary loads up the database and creates the tables if the 
+        database doesn't exist.
         """
-        log.info(u'AlternativeBookNamesDB loaded')
-        QtCore.QObject.__init__(self)
-        self.bible_plugin = parent
-        if u'path' not in kwargs:
-            raise KeyError(u'Missing keyword argument "path".')
-        self.stop_import_flag = False
-        self.name = u'alternative_book_names.sqlite'
-        if not isinstance(self.name, unicode):
-            self.name = unicode(self.name, u'utf-8')
-        self.file = self.name
-        Manager.__init__(self, u'bibles/resources', 
-            init_schema_alternative_book_names, self.file)
-        self.wizard = None
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
+        if AlternativeBookNamesDB.cursor is None:
+            filepath = os.path.join(
+                AppLocation.get_directory(AppLocation.DataDir), u'bibles',
+                    u'resources', u'alternative_book_names.sqlite')
+            log.debug(u'Filepath: %s' % filepath)
+            if not os.path.exists(filepath):
+                #create new DB, create table alternative_book_names
+                AlternativeBookNamesDB.conn = sqlite3.connect(filepath)
+                AlternativeBookNamesDB.conn.execute(u'CREATE TABLE '
+                    u'alternative_book_names(id INTEGER NOT NULL, '
+                    u'book_reference_id INTEGER, language_id INTEGER, name '
+                    u'VARCHAR(50), PRIMARY KEY (id))')
+            else:
+                #use existing DB
+                AlternativeBookNamesDB.conn = sqlite3.connect(filepath)
+            AlternativeBookNamesDB.cursor = AlternativeBookNamesDB.conn.cursor()
+        return AlternativeBookNamesDB.cursor
 
-    def stop_import(self):
+    @staticmethod
+    def run_sql(query, parameters=(), commit=None):
         """
-        Stops the import of the Bible.
-        """
-        log.debug(u'Stopping import')
-        self.stop_import_flag = True
+        Run an SQL query on the database, returning the results.
 
-    def get_book_reference_id(self, name,  language=None):
+        ``query``
+            The actual SQL query to run.
+
+        ``parameters``
+            Any variable parameters to add to the query
+        
+        ``commit``
+            If a commit statement is necessary this should be True.
         """
-        Return the book_reference_id of a book by name.
+        cursor = AlternativeBookNamesDB.get_cursor()
+        cursor.execute(query, parameters)
+        if commit:
+            AlternativeBookNamesDB.conn.commit()
+        return cursor.fetchall()
+
+    @staticmethod
+    def get_book_reference_id(name,  language_id=None):
+        """
+        Return a book_reference_id if the name matches.
 
         ``name``
             The name to search the id.
             
-        ``language``
-            The language for which should be searched
+        ``language_id``
+            The language_id for which language should be searched
         """
-        log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s")', name)
-        if language:
-            id = self.session.query(AlternativeBookNames.book_reference_id)\
-                .filter(AlternativeBookNames.name.like(name))\
-                .filter(AlternativeBookNames.language_id.like(language)).first()
+        log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s", "%s")', 
+            name, language_id)
+        if language_id:
+            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM '
+                u'alternative_book_names WHERE name = ? AND language_id = ?', (name, language_id))
         else:
-            id = self.get_object_filtered(AlternativeBookNames.book_reference_id,
-                AlternativeBookNames.name.like(name))
+            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM '
+                u'alternative_book_names WHERE name = ?', name)
         if not id:
             return None
         else:
-            return id[0]
+            return id[0][0]
 
-    def create_alternative_book_name(self, name, book_reference_id, 
-        language_id):
+    @staticmethod
+    def create_alternative_book_name(name, book_reference_id, language_id):
         """
         Add an alternative book name to the database.
 
@@ -979,7 +964,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         """
         log.debug(u'AlternativeBookNamesDB.create_alternative_book_name("%s", '
             '"%s", "%s"', name, book_reference_id, language_id)
-        alternative_book_name = AlternativeBookNames.populate(name=name, 
-            book_reference_id=book_reference_id, language_id=language_id)
-        self.save_object(alternative_book_name)
+        alternative_book_name = AlternativeBookNamesDB.run_sql(u'INSERT INTO '
+            u'alternative_book_names(book_reference_id, language_id, name) '
+            u'VALUES (?, ?, ?)', (book_reference_id, language_id, name), True)
         return alternative_book_name
