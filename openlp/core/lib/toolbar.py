@@ -51,8 +51,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         log.debug(u'Init done for %s' % parent.__class__.__name__)
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        checkable=False, shortcut=0, alternate=0,
-        context=QtCore.Qt.WidgetShortcut):
+        checkable=False, shortcuts=None, context=QtCore.Qt.WidgetShortcut):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -74,16 +73,12 @@ class OpenLPToolbar(QtGui.QToolBar):
             If *True* the button has two, *off* and *on*, states. Default is
             *False*, which means the buttons has only one state.
 
-        ``shortcut``
-            The primary shortcut for this action
-
-        ``alternate``
-            The alternate shortcut for this action
+        ``shortcuts``
+            The list of shortcuts for this action
 
         ``context``
             Specify the context in which this shortcut is valid
         """
-        newAction = None
         if icon:
             actionIcon = build_icon(icon)
             if slot and not checkable:
@@ -92,7 +87,7 @@ class OpenLPToolbar(QtGui.QToolBar):
                 newAction = self.addAction(actionIcon, title)
             self.icons[title] = actionIcon
         else:
-            newAction = QtGui.QAction(title, newAction)
+            newAction = QtGui.QAction(title, self)
             self.addAction(newAction)
             QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)
@@ -103,8 +98,9 @@ class OpenLPToolbar(QtGui.QToolBar):
             QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
         self.actions[title] = newAction
-        newAction.setShortcuts([shortcut, alternate])
-        newAction.setShortcutContext(context)
+        if shortcuts is not None:
+            newAction.setShortcuts(shortcuts)
+            newAction.setShortcutContext(context)
         return newAction
 
     def addToolbarSeparator(self, handle):
