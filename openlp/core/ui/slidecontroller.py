@@ -365,7 +365,7 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
-        self.previousItem.setObjectName(u'previousItemPreview')         
+        self.previousItem.setObjectName(u'previousItemPreview')
         self.nextItem.setObjectName(u'nextItemPreview')
         action_list = ActionList.get_instance()
         action_list.add_category(
@@ -374,7 +374,7 @@ class SlideController(QtGui.QWidget):
         action_list.add_action(self.nextItem, UiStrings.PreviewToolbar)
 
     def setLiveHotkeys(self, parent=None):
-        self.previousItem.setObjectName(u'previousItemLive')         
+        self.previousItem.setObjectName(u'previousItemLive')
         self.nextItem.setObjectName(u'nextItemLive')
         action_list = ActionList.get_instance()
         action_list.add_category(
@@ -575,6 +575,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
+        self.serviceItem = serviceItem
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
             self._resetBlank()
@@ -582,7 +583,6 @@ class SlideController(QtGui.QWidget):
             [serviceItem, self.isLive, self.hideMode(), slideno])
         self.slideList = {}
         width = self.parent.controlSplitter.sizes()[self.split]
-        self.serviceItem = serviceItem
         self.previewListWidget.clear()
         self.previewListWidget.setRowCount(0)
         self.previewListWidget.setColumnWidth(0, width)
@@ -642,7 +642,7 @@ class SlideController(QtGui.QWidget):
         self.__updatePreviewSelection(slideno)
         self.enableToolBar(serviceItem)
         # Pass to display for viewing.
-        # Postpone image build, we need to do this later to avoid theme
+        # Postpone image build, we need to do this later to avoid the theme
         # flashing on the screen
         if not self.serviceItem.is_image():
             self.display.buildHtml(self.serviceItem)
@@ -1136,6 +1136,8 @@ class SlideController(QtGui.QWidget):
             self.onThemeDisplay(True)
         elif hide_mode == HideMode.Screen:
             self.onHideDisplay(True)
+        else:
+            self.hidePlugin(False)
 
     def hideMode(self):
         """

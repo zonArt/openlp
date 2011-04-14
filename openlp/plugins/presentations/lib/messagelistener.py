@@ -173,12 +173,8 @@ class Controller(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         log.debug(u'Live = %s, shutdown' % self.is_live)
-        if self.is_live:
-            Receiver.send_message(u'maindisplay_show')
         self.doc.close_presentation()
         self.doc = None
-        #self.doc.slidenumber = 0
-        #self.timer.stop()
 
     def blank(self, hide_mode):
         """
@@ -345,7 +341,6 @@ class MessageListener(object):
         """
         is_live = message[1]
         if is_live:
-            Receiver.send_message(u'maindisplay_show')
             self.live_handler.shutdown()
         else:
             self.preview_handler.shutdown()

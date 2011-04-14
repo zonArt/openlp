@@ -343,11 +343,11 @@ def build_html(item, screen, alert, islive, background, image=None):
     webkitvers = webkit_version()
     # Image generated and poked in
     if background:
-        bgimage = u'src="data:image/png;base64,%s"' % background
+        bgimage_src = u'src="data:image/png;base64,%s"' % background
     elif item.bg_image_bytes:
-        bgimage = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage_src = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        bgimage = u'style="display:none;"'
+        bgimage_src = u'style="display:none;"'
     if image:
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
@@ -359,7 +359,7 @@ def build_html(item, screen, alert, islive, background, image=None):
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        bgimage, image_src,
+        bgimage_src, image_src,
         build_lyrics_html(item, webkitvers))
     return html
 
