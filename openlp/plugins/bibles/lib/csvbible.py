@@ -88,52 +88,9 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        #TODO: Delete unused code
-        '''
-        try:
-            self.testamentsfile = kwargs[u'testamentsfile']
-        except KeyError:
-            self.testamentsfile = None
-        '''
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
-    
-    #TODO: Delete unused code
-    '''
-    def setup_testaments(self):
-        """
-        Overrides parent method so we can handle importing a testament file.
-        """
-        if self.testamentsfile:
-            self.wizard.progressBar.setMinimum(0)
-            self.wizard.progressBar.setMaximum(2)
-            self.wizard.progressBar.setValue(0)
-            testaments_file = None
-            try:
-                details = get_file_encoding(self.testamentsfile)
-                testaments_file = open(self.testamentsfile, 'rb')
-                testaments_reader = csv.reader(testaments_file, delimiter=',',
-                    quotechar='"')
-                for line in testaments_reader:
-                    if self.stop_import_flag:
-                        break
-                    self.wizard.incrementProgressBar(unicode(
-                        translate('BibleDB.Wizard',
-                        'Importing testaments... %s')) %
-                        unicode(line[1], details['encoding']), 0)
-                    self.save_object(Testament.populate(
-                        name=unicode(line[1], details['encoding'])))
-                Receiver.send_message(u'openlp_process_events')
-            except (IOError, IndexError):
-                log.exception(u'Loading testaments from file failed')
-            finally:
-                if testaments_file:
-                    testaments_file.close()
-            self.wizard.incrementProgressBar(unicode(translate(
-                'BibleDB.Wizard', 'Importing testaments... done.')), 2)
-        else:
-            BibleDB.setup_testaments(self)
-    '''
+
     def do_import(self):
         """
         Import the bible books and verses.

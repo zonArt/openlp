@@ -48,14 +48,6 @@ class BibleMeta(BaseModel):
     """
     pass
 
-#TODO: Delete unused code
-'''
-class Testament(BaseModel):
-    """
-    Bible Testaments
-    """
-    pass
-'''
 
 class Book(BaseModel):
     """
@@ -83,13 +75,7 @@ def init_schema(url):
         Column(u'key', types.Unicode(255), primary_key=True, index=True),
         Column(u'value', types.Unicode(255)),
     )
-    #TODO: Delete unused code
-    '''
-    testament_table = Table(u'testament', metadata,
-        Column(u'id', types.Integer, primary_key=True),
-        Column(u'name', types.Unicode(50)),
-    )
-    '''
+
     book_table = Table(u'book', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'book_reference_id', types.Integer),
@@ -109,13 +95,6 @@ def init_schema(url):
         class_mapper(BibleMeta)
     except UnmappedClassError:
         mapper(BibleMeta, meta_table)
-    #TODO: Delete unused code
-    '''
-    try:
-        class_mapper(Testament)
-    except UnmappedClassError:
-        mapper(Testament, testament_table)
-    '''
     try:
         class_mapper(Book)
     except UnmappedClassError:
@@ -220,20 +199,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
-        #TODO: Delete unused code
-        #self.setup_testaments()
         return self.name
-
-    #TODO: Delete unused code
-    '''
-    def setup_testaments(self):
-        """
-        Initialise the testaments section of a bible with suitable defaults.
-        """
-        self.save_object(Testament.populate(name=u'Old Testament'))
-        self.save_object(Testament.populate(name=u'New Testament'))
-        self.save_object(Testament.populate(name=u'Apocrypha'))
-    '''
 
     def create_book(self, name, bk_ref_id, testament=1):
         """
