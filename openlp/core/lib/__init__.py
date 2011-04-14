@@ -274,8 +274,8 @@ def check_directory_exists(dir):
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
-from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from spelltextedit import SpellTextEdit
 from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
