@@ -42,7 +42,7 @@ from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
-    Book, BibleMeta
+    Book
 
 log = logging.getLogger(__name__)
 

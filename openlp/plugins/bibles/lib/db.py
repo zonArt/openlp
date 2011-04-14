@@ -938,11 +938,12 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s", "%s")', 
             name, language_id)
         if language_id:
-            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM '
-                u'alternative_book_names WHERE name = ? AND language_id = ?', (name, language_id))
+            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM'
+                u' alternative_book_names WHERE name = ? AND language_id = ?',
+                (name, language_id))
         else:
-            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM '
-                u'alternative_book_names WHERE name = ?', name)
+            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM'
+                u' alternative_book_names WHERE name = ?', name)
         if not id:
             return None
         else:
