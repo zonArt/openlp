@@ -63,7 +63,9 @@ class OpenLyricsImport(SongImport):
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
-                parsed_file = etree.parse(file_path, parser)
+                # Pass a file object, because lxml does not cope with some
+                # special characters in the path (see lp:757673 and lp:744337).
+                parsed_file = etree.parse(open(file_path, u'r'), parser)
                 xml = unicode(etree.tostring(parsed_file))
                 if self.openLyrics.xml_to_song(xml) is None:
                     log.debug(u'File could not be imported: %s' % file_path)

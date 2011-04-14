@@ -445,6 +445,7 @@ class ThemeManager(QtGui.QWidget):
         files = SettingsManager.get_files(self.settingsSection, u'.png')
         if firstTime:
             self.firstTime()
+            files = SettingsManager.get_files(self.settingsSection, u'.png')
             # No themes have been found so create one
             if len(files) == 0:
                 theme = ThemeXML()
