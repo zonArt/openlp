@@ -137,7 +137,7 @@ class PluginManager(object):
             if plugin.status is not PluginStatus.Disabled:
                 plugin.mediaItem = plugin.getMediaManagerItem()
 
-    def hook_settings_tabs(self, settingsform=None):
+    def hook_settings_tabs(self, settings_form=None):
         """
         Loop through all the plugins. If a plugin has a valid settings tab
         item, add it to the settings tab.
@@ -148,15 +148,8 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.getSettingsTab(settingsform)
-                visible_title = plugin.getString(StringContent.VisibleName)
-                if plugin.settings_tab and plugin.isActive():
-                    log.debug(u'Inserting settings tab item from %s' %
-                        visible_title[u'title'])
-                    settingsform.insertTab(plugin.settings_tab, plugin.weight)
-                else:
-                    log.debug(
-                        u'No tab settings in %s' % visible_title[u'title'])
+                plugin.settings_tab = plugin.getSettingsTab(settings_form)
+        settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
         """

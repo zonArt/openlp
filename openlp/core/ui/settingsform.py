@@ -30,7 +30,7 @@ import logging
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Receiver, build_icon
+from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
@@ -47,53 +47,42 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        generalTab = GeneralTab(self, screens)
-        self.insertTab(generalTab, 1)
+        self.generalTab = GeneralTab(self, screens)
         # Themes tab
-        themesTab = ThemesTab(self, mainWindow)
-        self.insertTab(themesTab, 2)
+        self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab
-        advancedTab = AdvancedTab(self, )
-        self.insertTab(advancedTab, 3)
+        self.advancedTab = AdvancedTab(self)
 
     def exec_(self):
         # load all the settings
-        for tabIndex in range(0, self.stackedLayout.count()):
-            self.stackedLayout.widget(tabIndex).load()
+        self.settingListWidget.clear()
+        for tabIndex in range(0, self.stackedLayout.count() + 1):
+            # take at 0 and the rest shuffell up.
+            self.stackedLayout.takeAt(0)
+        self.insertTab(self.generalTab, 0, PluginStatus.Active)
+        self.insertTab(self.themesTab, 1, PluginStatus.Active)
+        self.insertTab(self.advancedTab, 2, PluginStatus.Active)
+        count = 3
+        for plugin in self.plugins:
+            if plugin.settings_tab:
+                self.insertTab(plugin.settings_tab, count, plugin.status)
+                count += 1
         self.settingListWidget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
 
-    def insertTab(self, tab, location):
+    def insertTab(self, tab, location, is_active):
         """
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
-        # 14 : There are 3 tables currently and locations starts at -10
-        match = False
-        for tabIndex in range(0, self.stackedLayout.count()):
-            if self.stackedLayout.widget(tabIndex):
-                if self.stackedLayout.widget(tabIndex).tabTitleVisible == \
-                    tab.tabTitleVisible:
-                    self.stackedLayout.widget(tabIndex).setHidden(False)
-                    match = True
-                    break
-        if not match:
-            pos = self.stackedLayout.addWidget(tab)
+        pos = self.stackedLayout.addWidget(tab)
+        if is_active:
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
             icon = build_icon(tab.icon_path)
             item_name.setIcon(icon)
-            self.settingListWidget.insertItem(14 + location, item_name)
-
-    def removeTab(self, tab):
-        """
-        Remove a tab from the form
-        """
-        log.debug(u'remove %s tab' % tab.tabTitleVisible)
-        for tabIndex in range(0, self.stackedLayout.count()):
-            if self.stackedLayout.widget(tabIndex):
-                if self.stackedLayout.widget(tabIndex).tabTitleVisible == \
-                    tab.tabTitleVisible:
-                    self.settingListWidget.item(tabIndex).setHidden(True)
+            self.settingListWidget.insertItem(location, item_name)
+        else:
+            self.stackedLayout.takeAt(location)
 
     def accept(self):
         """

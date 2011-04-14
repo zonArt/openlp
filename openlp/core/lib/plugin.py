@@ -290,8 +290,6 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.mediaItem.initialise()
             self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
-        if self.settings_tab:
-            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
     def finalise(self):
         """
@@ -299,8 +297,6 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
-        if self.settings_tab:
-            self.settingsForm.removeTab(self.settings_tab)
 
     def usesTheme(self, theme):
         """

@@ -836,6 +836,9 @@ class BibleMediaItem(MediaManagerItem):
         return u'{su}%s{/su}' % verse_text
 
     def onlayoutStyleComboBoxChanged(self):
+        self.settings.layout_style = self.quickLayoutComboBox.currentIndex()
+        self.settings.layoutStyleComboBox.setCurrentIndex(
+            self.settings.layout_style)
         QtCore.QSettings().setValue(
             self.settingsSection + u'/verse layout style',
             QtCore.QVariant(self.settings.layout_style))
