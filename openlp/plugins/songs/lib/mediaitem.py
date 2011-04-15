@@ -155,9 +155,17 @@ class SongMediaItem(MediaManagerItem):
                 SongStrings.Authors),
             (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
+        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+            u'%s/last search type' % self.settingsSection,
+            QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
+        # Save the current search type to the configuration.
+        QtCore.QSettings().setValue(u'%s/last search type' %
+            self.settingsSection,
+            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+        # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
         search_type = self.searchTextEdit.currentSearchType()
