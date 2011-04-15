@@ -115,7 +115,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, pluginHelpers=None, mediaItemClass=None,
+    def __init__(self, name, plugin_helpers=None, media_item_class=None,
         settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
@@ -132,10 +132,10 @@ class Plugin(QtCore.QObject):
         ``version``
             Defaults to *None*. The version of the plugin.
 
-        ``pluginHelpers``
+        ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
 
-        ``mediaItemClass``
+        ``media_item_class``
             The class name of the plugin's media item.
 
         ``settings_tab_class``
@@ -153,20 +153,20 @@ class Plugin(QtCore.QObject):
             self.version = get_application_version()[u'version']
         self.settingsSection = self.name.lower()
         self.icon = None
-        self.mediaItemClass = mediaItemClass
+        self.media_item_class = media_item_class
         self.settings_tab_class = settings_tab_class
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.previewController = pluginHelpers[u'preview']
-        self.liveController = pluginHelpers[u'live']
-        self.renderManager = pluginHelpers[u'render']
-        self.serviceManager = pluginHelpers[u'service']
-        self.settingsForm = pluginHelpers[u'settings form']
-        self.mediadock = pluginHelpers[u'toolbox']
-        self.pluginManager = pluginHelpers[u'pluginmanager']
-        self.formparent = pluginHelpers[u'formparent']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderManager = plugin_helpers[u'render']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
+        self.mediadock = plugin_helpers[u'toolbox']
+        self.pluginManager = plugin_helpers[u'pluginmanager']
+        self.formparent = plugin_helpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -213,8 +213,8 @@ class Plugin(QtCore.QObject):
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
-        if self.mediaItemClass:
-            return self.mediaItemClass(self, self, self.icon)
+        if self.media_item_class:
+            return self.media_item_class(self, self, self.icon)
         return None
 
     def addImportMenuItem(self, importMenu):

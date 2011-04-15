@@ -45,7 +45,7 @@ class AdvancedTab(SettingsTab):
         SettingsTab.__init__(self, parent ,u'Advanced', generalTranslated)
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
-        self.icon_path = u':/icon/openlp-logo-16x16.png'
+        self.icon_path = u':/system/system_settings.png'
 
     def setupUi(self):
         """
