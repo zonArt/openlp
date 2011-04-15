@@ -63,7 +63,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarButton(UiStrings.NewTheme,
+        self.toolbar.addToolbarButton(UiStrings().NewTheme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
@@ -449,7 +449,7 @@ class ThemeManager(QtGui.QWidget):
             # No themes have been found so create one
             if len(files) == 0:
                 theme = ThemeXML()
-                theme.theme_name = UiStrings.Default
+                theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',

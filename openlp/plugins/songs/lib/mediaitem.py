@@ -137,8 +137,8 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
-        self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
-        self.searchTextButton.setText(UiStrings.Search)
+        self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
+        self.searchTextButton.setText(UiStrings().Search)
         self.maintenanceAction.setText(SongStrings.SongMaintenance)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
@@ -153,7 +153,7 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
                 SongStrings.Authors),
-            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings.Themes)
+            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
@@ -312,7 +312,7 @@ class SongMediaItem(MediaManagerItem):
         Edit a song
         """
         log.debug(u'onEditClick')
-        if check_item_selected(self.listView, UiStrings.SelectEdit):
+        if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
@@ -323,7 +323,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.listView, UiStrings.SelectDelete):
+        if check_item_selected(self.listView, UiStrings().SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
