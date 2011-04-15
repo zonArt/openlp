@@ -274,7 +274,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.advancedClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Keep'))
-        self.quickLayoutLabel.setText(UiStrings.DisplayStyle)
+        self.quickLayoutLabel.setText(UiStrings.LayoutStyle)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
             UiStrings.VersePerSlide)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerLine,

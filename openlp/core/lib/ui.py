@@ -65,6 +65,7 @@ class UiStrings(object):
     Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
+    LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
@@ -329,7 +330,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
     ``category``
         The category the shortcut should be listed in the shortcut dialog. If
         left to None, then the action will be hidden in the shortcut dialog.
-    
+
     ``context``
         The context the shortcut is valid.
     """
