@@ -169,7 +169,8 @@ class ServiceManager(QtGui.QWidget):
             self.onServiceTop, shortcuts=[QtCore.Qt.Key_Home])
         self.serviceManagerList.moveTop.setObjectName(u'moveTop')
         action_list = ActionList.get_instance()
-        action_list.add_category(UiStrings().Service, CategoryOrder.standardToolbar)
+        action_list.add_category(
+            UiStrings().Service, CategoryOrder.standardToolbar)
         action_list.add_action(
             self.serviceManagerList.moveTop, UiStrings().Service)
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(
@@ -179,7 +180,8 @@ class ServiceManager(QtGui.QWidget):
             'Move item up one position in the service.'),
             self.onServiceUp, shortcuts=[QtCore.Qt.Key_PageUp])
         self.serviceManagerList.moveUp.setObjectName(u'moveUp')
-        action_list.add_action(self.serviceManagerList.moveUp, UiStrings().Service)
+        action_list.add_action(
+            self.serviceManagerList.moveUp, UiStrings().Service)
         self.serviceManagerList.moveDown = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
@@ -231,7 +233,8 @@ class ServiceManager(QtGui.QWidget):
             'Expand all the service items.'),
             self.onExpandAll, shortcuts=[QtCore.Qt.Key_Plus])
         self.serviceManagerList.expand.setObjectName(u'expand')
-        action_list.add_action(self.serviceManagerList.expand, UiStrings().Service)
+        action_list.add_action(
+            self.serviceManagerList.expand, UiStrings().Service)
         self.serviceManagerList.collapse = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
             u':/services/service_collapse_all.png',

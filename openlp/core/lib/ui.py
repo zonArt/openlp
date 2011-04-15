@@ -175,7 +175,8 @@ def create_accept_reject_button_box(parent, okay=False):
     accept_button = QtGui.QDialogButtonBox.Save
     if okay:
         accept_button = QtGui.QDialogButtonBox.Ok
-    button_box.setStandardButtons(accept_button | QtGui.QDialogButtonBox.Cancel)
+    button_box.setStandardButtons(
+        accept_button | QtGui.QDialogButtonBox.Cancel)
     button_box.setObjectName(u'%sButtonBox' % parent)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
         parent.accept)

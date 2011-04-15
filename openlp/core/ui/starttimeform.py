@@ -53,7 +53,8 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         self.hourFinishSpinBox.setValue(hours)
         self.minuteFinishSpinBox.setValue(minutes)
         self.secondFinishSpinBox.setValue(seconds)
-        self.hourFinishLabel.setText(u'%s%s' % (unicode(hour), UiStrings().Hours))
+        self.hourFinishLabel.setText(u'%s%s' % (unicode(hour),
+            UiStrings().Hours))
         self.minuteFinishLabel.setText(u'%s%s' %
             (unicode(minutes), UiStrings().Minutes))
         self.secondFinishLabel.setText(u'%s%s' %
