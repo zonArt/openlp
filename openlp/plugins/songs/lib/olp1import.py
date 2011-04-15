@@ -61,10 +61,12 @@ class OpenLP1SongImport(SongImport):
         """
         Run the import for an openlp.org 1.x song database.
         """
-        # Connect to the database
+        if not self.import_source.endswith(u'.olp'):
+            return False
         encoding = self.get_encoding()
         if not encoding:
             return False
+        # Connect to the database
         connection = sqlite.connect(self.import_source, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()

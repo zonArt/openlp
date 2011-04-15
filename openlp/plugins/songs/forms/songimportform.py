@@ -459,10 +459,7 @@ class SongImportForm(OpenLPWizard):
         """
         Return a list of file from the listbox
         """
-        files = []
-        for row in range(0, listbox.count()):
-            files.append(unicode(listbox.item(row).text()))
-        return files
+        return [unicode(listbox.item(i).text()) for i in range(listbox.count())]
 
     def removeSelectedItems(self, listbox):
         """

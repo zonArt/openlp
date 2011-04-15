@@ -78,58 +78,60 @@ class SongBeamerImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        if isinstance(self.import_source, list):
-            self.import_wizard.progressBar.setMaximum(
-                len(self.import_source))
-            for file in self.import_source:
-                # TODO: check that it is a valid SongBeamer file
-                self.set_defaults()
-                self.current_verse = u''
-                self.current_verse_type = VerseType.Tags[VerseType.Verse]
-                read_verses = False
-                file_name = os.path.split(file)[1]
-                self.import_wizard.incrementProgressBar(
-                    WizardStrings.ImportingType % file_name, 0)
-                if os.path.isfile(file):
-                    detect_file = open(file, u'r')
-                    details = chardet.detect(detect_file.read(2048))
-                    detect_file.close()
-                    infile = codecs.open(file, u'r', details['encoding'])
-                    songData = infile.readlines()
-                    infile.close()
-                else:
-                    return False
-                self.title = file_name.split('.sng')[0]
-                read_verses = False
-                for line in songData:
-                    # Just make sure that the line is of the type 'Unicode'.
-                    line = unicode(line).strip()
-                    if line.startswith(u'#') and not read_verses:
-                        self.parse_tags(line)
-                    elif line.startswith(u'---'):
-                        if self.current_verse:
-                            self.replace_html_tags()
-                            self.add_verse(self.current_verse,
-                                self.current_verse_type)
-                            self.current_verse = u''
-                            self.current_verse_type = VerseType.Tags[VerseType.Verse]
-                        read_verses = True
-                        verse_start = True
-                    elif read_verses:
-                        if verse_start:
-                            verse_start = False
-                            if not self.check_verse_marks(line):
-                                self.current_verse = line + u'\n'
-                        else:
-                            self.current_verse += line + u'\n'
-                if self.current_verse:
-                    self.replace_html_tags()
-                    self.add_verse(self.current_verse, self.current_verse_type)
-                if self.check_complete():
-                    self.finish()
-                self.import_wizard.incrementProgressBar(
-                    WizardStrings.ImportingType % file_name)
-            return True
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
+        if not isinstance(self.import_source, list):
+            return False
+        for file in self.import_source:
+            # TODO: check that it is a valid SongBeamer file
+            if self.stop_import_flag:
+                return False
+            self.set_defaults()
+            self.current_verse = u''
+            self.current_verse_type = VerseType.Tags[VerseType.Verse]
+            read_verses = False
+            file_name = os.path.split(file)[1]
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % file_name, 0)
+            if os.path.isfile(file):
+                detect_file = open(file, u'r')
+                details = chardet.detect(detect_file.read(2048))
+                detect_file.close()
+                infile = codecs.open(file, u'r', details['encoding'])
+                songData = infile.readlines()
+                infile.close()
+            else:
+                return False
+            self.title = file_name.split('.sng')[0]
+            read_verses = False
+            for line in songData:
+                # Just make sure that the line is of the type 'Unicode'.
+                line = unicode(line).strip()
+                if line.startswith(u'#') and not read_verses:
+                    self.parse_tags(line)
+                elif line.startswith(u'---'):
+                    if self.current_verse:
+                        self.replace_html_tags()
+                        self.add_verse(self.current_verse,
+                            self.current_verse_type)
+                        self.current_verse = u''
+                        self.current_verse_type = VerseType.Tags[VerseType.Verse]
+                    read_verses = True
+                    verse_start = True
+                elif read_verses:
+                    if verse_start:
+                        verse_start = False
+                        if not self.check_verse_marks(line):
+                            self.current_verse = line + u'\n'
+                    else:
+                        self.current_verse += line + u'\n'
+            if self.current_verse:
+                self.replace_html_tags()
+                self.add_verse(self.current_verse, self.current_verse_type)
+            if self.check_complete():
+                self.finish()
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % file_name)
+        return True
 
     def replace_html_tags(self):
         """
