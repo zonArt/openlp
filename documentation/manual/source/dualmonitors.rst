@@ -38,7 +38,7 @@ equivalent.
 
 We have experienced difficulties with users using a projector with a USB 
 connection. It seems that third party software many times is required to 
-properly setup dual monitors. When possible, it is best to use a direct output
+properly setup dual monitors. If possible, it is best to use a direct output
 (VGA, DVI, HDMI, S-Video) from your machine's video card. If a USB connection
 is your only option please carefully read the manual from the manufacture on 
 proper setup.
