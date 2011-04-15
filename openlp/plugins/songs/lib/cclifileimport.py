@@ -93,7 +93,6 @@ class CCLIFileImport(SongImport):
                 song_count += 1
             if self.stop_import_flag:
                 return False
-        return True
 
     def do_import_usr_file(self, textList):
         """

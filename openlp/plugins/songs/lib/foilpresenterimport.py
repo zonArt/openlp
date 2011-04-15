@@ -131,7 +131,6 @@ class FoilPresenterImport(SongImport):
                     log.debug(u'File could not be imported: %s' % file_path)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
-        return True
 
 
 class FoilPresenter(object):
@@ -235,7 +234,6 @@ class FoilPresenter(object):
         self._process_topics(foilpresenterfolie, song)
         clean_song(self.manager, song)
         self.manager.save_object(song)
-        return song.id
 
     def _child(self, element):
         """

@@ -89,7 +89,7 @@ class SofImport(OooImport):
         while paragraphs.hasMoreElements():
             if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
-                return
+                return False
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
                 self.process_paragraph(paragraph)

@@ -740,12 +740,15 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        if importer.do_import():
-            self.progressLabel.setText(WizardStrings.FinishedImport)
-        else:
-            self.progressLabel.setText(
+        message = importer.do_import()
+        if isinstance(message, bool) and not message:
+            self.progressLabel.setText(self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm',
-                'Your song import failed.'))
+                'Your song import failed.')))
+        elif not isinstance(message, bool) and message:
+            self.progressLabel.setText(message)
+        else:
+            self.progressLabel.setText(WizardStrings.FinishedImport)
 
     def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
         single_select=False):

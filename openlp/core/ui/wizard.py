@@ -132,6 +132,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLayout.addWidget(self.progressLabel)
         self.progressBar = QtGui.QProgressBar(self.progressPage)
         self.progressBar.setObjectName(u'progressBar')
+        self.progressLabel.setWordWrap(True)
         self.progressLayout.addWidget(self.progressBar)
         self.addPage(self.progressPage)
 

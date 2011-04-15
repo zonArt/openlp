@@ -71,4 +71,3 @@ class OpenLyricsImport(SongImport):
                     log.debug(u'File could not be imported: %s' % file_path)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
-        return True

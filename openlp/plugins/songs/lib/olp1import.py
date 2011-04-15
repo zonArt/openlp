@@ -32,6 +32,7 @@ import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
 
+from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
@@ -62,7 +63,9 @@ class OpenLP1SongImport(SongImport):
         Run the import for an openlp.org 1.x song database.
         """
         if not self.import_source.endswith(u'.olp'):
-            return False
+            return translate('SongsPlugin.OpenLP1SongImport', 'The file you '
+                'were trying to import is not a valid openlp.org 1.x song '
+                'database.')
         encoding = self.get_encoding()
         if not encoding:
             return False

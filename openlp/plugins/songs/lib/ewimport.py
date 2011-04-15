@@ -273,7 +273,8 @@ class EasyWorshipSongImport(SongImport):
                 self.import_wizard.incrementProgressBar(u'')
         db_file.close()
         self.memo_file.close()
-        return success
+        if not success:
+            return False
 
     def find_field(self, field_name):
         return [i for i, x in enumerate(self.field_descs) \

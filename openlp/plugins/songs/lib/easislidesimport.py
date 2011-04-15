@@ -75,7 +75,6 @@ class EasiSlidesImport(SongImport):
                 return False
             elif self.commit:
                 self.finish()
-        return True
 
     def _parse_song(self, song):
         self._success = True

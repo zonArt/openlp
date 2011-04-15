@@ -107,7 +107,7 @@ class SongShowPlusImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     WizardStrings.ImportingType % file_name, 0)
                 songData = open(file, 'rb')
-                while (1):
+                while True:
                     blockKey, = struct.unpack("I", songData.read(4))
                     # The file ends with 4 NUL's
                     if blockKey == 0:
@@ -173,7 +173,6 @@ class SongShowPlusImport(SongImport):
                 self.finish()
                 self.import_wizard.incrementProgressBar(
                     WizardStrings.ImportingType % file_name)
-            return True
 
     def toOpenLPVerseTag(self, verseName, ignoreUnique=False):
         if verseName.find(" ") != -1:

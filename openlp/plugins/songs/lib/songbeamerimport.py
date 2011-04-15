@@ -131,7 +131,6 @@ class SongBeamerImport(SongImport):
                 self.finish()
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % file_name)
-        return True
 
     def replace_html_tags(self):
         """

@@ -163,7 +163,8 @@ class OpenSongImport(SongImport):
                 else:
                     success = False
                     break
-        return success
+        if not success:
+            return False
 
     def do_import_file(self, file):
         """
