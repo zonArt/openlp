@@ -368,10 +368,8 @@ class SlideController(QtGui.QWidget):
         self.previousItem.setObjectName(u'previousItemPreview')         
         self.nextItem.setObjectName(u'nextItemPreview')
         action_list = ActionList.get_instance()
-        action_list.add_category(
-            UiStrings.PreviewToolbar, CategoryOrder.standardToolbar)
-        action_list.add_action(self.previousItem, UiStrings.PreviewToolbar)
-        action_list.add_action(self.nextItem, UiStrings.PreviewToolbar)
+        action_list.add_action(self.previousItem)
+        action_list.add_action(self.nextItem)
 
     def setLiveHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemLive')         
@@ -379,8 +377,8 @@ class SlideController(QtGui.QWidget):
         action_list = ActionList.get_instance()
         action_list.add_category(
             UiStrings.LiveToolbar, CategoryOrder.standardToolbar)
-        action_list.add_action(self.previousItem, UiStrings.LiveToolbar)
-        action_list.add_action(self.nextItem, UiStrings.LiveToolbar)
+        action_list.add_action(self.previousItem)
+        action_list.add_action(self.nextItem)
         self.previousService = shortcut_action(parent, u'previousService',
             [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings.LiveToolbar)
         self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
