@@ -99,12 +99,6 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchEdit = SearchEdit(self.quickTab)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
-        self.quickSearchEdit.setSearchTypes([
-            (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
-            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
-            (BibleSearch.Text, u':/bibles/bibles_search_text.png',
-            translate('BiblesPlugin.MediaItem', 'Text Search'))
-        ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
         self.quickLayoutLabel = QtGui.QLabel(self.quickTab)
         self.quickLayoutLabel.setObjectName(u'quickClearLabel')
@@ -295,7 +289,15 @@ class BibleMediaItem(MediaManagerItem):
             self.settingsSection + u'/quick bible', QtCore.QVariant(
             self.quickVersionComboBox.currentText())).toString()
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
-        self.updateAutoCompleter()
+        self.quickSearchEdit.setSearchTypes([
+            (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
+            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
+            (BibleSearch.Text, u':/bibles/bibles_search_text.png',
+            translate('BiblesPlugin.MediaItem', 'Text Search'))
+        ])
+        self.quickSearchEdit.setCurrentSearchType(QtCore.QSettings().value(
+            u'%s/last search type' % self.settingsSection,
+            QtCore.QVariant(BibleSearch.Reference)).toInt()[0])
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
@@ -386,6 +388,11 @@ class BibleMediaItem(MediaManagerItem):
         completion depends on the bible. It is only updated when we are doing a
         reference search, otherwise the auto completion list is removed.
         """
+        # Save the current search type to the configuration.
+        QtCore.QSettings().setValue(u'%s/last search type' %
+            self.settingsSection,
+            QtCore.QVariant(self.quickSearchEdit.currentSearchType()))
+        # Save the current bible to the configuration.
         QtCore.QSettings().setValue(self.settingsSection + u'/quick bible',
             QtCore.QVariant(self.quickVersionComboBox.currentText()))
         books = []

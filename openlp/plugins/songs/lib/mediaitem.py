@@ -155,14 +155,13 @@ class SongMediaItem(MediaManagerItem):
                 SongStrings.Authors),
             (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
-        self.configUpdated()
-        # FIXME: Saved search type need to be considered when loading the list.
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
+        self.configUpdated()
 
     def onSearchTextButtonClick(self):
-        # Save the current search type to the config. so it can be restored.
+        # Save the current search type to the configuration.
         QtCore.QSettings().setValue(u'%s/last search type' %
             self.settingsSection,
             QtCore.QVariant(self.searchTextEdit.currentSearchType()))

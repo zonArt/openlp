@@ -122,6 +122,7 @@ class SearchEdit(QtGui.QLineEdit):
             if identifier == action.data().toInt()[0]:
                 self.menuButton.setDefaultAction(action)
                 self._currentSearchType = identifier
+                self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
                 return True
 
     def setSearchTypes(self, items):

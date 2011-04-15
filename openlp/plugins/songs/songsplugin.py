@@ -70,8 +70,6 @@ class SongsPlugin(Plugin):
         action_list.add_action(self.SongImportItem, UiStrings.Import)
         action_list.add_action(self.SongExportItem, UiStrings.Export)
         action_list.add_action(self.toolsReindexItem, UiStrings.Tools)
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
     def addImportMenuItem(self, import_menu):
         """
