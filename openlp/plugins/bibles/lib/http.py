@@ -147,8 +147,8 @@ class BGExtract(object):
             return None
         page_source = page.read()
         page_source = unicode(page_source, 'utf8')
-        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>',  \
-            page_source,  re.DOTALL)
+        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>', \
+            page_source, re.DOTALL)
         if page_source_temp:
             soup = page_source_temp.group(0)
         else:

@@ -618,7 +618,8 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ``chapter``
             The chapter number.
         """
-        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_id,  chapter)
+        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_id, 
+            chapter)
         if not isinstance(chapter, int):
             chapter = int(chapter)
         chapters = BiblesResourcesDB.run_sql(u'SELECT id, book_reference_id, '
@@ -770,8 +771,8 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'= ? ORDER BY id', (name, language_id))
         else:
             id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
-                u'FROM alternative_book_names WHERE name = ? ORDER BY id', (
-                name, ))
+                u'FROM alternative_book_names WHERE name = ? ORDER BY id',
+                (name, ))
         if id:
             return int(id[0][0])
         else:

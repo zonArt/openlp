@@ -59,7 +59,7 @@ class OpenLP1Bible(BibleDB):
         #Create the bible language
         language_id = self.get_language()
         if not language_id:
-            log.exception(u'Importing books from %s   " '\
+            log.exception(u'Importing books from "%s " '\
                 'failed' % self.filename)
             return False
         # Create all books.
@@ -76,7 +76,7 @@ class OpenLP1Bible(BibleDB):
             abbreviation = unicode(book[3], u'cp1252')
             book_ref_id = self.get_book_ref_id_by_name(name, language_id)
             if not book_ref_id:
-                log.exception(u'Importing books from %s " '\
+                log.exception(u'Importing books from "%s" '\
                     'failed' % self.filename)
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)

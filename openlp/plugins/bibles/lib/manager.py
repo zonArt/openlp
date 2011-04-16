@@ -214,7 +214,8 @@ class BibleManager(object):
             books.append(
             {
                 u'name': book.name,
-                u'chapters': self.db_cache[bible].get_chapter_count(book.book_reference_id)
+                u'chapters': self.db_cache[bible].get_chapter_count(
+                    book.book_reference_id)
             })
         return books
 
@@ -222,7 +223,7 @@ class BibleManager(object):
         """
         Returns the number of Chapters for a given book.
         """
-        log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible, 
+        log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible,
             book)
         return self.db_cache[bible].get_chapter_count(book)
 
