@@ -88,11 +88,11 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.typeLabel = QtGui.QLabel(self.panel)
         if self.isLive:
-            self.typeLabel.setText(UiStrings.Live)
+            self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
         else:
-            self.typeLabel.setText(UiStrings.Preview)
+            self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
             self.typePrefix = u'preview'
         self.typeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
@@ -161,18 +161,18 @@ class SlideController(QtGui.QWidget):
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
                 [QtCore.Qt.Key_Period], self.onBlankDisplay,
-                u':/slides/slide_blank.png', False, UiStrings.LiveToolbar)
+                u':/slides/slide_blank.png', False, UiStrings().LiveToolbar)
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
             self.themeScreen = shortcut_action(self.hideMenu, u'themeScreen',
                 [QtGui.QKeySequence(u'T')], self.onThemeDisplay,
-                u':/slides/slide_theme.png', False, UiStrings.LiveToolbar)
+                u':/slides/slide_theme.png', False, UiStrings().LiveToolbar)
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
             self.desktopScreen = shortcut_action(self.hideMenu,
                 u'desktopScreen', [QtGui.QKeySequence(u'D')],
                 self.onHideDisplay, u':/slides/slide_desktop.png', False,
-                UiStrings.LiveToolbar)
+                UiStrings().LiveToolbar)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
@@ -194,7 +194,7 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
-            self.delaySpinBox.setSuffix(UiStrings.Seconds)
+            self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
@@ -376,21 +376,21 @@ class SlideController(QtGui.QWidget):
         self.nextItem.setObjectName(u'nextItemLive')
         action_list = ActionList.get_instance()
         action_list.add_category(
-            UiStrings.LiveToolbar, CategoryOrder.standardToolbar)
+            UiStrings().LiveToolbar, CategoryOrder.standardToolbar)
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
         self.previousService = shortcut_action(parent, u'previousService',
-            [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings.LiveToolbar)
+            [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings().LiveToolbar)
         self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.previousService.setText(
             translate('OpenLP.SlideController', 'Previous Service'))
         self.nextService = shortcut_action(parent, 'nextService',
-            [QtCore.Qt.Key_Right], self.serviceNext, UiStrings.LiveToolbar)
+            [QtCore.Qt.Key_Right], self.serviceNext, UiStrings().LiveToolbar)
         self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextService.setText(
             translate('OpenLP.SlideController', 'Next Service'))
         self.escapeItem = shortcut_action(parent, 'escapeItem',
-            [QtCore.Qt.Key_Escape], self.liveEscape, UiStrings.LiveToolbar)
+            [QtCore.Qt.Key_Escape], self.liveEscape, UiStrings().LiveToolbar)
         self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         self.escapeItem.setText(
             translate('OpenLP.SlideController', 'Escape Item'))

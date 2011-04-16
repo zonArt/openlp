@@ -86,7 +86,7 @@ class PresentationTab(SettingsTab):
                 checkbox.setText(
                     unicode(translate('PresentationPlugin.PresentationTab',
                     '%s (unavailable)')) % controller.name)
-        self.AdvancedGroupBox.setTitle(UiStrings.Advanced)
+        self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
             'Allow presentation application to be overriden'))

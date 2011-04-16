@@ -109,12 +109,12 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Font size:'))
-        self.FontSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
+        self.FontSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
         self.TimeoutLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(UiStrings.Seconds)
-        self.PreviewGroupBox.setTitle(UiStrings.Preview)
-        self.FontPreview.setText(UiStrings.OLPV2)
+        self.TimeoutSpinBox.setSuffix(UiStrings().Seconds)
+        self.PreviewGroupBox.setTitle(UiStrings().Preview)
+        self.FontPreview.setText(UiStrings().OLPV2)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

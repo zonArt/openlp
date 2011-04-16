@@ -39,78 +39,96 @@ class UiStrings(object):
     """
     Provide standard strings for objects to use.
     """
-    # These strings should need a good reason to be retranslated elsewhere.
-    # Should some/more/less of these have an &amp; attached?
-    About = translate('OpenLP.Ui', 'About')
-    Add = translate('OpenLP.Ui', '&Add')
-    Advanced = translate('OpenLP.Ui', 'Advanced')
-    AllFiles = translate('OpenLP.Ui', 'All Files')
-    Bottom = translate('OpenLP.Ui', 'Bottom')
-    Browse = translate('OpenLP.Ui', 'Browse...')
-    Cancel = translate('OpenLP.Ui', 'Cancel')
-    CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
-    CreateService = translate('OpenLP.Ui', 'Create a new service.')
-    Continuous = translate('OpenLP.Ui', 'Continuous')
-    Default = unicode(translate('OpenLP.Ui', 'Default'))
-    Delete = translate('OpenLP.Ui', '&Delete')
-    DisplayStyle = translate('OpenLP.Ui', 'Display style:')
-    Edit = translate('OpenLP.Ui', '&Edit')
-    EmptyField = translate('OpenLP.Ui', 'Empty Field')
-    Error = translate('OpenLP.Ui', 'Error')
-    Export = translate('OpenLP.Ui', 'Export')
-    File = translate('OpenLP.Ui', 'File')
-    FontSizePtUnit = translate('OpenLP.Ui', 'pt',
-        'Abbreviated font pointsize unit')
-    Help = translate('OpenLP.Ui', 'Help')
-    Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
-    Image = translate('OpenLP.Ui', 'Image')
-    Import = translate('OpenLP.Ui', 'Import')
-    LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
-    Live = translate('OpenLP.Ui', 'Live')
-    LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
-    LivePanel = translate('OpenLP.Ui', 'Live Panel')
-    LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
-    Load = translate('OpenLP.Ui', 'Load')
-    Minutes = translate('OpenLP.Ui', 'm', 'The abbreviated unit for minutes')
-    Middle = translate('OpenLP.Ui', 'Middle')
-    New = translate('OpenLP.Ui', 'New')
-    NewService = translate('OpenLP.Ui', 'New Service')
-    NewTheme = translate('OpenLP.Ui', 'New Theme')
-    NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
-    NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
-    NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
-    NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
-    OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
-    OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
-    OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you '
-        'wish to continue?')
-    OpenService = translate('OpenLP.Ui', 'Open Service')
-    Preview = translate('OpenLP.Ui', 'Preview')
-    PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
-    PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
-    ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
-    ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
-    ResetBG = translate('OpenLP.Ui', 'Reset Background')
-    ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
-    Seconds = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')
-    SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
-    Search = translate('OpenLP.Ui', 'Search')
-    SelectDelete = translate('OpenLP.Ui', 'You must select an item to delete.')
-    SelectEdit = translate('OpenLP.Ui', 'You must select an item to edit.')
-    Settings = translate('OpenLP.Ui', 'Settings')
-    SaveService = translate('OpenLP.Ui', 'Save Service')
-    Service = translate('OpenLP.Ui', 'Service')
-    StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
-    Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
-    Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
-    Tools = translate('OpenLP.Ui', 'Tools')
-    Top = translate('OpenLP.Ui', 'Top')
-    VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
-    VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
-    Version = translate('OpenLP.Ui', 'Version')
-    View = translate('OpenLP.Ui', 'View')
-    ViewMode = translate('OpenLP.Ui', 'View Model')
+    __instance__ = None
+
+    def __new__(cls):
+        """
+        Override the default object creation method to return a single instance.
+        """
+        if not cls.__instance__:
+            cls.__instance__ = object.__new__(cls)
+        return cls.__instance__
+
+    def __init__(self):
+        """
+        These strings should need a good reason to be retranslated elsewhere.
+        Should some/more/less of these have an &amp; attached?
+        """
+        self.About = translate('OpenLP.Ui', 'About')
+        self.Add = translate('OpenLP.Ui', '&Add')
+        self.Advanced = translate('OpenLP.Ui', 'Advanced')
+        self.AllFiles = translate('OpenLP.Ui', 'All Files')
+        self.Bottom = translate('OpenLP.Ui', 'Bottom')
+        self.Browse = translate('OpenLP.Ui', 'Browse...')
+        self.Cancel = translate('OpenLP.Ui', 'Cancel')
+        self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
+        self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
+        self.Continuous = translate('OpenLP.Ui', 'Continuous')
+        self.Default = unicode(translate('OpenLP.Ui', 'Default'))
+        self.Delete = translate('OpenLP.Ui', '&Delete')
+        self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
+        self.Edit = translate('OpenLP.Ui', '&Edit')
+        self.EmptyField = translate('OpenLP.Ui', 'Empty Field')
+        self.Error = translate('OpenLP.Ui', 'Error')
+        self.Export = translate('OpenLP.Ui', 'Export')
+        self.File = translate('OpenLP.Ui', 'File')
+        self.FontSizePtUnit = translate('OpenLP.Ui', 'pt',
+            'Abbreviated font pointsize unit')
+        self.Help = translate('OpenLP.Ui', 'Help')
+        self.Hours = translate('OpenLP.Ui', 'h',
+            'The abbreviated unit for hours')
+        self.Image = translate('OpenLP.Ui', 'Image')
+        self.Import = translate('OpenLP.Ui', 'Import')
+        self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
+        self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
+        self.Live = translate('OpenLP.Ui', 'Live')
+        self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
+        self.LivePanel = translate('OpenLP.Ui', 'Live Panel')
+        self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
+        self.Load = translate('OpenLP.Ui', 'Load')
+        self.Minutes = translate('OpenLP.Ui', 'm',
+            'The abbreviated unit for minutes')
+        self.Middle = translate('OpenLP.Ui', 'Middle')
+        self.New = translate('OpenLP.Ui', 'New')
+        self.NewService = translate('OpenLP.Ui', 'New Service')
+        self.NewTheme = translate('OpenLP.Ui', 'New Theme')
+        self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
+        self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
+        self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
+        self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
+        self.OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
+        self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+        self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
+            'Do you wish to continue?')
+        self.OpenService = translate('OpenLP.Ui', 'Open Service')
+        self.Preview = translate('OpenLP.Ui', 'Preview')
+        self.PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
+        self.PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
+        self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
+        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+        self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
+        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+        self.Seconds = translate('OpenLP.Ui', 's',
+            'The abbreviated unit for seconds')
+        self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
+        self.Search = translate('OpenLP.Ui', 'Search')
+        self.SelectDelete = translate('OpenLP.Ui', 'You must select an item '
+            'to delete.')
+        self.SelectEdit = translate('OpenLP.Ui', 'You must select an item to '
+            'edit.')
+        self.Settings = translate('OpenLP.Ui', 'Settings')
+        self.SaveService = translate('OpenLP.Ui', 'Save Service')
+        self.Service = translate('OpenLP.Ui', 'Service')
+        self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
+        self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
+        self.Tools = translate('OpenLP.Ui', 'Tools')
+        self.Top = translate('OpenLP.Ui', 'Top')
+        self.VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
+        self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
+        self.Version = translate('OpenLP.Ui', 'Version')
+        self.View = translate('OpenLP.Ui', 'View')
+        self.ViewMode = translate('OpenLP.Ui', 'View Model')
 
 def add_welcome_page(parent, image):
     """
@@ -157,7 +175,8 @@ def create_accept_reject_button_box(parent, okay=False):
     accept_button = QtGui.QDialogButtonBox.Save
     if okay:
         accept_button = QtGui.QDialogButtonBox.Ok
-    button_box.setStandardButtons(accept_button | QtGui.QDialogButtonBox.Cancel)
+    button_box.setStandardButtons(
+        accept_button | QtGui.QDialogButtonBox.Cancel)
     button_box.setObjectName(u'%sButtonBox' % parent)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
         parent.accept)
@@ -184,11 +203,11 @@ def critical_error_message_box(title=None, message=None, parent=None,
         Should this message box question the user.
     """
     if question:
-        return QtGui.QMessageBox.critical(parent, UiStrings.Error, message,
+        return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
-    data[u'title'] = title if title else UiStrings.Error
+    data[u'title'] = title if title else UiStrings().Error
     return Receiver.send_message(u'openlp_error_message', data)
 
 def media_item_combo_box(parent, name):
@@ -218,7 +237,7 @@ def create_delete_push_button(parent, icon=None):
     delete_button.setObjectName(u'deleteButton')
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
-    delete_button.setText(UiStrings.Delete)
+    delete_button.setText(UiStrings().Delete)
     delete_button.setToolTip(
         translate('OpenLP.Ui', 'Delete the selected item.'))
     QtCore.QObject.connect(delete_button,
@@ -406,9 +425,9 @@ def create_valign_combo(form, parent, layout):
     verticalLabel.setText(translate('OpenLP.Ui', '&Vertical Align:'))
     form.verticalComboBox = QtGui.QComboBox(parent)
     form.verticalComboBox.setObjectName(u'VerticalComboBox')
-    form.verticalComboBox.addItem(UiStrings.Top)
-    form.verticalComboBox.addItem(UiStrings.Middle)
-    form.verticalComboBox.addItem(UiStrings.Bottom)
+    form.verticalComboBox.addItem(UiStrings().Top)
+    form.verticalComboBox.addItem(UiStrings().Middle)
+    form.verticalComboBox.addItem(UiStrings().Bottom)
     verticalLabel.setBuddy(form.verticalComboBox)
     layout.addRow(verticalLabel, form.verticalComboBox)
 

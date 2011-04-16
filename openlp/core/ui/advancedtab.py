@@ -127,7 +127,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = UiStrings.Advanced
+        self.tabTitleVisible = UiStrings().Advanced
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -226,7 +226,7 @@ class AdvancedTab(SettingsTab):
 
     def onDefaultBrowseButtonPressed(self):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
-            UiStrings.AllFiles)
+            UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.AdvancedTab', 'Open File'), '',
             file_filters)
