@@ -222,6 +222,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     unicode(datetime.timedelta(seconds=tme)), title)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
+            div = self._addChildToParent(u'div', parent=html_data.body)
             self._addChildToParent(u'span', translate('OpenLP.ServiceManager',
                 u'Custom Service Notes:'), div, u'class', u'customNotesTitle')
             self._addChildToParent(

@@ -36,7 +36,7 @@ class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
     """
-    def __init__(self, screens):
+    def __init__(self, parent, screens):
         """
         Initialise the general settings tab
         """
@@ -44,7 +44,9 @@ class GeneralTab(SettingsTab):
         self.monitorNumber = 0
         # Set to True to allow PostSetup to work on application start up
         self.overrideChanged = True
-        SettingsTab.__init__(self, u'General')
+        self.icon_path = u':/icon/openlp-logo-16x16.png'
+        generalTranslated = translate('GeneralTab', 'General')
+        SettingsTab.__init__(self, parent, u'General', generalTranslated)
 
     def preLoad(self):
         """

@@ -110,6 +110,21 @@ class SearchEdit(QtGui.QLineEdit):
         """
         return self._currentSearchType
 
+    def setCurrentSearchType(self, identifier):
+        """
+        Set a new current search type.
+
+        ``identifier``
+            The search type identifier (int). 
+        """
+        menu = self.menuButton.menu()
+        for action in menu.actions():
+            if identifier == action.data().toInt()[0]:
+                self.menuButton.setDefaultAction(action)
+                self._currentSearchType = identifier
+                self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
+                return True
+
     def setSearchTypes(self, items):
         """
         A list of tuples to be used in the search type menu. The first item in

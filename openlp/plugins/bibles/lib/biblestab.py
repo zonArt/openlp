@@ -40,11 +40,11 @@ class BiblesTab(SettingsTab):
     """
     log.info(u'Bible Tab loaded')
 
-    def __init__(self, title, visible_title):
+    def __init__(self, parent, title, visible_title, icon_path):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        SettingsTab.__init__(self, title, visible_title)
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
@@ -118,8 +118,7 @@ class BiblesTab(SettingsTab):
         self.newChaptersCheckBox.setText(
             translate('BiblesPlugin.BiblesTab',
             'Only show new chapter numbers'))
-        self.layoutStyleLabel.setText(
-            translate('BiblesPlugin.BiblesTab', 'Layout style:'))
+        self.layoutStyleLabel.setText(UiStrings.LayoutStyle)
         self.displayStyleLabel.setText(UiStrings.DisplayStyle)
         self.bibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
