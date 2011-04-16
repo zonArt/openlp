@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    critical_error_message_box
+    critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -96,7 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(UiStrings.SaveAndPreview)
+        self.previewButton.setText(UiStrings().SaveAndPreview)
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -208,20 +208,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.alternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
-            id = self.songBookComboBox.findText(
-                unicode(book_name.name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-            self.songBookComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.songBookComboBox, unicode(book_name.name))
         if self.song.theme_name:
-            id = self.themeComboBox.findText(
-                unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-                self.song.theme_name = None
-            self.themeComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.themeComboBox, unicode(self.song.theme_name))
         if self.song.copyright:
             self.copyrightEdit.setText(self.song.copyright)
         else:
@@ -366,7 +355,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -425,7 +414,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '

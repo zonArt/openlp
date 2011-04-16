@@ -115,8 +115,8 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, pluginHelpers=None, mediaItemClass=None,
-        settingsTabClass=None, version=None):
+    def __init__(self, name, plugin_helpers=None, media_item_class=None,
+        settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -132,15 +132,16 @@ class Plugin(QtCore.QObject):
         ``version``
             Defaults to *None*. The version of the plugin.
 
-        ``pluginHelpers``
+        ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
 
-        ``mediaItemClass``
+        ``media_item_class``
             The class name of the plugin's media item.
 
-        ``settingsTabClass``
+        ``settings_tab_class``
             The class name of the plugin's settings tab.
         """
+        log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
         self.textStrings = {}
@@ -152,8 +153,8 @@ class Plugin(QtCore.QObject):
             self.version = get_application_version()[u'version']
         self.settingsSection = self.name.lower()
         self.icon = None
-        self.mediaItemClass = mediaItemClass
-        self.settingsTabClass = settingsTabClass
+        self.media_item_class = media_item_class
+        self.settings_tab_class = settings_tab_class
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
@@ -212,8 +213,8 @@ class Plugin(QtCore.QObject):
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
-        if self.mediaItemClass:
-            return self.mediaItemClass(self, self, self.icon)
+        if self.media_item_class:
+            return self.media_item_class(self, self, self.icon)
         return None
 
     def addImportMenuItem(self, importMenu):
@@ -243,14 +244,15 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def getSettingsTab(self):
+    def getSettingsTab(self, parent):
         """
         Create a tab for the settings window to display the configurable
         options for this plugin to the user.
         """
-        if self.settingsTabClass:
-            return self.settingsTabClass(self.name,
-                self.getString(StringContent.VisibleName)[u'title'])
+        if self.settings_tab_class:
+            return self.settings_tab_class(parent, self.name,
+                self.getString(StringContent.VisibleName)[u'title'],
+                self.icon_path)
         return None
 
     def addToMenu(self, menubar):
@@ -287,31 +289,14 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-        self.insertToolboxItem()
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        self.removeToolboxItem()
-
-    def removeToolboxItem(self):
-        """
-        Called by the plugin to remove toolbar
-        """
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
-        if self.settings_tab:
-            self.settingsForm.removeTab(self.settings_tab)
-
-    def insertToolboxItem(self):
-        """
-        Called by plugin to replace toolbar
-        """
-        if self.mediaItem:
-            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
-        if self.settings_tab:
-            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
     def usesTheme(self, theme):
         """
@@ -345,28 +330,28 @@ class Plugin(QtCore.QObject):
         """
         ## Load Action ##
         self.__setNameTextString(StringContent.Load,
-            UiStrings.Load, tooltips[u'load'])
+            UiStrings().Load, tooltips[u'load'])
         ## Import Action ##
         self.__setNameTextString(StringContent.Import,
-            UiStrings.Import, tooltips[u'import'])
+            UiStrings().Import, tooltips[u'import'])
         ## New Action ##
         self.__setNameTextString(StringContent.New,
-            UiStrings.Add, tooltips[u'new'])
+            UiStrings().Add, tooltips[u'new'])
         ## Edit Action ##
         self.__setNameTextString(StringContent.Edit,
-            UiStrings.Edit, tooltips[u'edit'])
+            UiStrings().Edit, tooltips[u'edit'])
         ## Delete Action ##
         self.__setNameTextString(StringContent.Delete,
-            UiStrings.Delete, tooltips[u'delete'])
+            UiStrings().Delete, tooltips[u'delete'])
         ## Preview Action ##
         self.__setNameTextString(StringContent.Preview,
-            UiStrings.Preview, tooltips[u'preview'])
+            UiStrings().Preview, tooltips[u'preview'])
         ## Send Live Action ##
         self.__setNameTextString(StringContent.Live,
-            UiStrings.Live, tooltips[u'live'])
+            UiStrings().Live, tooltips[u'live'])
         ## Add to Service Action ##
         self.__setNameTextString(StringContent.Service,
-            UiStrings.Service, tooltips[u'service'])
+            UiStrings().Service, tooltips[u'service'])
 
     def __setNameTextString(self, name, title, tooltip):
         """

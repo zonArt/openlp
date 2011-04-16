@@ -443,10 +443,10 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = UiStrings.StartTimeCode % \
+            start = UiStrings().StartTimeCode % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = UiStrings.LengthTime % \
+            end = UiStrings().LengthTime % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return None

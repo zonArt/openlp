@@ -110,7 +110,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Edit a custom item
         """
-        if check_item_selected(self.listView, UiStrings.SelectEdit):
+        if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -121,7 +121,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Remove a custom item from the list and database
         """
-        if check_item_selected(self.listView, UiStrings.SelectDelete):
+        if check_item_selected(self.listView, UiStrings().SelectDelete):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]

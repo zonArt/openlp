@@ -192,7 +192,7 @@ class VerticalType(object):
     Bottom = 2
 
     Names = [u'top', u'middle', u'bottom']
-    TranslatedNames = [UiStrings.Top, UiStrings.Middle, UiStrings.Bottom]
+    TranslatedNames = [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
