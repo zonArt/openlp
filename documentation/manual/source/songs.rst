@@ -190,7 +190,7 @@ the authors name in the box and click :guilabel:`Add to Song`. The authors name
 will appear below and will also be added to your database. If you accidently add
 the wrong author you can click on the authors name and click :guilabel:`Remove`.
 
-:guilabel:`Manage Authors, Topics, Song Books:` Clicking this button will bring 
+:guilabel:`Manage Authors, Topics, Song Books`: Clicking this button will bring 
 up your complete list of authors.
 
 .. image:: pics/song_edit_maintenance.png
