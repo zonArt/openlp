@@ -55,11 +55,11 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            UiStrings.AllFiles)
-        self.replaceAction.setText(UiStrings.ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
-        self.resetAction.setText(UiStrings.ResetBG)
-        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
+            UiStrings().AllFiles)
+        self.replaceAction.setText(UiStrings().ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
+        self.resetAction.setText(UiStrings().ResetBG)
+        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -198,7 +198,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(UiStrings.LiveBGError,
+                critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)

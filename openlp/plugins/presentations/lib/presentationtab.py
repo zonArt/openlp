@@ -33,12 +33,12 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, visible_title, controllers):
+    def __init__(self, parent, title, visible_title, controllers, icon_path):
         """
         Constructor
         """
         self.controllers = controllers
-        SettingsTab.__init__(self, title, visible_title)
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         """
@@ -86,7 +86,7 @@ class PresentationTab(SettingsTab):
                 checkbox.setText(
                     unicode(translate('PresentationPlugin.PresentationTab',
                     '%s (unavailable)')) % controller.name)
-        self.AdvancedGroupBox.setTitle(UiStrings.Advanced)
+        self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
             'Allow presentation application to be overriden'))
