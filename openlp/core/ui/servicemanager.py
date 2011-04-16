@@ -614,7 +614,7 @@ class ServiceManager(QtGui.QWidget):
                     u'%s' % fileName)
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.ServiceManager', 'Corrupt File'),
-                    translate('OpenLP.ServiceManager', 'This file is either'
+                    translate('OpenLP.ServiceManager', 'This file is either '
                     'corrupt or not an OpenLP 2.0 service file.'))
             return
         finally:
