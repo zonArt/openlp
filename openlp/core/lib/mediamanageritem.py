@@ -31,10 +31,10 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver, ListWidgetWithDnD
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
+    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.ui import UiStrings, context_menu_action, \
+    context_menu_separator
 
 log = logging.getLogger(__name__)
 
@@ -101,6 +101,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.toolbar = None
         self.remoteTriggered = None
         self.singleServiceItem = True
+        self.quickPreviewAllowed = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
@@ -259,40 +260,48 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_edit.png',
                     self.plugin.getString(StringContent.Edit)[u'title'],
-                    self.onEditClick))
+                    self.onEditClick, context=QtCore.Qt.WidgetShortcut))
             self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
                     self.plugin.getString(StringContent.Delete)[u'title'],
-                    self.onDeleteClick))
+                    self.onDeleteClick, [QtCore.Qt.Key_Delete],
+                    context=QtCore.Qt.WidgetShortcut))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick))
+                self.onPreviewClick, [QtCore.Qt.Key_Enter,
+                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_live.png',
                 self.plugin.getString(StringContent.Live)[u'title'],
-                self.onLiveClick))
+                self.onLiveClick, [QtCore.Qt.ShiftModifier + \
+                QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
+                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_add.png',
                 self.plugin.getString(StringContent.Service)[u'title'],
-                self.onAddClick))
+                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
+                context=QtCore.Qt.WidgetShortcut))
         if self.addToServiceItem:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
                     '&Add to selected Service Item'),
-                    self.onAddEditClick))
+                    self.onAddEditClick, context=QtCore.Qt.WidgetShortcut))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onClickPressed)
+        QtCore.QObject.connect(self.listView,
+            QtCore.SIGNAL(u'itemSelectionChanged()'),
+            self.onSelectionChange)
 
     def initialise(self):
         """
@@ -411,7 +420,16 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.onPreviewClick()
 
-    def onPreviewClick(self):
+    def onSelectionChange(self):
+        """
+        Allows the change of current item in the list to be actioned
+        """
+        if QtCore.QSettings().value(u'advanced/single click preview',
+            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
+            and self.listView.selectedIndexes():
+            self.onPreviewClick(True)
+
+    def onPreviewClick(self, keepFocus=False):
         """
         Preview an item by building a service item then adding that service
         item to the preview slide controller.
@@ -426,6 +444,8 @@ class MediaManagerItem(QtGui.QWidget):
             if serviceItem:
                 serviceItem.from_plugin = True
                 self.parent.previewController.addServiceItem(serviceItem)
+                if keepFocus:
+                    self.listView.setFocus()
 
     def onLiveClick(self):
         """

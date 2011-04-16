@@ -37,13 +37,15 @@ class AdvancedTab(SettingsTab):
     The :class:`AdvancedTab` manages the advanced settings tab including the UI
     and the loading and saving of the displayed settings.
     """
-    def __init__(self):
+    def __init__(self, parent):
         """
         Initialise the settings tab
         """
-        SettingsTab.__init__(self, u'Advanced')
+        generalTranslated = translate('AdvancedTab', 'Advanced')
+        SettingsTab.__init__(self, parent ,u'Advanced', generalTranslated)
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
+        self.icon_path = u':/system/system_settings.png'
 
     def setupUi(self):
         """
@@ -67,6 +69,10 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
         self.uiLayout.addRow(self.doubleClickLiveCheckBox)
+        self.singleClickPreviewCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.singleClickPreviewCheckBox.setObjectName(
+            u'singleClickPreviewCheckBox')
+        self.uiLayout.addRow(self.singleClickPreviewCheckBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.expandServiceItemCheckBox.setObjectName(
             u'expandServiceItemCheckBox')
@@ -130,6 +136,8 @@ class AdvancedTab(SettingsTab):
             'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Double-click to send items straight to live'))
+        self.singleClickPreviewCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Preview items when clicked in Media Manager'))
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
@@ -164,6 +172,9 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox.setChecked(
             settings.value(u'double click live',
             QtCore.QVariant(False)).toBool())
+        self.singleClickPreviewCheckBox.setChecked(
+            settings.value(u'single click preview',
+            QtCore.QVariant(False)).toBool())
         self.expandServiceItemCheckBox.setChecked(
             settings.value(u'expand service item',
             QtCore.QVariant(False)).toBool())
@@ -193,6 +204,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
         settings.setValue(u'double click live',
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
+        settings.setValue(u'single click preview',
+            QtCore.QVariant(self.singleClickPreviewCheckBox.isChecked()))
         settings.setValue(u'expand service item',
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
         settings.setValue(u'enable exit confirmation',

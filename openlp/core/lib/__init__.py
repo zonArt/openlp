@@ -166,56 +166,6 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
-def context_menu_action(base, icon, text, slot):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
-
-    ``text``
-        The text to display for this action
-
-    ``slot``
-        The code to run when this action is triggered
-    """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-    return action
-
-def context_menu(base, icon, text):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent object to add this menu to
-
-    ``icon``
-        An icon for this menu
-
-    ``text``
-        The text to display for this menu
-    """
-    action = QtGui.QMenu(text, base)
-    action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    return action
-
 def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and returns
@@ -324,8 +274,8 @@ def check_directory_exists(dir):
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
-from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from spelltextedit import SpellTextEdit
 from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
@@ -341,3 +291,4 @@ from dockwidget import OpenLPDockWidget
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from openlp.core.utils.actions import ActionList

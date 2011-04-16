@@ -5,33 +5,31 @@ Introduction
 About
 -----
 
-OpenLP is an open source lyrics projection application developed specifically
-for churches. It is licensed under the GNU Generic Public License, which means
-that it is free to use and distribute, and it stays free.
+OpenLP stands for "Open Source Lyrics Projection" and is presentation software
+developed for churches to provide a single easy to use interface for the
+projection needs of a typical worship service. First created in 2004, it has
+steadily grown in features and maturity such that it is now a mainstay in
+hundreds of churches around the world.
 
-Lyrics Projection
------------------
+OpenLP has searchable databases of songs and Bible verses allowing them to be
+projected instantly or saved in a pre-prepared order of service file. Themes
+allow for a variety of presentation options and allow you to add attractive
+visuals to enhance your presentations. PowerPoint and OpenOffice presentations,
+videos and audio files can be run from within the program removing the need to
+switch between different programs. Alert messages can be displayed so the
+nursery or car park stewards can notify the congregation easily. Remote
+capability allows the worship leader to change songs, or for alert messages to
+be sent from anywhere on the network, even via a smart phone or tablet.
 
-OpenLP's purpose is to project the lyrics of songs and Bible verses using a 
-computer and a data projector. OpenLP also has the ability to project videos, 
-images, and also play audio. OpenLP also is highly customizable providing users 
-with the ability to set up a wide variety of themes, including themes with 
-video backgrounds.
+Being free, this software can be installed on as many PCs as required, 
+including the home PCs of worship leader(s) at no additional cost. Compared to
+the expensive site licenses and restrictions of commercial software we believe 
+OpenLP is the perfect choice for quality and value. Still in active development
+by a growing team of enthusiastic developers, features are being added all the 
+time resulting in continual improvement of the software.
 
-Open Source
------------
-
-OpenLP is open source software. This means that the source code (the 
-programming instructions the developers write) is open to anyone who wants to 
-look at it. This gives you, the end user, a few freedoms.
-
-From a developer's perspective, it gives you the freedom to inspect the code 
-and make sure that it is not malicious. Also, it gives you the freedom to 
-change the code and the freedom to "fork" the project and make it your own.
-
-For end users open source software gives you the freedom to use software as 
-you wish. You are not required to pay for the software and you are free to 
-make copies and distribute it to anyone you want.
+OpenLP is licensed under the GNU Generic Public License, which means
+that it is free to use, distribute, modify, and it stays free.
 
 GNU General Public License
 --------------------------
@@ -42,5 +40,4 @@ to charge for the software, and that you have to distribute the source code as
 well.
 
 You can find a copy of the GNU General Public License from the Help menu 
-selecting about OpenLP or on-line 
-at: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+selecting about OpenLP or `view the license on-line <http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.

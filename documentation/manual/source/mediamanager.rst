@@ -16,8 +16,8 @@ this is what the `Media Manager` looks like with all the plugins enabled.
 .. image:: pics/mediamanager.png
 
 To enable the plugins navigate to :menuselection:`Settings --> Plugins` or
-press `F7`. You will want to click on the plugin to the left that you want to 
-enable and select **active** from the drop down box to the right.
+press :kbd:`Alt+F7`. You will want to click on the plugin to the left that you
+would like to enable and select **active** from the drop down box to the right.
 
 .. image:: pics/plugins.png
 
@@ -99,9 +99,10 @@ You will type your search query in this box for the following two searches.
 Book Chapter 
 Book Chapter-Chapter
 Book Chapter:Verse-Verse
+Book Chapter:Verse-End (this will display verses to the end of the chapter)
 Book Chapter:Verse-Verse, Verse-Verse
 Book Chapter:Verse-Verse,Chapter:Verse-Verse
-Book Chapter: Verse-Chapter:Verse
+Book Chapter:Verse-Chapter:Verse
 
 `Text Search:`
 
