@@ -350,18 +350,18 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     LRESULT lResult;
 
     DEBUG("GetPPTViewerPath: start\n");
-    if ((RegOpenKeyEx(HKEY_CLASSES_ROOT,
+    if (RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
-        != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
-        != ERROR_SUCCESS))
-    {
-        return FALSE;
-    }
+        if(RegOpenKeyEx(HKEY_CLASSES_ROOT,
+			"Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
+			!= ERROR_SUCCESS)
+			if (RegOpenKeyEx(HKEY_CLASSES_ROOT,
+				"Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
+				!= ERROR_SUCCESS)
+				{
+					return FALSE;
+			    }
     dwType = REG_SZ;
     dwSize = (DWORD)stringSize;
     lResult = RegQueryValueEx(hKey, NULL, NULL, &dwType, (LPBYTE)pptViewerPath,
