@@ -27,6 +27,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <io.h>
+#include <direct.h>
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -88,7 +90,12 @@ DllExport BOOL CheckInstalled()
     char cmdLine[MAX_PATH * 2];
 
     DEBUG("CheckInstalled\n");
-    return GetPPTViewerPath(cmdLine, sizeof(cmdLine));
+    BOOL found = GetPPTViewerPath(cmdLine, sizeof(cmdLine));
+	if(found)
+	{
+		DEBUG("Exe: %s\n", cmdLine);
+	}
+	return found;
 }
 
 // Open the PointPoint, count the slides and take a snapshot of each slide
@@ -160,7 +167,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
         pptView[id].rect.bottom = rect.bottom;
         pptView[id].rect.right = rect.right;
     }
-    strcat_s(cmdLine, MAX_PATH * 2, "/F /S \"");
+    strcat_s(cmdLine, MAX_PATH * 2, " /F /S \"");
     strcat_s(cmdLine, MAX_PATH * 2, filename);
     strcat_s(cmdLine, MAX_PATH * 2, "\"");
     memset(&si, 0, sizeof(si));
@@ -189,7 +196,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     Sleep(10);
     if (!CreateProcess(NULL, cmdLine, NULL, NULL, FALSE, 0, 0, NULL, &si, &pi))
     {
-        DEBUG("OpenPPT: CreateProcess failed\n");
+		DEBUG("OpenPPT: CreateProcess failed: %s\n", cmdLine);
         ClosePPT(id);
         return -1;
     }
@@ -345,23 +352,78 @@ BOOL SavePPTInfo(int id)
 // Get the path of the PowerPoint viewer from the registry
 BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
 {
+    char cwd[MAX_PATH];
+
+    DEBUG("GetPPTViewerPath: start\n");
+	if(GetPPTViewerPathFromReg(pptViewerPath, stringSize))
+	{
+		if(_access(pptViewerPath, 0) != -1)
+		{
+		    DEBUG("GetPPTViewerPath: exit registry\n");
+			return TRUE;
+		}
+	}
+	// This is where it gets ugly. PPT2007 it seems no longer stores its
+	// location in the registry. So we have to use the defaults which will
+	// upset those who like to put things somewhere else
+
+	// Viewer 2007 in 64bit Windows:
+	if(_access("C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+		0) != -1)
+	{
+		strcpy_s(
+			"C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+			stringSize, pptViewerPath);
+	    DEBUG("GetPPTViewerPath: exit 64bit 2007\n");
+		return TRUE;
+	}
+	// Viewer 2007 in 32bit Windows:
+	if(_access("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE", 0)
+		!= -1)
+	{
+		strcpy_s("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+			stringSize, pptViewerPath);
+	    DEBUG("GetPPTViewerPath: exit 32bit 2007\n");
+		return TRUE;
+	}
+	// Give them the opportunity to place it in the same folder as the app
+	_getcwd(cwd, MAX_PATH);
+	strcat_s(cwd, MAX_PATH, "\\PPTVIEW.EXE");
+	if(_access(cwd, 0) != -1)
+	{
+		strcpy_s(pptViewerPath, stringSize, cwd);
+	    DEBUG("GetPPTViewerPath: exit local\n");
+		return TRUE;
+	}
+    DEBUG("GetPPTViewerPath: exit fail\n");
+	return FALSE;
+}
+BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
+{
     HKEY hKey;
     DWORD dwType, dwSize;
     LRESULT lResult;
 
-    DEBUG("GetPPTViewerPath: start\n");
-    if (RegOpenKeyEx(HKEY_CLASSES_ROOT,
+	// The following registry settings are for, respectively, (I think)
+	// PPT Viewer 2007 (older versions. Latest not in registry) & PPT Viewer 2010
+	// PPT Viewer 2003 (recent versions)
+	// PPT Viewer 2003 (older versions) 
+	// PPT Viewer 97
+    if ((RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        if(RegOpenKeyEx(HKEY_CLASSES_ROOT,
-			"Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
-			!= ERROR_SUCCESS)
-			if (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-				"Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
-				!= ERROR_SUCCESS)
-				{
-					return FALSE;
-			    }
+        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
+        "PowerPointViewer.Show.11\\shell\\Show\\command", 0, KEY_READ, &hKey)
+        != ERROR_SUCCESS)
+        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
+        "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
+        != ERROR_SUCCESS)
+        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
+        "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
+        != ERROR_SUCCESS))
+    {
+        return FALSE;
+    }
     dwType = REG_SZ;
     dwSize = (DWORD)stringSize;
     lResult = RegQueryValueEx(hKey, NULL, NULL, &dwType, (LPBYTE)pptViewerPath,
@@ -373,7 +435,6 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     }
     // remove "%1" from end of key value
     pptViewerPath[strlen(pptViewerPath) - 4] = '\0';
-    DEBUG("GetPPTViewerPath: exit ok\n");
     return TRUE;
 }
 
