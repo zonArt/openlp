@@ -799,9 +799,9 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_text = unicode(verse)
         if self.settings.display_style == DisplayStyle.Round:
-            return u'[---]{su}(%s){/su}' % verse_text
+            return u'{su}(%s){/su}' % verse_text
         if self.settings.display_style == DisplayStyle.Curly:
-            return u'[---]{su}{%s}{/su}' % verse_text
+            return u'{su}{%s}{/su}' % verse_text
         if self.settings.display_style == DisplayStyle.Square:
-            return u'[---]{su}[%s]{/su}' % verse_text
-        return u'[---]{su}%s{/su}' % verse_text
+            return u'{su}[%s]{/su}' % verse_text
+        return u'{su}%s{/su}' % verse_text

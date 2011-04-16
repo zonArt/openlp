@@ -399,7 +399,7 @@ class Renderer(object):
                 if line_count > 1:
                     if html_text.endswith(u'<br>'):
                         html_text = html_text[:len(html_text)-4]
-                    formatted.append(html_text)
+                    formatted.append(html_text + line_end)
                     line = previous_line
                     line_count = 1
                     html_text = u''
@@ -419,7 +419,7 @@ class Renderer(object):
                         if self.web_frame.contentsSize().height() > self.page_height:
                             if html_text.endswith(u'<br>'):
                                 html_text = html_text[:len(html_text)-4]
-                            formatted.append(html_text)
+                            formatted.append(html_text + line_break)
                             html_text = u''
                             styled_text = u''
                         html_text += word
