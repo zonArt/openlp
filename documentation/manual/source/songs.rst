@@ -103,23 +103,25 @@ Creating or editing a song slide
 ================================
 
 If you want to create a new song slide or, once you have a song imported, you 
-can edit and rearrange the Title & Lyrics, Author, Topics & Song Book, 
-assign a Theme, or edit *Copyright Info & Comments* as needed. This is done 
-through the `Song Editor`. To use the `Song Editor` to edit an existing song you 
-can click on a song in the `Media Manager` and then click the button to 
-:guilabel:`Edit the selected song` or right click a song from either the 
-`Media Manager` or from the `Service Manager` and click :guilabel:`Edit item`. 
-If you are adding a new song click :guilabel:`Add a new Song` in the 
-`Media Manager`.
+want to edit and rearrange the Title & Lyrics, Author, Topics & Song Book, 
+assign a Theme, or edit Copyright Info & Comments, you will do this through the 
+`Song Editor`. 
+
+**Edit:** To edit an existing song you can either click on a song in the 
+`Media Manager` and then click the button to :guilabel:`Edit the selected song` 
+or right click a song from either the `Media Manager` or additionally from the 
+`Service Manager` and click :guilabel:`Edit item`. If you are adding a new song 
+click :guilabel:`Add a new Song` in the `Media Manager`.
 
 .. image:: pics/song_edit_lyrics.png
 
 **Title:** This is where you would name your song or edit a song name.
 
-**Alternate title:** You can add a name in this box that will bring up the song
-in Titles search. **Example:** You could use an alternate title of "hymn" on all
-your hymn song titles for grouping. When you search "hymn" it will show all the
-hymns that have "hymn" for the Alternate title.
+**Alternate title:**Alternate Title was for songs with two names 
+"Lord the Light" - "Shine Jesus Shine". You can also add a name in this box that 
+will bring up the song in Titles search. **Example:** You could use an alternate 
+title of "hymn" on all your hymn song titles for grouping. When you search "hymn" 
+it will show all the hymns that have "hymn" for the Alternate title. 
 
 **Lyrics:** The *Lyrics* window shows all lyrics imported or added. On the left 
 side of the lyrics you will see a capital letter followed by a number. A V1 
@@ -135,7 +137,8 @@ displayed, with only a blank space in between each entry. The correct format wil
 look like this: V1 C1 V2 C1 V3 C1. If you forget to put a space in between the 
 order, or if you do not have the corresponding verse number, OpenLP will politely 
 tell you with a pop-up error message what is wrong so you can correct your 
-mistake and save it. 
+mistake and save it. Verse order is optional and if left blank the verses will 
+display in the order seen in *Lyrics*.
 
 .. image:: pics/song_edit_verse_error.png
 
