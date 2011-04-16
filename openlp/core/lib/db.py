@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ def delete_database(plugin_name, db_file_name=None):
         The name of the plugin to remove the database for
 
     ``db_file_name``
-        The database file name.  Defaults to None resulting in the
+        The database file name. Defaults to None resulting in the
         plugin_name being used.
     """
     db_file_path = None
@@ -75,11 +75,7 @@ def delete_database(plugin_name, db_file_name=None):
     else:
         db_file_path = os.path.join(
             AppLocation.get_section_data_path(plugin_name), plugin_name)
-    try:
-        os.remove(db_file_path)
-        return True
-    except OSError:
-        return False
+    return delete_file(db_file_path)
 
 class BaseModel(object):
     """
@@ -90,10 +86,11 @@ class BaseModel(object):
         """
         Creates an instance of a class and populates it, returning the instance
         """
-        me = cls()
+        instance = cls()
         for key in kwargs:
-            me.__setattr__(key, kwargs[key])
-        return me
+            instance.__setattr__(key, kwargs[key])
+        return instance
+
 
 class Manager(object):
     """
@@ -111,12 +108,13 @@ class Manager(object):
             The init_schema function for this database
 
         ``db_file_name``
-            The file name to use for this database.  Defaults to None resulting
+            The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
         settings = QtCore.QSettings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
+        self.is_dirty = False
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
@@ -150,10 +148,32 @@ class Manager(object):
             self.session.add(object_instance)
             if commit:
                 self.session.commit()
+            self.is_dirty = True
             return True
         except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Object save failed')
+            return False
+
+    def save_objects(self, object_list, commit=True):
+        """
+        Save a list of objects to the database
+
+        ``object_list``
+            The list of objects to save
+
+        ``commit``
+            Commit the session with this object
+        """
+        try:
+            self.session.add_all(object_list)
+            if commit:
+                self.session.commit()
+            self.is_dirty = True
+            return True
+        except InvalidRequestError:
+            self.session.rollback()
+            log.exception(u'Object list save failed')
             return False
 
     def get_object(self, object_class, key=None):
@@ -192,11 +212,11 @@ class Manager(object):
             The type of objects to return
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
 
         ``order_by_ref``
-            Any parameters to order the returned objects by.  Defaults to None.
+            Any parameters to order the returned objects by. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -204,6 +224,22 @@ class Manager(object):
         if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
+
+    def get_object_count(self, object_class, filter_clause=None):
+        """
+        Returns a count of the number of objects in the database.
+
+        ``object_class``
+            The type of objects to return.
+
+        ``filter_clause``
+            The filter governing selection of objects to return. Defaults to
+            None.
+        """
+        query = self.session.query(object_class)
+        if filter_clause is not None:
+            query = query.filter(filter_clause)
+        return query.count()
 
     def delete_object(self, object_class, key):
         """
@@ -220,6 +256,7 @@ class Manager(object):
             try:
                 self.session.delete(object_instance)
                 self.session.commit()
+                self.is_dirty = True
                 return True
             except InvalidRequestError:
                 self.session.rollback()
@@ -241,8 +278,18 @@ class Manager(object):
                 query = query.filter(filter_clause)
             query.delete(synchronize_session=False)
             self.session.commit()
+            self.is_dirty = True
             return True
         except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Failed to delete %s records', object_class.__name__)
             return False
+
+    def finalise(self):
+        """
+        VACUUM the database on exit.
+        """
+        if self.is_dirty:
+            engine = create_engine(self.db_url)
+            if self.db_url.startswith(u'sqlite'):
+                engine.execute("vacuum")

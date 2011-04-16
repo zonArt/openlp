@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -94,6 +94,10 @@ from subprocess import Popen, PIPE
 python_exe = sys.executable
 innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
     u'ISCC.exe')
+sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
+    u'sphinx-build.exe')
+hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
+    u'hhc.exe')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
@@ -109,23 +113,29 @@ i18n_utils = os.path.join(script_path, u'translation_utils.py')
 
 # Paths
 source_path = os.path.join(branch_path, u'openlp')
+manual_path = os.path.join(branch_path, u'documentation', u'manual')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
 
-def clean_build_directories():
-    #if not os.path.exists(build_path)
-    for root, dirs, files in os.walk(build_path, topdown=False):
-        print root
-        for file in files:
-            os.remove(os.path.join(root, file))
-    #os.removedirs(build_path)
-    for root, dirs, files in os.walk(dist_path, topdown=False):
-        for file in files:
-            os.remove(os.path.join(root, file))
-    #os.removedirs(dist_path)
+def update_code():
+    os.chdir(branch_path)
+    print u'Reverting any changes to the code...'
+    bzr = Popen((u'bzr', u'revert'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+       print output
+       raise Exception(u'Error reverting the code')
+    print u'Updating the code...'
+    bzr = Popen((u'bzr', u'update'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+       print output
+       raise Exception(u'Error updating the code')
 
 def run_pyinstaller():
     print u'Running PyInstaller...'
@@ -220,6 +230,31 @@ def compile_translations():
             if code != 0:
                 raise Exception('Error running lconvert on %s' % source_path)
 
+def run_sphinx():
+    print u'Running Sphinx...'
+    os.chdir(manual_path)
+    sphinx = Popen((sphinx_exe, u'-b', u'htmlhelp', u'-d', u'build/doctrees',
+        u'source', u'build/htmlhelp'), stdout=PIPE)
+    output, error = sphinx.communicate()
+    code = sphinx.wait()
+    if code != 0:
+        print output
+        raise Exception(u'Error running Sphinx')
+
+def run_htmlhelp():
+    print u'Running HTML Help Workshop...'
+    os.chdir(os.path.join(manual_path, u'build', u'htmlhelp'))
+    hhc = Popen((hhc_exe, u'OpenLP.chm'), stdout=PIPE)
+    output, error = hhc.communicate()
+    code = hhc.wait()
+    if code != 1:
+        print u'Exit code:', code
+        print output
+        raise Exception(u'Error running HTML Help Workshop')
+    else:
+        copy(os.path.join(manual_path, u'build', 'htmlhelp', u'OpenLP.chm'),
+            os.path.join(dist_path, u'OpenLP.chm'))
+
 def run_innosetup():
     print u'Running Inno Setup...'
     os.chdir(winres_path)
@@ -239,7 +274,7 @@ def main():
        print "PyInstaller:", pyi_build
        print "Inno Setup path:", innosetup_path
        print "Windows resources:", winres_path
-    #clean_build_directories()
+    update_code()
     run_pyinstaller()
     write_version_file()
     copy_enchant()
@@ -247,6 +282,8 @@ def main():
     copy_windows_files()
     update_translations()
     compile_translations()
+    run_sphinx()
+    run_htmlhelp()
     run_innosetup()
     print "Done."
 

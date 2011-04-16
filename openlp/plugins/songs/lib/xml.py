@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,71 +24,93 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`xml` module provides the XML functionality for songs
+The :mod:`xml` module provides the XML functionality.
 
-The basic XML is of the format::
+The basic XML for storing the lyrics in the song database looks like this::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <song version="1.0">
-        <lyrics language="en">
-            <verse type="chorus" label="1">
+        <lyrics>
+            <verse type="c" label="1" lang="en">
                 <![CDATA[ ... ]]>
+            </verse>
+        </lyrics>
+    </song>
+
+
+The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
+
+    <song xmlns="http://openlyrics.info/namespace/2009/song"
+        version="0.7"
+        createdIn="OpenLP 1.9.0"
+        modifiedIn="ChangingSong 0.0.1"
+        modifiedDate="2010-01-28T13:15:30+01:00">
+    <properties>
+        <titles>
+            <title>Amazing Grace</title>
+        </titles>
+    </properties>
+        <lyrics>
+            <verse name="v1">
+                <lines>
+                    <line>Amazing grace how sweet the sound</line>
+                </lines>
             </verse>
         </lyrics>
     </song>
 """
 
+import datetime
 import logging
+import re
 
 from lxml import etree, objectify
 
+from openlp.plugins.songs.lib import clean_song, VerseType
+from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.core.utils import get_application_version
+
 log = logging.getLogger(__name__)
 
-class SongXMLBuilder(object):
+class SongXML(object):
     """
-    This class builds the XML used to describe songs.
+    This class builds and parses the XML used to describe songs.
     """
-    log.info(u'SongXMLBuilder Loaded')
+    log.info(u'SongXML Loaded')
 
-    def __init__(self, song_language=None):
+    def __init__(self):
         """
-        Set up the song builder.
-
-        ``song_language``
-            The language used in this song
+        Set up the default variables.
         """
-        lang = u'en'
-        if song_language:
-            lang = song_language
         self.song_xml = objectify.fromstring(u'<song version="1.0" />')
-        self.lyrics = etree.SubElement(self.song_xml, u'lyrics', language=lang)
+        self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
 
-    def add_verse_to_lyrics(self, type, number, content):
+    def add_verse_to_lyrics(self, type, number, content, lang=None):
         """
         Add a verse to the ``<lyrics>`` tag.
 
         ``type``
-            A string denoting the type of verse. Possible values are "Chorus",
-            "Verse", "Bridge", and "Custom".
+            A string denoting the type of verse. Possible values are *v*,
+            *c*, *b*, *p*, *i*, *e* and *o*.
+            Any other type is **not** allowed, this also includes translated
+            types.
 
         ``number``
             An integer denoting the number of the item, for example: verse 1.
 
         ``content``
             The actual text of the verse to be stored.
+
+        ``lang``
+            The verse's language code (ISO-639). This is not required, but
+            should be added if available.
         """
-        # log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
-        verse = etree.Element(u'verse', type = unicode(type),
-            label = unicode(number))
+        verse = etree.Element(u'verse', type=unicode(type),
+            label=unicode(number))
+        if lang:
+            verse.set(u'lang', lang)
         verse.text = etree.CDATA(content)
         self.lyrics.append(verse)
-
-    def dump_xml(self):
-        """
-        Debugging aid to dump XML so that we can see what we have.
-        """
-        return etree.tostring(self.song_xml, encoding=u'UTF-8',
-            xml_declaration=True, pretty_print=True)
 
     def extract_xml(self):
         """
@@ -97,19 +119,18 @@ class SongXMLBuilder(object):
         return etree.tostring(self.song_xml, encoding=u'UTF-8',
             xml_declaration=True)
 
-
-class SongXMLParser(object):
-    """
-    A class to read in and parse a song's XML.
-    """
-    log.info(u'SongXMLParser Loaded')
-
-    def __init__(self, xml):
+    def get_verses(self, xml):
         """
-        Set up our song XML parser.
+        Iterates through the verses in the XML and returns a list of verses
+        and their attributes.
 
         ``xml``
             The XML of the song to be parsed.
+
+        The returned list has the following format::
+
+            [[{'lang': 'en', 'type': 'v', 'label': '1'}, u"English verse"],
+            [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
         if xml[:5] == u'<?xml':
@@ -118,12 +139,6 @@ class SongXMLParser(object):
             self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
-
-    def get_verses(self):
-        """
-        Iterates through the verses in the XML and returns a list of verses
-        and their attributes.
-        """
         xml_iter = self.song_xml.getiterator()
         verse_list = []
         for element in xml_iter:
@@ -140,102 +155,392 @@ class SongXMLParser(object):
         return etree.dump(self.song_xml)
 
 
-class LyricsXML(object):
+class OpenLyrics(object):
     """
-    This class represents the XML in the ``lyrics`` field of a song.
-    """
-    def __init__(self, song=None):
-        if song:
-            if song.lyrics.startswith(u'<?xml'):
-                self.parse(song.lyrics)
-            else:
-                self.extract(song.lyrics)
-        else:
-            self.languages = []
+    This class represents the converter for OpenLyrics XML (version 0.7)
+    to/from a song.
 
-    def parse(self, xml):
+    As OpenLyrics has a rich set of different features, we cannot support them
+    all. The following features are supported by the :class:`OpenLyrics` class:
+
+    ``<authors>``
+        OpenLP does not support the attribute *type* and *lang*.
+
+    ``<chord>``
+        This property is not supported.
+
+    ``<comments>``
+        The ``<comments>`` property is fully supported. But comments in lyrics
+        are not supported.
+
+    ``<copyright>``
+        This property is fully supported.
+
+    ``<customVersion>``
+        This property is not supported.
+
+    ``<key>``
+        This property is not supported.
+
+    ``<keywords>``
+        This property is not supported.
+
+    ``<lines>``
+        The attribute *part* is not supported.
+
+    ``<publisher>``
+        This property is not supported.
+
+    ``<songbooks>``
+        As OpenLP does only support one songbook, we cannot consider more than
+        one songbook.
+
+    ``<tempo>``
+        This property is not supported.
+
+    ``<themes>``
+        Topics, as they are called in OpenLP, are fully supported, whereby only
+        the topic text (e. g. Grace) is considered, but neither the *id* nor
+        *lang*.
+
+    ``<transposition>``
+        This property is not supported.
+
+    ``<variant>``
+        This property is not supported.
+
+    ``<verse name="v1a" lang="he" translit="en">``
+        The attribute *translit* is not supported. Note, the attribute *lang* is
+        considered, but there is not further functionality implemented yet.
+
+    ``<verseOrder>``
+        OpenLP supports this property.
+
+    """
+    IMPLEMENTED_VERSION = u'0.7'
+    def __init__(self, manager):
+        self.manager = manager
+
+    def song_to_xml(self, song):
         """
-        Parse XML from the ``lyrics`` field in the database, and set the list
-        of verses from it.
+        Convert the song to OpenLyrics Format.
+        """
+        sxml = SongXML()
+        verse_list = sxml.get_verses(song.lyrics)
+        song_xml = objectify.fromstring(u'<song/>')
+        # Append the necessary meta data to the song.
+        song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
+        song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
+        song_xml.set(u'createdIn', get_application_version()[u'version'])
+        song_xml.set(u'modifiedIn', get_application_version()[u'version'])
+        song_xml.set(u'modifiedDate',
+            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
+        properties = etree.SubElement(song_xml, u'properties')
+        titles = etree.SubElement(properties, u'titles')
+        self._add_text_to_element(u'title', titles, song.title)
+        if song.alternate_title:
+            self._add_text_to_element(u'title', titles, song.alternate_title)
+        if song.comments:
+            comments = etree.SubElement(properties, u'comments')
+            self._add_text_to_element(u'comment', comments, song.comments)
+        if song.copyright:
+            self._add_text_to_element(u'copyright', properties, song.copyright)
+        if song.verse_order:
+            self._add_text_to_element(
+                u'verseOrder', properties, song.verse_order.lower())
+        if song.ccli_number:
+            self._add_text_to_element(u'ccliNo', properties, song.ccli_number)
+        if song.authors:
+            authors = etree.SubElement(properties, u'authors')
+            for author in song.authors:
+                self._add_text_to_element(
+                    u'author', authors, author.display_name)
+        book = self.manager.get_object_filtered(
+            Book, Book.id == song.song_book_id)
+        if book is not None:
+            book = book.name
+            songbooks = etree.SubElement(properties, u'songbooks')
+            element = self._add_text_to_element(
+                u'songbook', songbooks, None, book)
+            if song.song_number:
+                element.set(u'entry', song.song_number)
+        if song.topics:
+            themes = etree.SubElement(properties, u'themes')
+            for topic in song.topics:
+                self._add_text_to_element(u'theme', themes, topic.name)
+        lyrics = etree.SubElement(song_xml, u'lyrics')
+        for verse in verse_list:
+            verse_tag = u'%s%s' % (
+                verse[0][u'type'][0].lower(), verse[0][u'label'])
+            element = \
+                self._add_text_to_element(u'verse', lyrics, None, verse_tag)
+            if verse[0].has_key(u'lang'):
+                element.set(u'lang', verse[0][u'lang'])
+            element = self._add_text_to_element(u'lines', element)
+            for line in unicode(verse[1]).split(u'\n'):
+                self._add_text_to_element(u'line', element, line)
+        return self._extract_xml(song_xml)
+
+    def xml_to_song(self, xml):
+        """
+        Create and save a song from OpenLyrics format xml to the database. Since
+        we also export XML from external sources (e. g. OpenLyrics import), we
+        cannot ensure, that it completely conforms to the OpenLyrics standard.
 
         ``xml``
-            The XML to parse.
+            The XML to parse (unicode).
         """
-        try:
-            self.languages = []
-            song = objectify.fromstring(xml)
-            for lyrics in song.lyrics:
-                language = {
-                    u'language': lyrics.attrib[u'language'],
-                    u'verses': []
-                }
-                for verse in lyrics.verse:
-                    language[u'verses'].append({
-                        u'type': verse.attrib[u'type'],
-                        u'label': verse.attrib[u'label'],
-                        u'text': unicode(verse.text)
-                    })
-                self.lyrics.append(language)
-            return True
-        except etree.XMLSyntaxError:
-            return False
+        # No xml get out of here.
+        if not xml:
+            return None
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
+        # Remove chords from xml.
+        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
+        song_xml = objectify.fromstring(xml)
+        if hasattr(song_xml, u'properties'):
+            properties = song_xml.properties
+        else:
+            return None
+        song = Song()
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
+        song.search_title = u''
+        self._process_copyright(properties, song)
+        self._process_cclinumber(properties, song)
+        self._process_titles(properties, song)
+        # The verse order is processed with the lyrics!
+        self._process_lyrics(properties, song_xml.lyrics, song)
+        self._process_comments(properties, song)
+        self._process_authors(properties, song)
+        self._process_songbooks(properties, song)
+        self._process_topics(properties, song)
+        clean_song(self.manager, song)
+        self.manager.save_object(song)
+        return song.id
 
-    def extract(self, text):
+    def _add_text_to_element(self, tag, parent, text=None, label=None):
+        if label:
+            element = etree.Element(tag, name=unicode(label))
+        else:
+            element = etree.Element(tag)
+        if text:
+            element.text = unicode(text)
+        parent.append(element)
+        return element
+
+    def _extract_xml(self, xml):
         """
-        If the ``lyrics`` field in the database is not XML, this method is
-        called and used to construct the verse structure similar to the output
-        of the ``parse`` function.
-
-        ``text``
-            The text to pull verses out of.
+        Extract our newly created XML song.
         """
-        text = text.replace('\r\n', '\n')
-        verses = text.split('\n\n')
-        self.languages = [{u'language': u'en', u'verses': []}]
-        counter = 0
-        for verse in verses:
-            counter = counter + 1
-            self.languages[0][u'verses'].append({
-                u'type': u'verse',
-                u'label': unicode(counter),
-                u'text': verse
-            })
-        return True
+        return etree.tostring(xml, encoding=u'UTF-8',
+            xml_declaration=True)
 
-    def add_verse(self, type, label, text):
+    def _get(self, element, attribute):
         """
-        Add a verse to the list of verses.
+        This returns the element's attribute as unicode string.
 
-        ``type``
-            The type of list, one of "verse", "chorus", "bridge", "pre-chorus",
-            "intro", "outtro".
+        ``element``
+            The element.
 
-        ``label``
-            The number associated with this verse, like 1 or 2.
-
-        ``text``
-            The text of the verse.
+        ``attribute``
+            The element's attribute (unicode).
         """
-        self.verses.append({
-            u'type': type,
-            u'label': label,
-            u'text': text
-        })
+        if element.get(attribute) is not None:
+            return unicode(element.get(attribute))
+        return u''
 
-    def export(self):
+    def _text(self, element):
         """
-        Build up the XML for the verse structure.
+        This returns the text of an element as unicode string.
+
+        ``element``
+            The element.
         """
-        lyrics_output = u''
-        for language in self.languages:
-            verse_output = u''
-            for verse in language[u'verses']:
-                verse_output = verse_output + \
-                    u'<verse type="%s" label="%s"><![CDATA[%s]]></verse>' % \
-                    (verse[u'type'], verse[u'label'], verse[u'text'])
-            lyrics_output = lyrics_output + \
-                u'<lyrics language="%s">%s</lyrics>' % \
-                (language[u'language'], verse_output)
-        song_output = u'<?xml version="1.0" encoding="UTF-8"?>' + \
-            u'<song version="1.0">%s</song>' % lyrics_output
-        return song_output
+        if element.text is not None:
+            return unicode(element.text)
+        return u''
+
+    def _process_authors(self, properties, song):
+        """
+        Adds the authors specified in the XML to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        authors = []
+        if hasattr(properties, u'authors'):
+            for author in properties.authors.author:
+                display_name = self._text(author)
+                if display_name:
+                    authors.append(display_name)
+        for display_name in authors:
+            author = self.manager.get_object_filtered(Author,
+                Author.display_name == display_name)
+            if author is None:
+                # We need to create a new author, as the author does not exist.
+                author = Author.populate(display_name=display_name,
+                    last_name=display_name.split(u' ')[-1],
+                    first_name=u' '.join(display_name.split(u' ')[:-1]))
+            song.authors.append(author)
+
+    def _process_cclinumber(self, properties, song):
+        """
+        Adds the CCLI number to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        if hasattr(properties, u'ccliNo'):
+            song.ccli_number = self._text(properties.ccliNo)
+
+    def _process_comments(self, properties, song):
+        """
+        Joins the comments specified in the XML and add it to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        if hasattr(properties, u'comments'):
+            comments_list = []
+            for comment in properties.comments.comment:
+                commenttext = self._text(comment)
+                if commenttext:
+                    comments_list.append(commenttext)
+            song.comments = u'\n'.join(comments_list)
+
+    def _process_copyright(self, properties, song):
+        """
+        Adds the copyright to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        if hasattr(properties, u'copyright'):
+            song.copyright = self._text(properties.copyright)
+
+    def _process_lyrics(self, properties, lyrics, song):
+        """
+        Processes the verses and search_lyrics for the song.
+
+        ``properties``
+            The properties object (lxml.objectify.ObjectifiedElement).
+
+        ``lyrics``
+            The lyrics object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        sxml = SongXML()
+        for verse in lyrics.verse:
+            text = u''
+            for lines in verse.lines:
+                if text:
+                    text += u'\n'
+                text += u'\n'.join([unicode(line) for line in lines.line])
+            verse_def = self._get(verse, u'name').lower()
+            if verse_def[0] in VerseType.Tags:
+                verse_tag = verse_def[0]
+            else:
+                verse_tag = VerseType.Tags[VerseType.Other]
+            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_def)
+            # OpenLyrics allows e. g. "c", but we need "c1". However, this does
+            # not correct the verse order.
+            if not verse_number:
+                verse_number = u'1'
+            lang = None
+            if self._get(verse, u'lang'):
+                lang = self._get(verse, u'lang')
+            sxml.add_verse_to_lyrics(verse_tag, verse_number, text, lang)
+        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        # Process verse order
+        if hasattr(properties, u'verseOrder'):
+            song.verse_order = self._text(properties.verseOrder)
+
+    def _process_songbooks(self, properties, song):
+        """
+        Adds the song book and song number specified in the XML to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        song.song_book_id = 0
+        song.song_number = u''
+        if hasattr(properties, u'songbooks'):
+            for songbook in properties.songbooks.songbook:
+                bookname = self._get(songbook, u'name')
+                if bookname:
+                    book = self.manager.get_object_filtered(Book,
+                        Book.name == bookname)
+                    if book is None:
+                        # We need to create a book, because it does not exist.
+                        book = Book.populate(name=bookname, publisher=u'')
+                        self.manager.save_object(book)
+                    song.song_book_id = book.id
+                    if hasattr(songbook, u'entry'):
+                        song.song_number = self._get(songbook, u'entry')
+                    # We only support one song book, so take the first one.
+                    break
+
+    def _process_titles(self, properties, song):
+        """
+        Processes the titles specified in the song's XML.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        for title in properties.titles.title:
+            if not song.title:
+                song.title = self._text(title)
+                song.alternate_title = u''
+            else:
+                song.alternate_title = self._text(title)
+
+    def _process_topics(self, properties, song):
+        """
+        Adds the topics to the song.
+
+        ``properties``
+            The property object (lxml.objectify.ObjectifiedElement).
+
+        ``song``
+            The song object.
+        """
+        if hasattr(properties, u'themes'):
+            for topictext in properties.themes.theme:
+                topictext = self._text(topictext)
+                if topictext:
+                    topic = self.manager.get_object_filtered(Topic,
+                        Topic.name == topictext)
+                    if topic is None:
+                        # We need to create a topic, because it does not exist.
+                        topic = Topic.populate(name=topictext)
+                        self.manager.save_object(topic)
+                    song.topics.append(topic)
+
+    def _dump_xml(self, xml):
+        """
+        Debugging aid to dump XML so that we can see what we have.
+        """
+        return etree.tostring(xml, encoding=u'UTF-8',
+            xml_declaration=True, pretty_print=True)

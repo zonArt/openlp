@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,13 +23,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.utils import get_uno_command, get_uno_instance
 from songimport import SongImport
+
+log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -37,58 +39,51 @@ if os.name == u'nt':
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    try:
-        import uno
-        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
-            PAGE_BOTH
-    except ImportError:
-        pass
+    import uno
+    from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 
 class OooImport(SongImport):
     """
-    Import songs from Impress/Powerpoint docs using Impress 
+    Import songs from Impress/Powerpoint docs using Impress
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        SongImport.__init__(self, master_manager)
-        self.song = None
-        self.master_manager = master_manager
+        SongImport.__init__(self, manager, **kwargs)
         self.document = None
         self.process_started = False
-        self.filenames = kwargs[u'filenames']
-        self.uno_connection_type = u'pipe' #u'socket'
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
 
     def do_import(self):
-        self.abort = False
-        self.import_wizard.importProgressBar.setMaximum(0)
+        self.stop_import_flag = False
+        self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
-        for filename in self.filenames:
-            if self.abort:
+        for filename in self.import_source:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
                 if self.document:
-                    if self.document.supportsService(
-                        "com.sun.star.presentation.PresentationDocument"):
-                        self.process_pres()
-                    if self.document.supportsService(
-                            "com.sun.star.text.TextDocument"):
-                        self.process_doc()
+                    self.process_ooo_document()
                     self.close_ooo_file()
         self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
 
-    def stop_import(self):
-        self.abort = True
+    def process_ooo_document(self):
+        """
+        Handle the import process for OpenOffice files. This method facilitates
+        allowing subclasses to handle specific types of OpenOffice files.
+        """
+        if self.document.supportsService(
+            "com.sun.star.presentation.PresentationDocument"):
+            self.process_pres()
+        if self.document.supportsService("com.sun.star.text.TextDocument"):
+            self.process_doc()
 
     def start_ooo(self):
         """
@@ -97,61 +92,49 @@ class OooImport(SongImport):
         """
         if os.name == u'nt':
             self.start_ooo_process()
-            self.desktop = self.manager.createInstance(
+            self.desktop = self.ooo_manager.createInstance(
                 u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext(
                 u'com.sun.star.bridge.UnoUrlResolver', context)
-            ctx = None
+            uno_instance = None
             loop = 0
-            while ctx is None and loop < 5:
+            while uno_instance is None and loop < 5:
                 try:
-                    if self.uno_connection_type == u'pipe':
-                        ctx = resolver.resolve(u'uno:' \
-                            + u'pipe,name=openlp_pipe;' \
-                            + u'urp;StarOffice.ComponentContext')
-                    else:
-                        ctx = resolver.resolve(u'uno:' \
-                            + u'socket,host=localhost,port=2002;' \
-                            + u'urp;StarOffice.ComponentContext')
+                    uno_instance = get_uno_instance(resolver)
                 except:
-                    pass
-                self.start_ooo_process()
-                loop += 1
-            manager = ctx.ServiceManager
+                    log.exception("Failed to resolve uno connection")
+                    self.start_ooo_process()
+                    loop += 1
+            manager = uno_instance.ServiceManager
             self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx)
-            
+                "com.sun.star.frame.Desktop", uno_instance)
+
     def start_ooo_process(self):
         try:
             if os.name == u'nt':
-                self.manager = Dispatch(u'com.sun.star.ServiceManager')
-                self.manager._FlagAsMethod(u'Bridge_GetStruct')
-                self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+                self.ooo_manager = Dispatch(u'com.sun.star.ServiceManager')
+                self.ooo_manager._FlagAsMethod(u'Bridge_GetStruct')
+                self.ooo_manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                if self.uno_connection_type == u'pipe':
-                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                        + u'-invisible -nofirststartwizard ' \
-                        + u'-accept=pipe,name=openlp_pipe;urp;'
-                else:
-                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                        + u'-invisible -nofirststartwizard ' \
-                        + u'-accept=socket,host=localhost,port=2002;urp;'
+                cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
             self.process_started = True
         except:
-            pass
+            log.exception("start_ooo_process failed")
 
     def open_ooo_file(self, filepath):
         """
         Open the passed file in OpenOffice.org Impress
         """
+        self.filepath = filepath
         if os.name == u'nt':
-            url = u'file:///' + filepath.replace(u'\\', u'/')
+            url = filepath.replace(u'\\', u'/')
             url = url.replace(u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + url
         else:
             url = uno.systemPathToFileUrl(filepath)
         properties = []
@@ -167,12 +150,12 @@ class OooImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except:
-            pass
-        return   
+            log.exception("open_ooo_file failed")
+        return
 
     def close_ooo_file(self):
         """
-        Close file. 
+        Close file.
         """
         self.document.close(True)
         self.document = None
@@ -187,15 +170,15 @@ class OooImport(SongImport):
     def process_pres(self):
         """
         Process the file
-        """            
+        """
         doc = self.document
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
-            slide = slides.getByIndex(slide_no)   
+            slide = slides.getByIndex(slide_no)
             slidetext = u''
             for idx in range(slide.getCount()):
                 shape = slide.getByIndex(idx)
@@ -205,16 +188,13 @@ class OooImport(SongImport):
             if slidetext.strip() == u'':
                 slidetext = u'\f'
             text += slidetext
-        song = SongImport(self.manager)
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
-        return 
+        self.process_songs_text(text)
+        return
 
     def process_doc(self):
         """
         Process the doc file, a paragraph at a time
-        """            
+        """
         text = u''
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
@@ -230,6 +210,16 @@ class OooImport(SongImport):
                     if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                         paratext += u'\f'
             text += paratext + u'\n'
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
+        self.process_songs_text(text)
+
+    def process_songs_text(self, text):
+        songtexts = self.tidy_text(text).split(u'\f')
+        self.set_defaults()
+        for songtext in songtexts:
+            if songtext.strip():
+                self.process_song_text(songtext.strip())
+                if self.check_complete():
+                    self.finish()
+                    self.set_defaults()
+        if self.check_complete():
+            self.finish()

@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,6 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
 from editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
@@ -46,12 +45,12 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonPressed)
 
     def setText(self, text):
         """
         Set the text for slideTextEdit.
-        
+
         ``text``
             The text (unicode).
         """
@@ -68,9 +67,9 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
 
     def onSplitButtonPressed(self):
         """
-        Splits a slide in two slides.
+        Adds a slide split at the cursor.
         """
         if self.slideTextEdit.textCursor().columnNumber() != 0:
             self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[---]\n' )
+        self.slideTextEdit.insertPlainText(u'[---]\n')
         self.slideTextEdit.setFocus()

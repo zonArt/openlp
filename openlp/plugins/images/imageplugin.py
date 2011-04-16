@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,14 +35,10 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Images', plugin_helpers, ImageMediaItem)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
-        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -64,53 +60,23 @@ class ImagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('ImagePlugin', 'Image'),
-            u'plural': translate('ImagePlugin', 'Images')
+            u'singular': translate('ImagePlugin', 'Image', 'name singular'),
+            u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('ImagePlugin', 'Images')
+            u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('ImagePlugin', 'Load'),
-            u'tooltip': translate('ImagePlugin', 
-                'Load a new Image')
-        }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('ImagePlugin', 'Add'),
-            u'tooltip': translate('ImagePlugin', 
-                'Add a new Image')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('ImagePlugin', 'Edit'),
-            u'tooltip': translate('ImagePlugin', 
-                'Edit the selected Image')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('ImagePlugin', 'Delete'),
-            u'tooltip': translate('ImagePlugin', 
-                'Delete the selected Image')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('ImagePlugin', 'Preview'),
-            u'tooltip': translate('ImagePlugin', 
-                'Preview the selected Image')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('ImagePlugin', 'Live'),
-            u'tooltip': translate('ImagePlugin', 
-                'Send the selected Image live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('ImagePlugin', 'Service'),
-            u'tooltip': translate('ImagePlugin', 
+        tooltips = {
+            u'load': translate('ImagePlugin', 'Load a new Image'),
+            u'import': u'',
+            u'new': translate('ImagePlugin', 'Add a new Image'),
+            u'edit': translate('ImagePlugin', 'Edit the selected Image'),
+            u'delete': translate('ImagePlugin', 'Delete the selected Image'),
+            u'preview': translate('ImagePlugin', 'Preview the selected Image'),
+            u'live': translate('ImagePlugin', 'Send the selected Image live'),
+            u'service': translate('ImagePlugin',
                 'Add the selected Image to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

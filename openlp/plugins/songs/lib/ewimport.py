@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund, Jeffrey Smith                            #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,11 +28,12 @@ The :mod:`ewimport` module provides the functionality for importing
 EasyWorship song databases into the current installation database.
 """
 
-import sys
 import os
 import struct
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
 def strip_rtf(blob, encoding):
@@ -42,7 +43,7 @@ def strip_rtf(blob, encoding):
     control_word = []
     for c in blob:
         if control:
-            # for delimiters, set control to False 
+            # for delimiters, set control to False
             if c == '{':
                 if len(control_word) > 0:
                     depth += 1
@@ -71,7 +72,7 @@ def strip_rtf(blob, encoding):
                     elif control_str == 'tab':
                         clear_text.append(u'\t')
                     # Prefer the encoding specified by the RTF data to that
-                    #  specified by the Paradox table header
+                    # specified by the Paradox table header
                     # West European encoding
                     elif control_str == 'fcharset0':
                         encoding = u'cp1252'
@@ -128,14 +129,14 @@ class FieldDescEntry:
         self.type = type
         self.size = size
 
+
 class EasyWorshipSongImport(SongImport):
     """
     The :class:`EasyWorshipSongImport` class provides OpenLP with the
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        self.import_source = kwargs[u'filename']
-        SongImport.__init__(self, manager)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         # Open the DB and MB files if they exist
@@ -163,27 +164,30 @@ class EasyWorshipSongImport(SongImport):
         if code_page == 852:
             self.encoding = u'cp1250'
         # The following codepage to actual encoding mappings have not been
-        #  observed, but merely guessed.  Actual example files are needed.
-        #if code_page == 737:
-        #    self.encoding = u'cp1253'
-        #if code_page == 775:
-        #    self.encoding = u'cp1257'
-        #if code_page == 855:
-        #    self.encoding = u'cp1251'
-        #if code_page == 857:
-        #    self.encoding = u'cp1254'
-        #if code_page == 866:
-        #    self.encoding = u'cp1251'
-        #if code_page == 869:
-        #    self.encoding = u'cp1253'
-        #if code_page == 862:
-        #    self.encoding = u'cp1255'
-        #if code_page == 874:
-        #    self.encoding = u'cp874'
+        # observed, but merely guessed. Actual example files are needed.
+        elif code_page == 737:
+            self.encoding = u'cp1253'
+        elif code_page == 775:
+            self.encoding = u'cp1257'
+        elif code_page == 855:
+            self.encoding = u'cp1251'
+        elif code_page == 857:
+            self.encoding = u'cp1254'
+        elif code_page == 866:
+            self.encoding = u'cp1251'
+        elif code_page == 869:
+            self.encoding = u'cp1253'
+        elif code_page == 862:
+            self.encoding = u'cp1255'
+        elif code_page == 874:
+            self.encoding = u'cp874'
+        self.encoding = retrieve_windows_encoding(self.encoding)
+        if not self.encoding:
+            return False
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.import_wizard.importProgressBar.setMaximum(total_blocks)
+        self.import_wizard.progressBar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -192,8 +196,9 @@ class EasyWorshipSongImport(SongImport):
             num_fields)
         field_names.pop()
         field_descs = []
-        for i,field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+        for i, field_name in enumerate(field_names):
+            field_type, field_size = struct.unpack_from('BB',
+                field_info, i * 2)
             field_descs.append(FieldDescEntry(field_name, field_type,
                 field_size))
         self.set_record_struct(field_descs)
@@ -227,8 +232,7 @@ class EasyWorshipSongImport(SongImport):
                 title = self.get_field(fi_title)
                 if title:
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                            'Importing "%s"...')) % title, 0)
+                        WizardStrings.ImportingType % title, 0)
                     self.title = title
                 # Get remaining fields
                 copy = self.get_field(fi_copy)
@@ -272,7 +276,7 @@ class EasyWorshipSongImport(SongImport):
         return success
 
     def find_field(self, field_name):
-        return [i for i,x in enumerate(self.field_descs) \
+        return [i for i, x in enumerate(self.field_descs) \
             if x.name == field_name][0]
 
     def set_record_struct(self, field_descs):
@@ -331,7 +335,7 @@ class EasyWorshipSongImport(SongImport):
             # Memo or Blob
             block_start, blob_size = \
                 struct.unpack_from('<II', field, len(field)-10)
-            sub_block = block_start & 0xff;
+            sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memo_file.seek(block_start)
             memo_block_type, = struct.unpack('b', self.memo_file.read(1))
@@ -339,12 +343,12 @@ class EasyWorshipSongImport(SongImport):
                 self.memo_file.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
                 if sub_block > 63:
-                    return u'';
+                    return u''
                 self.memo_file.seek(11 + (5 * sub_block), os.SEEK_CUR)
                 sub_block_start, = struct.unpack('B', self.memo_file.read(1))
                 self.memo_file.seek(block_start + (sub_block_start * 16))
             else:
-                return u'';
+                return u''
             return self.memo_file.read(blob_size)
         else:
             return 0

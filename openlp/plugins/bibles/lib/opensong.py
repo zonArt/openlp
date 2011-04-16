@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,12 +25,10 @@
 ###############################################################################
 
 import logging
-
 from lxml import objectify
-from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -38,19 +36,14 @@ class OpenSongBible(BibleDB):
     """
     OpenSong Bible format importer class.
     """
-
     def __init__(self, parent, **kwargs):
         """
         Constructor to create and set up an instance of the OpenSongBible
         class. This class is used to import Bibles from OpenSong's XML format.
         """
-        log.debug(__name__)
+        log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        if 'filename' not in kwargs:
-            raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
         """
@@ -59,7 +52,6 @@ class OpenSongBible(BibleDB):
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
         if not isinstance(self.filename, unicode):
             self.filename = unicode(self.filename, u'utf8')
-        self.wizard.incrementProgressBar(u'Preparing for import...')
         file = None
         success = True
         try:
@@ -82,24 +74,22 @@ class OpenSongBible(BibleDB):
                             break
                         self.create_verse(
                             db_book.id,
-                            int(chapter.attrib[u'n']),
+                            int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
-                            unicode(verse.text)
-                        )
-                        Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(
-                        QtCore.QString('%s %s %s' % (
-                            translate('BiblesPlugin.Opensong', 'Importing'),
-                            db_book.name, chapter.attrib[u'n'])))
-                    self.session.commit()
-        except IOError:
+                            unicode(verse.text))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.Opensong', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
+                self.session.commit()
+            Receiver.send_message(u'openlp_process_events')
+        except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
             if file:
                 file.close()
         if self.stop_import_flag:
-            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success

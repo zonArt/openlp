@@ -31,9 +31,9 @@ OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
 Compression=lzma
 SolidCompression=true
-SetupIconFile=C:\Program Files\Inno Setup 5\Examples\Setup.ico
-WizardImageFile=C:\Program Files\Inno Setup 5\WizModernImage-IS.bmp
-WizardSmallImageFile=C:\Program Files\Inno Setup 5\WizModernSmallImage-IS.bmp
+SetupIconFile=OpenLP.ico
+WizardImageFile=WizImageBig.bmp
+WizardSmallImageFile=WizImageSmall.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -68,6 +68,8 @@ Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
+Name: {group}\{#AppName} (Debug); Filename: {app}\{#AppExeName}; Parameters: -l debug
+Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm
 Name: {group}\{cm:ProgramOnTheWeb,{#AppName}}; Filename: {#AppURL}
 Name: {group}\{cm:UninstallProgram,{#AppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#AppName}; Filename: {app}\{#AppExeName}; Tasks: desktopicon
@@ -77,12 +79,55 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\alerts; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\bibles; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\custom; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\images; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\media; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\presentations; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\remotes; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songs; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songusage; ValueType: dword; ValueName: status; ValueData: $00000001
+
+[Code]
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+  Result := 0;
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then
+  begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end
+  else
+    Result := 1;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
+    end;
+  end;
+end;

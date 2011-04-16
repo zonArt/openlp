@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +25,7 @@
 ###############################################################################
 
 import logging
+import mimetypes
 
 from PyQt4.phonon import Phonon
 
@@ -37,43 +38,58 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Media', plugin_helpers,
+            MediaMediaItem, MediaTab)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_list = u''
-        self.video_list = u''
+        self.additional_extensions = {
+            u'audio/ac3': [u'.ac3'],
+            u'audio/flac': [u'.flac'],
+            u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
+            u'audio/x-mp3': [u'.mp3'],
+            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+            u'audio/qcelp': [u'.qcp'],
+            u'audio/x-wma': [u'.wma'],
+            u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
+            u'video/x-matroska': [u'.mpv', u'.mkv'],
+            u'video/x-wmv': [u'.wmv'],
+            u'video/x-ms-wmv': [u'.wmv']}
+        self.audio_extensions_list = []
+        self.video_extensions_list = []
+        mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
-            type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
-            type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
+            if mimetype.startswith(u'audio/'):
+                self._addToList(self.audio_extensions_list, mimetype)
+            elif mimetype.startswith(u'video/'):
+                self._addToList(self.video_extensions_list, mimetype)
 
-    def _addToList(self, list, value, type):
-        if len(value) == 2:
-            if list.find(value[1]) == -1:
-                list += u'*.%s ' % value[1]
-                self.serviceManager.supportedSuffixes(value[1])
-            type = u''
-        return list, type
-
-    def getSettingsTab(self):
-        return MediaTab(self.name)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
-        return MediaMediaItem(self, self, self.icon)
+    def _addToList(self, list, mimetype):
+        # Add all extensions which mimetypes provides us for supported types.
+        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
+        for extension in extensions:
+            ext = u'*%s' % extension
+            if ext not in list:
+                list.append(ext)
+                self.serviceManager.supportedSuffixes(extension[1:])
+        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
+            u' '.join(extensions)))
+        # Add extensions for this mimetype from self.additional_extensions.
+        # This hack clears mimetypes' and operating system's shortcomings
+        # by providing possibly missing extensions.
+        if mimetype in self.additional_extensions.keys():
+            for extension in self.additional_extensions[mimetype]:
+                ext = u'*%s' % extension
+                if ext not in list:
+                    list.append(ext)
+                    self.serviceManager.supportedSuffixes(extension[1:])
+            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
+                u' '.join(self.additional_extensions[mimetype])))
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -86,53 +102,23 @@ class MediaPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('MediaPlugin', 'Media'),
-            u'plural': translate('MediaPlugin', 'Media')
+            u'singular': translate('MediaPlugin', 'Media', 'name singular'),
+            u'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('MediaPlugin', 'Media')
+            u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('MediaPlugin', 'Load'),
-            u'tooltip': translate('MediaPlugin', 
-                'Load a new Media')
-        }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('MediaPlugin', 'Add'),
-            u'tooltip': translate('MediaPlugin', 
-                'Add a new Media')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('MediaPlugin', 'Edit'),
-            u'tooltip': translate('MediaPlugin', 
-                'Edit the selected Media')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('MediaPlugin', 'Delete'),
-            u'tooltip': translate('MediaPlugin', 
-                'Delete the selected Media')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('MediaPlugin', 'Preview'),
-            u'tooltip': translate('MediaPlugin', 
-                'Preview the selected Media')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('MediaPlugin', 'Live'),
-            u'tooltip': translate('MediaPlugin', 
-                'Send the selected Media live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('MediaPlugin', 'Service'),
-            u'tooltip': translate('MediaPlugin', 
+        tooltips = {
+            u'load': translate('MediaPlugin', 'Load a new Media'),
+            u'import': u'',
+            u'new': translate('MediaPlugin', 'Add a new Media'),
+            u'edit': translate('MediaPlugin', 'Edit the selected Media'),
+            u'delete': translate('MediaPlugin', 'Delete the selected Media'),
+            u'preview': translate('MediaPlugin', 'Preview the selected Media'),
+            u'live': translate('MediaPlugin', 'Send the selected Media live'),
+            u'service': translate('MediaPlugin',
                 'Add the selected Media to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

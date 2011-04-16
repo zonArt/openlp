@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,10 +28,20 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Renderer, ThemeLevel, ServiceItem
+from openlp.core.lib import Renderer, ServiceItem, ImageManager
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
+
+VERSE = u'The Lord said to {r}Noah{/r}: \n' \
+    'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
+    'The Lord said to {g}Noah{/g}:\n' \
+    'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
+    'Get those children out of the muddy, muddy \n' \
+    '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
+    'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class RenderManager(object):
     """
@@ -56,8 +66,9 @@ class RenderManager(object):
         """
         log.debug(u'Initilisation started')
         self.screens = screens
+        self.image_manager = ImageManager()
         self.display = MainDisplay(self, screens, False)
-        self.display.setup()
+        self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
         self.renderer = Renderer()
         self.calculate_default(self.screens.current[u'size'])
@@ -65,8 +76,8 @@ class RenderManager(object):
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
-        self.themedata = None
-        self.alertTab = None
+        self.theme_data = None
+        self.force_page = False
 
     def update_display(self):
         """
@@ -75,9 +86,11 @@ class RenderManager(object):
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])
         self.display = MainDisplay(self, self.screens, False)
+        self.display.imageManager = self.image_manager
         self.display.setup()
         self.renderer.bg_frame = None
-        self.themedata = None
+        self.theme_data = None
+        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -95,7 +108,7 @@ class RenderManager(object):
         self.theme_level = theme_level
         self.global_theme_data = \
             self.theme_manager.getThemeData(self.global_theme)
-        self.themedata = None
+        self.theme_data = None
 
     def set_service_theme(self, service_theme):
         """
@@ -105,7 +118,7 @@ class RenderManager(object):
             The service-level theme to be set.
         """
         self.service_theme = service_theme
-        self.themedata = None
+        self.theme_data = None
 
     def set_override_theme(self, theme, overrideLevels=False):
         """
@@ -132,7 +145,8 @@ class RenderManager(object):
             else:
                 self.theme = self.service_theme
         else:
-            if theme:
+            # Images have a theme of -1
+            if theme and theme != -1:
                 self.theme = theme
             elif theme_level == ThemeLevel.Song or \
                 theme_level == ThemeLevel.Service:
@@ -142,18 +156,19 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name or self.themedata is None \
+        if self.theme != self.renderer.theme_name or self.theme_data is None \
             or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
             # Force the theme to be the one passed in.
             if overrideLevels:
-                self.themedata = theme
+                self.theme_data = theme
             else:
-                self.themedata = self.theme_manager.getThemeData(self.theme)
+                self.theme_data = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(self.screens.current[u'size'])
-            self.renderer.set_theme(self.themedata)
-            self.build_text_rectangle(self.themedata)
-            self.renderer.set_frame_dest(self.width, self.height)
+            self.renderer.set_theme(self.theme_data)
+            self.build_text_rectangle(self.theme_data)
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self.renderer._rect, self.renderer._rect_footer
 
     def build_text_rectangle(self, theme):
@@ -168,54 +183,53 @@ class RenderManager(object):
         main_rect = None
         footer_rect = None
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0,
-                            self.width - 20, self.footer_start)
+            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start,
-                            self.width - 20, self.height - self.footer_start)
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+                self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
                 theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
-    def generate_preview(self, themedata):
+    def generate_preview(self, theme_data, force_page=False):
         """
         Generate a preview of a theme.
 
-        ``themedata``
+        ``theme_data``
             The theme to generated a preview for.
+
+        ``force_page``
+            Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generate preview')
+        # save value for use in format_slide
+        self.force_page = force_page
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
-        verse = u'The Lord said to {r}Noah{/r}: \n' \
-        'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
-        'The Lord said to {g}Noah{/g}:\n' \
-        'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
-        'Get those children out of the muddy, muddy \n' \
-        '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
-        'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-        footer = []
-        footer.append(u'Arky Arky (Unknown)' )
-        footer.append(u'Public Domain')
-        footer.append(u'CCLI 123456')
         # build a service item to generate preview
         serviceItem = ServiceItem()
-        serviceItem.theme = themedata
-        serviceItem.add_from_text(u'', verse, footer)
+        serviceItem.theme = theme_data
+        if self.force_page:
+            # make big page for theme edit dialog to get line count
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+        else:
+            self.image_manager.del_image(theme_data.theme_name)
+            serviceItem.add_from_text(u'', VERSE, FOOTER)
         serviceItem.render_manager = self
-        serviceItem.raw_footer = footer
+        serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
-        self.display.buildHtml(serviceItem)
-        raw_html = serviceItem.get_rendered_frame(0)[1]
-        preview = self.display.text(raw_html)
-        # Reset the real screen size for subsequent render requests
-        self.calculate_default(self.screens.current[u'size'])
-        return preview
+        if not self.force_page:
+            self.display.buildHtml(serviceItem)
+            raw_html = serviceItem.get_rendered_frame(0)
+            preview = self.display.text(raw_html)
+            # Reset the real screen size for subsequent render requests
+            self.calculate_default(self.screens.current[u'size'])
+            return preview
 
     def format_slide(self, words, line_break):
         """
@@ -223,9 +237,12 @@ class RenderManager(object):
 
         ``words``
             The words to go on the slides.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
         """
         log.debug(u'format slide')
-        return self.renderer.format_slide(words, line_break)
+        return self.renderer.format_slide(words, line_break, self.force_page)
 
     def calculate_default(self, screen):
         """
@@ -239,6 +256,6 @@ class RenderManager(object):
         self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
         log.debug(u'calculate default %d, %d, %f',
-            self.width, self.height, self.screen_ratio )
+            self.width, self.height, self.screen_ratio)
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)

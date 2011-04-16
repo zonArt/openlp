@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,41 +27,34 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(724, 502)
+        settingsDialog.resize(800, 500)
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        self.settingsLayout.setSpacing(8)
-        self.settingsLayout.setMargin(8)
-        self.settingsLayout.setObjectName(u'settingsLayout')
-        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.buttonBox.sizePolicy().hasHeightForWidth())
-        self.buttonBox.setSizePolicy(sizePolicy)
-        self.buttonBox.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.settingsLayout.addWidget(self.buttonBox)
+        self.dialogLayout = QtGui.QGridLayout(settingsDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setMargin(8)
+        self.settingListWidget = QtGui.QListWidget(settingsDialog)
+        self.settingListWidget.setUniformItemSizes(True)
+        self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
+        self.settingListWidget.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.settingListWidget.setObjectName(u'settingListWidget')
+        self.dialogLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
+        self.stackedLayout = QtGui.QStackedLayout()
+        self.stackedLayout.setObjectName(u'stackedLayout')
+        self.dialogLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
+        self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
+        self.dialogLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
-        self.settingsTabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), settingsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
+        QtCore.QObject.connect(self.settingListWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'),
+            self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, settingsDialog):
         settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',

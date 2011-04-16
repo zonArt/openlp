@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -84,9 +84,9 @@ class AlertsManager(QtCore.QObject):
         if len(self.alertList) == 0:
             return
         text = self.alertList.pop(0)
-        alertTab = self.parent.alertsTab
+        alertTab = self.parent.settings_tab
         self.parent.liveController.display.alert(text)
-        # check to see if we have a timer running
+        # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
@@ -94,9 +94,9 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert
         if there is one and reset the timer.
+
         ``event``
             the QT event that has been triggered.
-
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:

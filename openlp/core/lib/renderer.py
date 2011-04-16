@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,11 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, image_to_byte
-
+from openlp.core.lib import expand_tags, build_lyrics_format_css, \
+    build_lyrics_outline_css, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -51,11 +50,6 @@ class Renderer(object):
         self._rect = None
         self.theme_name = None
         self._theme = None
-        self._bg_image_filename = None
-        self.frame = None
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
 
     def set_theme(self, theme):
         """
@@ -66,14 +60,7 @@ class Renderer(object):
         """
         log.debug(u'set theme')
         self._theme = theme
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
-        self._bg_image_filename = None
         self.theme_name = theme.theme_name
-        if theme.background_type == u'image':
-            if theme.background_filename:
-                self._bg_image_filename = unicode(theme.background_filename)
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -90,9 +77,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._theme.display_shadow:
-            self.page_width -= int(self._theme.display_shadow_size)
-            self.page_height -= int(self._theme.display_shadow_size)
+        if self._theme.font_main_shadow:
+            self.page_width -= int(self._theme.font_main_shadow_size)
+            self.page_height -= int(self._theme.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -105,46 +92,20 @@ class Renderer(object):
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
 
-    def set_frame_dest(self, frame_width, frame_height):
-        """
-        Set the size of the slide.
-
-        ``frame_width``
-            The width of the slide.
-
-        ``frame_height``
-            The height of the slide.
-
-        """
-        log.debug(u'set frame dest (frame) w %d h %d', frame_width,
-            frame_height)
-        self.frame = QtGui.QImage(frame_width, frame_height,
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        if self._bg_image_filename and not self.bg_image:
-            self.bg_image = resize_image(self._bg_image_filename,
-                self.frame.width(), self.frame.height())
-        if self._theme.background_type == u'image':
-            self.bg_frame = QtGui.QImage(self.frame.width(),
-                self.frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter = QtGui.QPainter()
-            painter.begin(self.bg_frame)
-            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-            if self.bg_image:
-                painter.drawImage(0, 0, self.bg_image)
-            painter.end()
-            self.bg_image_bytes = image_to_byte(self.bg_frame)
-        else:
-            self.bg_frame = None
-            self.bg_image_bytes = None
-
-    def format_slide(self, words, line_break):
+    def format_slide(self, words, line_break, force_page=False):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
         ``words``
             The words to be fitted on the slide.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+
+        ``force_page``
+            Flag to tell message lines in page.
+
         """
         log.debug(u'format_slide - Start')
         line_end = u''
@@ -160,19 +121,26 @@ class Renderer(object):
         formatted = []
         html_text = u''
         styled_text = u''
+        line_count = 0
         for line in text:
-            styled_line = expand_tags(line)
-            if styled_text:
-                styled_text += line_end + styled_line
+            if line_count != -1:
+                line_count += 1
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
+                if force_page and line_count > 0:
+                    Receiver.send_message(u'theme_line_count', line_count)
+                line_count = -1
+                if html_text.endswith(u'<br>'):
+                    html_text = html_text[:len(html_text)-4]
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        if line_break:
+        if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')

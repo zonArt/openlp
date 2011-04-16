@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,6 @@ The :mod:`languagemanager` module provides all the translation settings and
 language file loading for OpenLP.
 """
 import logging
-import os
 
 from PyQt4 import QtCore, QtGui
 
@@ -64,9 +63,11 @@ class LanguageManager(object):
         """
         Find all available language files in this OpenLP install
         """
+        log.debug(u'Translation files: %s', AppLocation.get_directory(
+            AppLocation.LanguageDir))
         trans_dir = QtCore.QDir(AppLocation.get_directory(
             AppLocation.LanguageDir))
-        file_names = trans_dir.entryList(QtCore.QStringList("*.qm"),
+        file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
         for name in file_names:
             file_names.replaceInStrings(name, trans_dir.filePath(name))
@@ -90,7 +91,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        settings = QtCore.QSettings()
         language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
@@ -101,27 +102,35 @@ class LanguageManager(object):
         return language
 
     @staticmethod
-    def set_language(action):
+    def set_language(action, message=True):
         """
         Set the language to translate OpenLP into
 
         ``action``
             The language menu option
+
+        ``message``
+            Display the message option
         """
         language = u'en'
         if action:
-            action_name = u'%s' % action.objectName()
-            qm_list = LanguageManager.get_qm_list()
-            language = u'%s' % qm_list[action_name]
+            action_name = unicode(action.objectName())
+            if action_name == u'AutoLanguageItem':
+                LanguageManager.auto_language = True
+            else:
+                LanguageManager.auto_language = False
+                qm_list = LanguageManager.get_qm_list()
+                language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
         QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
-        QtGui.QMessageBox.information(None,
-            translate('OpenLP.LanguageManager', 'Language'),
-            translate('OpenLP.LanguageManager',
-                'Please restart OpenLP to use your new language setting.'))
+        if message:
+            QtGui.QMessageBox.information(None,
+                translate('OpenLP.LanguageManager', 'Language'),
+                translate('OpenLP.LanguageManager',
+                    'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():

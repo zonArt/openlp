@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,39 +32,43 @@ class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
-    def __init__(self, title, visible_title):
-        SettingsTab.__init__(self, title, visible_title)
+    def __init__(self, parent, title, visible_title, icon_path):
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.remoteLayout = QtGui.QFormLayout(self)
-        self.remoteLayout.setSpacing(8)
-        self.remoteLayout.setMargin(8)
-        self.remoteLayout.setObjectName(u'remoteLayout')
-        self.serverSettingsGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.serverSettingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
         self.serverSettingsLayout = QtGui.QFormLayout(
             self.serverSettingsGroupBox)
-        self.serverSettingsLayout.setSpacing(8)
-        self.serverSettingsLayout.setMargin(8)
         self.serverSettingsLayout.setObjectName(u'serverSettingsLayout')
+        self.addressLabel = QtGui.QLabel(self.serverSettingsGroupBox)
+        self.addressLabel.setObjectName(u'addressLabel')
         self.addressEdit = QtGui.QLineEdit(self.serverSettingsGroupBox)
+        self.addressEdit.setSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+        self.addressEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(
+            u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), self))
         self.addressEdit.setObjectName(u'addressEdit')
-        self.serverSettingsLayout.addRow(
-            translate('RemotePlugin.RemoteTab', 'Serve on IP address:'),
-            self.addressEdit)
+        self.serverSettingsLayout.addRow(self.addressLabel, self.addressEdit)
+        self.portLabel = QtGui.QLabel(self.serverSettingsGroupBox)
+        self.portLabel.setObjectName(u'portLabel')
         self.portSpinBox = QtGui.QSpinBox(self.serverSettingsGroupBox)
-        self.portSpinBox.setObjectName(u'portSpinBox')
         self.portSpinBox.setMaximum(32767)
-        self.serverSettingsLayout.addRow(
-            translate('RemotePlugin.RemoteTab', 'Port number:'),
-            self.portSpinBox)
-        self.remoteLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.serverSettingsGroupBox)
+        self.portSpinBox.setObjectName(u'portSpinBox')
+        self.serverSettingsLayout.addRow(self.portLabel, self.portSpinBox)
+        self.leftLayout.addWidget(self.serverSettingsGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
 
     def retranslateUi(self):
         self.serverSettingsGroupBox.setTitle(
             translate('RemotePlugin.RemoteTab', 'Server Settings'))
+        self.addressLabel.setText(translate('RemotePlugin.RemoteTab',
+            'Serve on IP address:'))
+        self.portLabel.setText(translate('RemotePlugin.RemoteTab',
+            'Port number:'))
 
     def load(self):
         self.portSpinBox.setValue(

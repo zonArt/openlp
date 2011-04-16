@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,17 +28,13 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, \
-    Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    check_item_selected
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
-
-class CustomListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Custom'
-        BaseListWithDnD.__init__(self, parent)
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -48,41 +44,37 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = CustomListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
+        self.quickPreviewAllowed = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
+        self.manager = parent.manager
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def initialise(self):
-        self.loadCustomListView(self.parent.custommanager.get_all_objects(
+        self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
-        #Called to redisplay the song list screen edith from a search
-        #or from the exit of the Song edit dialog.  If remote editing is active
-        #Trigger it and clean up so it will not update again.
+        # Called to redisplay the custom list screen edith from a search
+        # or from the exit of the Custom edit dialog. If remote editing is
+        # active trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
         if self.remoteTriggered == u'P':
             self.onPreviewClick()
         self.onRemoteEditClear()
 
-    def loadCustomListView(self, list):
+    def loadList(self, list):
         self.listView.clear()
         for customSlide in list:
             custom_name = QtGui.QListWidgetItem(customSlide.title)
@@ -106,7 +98,7 @@ class CustomMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = customid.split(u':')
-        valid = self.parent.custommanager.get_object(CustomSlide, fields[1])
+        valid = self.manager.get_object(CustomSlide, fields[1])
         if valid:
             self.remoteCustom = fields[1]
             self.remoteTriggered = fields[0]
@@ -118,9 +110,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Edit a custom item
         """
-        if check_item_selected(self.listView,
-            translate('CustomPlugin.MediaItem',
-            'You haven\'t selected an item to edit.')):
+        if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -131,40 +121,29 @@ class CustomMediaItem(MediaManagerItem):
         """
         Remove a custom item from the list and database
         """
-        if check_item_selected(self.listView,
-            translate('CustomPlugin.MediaItem',
-            'You haven\'t selected an item to delete.')):
+        if check_item_selected(self.listView, UiStrings().SelectDelete):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.custommanager.delete_object(CustomSlide, id)
+                self.parent.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         raw_slides = []
         raw_footer = []
         slide = None
         theme = None
-        if item is None:
-            if self.remoteTriggered is None:
-                item = self.listView.currentItem()
-                if item is None:
-                    return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            else:
-                item_id = self.remoteCustom
-        else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        customSlide = self.parent.custommanager.get_object(CustomSlide, item_id)
+        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.editId = item_id
+        service_item.edit_id = item_id
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme

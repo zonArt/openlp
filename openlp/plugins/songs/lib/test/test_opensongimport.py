@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +35,7 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 # Stubs to replace the UI functions for raw testing
 class wizard_stub:
     def __init__(self):
-        self.importProgressBar=progbar_stub()
+        self.progressBar=progbar_stub()
     def incrementProgressBar(self, str):
         pass
 class progbar_stub:
@@ -56,11 +56,11 @@ def test():
     assert o.title == u'Martins Test'
     assert o.alternate_title == u''
     assert o.song_number == u'1'
-    assert [u'C1', u'Chorus 1'] in o.verses 
-    assert [u'C2', u'Chorus 2'] in o.verses 
-    assert not [u'C3', u'Chorus 3'] in o.verses 
-    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses 
-    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses 
+    assert [u'C1', u'Chorus 1'] in o.verses
+    assert [u'C2', u'Chorus 2'] in o.verses
+    assert not [u'C3', u'Chorus 3'] in o.verses
+    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses
+    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
     assert [u'V3A', u'V3 Line 1\nV3 Line 2'] in o.verses
     assert [u'RAP1', u'Rap 1 Line 1\nRap 1 Line 2'] in o.verses
@@ -80,11 +80,11 @@ def test():
     assert o.title == u'Martins Test'
     assert o.alternate_title == u''
     assert o.song_number == u'1'
-    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses 
-    assert [u'C1', u'Chorus 1'] in o.verses 
-    assert [u'C2', u'Chorus 2'] in o.verses 
-    assert not [u'C3', u'Chorus 3'] in o.verses 
-    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses 
+    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses
+    assert [u'C1', u'Chorus 1'] in o.verses
+    assert [u'C2', u'Chorus 2'] in o.verses
+    assert not [u'C3', u'Chorus 3'] in o.verses
+    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
     print o.verse_order_list
     assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1']
@@ -99,11 +99,11 @@ def test():
     assert o.alternate_title == u''
     assert o.song_number == u'2'
     print o.verses
-    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses 
-    assert [u'C1', u'Chorus 1'] in o.verses 
-    assert [u'C2', u'Chorus 2'] in o.verses 
-    assert not [u'C3', u'Chorus 3'] in o.verses 
-    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses 
+    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses
+    assert [u'C1', u'Chorus 1'] in o.verses
+    assert [u'C2', u'Chorus 2'] in o.verses
+    assert not [u'C3', u'Chorus 3'] in o.verses
+    assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
     print o.verse_order_list
     assert o.verse_order_list == [u'V1', u'V2', u'B1', u'C1', u'C2']
@@ -120,7 +120,7 @@ def test():
     assert o.verse_order_list == [u'V1']
     assert o.topics == [u'Worship: Declaration']
     print o.verses[0]
-    assert [u'V1', u'Line 1\nLine 2'] in o.verses 
+    assert [u'V1', u'Line 1\nLine 2'] in o.verses
 
     print "Tests passed"
 

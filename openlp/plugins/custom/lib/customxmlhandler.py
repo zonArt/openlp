@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,8 +42,8 @@ The basic XML is of the format::
 import logging
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML, dump
-from xml.parsers.expat import ExpatError
+from xml.etree.ElementTree import dump
+from lxml import etree, objectify
 
 log = logging.getLogger(__name__)
 
@@ -55,14 +55,14 @@ class CustomXMLBuilder(object):
 
     def __init__(self):
         """
-        Set up the song builder.
+        Set up the custom builder.
         """
         # Create the minidom document
         self.custom_xml = Document()
 
     def new_document(self):
         """
-        Create a new song XML document.
+        Create a new custom XML document.
         """
         # Create the <song> base element
         self.song = self.custom_xml.createElement(u'song')
@@ -72,7 +72,7 @@ class CustomXMLBuilder(object):
     def add_lyrics_to_song(self):
         """
         Set up and add a ``<lyrics>`` tag which contains the lyrics of the
-        song.
+        custom item.
         """
         # Create the main <lyrics> element
         self.lyrics = self.custom_xml.createElement(u'lyrics')
@@ -93,7 +93,6 @@ class CustomXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
         verse = self.custom_xml.createElement(u'verse')
         verse.setAttribute(u'type', type)
         verse.setAttribute(u'label', number)
@@ -102,7 +101,7 @@ class CustomXMLBuilder(object):
         cds = self.custom_xml.createCDATASection(content)
         verse.appendChild(cds)
 
-    def dump_xml(self):
+    def _dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
@@ -110,29 +109,30 @@ class CustomXMLBuilder(object):
 
     def extract_xml(self):
         """
-        Extract our newly created XML song.
+        Extract our newly created XML custom.
         """
         return self.custom_xml.toxml(u'utf-8')
 
 
 class CustomXMLParser(object):
     """
-    A class to read in and parse a song's XML.
+    A class to read in and parse a custom's XML.
     """
     log.info(u'CustomXMLParser Loaded')
 
     def __init__(self, xml):
         """
-        Set up our song XML parser.
+        Set up our custom XML parser.
 
         ``xml``
-            The XML of the song to be parsed.
+            The XML of the custom to be parsed.
         """
         self.custom_xml = None
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
         try:
-            self.custom_xml = ElementTree(
-                element=XML(unicode(xml).encode('unicode-escape')))
-        except ExpatError:
+            self.custom_xml = objectify.fromstring(xml)
+        except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):
@@ -146,11 +146,10 @@ class CustomXMLParser(object):
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''
-                verse_list.append([element.attrib,
-                    unicode(element.text).decode('unicode-escape')])
+                verse_list.append([element.attrib, unicode(element.text)])
         return verse_list
 
-    def dump_xml(self):
+    def _dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """

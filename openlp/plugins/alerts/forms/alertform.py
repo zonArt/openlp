@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +35,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
     Provide UI for the alert system
     """
-    def __init__(self, title, visible_title):
+    def __init__(self, plugin):
         """
         Initialise the alert form
         """
@@ -44,115 +44,163 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'),
-            self.onDisplayClicked)
-        QtCore.QObject.connect(self.DisplayCloseButton,
+        QtCore.QObject.connect(self.displayButton,
+            QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
+        QtCore.QObject.connect(self.displayCloseButton,
             QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
-        QtCore.QObject.connect(self.AlertTextEdit,
+        QtCore.QObject.connect(self.alertTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
-        QtCore.QObject.connect(self.NewButton, QtCore.SIGNAL(u'clicked()'),
-            self.onNewClick)
-        QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL(u'clicked()'),
-            self.onDeleteClick)
-        QtCore.QObject.connect(self.SaveButton, QtCore.SIGNAL(u'clicked()'),
-            self.onSaveClick)
-        QtCore.QObject.connect(self.AlertListWidget,
+        QtCore.QObject.connect(self.newButton,
+            QtCore.SIGNAL(u'clicked()'), self.onNewClick)
+        QtCore.QObject.connect(self.saveButton,
+            QtCore.SIGNAL(u'clicked()'), self.onSaveClick)
+        QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onDoubleClick)
-        QtCore.QObject.connect(self.AlertListWidget,
+        QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
+        QtCore.QObject.connect(self.alertListWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def loadList(self):
-        self.AlertListWidget.clear()
+        """
+        Loads the list with alerts.
+        """
+        self.alertListWidget.clear()
         alerts = self.manager.get_all_objects(AlertItem,
             order_by_ref=AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
-            self.AlertListWidget.addItem(item_name)
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
+            self.alertListWidget.addItem(item_name)
 
     def onDisplayClicked(self):
-        if self.triggerAlert(unicode(self.AlertTextEdit.text())):
-            self.loadList()
+        self.triggerAlert(unicode(self.alertTextEdit.text()))
 
     def onDisplayCloseClicked(self):
-        if self.triggerAlert(unicode(self.AlertTextEdit.text())):
+        if self.triggerAlert(unicode(self.alertTextEdit.text())):
             self.close()
 
-    def onDeleteClick(self):
-        item = self.AlertListWidget.currentItem()
+    def onDeleteButtonClicked(self):
+        """
+        Deletes the selected item.
+        """
+        item = self.alertListWidget.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.manager.delete_object(AlertItem, item_id)
-            row = self.AlertListWidget.row(item)
-            self.AlertListWidget.takeItem(row)
-        self.AlertTextEdit.setText(u'')
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
+            row = self.alertListWidget.row(item)
+            self.alertListWidget.takeItem(row)
+        self.item_id = None
+        self.alertTextEdit.setText(u'')
 
     def onNewClick(self):
-        if len(self.AlertTextEdit.text()) == 0:
+        if len(self.alertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
-                    'any text for your alert. Please type in some text before '
-                    'clicking New.'))
+                'any text for your alert. Please type in some text before '
+                'clicking New.'))
         else:
             alert = AlertItem()
-            alert.text = unicode(self.AlertTextEdit.text())
+            alert.text = unicode(self.alertTextEdit.text())
             self.manager.save_object(alert)
-        self.AlertTextEdit.setText(u'')
+        self.alertTextEdit.setText(u'')
         self.loadList()
 
     def onSaveClick(self):
         """
-        Save an alert
+        Save the alert, we are editing.
         """
         if self.item_id:
             alert = self.manager.get_object(AlertItem, self.item_id)
-            alert.text = unicode(self.AlertTextEdit.text())
+            alert.text = unicode(self.alertTextEdit.text())
             self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
-        else:
-            self.onNewClick()
 
     def onTextChanged(self):
         """
         Enable save button when data has been changed by editing the form
         """
-        self.SaveButton.setEnabled(True)
+        # Only enable the button, if we are editing an item.
+        if self.item_id:
+            self.saveButton.setEnabled(True)
 
     def onDoubleClick(self):
         """
         List item has been double clicked to display it
         """
-        items = self.AlertListWidget.selectedIndexes()
-        for item in items:
-            bitem = self.AlertListWidget.item(item.row())
-            self.triggerAlert(bitem.text())
-            self.AlertTextEdit.setText(bitem.text())
-            self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(True)
+        item = self.alertListWidget.selectedIndexes()[0]
+        bitem = self.alertListWidget.item(item.row())
+        self.triggerAlert(unicode(bitem.text()))
+        self.alertTextEdit.setText(unicode(bitem.text()))
+        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.saveButton.setEnabled(False)
 
     def onSingleClick(self):
         """
         List item has been single clicked to add it to
         the edit field so it can be changed.
         """
-        items = self.AlertListWidget.selectedIndexes()
-        for item in items:
-            bitem = self.AlertListWidget.item(item.row())
-            self.AlertTextEdit.setText(bitem.text())
-            self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(True)
+        item = self.alertListWidget.selectedIndexes()[0]
+        bitem = self.alertListWidget.item(item.row())
+        self.alertTextEdit.setText(unicode(bitem.text()))
+        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        # If the alert does not contain '<>' we clear the ParameterEdit field.
+        if unicode(self.alertTextEdit.text()).find(u'<>') == -1:
+            self.parameterEdit.setText(u'')
+        self.saveButton.setEnabled(False)
 
     def triggerAlert(self, text):
-        if text:
-            text = text.replace(u'<>', unicode(self.ParameterEdit.text()))
-            self.parent.alertsmanager.displayAlert(text)
-            return True
-        return False
+        """
+        Prepares the alert text for displaying.
+
+        ``text``
+            The alert text (unicode).
+        """
+        if not text:
+            return False
+        # We found '<>' in the alert text, but the ParameterEdit field is empty.
+        if text.find(u'<>') != -1 and not self.parameterEdit.text() and \
+            QtGui.QMessageBox.question(self,
+            translate('AlertPlugin.AlertForm', 'No Parameter Found'),
+            translate('AlertPlugin.AlertForm', 'You have not entered a '
+            'parameter to be replaced.\nDo you want to continue anyway?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+            self.parameterEdit.setFocus()
+            return False
+        # The ParameterEdit field is not empty, but we have not found '<>'
+        # in the alert text.
+        elif text.find(u'<>') == -1 and self.parameterEdit.text() and \
+            QtGui.QMessageBox.question(self,
+            translate('AlertPlugin.AlertForm', 'No Placeholder Found'),
+            translate('AlertPlugin.AlertForm', 'The alert text does not'
+            ' contain \'<>\'.\nDo you want to continue anyway?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+            self.parameterEdit.setFocus()
+            return False
+        text = text.replace(u'<>', unicode(self.parameterEdit.text()))
+        self.parent.alertsmanager.displayAlert(text)
+        return True
+
+    def onCurrentRowChanged(self, row):
+        """
+        Called when the *alertListWidget*'s current row has been changed. This
+        enables or disables buttons which require an item to act on.
+
+        ``row``
+            The row (int). If there is no current row, the value is -1.
+        """
+        if row == -1:
+            self.displayButton.setEnabled(False)
+            self.displayCloseButton.setEnabled(False)
+            self.saveButton.setEnabled(False)
+            self.deleteButton.setEnabled(False)
+        else:
+            self.displayButton.setEnabled(True)
+            self.displayCloseButton.setEnabled(True)
+            self.deleteButton.setEnabled(True)
+            # We do not need to enable the save button, as it is only enabled
+            # when typing text in the "alertTextEdit".

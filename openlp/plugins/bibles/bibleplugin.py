@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +29,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import base_action, UiStrings
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -37,7 +39,8 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', plugin_helpers,
+            BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
@@ -49,38 +52,39 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
-        self.exportBibleItem.setVisible(True)
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        Plugin.finalise(self)
-        self.importBibleItem.setVisible(False)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        # Do not add the action to the list yet.
+        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
+        # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
 
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return BiblesTab(self.name, visible_name[u'title'])
-
-    def getMediaManagerItem(self):
-        # Create the BibleManagerItem object.
-        return BibleMediaItem(self, self, self.icon)
+    def finalise(self):
+        """
+        Tidy up on exit
+        """
+        log.info(u'Plugin Finalise')
+        self.manager.finalise()
+        Plugin.finalise(self)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.importBibleItem, UiStrings().Import)
+        self.importBibleItem.setVisible(False)
+        #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
+        self.exportBibleItem.setVisible(False)
 
     def addImportMenuItem(self, import_menu):
-        self.importBibleItem = QtGui.QAction(import_menu)
-        self.importBibleItem.setObjectName(u'importBibleItem')
+        self.importBibleItem = base_action(import_menu, u'importBibleItem')
+        self.importBibleItem.setText(translate('BiblesPlugin', '&Bible'))
         import_menu.addAction(self.importBibleItem)
-        self.importBibleItem.setText(
-            translate('BiblesPlugin', '&Bible'))
         # signals and slots
         QtCore.QObject.connect(self.importBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.importBibleItem.setVisible(False)
 
     def addExportMenuItem(self, export_menu):
-        self.exportBibleItem = QtGui.QAction(export_menu)
-        self.exportBibleItem.setObjectName(u'exportBibleItem')
-        export_menu.addAction(self.exportBibleItem)
+        self.exportBibleItem = base_action(export_menu, u'exportBibleItem')
         self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        export_menu.addAction(self.exportBibleItem)
         self.exportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
@@ -98,7 +102,7 @@ class BiblePlugin(Plugin):
         Called to find out if the bible plugin is currently using a theme.
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.settings_tab.bible_theme == theme:
+        if unicode(self.settings_tab.bible_theme) == theme:
             return True
         return False
 
@@ -115,6 +119,7 @@ class BiblePlugin(Plugin):
             The new name the plugin should now use.
         """
         self.settings_tab.bible_theme = newTheme
+        self.settings_tab.save()
 
     def setPluginTextStrings(self):
         """
@@ -122,53 +127,23 @@ class BiblePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('BiblesPlugin', 'Bible'),
-            u'plural': translate('BiblesPlugin', 'Bibles')
+            u'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
+            u'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('BiblesPlugin', 'Bibles')
+            u'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
-        ## Import Button ##
-        self.textStrings[StringContent.Import] = {
-            u'title': translate('BiblesPlugin', 'Import'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Import a Bible')
-        }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('BiblesPlugin', 'Add'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Add a new Bible')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('BiblesPlugin', 'Edit'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Edit the selected Bible')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('BiblesPlugin', 'Delete'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Delete the selected Bible')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('BiblesPlugin', 'Preview'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Preview the selected Bible')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('BiblesPlugin', 'Live'),
-            u'tooltip': translate('BiblesPlugin', 
-                'Send the selected Bible live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('BiblesPlugin', 'Service'),
-            u'tooltip': translate('BiblesPlugin', 
+        tooltips = {
+            u'load': u'',
+            u'import': translate('BiblesPlugin', 'Import a Bible'),
+            u'new': translate('BiblesPlugin', 'Add a new Bible'),
+            u'edit': translate('BiblesPlugin', 'Edit the selected Bible'),
+            u'delete': translate('BiblesPlugin', 'Delete the selected Bible'),
+            u'preview': translate('BiblesPlugin', 'Preview the selected Bible'),
+            u'live': translate('BiblesPlugin', 'Send the selected Bible live'),
+            u'service': translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

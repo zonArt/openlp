@@ -4,11 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,14 +28,13 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
+import datetime
 import logging
 import os
-import time
 import uuid
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import build_icon, resize_image, clean_tags, expand_tags
+from openlp.core.lib import build_icon, clean_tags, expand_tags
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +45,7 @@ class ServiceItemType(object):
     Text = 1
     Image = 2
     Command = 3
+
 
 class ItemCapabilities(object):
     """
@@ -60,6 +60,9 @@ class ItemCapabilities(object):
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
+    ProvidesOwnDisplay = 10
+    AllowsDetailedTitleDisplay = 11
+    AllowsVariableStartTime = 12
 
 
 class ServiceItem(object):
@@ -85,8 +88,8 @@ class ServiceItem(object):
         self.audit = u''
         self.items = []
         self.iconic_representation = None
-        self.raw_footer = None
-        self.foot_text = None
+        self.raw_footer = []
+        self.foot_text = u''
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
@@ -103,6 +106,12 @@ class ServiceItem(object):
         self.bg_image_bytes = None
         self.search_string = u''
         self.data_string = u''
+        self.edit_id = None
+        self.xml_version = None
+        self.start_time = 0
+        self.end_time = 0
+        self.media_length = 0
+        self.from_service = False
         self._new_item()
 
     def _new_item(self):
@@ -155,17 +164,13 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
-        theme = None
-        if self.theme:
-            theme = self.theme
+        theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.render_manager.set_override_theme(theme, useOverride)
-        self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
         self.themedata = self.render_manager.renderer._theme
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
-                before = time.time()
                 formatted = self.render_manager \
                     .format_slide(slide[u'raw_slide'], line_break)
                 for page in formatted:
@@ -174,25 +179,21 @@ class ServiceItem(object):
                         u'text': clean_tags(page.rstrip()),
                         u'html': expand_tags(page.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
-                log.log(15, u'Formatting took %4s' % (time.time() - before))
-        elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
-                slide[u'image'] = resize_image(slide[u'image'],
-                    self.render_manager.width, self.render_manager.height)
-        elif self.service_item_type == ServiceItemType.Command:
+        elif self.service_item_type == ServiceItemType.Image or \
+            self.service_item_type == ServiceItemType.Command:
             pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        self.foot_text = None
-        if self.raw_footer:
-            for foot in self.raw_footer:
-                if not self.foot_text:
-                    self.foot_text = foot
-                else:
-                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
+        # The footer should never be None, but to be compatible with a few
+        # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
+        # avoid tracebacks.
+        if self.raw_footer is None:
+            self.raw_footer = []
+        self.foot_text = \
+            u'<br>'.join([footer for footer in self.raw_footer if footer])
 
-    def add_from_image(self, path, title, image):
+    def add_from_image(self, path, title):
         """
         Add an image slide to the service item.
 
@@ -201,13 +202,10 @@ class ServiceItem(object):
 
         ``title``
             A title for the slide in the service item.
-
-        ``image``
-            The actual image file name.
         """
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append(
-            {u'title': title, u'image': image, u'path': path})
+        self._raw_frames.append({u'title': title, u'path': path})
+        self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):
@@ -223,7 +221,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Text
         title = title.split(u'\n')[0]
         self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide, u'verseTag':verse_tag})
+            {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
 
     def add_from_command(self, path, file_name, image):
@@ -250,19 +248,23 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name.lower(),
+            u'name': self.name,
             u'plugin': self.name,
-            u'theme':self.theme,
-            u'title':self.title,
-            u'icon':self.icon,
-            u'footer':self.raw_footer,
-            u'type':self.service_item_type,
-            u'audit':self.audit,
-            u'notes':self.notes,
-            u'from_plugin':self.from_plugin,
-            u'capabilities':self.capabilities,
-            u'search':self.search_string,
-            u'data':self.data_string
+            u'theme': self.theme,
+            u'title': self.title,
+            u'icon': self.icon,
+            u'footer': self.raw_footer,
+            u'type': self.service_item_type,
+            u'audit': self.audit,
+            u'notes': self.notes,
+            u'from_plugin': self.from_plugin,
+            u'capabilities': self.capabilities,
+            u'search': self.search_string,
+            u'data': self.data_string,
+            u'xml_version': self.xml_version,
+            u'start_time': self.start_time,
+            u'end_time': self.end_time,
+            u'media_length': self.media_length
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -274,7 +276,7 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
-                    {u'title':slide[u'title'], u'image':slide[u'image']})
+                    {u'title': slide[u'title'], u'image': slide[u'image']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -304,20 +306,41 @@ class ServiceItem(object):
         if u'search' in header:
             self.search_string = header[u'search']
             self.data_string = header[u'data']
+        if u'xml_version' in header:
+            self.xml_version = header[u'xml_version']
+        if u'start_time' in header:
+            self.start_time = header[u'start_time']
+        if u'end_time' in header:
+            self.end_time = header[u'end_time']
+        if u'media_length' in header:
+            self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
-                real_image = QtGui.QImage(unicode(filename))
-                self.add_from_image(path, text_image, real_image)
+                self.add_from_image(filename, text_image)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
-                    path, text_image[u'title'], text_image[u'image'] )
+                    path, text_image[u'title'], text_image[u'image'])
         self._new_item()
+
+    def get_display_title(self):
+        """
+        Returns the title of the service item.
+        """
+        if self.is_text():
+            return self.title
+        else:
+            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+                return self._raw_frames[0][u'title']
+            elif len(self._raw_frames) > 1:
+                return self.title
+            else:
+                return self._raw_frames[0][u'title']
 
     def merge(self, other):
         """
@@ -387,18 +410,47 @@ class ServiceItem(object):
         renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
-            return None, self._display_frames[row][u'html'].split(u'\n')[0]
+            return self._display_frames[row][u'html'].split(u'\n')[0]
+        elif self.service_item_type == ServiceItemType.Image:
+            return self._raw_frames[row][u'title']
         else:
-            return self._raw_frames[row][u'image'], u''
+            return self._raw_frames[row][u'image']
 
     def get_frame_title(self, row=0):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except IndexError:
+            return u''
 
     def get_frame_path(self, row=0):
         """
-        Returns the title of the raw frame
+        Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except IndexError:
+            return u''
+
+    def get_media_time(self):
+        """
+        Returns the start and finish time for a media item
+        """
+        start = None
+        end = None
+        if self.start_time != 0:
+            start = UiStrings().StartTimeCode % \
+                unicode(datetime.timedelta(seconds=self.start_time))
+        if self.media_length != 0:
+            end = UiStrings().LengthTime % \
+                unicode(datetime.timedelta(seconds=self.media_length))
+        if not start and not end:
+            return None
+        elif start and not end:
+            return start
+        elif not start and end:
+            return end
+        else:
+            return u'%s : %s' % (start, end)
