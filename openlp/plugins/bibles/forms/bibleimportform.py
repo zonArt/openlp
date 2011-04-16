@@ -363,7 +363,7 @@ class BibleImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(BibleFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(BibleFormat.WebDownload,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
-        self.formatComboBox.setItemText(BibleFormat.OpenLP1, UiStrings.OLPV1)
+        self.formatComboBox.setItemText(BibleFormat.OpenLP1, UiStrings().OLPV1)
         self.openlp1FileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.osisFileLabel.setText(
@@ -434,20 +434,20 @@ class BibleImportForm(OpenLPWizard):
         elif self.currentPage() == self.selectPage:
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
                 if not self.field(u'csv_booksfile').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of '
                         'the Bible to use in the import.'))
                     self.csvBooksEdit.setFocus()
                     return False
                 elif not self.field(u'csv_versefile').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file of Bible '
                         'verses to import.'))
@@ -456,14 +456,14 @@ class BibleImportForm(OpenLPWizard):
             elif self.field(u'source_format').toInt()[0] == \
                 BibleFormat.OpenSong:
                 if not self.field(u'opensong_file').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
-                    critical_error_message_box(UiStrings.NFSs,
-                        WizardStrings.YouSpecifyFile % UiStrings.OLPV1)
+                    critical_error_message_box(UiStrings().NFSs,
+                        WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
                     self.openlp1FileEdit.setFocus()
                     return False
             return True
@@ -472,13 +472,13 @@ class BibleImportForm(OpenLPWizard):
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
             if not license_version:
-                critical_error_message_box(UiStrings.EmptyField,
+                critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
                     'You need to specify a version name for your Bible.'))
                 self.versionNameEdit.setFocus()
                 return False
             elif not license_copyright:
-                critical_error_message_box(UiStrings.EmptyField,
+                critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
                     'You need to set a copyright for your Bible. '
                     'Bibles in the Public Domain need to be marked as such.'))
@@ -543,7 +543,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1,
             self.openlp1FileEdit, u'%s (*.bible)' %
             translate('BiblesPlugin.ImportWizardForm',
             'openlp.org 1.x Bible Files'))
