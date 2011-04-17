@@ -37,13 +37,15 @@ class AdvancedTab(SettingsTab):
     The :class:`AdvancedTab` manages the advanced settings tab including the UI
     and the loading and saving of the displayed settings.
     """
-    def __init__(self):
+    def __init__(self, parent):
         """
         Initialise the settings tab
         """
-        SettingsTab.__init__(self, u'Advanced')
+        generalTranslated = translate('AdvancedTab', 'Advanced')
+        SettingsTab.__init__(self, parent ,u'Advanced', generalTranslated)
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
+        self.icon_path = u':/system/system_settings.png'
 
     def setupUi(self):
         """
@@ -125,7 +127,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = UiStrings.Advanced
+        self.tabTitleVisible = UiStrings().Advanced
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -224,7 +226,7 @@ class AdvancedTab(SettingsTab):
 
     def onDefaultBrowseButtonPressed(self):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
-            UiStrings.AllFiles)
+            UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.AdvancedTab', 'Open File'), '',
             file_filters)

@@ -56,13 +56,13 @@ class PresentationPlugin(Plugin):
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
 
-    def getSettingsTab(self):
+    def getSettingsTab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return PresentationTab(self.name, visible_name[u'title'],
-            self.controllers)
+        return PresentationTab(parent, self.name, visible_name[u'title'],
+            self.controllers, self.icon_path)
 
     def initialise(self):
         """
@@ -71,7 +71,6 @@ class PresentationPlugin(Plugin):
         """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
-        self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 try:

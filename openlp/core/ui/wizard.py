@@ -213,7 +213,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
+        filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
             self.plugin.settingsSection, 1)), filters)
