@@ -896,7 +896,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def toggleThemeManager(self):
         self.themeManagerDock.setVisible(not self.themeManagerDock.isVisible())
 
-    def setPreviewPanelVisibility(self, visible=None):
+    def setPreviewPanelVisibility(self, visible):
         """
         Sets the visibility of the preview panel including saving the setting
         and updating the menu.
@@ -906,14 +906,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        if visible is None:
-            visible = self.ViewPreviewPanel.isVisible()
         self.previewController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
 
-    def setLivePanelVisibility(self, visible=None):
+    def setLivePanelVisibility(self, visible):
         """
         Sets the visibility of the live panel including saving the setting and
         updating the menu.
@@ -923,8 +921,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        if visible is None:
-            visible = self.ViewLivePanel.isVisible()
         self.liveController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/live panel',
             QtCore.QVariant(visible))
