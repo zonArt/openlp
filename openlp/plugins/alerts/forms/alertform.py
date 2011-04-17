@@ -61,6 +61,12 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
+    def exec_(self):
+        self.displayButton.setEnabled(False)
+        self.displayCloseButton.setEnabled(False)
+        self.alertTextEdit.setText(u'')
+        return QtGui.QDialog.exec_(self)
+
     def loadList(self):
         """
         Loads the list with alerts.
@@ -125,6 +131,13 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # Only enable the button, if we are editing an item.
         if self.item_id:
             self.saveButton.setEnabled(True)
+        if self.alertTextEdit.text():
+            self.displayButton.setEnabled(True)
+            self.displayCloseButton.setEnabled(True)
+        else:
+            self.displayButton.setEnabled(False)
+            self.displayCloseButton.setEnabled(False)
+
 
     def onDoubleClick(self):
         """
