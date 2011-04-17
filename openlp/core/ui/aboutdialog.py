@@ -87,7 +87,7 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
-        aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings.About)
+        aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
         self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
@@ -105,7 +105,7 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.aboutTab), UiStrings.About)
+            self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
         lead = u'Raoul "superfly" Snyman'
         developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
             u'Michael "cocooncrash" Gorven',

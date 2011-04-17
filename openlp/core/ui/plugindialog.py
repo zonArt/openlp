@@ -78,8 +78,8 @@ class Ui_PluginViewDialog(object):
             translate('OpenLP.PluginForm', 'Plugin List'))
         self.pluginInfoGroupBox.setTitle(
             translate('OpenLP.PluginForm', 'Plugin Details'))
-        self.versionLabel.setText(u'%s:' % UiStrings.Version)
-        self.aboutLabel.setText(u'%s:' % UiStrings.About)
+        self.versionLabel.setText(u'%s:' % UiStrings().Version)
+        self.aboutLabel.setText(u'%s:' % UiStrings().About)
         self.statusLabel.setText(
             translate('OpenLP.PluginForm', 'Status:'))
         self.statusComboBox.setItemText(0,
