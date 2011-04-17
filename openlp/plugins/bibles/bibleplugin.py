@@ -29,6 +29,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import base_action, UiStrings
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -50,6 +52,10 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        # Do not add the action to the list yet.
+        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
 
@@ -60,25 +66,25 @@ class BiblePlugin(Plugin):
         log.info(u'Plugin Finalise')
         self.manager.finalise()
         Plugin.finalise(self)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.importBibleItem, UiStrings().Import)
         self.importBibleItem.setVisible(False)
+        #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
 
     def addImportMenuItem(self, import_menu):
-        self.importBibleItem = QtGui.QAction(import_menu)
-        self.importBibleItem.setObjectName(u'importBibleItem')
+        self.importBibleItem = base_action(import_menu, u'importBibleItem')
+        self.importBibleItem.setText(translate('BiblesPlugin', '&Bible'))
         import_menu.addAction(self.importBibleItem)
-        self.importBibleItem.setText(
-            translate('BiblesPlugin', '&Bible'))
         # signals and slots
         QtCore.QObject.connect(self.importBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.importBibleItem.setVisible(False)
 
     def addExportMenuItem(self, export_menu):
-        self.exportBibleItem = QtGui.QAction(export_menu)
-        self.exportBibleItem.setObjectName(u'exportBibleItem')
-        export_menu.addAction(self.exportBibleItem)
+        self.exportBibleItem = base_action(export_menu, u'exportBibleItem')
         self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        export_menu.addAction(self.exportBibleItem)
         self.exportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
