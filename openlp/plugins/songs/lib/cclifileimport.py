@@ -59,16 +59,10 @@ class CCLIFileImport(SongImport):
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
         log.debug(u'Starting CCLI File Import')
-        song_total = len(self.import_source)
-        self.import_wizard.progressBar.setMaximum(song_total)
-        song_count = 1
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for filename in self.import_source:
-            self.import_wizard.incrementProgressBar(unicode(translate(
-                'SongsPlugin.CCLIFileImport', 'Importing song %d of %d')) %
-                (song_count, song_total))
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
-            self.set_defaults()
             lines = []
             if os.path.isfile(filename):
                 detect_file = open(filename, u'r')
@@ -81,6 +75,7 @@ class CCLIFileImport(SongImport):
                 detect_file.close()
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()
+                infile.close()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found: %s', filename)
@@ -89,10 +84,12 @@ class CCLIFileImport(SongImport):
                     log.info(u'SongSelect .txt format file found: %s', filename)
                     self.do_import_txt_file(lines)
                 else:
+                    self.log_error(filename,
+                        translate('SongsPlugin.CCLIFileImport',
+                        'The file does not have a valid extension.'))
                     log.info(u'Extension %s is not valid', filename)
-                song_count += 1
             if self.stop_import_flag:
-                return False
+                return
 
     def do_import_usr_file(self, textList):
         """
@@ -333,6 +330,5 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         # Clean spaces before and after author names.
-        for author_name in author_list:
-            self.add_author(author_name.strip())
+        [self.add_author(author_name.strip()) for author_name in author_list]
         self.finish()

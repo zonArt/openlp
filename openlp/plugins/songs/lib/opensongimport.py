@@ -26,12 +26,14 @@
 
 import logging
 import os
+import re
 from zipfile import ZipFile
+
 from lxml import objectify
 from lxml.etree import Error, LxmlError
-import re
 
 from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -105,29 +107,26 @@ class OpenSongImport(SongImport):
         Initialise the class.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.commit = True
 
     def do_import(self):
         """
         Import either each of the files in self.import_source - each element of
         which can be either a single opensong file, or a zipfile containing
-        multiple opensong files. If `self.commit` is set False, the
-        import will not be committed to the database (useful for test scripts).
+        multiple opensong files.
         """
-        success = True
         numfiles = 0
         for filename in self.import_source:
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
                 z = ZipFile(filename, u'r')
                 numfiles += len(z.infolist())
+                z.close()
             else:
                 numfiles += 1
         log.debug(u'Total number of files: %d', numfiles)
         self.import_wizard.progressBar.setMaximum(numfiles)
         for filename in self.import_source:
             if self.stop_import_flag:
-                success = False
                 break
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
@@ -135,48 +134,36 @@ class OpenSongImport(SongImport):
                 z = ZipFile(filename, u'r')
                 for song in z.infolist():
                     if self.stop_import_flag:
-                        success = False
                         break
                     parts = os.path.split(song.filename)
                     if parts[-1] == u'':
-                        #No final part => directory
+                        # No final part => directory
                         continue
                     log.info(u'Zip importing %s', parts[-1])
                     self.import_wizard.incrementProgressBar(
                         WizardStrings.ImportingType % parts[-1])
-                    songfile = z.open(song)
-                    if self.do_import_file(songfile) and self.commit and \
-                        not self.stop_import_flag:
-                        self.finish()
-                    else:
-                        success = False
-                        break
+                    song_file = z.open(song)
+                    self.do_import_file(song_file)
+                    song_file.close()
+                z.close()
             else:
                 # not a zipfile
                 log.info(u'Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
                     WizardStrings.ImportingType % os.path.split(filename)[-1])
                 song_file = open(filename)
-                if self.do_import_file(song_file) and self.commit and \
-                    not self.stop_import_flag:
-                    self.finish()
-                else:
-                    success = False
-                    break
-        if not success:
-            return False
+                self.do_import_file(song_file)
+                song_file.close()
 
     def do_import_file(self, file):
         """
-        Process the OpenSong file - pass in a file-like object,
-        not a filename
+        Process the OpenSong file - pass in a file-like object, not a file path.
         """
         self.set_defaults()
         try:
             tree = objectify.parse(file)
         except (Error, LxmlError):
             log.exception(u'Error parsing XML')
-            return False
         root = tree.getroot()
         fields = dir(root)
         decode = {
@@ -196,7 +183,7 @@ class OpenSongImport(SongImport):
                     fn_or_string(ustring)
         if not len(self.title):
             # to prevent creation of empty songs from wrong files
-            return False
+            return
         if u'theme' in fields and unicode(root.theme) not in self.topics:
             self.topics.append(unicode(root.theme))
         if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
@@ -206,7 +193,7 @@ class OpenSongImport(SongImport):
         # keep track of verses appearance order
         our_verse_order = []
         # default verse
-        verse_tag = u'v'
+        verse_tag = VerseType.Tags[VerseType.Verse]
         verse_num = u'1'
         # for the case where song has several sections with same marker
         inst = 1
@@ -244,7 +231,7 @@ class OpenSongImport(SongImport):
                 if [verse_tag, verse_num, inst] in our_verse_order \
                     and verses.has_key(verse_tag) \
                     and verses[verse_tag].has_key(verse_num):
-                    inst = len(verses[verse_tag][verse_num])+1
+                    inst = len(verses[verse_tag][verse_num]) + 1
                 our_verse_order.append([verse_tag, verse_num, inst])
                 continue
             # number at start of line.. it's verse number
@@ -293,4 +280,4 @@ class OpenSongImport(SongImport):
                 else:
                     log.info(u'Got order %s but not in verse tags, dropping'
                         u'this item from presentation order', verse_def)
-        return True
+        self.finish()

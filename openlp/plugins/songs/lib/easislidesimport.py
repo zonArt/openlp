@@ -26,11 +26,13 @@
 
 import logging
 import os
-from lxml import etree, objectify
 import re
+
+from lxml import etree, objectify
 
 from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -56,27 +58,19 @@ class EasiSlidesImport(SongImport):
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        self.import_wizard.progressBar.setMaximum(1)
         log.info(u'Importing EasiSlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
         file = etree.parse(self.import_source, parser)
         xml = unicode(etree.tostring(file))
         song_xml = objectify.fromstring(xml)
-        self.import_wizard.incrementProgressBar(
-            WizardStrings.ImportingType % os.path.split(self.import_source)[-1])
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            self.import_wizard.incrementProgressBar(
-                unicode(translate('SongsPlugin.ImportWizardForm',
-                    u'Importing %s, song %s...')) %
-                    (os.path.split(self.import_source)[-1], song.Title1))
-            success = self._parse_song(song)
-            if not success or self.stop_import_flag:
-                return False
-            elif self.commit:
-                self.finish()
+            if self.stop_import_flag:
+                return
+            self._parse_song(song)
 
     def _parse_song(self, song):
+        self.set_defaults()
         self._success = True
         self._add_unicode_attribute(u'title', song.Title1, True)
         self._add_unicode_attribute(u'alternate_title', song.Title2)
@@ -89,7 +83,8 @@ class EasiSlidesImport(SongImport):
         self._add_copyright(song.LicenceAdmin2)
         self._add_unicode_attribute(u'song_book_name', song.BookReference)
         self._parse_and_add_lyrics(song)
-        return self._success
+        if self._success:
+            self.finish()
 
     def _add_unicode_attribute(self, self_attribute, import_attribute,
         mandatory=False):
@@ -187,12 +182,13 @@ class EasiSlidesImport(SongImport):
         # if the regions are inside verses
         regionsInVerses = (regions and regionlines[regionlines.keys()[0]] > 1)
         MarkTypes = {
-            u'CHORUS': u'C',
-            u'VERSE': u'V',
-            u'INTRO': u'I',
-            u'ENDING': u'E',
-            u'BRIDGE': u'B',
-            u'PRECHORUS': u'P'}
+            u'CHORUS': VerseType.Tags[VerseType.Chorus],
+            u'VERSE': VerseType.Tags[VerseType.Verse],
+            u'INTRO': VerseType.Tags[VerseType.Intro],
+            u'ENDING': VerseType.Tags[VerseType.Ending],
+            u'BRIDGE': VerseType.Tags[VerseType.Bridge],
+            u'PRECHORUS': VerseType.Tags[VerseType.PreChorus]
+        }
         verses = {}
         # list as [region, versetype, versenum, instance]
         our_verse_order = []

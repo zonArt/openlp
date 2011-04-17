@@ -740,13 +740,17 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        message = importer.do_import()
-        if isinstance(message, bool) and not message:
+        test = importer.do_import()
+        print test
+        if test is not None:
+            raise A
+        print importer.import_error_log
+        if importer.stop_import_flag:
+            print u'cancelled'
+        elif importer.import_error_log:
             self.progressLabel.setText(self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm',
                 'Your song import failed.')))
-        elif not isinstance(message, bool) and message:
-            self.progressLabel.setText(message)
         else:
             self.progressLabel.setText(WizardStrings.FinishedImport)
 

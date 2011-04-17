@@ -33,6 +33,7 @@ import struct
 
 from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -203,8 +204,8 @@ class EasyWorshipSongImport(SongImport):
                 field_size))
         self.set_record_struct(field_descs)
         # Pick out the field description indexes we will need
-        success = True
         try:
+            success = True
             fi_title = self.find_field(u'Title')
             fi_author = self.find_field(u'Author')
             fi_copy = self.find_field(u'Copyright')
@@ -223,24 +224,18 @@ class EasyWorshipSongImport(SongImport):
             # Loop through each record within the current block
             for i in range(rec_count):
                 if self.stop_import_flag:
-                    success = False
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_struct.unpack(raw_record)
                 self.set_defaults()
-                # Get title and update progress bar message
-                title = self.get_field(fi_title)
-                if title:
-                    self.import_wizard.incrementProgressBar(
-                        WizardStrings.ImportingType % title, 0)
-                    self.title = title
-                # Get remaining fields
+                self.title = self.get_field(fi_title)
+                # Get remaining fields.
                 copy = self.get_field(fi_copy)
                 admin = self.get_field(fi_admin)
                 ccli = self.get_field(fi_ccli)
                 authors = self.get_field(fi_author)
                 words = self.get_field(fi_words)
-                # Set the SongImport object members
+                # Set the SongImport object members.
                 if copy:
                     self.copyright = copy
                 if admin:
@@ -264,17 +259,13 @@ class EasyWorshipSongImport(SongImport):
                     # Format the lyrics
                     words = strip_rtf(words, self.encoding)
                     for verse in words.split(u'\n\n'):
-                        self.add_verse(verse.strip(), u'V')
+                        self.add_verse(
+                            verse.strip(), VerseType.Tags[VerseType.Verse])
                 if self.stop_import_flag:
-                    success = False
                     break
                 self.finish()
-            if not self.stop_import_flag:
-                self.import_wizard.incrementProgressBar(u'')
         db_file.close()
         self.memo_file.close()
-        if not success:
-            return False
 
     def find_field(self, field_name):
         return [i for i, x in enumerate(self.field_descs) \

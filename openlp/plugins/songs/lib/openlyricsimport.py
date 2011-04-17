@@ -59,7 +59,7 @@ class OpenLyricsImport(SongImport):
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
-                return False
+                return
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
