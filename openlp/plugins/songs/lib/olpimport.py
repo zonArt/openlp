@@ -101,8 +101,10 @@ class OpenLPSongImport(SongImport):
         Run the import for an OpenLP version 2 song database.
         """
         if not self.import_source.endswith(u'.sqlite'):
-            return translate('SongsPlugin.OpenLPSongImport', 'The file you were'
-            ' trying to import is not a valid OpenLP 2.0 song database.')
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLPSongImport', 'The file you were '
+                'trying to import is not a valid OpenLP 2.0 song database.'))
+            return
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
@@ -127,10 +129,10 @@ class OpenLPSongImport(SongImport):
                 mapper(OldMediaFile, source_media_files_table)
         song_props = {
             'authors': relation(OldAuthor, backref='songs',
-                secondary=source_authors_songs_table),
+            secondary=source_authors_songs_table),
             'book': relation(OldBook, backref='songs'),
             'topics': relation(OldTopic, backref='songs',
-                secondary=source_songs_topics_table)
+            secondary=source_songs_topics_table)
         }
         if has_media_files:
             song_props['media_files'] = relation(OldMediaFile, backref='songs',
@@ -218,5 +220,5 @@ class OpenLPSongImport(SongImport):
             self.manager.save_object(new_song)
             song_count += 1
             if self.stop_import_flag:
-                return False
+                break
         engine.dispose()

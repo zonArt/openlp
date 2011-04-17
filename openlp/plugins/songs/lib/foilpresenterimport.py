@@ -121,7 +121,7 @@ class FoilPresenterImport(SongImport):
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
-                return False
+                return
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
@@ -303,9 +303,8 @@ class FoilPresenter(object):
             for marker in markers:
                 copyright = re.compile(marker).sub(u'<marker>', copyright, re.U)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
-            i = 0
             x = 0
-            while i != 1:
+            while True:
                 if copyright.find(u'<marker>') != -1:
                     temp = copyright.partition(u'<marker>')
                     if temp[0].strip() and x > 0:
@@ -314,9 +313,9 @@ class FoilPresenter(object):
                     x += 1
                 elif x > 0:
                     strings.append(copyright)
-                    i = 1
+                    break
                 else:
-                    i = 1
+                    break
             author_temp = []
             for author in strings:
                 temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
@@ -347,8 +346,8 @@ class FoilPresenter(object):
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
-                    last_name = display_name.split(u' ')[-1],
-                    first_name = u' '.join(display_name.split(u' ')[:-1]))
+                    last_name=display_name.split(u' ')[-1],
+                    first_name=u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
 
@@ -412,8 +411,15 @@ class FoilPresenter(object):
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {u'V': 1, u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1,
-            u'P': 1}
+        versenumber = {
+            VerseType.Tags[VerseType.Verse]: 1,
+            VerseType.Tags[VerseType.Chorus]: 1, 
+            VerseType.Tags[VerseType.Bridge]: 1,
+            VerseType.Tags[VerseType.Ending]: 1,
+            VerseType.Tags[VerseType.Other]: 1,
+            VerseType.Tags[VerseType.Intro]: 1,
+            VerseType.Tags[VerseType.PreChorus]: 1
+        }
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
@@ -432,25 +438,25 @@ class FoilPresenter(object):
             temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
             if temp_verse_name == u'ref':
-                verse_type = u'C'
+                verse_type = VerseType.Tags[VerseType.Chorus]
             elif temp_verse_name == u'r':
-                verse_type = u'C'
+                verse_type = VerseType.Tags[VerseType.Chorus]
             elif temp_verse_name == u'':
-                verse_type = u'V'
+                verse_type = VerseType.Tags[VerseType.Verse]
             elif temp_verse_name == u'v':
-                verse_type = u'V'
+                verse_type = VerseType.Tags[VerseType.Verse]
             elif temp_verse_name == u'bri':
-                verse_type = u'B'
+                verse_type = VerseType.Tags[VerseType.Bridge]
             elif temp_verse_name == u'cod':
-                verse_type = u'E'
+                verse_type = VerseType.Tags[VerseType.Ending]
             elif temp_verse_name == u'sch':
-                verse_type = u'E'
+                verse_type = VerseType.Tags[VerseType.Ending]
             elif temp_verse_name == u'pre':
-                verse_type = u'P'
+                verse_type = VerseType.Tags[VerseType.PreChorus]
             elif temp_verse_name == u'int':
-                verse_type = u'I'
+                verse_type = VerseType.Tags[VerseType.Intro]
             else:
-                verse_type = u'O'
+                verse_type = VerseType.Tags[VerseType.Other]
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
@@ -464,8 +470,8 @@ class FoilPresenter(object):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.Names[verse_type_index]
-            temp_verse_order[verse_sortnr] = (u''.join((verse_type[0],
-                verse_number)))
+            temp_verse_order[verse_sortnr] = u''.join((verse_type[0],
+                verse_number))
             temp_verse_order_backup.append(u''.join((verse_type[0],
                 verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)

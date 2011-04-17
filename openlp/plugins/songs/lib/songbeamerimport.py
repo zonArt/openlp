@@ -33,7 +33,6 @@ import logging
 import os
 import re
 
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -80,18 +79,16 @@ class SongBeamerImport(SongImport):
         """
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
         if not isinstance(self.import_source, list):
-            return False
+            return
         for file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
-                return False
+                return
             self.set_defaults()
             self.current_verse = u''
             self.current_verse_type = VerseType.Tags[VerseType.Verse]
             read_verses = False
             file_name = os.path.split(file)[1]
-            self.import_wizard.incrementProgressBar(
-                WizardStrings.ImportingType % file_name, 0)
             if os.path.isfile(file):
                 detect_file = open(file, u'r')
                 details = chardet.detect(detect_file.read(2048))
@@ -100,7 +97,7 @@ class SongBeamerImport(SongImport):
                 songData = infile.readlines()
                 infile.close()
             else:
-                return False
+                continue
             self.title = file_name.split('.sng')[0]
             read_verses = False
             for line in songData:
@@ -127,10 +124,7 @@ class SongBeamerImport(SongImport):
             if self.current_verse:
                 self.replace_html_tags()
                 self.add_verse(self.current_verse, self.current_verse_type)
-            if self.check_complete():
-                self.finish()
-            self.import_wizard.incrementProgressBar(
-                WizardStrings.ImportingType % file_name)
+            self.finish()
 
     def replace_html_tags(self):
         """
@@ -288,5 +282,4 @@ class SongBeamerImport(SongImport):
                 if marks[1].isdigit():
                     self.current_verse_type += marks[1]
             return True
-        else:
-            return False
+        return False

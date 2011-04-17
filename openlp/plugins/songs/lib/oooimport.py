@@ -60,7 +60,7 @@ class OooImport(SongImport):
         self.import_wizard.progressBar.setMaximum(self.import_source)
         for filename in self.import_source:
             if self.stop_import_flag:
-                return False
+                break
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)

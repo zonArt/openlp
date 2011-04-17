@@ -63,12 +63,18 @@ class OpenLP1SongImport(SongImport):
         Run the import for an openlp.org 1.x song database.
         """
         if not self.import_source.endswith(u'.olp'):
-            return translate('SongsPlugin.OpenLP1SongImport', 'The file you '
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLP1SongImport', 'The file you '
                 'were trying to import is not a valid openlp.org 1.x song '
-                'database.')
+                'database.'))
+            return
         encoding = self.get_encoding()
         if not encoding:
-            return False
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLP1SongImport', 'The file you '
+                'were trying to import is not a valid openlp.org 1.x song '
+                'database.'))
+            return
         # Connect to the database
         connection = sqlite.connect(self.import_source, mode=0444,
             encoding=(encoding, 'replace'))
@@ -81,7 +87,6 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'-- types int')
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = cursor.fetchone()[0]
-        success = True
         self.import_wizard.progressBar.setMaximum(count)
         # "cache" our list of authors
         cursor.execute(u'-- types int, unicode')
@@ -100,7 +105,6 @@ class OpenLP1SongImport(SongImport):
         for song in songs:
             self.set_defaults()
             if self.stop_import_flag:
-                success = False
                 break
             song_id = song[0]
             title = song[1]
@@ -110,9 +114,7 @@ class OpenLP1SongImport(SongImport):
                 WizardStrings.ImportingType % title)
             self.title = title
             verses = lyrics.split(u'\n\n')
-            for verse in verses:
-                if verse.strip() != u'':
-                    self.add_verse(verse.strip())
+            [self.add_verse(verse.strip()) for verse in verses if verse.strip()]
             self.add_copyright(copyright)
             cursor.execute(u'-- types int')
             cursor.execute(u'SELECT authorid FROM songauthors '
@@ -120,14 +122,12 @@ class OpenLP1SongImport(SongImport):
             author_ids = cursor.fetchall()
             for author_id in author_ids:
                 if self.stop_import_flag:
-                    success = False
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
                         self.parse_author(author[1])
                         break
             if self.stop_import_flag:
-                success = False
                 break
             if new_db:
                 cursor.execute(u'-- types int')
@@ -136,17 +136,14 @@ class OpenLP1SongImport(SongImport):
                 track_ids = cursor.fetchall()
                 for track_id in track_ids:
                     if self.stop_import_flag:
-                        success = False
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
                             self.add_media_file(track[1])
                             break
             if self.stop_import_flag:
-                success = False
                 break
             self.finish()
-        return success
 
     def get_encoding(self):
         """
