@@ -138,7 +138,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.displayButton.setEnabled(False)
             self.displayCloseButton.setEnabled(False)
 
-
     def onDoubleClick(self):
         """
         List item has been double clicked to display it
