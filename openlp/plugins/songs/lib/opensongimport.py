@@ -255,7 +255,7 @@ class OpenSongImport(SongImport):
             lines = u'\n'.join(verses[verse_tag][verse_num][inst])
             self.add_verse(lines, verse_def)
         # figure out the presentation order, if present
-        if u'presentation' in fields and root.presentation != u'':
+        if u'presentation' in fields and root.presentation:
             order = unicode(root.presentation)
             # We make all the tags in the lyrics lower case, so match that here
             # and then split into a list on the whitespace
@@ -266,7 +266,7 @@ class OpenSongImport(SongImport):
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                     if not len(verse_tag):
-                        verse_tag = u'v'
+                        verse_tag =  VerseType.Tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def

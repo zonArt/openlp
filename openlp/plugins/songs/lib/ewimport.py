@@ -143,12 +143,12 @@ class EasyWorshipSongImport(SongImport):
         # Open the DB and MB files if they exist
         import_source_mb = self.import_source.replace('.DB', '.MB')
         if not os.path.isfile(self.import_source):
-            return False
+            return
         if not os.path.isfile(import_source_mb):
-            return False
+            return
         db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
-            return False
+            return
         db_file = open(self.import_source, 'rb')
         self.memo_file = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
@@ -157,7 +157,7 @@ class EasyWorshipSongImport(SongImport):
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memo_file.close()
-            return False
+            return
         # Take a stab at how text is encoded
         self.encoding = u'cp1252'
         db_file.seek(106)
@@ -184,7 +184,7 @@ class EasyWorshipSongImport(SongImport):
             self.encoding = u'cp874'
         self.encoding = retrieve_windows_encoding(self.encoding)
         if not self.encoding:
-            return False
+            return
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
@@ -242,7 +242,7 @@ class EasyWorshipSongImport(SongImport):
                     if copy:
                         self.copyright += u', '
                     self.copyright += \
-                        unicode(translate('SongsPlugin.ImportWizardForm',
+                        unicode(translate('SongsPlugin.EasyWorshipSongImport',
                             'Administered by %s')) % admin
                 if ccli:
                     self.ccli_number = ccli
@@ -269,7 +269,7 @@ class EasyWorshipSongImport(SongImport):
         self.memo_file.close()
 
     def find_field(self, field_name):
-        return [i for i, x in enumerate(self.field_descs) \
+        return [i for i, x in enumerate(self.field_descs)
             if x.name == field_name][0]
 
     def set_record_struct(self, field_descs):

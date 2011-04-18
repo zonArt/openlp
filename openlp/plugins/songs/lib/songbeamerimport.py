@@ -73,11 +73,6 @@ class SongBeamerImport(SongImport):
         Initialise the Song Beamer importer.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.log_error(u'/home/andreas/1.sng', u'aaaa')
-        self.log_error(u'/home/andreas/4.sng', u'asdfsdfsadfds')
-        self.log_error(u'/home/andreas/3.sng', u'asdf3q4')
-        self.log_error(u'/home/andreas/2.sng', u'sadfasdf')
-        self.log_error(u'/home/andreas/ä.sng', u'kqwjw32w3')
 
     def do_import(self):
         """
@@ -238,11 +233,12 @@ class SongBeamerImport(SongImport):
             pass
         elif tag_val[0] == u'#Rights':
             song_book_pub = tag_val[1]
-        elif tag_val[0] == u'#Songbook':
-            book_num = tag_val[1].split(' / ')
-            self.song_book_name = book_num[0]
-            if len(book_num) == book_num[1]:
-                self.song_number = u''
+        elif tag_val[0] == u'#Songbook' or tag_val[0] == u'#SongBook':
+            book_data = tag_val[1].split(u'/')
+            self.song_book_name = book_data[0].strip()
+            if len(book_data) == 2:
+                number = book_data[1].strip()
+                self.song_number = number if number.isdigit() else u''
         elif tag_val[0] == u'#Speed':
             pass
         elif tag_val[0] == u'Tempo':

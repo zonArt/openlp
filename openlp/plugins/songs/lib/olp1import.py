@@ -64,16 +64,14 @@ class OpenLP1SongImport(SongImport):
         """
         if not self.import_source.endswith(u'.olp'):
             self.log_error(self.import_source,
-                translate('SongsPlugin.OpenLP1SongImport', 'The file you '
-                'were trying to import is not a valid openlp.org 1.x song '
-                'database.'))
+                translate('SongsPlugin.OpenLP1SongImport',
+                'Not a valid openlp.org 1.x song database.'))
             return
         encoding = self.get_encoding()
         if not encoding:
             self.log_error(self.import_source,
-                translate('SongsPlugin.OpenLP1SongImport', 'The file you '
-                'were trying to import is not a valid openlp.org 1.x song '
-                'database.'))
+                translate('SongsPlugin.OpenLP1SongImport',
+                'Not a valid openlp.org 1.x song database.'))
             return
         # Connect to the database
         connection = sqlite.connect(self.import_source, mode=0444,

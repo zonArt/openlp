@@ -134,7 +134,7 @@ class WowImport(SongImport):
                     songData.seek(3, os.SEEK_CUR)
                     # Blocks are seperated by 2 bytes, skip them, but not if
                     # this is the last block!
-                    if (block + 1) < no_of_blocks:
+                    if block + 1 < no_of_blocks:
                         songData.seek(2, os.SEEK_CUR)
                     self.add_verse(block_text, block_type)
                 # Now to extract the author

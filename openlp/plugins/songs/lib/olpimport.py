@@ -102,8 +102,8 @@ class OpenLPSongImport(SongImport):
         """
         if not self.import_source.endswith(u'.sqlite'):
             self.log_error(self.import_source,
-                translate('SongsPlugin.OpenLPSongImport', 'The file you were '
-                'trying to import is not a valid OpenLP 2.0 song database.'))
+                translate('SongsPlugin.OpenLPSongImport',
+                'Not a valid OpenLP 2.0 song database.'))
             return
         engine = create_engine(self.import_source)
         source_meta = MetaData()
