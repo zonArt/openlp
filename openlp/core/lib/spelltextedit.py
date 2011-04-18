@@ -36,7 +36,9 @@ except ImportError:
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate, DisplayTags
+from openlp.core.lib.ui import checkable_action
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +82,19 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if not cursor.hasSelection():
             cursor.select(QtGui.QTextCursor.WordUnderCursor)
         self.setTextCursor(cursor)
+        # Add menu with available languages.
+        if ENCHANT_AVAILABLE:
+            lang_menu = QtGui.QMenu(
+                translate('OpenLP.SpellTextEdit', 'Language:'))
+            for lang in enchant.list_languages():
+                action = checkable_action(
+                    lang_menu, lang, lang == self.dictionary.tag)
+                action.setText(lang)
+                lang_menu.addAction(action)
+            popupMenu.insertSeparator(popupMenu.actions()[0])
+            popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
+            QtCore.QObject.connect(lang_menu,
+                QtCore.SIGNAL(u'triggered(QAction*)'), self.setLanguage)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
@@ -93,18 +108,29 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     spell_menu.addAction(action)
                 # Only add the spelling suggests to the menu if there are
                 # suggestions.
-                if len(spell_menu.actions()) != 0:
-                    popupMenu.insertSeparator(popupMenu.actions()[0])
+                if len(spell_menu.actions()):
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
         for html in DisplayTags.get_html_tags():
-            action = SpellAction( html[u'desc'], tagMenu)
+            action = SpellAction(html[u'desc'], tagMenu)
             action.correct.connect(self.htmlTag)
             tagMenu.addAction(action)
         popupMenu.insertSeparator(popupMenu.actions()[0])
         popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
         popupMenu.exec_(event.globalPos())
+
+    def setLanguage(self, action):
+        """
+        Changes the language for this spelltextedit.
+
+        ``action``
+            The action.
+        """
+        self.dictionary = enchant.Dict(action.text())
+        self.highlighter.spellingDictionary = self.dictionary
+        self.highlighter.highlightBlock(self.toPlainText())
+        self.highlighter.rehighlight()
 
     def correctWord(self, word):
         """
