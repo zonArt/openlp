@@ -60,11 +60,11 @@ class MediaMediaItem(MediaManagerItem):
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (
             u' '.join(self.parent.video_extensions_list),
-            u' '.join(self.parent.audio_extensions_list), UiStrings.AllFiles)
-        self.replaceAction.setText(UiStrings.ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
-        self.resetAction.setText(UiStrings.ResetBG)
-        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
+            u' '.join(self.parent.audio_extensions_list), UiStrings().AllFiles)
+        self.replaceAction.setText(UiStrings().ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
+        self.resetAction.setText(UiStrings().ResetBG)
+        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -111,7 +111,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(UiStrings.LiveBGError,
+                critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)

@@ -32,18 +32,29 @@ from openlp.core.lib.ui import create_accept_reject_button_box
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(700, 500)
+        settingsDialog.resize(800, 500)
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        self.settingsLayout.setObjectName(u'settingsLayout')
-        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget)
+        self.dialogLayout = QtGui.QGridLayout(settingsDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setMargin(8)
+        self.settingListWidget = QtGui.QListWidget(settingsDialog)
+        self.settingListWidget.setUniformItemSizes(True)
+        self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
+        self.settingListWidget.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.settingListWidget.setObjectName(u'settingListWidget')
+        self.dialogLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
+        self.stackedLayout = QtGui.QStackedLayout()
+        self.stackedLayout.setObjectName(u'stackedLayout')
+        self.dialogLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
         self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
-        self.settingsLayout.addWidget(self.buttonBox)
+        self.dialogLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
+        QtCore.QObject.connect(self.settingListWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'),
+            self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, settingsDialog):
         settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
