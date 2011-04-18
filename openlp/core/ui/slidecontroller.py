@@ -225,6 +225,9 @@ class SlideController(QtGui.QWidget):
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+            # Build the seekSlider.
+            self.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+            self.seekSlider.setMaximum(1000)
             # Build the volumeSlider.
             self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
             self.volumeSlider.setTickInterval(1)
@@ -234,11 +237,11 @@ class SlideController(QtGui.QWidget):
         else:
             # Build the seekSlider.
             self.seekSlider = Phonon.SeekSlider()
-            self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-            self.seekSlider.setObjectName(u'seekSlider')
-            self.mediabar.addToolbarWidget(u'Seek Slider', self.seekSlider)
             self.volumeSlider = Phonon.VolumeSlider()
-        self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        self.seekSlider.setObjectName(u'seekSlider')
+        self.mediabar.addToolbarWidget(u'Seek Slider', self.seekSlider)
+        self.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         self.volumeSlider.setObjectName(u'volumeSlider')
         self.mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.controllerLayout.addWidget(self.mediabar)
@@ -297,6 +300,8 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'triggered(bool)'), self.onThemeDisplay)
             QtCore.QObject.connect(self.desktopScreen,
                 QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
+            QtCore.QObject.connect(self.seekSlider,
+                QtCore.SIGNAL(u'sliderReleased()'), self.mediaSeek)
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -392,7 +397,8 @@ class SlideController(QtGui.QWidget):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        self.display.videoStop()
+        #self.display.videoStop()
+        Receiver.send_message('media_stop', self.display)
 
     def servicePrevious(self):
         Receiver.send_message('servicemanager_previous_item')
@@ -496,7 +502,7 @@ class SlideController(QtGui.QWidget):
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
-            self.toolbar.setVisible(False)
+            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
 
     def enablePreviewToolBar(self, item):
@@ -509,7 +515,7 @@ class SlideController(QtGui.QWidget):
         if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
-            self.toolbar.setVisible(False)
+            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
 
@@ -1028,7 +1034,8 @@ class SlideController(QtGui.QWidget):
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
         if self.isLive:
-            self.display.video(file, self.volume)
+            #self.display.video(file, self.volume)
+            Receiver.send_message(u'media_video', [self.display, file, self.volume, False])
             self.volumeSlider.setValue(self.volume)
         else:
             self.mediaObject.stop()
@@ -1038,13 +1045,24 @@ class SlideController(QtGui.QWidget):
             self.seekSlider.show()
             self.onMediaPlay()
 
+    def mediaSeek(self):
+        """
+        Respond to the release of Seek Slider
+        """
+        log.debug(u'SlideController mediaSeek')
+        self.seekPos = self.seekSlider.value()
+        #self.display.videoVolume(self.volume)
+        Receiver.send_message(u'media_seek', [self.display, self.seekPos])
+
     def mediaVolume(self):
         """
         Respond to the release of Volume Slider
         """
         log.debug(u'SlideController mediaVolume')
         self.volume = self.volumeSlider.value()
-        self.display.videoVolume(self.volume)
+        #self.display.videoVolume(self.volume)
+        Receiver.send_message(u'media_volume', [self.display, self.volume])
+
 
     def onMediaPause(self):
         """
@@ -1052,7 +1070,8 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaPause')
         if self.isLive:
-            self.display.videoPause()
+            #self.display.videoPause()
+            Receiver.send_message(u'media_pause', self.display)
         else:
             self.mediaObject.pause()
 
@@ -1062,7 +1081,8 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaPlay')
         if self.isLive:
-            self.display.videoPlay()
+            Receiver.send_message(u'media_play', self.display)
+            #self.display.videoPlay()
         else:
             self.slidePreview.hide()
             self.video.show()
@@ -1074,7 +1094,8 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStop')
         if self.isLive:
-            self.display.videoStop()
+            #self.display.videoStop()
+            Receiver.send_message(u'media_stop', self.display)
         else:
             self.mediaObject.stop()
             self.video.hide()
@@ -1085,9 +1106,10 @@ class SlideController(QtGui.QWidget):
         """
         Respond to a request to close the Video
         """
-        log.debug(u'SlideController onMediaStop')
+        log.debug(u'SlideController onMediaClose')
         if self.isLive:
-            self.display.resetVideo()
+            #self.display.resetVideo()
+            Receiver.send_message(u'media_reset', self.display)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()

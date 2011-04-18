@@ -99,28 +99,30 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.videoWidget = Phonon.VideoWidget(self)
-        self.videoWidget.setVisible(False)
-        self.videoWidget.setGeometry(QtCore.QRect(0, 0,
-            self.screen[u'size'].width(), self.screen[u'size'].height()))
-        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videoWidget)
-        Phonon.createPath(self.mediaObject, self.audio)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoState)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'),
-            self.videoFinished)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'tick(qint64)'),
-            self.videoTick)
+#        self.videoWidget = Phonon.VideoWidget(self)
+#        self.videoWidget.setVisible(False)
+#        self.videoWidget.setGeometry(QtCore.QRect(0, 0,
+#            self.screen[u'size'].width(), self.screen[u'size'].height()))
+#        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
+#        self.mediaObject = Phonon.MediaObject(self)
+#        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+#        Phonon.createPath(self.mediaObject, self.videoWidget)
+#        Phonon.createPath(self.mediaObject, self.audio)
+#        QtCore.QObject.connect(self.mediaObject,
+#            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+#            self.videoState)
+#        QtCore.QObject.connect(self.mediaObject,
+#            QtCore.SIGNAL(u'finished()'),
+#            self.videoFinished)
+#        QtCore.QObject.connect(self.mediaObject,
+#            QtCore.SIGNAL(u'tick(qint64)'),
+#            self.videoTick)
+
         log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled,True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -173,8 +175,16 @@ class MainDisplay(DisplayWidget):
                 self.primary = False
             else:
                 self.primary = True
+        Receiver.send_message(u'media_set_display', self)
         log.debug(
             u'Finished setup for monitor %s' % self.screens.monitor_number)
+
+    def videoHelper(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if type(newState) == Phonon.State:
+            print "Phonon State alt:%d, neu:%d" % (oldState, newState)
 
     def text(self, slide):
         """
@@ -201,7 +211,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible() or self.videoWidget.isVisible():
+            or not self.isVisible():# or self.videoWidget.isVisible():
             shrink = True
         else:
             shrink = False
@@ -282,129 +292,107 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             Receiver.send_message(u'maindisplay_active')
 
-    def resetVideo(self):
-        """
-        Used after Video plugin has changed the background
-        """
-        log.debug(u'resetVideo')
-        if self.phononActive:
-            self.mediaObject.stop()
-            self.mediaObject.clearQueue()
-            self.webView.setVisible(True)
-            self.videoWidget.setVisible(False)
-            self.phononActive = False
-        else:
-            self.frame.evaluateJavaScript(u'show_video("close");')
-        self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
-
-    def videoPlay(self):
-        """
-        Responds to the request to play a loaded video
-        """
-        log.debug(u'videoPlay')
-        if self.phononActive:
-            self.mediaObject.play()
-        else:
-            self.frame.evaluateJavaScript(u'show_video("play");')
-        # show screen
-        if self.isLive:
-            self.setVisible(True)
-
-    def videoPause(self):
-        """
-        Responds to the request to pause a loaded video
-        """
-        log.debug(u'videoPause')
-        if self.phononActive:
-            self.mediaObject.pause()
-        else:
-            self.frame.evaluateJavaScript(u'show_video("pause");')
-
-    def videoStop(self):
-        """
-        Responds to the request to stop a loaded video
-        """
-        log.debug(u'videoStop')
-        if self.phononActive:
-            self.mediaObject.stop()
-        else:
-            self.frame.evaluateJavaScript(u'show_video("stop");')
-
-    def videoVolume(self, volume):
-        """
-        Changes the volume of a running video
-        """
-        log.debug(u'videoVolume %d' % volume)
-        vol = float(volume) / float(10)
-        if self.phononActive:
-            self.audio.setVolume(vol)
-        else:
-            self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
-                str(vol))
-
-    def video(self, videoPath, volume, isBackground=False):
-        """
-        Loads and starts a video to run with the option of sound
-        """
-        log.debug(u'video')
-        self.webLoaded = True
-        self.setGeometry(self.screen[u'size'])
-        # We are running a background theme
-        self.override[u'theme'] = u''
-        self.override[u'video'] = True
-        vol = float(volume) / float(10)
-        if isBackground or not self.usePhonon:
-            js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-                (videoPath.replace(u'\\', u'\\\\'), str(vol))
-            self.frame.evaluateJavaScript(js)
-        else:
-            self.phononActive = True
-            self.mediaObject.stop()
-            self.mediaObject.clearQueue()
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
-            # Need the timer to trigger set the trigger to 200ms
-            # Value taken from web documentation.
-            if self.serviceItem.end_time != 0:
-                self.mediaObject.setTickInterval(200)
-            self.mediaObject.play()
-            self.webView.setVisible(False)
-            self.videoWidget.setVisible(True)
-            self.audio.setVolume(vol)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
-        return self.preview()
-
-    def videoState(self, newState, oldState):
-        """
-        Start the video at a predetermined point.
-        """
-        if newState == Phonon.PlayingState \
-            and oldState != Phonon.PausedState \
-            and self.serviceItem.start_time > 0:
-            # set start time in milliseconds
-            self.mediaObject.seek(self.serviceItem.start_time * 1000)
-
-    def videoFinished(self):
-        """
-        Blank the Video when it has finished so the final frame is not left
-        hanging
-        """
-        self.videoStop()
-        self.hideDisplay(HideMode.Blank)
-        self.phononActive = False
-        self.videoHide = True
-
-    def videoTick(self, tick):
-        """
-        Triggered on video tick every 200 milli seconds
-        """
-        if tick > self.serviceItem.end_time * 1000:
-            self.videoFinished()
-
+#    def resetVideo(self):
+#        """
+#        Used after Video plugin has changed the background
+#        """
+#        log.debug(u'resetVideo')
+#        if self.phononActive:
+#            self.mediaObject.stop()
+#            self.mediaObject.clearQueue()
+#            self.webView.setVisible(True)
+#            self.videoWidget.setVisible(False)
+#            self.phononActive = False
+#        else:
+#            self.frame.evaluateJavaScript(u'show_video("close");')
+#        self.override = {}
+#        # Update the preview frame.
+#        if self.isLive:
+#            Receiver.send_message(u'maindisplay_active')
+#
+#    def videoPlay(self):
+#        """
+#        Responds to the request to play a loaded video
+#        """
+#        log.debug(u'videoPlay')
+#        self.frame.evaluateJavaScript(u'show_flash("play","");')
+#        self.frame.evaluateJavaScript(u'show_video("stop");')
+#        return
+#        if self.phononActive:
+#            self.mediaObject.play()
+#        else:
+#            self.frame.evaluateJavaScript(u'show_video("play");')
+#        # show screen
+#        if self.isLive:
+#            self.setVisible(True)
+#
+#    def videoPause(self):
+#        """
+#        Responds to the request to pause a loaded video
+#        """
+#        log.debug(u'videoPause')
+#        if self.phononActive:
+#            self.mediaObject.pause()
+#        else:
+#            self.frame.evaluateJavaScript(u'show_video("pause");')
+#
+#    def videoStop(self):
+#        """
+#        Responds to the request to stop a loaded video
+#        """
+#        log.debug(u'videoStop')
+#        if self.phononActive:
+#            self.mediaObject.stop()
+#        else:
+#            self.frame.evaluateJavaScript(u'show_video("stop");')
+#
+#    def videoVolume(self, volume):
+#        """
+#        Changes the volume of a running video
+#        """
+#        log.debug(u'videoVolume %d' % volume)
+#        vol = float(volume) / float(10)
+#        if self.phononActive:
+#            self.audio.setVolume(vol)
+#        else:
+#            self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
+#                str(vol))
+#
+#    def video(self, videoPath, volume, isBackground=False):
+#        """
+#        Loads and starts a video to run with the option of sound
+#        """
+#        log.debug(u'video')
+#        Receiver.send_message(u'media_video', [self, videoPath, volume, isBackground])
+#        return self.preview()
+#
+#    def videoState(self, newState, oldState):
+#        """
+#        Start the video at a predetermined point.
+#        """
+#        if newState == Phonon.PlayingState \
+#            and oldState != Phonon.PausedState \
+#            and self.serviceItem.start_time > 0:
+#            # set start time in milliseconds
+#            self.mediaObject.seek(self.serviceItem.start_time * 1000)
+#
+#    def videoFinished(self):
+#        """
+#        Blank the Video when it has finished so the final frame is not left
+#        hanging
+#        """
+#        self.videoStop()
+#        self.hideDisplay(HideMode.Blank)
+#        self.phononActive = False
+#        self.videoHide = True
+#
+#    def videoTick(self, tick):
+#        """
+#        Triggered on video tick every 200 milli seconds
+#        """
+#        if tick > self.serviceItem.end_time * 1000:
+#            self.videoFinished()
+#
     def isWebLoaded(self):
         """
         Called by webView event to show display is fully loaded
@@ -515,8 +503,9 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        if self.phononActive:
-            self.videoPause()
+#        if self.phononActive:
+#            self.videoPause()
+        Receiver.send_message(u'media_pause', self)
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -543,7 +532,8 @@ class MainDisplay(DisplayWidget):
             self.setVisible(True)
         if self.phononActive:
             self.webView.setVisible(False)
-            self.videoPlay()
+            #self.videoPlay()
+            Receiver.send_message(u'media_play', self)
         self.hideMode = None
         # Trigger actions when display is active again
         if self.isLive:

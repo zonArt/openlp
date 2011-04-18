@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -24,53 +25,25 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore
+from openlp.plugins.media.lib import MediaController
 
-class MediaBackends(object):
-    """
-    An enumeration for possible Backends.
-    """
-    Webkit = 0
-    Phonon = 1
-    Vlc = 2
-
-class MediaController(object):
+class WebkitController(MediaController):
     """
     """
-    def __init__(self, parent):
-        self.parent = parent
-        self.state = 0
-        self.Timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.Timer,
-            QtCore.SIGNAL("timeout()"), self.updatePlayer)
-
+    def __init__(self):
+        pass
 
     def load(self, display, path, volume):
         pass
 
     def play(self, display):
+        self.display[u'live']
+
+    def pause(self):
         pass
 
-    def pause(self, display):
+    def stop(self):
         pass
 
-    def stop(self, display):
+    def seek(self):
         pass
-
-    def seek(self, display, seekVal):
-        pass
-
-    def reset(self, display):
-        pass
-
-    def updatePlayer(self):
-        pass
-
-from mediaitem import MediaMediaItem
-from mediatab import MediaTab
-from mediacontroller import MediaManager
-from webkitcontroller import WebkitController
-#from phononcontroller import PhononController
-#from vlccontroller import VlcController
-
-__all__ = ['MediaMediaItem']

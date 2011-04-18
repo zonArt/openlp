@@ -71,6 +71,9 @@ body {
 #video2 {
     z-index:3;
 }
+#flash {
+    z-index:4;
+}
 #alert {
     position: absolute;
     left: 0px;
@@ -303,6 +306,63 @@ sup {
     function show_text_complete(){
         return (text_opacity()==1);
     }
+
+    function getFlashMovieObject(movieName)
+    {
+        if (window.document[movieName])
+        {
+            return window.document[movieName];
+        }
+        if (navigator.appName.indexOf("Microsoft Internet")==-1)
+        {
+            if (document.embeds && document.embeds[movieName])
+            return document.embeds[movieName];
+        }
+        else // if (navigator.appName.indexOf("Microsoft Internet")!=-1)
+        {
+            return document.getElementById(movieName);
+        }
+    }
+
+    function show_flash(state, path){
+        var text = document.getElementById('flash');
+        var flashMovie=getFlashMovieObject("OpenLPFlashMovie");
+        var src = "src = 'file:///" + path + "'";
+        var view_parm = " wmode='opaque'" +
+                           " width='" + window.innerWidth + "'" +
+                           " height='" + window.innerHeight + "'";
+        var swf_parm = " autostart='false' loop='false' play='false'" +
+                              " hidden='false' swliveconnect='true'" +
+                              " name='OpenLPFlashMovie'>";
+
+        switch(state){
+            case 'load':
+                text.innerHTML = "<embed " + src + view_parm + swf_parm + ">";
+                flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                text.style.visibility = 'visible';
+                flashMovie.Play();
+                break;
+
+            case 'play':
+                text.style.visibility = 'visible';
+                flashMovie.Play();
+                break;
+
+            case 'rewind':
+                ret = 'rewind';
+                alert(' Wert: ' + flashMovie.TGetProperty("/", 4));
+// flashMovie.TotalFrames()
+// PercentLoaded()
+// GotoFrame()
+                break;
+            case 'stop':
+                flashMovie.StopPlay();
+                text.innerHTML = ''
+                text.style.visibility = 'hidden';
+                break;
+        }
+    }
+
 </script>
 </head>
 <body>
@@ -312,6 +372,7 @@ sup {
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
 </video>
+<div id="flash" class="size" style="visibility:hidden"></div>
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>

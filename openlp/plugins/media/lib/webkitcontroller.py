@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -24,53 +25,53 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore
+from openlp.plugins.media.lib import MediaController
 
-class MediaBackends(object):
-    """
-    An enumeration for possible Backends.
-    """
-    Webkit = 0
-    Phonon = 1
-    Vlc = 2
-
-class MediaController(object):
+class WebkitController(MediaController):
     """
     """
     def __init__(self, parent):
         self.parent = parent
-        self.state = 0
-        self.Timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.Timer,
-            QtCore.SIGNAL("timeout()"), self.updatePlayer)
-
+        MediaController.__init__(self, parent)
+        self.isFlash = False
 
     def load(self, display, path, volume):
-        pass
+        vol = float(volume) / float(10)
+        display.webView.setVisible(True)
+        display.phononWidget.setVisible(False)
+        if path.endswith(u'.swf'):
+            js = u'show_flash("load","%s");' % \
+                (path.replace(u'\\', u'\\\\'))
+            self.isFlash = True
+        else:
+            js = u'show_video("init", "%s", %s, false); show_video("play");' % \
+                (path.replace(u'\\', u'\\\\'), str(vol))
+            self.isFlash = False
+        display.frame.evaluateJavaScript(js)
 
     def play(self, display):
-        pass
+        if self.isFlash:
+            display.frame.evaluateJavaScript(u'show_flash("play","");')
+#            display.frame.evaluateJavaScript(u'show_video("stop");')
+        else:
+#            display.frame.evaluateJavaScript(u'show_flash("stop","");')
+            display.frame.evaluateJavaScript(u'show_video("play");')
+
 
     def pause(self, display):
-        pass
+        if self.isFlash:
+            display.frame.evaluateJavaScript(u'show_flash("pause","");')
+        else:
+            display.frame.evaluateJavaScript(u'show_video("pause");')
 
     def stop(self, display):
-        pass
+        if self.isFlash:
+            display.frame.evaluateJavaScript(u'show_flash("stop","");')
+        else:
+            display.frame.evaluateJavaScript(u'show_video("stop");')
 
-    def seek(self, display, seekVal):
+    def seek(self, display):
         pass
 
     def reset(self, display):
-        pass
-
-    def updatePlayer(self):
-        pass
-
-from mediaitem import MediaMediaItem
-from mediatab import MediaTab
-from mediacontroller import MediaManager
-from webkitcontroller import WebkitController
-#from phononcontroller import PhononController
-#from vlccontroller import VlcController
-
-__all__ = ['MediaMediaItem']
+        display.frame.evaluateJavaScript(u'show_video("close");')

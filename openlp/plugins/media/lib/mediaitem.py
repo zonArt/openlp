@@ -108,7 +108,9 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.parent.liveController.display.video(filename, 0, True)
+                #self.parent.liveController.display.video(filename, 0, True)
+                Receiver.send_message(u'media_video',
+                    [self.parent.liveController.display, filename, 0, True])
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings.LiveBGError,
@@ -129,35 +131,35 @@ class MediaMediaItem(MediaManagerItem):
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
-        self.mediaObject.stop()
-        self.mediaObject.clearQueue()
-        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-        if not self.mediaStateWait(Phonon.StoppedState):
+#        self.mediaObject.stop()
+#        self.mediaObject.clearQueue()
+#        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
+#        if not self.mediaStateWait(Phonon.StoppedState):
             # Due to string freeze, borrow a message from presentations
             # This will be corrected in 1.9.6
-            critical_error_message_box(
-                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('PresentationPlugin.MediaItem',
-                'Unsupported File')))
-            return False
+#            critical_error_message_box(
+#                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
+#                unicode(translate('PresentationPlugin.MediaItem',
+#                'Unsupported File')))
+            #return False
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
-            self.mediaObject.play()
-            if not self.mediaStateWait(Phonon.PlayingState) \
-                or self.mediaObject.currentSource().type() \
-                == Phonon.MediaSource.Invalid:
-                # Due to string freeze, borrow a message from presentations
-                # This will be corrected in 1.9.6
-                self.mediaObject.stop()
-                critical_error_message_box(
-                    translate('PresentationPlugin.MediaItem',
-                    'Unsupported File'),
-                    unicode(translate('PresentationPlugin.MediaItem',
-                    'Unsupported File')))
-                return False
-            self.mediaLength = self.mediaObject.totalTime() / 1000
-            self.mediaObject.stop()
-            service_item.media_length = self.mediaLength
+#            self.mediaObject.play()
+#            if not self.mediaStateWait(Phonon.PlayingState) \
+#                or self.mediaObject.currentSource().type() \
+#                == Phonon.MediaSource.Invalid:
+#                # Due to string freeze, borrow a message from presentations
+#                # This will be corrected in 1.9.6
+#                self.mediaObject.stop()
+#                critical_error_message_box(
+#                    translate('PresentationPlugin.MediaItem',
+#                    'Unsupported File'),
+#                    unicode(translate('PresentationPlugin.MediaItem',
+#                    'Unsupported File')))
+#                #return False
+#            self.mediaLength = self.mediaObject.totalTime() / 1000
+#            self.mediaObject.stop()
+#            service_item.media_length = self.mediaLength
             service_item.add_capability(
                 ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])

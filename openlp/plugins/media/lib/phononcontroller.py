@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -24,53 +25,57 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore
+from PyQt4.phonon import Phonon
 
-class MediaBackends(object):
-    """
-    An enumeration for possible Backends.
-    """
-    Webkit = 0
-    Phonon = 1
-    Vlc = 2
+from openlp.plugins.media.lib import MediaController
 
-class MediaController(object):
+class PhononController(MediaController):
     """
     """
     def __init__(self, parent):
         self.parent = parent
-        self.state = 0
-        self.Timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.Timer,
-            QtCore.SIGNAL("timeout()"), self.updatePlayer)
-
+        MediaController.__init__(self, parent)
 
     def load(self, display, path, volume):
-        pass
+        display.phononActive = True
+        display.mediaObject.stop()
+        display.mediaObject.clearQueue()
+        display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
+        # Need the timer to trigger set the trigger to 200ms
+        # Value taken from web documentation.
+        vol = float(volume) / float(10)
+        if display.serviceItem.end_time != 0:
+            display.mediaObject.setTickInterval(200)
+        display.mediaObject.play()
+        display.audio.setVolume(vol)
+        self.Timer.setInterval(200)
+
 
     def play(self, display):
-        pass
+        display.mediaObject.play()
+        display.parent.seekSlider.setMaximum(display.mediaObject.totalTime())
 
     def pause(self, display):
-        pass
+        display.mediaObject.pause()
+        self.Timer.stop()
 
     def stop(self, display):
-        pass
+        display.mediaObject.stop()
+        self.Timer.stop()
 
     def seek(self, display, seekVal):
-        pass
+        print "seek"
+        display.mediaObject.seek(seekVal)
 
     def reset(self, display):
-        pass
+        display.mediaObject.stop()
+        display.mediaObject.clearQueue()
+        display.webView.setVisible(True)
+        display.phononWidget.setVisible(False)
+        display.phononActive = False
+        self.Timer.stop()
 
     def updatePlayer(self):
-        pass
-
-from mediaitem import MediaMediaItem
-from mediatab import MediaTab
-from mediacontroller import MediaManager
-from webkitcontroller import WebkitController
-#from phononcontroller import PhononController
-#from vlccontroller import VlcController
-
-__all__ = ['MediaMediaItem']
+        for controller in self.parent.curDisplayMediaController:
+            if controller.getState() == 1:
+                pass

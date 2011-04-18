@@ -30,7 +30,7 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.media.lib import MediaMediaItem, MediaTab
+from openlp.plugins.media.lib import MediaMediaItem, MediaTab, MediaManager
 
 log = logging.getLogger(__name__)
 
@@ -68,6 +68,7 @@ class MediaPlugin(Plugin):
                 self._addToList(self.audio_extensions_list, mimetype)
             elif mimetype.startswith(u'video/'):
                 self._addToList(self.video_extensions_list, mimetype)
+        self.mediaManager = MediaManager(self)
 
     def _addToList(self, list, mimetype):
         # Add all extensions which mimetypes provides us for supported types.
