@@ -741,10 +741,7 @@ class SongImportForm(OpenLPWizard):
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
         importer.do_import()
-        if importer.stop_import_flag:
-            self.progressLabel.setText(translate('SongsPlugin.SongImportForm',
-                'Song import has been cancelled.'))
-        elif importer.error_log:
+        if importer.error_log:
             error_path = importer.write_error_report()
             self.progressLabel.setTextInteractionFlags(
                 QtCore.Qt.TextSelectableByMouse)

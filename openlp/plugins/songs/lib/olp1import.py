@@ -33,7 +33,6 @@ from chardet.universaldetector import UniversalDetector
 import sqlite
 
 from openlp.core.lib import translate
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -69,9 +68,6 @@ class OpenLP1SongImport(SongImport):
             return
         encoding = self.get_encoding()
         if not encoding:
-            self.log_error(self.import_source,
-                translate('SongsPlugin.OpenLP1SongImport',
-                'Not a valid openlp.org 1.x song database.'))
             return
         # Connect to the database
         connection = sqlite.connect(self.import_source, mode=0444,
@@ -81,11 +77,6 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
         new_db = len(cursor.fetchall()) > 0
-        # Count the number of records we need to import, for the progress bar
-        cursor.execute(u'-- types int')
-        cursor.execute(u'SELECT COUNT(songid) FROM songs')
-        count = cursor.fetchone()[0]
-        self.import_wizard.progressBar.setMaximum(count)
         # "cache" our list of authors
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')
@@ -100,20 +91,17 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
         songs = cursor.fetchall()
+        self.import_wizard.progressBar.setMaximum(len(songs))
         for song in songs:
             self.set_defaults()
             if self.stop_import_flag:
                 break
             song_id = song[0]
-            title = song[1]
+            self.title = song[1]
             lyrics = song[2].replace(u'\r\n', u'\n')
-            copyright = song[3]
-            self.import_wizard.incrementProgressBar(
-                WizardStrings.ImportingType % title)
-            self.title = title
+            self.add_copyright(song[3])
             verses = lyrics.split(u'\n\n')
             [self.add_verse(verse.strip()) for verse in verses if verse.strip()]
-            self.add_copyright(copyright)
             cursor.execute(u'-- types int')
             cursor.execute(u'SELECT authorid FROM songauthors '
                 u'WHERE songid = %s' % song_id)

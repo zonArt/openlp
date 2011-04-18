@@ -57,7 +57,7 @@ class OooImport(SongImport):
 
     def do_import(self):
         self.start_ooo()
-        self.import_wizard.progressBar.setMaximum(self.import_source)
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
                 break
