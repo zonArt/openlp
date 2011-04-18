@@ -128,9 +128,7 @@ class FoilPresenterImport(SongImport):
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))
-                if self.FoilPresenter.xml_to_song(xml) is None:
-                    self.log_error(file_path, SongStrings.NoXML)
-                    log.debug(u'File could not be imported: %s' % file_path)
+                self.FoilPresenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 self.log_error(file_path, SongStrings.XMLSyntaxError)
                 log.exception(u'XML syntax error in file %s' % file_path)
@@ -213,7 +211,7 @@ class FoilPresenter(object):
         """
         # No xml get out of here.
         if not xml:
-            return None
+            return
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         song = Song()
@@ -237,7 +235,6 @@ class FoilPresenter(object):
         self._process_topics(foilpresenterfolie, song)
         clean_song(self.manager, song)
         self.manager.save_object(song)
-        return song.id
 
     def _child(self, element):
         """
