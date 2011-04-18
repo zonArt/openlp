@@ -347,7 +347,8 @@ class ServiceManager(QtGui.QWidget):
         has been modified.
         """
         self._modified = modified
-        serviceFile = self.shortFileName() or u'Untitled Service'
+        serviceFile = self.shortFileName() or translate(
+            'OpenLP.ServiceManager', 'Untitled Service')
         self.mainwindow.setServiceModified(modified, serviceFile)
 
     def isModified(self):
