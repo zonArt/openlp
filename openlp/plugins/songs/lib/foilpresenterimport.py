@@ -237,6 +237,7 @@ class FoilPresenter(object):
         self._process_topics(foilpresenterfolie, song)
         clean_song(self.manager, song)
         self.manager.save_object(song)
+        return song.id
 
     def _child(self, element):
         """
