@@ -82,7 +82,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(location, item_name)
         else:
-            self.stackedLayout.takeAt(location)
+            # add then remove tab to stop th UI displaying it even if
+            # it is not required.
+            self.stackedLayout.takeAt(pos)
 
     def accept(self):
         """
