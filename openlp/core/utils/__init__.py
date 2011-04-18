@@ -495,7 +495,7 @@ def get_uno_instance(resolver):
 from languagemanager import LanguageManager
 from actions import ActionList
 
-__all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page', u'file_is_unicode', u'string_is_unicode',
+__all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
+    u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
+    u'ActionList', u'get_web_page', u'file_is_unicode', u'string_is_unicode',
     u'get_uno_command', u'get_uno_instance', u'delete_file']

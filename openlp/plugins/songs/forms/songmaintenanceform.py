@@ -115,7 +115,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 critical_error_message_box(dlg_title, err_text)
         else:
-            critical_error_message_box(dlg_title, UiStrings.NISs)
+            critical_error_message_box(dlg_title, UiStrings().NISs)
 
     def resetAuthors(self):
         """
