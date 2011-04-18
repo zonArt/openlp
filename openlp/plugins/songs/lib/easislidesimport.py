@@ -70,7 +70,6 @@ class EasiSlidesImport(SongImport):
             self._parse_song(song)
 
     def _parse_song(self, song):
-        self.set_defaults()
         self._success = True
         self._add_unicode_attribute(u'title', song.Title1, True)
         self._add_unicode_attribute(u'alternate_title', song.Title2)
@@ -84,7 +83,10 @@ class EasiSlidesImport(SongImport):
         self._add_unicode_attribute(u'song_book_name', song.BookReference)
         self._parse_and_add_lyrics(song)
         if self._success:
-            self.finish()
+            if not self.finish():
+                self.log_error(song.Title1 if song.Title1 else u'')
+        else:
+            self.set_defaults()
 
     def _add_unicode_attribute(self, self_attribute, import_attribute,
         mandatory=False):
@@ -116,10 +118,8 @@ class EasiSlidesImport(SongImport):
     def _add_authors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
-            for author in authors:
-                author = author.strip()
-                if len(author):
-                    self.authors.append(author)
+            self.authors = \
+                [author.strip() for author in authors if author.strip()]
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
             self._success = False

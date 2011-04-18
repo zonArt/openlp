@@ -35,6 +35,7 @@ import re
 
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -72,6 +73,11 @@ class SongBeamerImport(SongImport):
         Initialise the Song Beamer importer.
         """
         SongImport.__init__(self, manager, **kwargs)
+        self.log_error(u'/home/andreas/1.sng', u'aaaa')
+        self.log_error(u'/home/andreas/4.sng', u'asdfsdfsadfds')
+        self.log_error(u'/home/andreas/3.sng', u'asdf3q4')
+        self.log_error(u'/home/andreas/2.sng', u'sadfasdf')
+        self.log_error(u'/home/andreas/ä.sng', u'kqwjw32w3')
 
     def do_import(self):
         """
@@ -124,7 +130,8 @@ class SongBeamerImport(SongImport):
             if self.current_verse:
                 self.replace_html_tags()
                 self.add_verse(self.current_verse, self.current_verse_type)
-            self.finish()
+            if not self.finish():
+                self.log_error(file)
 
     def replace_html_tags(self):
         """
@@ -184,7 +191,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#Bible':
             pass
         elif tag_val[0] == u'#Categories':
-            self.topics = line.split(',')
+            self.topics = tag_val[1].split(',')
         elif tag_val[0] == u'#CCLI':
             self.ccli_number = tag_val[1]
         elif tag_val[0] == u'#Chords':

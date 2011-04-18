@@ -35,6 +35,7 @@ from lxml import etree
 
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
@@ -69,5 +70,7 @@ class OpenLyricsImport(SongImport):
                 xml = unicode(etree.tostring(parsed_file))
                 if self.openLyrics.xml_to_song(xml) is None:
                     log.debug(u'File could not be imported: %s' % file_path)
+                    self.log_error(file_path, SongStrings.NoXML)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
+                self.log_error(file_path, SongStrings.XMLSyntaxError)

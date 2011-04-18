@@ -143,7 +143,8 @@ class OpenLP1SongImport(SongImport):
                             break
             if self.stop_import_flag:
                 break
-            self.finish()
+            if not self.finish():
+                self.log_error(self.import_source)
 
     def get_encoding(self):
         """

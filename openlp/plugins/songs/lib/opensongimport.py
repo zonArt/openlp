@@ -35,6 +35,7 @@ from lxml.etree import Error, LxmlError
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -181,9 +182,6 @@ class OpenSongImport(SongImport):
                     setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if not len(self.title):
-            # to prevent creation of empty songs from wrong files
-            return
         if u'theme' in fields and unicode(root.theme) not in self.topics:
             self.topics.append(unicode(root.theme))
         if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
@@ -274,10 +272,11 @@ class OpenSongImport(SongImport):
                     verse_tag = verse_def
                     verse_num = u'1'
                 verse_def = u'%s%s' % (verse_tag, verse_num)
-                if verses.has_key(verse_tag) \
-                    and verses[verse_tag].has_key(verse_num):
+                if verses.has_key(verse_tag) and \
+                    verses[verse_tag].has_key(verse_num):
                     self.verse_order_list.append(verse_def)
                 else:
                     log.info(u'Got order %s but not in verse tags, dropping'
                         u'this item from presentation order', verse_def)
-        self.finish()
+        if not self.finish():
+            self.log_error(file.name)

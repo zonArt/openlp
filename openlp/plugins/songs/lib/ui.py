@@ -38,8 +38,11 @@ class SongStrings(object):
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
     AuthorUnknown = u'Author Unknown' # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
+    NoXML = translate('OpenLP.Ui', 'Song does not contain any XML')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    SongIncomplete = translate('OpenLP.Ui','Title and/or verses not found')
     SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
     Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
+    XMLSyntaxError = translate('OpenLP.Ui', 'XML syntax error')

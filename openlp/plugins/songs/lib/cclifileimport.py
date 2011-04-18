@@ -79,10 +79,12 @@ class CCLIFileImport(SongImport):
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found: %s', filename)
-                    self.do_import_usr_file(lines)
+                    if not self.do_import_usr_file(lines):
+                        self.log_error(filename)
                 elif ext.lower() == u'.txt':
                     log.info(u'SongSelect .txt format file found: %s', filename)
-                    self.do_import_txt_file(lines)
+                    if not self.do_import_txt_file(lines):
+                        self.log_error(filename)
                 else:
                     self.log_error(filename,
                         translate('SongsPlugin.CCLIFileImport',
@@ -214,7 +216,7 @@ class CCLIFileImport(SongImport):
             else:
                 self.add_author(author)
         self.topics = [topic.strip() for topic in song_topics.split(u'/t')]
-        self.finish()
+        return self.finish()
 
     def do_import_txt_file(self, textList):
         """
@@ -331,4 +333,4 @@ class CCLIFileImport(SongImport):
             author_list = song_author.split(u'|')
         # Clean spaces before and after author names.
         [self.add_author(author_name.strip()) for author_name in author_list]
-        self.finish()
+        return self.finish()

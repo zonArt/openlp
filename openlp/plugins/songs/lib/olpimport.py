@@ -155,15 +155,9 @@ class OpenLPSongImport(SongImport):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.source_session.query(OldSong).all()
-        song_total = len(source_songs)
         if self.import_wizard:
-            self.import_wizard.progressBar.setMaximum(song_total)
-        song_count = 1
+            self.import_wizard.progressBar.setMaximum(len(source_songs))
         for song in source_songs:
-            if self.import_wizard:
-                self.import_wizard.incrementProgressBar(
-                    unicode(translate('SongsPlugin.OpenLPSongImport',
-                    'Importing song %d of %d.')) % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files and hasattr(song, 'alternate_title'):
@@ -218,7 +212,9 @@ class OpenLPSongImport(SongImport):
 #                                file_name=media_file.file_name))
             clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
-            song_count += 1
+            if self.import_wizard:
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:
                 break
         engine.dispose()

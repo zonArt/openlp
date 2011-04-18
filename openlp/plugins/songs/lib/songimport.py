@@ -23,13 +23,17 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import codecs
+import datetime
 import logging
+import os
 import re
+
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.ui.wizard import WizardStrings
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -67,7 +71,7 @@ class SongImport(QtCore.QObject):
         self.song = None
         self.stop_import_flag = False
         self.set_defaults()
-        self.import_error_log = []
+        self.error_log = []
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
@@ -96,7 +100,7 @@ class SongImport(QtCore.QObject):
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
 
-    def log_error(self, filepath, reason=None):
+    def log_error(self, filepath, reason=SongStrings.SongIncomplete):
         """
         This should be called, when a song could not be imported.
 
@@ -109,7 +113,22 @@ class SongImport(QtCore.QObject):
             The reason, why the import failed. The string should be as
             informative as possible.
         """
-        self.import_error_log.append((filepath, unicode(reason)))
+        self.error_log.append((filepath, unicode(reason)))
+
+    def write_error_report(self):
+        """
+        Creates a error import containing all error messages.
+        """
+        report_path = os.path.join(AppLocation.get_data_path(), unicode(translate(
+            'SongsPlugin.SongImport','song_import_report (%s).txt')) %
+            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
+        report_file = codecs.open(report_path, u'w', u'utf-8')
+        report_file.write(translate('SongsPlugin.SongImport',
+            'The following songs could not be imported:\n'))
+        for filepath, reason in self.error_log:
+            report_file.write(u'- %s (%s)\n' % (filepath, reason))
+        report_file.close()
+        return report_path
 
     def stop_import(self):
         """
@@ -257,7 +276,7 @@ class SongImport(QtCore.QObject):
         Author not checked here, if no author then "Author unknown" is
         automatically added
         """
-        if self.title == u'' or len(self.verses) == 0:
+        if not self.title or not len(self.verses):
             return False
         else:
             return True
@@ -268,13 +287,12 @@ class SongImport(QtCore.QObject):
         """
         if not self.check_complete():
             self.set_defaults()
-            return
+            return False
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
         self.import_wizard.incrementProgressBar(
             WizardStrings.ImportingType % song.title)
-        print WizardStrings.ImportingType 
         song.alternate_title = self.alternate_title
         # Values will be set when cleaning the song.
         song.search_title = u''
@@ -331,7 +349,7 @@ class SongImport(QtCore.QObject):
                     publisher=self.song_book_pub)
             song.book = song_book
         for topictext in self.topics:
-            if len(topictext) == 0:
+            if not topictext:
                 continue
             topic = self.manager.get_object_filtered(Topic,
                 Topic.name == topictext)
@@ -341,6 +359,7 @@ class SongImport(QtCore.QObject):
         clean_song(self.manager, song)
         self.manager.save_object(song)
         self.set_defaults()
+        return True
 
     def print_song(self):
         """

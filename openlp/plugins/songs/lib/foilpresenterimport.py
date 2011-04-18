@@ -97,6 +97,7 @@ from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
@@ -128,8 +129,10 @@ class FoilPresenterImport(SongImport):
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))
                 if self.FoilPresenter.xml_to_song(xml) is None:
+                    self.log_error(file_path, SongStrings.NoXML)
                     log.debug(u'File could not be imported: %s' % file_path)
             except etree.XMLSyntaxError:
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
                 log.exception(u'XML syntax error in file %s' % file_path)
 
 

@@ -169,12 +169,11 @@ class SongShowPlusImport(SongImport):
                     self.add_verse(unicode(data, u'cp1252'), verseTag)
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s"
-                        %(blockKey, data))
+                        % (blockKey, data))
             self.verse_order_list = self.sspVerseOrderList
             songData.close()
-            self.finish()
-            self.import_wizard.incrementProgressBar(
-                WizardStrings.ImportingType % file_name)
+            if not self.finish():
+                self.log_error(file)
 
     def toOpenLPVerseTag(self, verseName, ignoreUnique=False):
         if verseName.find(" ") != -1:
@@ -186,22 +185,19 @@ class SongShowPlusImport(SongImport):
             verseNumber = "1"
         verseType = verseType.lower()
         if verseType == "verse":
-            verseTag = "V"
+            verseTag = VerseType.Tags[VerseType.Verse]
         elif verseType == "chorus":
-            verseTag = "C"
+            verseTag = VerseType.Tags[VerseType.Chorus]
         elif verseType == "bridge":
-            verseTag = "B"
+            verseTag = VerseType.Tags[VerseType.Bridge]
         elif verseType == "pre-chorus":
-            verseTag = "P"
-        elif verseType == "bridge":
-            verseTag = "B"
+            verseTag = VerseType.Tags[VerseType.PreChorus]
         else:
             if not self.otherList.has_key(verseName):
                 if ignoreUnique:
                     return None
                 self.otherCount = self.otherCount + 1
                 self.otherList[verseName] = str(self.otherCount)
-            verseTag = "O"
+            verseTag = VerseType.Tags[VerseType.Other]
             verseNumber = self.otherList[verseName]
-        verseTag = verseTag + verseNumber
-        return verseTag
+        return verseTag + verseNumber
