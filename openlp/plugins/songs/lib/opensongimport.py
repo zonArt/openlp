@@ -128,14 +128,15 @@ class OpenSongImport(SongImport):
         self.import_wizard.progressBar.setMaximum(numfiles)
         for filename in self.import_source:
             if self.stop_import_flag:
-                break
+                return
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
                 log.debug(u'Zipfile found %s', filename)
                 z = ZipFile(filename, u'r')
                 for song in z.infolist():
                     if self.stop_import_flag:
-                        break
+                        z.close()
+                        return
                     parts = os.path.split(song.filename)
                     if parts[-1] == u'':
                         # No final part => directory
