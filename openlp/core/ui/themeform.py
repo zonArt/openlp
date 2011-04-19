@@ -63,26 +63,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onGradientComboBoxCurrentIndexChanged)
         QtCore.QObject.connect(self.colorButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onColorButtonClicked)
         QtCore.QObject.connect(self.gradientStartButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onGradientStartButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onGradientEndButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onImageBrowseButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
         QtCore.QObject.connect(self.mainColorButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onMainColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onOutlineColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onShadowColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onOutlineCheckCheckBoxStateChanged)
@@ -90,8 +83,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onShadowCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.footerColorButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onFooterColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
         QtCore.QObject.connect(self.mainPositionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onMainPositionCheckBoxStateChanged)
@@ -99,26 +91,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFooterPositionCheckBoxStateChanged)
         QtCore.QObject.connect(self,
-            QtCore.SIGNAL(u'currentIdChanged(int)'),
-            self.onCurrentIdChanged)
+            QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_line_count'),
-            self.updateLinesText)
+            QtCore.SIGNAL(u'theme_line_count'), self.updateLinesText)
         QtCore.QObject.connect(self.mainSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.calculateLines)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.lineSpacingSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.calculateLines)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.outlineSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.calculateLines)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.shadowSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.calculateLines)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.mainFontComboBox,
-            QtCore.SIGNAL(u'activated(int)'),
-            self.calculateLines)
+            QtCore.SIGNAL(u'activated(int)'), self.calculateLines)
+        QtCore.QObject.connect(self.footerFontComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.updateTheme)
+        QtCore.QObject.connect(self.footerSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'), self.updateTheme)
 
     def setDefaults(self):
         """
@@ -301,7 +290,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(UiStrings.NewTheme)
+            self.setWindowTitle(UiStrings().NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -389,7 +378,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Handle the display and state of the Footer Area page.
         """
         self.footerFontComboBox.setCurrentFont(
-            QtGui.QFont(self.theme.font_main_name))
+            QtGui.QFont(self.theme.font_footer_name))
         self.footerColorButton.setStyleSheet(u'background-color: %s' %
             self.theme.font_footer_color)
         self.setField(u'footerSizeSpinBox',
@@ -484,7 +473,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         images_filter = get_images_filter()
         images_filter = u'%s;;%s (*.*) (*)' % (
-            images_filter, UiStrings.AllFiles)
+            images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)

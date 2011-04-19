@@ -175,7 +175,7 @@ class SongExportForm(OpenLPWizard):
         self.availableSongsPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
             'Check the songs you want to export.'))
-        self.searchLabel.setText(u'%s:' % UiStrings.Search)
+        self.searchLabel.setText(u'%s:' % UiStrings().Search)
         self.uncheckButton.setText(
             translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.checkButton.setText(
@@ -207,7 +207,7 @@ class SongExportForm(OpenLPWizard):
                 self.availableListWidget) if item.checkState()
             ]
             if not items:
-                critical_error_message_box(UiStrings.NISp,
+                critical_error_message_box(UiStrings().NISp,
                     translate('SongsPlugin.ExportWizardForm',
                     'You need to add at least one Song to export.'))
                 return False

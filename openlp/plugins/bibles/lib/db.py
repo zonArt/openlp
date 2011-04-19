@@ -177,10 +177,7 @@ class BibleDB(QtCore.QObject, Manager):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, u'Version')
-        if version_name:
-            self.name = version_name.value
-        else:
-            self.name = None
+        self.name = version_name.value if version_name else None
         return self.name
 
     def clean_filename(self, old_filename):
@@ -256,10 +253,10 @@ class BibleDB(QtCore.QObject, Manager):
         # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
-                book_id = book_id,
-                chapter = chapter,
-                verse = verse_number,
-                text = verse_text
+                book_id=book_id,
+                chapter=chapter,
+                verse=verse_number,
+                text=verse_text
             )
             self.session.add(verse)
         self.session.commit()
@@ -383,15 +380,13 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'BibleDB.verse_search("%s")', text)
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
-            or_clause = []
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u',')]
-            for keyword in keywords:
-                or_clause.append(Verse.text.like(keyword))
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u',')]
+            or_clause = [Verse.text.like(keyword) for keyword in keywords]
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u' ')]
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()

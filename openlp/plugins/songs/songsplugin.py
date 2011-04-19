@@ -33,7 +33,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, base_action, icon_action
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -65,8 +66,10 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.toolsReindexItem.setVisible(True)
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.SongImportItem, UiStrings().Import)
+        action_list.add_action(self.SongExportItem, UiStrings().Export)
+        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -78,10 +81,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongImportItem = QtGui.QAction(import_menu)
-        self.SongImportItem.setObjectName(u'SongImportItem')
-        self.SongImportItem.setText(translate(
-            'SongsPlugin', '&Song'))
+        self.SongImportItem = base_action(import_menu, u'SongImportItem')
+        self.SongImportItem.setText(translate('SongsPlugin', '&Song'))
         self.SongImportItem.setToolTip(translate('SongsPlugin',
             'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
@@ -99,10 +100,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongExportItem = QtGui.QAction(export_menu)
-        self.SongExportItem.setObjectName(u'SongExportItem')
-        self.SongExportItem.setText(translate(
-            'SongsPlugin', '&Song'))
+        self.SongExportItem = base_action(export_menu, u'SongExportItem')
+        self.SongExportItem.setText(translate('SongsPlugin', '&Song'))
         self.SongExportItem.setToolTip(translate('SongsPlugin',
             'Exports songs using the export wizard.'))
         export_menu.addAction(self.SongExportItem)
@@ -120,9 +119,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReindexItem = QtGui.QAction(tools_menu)
-        self.toolsReindexItem.setIcon(build_icon(u':/plugins/plugin_songs.png'))
-        self.toolsReindexItem.setObjectName(u'toolsReindexItem')
+        self.toolsReindexItem = icon_action(tools_menu, u'toolsReindexItem',
+            u':/plugins/plugin_songs.png')
         self.toolsReindexItem.setText(
             translate('SongsPlugin', '&Re-index Songs'))
         self.toolsReindexItem.setStatusTip(
@@ -141,7 +139,7 @@ class SongsPlugin(Plugin):
         if maxSongs == 0:
             return
         progressDialog = QtGui.QProgressDialog(
-            translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
+            translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.formparent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
@@ -259,4 +257,8 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Finalising')
         self.manager.finalise()
         self.toolsReindexItem.setVisible(False)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.SongImportItem, UiStrings().Import)
+        action_list.remove_action(self.SongExportItem, UiStrings().Export)
+        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)

@@ -31,10 +31,10 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver, ListWidgetWithDnD
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
+    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.ui import UiStrings, context_menu_action, \
+    context_menu_separator
 
 log = logging.getLogger(__name__)
 
@@ -260,39 +260,42 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_edit.png',
                     self.plugin.getString(StringContent.Edit)[u'title'],
-                    self.onEditClick))
+                    self.onEditClick, context=QtCore.Qt.WidgetShortcut))
             self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
                     self.plugin.getString(StringContent.Delete)[u'title'],
-                    self.onDeleteClick, [QtCore.Qt.Key_Delete]))
+                    self.onDeleteClick, [QtCore.Qt.Key_Delete],
+                    context=QtCore.Qt.WidgetShortcut))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick, [QtCore.Qt.Key_Enter]))
+                self.onPreviewClick, [QtCore.Qt.Key_Enter,
+                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_live.png',
                 self.plugin.getString(StringContent.Live)[u'title'],
                 self.onLiveClick, [QtCore.Qt.ShiftModifier + \
                 QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
-                QtCore.Qt.Key_Return]))
+                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_add.png',
                 self.plugin.getString(StringContent.Service)[u'title'],
-                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal]))
+                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
+                context=QtCore.Qt.WidgetShortcut))
         if self.addToServiceItem:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
                     '&Add to selected Service Item'),
-                    self.onAddEditClick))
+                    self.onAddEditClick, context=QtCore.Qt.WidgetShortcut))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onClickPressed)
@@ -432,7 +435,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the preview slide controller.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                 'You must select one or more items to preview.'))
         else:
@@ -450,7 +453,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the live slide controller.
         """
         if not self.listView.selectedIndexes():
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
@@ -465,7 +468,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to the current service
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
@@ -491,14 +494,14 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to an existing item in the current service.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
-                QtGui.QMessageBox.information(self, UiStrings.NISs,
+                QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():

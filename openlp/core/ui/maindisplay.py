@@ -314,7 +314,7 @@ class MainDisplay(DisplayWidget):
         painter.end()
         return preview
 
-    def buildHtml(self, serviceItem):
+    def buildHtml(self, serviceItem, image=None):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
@@ -341,8 +341,12 @@ class MainDisplay(DisplayWidget):
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
+        if image:
+            image_bytes = self.imageManager.get_image_bytes(image)
+        else:
+            image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background)
+            self.isLive, background, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
