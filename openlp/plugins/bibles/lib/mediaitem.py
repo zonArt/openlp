@@ -33,7 +33,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
-from openlp.plugins.bibles.forms import BibleImportForm
+from openlp.plugins.bibles.forms import BibleImportForm, BibleReImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
 
@@ -305,6 +305,14 @@ class BibleMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.parent.manager,
+                self.parent)
+        # If the import was not cancelled then reload.
+        if self.import_wizard.exec_():
+            self.reloadBibles()
+
+    def onReImportClick(self):
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = BibleReImportForm(self, self.parent.manager,
                 self.parent)
         # If the import was not cancelled then reload.
         if self.import_wizard.exec_():

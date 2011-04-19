@@ -58,6 +58,7 @@ class BiblePlugin(Plugin):
         #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
+        self.toolsReimportItem.setVisible(True)
 
     def finalise(self):
         """
@@ -86,6 +87,36 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
         export_menu.addAction(self.exportBibleItem)
         self.exportBibleItem.setVisible(False)
+
+    def addToolsMenuItem(self, tools_menu):
+        """
+        Give the alerts plugin the opportunity to add items to the
+        **Tools** menu.
+
+        ``tools_menu``
+            The actual **Tools** menu item, so that your actions can
+            use it as their parent.
+        """
+        log.info(u'add tools menu')
+        self.toolsReimportItem = QtGui.QAction(tools_menu)
+        self.toolsReimportItem.setObjectName(u'toolsReimportItem')
+        self.toolsReimportItem.setText(
+            translate('BiblePlugin', 'Re-&import older bible databases'))
+        self.toolsReimportItem.setStatusTip(
+            translate('BiblePlugin', 'Re-import the bible databases to addapt '
+            'the database scheme.'))
+        tools_menu.addAction(self.toolsReimportItem)
+        QtCore.QObject.connect(self.toolsReimportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsReimportItemTriggered)
+        self.toolsReimportItem.setVisible(False)
+
+    def onToolsReimportItemTriggered(self):
+        """
+        Re-import older bible databases.
+        """
+        #self.manager.import_old_bible_databases()
+        if self.mediaItem:
+            self.mediaItem.onReImportClick()
 
     def onBibleImportClick(self):
         if self.mediaItem:

@@ -931,3 +931,125 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
             u'alternative_book_names(book_reference_id, language_id, name) '
             u'VALUES (?, ?, ?)', (book_reference_id, language_id, name), True)
         return alternative_book_name
+
+
+class OldBibleDB(QtCore.QObject, Manager):
+    """
+    This class conects to the old bible databases to reimport them to the new 
+    database scheme.
+    """
+    cursor = None
+    
+    def __init__(self, parent, **kwargs):
+        """
+        The constructor loads up the database and creates and initialises the
+        tables if the database doesn't exist.
+
+        **Required keyword arguments:**
+
+        ``path``
+            The path to the bible database file.
+
+        ``name``
+            The name of the database. This is also used as the file name for
+            SQLite databases.
+        """
+        log.info(u'OldBibleDB loaded')
+        QtCore.QObject.__init__(self)
+        if u'path' not in kwargs:
+            raise KeyError(u'Missing keyword argument "path".')
+        if  u'file' not in kwargs:
+            raise KeyError(u'Missing keyword argument "file".')
+        if u'path' in kwargs:
+            self.path = kwargs[u'path']
+        if u'file' in kwargs:
+            self.file = kwargs[u'file']
+
+    def get_cursor(self):
+        """
+        Return the cursor object. Instantiate one if it doesn't exist yet.
+        """
+        if self.cursor is None:
+            filepath = os.path.join(self.path, self.file)
+            conn = sqlite3.connect(filepath)
+            self.cursor = conn.cursor()
+        return self.cursor
+
+    def run_sql(self, query, parameters=()):
+        """
+        Run an SQL query on the database, returning the results.
+
+        ``query``
+            The actual SQL query to run.
+
+        ``parameters``
+            Any variable parameters to add to the query.
+        """
+        cursor = self.get_cursor()
+        cursor.execute(query, parameters)
+        return cursor.fetchall()
+
+    def get_name(self):
+        """
+        Returns the version name of the Bible.
+        """
+        version_name = self.run_sql(u'SELECT value FROM '
+                u'metadata WHERE key = "Version"')
+        if version_name:
+            self.name = version_name[0][0]
+        else:
+            self.name = None
+        return self.name
+
+    def get_metadata(self):
+        """
+        Returns the metadata of the Bible.
+        """
+        metadata = self.run_sql(u'SELECT key, value FROM metadata '
+            u'ORDER BY rowid')
+        if metadata:
+            metadata_list = []
+            for meta in metadata:
+                metadata_list.append({
+                    u'key': unicode(meta[0]),
+                    u'value': unicode(meta[1])
+                })
+        else:
+            metadata_list = None
+        return metadata_list
+
+    def get_books(self):
+        """
+        Returns the books of the Bible.
+        """
+        books = self.run_sql(u'SELECT name, id FROM book ORDER BY id')
+        if books:
+            book_list = []
+            for book in books:
+                book_list.append({
+                    u'name': unicode(book[0]),
+                    u'id':int(book[1])
+                })
+        else:
+            book_list = None
+        return book_list
+
+    def get_verses(self, book_id):
+        """
+        Returns the verses of the Bible.
+        """
+        verses = self.run_sql(u'SELECT book_id, chapter, verse, text FROM '
+            u'verse WHERE book_id = ? ORDER BY id', (book_id, ))
+        if verses:
+            verse_list = []
+            for verse in verses:
+                verse_list.append({
+                    u'book_id': int(verse[0]),
+                    u'chapter': int(verse[1]),
+                    u'verse': int(verse[2]),
+                    u'text': unicode(verse[3])
+                })
+        else:
+            verse_list = None
+        return verse_list
+
