@@ -28,10 +28,11 @@ import datetime
 import logging
 import os
 import re
+import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, check_directory_exists
 from openlp.core.ui.wizard import WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import clean_song, VerseType
@@ -121,12 +122,19 @@ class SongImport(QtCore.QObject):
         """
         report_path = os.path.join(AppLocation.get_data_path(), unicode(translate(
             'SongsPlugin.SongImport','song_import_report (%s).txt')) %
-            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
+            datetime.datetime.now().strftime(u'%Y-%m-%d %H:%M:%S'))
         report_file = codecs.open(report_path, u'w', u'utf-8')
         report_file.write(translate('SongsPlugin.SongImport',
             'The following songs could not be imported:\n'))
         for filepath, reason in self.error_log:
             report_file.write(u'- %s (%s)\n' % (filepath, reason))
+            if not os.path.isfile(filepath):
+                continue
+            check_directory_exists(report_path[:-4])
+            new_song_path = \
+                os.path.join(report_path[:-4], os.path.basename(filepath))
+            if not os.path.exists(new_song_path):
+                shutil.copyfile(filepath, new_song_path)
         report_file.close()
         return report_path
 

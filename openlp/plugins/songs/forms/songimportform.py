@@ -742,12 +742,19 @@ class SongImportForm(OpenLPWizard):
             )
         importer.do_import()
         if importer.error_log:
-            error_path = importer.write_error_report()
             self.progressLabel.setTextInteractionFlags(
                 QtCore.Qt.TextSelectableByMouse)
+            self.progressLabel.setText(translate(
+                'SongsPlugin.SongImportForm', 'Your song import failed.'))
+            if critical_error_message_box(translate('SongsPlugin.SongImportForm',
+                'Song import failed.'), translate('SongsPlugin.SongImportForm',
+                'Your song import failed. Do you want to create an error '
+                'report?'), self, True) == QtGui.QMessageBox.No:
+                return
+            error_path = importer.write_error_report()
             self.progressLabel.setText(unicode(translate(
-                'SongsPlugin.SongImportForm', 'Your song import failed. See '
-                'the error report for more details:\n%s')) % error_path)
+                'SongsPlugin.SongImportForm', 'Your song import failed. '
+                'For more details see the error report:\n%s')) % error_path)
         else:
             self.progressLabel.setText(WizardStrings.FinishedImport)
 

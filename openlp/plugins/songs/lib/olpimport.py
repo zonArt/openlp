@@ -94,7 +94,6 @@ class OpenLPSongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.import_source = u'sqlite:///%s' % self.import_source
         self.source_session = None
 
     def do_import(self):
@@ -106,6 +105,7 @@ class OpenLPSongImport(SongImport):
                 translate('SongsPlugin.OpenLPSongImport',
                 'Not a valid OpenLP 2.0 song database.'))
             return
+        self.import_source = u'sqlite:///%s' % self.import_source
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
