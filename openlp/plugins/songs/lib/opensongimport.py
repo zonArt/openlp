@@ -164,7 +164,9 @@ class OpenSongImport(SongImport):
         try:
             tree = objectify.parse(file)
         except (Error, LxmlError):
+            self.log_error(file.name, SongStrings.XMLSyntaxError)
             log.exception(u'Error parsing XML')
+            return
         root = tree.getroot()
         fields = dir(root)
         decode = {
