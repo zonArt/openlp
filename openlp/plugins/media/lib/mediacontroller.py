@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.plugins.media.lib import MediaBackends
+from openlp.plugins.media.lib import MediaBackends, MediaStates
 from webkitcontroller import WebkitController
 from phononcontroller import PhononController
 
@@ -43,6 +43,45 @@ log = logging.getLogger(__name__)
 
 class MediaManager(object):
     """
+        The implementation of a Media Manager
+        The idea is to separate the media related implementation into the plugin files
+        and unify the access from other parts of code
+        The media manager adds an own class for every type of backend
+        Currently these are QtWebkit, Phonon and planed Vlc.
+        On the other hand currently the previewController display only use phonon for media output.
+        So I would suggest to rename the maindisplay.py to display.py and modify the code,
+        so that the display class can be used for the maindisplay as well as for the previewController display.
+
+        Workflow idea:
+        - OpenLP is starting
+        - Live display and preview display are call setup
+        - Live display and preview display send signal with a pointer to their own to the media controller ('media_set_display')
+        - media controller register all available displays and create for each display all types of media backends (see setDisplay)
+        - in the OpenLP configuration dialog the user no longe will decide between using Webkit OR Phonon.
+        - instead of this there is a list widget with all available backends and the user can switch off/on the backends
+        and change the priority order
+        (this is necessary, because of not all backends can play all media files and text over video is currently only with QtWebkit possible)
+        - later on, if the user add a new media service item the signal ('media_video') will be send
+        - as a result of this the media manager checks which controller is needed for this filetyp
+        and assign the related backend controller to the right display
+        - Now all related media stuff (play, pause, ...) will be routed to the related backend controller and there processed
+        - if one or more medias loaded a generic 200ms Timer will be started peridiodically to refresh the UI
+        - Signal ('media_reset') will close the related video and disconnect the backend from the display
+
+        Advantages:
+        - clean and easy interface from other parts of code (slidecontroller and display classes)
+        - more and better configuration possibilities inside the special backend controllers
+        - same handling for preview and live display (or later on other additionally displays with their slide controllers)
+
+        Disadvantages:
+        - because of there will be display widgets created outside of the maindisplay.py file it is more complicate to read the code
+        - some more signals are send arround the system
+
+        Notices:
+        - the flash support uses the flash plugin from Mozilla. So there is a js-check that this plugin is installed.
+        - maybe there would be the installed flashplugin of the IE possible could also used, but I'm not sure about this?
+        - I would suggest to not hide the main toolbar in case of media, instead of this the media toolbar should be
+        visible as second toolbar (so the screen can be blanked also during a running video, ...)
     """
     def __init__(self, parent):
         self.parent = parent
@@ -56,6 +95,11 @@ class MediaManager(object):
         self.displayPhononController = PhononController(self)
         #self.displayVlcController = VlcController(self)
 
+        self.Timer = QtCore.QTimer()
+        self.Timer.setInterval(200)
+
+        QtCore.QObject.connect(self.Timer,
+            QtCore.SIGNAL("timeout()"), self.videoState)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_set_display'), self.setDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -73,9 +117,23 @@ class MediaManager(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_reset'), self.videoReset)
 
+    def videoState(self):
+        """
+        check if there is an assigned media backend and do some
+        updating stuff (e.g. update the UI)
+        """
+        isAnyonePlaying = False
+        if len(self.curDisplayMediaController.keys()) == 0:
+            self.Timer.stop()
+        else:
+            for display in self.curDisplayMediaController.keys():
+                self.curDisplayMediaController[display].updateUI(display)
+                if self.curDisplayMediaController[display].state == MediaStates.PlayingState:
+                    isAnyonePlaying = True
+        if not isAnyonePlaying:
+            self.Timer.stop()
 
     def setDisplay(self, display):
-        print display
         #self.setupVlcController(display)
         self.setupPhononController(display)
         self.setupWebkitController(display)
@@ -95,18 +153,6 @@ class MediaManager(object):
         Phonon.createPath(display.mediaObject, display.phononWidget)
         Phonon.createPath(display.mediaObject, display.audio)
         display.phononWidget.raise_()
-        QtCore.QObject.connect(display.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            display.videoHelper)
-#        display.mediaObject.stateChanged.connect(self.videoState)
-#        QtCore.QObject.connect(display.mediaObject,
-#            QtCore.SIGNAL(u'finished()'),
-#            self.videoFinished)
-#        QtCore.QObject.connect(display.mediaObject,
-#            QtCore.SIGNAL(u'tick(qint64)'),
-#            self.videoTick)
-
-        #self.displayPhononController[display] = display.mediaObject
 
     def setupVlcController(self, display):
         display.vlcWidget = QtGui.QWidget(display)
@@ -128,7 +174,6 @@ class MediaManager(object):
         display.vlcWidget.setGeometry(QtCore.QRect(0, 0,
             display.screen[u'size'].width(), display.screen[u'size'].height()))
         display.vlcWidget.raise_()
-        #self.displayVlcController[display] = player
 
     def video(self, msg):
         """
@@ -146,46 +191,30 @@ class MediaManager(object):
         display.override[u'theme'] = u''
         display.override[u'video'] = True
         vol = float(volume) / float(10)
+        self.checkFileType(display, videoPath, isBackground)
+        self.curDisplayMediaController[display].load(display, videoPath, volume)
+        if display.isLive:
+            Receiver.send_message(u'maindisplay_active')
+
+    def checkFileType(self, display, videoPath, isBackground):
+        """
+            Used to choose the right media backend type
+            from the prioritized backend list
+        """
         usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
-        if usePhonon:
+        if usePhonon and not isBackground:
             self.curDisplayMediaController[display] = self.displayPhononController
             display.phononWidget.setVisible(True)
             display.webView.setVisible(False)
-
         else:
             self.curDisplayMediaController[display] = self.displayWebkitController
             display.phononWidget.setVisible(False)
             display.webView.setVisible(True)
+        if len(self.curDisplayMediaController) > 0:
+            if not self.Timer.isActive():
+                self.Timer.start()
 
-        self.curDisplayMediaController[display].load(display, videoPath, volume)
-        if display.isLive:
-            Receiver.send_message(u'maindisplay_active')
-        return
-        if isBackground or not display.usePhonon:
-            if videoPath.endswith(u'.swf'):
-                js = u'show_flash("load","%s");' % \
-                    (videoPath.replace(u'\\', u'\\\\'))
-            else:
-                js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-                    (videoPath.replace(u'\\', u'\\\\'), str(vol))
-            display.frame.evaluateJavaScript(js)
-        else:
-            display.phononActive = True
-            display.mediaObject.stop()
-            display.mediaObject.clearQueue()
-            display.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
-            # Need the timer to trigger set the trigger to 200ms
-            # Value taken from web documentation.
-            if display.serviceItem.end_time != 0:
-                display.mediaObject.setTickInterval(200)
-            display.mediaObject.play()
-            display.webView.setVisible(False)
-            display.phononWidget.setVisible(True)
-            display.audio.setVolume(vol)
-        # Update the preview frame.
-        if display.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -200,6 +229,7 @@ class MediaManager(object):
             display.phononActive = False
         else:
             display.frame.evaluateJavaScript(u'show_video("close");')
+            display.frame.evaluateJavaScript(u'show_flash("close");')
         display.override = {}
         # Update the preview frame.
         if display.isLive:
@@ -213,6 +243,8 @@ class MediaManager(object):
         self.curDisplayMediaController[display].play(display)
         # show screen
         if display.isLive:
+            if not self.Timer.isActive():
+                self.Timer.start()
             display.setVisible(True)
 
     def videoPause(self, display):
@@ -229,10 +261,8 @@ class MediaManager(object):
         Responds to the request to stop a loaded video
         """
         log.debug(u'videoStop')
-        print type(display)
         if type(display) is types.ListType:
             return
-        print display, self.curDisplayMediaController
         if display in self.curDisplayMediaController:
             self.curDisplayMediaController[display].stop(display)
         if display.isLive:
@@ -252,17 +282,6 @@ class MediaManager(object):
         else:
             display.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
                 str(vol))
-
-    def videoState(self, newState, oldState):
-        """
-        Start the video at a predetermined point.
-        """
-        print "display", self.sender()
-#        if newState == Phonon.PlayingState \
-#            and oldState != Phonon.PausedState \
-#            and self.serviceItem.start_time > 0:
-#            # set start time in milliseconds
-#            self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
     def videoFinished(self):
         """
@@ -296,5 +315,7 @@ class MediaManager(object):
         Responds to the request to reset a loaded video
         """
         log.debug(u'videoReset')
+        print "videoReset"
         if display in self.curDisplayMediaController:
             self.curDisplayMediaController[display].reset(display)
+            self.curDisplayMediaController[display]

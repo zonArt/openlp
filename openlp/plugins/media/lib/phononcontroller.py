@@ -27,10 +27,12 @@
 
 from PyQt4.phonon import Phonon
 
-from openlp.plugins.media.lib import MediaController
+from openlp.plugins.media.lib import MediaController, MediaStates
 
 class PhononController(MediaController):
     """
+    Specialiced MediaController class
+    to reflect Features of the Phonon backend
     """
     def __init__(self, parent):
         self.parent = parent
@@ -48,20 +50,20 @@ class PhononController(MediaController):
             display.mediaObject.setTickInterval(200)
         display.mediaObject.play()
         display.audio.setVolume(vol)
-        self.Timer.setInterval(200)
+        self.state = MediaStates.PlayingState
 
 
     def play(self, display):
         display.mediaObject.play()
-        display.parent.seekSlider.setMaximum(display.mediaObject.totalTime())
+        self.state = MediaStates.PlayingState
 
     def pause(self, display):
         display.mediaObject.pause()
-        self.Timer.stop()
+        self.state = MediaStates.PausedState
 
     def stop(self, display):
         display.mediaObject.stop()
-        self.Timer.stop()
+        self.state = MediaStates.StoppedState
 
     def seek(self, display, seekVal):
         print "seek"
@@ -73,9 +75,18 @@ class PhononController(MediaController):
         display.webView.setVisible(True)
         display.phononWidget.setVisible(False)
         display.phononActive = False
-        self.Timer.stop()
 
-    def updatePlayer(self):
-        for controller in self.parent.curDisplayMediaController:
-            if controller.getState() == 1:
-                pass
+    def updateUI(self, display):
+        display.parent.seekSlider.setMaximum(display.mediaObject.totalTime())
+        if not display.parent.seekSlider.isSliderDown():
+            display.parent.seekSlider.setSliderPosition(display.mediaObject.currentTime())
+#        if newState == Phonon.PlayingState \
+#            and oldState != Phonon.PausedState \
+#            and self.serviceItem.start_time > 0:
+#            # set start time in milliseconds
+#            self.mediaObject.seek(self.serviceItem.start_time * 1000)
+
+        pass
+
+    def getSupportedFileTypes(self):
+        pass

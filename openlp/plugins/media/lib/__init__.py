@@ -24,8 +24,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore
-
 class MediaBackends(object):
     """
     An enumeration for possible Backends.
@@ -34,16 +32,25 @@ class MediaBackends(object):
     Phonon = 1
     Vlc = 2
 
+class MediaStates(object):
+    """
+    An enumeratioin for possible States of the Media Player
+    (copied from Phonon::State
+    """
+    LoadingState = 0
+    StoppedState = 1
+    PlayingState = 2
+    PausedState = 4
+    OffState = 6
+
 class MediaController(object):
     """
+    Specialiced MediaController class
+    to reflect Features of the related backend
     """
     def __init__(self, parent):
         self.parent = parent
-        self.state = 0
-        self.Timer = QtCore.QTimer()
-        QtCore.QObject.connect(self.Timer,
-            QtCore.SIGNAL("timeout()"), self.updatePlayer)
-
+        self.state = MediaStates.OffState
 
     def load(self, display, path, volume):
         pass
@@ -63,7 +70,10 @@ class MediaController(object):
     def reset(self, display):
         pass
 
-    def updatePlayer(self):
+    def updateUI(self, display):
+        pass
+
+    def getSupportedFileTypes(self):
         pass
 
 from mediaitem import MediaMediaItem

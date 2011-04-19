@@ -29,6 +29,8 @@ from openlp.plugins.media.lib import MediaController
 
 class WebkitController(MediaController):
     """
+    Specialiced MediaController class
+    to reflect Features of the QtWebkit backend
     """
     def __init__(self, parent):
         self.parent = parent
@@ -52,9 +54,7 @@ class WebkitController(MediaController):
     def play(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play","");')
-#            display.frame.evaluateJavaScript(u'show_video("stop");')
         else:
-#            display.frame.evaluateJavaScript(u'show_flash("stop","");')
             display.frame.evaluateJavaScript(u'show_video("play");')
 
 
@@ -70,8 +70,14 @@ class WebkitController(MediaController):
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
 
-    def seek(self, display):
+    def seek(self, display, seekVal):
         pass
 
     def reset(self, display):
         display.frame.evaluateJavaScript(u'show_video("close");')
+
+    def updateUI(self, display):
+        pass
+
+    def getSupportedFileTypes(self):
+        pass

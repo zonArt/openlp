@@ -1034,7 +1034,6 @@ class SlideController(QtGui.QWidget):
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
         if self.isLive:
-            #self.display.video(file, self.volume)
             Receiver.send_message(u'media_video', [self.display, file, self.volume, False])
             self.volumeSlider.setValue(self.volume)
         else:
@@ -1051,7 +1050,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController mediaSeek')
         self.seekPos = self.seekSlider.value()
-        #self.display.videoVolume(self.volume)
         Receiver.send_message(u'media_seek', [self.display, self.seekPos])
 
     def mediaVolume(self):
@@ -1060,7 +1058,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController mediaVolume')
         self.volume = self.volumeSlider.value()
-        #self.display.videoVolume(self.volume)
         Receiver.send_message(u'media_volume', [self.display, self.volume])
 
 
@@ -1070,7 +1067,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaPause')
         if self.isLive:
-            #self.display.videoPause()
             Receiver.send_message(u'media_pause', self.display)
         else:
             self.mediaObject.pause()
@@ -1082,7 +1078,6 @@ class SlideController(QtGui.QWidget):
         log.debug(u'SlideController onMediaPlay')
         if self.isLive:
             Receiver.send_message(u'media_play', self.display)
-            #self.display.videoPlay()
         else:
             self.slidePreview.hide()
             self.video.show()
@@ -1094,7 +1089,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStop')
         if self.isLive:
-            #self.display.videoStop()
             Receiver.send_message(u'media_stop', self.display)
         else:
             self.mediaObject.stop()
@@ -1108,7 +1102,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaClose')
         if self.isLive:
-            #self.display.resetVideo()
             Receiver.send_message(u'media_reset', self.display)
         else:
             self.mediaObject.stop()

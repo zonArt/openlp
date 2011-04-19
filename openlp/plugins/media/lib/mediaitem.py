@@ -89,7 +89,9 @@ class MediaMediaItem(MediaManagerItem):
         Called to reset the Live backgound with the media selected,
         """
         self.resetAction.setVisible(False)
-        self.parent.liveController.display.resetVideo()
+        #self.parent.liveController.display.resetVideo()
+        Receiver.send_message(u'media_reset',
+            self.parent.liveController.display)
 
     def videobackgroundReplaced(self):
         """

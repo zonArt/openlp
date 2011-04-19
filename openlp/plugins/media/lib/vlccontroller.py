@@ -27,8 +27,10 @@
 
 from openlp.plugins.media.lib import MediaController
 
-class WebkitController(MediaController):
+class VlcController(MediaController):
     """
+    Specialiced MediaController class
+    to reflect Features of the Vlc backend
     """
     def __init__(self):
         pass
@@ -45,5 +47,11 @@ class WebkitController(MediaController):
     def stop(self):
         pass
 
-    def seek(self):
+    def seek(self, display, seekVal):
+        pass
+
+    def updateUI(self):
+        pass
+
+    def getSupportedFileTypes(self):
         pass
