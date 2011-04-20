@@ -23,12 +23,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import codecs
-import datetime
 import logging
-import os
 import re
-import shutil
 
 from PyQt4 import QtCore
 
@@ -114,29 +110,17 @@ class SongImport(QtCore.QObject):
             The reason, why the import failed. The string should be as
             informative as possible.
         """
-        self.error_log.append((filepath, unicode(reason)))
-
-    def write_error_report(self):
-        """
-        Creates a error import containing all error messages.
-        """
-        report_path = os.path.join(AppLocation.get_data_path(), unicode(translate(
-            'SongsPlugin.SongImport','song_import_report (%s).txt')) %
-            datetime.datetime.now().strftime(u'%Y-%m-%d %H:%M:%S'))
-        report_file = codecs.open(report_path, u'w', u'utf-8')
-        report_file.write(translate('SongsPlugin.SongImport',
-            'The following songs could not be imported:\n'))
-        for filepath, reason in self.error_log:
-            report_file.write(u'- %s (%s)\n' % (filepath, reason))
-            if not os.path.isfile(filepath):
-                continue
-            check_directory_exists(report_path[:-4])
-            new_song_path = \
-                os.path.join(report_path[:-4], os.path.basename(filepath))
-            if not os.path.exists(new_song_path):
-                shutil.copyfile(filepath, new_song_path)
-        report_file.close()
-        return report_path
+        if self.import_wizard is None:
+            return
+        if self.import_wizard.errorReportTextEdit.isHidden():
+            self.import_wizard.errorReportTextEdit.setText(
+                translate('SongsPlugin.SongImport',
+                'The following songs could not be imported:'))
+            self.import_wizard.errorReportTextEdit.setVisible(True)
+            self.import_wizard.errorCopyToButton.setVisible(True)
+            self.import_wizard.errorSaveToButton.setVisible(True)
+        self.import_wizard.errorReportTextEdit.append(
+            u'- %s (%s)' % (filepath, reason))
 
     def stop_import(self):
         """
@@ -299,8 +283,9 @@ class SongImport(QtCore.QObject):
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
-        self.import_wizard.incrementProgressBar(
-            WizardStrings.ImportingType % song.title)
+        if self.import_wizard is not None:
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % song.title)
         song.alternate_title = self.alternate_title
         # Values will be set when cleaning the song.
         song.search_title = u''

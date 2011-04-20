@@ -32,7 +32,6 @@ from zipfile import ZipFile
 from lxml import objectify
 from lxml.etree import Error, LxmlError
 
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -142,8 +141,6 @@ class OpenSongImport(SongImport):
                         # No final part => directory
                         continue
                     log.info(u'Zip importing %s', parts[-1])
-                    self.import_wizard.incrementProgressBar(
-                        WizardStrings.ImportingType % parts[-1])
                     song_file = z.open(song)
                     self.do_import_file(song_file)
                     song_file.close()
@@ -151,8 +148,6 @@ class OpenSongImport(SongImport):
             else:
                 # not a zipfile
                 log.info(u'Direct import %s', filename)
-                self.import_wizard.incrementProgressBar(
-                    WizardStrings.ImportingType % os.path.split(filename)[-1])
                 song_file = open(filename)
                 self.do_import_file(song_file)
                 song_file.close()
