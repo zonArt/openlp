@@ -311,11 +311,11 @@ class BibleMediaItem(MediaManagerItem):
             self.reloadBibles()
 
     def onReImportClick(self):
-        if not hasattr(self, u'import_wizard'):
-            self.import_wizard = BibleReImportForm(self, self.parent.manager,
+        if not hasattr(self, u'reimport_wizard'):
+            self.reimport_wizard = BibleReImportForm(self, self.parent.manager,
                 self.parent)
         # If the import was not cancelled then reload.
-        if self.import_wizard.exec_():
+        if self.reimport_wizard.exec_():
             self.reloadBibles()
 
     def loadBibles(self):

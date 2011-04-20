@@ -30,6 +30,7 @@ import csv
 import logging
 import os
 import os.path
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -471,6 +472,7 @@ class BibleImportForm(OpenLPWizard):
             license_version = unicode(self.field(u'license_version').toString())
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
+            path = AppLocation.get_section_data_path(u'bibles/bibles')
             if not license_version:
                 critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
@@ -492,9 +494,31 @@ class BibleImportForm(OpenLPWizard):
                     'a different Bible or first delete the existing one.'))
                 self.versionNameEdit.setFocus()
                 return False
+            elif os.path.exists(os.path.join(path, self.clean_filename(
+                license_version))):
+                critical_error_message_box(
+                    translate('BiblesPlugin.ImportWizardForm', 'Bible Exists'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                    'This Bible already exists. Please import '
+                    'a different Bible or first delete the existing one.'))
+                self.versionNameEdit.setFocus()
+                return False
             return True
         if self.currentPage() == self.progressPage:
             return True
+
+    def clean_filename(self, old_filename):
+        """
+        Clean up the version name of the Bible and convert it into a valid
+        file name.
+
+        ``old_filename``
+            The "dirty" file name or version name.
+        """
+        if not isinstance(old_filename, unicode):
+            old_filename = unicode(old_filename, u'utf-8')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
+        return old_filename + u'.sqlite'
 
     def onWebSourceComboBoxIndexChanged(self, index):
         """

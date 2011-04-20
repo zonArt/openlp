@@ -56,8 +56,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
     def exec_(self, name):
         items = []
         self.requestComboBox.addItem(u'')
-        self.requestLabel.setText(
-            translate('BiblesPlugin.BookNameForm', name))
+        self.requestLabel.setText(name)
         items = BiblesResourcesDB.get_books()
         for item in items:
             self.requestComboBox.addItem(item[u'name'])

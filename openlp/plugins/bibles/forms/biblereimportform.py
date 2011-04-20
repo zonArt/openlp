@@ -310,7 +310,7 @@ class BibleReImportForm(OpenLPWizard):
         the wizard is progressing with its task.
         """
         OpenLPWizard.addProgressPage(self)
-        self.progressLayout.setContentsMargins(48, 30, 48, 30)
+        self.progressLayout.setContentsMargins(48, 48, 48, 30)
         self.progressLabelAfter = QtGui.QLabel(self.progressPage)
         self.progressLabelAfter.setObjectName(u'progressLabelAfter')
         self.progressLayout.addWidget(self.progressLabelAfter)
@@ -663,22 +663,23 @@ class BibleReImportForm(OpenLPWizard):
             elif success == False and self.checkBox[number].checkState() == 2:
                 failed_import += 1
         if failed_import > 0:
-            failed_import_text = u' And ' + unicode(failed_import) + \
-                u' reimport fails.'
+            failed_import_text = unicode(translate(
+                'BiblesPlugin.ReImportWizardForm', 
+                ' - %s reimport fail')) % failed_import
         else:
             failed_import_text = u''
         if successful_import > 0:
             if include_webbible:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.ReImportWizardForm', 'Reimport %s '
-                    'bibles successful.%s\nPlease note, that verses from '
+                    'bible(s) successful%s.\nPlease note, that verses from '
                     'webbibles will be downloaded\non demand and thus an '
                     'internet connection is required.')) % 
                     (successful_import, failed_import_text))
             else:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.ReImportWizardForm', 'Reimport %s '
-                    'bibles successful.%s')) % (successful_import, 
+                    'bible(s) successful.%s')) % (successful_import, 
                     failed_import_text))
             self.deleteCheckBox.setVisible(1)
             bibles = u''
