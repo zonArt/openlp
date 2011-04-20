@@ -52,6 +52,12 @@ UPX
     http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
     add that directory to your PATH environment variable.
 
+Sphinx
+    This is used to build the documentation
+
+HTML Help Workshop
+    This is used to create the help file
+
 PyInstaller
     PyInstaller should be a checkout of revision 844 of trunk, and in a
     directory called, "pyinstaller" on the same level as OpenLP's Bazaar shared
@@ -81,6 +87,10 @@ OpenLP
     shared repository directory. This means your code should be in a directory
     structure like this: "openlp\branch-name".
 
+Visual C++ 2008 Express Edition
+    This is to build pptviewlib.dll, the library for controlling the
+    PowerPointViewer
+
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
 
@@ -98,6 +108,8 @@ sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
     u'sphinx-build.exe')
 hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
     u'hhc.exe')
+vcenv_bat = os.path.join(os.getenv(u'PROGRAMFILES'), 'Microsoft Visual Studio 9.0',
+    u'VC', 'vcvarsall.bat')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
@@ -119,6 +131,8 @@ winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
+pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
+    u'lib', u'pptviewlib')
 
 def update_code():
     os.chdir(branch_path)
@@ -264,17 +278,45 @@ def run_innosetup():
     if code != 0:
         raise Exception(u'Error running Inno Setup')
 
+def build_pptviewlib():
+    print u'Building PPTVIEWLIB.DLL...'
+    vcenv = Popen(vcenv_bat)
+    code = vcenv.wait()
+    if code != 0:
+        raise Exception(u'Error creating VC++ environment')
+    vcbuild = Popen((u'vcbuild', '/rebuild',
+        os.path.join(pptviewlib_path, u'pptviewlib.vcproj'),
+        u'Release|Win32'))
+    code = vcbuild.wait()
+    if code != 0:
+        raise Exception(u'Error building pptviewlib.dll')
+    copy(os.path.join(pptviewlib_path, u'Release', 'pptviewlib.dll'),
+        pptviewlib_path)
+
 def main():
+    skip_update = False
     import sys
-    if len(sys.argv) > 1 and (sys.argv[1] == u'-v' or sys.argv[1] == u'--verbose'):
-       print "Script path:", script_path
-       print "Branch path:", branch_path
-       print "Source path:", source_path
-       print "\"dist\" path:", dist_path
-       print "PyInstaller:", pyi_build
-       print "Inno Setup path:", innosetup_path
-       print "Windows resources:", winres_path
-    update_code()
+    for arg in sys.argv:
+        if arg == u'-v' or arg == u'--verbose':
+            print "Script path:", script_path
+            print "Branch path:", branch_path
+            print "Source path:", source_path
+            print "\"dist\" path:", dist_path
+            print "PyInstaller:", pyi_build
+            print "Inno Setup path:", innosetup_exe
+            print "Windows resources:", winres_path
+            print "VC++ path:", vcenv_bat
+            print "PPTVIEWLIB path:", pptviewlib_path
+        elif arg == u'--skip-update':
+            skip_update = True
+        elif arg == u'/?' or arg == u'-h' or arg == u'--help':
+            print u'Command options:'
+            print u' -v --verbose : More verbose output'
+            print u' --skip-update : Do not update or revert current branch'
+            exit()
+    if not skip_update:
+        update_code()
+    build_pptviewlib()
     run_pyinstaller()
     write_version_file()
     copy_enchant()
