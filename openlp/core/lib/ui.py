@@ -323,7 +323,7 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     action.setShortcutContext(context)
     action_list = ActionList.get_instance()
     action_list.add_action(action, category)
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
     return action
 
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
@@ -356,7 +356,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
     action = QtGui.QAction(text, base)
     if icon:
         action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), slot)
     if shortcuts is not None:
         action.setShortcuts(shortcuts)
         action.setShortcutContext(context)

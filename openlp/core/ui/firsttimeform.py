@@ -140,6 +140,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 return FirstTimePage.Songs
         elif self.currentId() == FirstTimePage.Progress:
             return -1
+        elif self.currentId() == FirstTimePage.NoInternet:
+            return FirstTimePage.Progress
         else:
             return self.currentId() + 1
 
@@ -147,11 +149,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Detects Page changes and updates as approprate.
         """
-        if pageId == FirstTimePage.NoInternet:
-            self.finishButton.setVisible(True)
-            self.finishButton.setEnabled(True)
-            self.nextButton.setVisible(False)
-        elif pageId == FirstTimePage.Defaults:
+        if pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
             for iter in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(iter)
