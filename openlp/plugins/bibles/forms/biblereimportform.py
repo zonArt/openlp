@@ -233,8 +233,7 @@ class BibleReImportForm(OpenLPWizard):
             versionInfoPixmapName = u'versionInfoPixmap['+unicode(number)+u']'
             self.versionInfoPixmap[number].setObjectName(versionInfoPixmapName)
             self.versionInfoPixmap[number].setPixmap(QtGui.QPixmap(
-                u':/plugins/plugin_alerts.png'))
-                #u':/bibles/bibles_reimport_alert.png'))
+                u':/bibles/bibles_reimport_alert.png'))
             self.versionInfoPixmap[number].setAlignment(QtCore.Qt.AlignRight)
             self.horizontalLayout[number].addWidget(
                 self.versionInfoPixmap[number])
