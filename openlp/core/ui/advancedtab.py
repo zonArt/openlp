@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,19 +28,24 @@ The :mod:`advancedtab` provides an advanced settings facility.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate, build_icon
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_images_filter
 
 class AdvancedTab(SettingsTab):
     """
     The :class:`AdvancedTab` manages the advanced settings tab including the UI
     and the loading and saving of the displayed settings.
     """
-    def __init__(self):
+    def __init__(self, parent):
         """
         Initialise the settings tab
         """
-        SettingsTab.__init__(self, u'Advanced')
+        generalTranslated = translate('AdvancedTab', 'Advanced')
+        SettingsTab.__init__(self, parent ,u'Advanced', generalTranslated)
+        self.default_image = u':/graphics/openlp-splash-screen.png'
+        self.default_color = u'#ffffff'
+        self.icon_path = u':/system/system_settings.png'
 
     def setupUi(self):
         """
@@ -64,6 +69,10 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
         self.uiLayout.addRow(self.doubleClickLiveCheckBox)
+        self.singleClickPreviewCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.singleClickPreviewCheckBox.setObjectName(
+            u'singleClickPreviewCheckBox')
+        self.uiLayout.addRow(self.singleClickPreviewCheckBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.expandServiceItemCheckBox.setObjectName(
             u'expandServiceItemCheckBox')
@@ -81,39 +90,44 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
         self.leftLayout.addWidget(self.hideMouseGroupBox)
-#        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
-#        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
-#        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
-#        self.sharedCheckBox = QtGui.QCheckBox(self.sharedDirGroupBox)
-#        self.sharedCheckBox.setObjectName(u'sharedCheckBox')
-#        self.sharedDirLayout.addRow(self.sharedCheckBox)
-#        self.sharedLabel = QtGui.QLabel(self.sharedDirGroupBox)
-#        self.sharedLabel.setObjectName(u'sharedLabel')
-#        self.sharedSubLayout = QtGui.QHBoxLayout()
-#        self.sharedSubLayout.setObjectName(u'sharedSubLayout')
-#        self.sharedLineEdit = QtGui.QLineEdit(self.sharedDirGroupBox)
-#        self.sharedLineEdit.setObjectName(u'sharedLineEdit')
-#        self.sharedSubLayout.addWidget(self.sharedLineEdit)
-#        self.sharedPushButton = QtGui.QPushButton(self.sharedDirGroupBox)
-#        self.sharedPushButton.setObjectName(u'sharedPushButton')
-#        self.sharedSubLayout.addWidget(self.sharedPushButton)
-#        self.sharedDirLayout.addRow(self.sharedLabel, self.sharedSubLayout)
-#        self.leftLayout.addWidget(self.sharedDirGroupBox)
         self.leftLayout.addStretch()
-#        self.databaseGroupBox = QtGui.QGroupBox(self.rightColumn)
-#        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
-#        self.databaseGroupBox.setEnabled(False)
-#        self.databaseLayout = QtGui.QVBoxLayout(self.databaseGroupBox)
-#        self.rightLayout.addWidget(self.databaseGroupBox)
+        self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.defaultImageGroupBox.setObjectName(u'defaultImageGroupBox')
+        self.defaultImageLayout = QtGui.QFormLayout(self.defaultImageGroupBox)
+        self.defaultImageLayout.setObjectName(u'defaultImageLayout')
+        self.defaultColorLabel = QtGui.QLabel(self.defaultImageGroupBox)
+        self.defaultColorLabel.setObjectName(u'defaultColorLabel')
+        self.defaultColorButton = QtGui.QPushButton(self.defaultImageGroupBox)
+        self.defaultColorButton.setObjectName(u'defaultColorButton')
+        self.defaultImageLayout.addRow(self.defaultColorLabel,
+            self.defaultColorButton)
+        self.defaultFileLabel = QtGui.QLabel(self.defaultImageGroupBox)
+        self.defaultFileLabel.setObjectName(u'defaultFileLabel')
+        self.defaultFileEdit = QtGui.QLineEdit(self.defaultImageGroupBox)
+        self.defaultFileEdit.setObjectName(u'defaultFileEdit')
+        self.defaultBrowseButton = QtGui.QToolButton(self.defaultImageGroupBox)
+        self.defaultBrowseButton.setObjectName(u'defaultBrowseButton')
+        self.defaultBrowseButton.setIcon(
+            build_icon(u':/general/general_open.png'))
+        self.defaultFileLayout = QtGui.QHBoxLayout()
+        self.defaultFileLayout.setObjectName(u'defaultFileLayout')
+        self.defaultFileLayout.addWidget(self.defaultFileEdit)
+        self.defaultFileLayout.addWidget(self.defaultBrowseButton)
+        self.defaultImageLayout.addRow(self.defaultFileLabel,
+            self.defaultFileLayout)
+        self.rightLayout.addWidget(self.defaultImageGroupBox)
         self.rightLayout.addStretch()
-#        QtCore.QObject.connect(self.sharedCheckBox,
-#            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
+
+        QtCore.QObject.connect(self.defaultColorButton,
+            QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
+        QtCore.QObject.connect(self.defaultBrowseButton,
+            QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
 
     def retranslateUi(self):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = UiStrings.Advanced
+        self.tabTitleVisible = UiStrings().Advanced
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -122,6 +136,8 @@ class AdvancedTab(SettingsTab):
             'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Double-click to send items straight to live'))
+        self.singleClickPreviewCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Preview items when clicked in Media Manager'))
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
@@ -129,14 +145,13 @@ class AdvancedTab(SettingsTab):
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Hide the mouse cursor when moved over the display window'))
-#        self.sharedDirGroupBox.setTitle(
-#            translate('AdvancedTab', 'Central Data Store'))
-#        self.sharedCheckBox.setText(
-#            translate('AdvancedTab', 'Enable a shared data location'))
-#        self.sharedLabel.setText(translate('AdvancedTab', 'Store location:'))
-#        self.sharedPushButton.setText(translate('AdvancedTab', 'Browse...'))
-#        self.databaseGroupBox.setTitle(translate('AdvancedTab', 'Databases'))
+            'Hide mouse cursor when over display window'))
+        self.defaultImageGroupBox.setTitle(translate('OpenLP.AdvancedTab',
+            'Default Image'))
+        self.defaultColorLabel.setText(translate('OpenLP.AdvancedTab',
+            'Background color:'))
+        self.defaultFileLabel.setText(translate('OpenLP.AdvancedTab',
+            'Image file:'))
 
     def load(self):
         """
@@ -157,6 +172,9 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox.setChecked(
             settings.value(u'double click live',
             QtCore.QVariant(False)).toBool())
+        self.singleClickPreviewCheckBox.setChecked(
+            settings.value(u'single click preview',
+            QtCore.QVariant(False)).toBool())
         self.expandServiceItemCheckBox.setChecked(
             settings.value(u'expand service item',
             QtCore.QVariant(False)).toBool())
@@ -165,7 +183,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+        self.default_color = settings.value(u'default color',
+            QtCore.QVariant(u'#ffffff')).toString()
+        self.defaultFileEdit.setText(settings.value(u'default image',
+            QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+            .toString())
         settings.endGroup()
+        self.defaultColorButton.setStyleSheet(
+            u'background-color: %s' % self.default_color)
 
     def save(self):
         """
@@ -179,18 +204,32 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
         settings.setValue(u'double click live',
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
+        settings.setValue(u'single click preview',
+            QtCore.QVariant(self.singleClickPreviewCheckBox.isChecked()))
         settings.setValue(u'expand service item',
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
         settings.setValue(u'enable exit confirmation',
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.setValue(u'hide mouse',
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
+        settings.setValue(u'default color', self.default_color)
+        settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
 
-#    def onSharedCheckBoxChanged(self, checked):
-#        """
-#        Enables the widgets to allow a shared data location
-#        """
-#        self.sharedLabel.setEnabled(checked)
-#        self.sharedTextEdit.setEnabled(checked)
-#        self.sharedPushButton.setEnabled(checked)
+    def onDefaultColorButtonPressed(self):
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.default_color), self)
+        if new_color.isValid():
+            self.default_color = new_color.name()
+            self.defaultColorButton.setStyleSheet(
+                u'background-color: %s' % self.default_color)
+
+    def onDefaultBrowseButtonPressed(self):
+        file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
+            UiStrings().AllFiles)
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            translate('OpenLP.AdvancedTab', 'Open File'), '',
+            file_filters)
+        if filename:
+            self.defaultFileEdit.setText(filename)
+        self.defaultFileEdit.setFocus()

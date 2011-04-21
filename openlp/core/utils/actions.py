@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,8 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
+from PyQt4 import QtCore, QtGui
+
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
@@ -67,6 +69,7 @@ class CategoryActionList(object):
         Python 3 "next" method.
         """
         if self.index >= len(self.actions):
+            self.index = 0
             raise StopIteration
         else:
             self.index += 1
@@ -93,6 +96,12 @@ class CategoryActionList(object):
     def add(self, action, weight=0):
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
+
+    def remove(self, remove_action):
+        for action in self.actions:
+            if action[1] == remove_action:
+                self.actions.remove(action)
+                return
 
 
 class CategoryList(object):
@@ -126,6 +135,7 @@ class CategoryList(object):
         Python 3 "next" method for iterator.
         """
         if self.index >= len(self.categories):
+            self.index = 0
             raise StopIteration
         else:
             self.index += 1
@@ -163,6 +173,11 @@ class CategoryList(object):
         self.categories.append(category)
         self.categories.sort(key=lambda cat: cat.weight)
 
+    def remove(self, name):
+        for category in self.categories:
+            if category.name == name:
+                self.categories.remove(category)
+
 
 class ActionList(object):
     """
@@ -171,13 +186,101 @@ class ActionList(object):
     has a weight by which it is sorted when iterating through the list of
     actions or categories.
     """
+    instance = None
+
     def __init__(self):
         self.categories = CategoryList()
 
-    def add_action(self, action, category=u'Default', weight=None):
+    @staticmethod
+    def get_instance():
+        if ActionList.instance is None:
+            ActionList.instance = ActionList()
+        return ActionList.instance
+
+    def add_action(self, action, category=None, weight=None):
+        """
+        Add an action to the list of actions.
+
+        ``action``
+            The action to add (QAction).
+
+        ``category``
+            The category this action belongs to. The category can be a QString
+            or python unicode string. **Note**, if the category is ``None``, the
+            category and its actions are being hidden in the shortcut dialog.
+            However, if they are added, it is possible to avoid assigning
+            shortcuts twice, which is important.
+
+        ``weight``
+            The weight specifies how important a category is. However, this only
+            has an impact on the order the categories are displayed.
+        """
+        if category is not None:
+            category = unicode(category)
         if category not in self.categories:
             self.categories.append(category)
+        action.defaultShortcuts = action.shortcuts()
         if weight is None:
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
+        if category is None:
+            # Stop here, as this action is not configurable.
+            return
+        # Load the shortcut from the config.
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'shortcuts')
+        shortcuts = settings.value(action.objectName(),
+            QtCore.QVariant(action.shortcuts())).toStringList()
+        action.setShortcuts(
+            [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
+        settings.endGroup()
+
+    def remove_action(self, action, category=None):
+        """
+        This removes an action from its category. Empty categories are
+        automatically removed.
+
+        ``action``
+            The QAction object to be removed.
+
+        ``category``
+            The name (unicode string) of the category, which contains the
+            action. Defaults to None.
+        """
+        if category is not None:
+            category = unicode(category)
+        if category not in self.categories:
+            return
+        self.categories[category].actions.remove(action)
+        # Remove empty categories.
+        if len(self.categories[category].actions) == 0:
+            self.categories.remove(category)
+
+    def add_category(self, name, weight):
+        """
+        Add an empty category to the list of categories. This is ony convenient
+        for categories with a given weight.
+
+        ``name``
+            The category's name.
+
+        ``weight``
+            The category's weight (int).
+        """
+        if name in self.categories:
+            # Only change the weight and resort the categories again.
+            for category in self.categories:
+                if category.name == name:
+                    category.weight = weight
+            self.categories.categories.sort(key=lambda cat: cat.weight)
+            return
+        self.categories.add(name, weight)
+
+
+class CategoryOrder(object):
+    """
+    An enumeration class for category weights.
+    """
+    standardMenu = -20
+    standardToolbar = -10

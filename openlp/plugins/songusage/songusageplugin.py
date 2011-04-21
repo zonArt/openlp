@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +32,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
+from openlp.core.lib.ui import base_action, shortcut_action, UiStrings
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
 from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
@@ -42,7 +44,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'SongUsage', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.manager = None
@@ -63,30 +65,25 @@ class SongUsagePlugin(Plugin):
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
         self.SongUsageMenu.setTitle(translate(
             'SongUsagePlugin', '&Song Usage Tracking'))
-        #SongUsage Delete
-        self.SongUsageDelete = QtGui.QAction(tools_menu)
+        # SongUsage Delete
+        self.SongUsageDelete = base_action(tools_menu, u'SongUsageDelete')
         self.SongUsageDelete.setText(translate('SongUsagePlugin',
             '&Delete Tracking Data'))
         self.SongUsageDelete.setStatusTip(translate('SongUsagePlugin',
             'Delete song usage data up to a specified date.'))
-        self.SongUsageDelete.setObjectName(u'SongUsageDelete')
-        #SongUsage Report
-        self.SongUsageReport = QtGui.QAction(tools_menu)
+        # SongUsage Report
+        self.SongUsageReport = base_action(tools_menu, u'SongUsageReport')
         self.SongUsageReport.setText(
             translate('SongUsagePlugin', '&Extract Tracking Data'))
         self.SongUsageReport.setStatusTip(
             translate('SongUsagePlugin', 'Generate a report on song usage.'))
-        self.SongUsageReport.setObjectName(u'SongUsageReport')
-        #SongUsage activation
-        self.SongUsageStatus = QtGui.QAction(tools_menu)
-        self.SongUsageStatus.setCheckable(True)
-        self.SongUsageStatus.setChecked(False)
+        # SongUsage activation
+        self.SongUsageStatus = shortcut_action(tools_menu, u'SongUsageStatus',
+            [QtCore.Qt.Key_F4], self.toggleSongUsageState, checked=False)
         self.SongUsageStatus.setText(translate(
             'SongUsagePlugin', 'Toggle Tracking'))
         self.SongUsageStatus.setStatusTip(translate('SongUsagePlugin',
                 'Toggle the tracking of song usage.'))
-        self.SongUsageStatus.setShortcut(u'F4')
-        self.SongUsageStatus.setObjectName(u'SongUsageStatus')
         #Add Menus together
         self.toolsMenu.addAction(self.SongUsageMenu.menuAction())
         self.SongUsageMenu.addAction(self.SongUsageStatus)
@@ -97,9 +94,6 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(self.SongUsageStatus,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.SongUsageStatus.setChecked)
-        QtCore.QObject.connect(self.SongUsageStatus,
-            QtCore.SIGNAL(u'triggered(bool)'),
-            self.toggleSongUsageState)
         QtCore.QObject.connect(self.SongUsageDelete,
             QtCore.SIGNAL(u'triggered()'), self.onSongUsageDelete)
         QtCore.QObject.connect(self.SongUsageReport,
@@ -116,6 +110,13 @@ class SongUsagePlugin(Plugin):
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.SongUsageDelete,
+            translate('SongUsagePlugin', 'Song Usage'))
+        action_list.add_action(self.SongUsageReport,
+            translate('SongUsagePlugin', 'Song Usage'))
+        action_list.add_action(self.SongUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         if self.manager is None:
             self.manager = Manager(u'songusage', init_schema)
         self.SongUsagedeleteform = SongUsageDeleteForm(self.manager,
@@ -131,6 +132,13 @@ class SongUsagePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.SongUsageMenu.menuAction().setVisible(False)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.SongUsageDelete,
+            translate('SongUsagePlugin', 'Song Usage'))
+        action_list.remove_action(self.SongUsageReport,
+            translate('SongUsagePlugin', 'Song Usage'))
+        action_list.remove_action(self.SongUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         #stop any events being processed
         self.SongUsageActive = False
 

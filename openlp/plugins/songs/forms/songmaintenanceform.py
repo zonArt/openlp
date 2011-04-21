@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
@@ -103,19 +103,19 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             return -1
 
     def _deleteItem(self, item_class, list_widget, reset_func, dlg_title,
-        del_text, err_text, sel_text):
+        del_text, err_text):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if critical_error_message_box(title=dlg_title, message=del_text,
-                    parent=self, question=True) == QtGui.QMessageBox.Yes:
+                if critical_error_message_box(dlg_title, del_text, self,
+                    True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
                 critical_error_message_box(dlg_title, err_text)
         else:
-            critical_error_message_box(dlg_title, sel_text)
+            critical_error_message_box(dlg_title, UiStrings().NISs)
 
     def resetAuthors(self):
         """
@@ -268,11 +268,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         temp_last_name = author.last_name
         temp_display_name = author.display_name
         if self.authorform.exec_(False):
-            author.first_name = unicode(
-                self.authorform.firstNameEdit.text())
+            author.first_name = unicode(self.authorform.firstNameEdit.text())
             author.last_name = unicode(self.authorform.lastNameEdit.text())
-            author.display_name = unicode(
-                self.authorform.displayEdit.text())
+            author.display_name = unicode(self.authorform.displayEdit.text())
             if self.checkAuthor(author, True):
                 if self.manager.save_object(author):
                     self.resetAuthors()
@@ -449,37 +447,31 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(Author, self.authorsListWidget, self.resetAuthors,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
             translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected author?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This author cannot be deleted, they are currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No author selected!'))
+            'Are you sure you want to delete the selected author?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This author cannot '
+            'be deleted, they are currently assigned to at least one song.'))
 
     def onTopicDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
             translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected topic?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This topic cannot be deleted, it is currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No topic selected!'))
+            'Are you sure you want to delete the selected topic?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This topic cannot '
+            'be deleted, it is currently assigned to at least one song.'))
 
     def onBookDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.booksListWidget, self.resetBooks,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
             translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected book?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This book cannot be deleted, it is currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No book selected!'))
+            'Are you sure you want to delete the selected book?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This book cannot be '
+            'deleted, it is currently assigned to at least one song.'))
 
     def onAuthorsListRowChanged(self, row):
         """

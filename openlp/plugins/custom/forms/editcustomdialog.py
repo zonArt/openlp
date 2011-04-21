@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -107,11 +107,11 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
-        self.addButton.setText(UiStrings.Add)
+        self.addButton.setText(UiStrings().Add)
         self.addButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
             'bottom.'))
-        self.editButton.setText(UiStrings.Edit)
+        self.editButton.setText(UiStrings().Edit)
         self.editButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit the selected '
             'slide.'))
@@ -124,5 +124,4 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Credits:'))
-        self.previewButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Save && Preview'))
+        self.previewButton.setText(UiStrings().SaveAndPreview)

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -106,8 +106,8 @@ def translate(context, text, comment=None,
 
 def get_text_file_string(text_file):
     """
-    Open a file and return its content as unicode string.  If the supplied file
-    name is not a file then the function returns False.  If there is an error
+    Open a file and return its content as unicode string. If the supplied file
+    name is not a file then the function returns False. If there is an error
     loading the file or the content can't be decoded then the function will
     return None.
 
@@ -166,56 +166,6 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
-def context_menu_action(base, icon, text, slot):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
-
-    ``text``
-        The text to display for this action
-
-    ``slot``
-        The code to run when this action is triggered
-    """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-    return action
-
-def context_menu(base, icon, text):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent object to add this menu to
-
-    ``icon``
-        An icon for this menu
-
-    ``text``
-        The text to display for this menu
-    """
-    action = QtGui.QMenu(text, base)
-    action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    return action
-
 def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and returns
@@ -239,7 +189,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     Resize an image to fit on the current screen.
 
     ``image``
-        The image to resize.
+        The image to resize. It has to be either a ``QImage`` instance or the
+        path to the image.
 
     ``width``
         The new image width.
@@ -247,9 +198,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     ``height``
         The new image height.
 
-     ``background``
+    ``background``
         The background colour defaults to black.
-
     """
     log.debug(u'resize_image - start')
     if isinstance(image, QtGui.QImage):
@@ -316,15 +266,16 @@ def check_directory_exists(dir):
         Theme directory to make sure exists
     """
     log.debug(u'check_directory_exists %s' % dir)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    try:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+    except IOError:
+        pass
 
 from listwidgetwithdnd import ListWidgetWithDnD
-from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
-    BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags
-from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from spelltextedit import SpellTextEdit
 from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
@@ -340,3 +291,4 @@ from dockwidget import OpenLPDockWidget
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from openlp.core.utils.actions import ActionList

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,7 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 
@@ -162,6 +162,8 @@ class BibleDB(QtCore.QObject, Manager):
         if u'file' in kwargs:
             self.get_name()
         self.wizard = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def stop_import(self):
         """
@@ -175,10 +177,7 @@ class BibleDB(QtCore.QObject, Manager):
         Returns the version name of the Bible.
         """
         version_name = self.get_object(BibleMeta, u'Version')
-        if version_name:
-            self.name = version_name.value
-        else:
-            self.name = None
+        self.name = version_name.value if version_name else None
         return self.name
 
     def clean_filename(self, old_filename):
@@ -254,10 +253,10 @@ class BibleDB(QtCore.QObject, Manager):
         # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
-                book_id = book_id,
-                chapter = chapter,
-                verse = verse_number,
-                text = verse_text
+                book_id=book_id,
+                chapter=chapter,
+                verse=verse_number,
+                text=verse_text
             )
             self.session.add(verse)
         self.session.commit()
@@ -320,7 +319,7 @@ class BibleDB(QtCore.QObject, Manager):
     def get_books(self):
         """
         A wrapper so both local and web bibles have a get_books() method that
-        manager can call.  Used in the media manager advanced search tab.
+        manager can call. Used in the media manager advanced search tab.
         """
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
@@ -381,15 +380,13 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'BibleDB.verse_search("%s")', text)
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
-            or_clause = []
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u',')]
-            for keyword in keywords:
-                or_clause.append(Verse.text.like(keyword))
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u',')]
+            or_clause = [Verse.text.like(keyword) for keyword in keywords]
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u' ')]
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()

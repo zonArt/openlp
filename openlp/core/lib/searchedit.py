@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
+from openlp.core.lib.ui import icon_action
 
 log = logging.getLogger(__name__)
 
@@ -109,6 +110,21 @@ class SearchEdit(QtGui.QLineEdit):
         """
         return self._currentSearchType
 
+    def setCurrentSearchType(self, identifier):
+        """
+        Set a new current search type.
+
+        ``identifier``
+            The search type identifier (int). 
+        """
+        menu = self.menuButton.menu()
+        for action in menu.actions():
+            if identifier == action.data().toInt()[0]:
+                self.menuButton.setDefaultAction(action)
+                self._currentSearchType = identifier
+                self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
+                return True
+
     def setSearchTypes(self, items):
         """
         A list of tuples to be used in the search type menu. The first item in
@@ -132,7 +148,8 @@ class SearchEdit(QtGui.QLineEdit):
         menu = QtGui.QMenu(self)
         first = None
         for identifier, icon, title in items:
-            action = QtGui.QAction(build_icon(icon), title, menu)
+            action = icon_action(menu, u'', icon)
+            action.setText(title)
             action.setData(QtCore.QVariant(identifier))
             menu.addAction(action)
             QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),

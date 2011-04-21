@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,10 +31,50 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
+
+class WizardStrings(object):
+    """
+    Provide standard strings for wizards to use.
+    """
+    # Applications/Formats we import from or export to. These get used in
+    # multiple places but do not need translating unless you find evidence of
+    # the writers translating their own product name.
+    CCLI = u'CCLI/SongSelect'
+    CSV = u'CSV'
+    EW = u'EasyWorship'
+    ES = u'EasiSlides'
+    FP = u'Foilpresenter'
+    OL = u'OpenLyrics'
+    OS = u'OpenSong'
+    OSIS = u'OSIS'
+    SB = u'SongBeamer'
+    SoF = u'Songs of Fellowship'
+    SSP = u'SongShow Plus'
+    WoW = u'Words of Worship'
+    # These strings should need a good reason to be retranslated elsewhere.
+    FinishedImport = translate('OpenLP.Ui', 'Finished import.')
+    FormatLabel = translate('OpenLP.Ui', 'Format:')
+    HeaderStyle = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
+    Importing = translate('OpenLP.Ui', 'Importing')
+    ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
+    ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
+    ImportSelectLong = unicode(translate('OpenLP.Ui',
+        'Select the import format and the location to import from.'))
+    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
+        'disabled due to a missing Python module. If you want to use this '
+        'importer, you will need to install the "python-sqlite" '
+        'module.')
+    OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
+    Ready = translate('OpenLP.Ui', 'Ready.')
+    StartingImport = translate('OpenLP.Ui', 'Starting import...')
+    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
+        'least one %s file to import from.', 'A file type e.g. OpenSong'))
+
 
 class OpenLPWizard(QtGui.QWizard):
     """
@@ -43,6 +83,7 @@ class OpenLPWizard(QtGui.QWizard):
     """
     def __init__(self, parent, plugin, name, image):
         QtGui.QWizard.__init__(self, parent)
+        self.plugin = plugin
         self.setObjectName(name)
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
@@ -50,7 +91,6 @@ class OpenLPWizard(QtGui.QWizard):
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.setupUi(image)
         self.registerFields()
-        self.plugin = plugin
         self.customInit()
         self.customSignals()
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'),
@@ -172,7 +212,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
+        filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
             self.plugin.settingsSection, 1)), filters)

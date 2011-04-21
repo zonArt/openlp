@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -92,7 +92,7 @@ class Theme(object):
             * ``solid`` - color
 
     ``BackgroundParameter2``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
 
             * ``image`` - border color
@@ -100,7 +100,7 @@ class Theme(object):
             * ``solid`` - N/A
 
     ``BackgroundParameter3``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
 
             * ``image`` - N/A
@@ -142,7 +142,7 @@ class Theme(object):
         Color for the outline (or None if Outline is 0)
 
     ``HorizontalAlign``
-        The horizontal alignment to apply to text.  Valid alignments are:
+        The horizontal alignment to apply to text. Valid alignments are:
 
             * ``0`` - left align
             * ``1`` - right align
@@ -156,7 +156,7 @@ class Theme(object):
             * ``2`` - centre align
 
     ``WrapStyle``
-        The wrap style to apply to the text.  Valid styles are:
+        The wrap style to apply to the text. Valid styles are:
 
             * ``0`` - normal
             * ``1`` - lyrics

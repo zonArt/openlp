@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,7 +49,7 @@ class Controller(object):
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
-    def add_handler(self, controller, file, is_blank):
+    def add_handler(self, controller, file, hide_mode, slide_no):
         """
         Add a handler, which is an instance of a presentation and
         slidecontroller combination. If the slidecontroller has a display
@@ -64,12 +64,21 @@ class Controller(object):
             # Display error message to user
             # Inform slidecontroller that the action failed?
             return
+        self.doc.slidenumber = slide_no
         if self.is_live:
-            self.doc.start_presentation()
-            if is_blank:
-                self.blank()
-            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
-        self.doc.slidenumber = 0
+            if hide_mode == HideMode.Screen:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                self.stop()
+            elif hide_mode == HideMode.Theme:
+                self.blank(hide_mode)
+            elif hide_mode == HideMode.Blank:
+                self.blank(hide_mode)
+            else:
+                self.doc.start_presentation()
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                self.doc.slidenumber = 0
+                if slide_no > 1:
+                    self.slide(slide_no)
 
     def activate(self):
         """
@@ -80,7 +89,8 @@ class Controller(object):
         if self.doc.is_active():
             return
         if not self.doc.is_loaded():
-            self.doc.load_presentation()
+            if not self.doc.load_presentation():
+                return
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
@@ -163,14 +173,10 @@ class Controller(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         log.debug(u'Live = %s, shutdown' % self.is_live)
-        if self.is_live:
-            Receiver.send_message(u'maindisplay_show')
         self.doc.close_presentation()
         self.doc = None
-        #self.doc.slidenumber = 0
-        #self.timer.stop()
 
-    def blank(self):
+    def blank(self, hide_mode):
         """
         Instruct the controller to blank the presentation
         """
@@ -181,6 +187,8 @@ class Controller(object):
             return
         if not self.doc.is_active():
             return
+        if hide_mode == HideMode.Theme:
+            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
         self.doc.blank_screen()
 
     def stop(self):
@@ -212,6 +220,7 @@ class Controller(object):
 
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
+
 
 class MessageListener(object):
     """
@@ -259,7 +268,7 @@ class MessageListener(object):
         is_live = message[1]
         item = message[0]
         log.debug(u'Startup called with message %s' % message)
-        is_blank = message[2]
+        hide_mode = message[2]
         file = os.path.join(item.get_frame_path(),
             item.get_frame_title())
         self.handler = item.title
@@ -271,7 +280,8 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, is_blank)
+        controller.add_handler(self.controllers[self.handler], file, hide_mode,
+            message[3])
 
     def slide(self, message):
         """
@@ -331,7 +341,6 @@ class MessageListener(object):
         """
         is_live = message[1]
         if is_live:
-            Receiver.send_message(u'maindisplay_show')
             self.live_handler.shutdown()
         else:
             self.preview_handler.shutdown()
@@ -349,8 +358,9 @@ class MessageListener(object):
         React to the message to blank the display
         """
         is_live = message[1]
+        hide_mode = message[2]
         if is_live:
-            self.live_handler.blank()
+            self.live_handler.blank(hide_mode)
 
     def unblank(self, message):
         """

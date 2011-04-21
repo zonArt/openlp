@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -42,14 +42,15 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, manager, parent=None):
+    def __init__(self, parent):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self)
+        self.parent = parent
+        self.manager = self.parent.manager
         self.setupUi(self)
         # Create other objects and forms.
-        self.manager = manager
         self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.previewButton,
@@ -97,11 +98,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             for slide in slideList:
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
-            id = self.themeComboBox.findText(theme, QtCore.Qt.MatchExactly)
-            # No theme match
-            if id == -1:
-                id = 0
-            self.themeComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.themeComboBox, theme)
         # If not preview hide the preview button.
         self.previewButton.setVisible(False)
         if preview:
@@ -219,10 +216,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Removes the current row from the list.
         """
         self.slideListView.takeItem(self.slideListView.currentRow())
-        if self.slideListView.currentRow() == 0:
-            self.upButton.setEnabled(False)
-        if self.slideListView.currentRow() == self.slideListView.count():
-            self.downButton.setEnabled(False)
+        self.onCurrentRowChanged(self.slideListView.currentRow())
 
     def onCurrentRowChanged(self, row):
         """

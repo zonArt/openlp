@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,19 +46,20 @@ class ImageMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         MediaManagerItem.__init__(self, parent, self, icon)
+        self.quickPreviewAllowed = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('ImagePlugin.MediaItem',
+        self.onNewPrompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
         file_formats = get_images_filter()
-        self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            UiStrings.AllFiles)
-        self.replaceAction.setText(UiStrings.ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
-        self.resetAction.setText(UiStrings.ResetBG)
-        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
+        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
+            UiStrings().AllFiles)
+        self.replaceAction.setText(UiStrings().ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
+        self.resetAction.setText(UiStrings().ResetBG)
+        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -125,8 +126,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
-            service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Images'))
+            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -198,8 +198,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(
-                    translate('ImagePlugin.MediaItem', 'Live Background Error'),
+                critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)

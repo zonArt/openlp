@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund, Jeffrey Smith                            #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +32,7 @@ import os
 import struct
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -71,7 +72,7 @@ def strip_rtf(blob, encoding):
                     elif control_str == 'tab':
                         clear_text.append(u'\t')
                     # Prefer the encoding specified by the RTF data to that
-                    #  specified by the Paradox table header
+                    # specified by the Paradox table header
                     # West European encoding
                     elif control_str == 'fcharset0':
                         encoding = u'cp1252'
@@ -128,14 +129,14 @@ class FieldDescEntry:
         self.type = type
         self.size = size
 
+
 class EasyWorshipSongImport(SongImport):
     """
     The :class:`EasyWorshipSongImport` class provides OpenLP with the
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        self.import_source = kwargs[u'filename']
-        SongImport.__init__(self, manager)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         # Open the DB and MB files if they exist
@@ -163,7 +164,7 @@ class EasyWorshipSongImport(SongImport):
         if code_page == 852:
             self.encoding = u'cp1250'
         # The following codepage to actual encoding mappings have not been
-        #  observed, but merely guessed.  Actual example files are needed.
+        # observed, but merely guessed. Actual example files are needed.
         elif code_page == 737:
             self.encoding = u'cp1253'
         elif code_page == 775:
@@ -231,8 +232,7 @@ class EasyWorshipSongImport(SongImport):
                 title = self.get_field(fi_title)
                 if title:
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                            'Importing "%s"...')) % title, 0)
+                        WizardStrings.ImportingType % title, 0)
                     self.title = title
                 # Get remaining fields
                 copy = self.get_field(fi_copy)

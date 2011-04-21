@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>CFBundleIdentifier</key>
+<string>org.openlp</string>
+<key>CFBundleShortVersionString</key>
+<string>%(openlp_version)s</string>
+<key>CFBundleVersion</key>
+<string>%(openlp_version)s</string>
+<key>CFBundleInfoDictionaryVersion</key>
+<string>6.0</string>
+<key>CFBundleDisplayName</key>
+<string>%(openlp_appname)s</string>
+<key>CFBundleIconFile</key>
+<string>openlp-logo-with-text.icns</string>
+<key>CFBundleExecutable</key>
+<string>MacOS/openlp</string>
+<key>CFBundleName</key>
+<string>%(openlp_appname)s</string>
+<key>CFBundleGetInfoString</key>
+<string>%(openlp_appname)s %(openlp_version)s</string>
+<key>LSHasLocalizedDisplayName</key>
+<false/>
+<key>NSAppleScriptEnabled</key>
+<false/>
+<key>CFBundlePackageType</key>
+<string>APPL</string>
+<key>LSBackgroundOnly</key>
+<false/>
+</dict>
+</plist>
