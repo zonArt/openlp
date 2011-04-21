@@ -91,11 +91,11 @@ DllExport BOOL CheckInstalled()
 
     DEBUG("CheckInstalled\n");
     BOOL found = GetPPTViewerPath(cmdLine, sizeof(cmdLine));
-	if(found)
-	{
-		DEBUG("Exe: %s\n", cmdLine);
-	}
-	return found;
+    if(found)
+    {
+        DEBUG("Exe: %s\n", cmdLine);
+    }
+    return found;
 }
 
 // Open the PointPoint, count the slides and take a snapshot of each slide
@@ -196,7 +196,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     Sleep(10);
     if (!CreateProcess(NULL, cmdLine, NULL, NULL, FALSE, 0, 0, NULL, &si, &pi))
     {
-		DEBUG("OpenPPT: CreateProcess failed: %s\n", cmdLine);
+        DEBUG("OpenPPT: CreateProcess failed: %s\n", cmdLine);
         ClosePPT(id);
         return -1;
     }
@@ -355,48 +355,48 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     char cwd[MAX_PATH];
 
     DEBUG("GetPPTViewerPath: start\n");
-	if(GetPPTViewerPathFromReg(pptViewerPath, stringSize))
-	{
-		if(_access(pptViewerPath, 0) != -1)
-		{
-		    DEBUG("GetPPTViewerPath: exit registry\n");
-			return TRUE;
-		}
-	}
-	// This is where it gets ugly. PPT2007 it seems no longer stores its
-	// location in the registry. So we have to use the defaults which will
-	// upset those who like to put things somewhere else
+    if(GetPPTViewerPathFromReg(pptViewerPath, stringSize))
+    {
+        if(_access(pptViewerPath, 0) != -1)
+        {
+            DEBUG("GetPPTViewerPath: exit registry\n");
+            return TRUE;
+        }
+    }
+    // This is where it gets ugly. PPT2007 it seems no longer stores its
+    // location in the registry. So we have to use the defaults which will
+    // upset those who like to put things somewhere else
 
-	// Viewer 2007 in 64bit Windows:
-	if(_access("C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
-		0) != -1)
-	{
-		strcpy_s(
-			"C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
-			stringSize, pptViewerPath);
-	    DEBUG("GetPPTViewerPath: exit 64bit 2007\n");
-		return TRUE;
-	}
-	// Viewer 2007 in 32bit Windows:
-	if(_access("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE", 0)
-		!= -1)
-	{
-		strcpy_s("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE",
-			stringSize, pptViewerPath);
-	    DEBUG("GetPPTViewerPath: exit 32bit 2007\n");
-		return TRUE;
-	}
-	// Give them the opportunity to place it in the same folder as the app
-	_getcwd(cwd, MAX_PATH);
-	strcat_s(cwd, MAX_PATH, "\\PPTVIEW.EXE");
-	if(_access(cwd, 0) != -1)
-	{
-		strcpy_s(pptViewerPath, stringSize, cwd);
-	    DEBUG("GetPPTViewerPath: exit local\n");
-		return TRUE;
-	}
+    // Viewer 2007 in 64bit Windows:
+    if(_access("C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+        0) != -1)
+    {
+        strcpy_s(
+            "C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+            stringSize, pptViewerPath);
+        DEBUG("GetPPTViewerPath: exit 64bit 2007\n");
+        return TRUE;
+    }
+    // Viewer 2007 in 32bit Windows:
+    if(_access("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE", 0)
+        != -1)
+    {
+        strcpy_s("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+            stringSize, pptViewerPath);
+        DEBUG("GetPPTViewerPath: exit 32bit 2007\n");
+        return TRUE;
+    }
+    // Give them the opportunity to place it in the same folder as the app
+    _getcwd(cwd, MAX_PATH);
+    strcat_s(cwd, MAX_PATH, "\\PPTVIEW.EXE");
+    if(_access(cwd, 0) != -1)
+    {
+        strcpy_s(pptViewerPath, stringSize, cwd);
+        DEBUG("GetPPTViewerPath: exit local\n");
+        return TRUE;
+    }
     DEBUG("GetPPTViewerPath: exit fail\n");
-	return FALSE;
+    return FALSE;
 }
 BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
 {
@@ -404,11 +404,11 @@ BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
     DWORD dwType, dwSize;
     LRESULT lResult;
 
-	// The following registry settings are for, respectively, (I think)
-	// PPT Viewer 2007 (older versions. Latest not in registry) & PPT Viewer 2010
-	// PPT Viewer 2003 (recent versions)
-	// PPT Viewer 2003 (older versions) 
-	// PPT Viewer 97
+    // The following registry settings are for, respectively, (I think)
+    // PPT Viewer 2007 (older versions. Latest not in registry) & PPT Viewer 2010
+    // PPT Viewer 2003 (recent versions)
+    // PPT Viewer 2003 (older versions) 
+    // PPT Viewer 97
     if ((RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
