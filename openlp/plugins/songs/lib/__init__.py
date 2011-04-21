@@ -278,8 +278,8 @@ def clean_song(manager, song):
     # List for later comparison.
     compare_order = []
     for verse in verses:
-        verse_type =
-            VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])]
+        verse_type = VerseType.Tags[VerseType.from_loose_input(
+            verse[0][u'type'])]
         sxml.add_verse_to_lyrics(
             verse_type,
             verse[0][u'label'],
