@@ -849,6 +849,12 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         database doesn't exist.
         """
         if AlternativeBookNamesDB.cursor is None:
+            if not os.path.exists(os.path.join(
+                AppLocation.get_directory(AppLocation.DataDir), u'bibles',
+                    u'resources')):
+                os.mkdir(os.path.join(
+                    AppLocation.get_directory(AppLocation.DataDir), u'bibles',
+                        u'resources'))
             filepath = os.path.join(
                 AppLocation.get_directory(AppLocation.DataDir), u'bibles',
                     u'resources', u'alternative_book_names.sqlite')

@@ -445,6 +445,7 @@ class BibleReImportForm(OpenLPWizard):
             else:
                 self.verticalWidget[number].hide()
                 self.formWidget[number].hide()
+        self.progressBar.show()
         self.progressLabelAfter.hide()
         self.deleteCheckBox.hide()
         self.deleteCheckBox.setCheckState(0)
