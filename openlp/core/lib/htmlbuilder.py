@@ -178,7 +178,14 @@ sup {
                 vid.src = '';
                 vid2.src = '';
                 break;
-        }
+             case 'length':
+                return vid.duration;
+            case 'currentTime':
+                return vid.currentTime;
+            case 'seek':
+                vid.currentTime = path;
+                break;
+       }
     }
 
     function show_image(src){

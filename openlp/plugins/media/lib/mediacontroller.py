@@ -38,6 +38,7 @@ from openlp.core.lib import Receiver
 from openlp.plugins.media.lib import MediaBackends, MediaStates
 from webkitcontroller import WebkitController
 from phononcontroller import PhononController
+from vlccontroller import VlcController
 
 log = logging.getLogger(__name__)
 
@@ -93,7 +94,7 @@ class MediaManager(object):
         self.curDisplayMediaController = {}
         self.displayWebkitController = WebkitController(self)
         self.displayPhononController = PhononController(self)
-        #self.displayVlcController = VlcController(self)
+        self.displayVlcController = VlcController(self)
 
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
@@ -134,13 +135,12 @@ class MediaManager(object):
             self.Timer.stop()
 
     def setDisplay(self, display):
-        #self.setupVlcController(display)
+        self.setupVlcController(display)
         self.setupPhononController(display)
         self.setupWebkitController(display)
 
 
     def setupWebkitController(self, display):
-        #self.displayWebkitController[display] = display.webView
         display.webView.raise_()
 
     def setupPhononController(self, display):
@@ -155,22 +155,11 @@ class MediaManager(object):
         display.phononWidget.raise_()
 
     def setupVlcController(self, display):
-        display.vlcWidget = QtGui.QWidget(display)
-        instance=vlc.Instance()
-        self.movieName = None
-        player=instance.media_player_new(self.movieName)
-        # the media player has to be 'connected' to the QFrame
-        # (otherwise a video would be displayed in it's own window)
-        # this is platform specific!
-        # you have to give the id of the QFrame (or similar object) to
-        # vlc, different platforms have different functions for this
-        if sys.platform == "linux2": # for Linux using the X Server
-            player.set_xwindow(self.hwnd)
-        elif sys.platform == "win32": # for Windows
-            player.set_hwnd(self.hwnd)
-        elif sys.platform == "darwin": # for MacOS
-            player.set_agl(self.hwnd)
-
+        display.vlcWidget = QtGui.QFrame(display)
+        # creating a basic vlc instance
+        display.vlcInstance = vlc.Instance()
+        # creating an empty vlc media player
+        display.vlcMediaPlayer = display.vlcInstance.media_player_new()
         display.vlcWidget.setGeometry(QtCore.QRect(0, 0,
             display.screen[u'size'].width(), display.screen[u'size'].height()))
         display.vlcWidget.raise_()
@@ -203,14 +192,29 @@ class MediaManager(object):
         """
         usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
-        if usePhonon and not isBackground:
+        useVlc = True
+        if videoPath.endswith(u'.swf'):
+            useVlc = False
+            usePhonon = False
+        elif videoPath.endswith(u'.wmv'):
+            useVlc = False
+            usePhonon = True
+        
+        if useVlc:
+            self.curDisplayMediaController[display] = self.displayVlcController
+            display.phononWidget.setVisible(False)
+            display.webView.setVisible(False)
+            display.vlcWidget.setVisible(True)
+        elif usePhonon and not isBackground:
             self.curDisplayMediaController[display] = self.displayPhononController
             display.phononWidget.setVisible(True)
             display.webView.setVisible(False)
+            display.vlcWidget.setVisible(False)
         else:
             self.curDisplayMediaController[display] = self.displayWebkitController
             display.phononWidget.setVisible(False)
             display.webView.setVisible(True)
+            display.vlcWidget.setVisible(False)
         if len(self.curDisplayMediaController) > 0:
             if not self.Timer.isActive():
                 self.Timer.start()

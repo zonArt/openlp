@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.plugins.media.lib import MediaController
+from openlp.plugins.media.lib import MediaController, MediaStates
 
 class WebkitController(MediaController):
     """
@@ -38,9 +38,11 @@ class WebkitController(MediaController):
         self.isFlash = False
 
     def load(self, display, path, volume):
+        print "load vid in Webkit Controller"
         vol = float(volume) / float(10)
         display.webView.setVisible(True)
         display.phononWidget.setVisible(False)
+        display.vlcWidget.setVisible(False)
         if path.endswith(u'.swf'):
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
@@ -50,34 +52,44 @@ class WebkitController(MediaController):
                 (path.replace(u'\\', u'\\\\'), str(vol))
             self.isFlash = False
         display.frame.evaluateJavaScript(js)
+        self.state = MediaStates.PlayingState
 
     def play(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("play");')
-
+        self.state = MediaStates.PlayingState
 
     def pause(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("pause","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("pause");')
+        self.state = MediaStates.PausedState
 
     def stop(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("stop","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
+        self.state = MediaStates.StoppedState
 
     def seek(self, display, seekVal):
-        pass
+        if not self.isFlash:
+            print seekVal, float(seekVal)/1000
+            display.frame.evaluateJavaScript(u'show_video("seek", "%f");' % (float(seekVal)/1000))
 
     def reset(self, display):
         display.frame.evaluateJavaScript(u'show_video("close");')
 
     def updateUI(self, display):
-        pass
+        if not self.isFlash:
+            length = display.frame.evaluateJavaScript(u'show_video("length");')
+            display.parent.seekSlider.setMaximum(length.toFloat()[0]*1000)
+            if not display.parent.seekSlider.isSliderDown():
+                currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+                display.parent.seekSlider.setSliderPosition(currentTime.toFloat()[0]*1000)
 
     def getSupportedFileTypes(self):
         pass

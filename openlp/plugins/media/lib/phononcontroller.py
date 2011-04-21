@@ -39,6 +39,7 @@ class PhononController(MediaController):
         MediaController.__init__(self, parent)
 
     def load(self, display, path, volume):
+        print "load vid in Phonon Controller"
         display.phononActive = True
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
