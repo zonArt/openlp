@@ -113,11 +113,11 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             # Add play length of media files.
             if item.is_media() and self.printMetaDataCheckBox.isChecked():
                 text += u'<p><b>%s</b> %s</p>' % (translate(
-                    'OpenLP.ServiceManager', u'Playing time:'),
+                    'OpenLP.ServiceManager', 'Playing time:'),
                     unicode(datetime.timedelta(seconds=item.media_length)))
         if self.customNoteEdit.toPlainText():
             text += u'<h4>%s</h4>%s' % (translate('OpenLP.ServiceManager',
-                u'Custom Service Notes:'), self.customNoteEdit.toPlainText())
+                'Custom Service Notes:'), self.customNoteEdit.toPlainText())
         self.document.setHtml(text)
         self.previewWidget.updatePreview()
 
