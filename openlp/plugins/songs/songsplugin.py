@@ -67,9 +67,9 @@ class SongsPlugin(Plugin):
         Plugin.initialise(self)
         self.toolsReindexItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.SongImportItem, UiStrings.Import)
-        action_list.add_action(self.SongExportItem, UiStrings.Export)
-        action_list.add_action(self.toolsReindexItem, UiStrings.Tools)
+        action_list.add_action(self.SongImportItem, UiStrings().Import)
+        action_list.add_action(self.SongExportItem, UiStrings().Export)
+        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -139,7 +139,7 @@ class SongsPlugin(Plugin):
         if maxSongs == 0:
             return
         progressDialog = QtGui.QProgressDialog(
-            translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
+            translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.formparent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
@@ -258,7 +258,7 @@ class SongsPlugin(Plugin):
         self.manager.finalise()
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.SongImportItem, UiStrings.Import)
-        action_list.remove_action(self.SongExportItem, UiStrings.Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings.Tools)
+        action_list.remove_action(self.SongImportItem, UiStrings().Import)
+        action_list.remove_action(self.SongExportItem, UiStrings().Export)
+        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)

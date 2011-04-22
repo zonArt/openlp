@@ -290,7 +290,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(UiStrings.NewTheme)
+            self.setWindowTitle(UiStrings().NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -473,7 +473,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         images_filter = get_images_filter()
         images_filter = u'%s;;%s (*.*) (*)' % (
-            images_filter, UiStrings.AllFiles)
+            images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)

@@ -118,16 +118,16 @@ class BiblesTab(SettingsTab):
         self.newChaptersCheckBox.setText(
             translate('BiblesPlugin.BiblesTab',
             'Only show new chapter numbers'))
-        self.layoutStyleLabel.setText(UiStrings.LayoutStyle)
-        self.displayStyleLabel.setText(UiStrings.DisplayStyle)
+        self.layoutStyleLabel.setText(UiStrings().LayoutStyle)
+        self.displayStyleLabel.setText(UiStrings().DisplayStyle)
         self.bibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
         self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerSlide,
-            UiStrings.VersePerSlide)
+            UiStrings().VersePerSlide)
         self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerLine,
-            UiStrings.VersePerLine)
+            UiStrings().VersePerLine)
         self.layoutStyleComboBox.setItemText(LayoutStyle.Continuous,
-            UiStrings.Continuous)
+            UiStrings().Continuous)
         self.displayStyleComboBox.setItemText(DisplayStyle.NoBrackets,
             translate('BiblesPlugin.BiblesTab', 'No Brackets'))
         self.displayStyleComboBox.setItemText(DisplayStyle.Round,
