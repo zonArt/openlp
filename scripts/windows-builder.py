@@ -108,8 +108,8 @@ sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
     u'sphinx-build.exe')
 hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
     u'hhc.exe')
-vcenv_bat = os.path.join(os.getenv(u'PROGRAMFILES'), 'Microsoft Visual Studio 9.0',
-    u'VC', 'vcvarsall.bat')
+vcbuild_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 
+    'Microsoft Visual Studio 9.0', 'VC','vcpackages','vcbuild.exe')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
@@ -280,13 +280,8 @@ def run_innosetup():
 
 def build_pptviewlib():
     print u'Building PPTVIEWLIB.DLL...'
-    vcenv = Popen(vcenv_bat)
-    code = vcenv.wait()
-    if code != 0:
-        raise Exception(u'Error creating VC++ environment')
-    vcbuild = Popen((u'vcbuild', '/rebuild',
-        os.path.join(pptviewlib_path, u'pptviewlib.vcproj'),
-        u'Release|Win32'))
+    vcbuild = Popen((vcbuild_exe, '/rebuild',
+        os.path.join(pptviewlib_path, u'pptviewlib.vcproj'), u'Release|Win32'))
     code = vcbuild.wait()
     if code != 0:
         raise Exception(u'Error building pptviewlib.dll')
@@ -305,7 +300,7 @@ def main():
             print "PyInstaller:", pyi_build
             print "Inno Setup path:", innosetup_exe
             print "Windows resources:", winres_path
-            print "VC++ path:", vcenv_bat
+            print "VCBuild path:", vcbuild_exe
             print "PPTVIEWLIB path:", pptviewlib_path
         elif arg == u'--skip-update':
             skip_update = True
