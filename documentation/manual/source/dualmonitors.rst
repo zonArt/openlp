@@ -37,11 +37,11 @@ equivalent.
 **Special Note For Projectors Using USB Connections**
 
 Users have reported experiencing difficulties when using a projector with a USB
-connection. It seems that third party software many times is required to 
-properly setup dual monitors. If possible, it is best to use a direct output
-(VGA, DVI, HDMI, S-Video) from your machine's video card. f a USB connection is
-your only option please consult the manufacturer's manual for instructions on a
-proper setup.
+connection. It seems that third party software often is required to properly
+setup dual monitors. If possible, it is best to use a direct output(VGA, DVI,
+HDMI, S-Video) from your machine's video card. If a USB connection is your only
+option please consult the manufacturer's manual for instructions on proper
+setup.
 
 Microsoft Windows
 -----------------
