@@ -136,10 +136,10 @@ class Ui_DisplayTagDialog(object):
             translate('OpenLP.DisplayTagDialog', 'Start tag'))
         self.endTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'End tag'))
-        self.deletePushButton.setText(UiStrings.Delete)
+        self.deletePushButton.setText(UiStrings().Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagDialog', 'Default'))
-        self.newPushButton.setText(UiStrings.New)
+        self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(

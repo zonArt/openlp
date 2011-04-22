@@ -183,8 +183,8 @@ presentation by itself. OpenLP uses PowerPoint or Impress to load the
 presentation. Then OpenLP displays images of each slide. This results in the 
 higher than expected RAM usage.
 
-OpenLP is not displaying correctly, or on the correct screen
-------------------------------------------------------------
+OpenLP is not displaying correctly, or is not on the correct screen
+-------------------------------------------------------------------
 
 Please read the documentation on :ref:`dualmonitors`. It is very important to 
 have dual monitors setup properly for OpenLP to function as expected.

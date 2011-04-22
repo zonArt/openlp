@@ -148,7 +148,7 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(UiStrings.PrintServiceOrder)
+        printServiceDialog.setWindowTitle(UiStrings().PrintServiceOrder)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
