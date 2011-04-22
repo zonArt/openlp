@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    build_icon, translate
+    translate
 
 from openlp.core.ui import HideMode
 
