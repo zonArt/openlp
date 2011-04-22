@@ -69,8 +69,6 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         self.videoHide = False
         self.override = {}
-        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.setWindowIcon(mainIcon)
         self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
