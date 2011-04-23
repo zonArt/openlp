@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
+from openlp.core.lib.ui import icon_action
 
 log = logging.getLogger(__name__)
 
@@ -109,6 +110,21 @@ class SearchEdit(QtGui.QLineEdit):
         """
         return self._currentSearchType
 
+    def setCurrentSearchType(self, identifier):
+        """
+        Set a new current search type.
+
+        ``identifier``
+            The search type identifier (int). 
+        """
+        menu = self.menuButton.menu()
+        for action in menu.actions():
+            if identifier == action.data().toInt()[0]:
+                self.menuButton.setDefaultAction(action)
+                self._currentSearchType = identifier
+                self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
+                return True
+
     def setSearchTypes(self, items):
         """
         A list of tuples to be used in the search type menu. The first item in
@@ -132,7 +148,8 @@ class SearchEdit(QtGui.QLineEdit):
         menu = QtGui.QMenu(self)
         first = None
         for identifier, icon, title in items:
-            action = QtGui.QAction(build_icon(icon), title, menu)
+            action = icon_action(menu, u'', icon)
+            action.setText(title)
             action.setData(QtCore.QVariant(identifier))
             menu.addAction(action)
             QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
