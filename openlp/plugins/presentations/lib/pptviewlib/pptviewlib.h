@@ -49,6 +49,7 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
 BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize);
+BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize);
 HBITMAP CaptureWindow(HWND hWnd);
 VOID SaveBitmap(CHAR* filename, HBITMAP hBmp) ;
 VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename);
