@@ -109,7 +109,7 @@ sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
 hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
     u'hhc.exe')
 vcbuild_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 
-    'Microsoft Visual Studio 9.0', 'VC','vcpackages','vcbuild.exe')
+    u'Microsoft Visual Studio 9.0', u'VC', u'vcpackages', u'vcbuild.exe')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
@@ -280,12 +280,12 @@ def run_innosetup():
 
 def build_pptviewlib():
     print u'Building PPTVIEWLIB.DLL...'
-    vcbuild = Popen((vcbuild_exe, '/rebuild',
+    vcbuild = Popen((vcbuild_exe, u'/rebuild',
         os.path.join(pptviewlib_path, u'pptviewlib.vcproj'), u'Release|Win32'))
     code = vcbuild.wait()
     if code != 0:
         raise Exception(u'Error building pptviewlib.dll')
-    copy(os.path.join(pptviewlib_path, u'Release', 'pptviewlib.dll'),
+    copy(os.path.join(pptviewlib_path, u'Release', u'pptviewlib.dll'),
         pptviewlib_path)
 
 def main():
