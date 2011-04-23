@@ -55,11 +55,11 @@ class LanguageManager(object):
             language = QtCore.QLocale.system().name()
         lang_path = AppLocation.get_directory(AppLocation.LanguageDir)
         app_translator = QtCore.QTranslator()
-        if not app_translator.load(language, lang_path):
-            return
+        app_translator.load(language, lang_path)
+        # A translator for buttons and other default strings provided by Qt.
         default_string_translator = QtCore.QTranslator()
-        if default_string_translator.load(u'qt_%s' % language, lang_path):
-            return app_translator, default_string_translator
+        default_string_translator.load(u'qt_%s' % language, lang_path)
+        return app_translator, default_string_translator
 
     @staticmethod
     def find_qm_files():

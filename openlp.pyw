@@ -240,10 +240,14 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator, default_string_translator = \
+    app_translator, default_translator = \
         LanguageManager.get_translator(language)
-    app.installTranslator(appTranslator)
-    app.installTranslator(default_string_translator)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
     sys.exit(app.run())
@@ -253,3 +257,4 @@ if __name__ == u'__main__':
     Instantiate and run the application.
     """
     main()
+
