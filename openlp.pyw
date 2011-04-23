@@ -240,8 +240,10 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator = LanguageManager.get_translator(language)
+    appTranslator, default_string_translator = \
+        LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
+    app.installTranslator(default_string_translator)
     if not options.no_error_form:
         sys.excepthook = app.hookException
     sys.exit(app.run())
