@@ -57,9 +57,9 @@ class LanguageManager(object):
         app_translator = QtCore.QTranslator()
         app_translator.load(language, lang_path)
         # A translator for buttons and other default strings provided by Qt.
-        default_string_translator = QtCore.QTranslator()
-        default_string_translator.load(u'qt_%s' % language, lang_path)
-        return app_translator, default_string_translator
+        default_translator = QtCore.QTranslator()
+        default_translator.load(u'qt_%s' % language, lang_path)
+        return app_translator, default_translator
 
     @staticmethod
     def find_qm_files():
