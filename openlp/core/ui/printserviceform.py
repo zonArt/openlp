@@ -190,7 +190,6 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
                  classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
-        print html.tostring(html_data)
         self.previewWidget.updatePreview()
 
     def _addPreviewItem(self, body, item, index):
