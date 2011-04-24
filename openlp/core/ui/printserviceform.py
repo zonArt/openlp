@@ -61,15 +61,23 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
    color:black;
 }
 
+.itemNotes {
+   color:black;
+}
+
 .itemNotesTitle {
    font-weight:bold;
    font-size:12px;
-   color:black;
 }
 
 .itemNotesText {
    font-size:11px;
-   color:black;
+}
+
+.mediaTitle {
+    font-weight:bold;
+    font-size:11px;
+    color:black;
 }
 
 .customNotesTitle {
@@ -81,6 +89,10 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 .customNotesText {
    font-size:11px;
    color:black;
+}
+
+.newPage {
+    page-break-before:always;
 }
 """
 
@@ -153,86 +165,90 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Creates the html text and updates the html of *self.document*.
         """
-        html_data = html.fromstring(
-            u'<title>%s</title>' % unicode(self.titleLineEdit.text()))
+        html_data = self._addElement(u'html')
+        self._addElement(u'head', parent=html_data)
+        self._addElement(u'title', unicode(self.titleLineEdit.text()),
+            html_data.head)
         css_path = os.path.join(
-            AppLocation.get_data_path(), u'servicePrint.css')
-        if not os.path.isfile(css_path):
-            # Create default css file.
-            css_file = open(css_path, u'w')
-            css_file.write(DEFAULT_CSS)
-            css_file.close()
+            AppLocation.get_data_path(), u'service_print.css')
         custom_css = get_text_file_string(css_path)
-        self._addChildToParent(
-            u'style', custom_css, html_data.head, u'type', u'text/css')
-        self._addChildToParent(u'body', parent=html_data)
-        self._addChildToParent(u'span', unicode(self.titleLineEdit.text()),
-            html_data.body, u'class', u'serviceTitle')
+        if not custom_css:
+            custom_css = DEFAULT_CSS
+        self._addElement(u'style', custom_css, html_data.head,
+            attribute=(u'type', u'text/css'))
+        self._addElement(u'body', parent=html_data)
+        self._addElement(u'h1', unicode(self.titleLineEdit.text()),
+            html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
-            item = item[u'service_item']
-            div = self._addChildToParent(u'div', parent=html_data.body)
-            # Add the title of the service item.
-            item_title = self._addChildToParent(
-                u'h2', parent=div, attribute=u'class', value=u'itemTitle')
-            self._addChildToParent(
-                u'img', parent=item_title, attribute=u'src', value=item.icon)
-            self._fromstring(
-                u'<span> %s</span>' % item.get_display_title(), item_title)
-            if self.slideTextCheckBox.isChecked():
-                # Add the text of the service item.
-                if item.is_text():
-                    verse_def = None
-                    for slide in item.get_frames():
-                        if not verse_def or verse_def != slide[u'verseTag']:
-                            p = self._addChildToParent(u'p', parent=div,
-                                attribute=u'class', value=u'itemText')
-                        else:
-                            self._addChildToParent(u'br', parent=p)
-                        self._fromstring(u'<span>%s</span>' % slide[u'html'], p)
-                        verse_def = slide[u'verseTag']
-                    # Break the page before the div element.
-                    if index != 0 and self.pageBreakAfterText.isChecked():
-                        div.set(u'style', u'page-break-before:always')
-                # Add the image names of the service item.
-                elif item.is_image():
-                    ol = self._addChildToParent(u'ol', parent=div)
-                    for slide in range(len(item.get_frames())):
-                        self._addChildToParent(u'li', item.get_frame_title(slide), ol)
-                # add footer
-                if item.foot_text:
-                    self._fromstring(
-                        item.foot_text, div, u'class', u'itemFooter')
-            # Add service items' notes.
-            if self.notesCheckBox.isChecked():
-                if item.notes:
-                    p = self._addChildToParent(u'p', parent=div)
-                    self._addChildToParent(u'span', unicode(
-                        translate('OpenLP.ServiceManager', 'Notes:')), p,
-                        u'class', u'itemNotesTitle')
-                    self._fromstring(u'<span> %s</span>' % item.notes.replace(
-                        u'\n', u'<br />'), p, u'class', u'itemNotesText')
-            # Add play length of media files.
-            if item.is_media() and self.metaDataCheckBox.isChecked():
-                tme = item.media_length
-                if item.end_time > 0:
-                    tme = item.end_time - item.start_time
-                title = self._fromstring(u'<p><strong>%s</strong> </p>' %
-                    translate('OpenLP.ServiceManager', 'Playing time:'), div)
-                self._fromstring(u'<span>%s</span>' %
-                    unicode(datetime.timedelta(seconds=tme)), title)
+            self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
-            div = self._addChildToParent(u'div', parent=html_data.body)
-            self._addChildToParent(u'span', translate('OpenLP.ServiceManager',
-                u'Custom Service Notes:'), div, u'class', u'customNotesTitle')
-            self._addChildToParent(
-                u'span', u' %s' % self.footerTextEdit.toPlainText(), div,
-                u'class', u'customNotesText')
+            div = self._addElement(u'div', parent=html_data.body,
+                classId=u'customNotes')
+            self._addElement(u'span', translate('OpenLP.ServiceManager',
+                u'Custom Service Notes: '), div, classId=u'customNotesTitle')
+            self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
+                 classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
+        print html.tostring(html_data)
         self.previewWidget.updatePreview()
 
-    def _addChildToParent(self, tag, text=None, parent=None, attribute=None,
-        value=None):
+    def _addPreviewItem(self, body, item, index):
+        div = self._addElement(u'div', classId=u'item', parent=body)
+        # Add the title of the service item.
+        item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
+        self._addElement(u'img', parent=item_title,
+             attribute=(u'src', item.icon))
+        self._addElement(u'span', item.get_display_title(), item_title)
+        if self.slideTextCheckBox.isChecked():
+            # Add the text of the service item.
+            if item.is_text():
+                verse_def = None
+                for slide in item.get_frames():
+                    if not verse_def or verse_def != slide[u'verseTag']:
+                        p = self._addElement(u'div', parent=div,
+                            classId=u'itemText')
+                    else:
+                        self._addElement(u'br', parent=p)
+                    self._addElement(u'p', slide[u'html'], p)
+                    verse_def = slide[u'verseTag']
+                # Break the page before the div element.
+                if index != 0 and self.pageBreakAfterText.isChecked():
+                    div.set(u'class', u'item newPage')
+            # Add the image names of the service item.
+            elif item.is_image():
+                ol = self._addElement(u'ol', parent=div, classId=u'imageList')
+                for slide in range(len(item.get_frames())):
+                    self._addElement(u'li', item.get_frame_title(slide), ol)
+            # add footer
+            foot_text = item.foot_text
+            foot_text = foot_text.partition(u'<br>')[2]
+            if foot_text:
+                foot = self._addElement(u'div', foot_text, parent=div,
+                    classId=u'itemFooter')
+        # Add service items' notes.
+        if self.notesCheckBox.isChecked():
+            if item.notes:
+                p = self._addElement(u'div', classId=u'itemNotes', parent=div)
+                self._addElement(u'span',
+                    translate('OpenLP.ServiceManager', 'Notes: '), p,
+                    classId=u'itemNotesTitle')
+                notes = self._addElement(u'span',
+                    item.notes.replace(u'\n', u'<br />'), p,
+                    classId=u'itemNotesText')
+        # Add play length of media files.
+        if item.is_media() and self.metaDataCheckBox.isChecked():
+            tme = item.media_length
+            if item.end_time > 0:
+                tme = item.end_time - item.start_time
+            title = self._addElement(u'div', classId=u'media', parent=div)
+            self._addElement(u'span', translate('OpenLP.ServiceManager',
+                'Playing time: '), title, classId=u'mediaTitle')
+            self._addElement(u'span', unicode(datetime.timedelta(seconds=tme)),
+                 title, classId=u'mediaText')
+
+    def _addElement(self, tag, text=None, parent=None, classId=None,
+         attribute=None):
         """
         Creates a html element. If ``text`` is given, the element's text will
         set and if a ``parent`` is given, the element is appended.
@@ -246,30 +262,22 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         ``parent``
             The parent element. Defaults to ``None``.
 
-        ``attribute``
-            An optional attribute, for instance ``u'class``.
+        ``classId``
+            Value for the class attribute
 
-        ``value``
-            The value for the given ``attribute``. It does not have a meaning,
-            if the attribute is left to its default.
+        ``attribute``
+            Tuple name/value pair to add as an optional attribute
         """
-        element = html.Element(tag)
         if text is not None:
-            element.text = unicode(text)
+            element = html.fragment_fromstring(unicode(text), create_parent=tag)
+        else:
+            element = html.Element(tag)
         if parent is not None:
             parent.append(element)
+        if classId is not None:
+            element.set(u'class', classId)
         if attribute is not None:
-            element.set(attribute, value if value is not None else u'')
-        return element
-
-    def _fromstring(self, string, parent, attribute=None, value=None):
-        """
-        This is used to create a child html element from a string.
-        """
-        element = html.fromstring(string)
-        if attribute is not None:
-            element.set(attribute, value if value is not None else u'')
-        parent.append(element)
+            element.set(attribute[0], attribute[1])
         return element
 
     def paintRequested(self, printer):
