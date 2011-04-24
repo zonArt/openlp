@@ -238,7 +238,7 @@ class GeneralTab(SettingsTab):
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
-        self.numberLabel.setText(UiStrings.CCLINumberLabel)
+        self.numberLabel.setText(UiStrings().CCLINumberLabel)
         self.usernameLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(

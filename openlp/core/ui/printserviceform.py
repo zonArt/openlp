@@ -362,9 +362,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Called when html copy check box is selected.
         """
         if value == QtCore.Qt.Checked:
-            self.copyTextButton.setText(UiStrings.CopyToHtml)
+            self.copyTextButton.setText(UiStrings().CopyToHtml)
         else:
-            self.copyTextButton.setText(UiStrings.CopyToText)
+            self.copyTextButton.setText(UiStrings().CopyToText)
 
     def onSlideTextCheckBoxChanged(self, state):
         """

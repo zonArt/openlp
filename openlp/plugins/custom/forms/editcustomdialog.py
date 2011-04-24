@@ -107,11 +107,11 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
-        self.addButton.setText(UiStrings.Add)
+        self.addButton.setText(UiStrings().Add)
         self.addButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
             'bottom.'))
-        self.editButton.setText(UiStrings.Edit)
+        self.editButton.setText(UiStrings().Edit)
         self.editButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit the selected '
             'slide.'))
@@ -124,4 +124,4 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Credits:'))
-        self.previewButton.setText(UiStrings.SaveAndPreview)
+        self.previewButton.setText(UiStrings().SaveAndPreview)

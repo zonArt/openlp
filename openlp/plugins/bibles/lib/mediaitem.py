@@ -193,7 +193,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSearchButtonLayout.addWidget(self.advancedSearchButton)
         self.advancedLayout.addLayout(
             self.advancedSearchButtonLayout, 7, 0, 1, 3)
-        self.searchTabWidget.addTab(self.advancedTab, UiStrings.Advanced)
+        self.searchTabWidget.addTab(self.advancedTab, UiStrings().Advanced)
         # Add the search tab widget to the page layout.
         self.pageLayout.addWidget(self.searchTabWidget)
         # Combo Boxes
@@ -242,15 +242,15 @@ class BibleMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
-        self.quickVersionLabel.setText(u'%s:' % UiStrings.Version)
+        self.quickVersionLabel.setText(u'%s:' % UiStrings().Version)
         self.quickSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
-        self.quickSearchButton.setText(UiStrings.Search)
+        self.quickSearchButton.setText(UiStrings().Search)
         self.quickClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedVersionLabel.setText(u'%s:' % UiStrings.Version)
+        self.advancedVersionLabel.setText(u'%s:' % UiStrings().Version)
         self.advancedSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.advancedBookLabel.setText(
@@ -265,7 +265,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'To:'))
         self.advancedClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedSearchButton.setText(UiStrings.Search)
+        self.advancedSearchButton.setText(UiStrings().Search)
         self.quickClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.quickClearComboBox.addItem(
@@ -274,13 +274,13 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.advancedClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Keep'))
-        self.quickLayoutLabel.setText(UiStrings.LayoutStyle)
+        self.quickLayoutLabel.setText(UiStrings().LayoutStyle)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
-            UiStrings.VersePerSlide)
+            UiStrings().VersePerSlide)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerLine,
-            UiStrings.VersePerLine)
+            UiStrings().VersePerLine)
         self.quickLayoutComboBox.setItemText(LayoutStyle.Continuous,
-            UiStrings.Continuous)
+            UiStrings().Continuous)
 
     def initialise(self):
         log.debug(u'bible manager initialise')

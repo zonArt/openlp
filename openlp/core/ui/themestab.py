@@ -102,7 +102,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.tabTitleVisible = UiStrings.Themes
+        self.tabTitleVisible = UiStrings().Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(

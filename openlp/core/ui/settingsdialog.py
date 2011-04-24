@@ -37,7 +37,7 @@ class Ui_SettingsDialog(object):
             build_icon(u':/system/system_settings.png'))
         self.dialogLayout = QtGui.QGridLayout(settingsDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
-        self.dialogLayout.setMargin(0)
+        self.dialogLayout.setMargin(8)
         self.settingListWidget = QtGui.QListWidget(settingsDialog)
         self.settingListWidget.setUniformItemSizes(True)
         self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
