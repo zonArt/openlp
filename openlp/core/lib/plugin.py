@@ -159,14 +159,14 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.previewController = pluginHelpers[u'preview']
-        self.liveController = pluginHelpers[u'live']
-        self.renderer = pluginHelpers[u'renderer']
-        self.serviceManager = pluginHelpers[u'service']
-        self.settingsForm = pluginHelpers[u'settings form']
-        self.mediadock = pluginHelpers[u'toolbox']
-        self.pluginManager = pluginHelpers[u'pluginmanager']
-        self.formparent = pluginHelpers[u'formparent']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderer = plugin_helpers[u'renderer']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
+        self.mediadock = plugin_helpers[u'toolbox']
+        self.pluginManager = plugin_helpers[u'pluginmanager']
+        self.formparent = plugin_helpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)

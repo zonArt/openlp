@@ -280,6 +280,8 @@ class ThemeManager(QtGui.QWidget):
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             if self.fileRenameForm.exec_():
                 newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
+                if oldThemeName == newThemeName:
+                    return
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
@@ -333,6 +335,7 @@ class ThemeManager(QtGui.QWidget):
                 self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
+            self.oldBackgroundImage = None
 
     def onDeleteTheme(self):
         """

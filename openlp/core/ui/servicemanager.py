@@ -347,7 +347,8 @@ class ServiceManager(QtGui.QWidget):
         has been modified.
         """
         self._modified = modified
-        serviceFile = self.shortFileName() or u'Untitled Service'
+        serviceFile = self.shortFileName() or translate(
+            'OpenLP.ServiceManager', 'Untitled Service')
         self.mainwindow.setServiceModified(modified, serviceFile)
 
     def isModified(self):
@@ -614,7 +615,7 @@ class ServiceManager(QtGui.QWidget):
                     u'%s' % fileName)
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.ServiceManager', 'Corrupt File'),
-                    translate('OpenLP.ServiceManager', 'This file is either'
+                    translate('OpenLP.ServiceManager', 'This file is either '
                     'corrupt or not an OpenLP 2.0 service file.'))
             return
         finally:

@@ -256,6 +256,7 @@ class Renderer(object):
         """
         Builds a text block using the settings in ``theme``
         and the size of the display screen.height.
+        Note the system has a 10 pixel border round the screen
 
         ``theme``
             The theme to build a text block for.

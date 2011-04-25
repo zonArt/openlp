@@ -75,6 +75,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
+        # add the tab to get it to display in the correct part of the screen
         pos = self.stackedLayout.addWidget(tab)
         if is_active:
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
@@ -82,7 +83,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(location, item_name)
         else:
-            self.stackedLayout.takeAt(location)
+            # then remove tab to stop the UI displaying it even if
+            # it is not required.
+            self.stackedLayout.takeAt(pos)
 
     def accept(self):
         """
