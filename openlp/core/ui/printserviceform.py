@@ -46,24 +46,22 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
    color:black;
 }
 
+.item {
+   color:black;
+}
+
 .itemTitle {
    font-weight:600;
    font-size:large;
-   color:black;
 }
 
-.itemText {
-   color:black;
-}
+.itemText {}
 
 .itemFooter {
    font-size:8px;
-   color:black;
 }
 
-.itemNotes {
-   color:black;
-}
+.itemNotes {}
 
 .itemNotesTitle {
    font-weight:bold;
@@ -74,21 +72,28 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
    font-size:11px;
 }
 
+.media {}
+
 .mediaTitle {
     font-weight:bold;
     font-size:11px;
-    color:black;
+}
+
+.mediaText {}
+
+.imageList {}
+
+.customNotes {
+   margin-top: 10px;
 }
 
 .customNotesTitle {
    font-weight:bold;
    font-size:11px;
-   color:black;
 }
 
 .customNotesText {
    font-size:11px;
-   color:black;
 }
 
 .newPage {
@@ -188,7 +193,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self._addElement(u'span', translate('OpenLP.ServiceManager',
                 u'Custom Service Notes: '), div, classId=u'customNotesTitle')
             self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
-                 classId=u'customNotesText')
+                classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
 
@@ -197,8 +202,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Add the title of the service item.
         item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
         self._addElement(u'img', parent=item_title,
-             attribute=(u'src', item.icon))
-        self._addElement(u'span', item.get_display_title(), item_title)
+            attribute=(u'src', item.icon))
+        self._addElement(u'span', u'&nbsp;' + item.get_display_title(),
+            item_title)
         if self.slideTextCheckBox.isChecked():
             # Add the text of the service item.
             if item.is_text():
@@ -244,10 +250,10 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self._addElement(u'span', translate('OpenLP.ServiceManager',
                 'Playing time: '), title, classId=u'mediaTitle')
             self._addElement(u'span', unicode(datetime.timedelta(seconds=tme)),
-                 title, classId=u'mediaText')
+                title, classId=u'mediaText')
 
     def _addElement(self, tag, text=None, parent=None, classId=None,
-         attribute=None):
+        attribute=None):
         """
         Creates a html element. If ``text`` is given, the element's text will
         set and if a ``parent`` is given, the element is appended.
