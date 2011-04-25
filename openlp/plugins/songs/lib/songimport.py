@@ -110,6 +110,7 @@ class SongImport(QtCore.QObject):
             The reason, why the import failed. The string should be as
             informative as possible.
         """
+        self.set_defaults()
         if self.import_wizard is None:
             return
         if self.import_wizard.errorReportTextEdit.isHidden():
