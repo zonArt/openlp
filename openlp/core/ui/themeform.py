@@ -280,7 +280,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Run the wizard.
         """
         log.debug(u'Editing theme %s' % self.theme.theme_name)
-        self.theme.background_filename = u''
+        self.temp_background_filename = u''
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
