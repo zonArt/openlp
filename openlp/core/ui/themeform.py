@@ -435,7 +435,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if self.updateThemeAllowed:
             self.theme.background_type = BackgroundType.to_string(index)
             if self.theme.background_type != \
-                BackgroundType.to_string(BackgroundType.Image):
+                BackgroundType.to_string(BackgroundType.Image) and \
+                self.temp_background_filename == u'':
                 self.temp_background_filename = self.theme.background_filename
                 self.theme.background_filename = u''
             if self.theme.background_type == \
