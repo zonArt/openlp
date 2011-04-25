@@ -56,13 +56,11 @@ class OooImport(SongImport):
         self.process_started = False
 
     def do_import(self):
-        self.stop_import_flag = False
-        self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
-                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
-                return
+                break
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
@@ -70,9 +68,6 @@ class OooImport(SongImport):
                     self.process_ooo_document()
                     self.close_ooo_file()
         self.close_ooo()
-        self.import_wizard.progressBar.setMaximum(1)
-        self.import_wizard.incrementProgressBar(u'', 1)
-        return True
 
     def process_ooo_document(self):
         """
