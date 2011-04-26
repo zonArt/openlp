@@ -214,7 +214,6 @@ class Renderer(object):
         ``line_break``
             Add line endings after each line of text used for bibles.
         """
-        print [text]
         log.debug(u'format slide')
         # clean up line endings
         lines = self._lines_split(text)
@@ -368,7 +367,7 @@ class Renderer(object):
             Add line endings after each line of text used for bibles.
 
         """
-        print [text]
+        print "st", [text]
         log.debug(u'format_slide - Start')
         line_end = u''
         if line_break:
@@ -393,7 +392,8 @@ class Renderer(object):
             # Text too long so go to next page
             print self.web_frame.contentsSize().height() , self.page_height, [line]
             if self.web_frame.contentsSize().height() > self.page_height:
-                # we have more than 1 verse on the slide
+                # we have more than 1 verse on the slide and it does not fit!
+                # Save the previous line as it fits on the page.
                 print "A", line_count
                 print "AA", [previous_line]
                 print "AAA", [styled_text]
