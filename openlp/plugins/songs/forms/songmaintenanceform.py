@@ -386,7 +386,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         existing_author = self.manager.get_object_filtered(Author,
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name,
-                Author.display_name == old_author.display_name))
+                Author.display_name == old_author.display_name,
+                Author.id != old_author.id))
         # Find the songs, which have the old_author as author.
         songs = self.manager.get_all_objects(Song,
             Song.authors.contains(old_author))
@@ -408,7 +409,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         # Find the duplicate.
         existing_topic = self.manager.get_object_filtered(Topic,
-            Topic.name == old_topic.name)
+            and_(Topic.name == old_topic.name, Topic.id != old_topic.id))
         # Find the songs, which have the old_topic as topic.
         songs = self.manager.get_all_objects(Song,
             Song.topics.contains(old_topic))
@@ -431,7 +432,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         # Find the duplicate.
         existing_book = self.manager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
-                Book.publisher == old_book.publisher))
+                Book.publisher == old_book.publisher,
+                Book.id != old_book.id))
         # Find the songs, which have the old_book as book.
         songs = self.manager.get_all_objects(Song,
             Song.song_book_id == old_book.id)
@@ -504,3 +506,4 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             deleteButton.setEnabled(True)
             editButton.setEnabled(True)
+

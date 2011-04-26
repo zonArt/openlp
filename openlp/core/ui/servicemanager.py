@@ -686,6 +686,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceNoteForm.textEdit.toPlainText()
             self.repaintServiceList(item, -1)
+            self.setModified()
 
     def onStartTimeForm(self):
         item = self.findServiceItem()[0]
@@ -789,7 +790,7 @@ class ServiceManager(QtGui.QWidget):
         # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
-        self.setModified(True)
+        self.setModified()
 
     def onMoveSelectionDown(self):
         """
@@ -811,7 +812,7 @@ class ServiceManager(QtGui.QWidget):
             serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
-        self.setModified(True)
+        self.setModified()
 
     def onCollapseAll(self):
         """
@@ -855,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList(0, child)
-        self.setModified(True)
+        self.setModified()
 
     def onServiceUp(self):
         """
@@ -867,7 +868,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
             self.repaintServiceList(item - 1, child)
-        self.setModified(True)
+        self.setModified()
 
     def onServiceDown(self):
         """
@@ -879,7 +880,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
             self.repaintServiceList(item + 1, child)
-        self.setModified(True)
+        self.setModified()
 
     def onServiceEnd(self):
         """
@@ -891,7 +892,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
             self.repaintServiceList(len(self.serviceItems) - 1, child)
-        self.setModified(True)
+        self.setModified()
 
     def onDeleteFromService(self):
         """
@@ -901,7 +902,7 @@ class ServiceManager(QtGui.QWidget):
         if item != -1:
             self.serviceItems.remove(self.serviceItems[item])
             self.repaintServiceList(item - 1, -1)
-        self.setModified(True)
+        self.setModified()
 
     def repaintServiceList(self, serviceItem, serviceItemChild):
         """
@@ -1026,7 +1027,7 @@ class ServiceManager(QtGui.QWidget):
                     item[u'service_item'], False, expand=item[u'expanded'])
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
-            self.setModified(True)
+            self.setModified()
         Receiver.send_message(u'cursor_normal')
 
     def serviceItemUpdate(self, message):
@@ -1037,7 +1038,7 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
                 item[u'service_item'].edit_id = int(editId)
-        self.setModified(True)
+        self.setModified()
 
     def replaceServiceItem(self, newItem):
         """
@@ -1053,7 +1054,7 @@ class ServiceManager(QtGui.QWidget):
                 self.repaintServiceList(itemcount + 1, 0)
                 self.mainwindow.liveController.replaceServiceManagerItem(
                     newItem)
-        self.setModified(True)
+        self.setModified()
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False):
         """
@@ -1098,7 +1099,7 @@ class ServiceManager(QtGui.QWidget):
             if rebuild:
                 self.mainwindow.liveController.replaceServiceManagerItem(item)
         self.dropPosition = 0
-        self.setModified(True)
+        self.setModified()
 
     def makePreview(self):
         """
@@ -1235,7 +1236,7 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.remove(serviceItem)
                 self.serviceItems.insert(endpos, serviceItem)
                 self.repaintServiceList(endpos, child)
-                self.setModified(True)
+                self.setModified()
             else:
                 # we are not over anything so drop
                 replace = False
