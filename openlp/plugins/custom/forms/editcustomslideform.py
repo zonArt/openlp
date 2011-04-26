@@ -63,7 +63,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         Returns a list with all slides.
         """
-        return self.slideTextEdit.toPlainText().split(u'\n[---]\n')
+        return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
 
     def onSplitButtonPressed(self):
         """
@@ -71,5 +71,5 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         if self.slideTextEdit.textCursor().columnNumber() != 0:
             self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[---]\n')
+        self.slideTextEdit.insertPlainText(u'[===]\n')
         self.slideTextEdit.setFocus()

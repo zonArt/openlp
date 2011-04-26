@@ -23,46 +23,261 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`renderer` module enables OpenLP to take the input from plugins and
-format it for the output display.
-"""
+
 import logging
 
-from PyQt4 import QtWebKit
+from PyQt4 import QtCore, QtWebKit
 
-from openlp.core.lib import expand_tags, build_lyrics_format_css, \
-    build_lyrics_outline_css, Receiver
+from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
+    ItemCapabilities
+from openlp.core.lib.theme import ThemeLevel
+from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
+VERSE = u'The Lord said to {r}Noah{/r}: \n' \
+    'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
+    'The Lord said to {g}Noah{/g}:\n' \
+    'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
+    'Get those children out of the muddy, muddy \n' \
+    '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
+    'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
+
+HTML_END = u'</div></body></html>'
+
 class Renderer(object):
     """
-    Genarates a pixmap image of a array of text. The Text is formatted to
-    make sure it fits on the screen and if not extra frames are generated.
+    Class to pull all Renderer interactions into one place. The plugins will
+    call helper methods to do the rendering but this class will provide
+    display defense code.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
+
+    ``screens``
+        Contains information about the Screens.
+
+    ``screen_number``
+        Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self):
+    def __init__(self, theme_manager, screens):
         """
-        Initialise the renderer.
+        Initialise the render manager.
         """
-        self._rect = None
-        self.theme_name = None
-        self._theme = None
+        log.debug(u'Initilisation started')
+        self.screens = screens
+        self.image_manager = ImageManager()
+        self.display = MainDisplay(self, screens, False)
+        self.display.imageManager = self.image_manager
+        self.theme_manager = theme_manager
+        self.service_theme = u''
+        self.theme_level = u''
+        self.override_background = None
+        self.theme_data = None
+        self.force_page = False
 
-    def set_theme(self, theme):
+    def update_display(self):
         """
-        Set the theme to be used.
+        Updates the render manager's information about the current screen.
+        """
+        log.debug(u'Update Display')
+        self._calculate_default(self.screens.current[u'size'])
+        self.display = MainDisplay(self, self.screens, False)
+        self.display.imageManager = self.image_manager
+        self.display.setup()
+        self.bg_frame = None
+        self.theme_data = None
+        self.image_manager.update_display(self.width, self.height)
+
+    def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
+        """
+        Set the global-level theme and the theme level.
+
+        ``global_theme``
+            The global-level theme to be set.
+
+        ``theme_level``
+            Defaults to *``ThemeLevel.Global``*. The theme level, can be
+            ``ThemeLevel.Global``, ``ThemeLevel.Service`` or
+            ``ThemeLevel.Song``.
+        """
+        self.global_theme = global_theme
+        self.theme_level = theme_level
+        self.global_theme_data = \
+            self.theme_manager.getThemeData(self.global_theme)
+        self.theme_data = None
+
+    def set_service_theme(self, service_theme):
+        """
+        Set the service-level theme.
+
+        ``service_theme``
+            The service-level theme to be set.
+        """
+        self.service_theme = service_theme
+        self.theme_data = None
+
+    def set_override_theme(self, override_theme, override_levels=False):
+        """
+        Set the appropriate theme depending on the theme level.
+        Called by the service item when building a display frame
 
         ``theme``
-            The theme to be used.
-        """
-        log.debug(u'set theme')
-        self._theme = theme
-        self.theme_name = theme.theme_name
+            The name of the song-level theme. None means the service
+            item wants to use the given value.
 
-    def set_text_rectangle(self, rect_main, rect_footer):
+        ``override_levels``
+            Used to force the theme data passed in to be used.
+
+        """
+        log.debug(u'set override theme to %s', override_theme)
+        theme_level = self.theme_level
+        if override_levels:
+            theme_level = ThemeLevel.Song
+        if theme_level == ThemeLevel.Global:
+            theme = self.global_theme
+        elif theme_level == ThemeLevel.Service:
+            if self.service_theme == u'':
+                theme = self.global_theme
+            else:
+                theme = self.service_theme
+        else:
+            # Images have a theme of -1
+            if override_theme and override_theme != -1:
+                theme = override_theme
+            elif theme_level == ThemeLevel.Song or \
+                theme_level == ThemeLevel.Service:
+                if self.service_theme == u'':
+                    theme = self.global_theme
+                else:
+                    theme = self.service_theme
+            else:
+                theme = self.global_theme
+        log.debug(u'theme is now %s', theme)
+        # Force the theme to be the one passed in.
+        if override_levels:
+            self.theme_data = override_theme
+        else:
+            self.theme_data = self.theme_manager.getThemeData(theme)
+        self._calculate_default(self.screens.current[u'size'])
+        self._build_text_rectangle(self.theme_data)
+        self.image_manager.add_image(self.theme_data.theme_name,
+            self.theme_data.background_filename)
+        return self._rect, self._rect_footer
+
+    def generate_preview(self, theme_data, force_page=False):
+        """
+        Generate a preview of a theme.
+
+        ``theme_data``
+            The theme to generated a preview for.
+
+        ``force_page``
+            Flag to tell message lines per page need to be generated.
+        """
+        log.debug(u'generate preview')
+        # save value for use in format_slide
+        self.force_page = force_page
+        # set the default image size for previews
+        self._calculate_default(self.screens.preview[u'size'])
+        # build a service item to generate preview
+        serviceItem = ServiceItem()
+        serviceItem.theme = theme_data
+        if self.force_page:
+            # make big page for theme edit dialog to get line count
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+        else:
+            self.image_manager.del_image(theme_data.theme_name)
+            serviceItem.add_from_text(u'', VERSE, FOOTER)
+        serviceItem.renderer = self
+        serviceItem.raw_footer = FOOTER
+        serviceItem.render(True)
+        if not self.force_page:
+            self.display.buildHtml(serviceItem)
+            raw_html = serviceItem.get_rendered_frame(0)
+            preview = self.display.text(raw_html)
+            # Reset the real screen size for subsequent render requests
+            self._calculate_default(self.screens.current[u'size'])
+            return preview
+
+    def format_slide(self, text, line_break, item):
+        """
+        Calculate how much text can fit on a slide.
+
+        ``text``
+            The words to go on the slides.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+        """
+        print [text]
+        log.debug(u'format slide')
+        # clean up line endings
+        lines = self._lines_split(text)
+        pages = self._paginate_slide(lines, line_break, self.force_page)
+        if len(pages) > 1:
+            # Songs and Custom
+            if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+                # do not forget the line breaks !
+                slides = text.split(u'\n[---]\n')
+                pages = []
+                for slide in slides:
+                    lines = self._lines(slide)
+                    new_pages = self._paginate_slide(lines, line_break,
+                        self.force_page)
+                    for page in new_pages:
+                        pages.append(page)
+#            # Bibles
+            elif item.is_capable(ItemCapabilities.AllowsWordSplit):
+                pages = self._paginate_slide_words(text, line_break)
+        return pages
+
+    def _calculate_default(self, screen):
+        """
+        Calculate the default dimentions of the screen.
+
+        ``screen``
+            The QSize of the screen.
+        """
+        log.debug(u'calculate default %s', screen)
+        self.width = screen.width()
+        self.height = screen.height()
+        self.screen_ratio = float(self.height) / float(self.width)
+        log.debug(u'calculate default %d, %d, %f',
+            self.width, self.height, self.screen_ratio)
+        # 90% is start of footer
+        self.footer_start = int(self.height * 0.90)
+
+    def _build_text_rectangle(self, theme):
+        """
+        Builds a text block using the settings in ``theme``
+        and the size of the display screen.height.
+
+        ``theme``
+            The theme to build a text block for.
+        """
+        log.debug(u'_build_text_rectangle')
+        main_rect = None
+        footer_rect = None
+        if not theme.font_main_override:
+            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+        else:
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
+        if not theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+                self.height - self.footer_start)
+        else:
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
+        self._set_text_rectangle(main_rect, footer_rect)
+
+    def _set_text_rectangle(self, rect_main, rect_footer):
         """
         Sets the rectangle within which text should be rendered.
 
@@ -77,9 +292,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._theme.font_main_shadow:
-            self.page_width -= int(self._theme.font_main_shadow_size)
-            self.page_height -= int(self._theme.font_main_shadow_size)
+        if self.theme_data.font_main_shadow:
+            self.page_width -= int(self.theme_data.font_main_shadow_size)
+            self.page_height -= int(self.theme_data.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -89,16 +304,16 @@ class Renderer(object):
             u'*{margin: 0; padding: 0; border: 0;} '\
             u'#main {position:absolute; top:0px; %s %s}</style><body>' \
             u'<div id="main">' % \
-            (build_lyrics_format_css(self._theme, self.page_width,
-            self.page_height), build_lyrics_outline_css(self._theme))
+            (build_lyrics_format_css(self.theme_data, self.page_width,
+            self.page_height), build_lyrics_outline_css(self.theme_data))
 
-    def format_slide(self, words, line_break, force_page=False):
+    def _paginate_slide(self, lines, line_break, force_page=False):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
-        ``words``
-            The words to be fitted on the slide.
+        ``lines``
+            The words to be fitted on the slide split into lines.
 
         ``line_break``
             Add line endings after each line of text used for bibles.
@@ -111,23 +326,16 @@ class Renderer(object):
         line_end = u''
         if line_break:
             line_end = u'<br>'
-        words = words.replace(u'\r\n', u'\n')
-        verses_text = words.split(u'\n')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u'\n')
-            for line in lines:
-                text.append(line)
         formatted = []
         html_text = u''
         styled_text = u''
         line_count = 0
-        for line in text:
+        for line in lines:
             if line_count != -1:
                 line_count += 1
             styled_line = expand_tags(line) + line_end
             styled_text += styled_line
-            html = self.page_shell + styled_text + u'</div></body></html>'
+            html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
@@ -145,3 +353,125 @@ class Renderer(object):
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
+
+    def _paginate_slide_words(self, text, line_break):
+        """
+        Figure out how much text can appear on a slide, using the current
+        theme settings. This version is to handle text which needs to be split
+        into words to get it to fit.
+
+        ``text``
+            The words to be fitted on the slide split into lines.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+
+        """
+        print [text]
+        log.debug(u'format_slide - Start')
+        line_end = u''
+        if line_break:
+            line_end = u'<br>'
+        formatted = []
+        html_text = u''
+        styled_text = u''
+        line_count = 0
+        force_current = False
+        lines = self._lines(text, u'[---]')
+        previous_line = u''
+        # Loop through the lines
+        for line in lines:
+            line_count += 1
+            styled_line = expand_tags(line)
+            styled_line = line_end + styled_line
+            previous_line = line
+            previous_styled = styled_line
+            styled_text += styled_line
+            html = self.page_shell + styled_text + HTML_END
+            self.web.setHtml(html)
+            # Text too long so go to next page
+            print self.web_frame.contentsSize().height() , self.page_height, [line]
+            if self.web_frame.contentsSize().height() > self.page_height:
+                # we have more than 1 verse on the slide
+                print "A", line_count
+                print "AA", [previous_line]
+                print "AAA", [styled_text]
+                if line_count > 1:
+                    if html_text.endswith(u'<br>'):
+                        html_text = html_text[:len(html_text)-4]
+                    formatted.append(html_text + line_end)
+                    line = previous_line
+                    line_count = 1
+                    html_text = u''
+                    print "c", [html_text]
+                if line_count == 1:
+                    line_count = 0
+                    words = self._words_split(line)
+                    styled_text = u''
+                    styled_line = u''
+                    for word in words:
+                        styled_word = expand_tags(word)
+                        styled_text += styled_word
+                        html = self.page_shell + styled_text + HTML_END
+                        self.web.setHtml(html)
+                        # Text too long so go to next page
+                        print self.web_frame.contentsSize().height() , self.page_height, [line]
+                        if self.web_frame.contentsSize().height() > self.page_height:
+                            if html_text.endswith(u'<br>'):
+                                html_text = html_text[:len(html_text)-4]
+                            formatted.append(html_text + line_break)
+                            html_text = u''
+                            styled_text = u''
+                        html_text += word
+                    a=1
+            else:
+                styled_text = styled_line
+                html_text += line + line_end
+                previous_line = line
+        if html_text.endswith(u'<br>'):
+            html_text = html_text[:len(html_text)-4]
+        formatted.append(html_text)
+        log.debug(u'format_slide - End')
+        return formatted
+
+    def _lines(self, words, split=u'n[---]n'):
+        """
+        Split the slide up by physical line
+        """
+        # this parse we do not want to use this so remove it
+        #words = words.replace(split, u'')
+        verses_text = words.split(u'\n')
+        text = []
+        for verse in verses_text:
+            lines = verse.split(u'\n')
+            for line in lines:
+                text.append(line)
+        return text
+
+    def _words_split(self, words):
+        """
+        Split the slide up by word so can wrap better
+        """
+        # this parse we are to be wordy
+        words = words.replace(u'\n', u' ')
+        verses_text = words.split(u' ')
+        text = []
+        for verse in verses_text:
+            lines = verse.split(u' ')
+            for line in lines:
+                text.append(line + u' ')
+        return text
+
+    def _lines_split(self, text):
+        """
+        Split the slide up by physical line
+        """
+        # this parse we do not want to use this so remove it
+        lines = text.split(u'\n')
+        real_lines = []
+        for line in lines:
+            line = line.replace(u' [---]', u'[---]')
+            sub_lines = line.split(u'\n')
+            for sub_line in sub_lines:
+                real_lines.append(sub_line)
+        return real_lines

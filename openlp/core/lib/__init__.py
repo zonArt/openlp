@@ -289,6 +289,5 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from renderer import Renderer
-from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
 from openlp.core.utils.actions import ActionList
