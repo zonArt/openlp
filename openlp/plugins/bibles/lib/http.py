@@ -242,8 +242,7 @@ class BSExtract(object):
             return None
         content = content.findAll(u'li')
         return [
-            books.append(book.contents[0].contents[0])
-            for book in content
+            book.contents[0].contents[0] for book in content
         ]
 
 

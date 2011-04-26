@@ -359,7 +359,7 @@ class BibleUpgradeForm(OpenLPWizard):
             translate('BiblesPlugin.UpgradeWizardForm', 'Delete all old bible '
             'database(s) (including not upgraded bibles)'))
         self.progressLabelAfter.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', '\nIf OpenLP should '
+            translate('BiblesPlugin.UpgradeWizardForm', 'If OpenLP should '
             'delete the old bible databases please choose:'))
 
     def validateCurrentPage(self):
