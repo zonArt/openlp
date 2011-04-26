@@ -241,10 +241,10 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.findAll(u'li')
-        books = []
-        for book in content:
+        return [
             books.append(book.contents[0].contents[0])
-        return books
+            for book in content
+        ]
 
 
 class CWExtract(object):
@@ -507,12 +507,15 @@ class HTTPBible(BibleDB):
         log.debug(u'HTTPBible.get_books("%s")', Book.name)
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
-    def get_chapter_count(self, book_id):
+    def get_chapter_count(self, book):
         """
         Return the number of chapters in a particular book.
+        
+        ``book``
+        The book object to get the chapter count for.
         """
-        log.debug(u'HTTPBible.get_chapter_count("%s")', book_id)
-        return BiblesResourcesDB.get_chapter_count(book_id)
+        log.debug(u'HTTPBible.get_chapter_count("%s")', book.name)
+        return BiblesResourcesDB.get_chapter_count(book.book_reference_id)
 
     def get_verse_count(self, book_id, chapter):
         """

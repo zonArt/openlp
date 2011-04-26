@@ -32,6 +32,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import base_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
+from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class BiblePlugin(Plugin):
         #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        self.toolsReimportItem.setVisible(True)
+        self.toolsUpgradeItem.setVisible(True)
 
     def finalise(self):
         """
@@ -90,7 +91,7 @@ class BiblePlugin(Plugin):
 
     def addToolsMenuItem(self, tools_menu):
         """
-        Give the alerts plugin the opportunity to add items to the
+        Give the bible plugin the opportunity to add items to the
         **Tools** menu.
 
         ``tools_menu``
@@ -98,25 +99,28 @@ class BiblePlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReimportItem = QtGui.QAction(tools_menu)
-        self.toolsReimportItem.setObjectName(u'toolsReimportItem')
-        self.toolsReimportItem.setText(
-            translate('BiblePlugin', 'Re-&import older bible databases'))
-        self.toolsReimportItem.setStatusTip(
-            translate('BiblePlugin', 'Re-import the bible databases to addapt '
+        self.toolsUpgradeItem = QtGui.QAction(tools_menu)
+        self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
+        self.toolsUpgradeItem.setText(
+            translate('BiblePlugin', '&Upgrade older bible databases'))
+        self.toolsUpgradeItem.setStatusTip(
+            translate('BiblePlugin', 'Upgrade the bible databases to addapt '
             'the database scheme.'))
-        tools_menu.addAction(self.toolsReimportItem)
-        QtCore.QObject.connect(self.toolsReimportItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsReimportItemTriggered)
-        self.toolsReimportItem.setVisible(False)
+        tools_menu.addAction(self.toolsUpgradeItem)
+        QtCore.QObject.connect(self.toolsUpgradeItem,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsUpgradeItemTriggered)
+        self.toolsUpgradeItem.setVisible(False)
 
-    def onToolsReimportItemTriggered(self):
+    def onToolsUpgradeItemTriggered(self):
         """
-        Re-import older bible databases.
+        Upgrade older bible databases.
         """
-        #self.manager.import_old_bible_databases()
-        if self.mediaItem:
-            self.mediaItem.onReImportClick()
+        if not hasattr(self, u'upgrade_wizard'):
+            self.upgrade_wizard = BibleUpgradeForm(self.formparent, 
+                self.manager, self)
+        # If the import was not cancelled then reload.
+        if self.upgrade_wizard.exec_():
+            self.mediaItem.reloadBibles()
 
     def onBibleImportClick(self):
         if self.mediaItem:

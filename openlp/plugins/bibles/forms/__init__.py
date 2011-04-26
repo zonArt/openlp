@@ -53,6 +53,7 @@ from the .ui files later if necessary.
 from booknameform import BookNameForm
 from languageform import LanguageForm
 from bibleimportform import BibleImportForm
-from biblereimportform import BibleReImportForm
+from bibleupgradeform import BibleUpgradeForm
 
-__all__ = ['BibleImportForm']
+__all__ = [u'BookNameForm', u'LanguageForm', u'BibleImportForm', 
+    u'BibleUpgradeForm']

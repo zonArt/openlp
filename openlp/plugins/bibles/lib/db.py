@@ -35,7 +35,7 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, check_directory_exists
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation
@@ -295,14 +295,14 @@ class BibleDB(QtCore.QObject, Manager):
             The name of the book to return.
         """
         log.debug(u'BibleDB.get_book("%s")', book)
-        db_book = self.get_object_filtered(Book, Book.name.like(book + u'%'))
-        return db_book
+        return self.get_object_filtered(Book, Book.name.like(book + u'%'))
 
     def get_books(self):
         """
         A wrapper so both local and web bibles have a get_books() method that
         manager can call. Used in the media manager advanced search tab.
         """
+        log.debug(u'BibleDB.get_books()')
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
     def get_book_by_book_ref_id(self, id):
@@ -313,9 +313,7 @@ class BibleDB(QtCore.QObject, Manager):
             The reference id of the book to return.
         """
         log.debug(u'BibleDB.get_book_by_book_ref_id("%s")', id)
-        db_book = self.get_object_filtered(Book, 
-            Book.book_reference_id.like(id))
-        return db_book
+        return self.get_object_filtered(Book, Book.book_reference_id.like(id))
 
     def get_book_ref_id_by_name(self, book, language_id=None):
         log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
@@ -421,16 +419,16 @@ class BibleDB(QtCore.QObject, Manager):
         verses = verses.all()
         return verses
 
-    def get_chapter_count(self, book_id):
+    def get_chapter_count(self, book):
         """
         Return the number of chapters in a book.
 
         ``book``
-            The book to get the chapter count for.
+            The book object to get the chapter count for.
         """
-        log.debug(u'BibleDB.get_chapter_count("%s")', book_id)
+        log.debug(u'BibleDB.get_chapter_count("%s")', book.name)
         count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.book_reference_id==book_id)\
+            .filter(Book.name==book.name)\
             .distinct().count()
         if not count:
             return 0
@@ -541,16 +539,16 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_books()')
         books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM book_reference ORDER BY id')
-        book_list = []
-        for book in books:
-            book_list.append({
-                u'id': book[0],
-                u'testament_id': book[1],
-                u'name': unicode(book[2]),
-                u'abbreviation': unicode(book[3]),
-                u'chapters': book[4]
-            })
-        return book_list
+        return [
+            {
+            u'id': book[0],
+            u'testament_id': book[1],
+            u'name': unicode(book[2]),
+            u'abbreviation': unicode(book[3]),
+            u'chapters': book[4]
+            }
+            for book in books
+        ]
 
     @staticmethod
     def get_book(name):
@@ -700,16 +698,16 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             u'language_id, download_source_id FROM webbibles WHERE '
             u'download_source_id = ?', (source[u'id'],))
         if bibles:
-            bibles_temp = []
-            for bible in bibles:
-                bibles_temp.append({
-                    u'id': bible[0],
-                    u'name': bible[1],
-                    u'abbreviation': bible[2],
-                    u'language_id': bible[3], 
-                    u'download_source_id': bible[4]
-                    })
-            return bibles_temp
+            return [
+                {
+                u'id': bible[0],
+                u'name': bible[1],
+                u'abbreviation': bible[2],
+                u'language_id': bible[3], 
+                u'download_source_id': bible[4]
+                }
+                for bible in bibles
+            ]
         else:
             return None
 
@@ -736,14 +734,13 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             u'download_source_id = ? AND abbreviation = ?', (source[u'id'], 
             abbreviation))
         if bible:
-            bibles_temp = {
+            return {
                 u'id': bible[0][0],
                 u'name': bible[0][1],
                 u'abbreviation': bible[0][2],
                 u'language_id': bible[0][3], 
                 u'download_source_id': bible[0][4]
                 }
-            return bibles_temp
         else:
             return None
 
@@ -806,14 +803,14 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         languages = BiblesResourcesDB.run_sql(u'SELECT id, name, code FROM '
                 u'language ORDER by name')
         if languages:
-            languages_temp = []
-            for language in languages:
-                languages_temp.append({
-                    u'id': language[0],
-                    u'name': unicode(language[1]),
-                    u'code': unicode(language[2])
-                })
-            return languages_temp
+            return [
+                {
+                u'id': language[0],
+                u'name': unicode(language[1]),
+                u'code': unicode(language[2])
+                }
+                for language in languages
+            ]
         else:
             return None
 
@@ -825,13 +822,13 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_testament_reference()')
         testaments = BiblesResourcesDB.run_sql(u'SELECT id, name FROM '
                 u'testament_reference ORDER BY id')
-        testament_list = []
-        for testament in testaments:
-            testament_list.append({
-                u'id': testament[0],
-                u'name': unicode(testament[1])
-            })
-        return testament_list
+        return [
+            {
+            u'id': testament[0],
+            u'name': unicode(testament[1])
+            }
+            for testament in testaments
+        ]
 
 
 class AlternativeBookNamesDB(QtCore.QObject, Manager):
@@ -849,12 +846,8 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         database doesn't exist.
         """
         if AlternativeBookNamesDB.cursor is None:
-            if not os.path.exists(os.path.join(
-                AppLocation.get_directory(AppLocation.DataDir), u'bibles',
-                    u'resources')):
-                os.mkdir(os.path.join(
-                    AppLocation.get_directory(AppLocation.DataDir), u'bibles',
-                        u'resources'))
+            check_directory_exists(os.path.join(AppLocation.get_directory(
+                AppLocation.DataDir), u'bibles', u'resources'))
             filepath = os.path.join(
                 AppLocation.get_directory(AppLocation.DataDir), u'bibles',
                     u'resources', u'alternative_book_names.sqlite')
@@ -933,10 +926,9 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         """
         log.debug(u'AlternativeBookNamesDB.create_alternative_book_name("%s", '
             '"%s", "%s"', name, book_reference_id, language_id)
-        alternative_book_name = AlternativeBookNamesDB.run_sql(u'INSERT INTO '
+        return AlternativeBookNamesDB.run_sql(u'INSERT INTO '
             u'alternative_book_names(book_reference_id, language_id, name) '
             u'VALUES (?, ?, ?)', (book_reference_id, language_id, name), True)
-        return alternative_book_name
 
 
 class OldBibleDB(QtCore.QObject, Manager):
@@ -1014,15 +1006,15 @@ class OldBibleDB(QtCore.QObject, Manager):
         metadata = self.run_sql(u'SELECT key, value FROM metadata '
             u'ORDER BY rowid')
         if metadata:
-            metadata_list = []
-            for meta in metadata:
-                metadata_list.append({
-                    u'key': unicode(meta[0]),
-                    u'value': unicode(meta[1])
-                })
+            return [
+                {
+                u'key': unicode(meta[0]),
+                u'value': unicode(meta[1])
+                }
+                for meta in metadata
+            ]
         else:
-            metadata_list = None
-        return metadata_list
+            return None
 
     def get_books(self):
         """
@@ -1030,15 +1022,16 @@ class OldBibleDB(QtCore.QObject, Manager):
         """
         books = self.run_sql(u'SELECT name, id FROM book ORDER BY id')
         if books:
+            return [
+                {
+                u'name': unicode(book[0]),
+                u'id':int(book[1])
+                }
+                for book in books
+            ]
             book_list = []
-            for book in books:
-                book_list.append({
-                    u'name': unicode(book[0]),
-                    u'id':int(book[1])
-                })
         else:
-            book_list = None
-        return book_list
+            return None
 
     def get_verses(self, book_id):
         """
@@ -1047,15 +1040,14 @@ class OldBibleDB(QtCore.QObject, Manager):
         verses = self.run_sql(u'SELECT book_id, chapter, verse, text FROM '
             u'verse WHERE book_id = ? ORDER BY id', (book_id, ))
         if verses:
-            verse_list = []
-            for verse in verses:
-                verse_list.append({
-                    u'book_id': int(verse[0]),
-                    u'chapter': int(verse[1]),
-                    u'verse': int(verse[2]),
-                    u'text': unicode(verse[3])
-                })
+            return [
+                {
+                u'book_id': int(verse[0]),
+                u'chapter': int(verse[1]),
+                u'verse': int(verse[2]),
+                u'text': unicode(verse[3])
+                }
+                for verse in verses
+            ]
         else:
-            verse_list = None
-        return verse_list
-
+            return None

@@ -208,23 +208,27 @@ class BibleManager(object):
             Unicode. The Bible to get the list of books from.
         """
         log.debug(u'BibleManager.get_books("%s")', bible)
-        language_id = self.get_meta_data(bible, u'language_id')
-        books = []
-        for book in self.db_cache[bible].get_books():
-            books.append(
+        return [
             {
-                u'name': book.name,
-                u'chapters': self.db_cache[bible].get_chapter_count(
-                    book.book_reference_id)
-            })
-        return books
+            u'name': book.name,
+            u'chapters': self.db_cache[bible].get_chapter_count(
+                book)
+            }
+            for book in self.db_cache[bible].get_books()
+        ]
 
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.
+        
+        ``bible``
+            Unicode. The Bible to get the list of books from.
+        
+        ``book``
+            The book object to get the chapter count for.
         """
         log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible,
-            book)
+            book.name)
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):

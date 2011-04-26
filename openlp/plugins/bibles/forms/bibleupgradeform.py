@@ -45,12 +45,12 @@ from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 log = logging.getLogger(__name__)
 
 
-class BibleReImportForm(OpenLPWizard):
+class BibleUpgradeForm(OpenLPWizard):
     """
-    This is the Bible ReImport Wizard, which allows easy importing of Bibles
+    This is the Bible Upgrade Wizard, which allows easy importing of Bibles
     into OpenLP from older OpenLP2 database versions.
     """
-    log.info(u'BibleReImportForm loaded')
+    log.info(u'BibleUpgradeForm loaded')
 
     def __init__(self, parent, manager, bibleplugin):
         """
@@ -66,7 +66,7 @@ class BibleReImportForm(OpenLPWizard):
             The Bible plugin.
         """
         self.manager = manager
-        self.parent = parent
+        self.mediaItem = bibleplugin.mediaItem
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles/bibles'
         self.oldsettingsSection = u'bibles'
@@ -80,7 +80,7 @@ class BibleReImportForm(OpenLPWizard):
         self.newbibles = {}
         self.maxBibles = len(self.files)
         self.stop_import_flag = False
-        OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleImportWizard',
+        OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleUpgradeWizard',
             u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
@@ -113,7 +113,7 @@ class BibleReImportForm(OpenLPWizard):
 
     def onCheckBoxIndexChanged(self, index):
         '''
-        Some cleanup while finishing
+        Show/ Hide warnings if CheckBox state has changed
         '''
         for number, filename in enumerate(self.files):
             if not self.checkBox[number].checkState() == 2:
@@ -121,8 +121,8 @@ class BibleReImportForm(OpenLPWizard):
                 self.formWidget[number].hide()
             else:
                 if os.path.exists(os.path.join(self.newpath, filename)):
-                    self.verticalWidget[number].setVisible(1)
-                    self.formWidget[number].setVisible(1)
+                    self.verticalWidget[number].show()
+                    self.formWidget[number].show()
 
     def reject(self):
         """
@@ -161,7 +161,7 @@ class BibleReImportForm(OpenLPWizard):
 
     def customInit(self):
         """
-        Perform any custom initialisation for bible importing.
+        Perform any custom initialisation for bible upgrading.
         """
         self.manager.set_process_dialog(self)
         self.restart()
@@ -213,7 +213,7 @@ class BibleReImportForm(OpenLPWizard):
         self.formWidget = {}
         self.formLayoutAttention = {}
         for number, filename in enumerate(self.files):
-            bible = OldBibleDB(self.parent, path=self.oldpath, file=filename)
+            bible = OldBibleDB(self.mediaItem, path=self.oldpath, file=filename)
             self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
             checkBoxName = u'checkBox['+unicode(number)+u']'
             self.checkBox[number].setObjectName(checkBoxName)
@@ -233,7 +233,7 @@ class BibleReImportForm(OpenLPWizard):
             versionInfoPixmapName = u'versionInfoPixmap['+unicode(number)+u']'
             self.versionInfoPixmap[number].setObjectName(versionInfoPixmapName)
             self.versionInfoPixmap[number].setPixmap(QtGui.QPixmap(
-                u':/bibles/bibles_reimport_alert.png'))
+                u':/bibles/bibles_upgrade_alert.png'))
             self.versionInfoPixmap[number].setAlignment(QtCore.Qt.AlignRight)
             self.horizontalLayout[number].addWidget(
                 self.versionInfoPixmap[number])
@@ -325,41 +325,41 @@ class BibleReImportForm(OpenLPWizard):
         """
         Allow for localisation of the bible import wizard.
         """
-        self.setWindowTitle(translate('BiblesPlugin.ReImportWizardForm', 
-            'Bible ReImport Wizard'))
+        self.setWindowTitle(translate('BiblesPlugin.UpgradeWizardForm', 
+            'Bible Upgrade Wizard'))
         self.titleLabel.setText(WizardStrings.HeaderStyle %
-            translate('OpenLP.Ui', 'Welcome to the Bible ReImport Wizard'))
+            translate('OpenLP.Ui', 'Welcome to the Bible Upgrade Wizard'))
         self.informationLabel.setText(
-            translate('BiblesPlugin.ReImportWizardForm',
-            'This wizard will help you to reimport your existing Bibles from a '
+            translate('BiblesPlugin.UpgradeWizardForm',
+            'This wizard will help you to upgrade your existing Bibles from a '
             'prior version of OpenLP 2. Click the next button below to start '
-            'the process by selecting the bibles to reimport.'))
+            'the process by selecting the bibles to upgrade.'))
         self.selectPage.setTitle(
-            translate('BiblesPlugin.ReImportWizardForm',
+            translate('BiblesPlugin.UpgradeWizardForm',
             'Please choose'))
         self.selectPage.setSubTitle(
-            translate('BiblesPlugin.ReImportWizardForm',
-            'Please choose the bibles which should be reimported'))
+            translate('BiblesPlugin.UpgradeWizardForm',
+            'Please choose the bibles which should be upgraded'))
         for number, bible in enumerate(self.files):
             self.versionNameLabel[number].setText(
-                translate('BiblesPlugin.ReImportWizardForm', 'Version name:'))
+                translate('BiblesPlugin.UpgradeWizardForm', 'Version name:'))
             self.versionInfoLabel[number].setText(
-                translate('BiblesPlugin.ReImportWizardForm', 'This '
+                translate('BiblesPlugin.UpgradeWizardForm', 'This '
                 'bible still exists. Please change the name or uncheck it.'))
         self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
-            translate('BiblesPlugin.ReImportWizardForm',
-            'Please wait while your Bibles are imported.'))
+            translate('BiblesPlugin.UpgradeWizardForm',
+            'Please wait while your Bibles are upgraded.'))
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(u'%p%')
         self.deleteCheckBox.setText(
-            translate('BiblesPlugin.ReImportWizardForm', 'Delete old bible '
-            'database(s) from bibles which was imported\nsucessful right now'))
+            translate('BiblesPlugin.UpgradeWizardForm', 'Delete old bible '
+            'database(s) from bibles which was upgraded\nsucessful right now'))
         self.deleteAllCheckBox.setText(
-            translate('BiblesPlugin.ReImportWizardForm', 'Delete all old bible '
-            'database(s) (including not imported bibles)'))
+            translate('BiblesPlugin.UpgradeWizardForm', 'Delete all old bible '
+            'database(s) (including not upgraded bibles)'))
         self.progressLabelAfter.setText(
-            translate('BiblesPlugin.ReImportWizardForm', '\nIf OpenLP should '
+            translate('BiblesPlugin.UpgradeWizardForm', '\nIf OpenLP should '
             'delete the old bible databases please choose:'))
 
     def validateCurrentPage(self):
@@ -373,21 +373,21 @@ class BibleReImportForm(OpenLPWizard):
                 if not self.checkBox[number].checkState() == 2:
                     continue
                 version_name = unicode(self.versionNameEdit[number].text())
-                oldbible = OldBibleDB(self.parent, path=self.oldpath, 
+                oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
                     file=filename)
                 oldname = oldbible.get_name()
                 if not version_name:
                     critical_error_message_box(UiStrings().EmptyField,
-                        translate('BiblesPlugin.ReImportWizardForm',
+                        translate('BiblesPlugin.UpgradeWizardForm',
                         'You need to specify a version name for your Bible.'))
                     self.versionNameEdit[number].setFocus()
                     return False
                 elif self.manager.exists(version_name):
                     critical_error_message_box(
-                        translate('BiblesPlugin.ReImportWizardForm', 
+                        translate('BiblesPlugin.UpgradeWizardForm', 
                             'Bible Exists'),
-                        translate('BiblesPlugin.ReImportWizardForm',
-                        'This Bible already exists. Please import '
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'This Bible already exists. Please upgrade '
                         'a different Bible, delete the existing one or '
                         'uncheck.'))
                     self.versionNameEdit[number].setFocus()
@@ -395,10 +395,10 @@ class BibleReImportForm(OpenLPWizard):
                 elif os.path.exists(os.path.join(self.newpath, filename)) and \
                     version_name == oldname:
                     critical_error_message_box(
-                        translate('BiblesPlugin.ReImportWizardForm', 
+                        translate('BiblesPlugin.UpgradeWizardForm', 
                             'Bible Exists'),
-                        translate('BiblesPlugin.ReImportWizardForm',
-                        'This Bible already exists. Please import '
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'This Bible already exists. Please upgrade '
                         'a different Bible, delete the existing one or '
                         'uncheck.'))
                     self.versionNameEdit[number].setFocus()
@@ -406,10 +406,10 @@ class BibleReImportForm(OpenLPWizard):
                 elif os.path.exists(os.path.join(self.newpath, 
                     self.clean_filename(version_name))):
                     critical_error_message_box(
-                        translate('BiblesPlugin.ReImportWizardForm', 
+                        translate('BiblesPlugin.UpgradeWizardForm', 
                         'Bible Exists'),
-                        translate('BiblesPlugin.ReImportWizardForm',
-                        'This Bible already exists. Please import '
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'This Bible already exists. Please upgrade '
                         'a different Bible, delete the existing one or '
                         'uncheck.'))
                     self.versionNameEdit[number].setFocus()
@@ -422,7 +422,7 @@ class BibleReImportForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        log.debug(u'BibleReImport setDefaults')
+        log.debug(u'BibleUpgrade setDefaults')
         settings = QtCore.QSettings()
         settings.beginGroup(self.plugin.settingsSection)
         self.stop_import_flag = False
@@ -440,8 +440,8 @@ class BibleReImportForm(OpenLPWizard):
         for number, filename in enumerate(self.files):
             self.checkBox[number].setCheckState(2)
             if os.path.exists(os.path.join(self.newpath, filename)):
-                self.verticalWidget[number].setVisible(1)
-                self.formWidget[number].setVisible(1)
+                self.verticalWidget[number].show()
+                self.formWidget[number].show()
             else:
                 self.verticalWidget[number].hide()
                 self.formWidget[number].hide()
@@ -456,24 +456,24 @@ class BibleReImportForm(OpenLPWizard):
 
     def preWizard(self):
         """
-        Prepare the UI for the import.
+        Prepare the UI for the upgrade.
         """
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate(
-            'BiblesPlugin.ImportWizardForm',
-            'Starting Importing bible...'))
+            'BiblesPlugin.UpgradeWizardForm',
+            'Starting upgrading bible(s)...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):
         """
-        Perform the actual import.
+        Perform the actual upgrade.
         """
         include_webbible = False
         proxy_server = None
         if self.maxBibles == 0:
             self.progressLabel.setText(
-                translate('BiblesPlugin.ReImportWizardForm', 'Sorry, but OpenLP'
-                    ' could not find a Bible to reimport.'))
+                translate('BiblesPlugin.UpgradeWizardForm', 'Sorry, but OpenLP'
+                    ' could not find a Bible to upgrade.'))
             self.progressBar.hide()
             return
         self.maxBibles = 0
@@ -487,24 +487,25 @@ class BibleReImportForm(OpenLPWizard):
             if not self.checkBox[biblenumber].checkState() == 2:
                 continue
             self.progressBar.reset()
-            oldbible = OldBibleDB(self.parent, path=self.oldpath, file=filename)
+            oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
+                file=filename)
             name = oldbible.get_name()
             if name is None:
                 delete_file(os.path.join(self.oldpath, filename))
                 self.incrementProgressBar(unicode(translate(
-                    'BiblesPlugin.ReImportWizardForm', 
-                    'Reimporting Bible %s of %s: "%s"\nFailed')) % 
+                    'BiblesPlugin.UpgradeWizardForm', 
+                    'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                     (number+1, self.maxBibles, name), 
                     self.progressBar.maximum()-self.progressBar.value())
                 number += 1
                 continue
             self.progressLabel.setText(unicode(translate(
-                'BiblesPlugin.ReImportWizardForm', 
-                'Reimporting Bible %s of %s: "%s"\nImporting ...')) % 
+                'BiblesPlugin.UpgradeWizardForm', 
+                'Upgrading Bible %s of %s: "%s"\nImporting ...')) % 
                 (number+1, self.maxBibles, name))
             if os.path.exists(os.path.join(self.newpath, filename)):
                 name = unicode(self.versionNameEdit[biblenumber].text())
-            self.newbibles[number] = BibleDB(self.parent, path=self.oldpath,
+            self.newbibles[number] = BibleDB(self.mediaItem, path=self.oldpath,
                 name=name)
             metadata = oldbible.get_metadata()
             webbible = False
@@ -538,16 +539,16 @@ class BibleReImportForm(OpenLPWizard):
                         clean_filename(self.newbibles[number].get_name())) 
                     del self.newbibles[number]
                     critical_error_message_box(
-                        translate('BiblesPlugin.ReImportWizardForm', 
+                        translate('BiblesPlugin.UpgradeWizardForm', 
                         'Download Error'),
-                        translate('BiblesPlugin.ReImportWizardForm', 
-                        'To Re-Import your webbibles a Internet connection is '
+                        translate('BiblesPlugin.UpgradeWizardForm', 
+                        'To upgrade your webbibles a Internet connection is '
                         'necessary. Please check your Internet connection, and '
                         'if this error continues to occur please consider '
                         'reporting a bug.'))
                     self.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.ReImportWizardForm', 
-                        'Reimporting Bible %s of %s: "%s"\nFailed')) % 
+                        'BiblesPlugin.UpgradeWizardForm', 
+                        'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                         (number+1, self.maxBibles, name), 
                         self.progressBar.maximum()-self.progressBar.value())
                     number += 1
@@ -562,14 +563,14 @@ class BibleReImportForm(OpenLPWizard):
                 else:
                     language_id = self.newbibles[number].get_language()
                 if not language_id:
-                    log.exception(u'Re-Importing from "%s" '\
+                    log.exception(u'Upgrading from "%s" '\
                         'failed' % filename)
                     delete_database(self.newpath, self.newbibles[number].\
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.ReImportWizardForm', 
-                        'Reimporting Bible %s of %s: "%s"\nFailed')) % 
+                        'BiblesPlugin.UpgradeWizardForm', 
+                        'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                         (number+1, self.maxBibles, name),
                         self.progressBar.maximum()-self.progressBar.value())
                     number += 1
@@ -577,8 +578,8 @@ class BibleReImportForm(OpenLPWizard):
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     self.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.ReImportWizardForm', 
-                        'Reimporting Bible %s of %s: "%s"\n'
+                        'BiblesPlugin.UpgradeWizardForm', 
+                        'Upgrading Bible %s of %s: "%s"\n'
                         'Importing %s ...')) % 
                         (number+1, self.maxBibles, name, book))
                     book_ref_id = self.newbibles[number].\
@@ -608,8 +609,8 @@ class BibleReImportForm(OpenLPWizard):
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.ReImportWizardForm', 
-                        'Reimporting Bible %s of %s: "%s"\nFailed')) % 
+                        'BiblesPlugin.UpgradeWizardForm', 
+                        'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                         (number+1, self.maxBibles, name), 
                         self.progressBar.maximum()-self.progressBar.value())
                     number += 1
@@ -618,8 +619,8 @@ class BibleReImportForm(OpenLPWizard):
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     self.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.ReImportWizardForm', 
-                        'Reimporting Bible %s of %s: "%s"\n'
+                        'BiblesPlugin.UpgradeWizardForm', 
+                        'Upgrading Bible %s of %s: "%s"\n'
                         'Importing %s ...')) % 
                         (number+1, self.maxBibles, name, book[u'name']))
                     book_ref_id = self.newbibles[number].\
@@ -643,19 +644,19 @@ class BibleReImportForm(OpenLPWizard):
                         Receiver.send_message(u'openlp_process_events')
             if not bible_failed:
                 self.incrementProgressBar(unicode(translate(
-                    'BiblesPlugin.ReImportWizardForm', 
-                    'Reimporting Bible %s of %s: "%s"\n'
+                    'BiblesPlugin.UpgradeWizardForm', 
+                    'Upgrading Bible %s of %s: "%s"\n'
                     'Done')) % 
                     (number+1, self.maxBibles, name))
                 self.success[biblenumber] = True
             else:
                 self.incrementProgressBar(unicode(translate(
-                    'BiblesPlugin.ReImportWizardForm', 
-                    'Reimporting Bible %s of %s: "%s"\nFailed')) % 
+                    'BiblesPlugin.UpgradeWizardForm', 
+                    'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                     (number+1, self.maxBibles, name), 
                     self.progressBar.maximum()-self.progressBar.value())
             number += 1
-        self.parent.reloadBibles()
+        self.mediaItem.reloadBibles()
         successful_import = 0
         failed_import = 0
         for number, success in self.success.iteritems():
@@ -665,34 +666,34 @@ class BibleReImportForm(OpenLPWizard):
                 failed_import += 1
         if failed_import > 0:
             failed_import_text = unicode(translate(
-                'BiblesPlugin.ReImportWizardForm', 
-                ' - %s reimport fail')) % failed_import
+                'BiblesPlugin.UpgradeWizardForm', 
+                ' - %s upgrade fail')) % failed_import
         else:
             failed_import_text = u''
         if successful_import > 0:
             if include_webbible:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.ReImportWizardForm', 'Reimport %s '
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
                     'bible(s) successful%s.\nPlease note, that verses from '
                     'webbibles will be downloaded\non demand and thus an '
                     'internet connection is required.')) % 
                     (successful_import, failed_import_text))
             else:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.ReImportWizardForm', 'Reimport %s '
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
                     'bible(s) successful.%s')) % (successful_import, 
                     failed_import_text))
-            self.deleteCheckBox.setVisible(1)
+            self.deleteCheckBox.show()
             bibles = u''
             for bible in self.newbibles.itervalues():
                 name = bible.get_name()
                 bibles += u'\n"' + name + u'"'
             self.deleteCheckBox.setToolTip(unicode(translate(
-                'BiblesPlugin.ReImportWizardForm', 
-                'Sucessful imported bible(s):%s')) % bibles)
+                'BiblesPlugin.UpgradeWizardForm', 
+                'Sucessful upgraded bible(s):%s')) % bibles)
         else:
             self.progressLabel.setText(
-                    translate('BiblesPlugin.ReImportWizardForm', 'Reimport '
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade '
                     'failed.'))
-        self.progressLabelAfter.setVisible(1)
-        self.deleteAllCheckBox.setVisible(1)
+        self.progressLabelAfter.show()
+        self.deleteAllCheckBox.show()
