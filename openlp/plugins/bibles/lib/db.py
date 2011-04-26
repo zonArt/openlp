@@ -78,7 +78,7 @@ def init_schema(url):
 
     book_table = Table(u'book', metadata,
         Column(u'id', types.Integer, primary_key=True),
-        Column(u'book_reference_id', types.Integer),
+        Column(u'book_reference_id', types.Integer, index=True),
         Column(u'testament_reference_id', types.Integer),
         Column(u'name', types.Unicode(50), index=True),
     )
@@ -428,7 +428,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book.name)
         count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.name==book.name)\
+            .filter(Book.book_reference_id==book.book_reference_id)\
             .distinct().count()
         if not count:
             return 0
