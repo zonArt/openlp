@@ -365,8 +365,6 @@ class Renderer(object):
             Add line endings after each line of text used for bibles.
 
         """
-        # TODO: Make sure spaces are striped so that they will not confuse
-        # rendering. for instance when the style is set to Verse per Line:
         # In the beginning ...
         # <space> <!-- here we could have added the second verse -->
         # <new slide>
@@ -392,7 +390,8 @@ class Renderer(object):
                         HTML_END
                     self.web.setHtml(html)
                     # Text too long so go to next page
-                    if self.web_frame.contentsSize().height() > self.page_height:
+                    if self.web_frame.contentsSize().height() > \
+                        self.page_height:
                         previous_raw = previous_raw.rstrip(u'<br>')
                         formatted.append(previous_raw)
                         previous_html = u''
@@ -409,13 +408,12 @@ class Renderer(object):
         log.debug(u'_paginate_slide_words - End')
         return formatted
 
-    def _lines(self, words, split=u'n[---]n'):
+    def _lines(self, text, split=u'\n[---]\n'):
         """
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        #words = words.replace(split, u'')
-        verses_text = words.split(u'\n')
+        verses_text = text.split(u'\n')
         text = []
         for verse in verses_text:
             lines = verse.split(u'\n')
@@ -423,13 +421,13 @@ class Renderer(object):
 
         return text
 
-    def _words_split(self, words):
+    def _words_split(self, line):
         """
         Split the slide up by word so can wrap better
         """
         # this parse we are to be wordy
-        words = words.replace(u'\n', u' ')
-        verses_text = words.split(u' ')
+        line = line.replace(u'\n', u' ')
+        verses_text = line.split(u' ')
         text = []
         for verse in verses_text:
             lines = verse.split(u' ')
