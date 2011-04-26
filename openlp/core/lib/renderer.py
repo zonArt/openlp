@@ -217,22 +217,22 @@ class Renderer(object):
         log.debug(u'format slide')
         # clean up line endings
         lines = self._lines_split(text)
-        pages = self._paginate_slide(lines, line_break, self.force_page)
-        if len(pages) > 1:
-            # Songs and Custom
-            if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-                # do not forget the line breaks !
-                slides = text.split(u'\n[---]\n')
-                pages = []
-                for slide in slides:
-                    lines = self._lines(slide)
-                    new_pages = self._paginate_slide(lines, line_break,
-                        self.force_page)
-                    for page in new_pages:
-                        pages.append(page)
-#            # Bibles
-            elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-                pages = self._paginate_slide_words(text, line_break)
+        # Songs and Custom
+        if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+            # Do not forget the line breaks !
+            slides = text.split(u'\n[---]\n')
+            pages = []
+            for slide in slides:
+                lines = self._lines(slide)
+                new_pages = self._paginate_slide(lines, line_break,
+                    self.force_page)
+                pages.extend([page for page in new_pages])
+        # Bibles
+        elif item.is_capable(ItemCapabilities.AllowsWordSplit):
+            pages = self._paginate_slide_words(text, line_break)
+        # Theme preview "service items".
+        else:
+            pages = self._paginate_slide(lines, line_break, self.force_page)
         return pages
 
     def _calculate_default(self, screen):
@@ -316,13 +316,13 @@ class Renderer(object):
             The words to be fitted on the slide split into lines.
 
         ``line_break``
-            Add line endings after each line of text used for bibles.
+            Add line endings after each line of text (used for bibles).
 
         ``force_page``
             Flag to tell message lines in page.
 
         """
-        log.debug(u'format_slide - Start')
+        log.debug(u'_paginate_slide - Start')
         line_end = u''
         if line_break:
             line_end = u'<br>'
@@ -342,16 +342,14 @@ class Renderer(object):
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
                 line_count = -1
-                if html_text.endswith(u'<br>'):
-                    html_text = html_text[:len(html_text)-4]
+                html_text = html_text.rstrip(u'<br>')
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        if html_text.endswith(u'<br>'):
-            html_text = html_text[:len(html_text)-4]
+        html_text = html_text.rstrip(u'<br>')
         formatted.append(html_text)
-        log.debug(u'format_slide - End')
+        log.debug(u'_paginate_slide - End')
         return formatted
 
     def _paginate_slide_words(self, text, line_break):
@@ -367,72 +365,48 @@ class Renderer(object):
             Add line endings after each line of text used for bibles.
 
         """
-        print "st", [text]
-        log.debug(u'format_slide - Start')
+        # TODO: Make sure spaces are striped so that they will not confuse
+        # rendering. for instance when the style is set to Verse per Line:
+        # In the beginning ...
+        # <space> <!-- here we could have added the second verse -->
+        # <new slide>
+        # Verse 2
+        log.debug(u'_paginate_slide_words - Start')
         line_end = u''
         if line_break:
             line_end = u'<br>'
         formatted = []
-        html_text = u''
-        styled_text = u''
-        line_count = 0
-        force_current = False
+        previous_html = u''
+        previous_raw = u''
         lines = self._lines(text, u'[---]')
-        previous_line = u''
-        # Loop through the lines
         for line in lines:
-            line_count += 1
             styled_line = expand_tags(line)
-            styled_line = line_end + styled_line
-            previous_line = line
-            previous_styled = styled_line
-            styled_text += styled_line
-            html = self.page_shell + styled_text + HTML_END
+            html = self.page_shell + previous_html + styled_line + HTML_END
             self.web.setHtml(html)
             # Text too long so go to next page
-            print self.web_frame.contentsSize().height() , self.page_height, [line]
             if self.web_frame.contentsSize().height() > self.page_height:
-                # we have more than 1 verse on the slide and it does not fit!
-                # Save the previous line as it fits on the page.
-                print "A", line_count
-                print "AA", [previous_line]
-                print "AAA", [styled_text]
-                if line_count > 1:
-                    if html_text.endswith(u'<br>'):
-                        html_text = html_text[:len(html_text)-4]
-                    formatted.append(html_text + line_end)
-                    line = previous_line
-                    line_count = 1
-                    html_text = u''
-                    print "c", [html_text]
-                if line_count == 1:
-                    line_count = 0
-                    words = self._words_split(line)
-                    styled_text = u''
-                    styled_line = u''
-                    for word in words:
-                        styled_word = expand_tags(word)
-                        styled_text += styled_word
-                        html = self.page_shell + styled_text + HTML_END
-                        self.web.setHtml(html)
-                        # Text too long so go to next page
-                        print self.web_frame.contentsSize().height() , self.page_height, [line]
-                        if self.web_frame.contentsSize().height() > self.page_height:
-                            if html_text.endswith(u'<br>'):
-                                html_text = html_text[:len(html_text)-4]
-                            formatted.append(html_text + line_break)
-                            html_text = u''
-                            styled_text = u''
-                        html_text += word
-                    a=1
+                words = self._words_split(line)
+                for word in words:
+                    styled_word = expand_tags(word)
+                    html = self.page_shell + previous_html + styled_word + \
+                        HTML_END
+                    self.web.setHtml(html)
+                    # Text too long so go to next page
+                    if self.web_frame.contentsSize().height() > self.page_height:
+                        previous_raw = previous_raw.rstrip(u'<br>')
+                        formatted.append(previous_raw)
+                        previous_html = u''
+                        previous_raw = u''
+                    previous_html += styled_word
+                    previous_raw += word
+                previous_html += line_end
+                previous_raw += line_end
             else:
-                styled_text = styled_line
-                html_text += line + line_end
-                previous_line = line
-        if html_text.endswith(u'<br>'):
-            html_text = html_text[:len(html_text)-4]
-        formatted.append(html_text)
-        log.debug(u'format_slide - End')
+                previous_html += styled_line + line_end
+                previous_raw += line + line_end
+        previous_raw = previous_raw.rstrip(u'<br>')
+        formatted.append(previous_raw)
+        log.debug(u'_paginate_slide_words - End')
         return formatted
 
     def _lines(self, words, split=u'n[---]n'):
@@ -445,8 +419,8 @@ class Renderer(object):
         text = []
         for verse in verses_text:
             lines = verse.split(u'\n')
-            for line in lines:
-                text.append(line)
+            text.extend([line for line in lines])
+
         return text
 
     def _words_split(self, words):
@@ -459,8 +433,7 @@ class Renderer(object):
         text = []
         for verse in verses_text:
             lines = verse.split(u' ')
-            for line in lines:
-                text.append(line + u' ')
+            text.extend([line + u' ' for line in lines])
         return text
 
     def _lines_split(self, text):
@@ -473,6 +446,5 @@ class Renderer(object):
         for line in lines:
             line = line.replace(u' [---]', u'[---]')
             sub_lines = line.split(u'\n')
-            for sub_line in sub_lines:
-                real_lines.append(sub_line)
+            real_lines.extend([sub_line for sub_line in sub_lines])
         return real_lines

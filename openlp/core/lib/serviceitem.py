@@ -163,9 +163,7 @@ class ServiceItem(object):
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        line_break = True
-        if self.is_capable(ItemCapabilities.NoLineBreaks):
-            line_break = False
+        line_break = not self.is_capable(ItemCapabilities.NoLineBreaks)
         theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.renderer.set_override_theme(theme, use_override)
@@ -176,11 +174,12 @@ class ServiceItem(object):
                 formatted = self.renderer \
                     .format_slide(slide[u'raw_slide'], line_break, self)
                 for page in formatted:
-                    self._display_frames.append(
-                        {u'title': clean_tags(page),
+                    self._display_frames.append({
+                        u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
                         u'html': expand_tags(page.rstrip()),
-                        u'verseTag': slide[u'verseTag'] })
+                        u'verseTag': slide[u'verseTag']
+                    })
         elif self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command:
             pass
@@ -456,3 +455,4 @@ class ServiceItem(object):
             return end
         else:
             return u'%s : %s' % (start, end)
+
