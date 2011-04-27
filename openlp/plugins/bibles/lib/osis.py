@@ -37,6 +37,9 @@ from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
+def replacement(match):
+    return match.group(2).upper()
+
 class OSISBible(BibleDB):
     """
     `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
@@ -106,6 +109,7 @@ class OSISBible(BibleDB):
                 detect_file.close()
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
+            repl = replacement
             for file_record in osis:
                 if self.stop_import_flag:
                     break
@@ -148,12 +152,12 @@ class OSISBible(BibleDB):
                     verse_text = self.rf_regex.sub(u'', verse_text)
                     verse_text = self.lb_regex.sub(u' ', verse_text)
                     verse_text = self.lg_regex.sub(u'', verse_text)
-                    verse_text = self.l_regex.sub(u'', verse_text)
+                    verse_text = self.l_regex.sub(u' ', verse_text)
                     verse_text = self.w_regex.sub(u'', verse_text)
                     verse_text = self.q1_regex.sub(u'"', verse_text)
                     verse_text = self.q2_regex.sub(u'\'', verse_text)
+                    verse_text = self.divine_name_regex.sub(repl, verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
-                    verse_text = self.divine_name_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
