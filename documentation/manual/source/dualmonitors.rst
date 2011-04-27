@@ -1,3 +1,5 @@
+.. _dualmonitors:
+
 ==================
 Dual Monitor Setup
 ==================
@@ -31,6 +33,14 @@ A typical OpenLP setup consist of your normal single monitor, with your
 projector hooked up to your computer as the second monitor. With the option of 
 extending your desktop across the second monitor, or your operating system's 
 equivalent.
+
+**Special Note For Projectors Using USB Connections**
+
+Users have reported experiencing difficulties when using a projector with a USB
+connection, as third party software is often required to properly configure
+dual monitors. If possible, it is best to use a direct output (VGA, DVI, HDMI,
+S-Video) from your machine's video card. If a USB connection is your only option
+please consult the manufacturer's manual for instructions on a proper setup.
 
 Microsoft Windows
 -----------------
