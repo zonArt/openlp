@@ -63,6 +63,7 @@ class OSISBible(BibleDB):
         self.lg_regex = re.compile(r'<lg(.*?)>')
         self.l_regex = re.compile(r'<l (.*?)>')
         self.w_regex = re.compile(r'<w (.*?)>')
+        self.q_regex = re.compile(r'<q(.*?)>')
         self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
         self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
@@ -156,6 +157,7 @@ class OSISBible(BibleDB):
                     verse_text = self.w_regex.sub(u'', verse_text)
                     verse_text = self.q1_regex.sub(u'"', verse_text)
                     verse_text = self.q2_regex.sub(u'\'', verse_text)
+                    verse_text = self.q_regex.sub(u'', verse_text)
                     verse_text = self.divine_name_regex.sub(repl, verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
