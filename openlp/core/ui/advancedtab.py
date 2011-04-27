@@ -43,7 +43,7 @@ class AdvancedTab(SettingsTab):
         """
         advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
         self.default_image = u':/graphics/openlp-splash-screen.png'
-        self.default_color = u'#009900'
+        self.default_color = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
         SettingsTab.__init__(self, parent, u'Advanced', advancedTranslated)
 
@@ -198,7 +198,7 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
         self.default_color = settings.value(u'default color',
-            QtCore.QVariant(u'#000099')).toString()
+            QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
             QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
             .toString())

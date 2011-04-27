@@ -145,7 +145,7 @@ class MainDisplay(DisplayWidget):
             background_color = QtGui.QColor()
             background_color.setNamedColor(QtCore.QSettings().value(
                 u'advanced/default color',
-                QtCore.QVariant(u'#990000')).toString())
+                QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
