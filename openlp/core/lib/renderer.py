@@ -217,22 +217,21 @@ class Renderer(object):
         log.debug(u'format slide')
         # clean up line endings
         lines = self._lines_split(text)
-        # Songs and Custom
-        if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-            # Do not forget the line breaks !
-            slides = text.split(u'\n[---]\n')
-            pages = []
-            for slide in slides:
-                lines = self._lines(slide)
-                new_pages = self._paginate_slide(lines, line_break,
-                    self.force_page)
-                pages.extend([page for page in new_pages])
-        # Bibles
-        elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-            pages = self._paginate_slide_words(text, line_break)
-        # Theme preview "service items".
-        else:
-            pages = self._paginate_slide(lines, line_break, self.force_page)
+        pages = self._paginate_slide(lines, line_break, self.force_page)
+        if len(pages) > 1:
+            # Songs and Custom
+            if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+                # Do not forget the line breaks !
+                slides = text.split(u'\n[---]\n')
+                pages = []
+                for slide in slides:
+                    lines = self._lines(slide)
+                    new_pages = self._paginate_slide(lines, line_break,
+                        self.force_page)
+                    pages.extend([page for page in new_pages])
+            # Bibles
+            elif item.is_capable(ItemCapabilities.AllowsWordSplit):
+                pages = self._paginate_slide_words(text, line_break)
         return pages
 
     def _calculate_default(self, screen):
@@ -376,7 +375,7 @@ class Renderer(object):
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = self._lines(text, u'[---]')
+        lines = self._lines(text)
         for line in lines:
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
@@ -408,7 +407,7 @@ class Renderer(object):
         log.debug(u'_paginate_slide_words - End')
         return formatted
 
-    def _lines(self, text, split=u'\n[---]\n'):
+    def _lines(self, text):
         """
         Split the slide up by physical line
         """
@@ -442,7 +441,7 @@ class Renderer(object):
         lines = text.split(u'\n')
         real_lines = []
         for line in lines:
-            line = line.replace(u' [---]', u'[---]')
+            line = line.replace(u'[---]', u'')
             sub_lines = line.split(u'\n')
             real_lines.extend([sub_line for sub_line in sub_lines])
         return real_lines
