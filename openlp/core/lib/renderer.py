@@ -438,6 +438,7 @@ class Renderer(object):
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
+        text = text.replace(u'\n[---]', u'')
         lines = text.split(u'\n')
         real_lines = []
         for line in lines:
