@@ -191,7 +191,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             div = self._addElement(u'div', parent=html_data.body,
                 classId=u'customNotes')
             self._addElement(u'span', translate('OpenLP.ServiceManager',
-                u'Custom Service Notes: '), div, classId=u'customNotesTitle')
+                'Custom Service Notes: '), div, classId=u'customNotesTitle')
             self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
                 classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
