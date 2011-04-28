@@ -579,7 +579,7 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     serviceItem = ServiceItem()
                     serviceItem.from_service = True
-                    serviceItem.render_manager = self.mainwindow.renderManager
+                    serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
                     self.addServiceItem(serviceItem)
@@ -989,7 +989,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
-        self.mainwindow.renderManager.set_service_theme(self.service_theme)
+        self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
             self.mainwindow.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
@@ -1001,7 +1001,7 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        if self.mainwindow.renderManager.theme_level == ThemeLevel.Global:
+        if self.mainwindow.renderer.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
         else:
@@ -1016,7 +1016,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.mainwindow.renderManager.themedata = None
+        self.mainwindow.renderer.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
@@ -1278,7 +1278,7 @@ class ServiceManager(QtGui.QWidget):
                 self.onThemeChangeAction, context=QtCore.Qt.WidgetShortcut)
             self.themeMenu.addAction(action)
         find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
-        self.mainwindow.renderManager.set_service_theme(self.service_theme)
+        self.mainwindow.renderer.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):

@@ -244,7 +244,7 @@ class ImpressDocument(PresentationDocument):
             return False
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
-            self.controller.plugin.renderManager.screens.current_display + 1
+            self.controller.plugin.renderer.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
         return True

@@ -415,7 +415,7 @@ class SlideController(QtGui.QWidget):
         """
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
-        self.display.imageManager = self.parent.renderManager.image_manager
+        self.display.imageManager = self.parent.renderer.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -617,19 +617,19 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     image = resize_image(frame[u'image'],
-                        self.parent.renderManager.width,
-                        self.parent.renderManager.height)
+                        self.parent.renderer.width,
+                        self.parent.renderer.height)
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.parent.renderManager.image_manager. \
+                            self.parent.renderer.image_manager. \
                             get_image_bytes(frame[u'title'])
-                    image = self.parent.renderManager.image_manager. \
+                    image = self.parent.renderer.image_manager. \
                         get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent.renderManager.screen_ratio
+                slideHeight = width * self.parent.renderer.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
@@ -1154,4 +1154,3 @@ class SlideController(QtGui.QWidget):
             return HideMode.Screen
         else:
             return None
-

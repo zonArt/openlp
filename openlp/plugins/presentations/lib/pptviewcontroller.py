@@ -121,8 +121,8 @@ class PptviewDocument(PresentationDocument):
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        rendermanager = self.controller.plugin.renderManager
-        rect = rendermanager.screens.current[u'size']
+        renderer = self.controller.plugin.renderer
+        rect = renderer.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
         if not os.path.isdir(self.get_temp_folder()):
