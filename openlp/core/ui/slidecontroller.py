@@ -187,7 +187,7 @@ class SlideController(QtGui.QWidget):
                 self.onStartLoop)
             action_list = ActionList.get_instance()
             action_list.add_action(startLoop, UiStrings().LiveToolbar)
-            stopLoop =self.toolbar.addToolbarButton(
+            stopLoop = self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
