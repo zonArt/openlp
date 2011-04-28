@@ -30,7 +30,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
+from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
@@ -553,9 +553,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'mainwindow_remove_progress'),
             self.removeProgressBar)
         # warning cyclic dependency
-        # RenderManager needs to call ThemeManager and
-        # ThemeManager needs to call RenderManager
-        self.renderManager = RenderManager(
+        # renderer needs to call ThemeManager and
+        # ThemeManager needs to call Renderer
+        self.renderer = Renderer(
             self.themeManagerContents, self.screens)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
@@ -563,7 +563,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # make the controllers available to the plugins
         self.pluginHelpers[u'preview'] = self.previewController
         self.pluginHelpers[u'live'] = self.liveController
-        self.pluginHelpers[u'render'] = self.renderManager
+        self.pluginHelpers[u'renderer'] = self.renderer
         self.pluginHelpers[u'service'] = self.ServiceManagerContents
         self.pluginHelpers[u'settings form'] = self.settingsForm
         self.pluginHelpers[u'toolbox'] = self.mediaDockManager
@@ -789,7 +789,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         log.debug(u'screenChanged')
-        self.renderManager.update_display()
+        self.renderer.update_display()
         self.setFocus()
         self.activateWindow()
 
