@@ -133,14 +133,26 @@ class SongXML(object):
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
-        if xml[:5] == u'<?xml':
+        verse_list = []
+        if not xml.startswith(u'<?xml') and not xml.startswith(u'<song'):
+            # This is an old style song, without XML. Let's handle it correctly
+            # by iterating through the verses, and then recreating the internal
+            # xml object as well.
+            self.song_xml = objectify.fromstring(u'<song version="1.0" />')
+            self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
+            verses = xml.split(u'\n\n')
+            for count, verse in enumerate(verses):
+                verse_list.append([{u'type': u'v', u'label': unicode(count)},
+                    unicode(verse)])
+                self.add_verse_to_lyrics(u'v', unicode(count), verse)
+            return verse_list
+        elif xml[:5] == u'<?xml':
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
         xml_iter = self.song_xml.getiterator()
-        verse_list = []
         for element in xml_iter:
             if element.tag == u'verse':
                 if element.text is None:
