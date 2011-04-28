@@ -576,7 +576,9 @@ class ServiceManager(QtGui.QWidget):
                 items = cPickle.load(fileTo)
                 fileTo.close()
                 self.newFile()
+                self.mainwindow.displayProgressBar(len(items))
                 for item in items:
+                    self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
                     serviceItem.from_service = True
                     serviceItem.render_manager = self.mainwindow.renderManager
@@ -592,6 +594,7 @@ class ServiceManager(QtGui.QWidget):
                 self.setModified(False)
                 QtCore.QSettings().setValue(
                     'service/last file', QtCore.QVariant(fileName))
+                self.mainwindow.finishedProgressBar()
                 Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(

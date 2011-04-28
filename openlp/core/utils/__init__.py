@@ -100,6 +100,19 @@ class VersionThread(QtCore.QThread):
             remote_version[u'revision'] > local_version[u'revision']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
+class LoadSleepThread(QtCore.QThread):
+    """
+    A special Qt thread class sleep then remove the load progress bar
+    """
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        Receiver.send_message(u'mainwindow_remove_progress')
 
 class AppLocation(object):
     """
