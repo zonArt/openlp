@@ -364,10 +364,6 @@ class Renderer(object):
             Add line endings after each line of text used for bibles.
 
         """
-        # In the beginning ...
-        # <space> <!-- here we could have added the second verse -->
-        # <new slide>
-        # Verse 2
         log.debug(u'_paginate_slide_words - Start')
         line_end = u''
         if line_break:
@@ -382,6 +378,27 @@ class Renderer(object):
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
+                # Check if there was a verse before the current one and append
+                # it, when it fits on the page.
+                if previous_html:
+                    html = self.page_shell + previous_html + HTML_END
+                    self.web.setHtml(html)
+                    if self.web_frame.contentsSize().height() <= \
+                        self.page_height:
+                        previous_raw = previous_raw.rstrip(u'<br>')
+                        formatted.append(previous_raw)
+                        previous_html = u''
+                        previous_raw = u''
+                        html = self.page_shell + styled_line + HTML_END
+                        self.web.setHtml(html)
+                        # Now check if the current verse will fit, if it does
+                        # not we have to start to process the verse word by
+                        # word.
+                        if self.web_frame.contentsSize().height() <= \
+                            self.page_height:
+                            previous_html = styled_line + line_end
+                            previous_raw = line + line_end
+                            continue
                 words = self._words_split(line)
                 for word in words:
                     styled_word = expand_tags(word)
