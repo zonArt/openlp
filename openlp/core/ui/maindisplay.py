@@ -142,7 +142,8 @@ class MainDisplay(DisplayWidget):
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
-            background_color = QtGui.QColor(QtCore.QSettings().value(
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(QtCore.QSettings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
