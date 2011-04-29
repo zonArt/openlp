@@ -72,6 +72,32 @@ class BibleMediaItem(MediaManagerItem):
         self.hasDeleteIcon = False
         self.addToServiceItem = False
 
+    def add(self, prefix):
+        """
+        """
+        tab = QtGui.QWidget()
+        tab.setObjectName(prefix + u'Tab')
+        layout = QtGui.QGridLayout(tab)
+        layout.setObjectName(prefix + u'Layout')
+        versionLabel = QtGui.QLabel(tab)
+        versionLabel.setObjectName(prefix + u'VersionLabel')
+        layout.addWidget(versionLabel, 0, 0, QtCore.Qt.AlignRight)
+        versionComboBox = media_item_combo_box(tab, prefix + u'VersionComboBox')
+        versionLabel.setBuddy(versionComboBox)
+        layout.addWidget(versionComboBox, 0, 1, 1, 2)
+        secondLabel = QtGui.QLabel(tab)
+        secondLabel.setObjectName(prefix + u'SecondLabel')
+        layout.addWidget(secondLabel, 1, 0, QtCore.Qt.AlignRight)
+        secondComboBox = media_item_combo_box(tab, prefix + u'SecondComboBox')
+        versionLabel.setBuddy(secondComboBox)
+        layout.addWidget(secondComboBox, 1, 1, 1, 2)
+        setattr(self, prefix + u'Tab', tab)
+        setattr(self, prefix + u'Layout', layout)
+        setattr(self, prefix + u'VersionLabel', versionLabel)
+        setattr(self, prefix + u'VersionComboBox', versionComboBox)
+        setattr(self, prefix + u'SecondLabel', secondLabel)
+        setattr(self, prefix + u'SecondComboBox', secondComboBox)
+
     def addEndHeaderBar(self):
         self.searchTabWidget = QtGui.QTabWidget(self)
         self.searchTabWidget.setSizePolicy(
@@ -122,26 +148,7 @@ class BibleMediaItem(MediaManagerItem):
         self.searchTabWidget.addTab(self.quickTab,
             translate('BiblesPlugin.MediaItem', 'Quick'))
         # Add the Advanced Search tab.
-        self.advancedTab = QtGui.QWidget()
-        self.advancedTab.setObjectName(u'advancedTab')
-        self.advancedLayout = QtGui.QGridLayout(self.advancedTab)
-        self.advancedLayout.setObjectName(u'advancedLayout')
-        self.advancedVersionLabel = QtGui.QLabel(self.advancedTab)
-        self.advancedVersionLabel.setObjectName(u'advancedVersionLabel')
-        self.advancedLayout.addWidget(self.advancedVersionLabel, 0, 0,
-            QtCore.Qt.AlignRight)
-        self.advancedVersionComboBox = media_item_combo_box(self.advancedTab,
-            u'advancedVersionComboBox')
-        self.advancedVersionLabel.setBuddy(self.advancedVersionComboBox)
-        self.advancedLayout.addWidget(self.advancedVersionComboBox, 0, 1, 1, 2)
-        self.advancedSecondLabel = QtGui.QLabel(self.advancedTab)
-        self.advancedSecondLabel.setObjectName(u'advancedSecondLabel')
-        self.advancedLayout.addWidget(self.advancedSecondLabel, 1, 0,
-            QtCore.Qt.AlignRight)
-        self.advancedSecondComboBox = media_item_combo_box(self.advancedTab,
-            u'advancedSecondComboBox')
-        self.advancedSecondLabel.setBuddy(self.advancedSecondComboBox)
-        self.advancedLayout.addWidget(self.advancedSecondComboBox, 1, 1, 1, 2)
+        self.add(u'advanced')
         self.advancedBookLabel = QtGui.QLabel(self.advancedTab)
         self.advancedBookLabel.setObjectName(u'advancedBookLabel')
         self.advancedLayout.addWidget(self.advancedBookLabel, 2, 0,
