@@ -122,12 +122,17 @@ class Ui_MainWindow(object):
         self.HelpMenu = QtGui.QMenu(self.MenuBar)
         self.HelpMenu.setObjectName(u'HelpMenu')
         mainWindow.setMenuBar(self.MenuBar)
-        self.StatusBar = QtGui.QStatusBar(mainWindow)
-        self.StatusBar.setObjectName(u'StatusBar')
-        mainWindow.setStatusBar(self.StatusBar)
-        self.DefaultThemeLabel = QtGui.QLabel(self.StatusBar)
-        self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
-        self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
+        self.statusBar = QtGui.QStatusBar(mainWindow)
+        self.statusBar.setObjectName(u'statusBar')
+        mainWindow.setStatusBar(self.statusBar)
+        self.loadProgressBar = QtGui.QProgressBar(self.statusBar)
+        self.loadProgressBar.setObjectName(u'loadProgressBar')
+        self.statusBar.addPermanentWidget(self.loadProgressBar)
+        self.loadProgressBar.hide()
+        self.loadProgressBar.setValue(0)
+        self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
+        self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
+        self.statusBar.addPermanentWidget(self.defaultThemeLabel)
         # Create the MediaManager
         self.mediaManagerDock = OpenLPDockWidget(mainWindow,
             u'mediaManagerDock', u':/system/system_mediamanager.png')
@@ -880,10 +885,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
-        self.StatusBar.showMessage(message)
+        self.statusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(
+        self.defaultThemeLabel.setText(
             unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
                 theme)
 
@@ -979,7 +984,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             for fileId, filename in enumerate(recentFilesToDisplay):
                 log.debug('Recent file name: %s', filename)
                 action =  base_action(self, u'')
-                action.setText(u'&%d %s' % 
+                action.setText(u'&%d %s' %
                     (fileId + 1, QtCore.QFileInfo(filename).fileName()))
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
@@ -1008,3 +1013,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()
+
+    def displayProgressBar(self, size):
+        """
+        Make Progress bar visible and set size
+        """
+        self.loadProgressBar.show()
+        self.loadProgressBar.setMaximum(size)
+        self.loadProgressBar.setValue(0)
+        Receiver.send_message(u'openlp_process_events')
+
+    def incrementProgressBar(self):
+        """
+        Increase the Progress Bar value by 1
+        """
+        self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
+        Receiver.send_message(u'openlp_process_events')
+
+    def finishedProgressBar(self):
+        """
+        Trigger it's removal after 2.5 second
+        """
+        self.timer_id = self.startTimer(2500)
+
+    def timerEvent(self, event):
+        """
+        Remove the Progress bar from view.
+        """
+        if event.timerId() == self.timer_id:
+            self.timer_id = 0
+            self.loadProgressBar.hide()
+            Receiver.send_message(u'openlp_process_events')
