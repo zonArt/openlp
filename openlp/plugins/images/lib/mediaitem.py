@@ -77,7 +77,7 @@ class ImageMediaItem(MediaManagerItem):
             u'thumbnails')
         check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.settingsSection, self.settingsSection))
+            self.settingsSection, self.settingsSection), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -107,11 +107,13 @@ class ImageMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
-    def loadList(self, list):
+    def loadList(self, list, initialLoad=False):
         Receiver.send_message(u'cursor_busy')
-        self.parent.formparent.displayProgressBar(len(list))
+        if not initialLoad:
+            self.parent.formparent.displayProgressBar(len(list))
         for imageFile in list:
-            self.parent.formparent.incrementProgressBar()
+            if not initialLoad:
+                self.parent.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
@@ -126,7 +128,8 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
-        self.parent.formparent.finishedProgressBar()
+        if not initialLoad:
+            self.parent.formparent.finishedProgressBar()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()

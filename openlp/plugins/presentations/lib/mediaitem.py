@@ -159,9 +159,11 @@ class PresentationMediaItem(MediaManagerItem):
         for file in currlist:
             titles.append(os.path.split(file)[1])
         Receiver.send_message(u'cursor_busy')
-        self.parent.formparent.displayProgressBar(len(list))
+        if not initialLoad:
+            self.parent.formparent.displayProgressBar(len(list))
         for file in list:
-            self.parent.formparent.incrementProgressBar()
+            if not initialLoad:
+                self.parent.formparent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -202,7 +204,8 @@ class PresentationMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
-        self.parent.formparent.finishedProgressBar()
+        if not initialLoad:
+            self.parent.formparent.finishedProgressBar()
 
     def onDeleteClick(self):
         """
