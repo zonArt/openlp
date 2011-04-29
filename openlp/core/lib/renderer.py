@@ -222,10 +222,10 @@ class Renderer(object):
             # Songs and Custom
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
                 # Do not forget the line breaks !
-                slides = text.split(u'\n[---]\n')
+                slides = text.split(u'[---]')
                 pages = []
                 for slide in slides:
-                    lines = self._lines(slide)
+                    lines = self._lines(slide.strip(u'\n'))
                     new_pages = self._paginate_slide(lines, line_break,
                         self.force_page)
                     pages.extend([page for page in new_pages])
