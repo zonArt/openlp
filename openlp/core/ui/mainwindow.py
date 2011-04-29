@@ -549,9 +549,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'mainwindow_remove_progress'),
-#            self.removeProgressBar)
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
