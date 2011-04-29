@@ -25,6 +25,7 @@
 ###############################################################################
 
 import logging
+import re
 
 from PyQt4 import QtCore, QtWebKit
 
@@ -228,7 +229,7 @@ class Renderer(object):
                     lines = self._lines(slide.strip(u'\n'))
                     new_pages = self._paginate_slide(lines, line_break,
                         self.force_page)
-                    pages.extend([page for page in new_pages])
+                    pages.extend(new_pages)
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
                 pages = self._paginate_slide_words(text, line_break)
@@ -341,12 +342,12 @@ class Renderer(object):
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
                 line_count = -1
-                html_text = html_text.rstrip(u'<br>')
+                html_text = re.compile(r'<br>.*$').sub(u'', html_text)
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        html_text = html_text.rstrip(u'<br>')
+        html_text = re.compile(r'<br>.*$').sub(u'', html_text)
         formatted.append(html_text)
         log.debug(u'_paginate_slide - End')
         return formatted
@@ -385,7 +386,8 @@ class Renderer(object):
                     self.web.setHtml(html)
                     if self.web_frame.contentsSize().height() <= \
                         self.page_height:
-                        previous_raw = previous_raw.rstrip(u'<br>')
+                        previous_raw = re.compile(
+                            r'<br>.*$').sub(u'', previous_raw)
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -408,7 +410,8 @@ class Renderer(object):
                     # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        previous_raw = previous_raw.rstrip(u'<br>')
+                        previous_raw = re.compile(
+                            r'<br>.*$').sub(u'', previous_raw)
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -419,7 +422,7 @@ class Renderer(object):
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
-        previous_raw = previous_raw.rstrip(u'<br>')
+        previous_raw = re.compile(r'<br>.*$').sub(u'', previous_raw)
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
@@ -429,8 +432,7 @@ class Renderer(object):
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        lines = text.split(u'\n')
-        return [line for line in lines]
+        return text.split(u'\n')
 
     def _words_split(self, line):
         """
