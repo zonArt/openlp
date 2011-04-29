@@ -146,7 +146,7 @@ class SongXML(object):
                     unicode(verse)])
                 self.add_verse_to_lyrics(u'v', unicode(count), verse)
             return verse_list
-        elif xml[:5] == u'<?xml':
+        elif xml.startswith(u'<?xml'):
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)
