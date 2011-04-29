@@ -54,6 +54,9 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_phonon_creation'),
+            self.createPhonon)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -117,8 +120,6 @@ class MediaMediaItem(MediaManagerItem):
                     'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
-        if not self.mediaObject:
-            self.mediaObject = Phonon.MediaObject(self)
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -212,3 +213,8 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+
+    def createPhonon(self):
+        if not self.mediaObject:
+            self.mediaObject = Phonon.MediaObject(self)
+
