@@ -56,6 +56,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True
+        self.temp_background_filename = u''
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onBackgroundComboBoxCurrentIndexChanged)
@@ -279,6 +280,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Run the wizard.
         """
         log.debug(u'Editing theme %s' % self.theme.theme_name)
+        self.temp_background_filename = u''
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
@@ -432,6 +434,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # do not allow updates when screen is building for the first time.
         if self.updateThemeAllowed:
             self.theme.background_type = BackgroundType.to_string(index)
+            if self.theme.background_type != \
+                BackgroundType.to_string(BackgroundType.Image) and \
+                self.temp_background_filename == u'':
+                self.temp_background_filename = self.theme.background_filename
+                self.theme.background_filename = u''
+            if self.theme.background_type == \
+                BackgroundType.to_string(BackgroundType.Image) and \
+                self.temp_background_filename != u'':
+                self.theme.background_filename = self.temp_background_filename
+                self.temp_background_filename = u''
             self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
