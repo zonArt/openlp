@@ -99,6 +99,7 @@ class VersionThread(QtCore.QThread):
             local_version.get(u'revision') and \
             remote_version[u'revision'] > local_version[u'revision']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
+        Receiver.send_message(u'openlp_phonon_creation')
 
 
 class AppLocation(object):
