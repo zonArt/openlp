@@ -108,7 +108,10 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
+        Receiver.send_message(u'cursor_busy')
+        self.parent.formparent.displayProgressBar(len(list))
         for imageFile in list:
+            self.parent.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
@@ -122,6 +125,8 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
+        Receiver.send_message(u'cursor_normal')
+        self.parent.formparent.finishedProgressBar()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
