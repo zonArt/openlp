@@ -277,15 +277,16 @@ class SlideController(QtGui.QWidget):
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
         self.slideLayout.setObjectName(u'SlideLayout')
-        self.mediaObject = Phonon.MediaObject(self)
-        self.video = Phonon.VideoWidget()
-        self.video.setVisible(False)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.video)
-        Phonon.createPath(self.mediaObject, self.audio)
         if not self.isLive:
+            self.mediaObject = Phonon.MediaObject(self)
+            self.video = Phonon.VideoWidget()
+            self.video.setVisible(False)
+            self.audio = Phonon.AudioOutput(Phonon.VideoCategory,
+                self.mediaObject)
+            Phonon.createPath(self.mediaObject, self.video)
+            Phonon.createPath(self.mediaObject, self.audio)
             self.video.setGeometry(QtCore.QRect(0, 0, 300, 225))
-        self.slideLayout.insertWidget(0, self.video)
+            self.slideLayout.insertWidget(0, self.video)
         # Actual preview screen
         self.slidePreview = QtGui.QLabel(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
