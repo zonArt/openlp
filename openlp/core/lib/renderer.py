@@ -348,7 +348,7 @@ class Renderer(object):
                 styled_text = styled_line
             html_text += line + line_end
         while html_text.endswith(u'<br>'):
-            tml_text = html_text[:-4]
+            html_text = html_text[:-4]
         formatted.append(html_text)
         log.debug(u'_paginate_slide - End')
         return formatted
