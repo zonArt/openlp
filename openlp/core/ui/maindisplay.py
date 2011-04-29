@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    build_icon, translate
+    translate
 
 from openlp.core.ui import HideMode
 
@@ -69,8 +69,6 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         self.videoHide = False
         self.override = {}
-        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.setWindowIcon(mainIcon)
         self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
@@ -144,7 +142,8 @@ class MainDisplay(DisplayWidget):
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
-            background_color = QtGui.QColor(QtCore.QSettings().value(
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(QtCore.QSettings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():

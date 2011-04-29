@@ -102,7 +102,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.tabTitleVisible = UiStrings.Themes
+        self.tabTitleVisible = UiStrings().Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(
@@ -149,7 +149,7 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -167,7 +167,7 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         self.__previewGlobalTheme()
 
@@ -188,7 +188,7 @@ class ThemesTab(SettingsTab):
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
