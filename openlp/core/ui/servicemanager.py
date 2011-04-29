@@ -460,7 +460,11 @@ class ServiceManager(QtGui.QWidget):
         service = []
         write_list = []
         total_size = 0
+        Receiver.send_message(u'cursor_busy')
+        # Number if items + 1 to zip it
+        self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
+            self.mainwindow.incrementProgressBar()
             service.append({u'serviceitem':
                 item[u'service_item'].get_service_repr()})
             if not item[u'service_item'].uses_file():
@@ -501,6 +505,7 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
         success = True
+        self.mainwindow.incrementProgressBar()
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
@@ -516,6 +521,8 @@ class ServiceManager(QtGui.QWidget):
         finally:
             if zip:
                 zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
         if success:
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
