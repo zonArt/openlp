@@ -25,7 +25,6 @@
 ###############################################################################
 
 import logging
-import re
 
 from PyQt4 import QtCore, QtWebKit
 
@@ -226,7 +225,7 @@ class Renderer(object):
                 slides = text.split(u'[---]')
                 pages = []
                 for slide in slides:
-                    lines = self._lines(slide.strip(u'\n'))
+                    lines = slide.strip(u'\n').split(u'\n')
                     new_pages = self._paginate_slide(lines, line_break,
                         self.force_page)
                     pages.extend(new_pages)
@@ -342,12 +341,14 @@ class Renderer(object):
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
                 line_count = -1
-                html_text = re.compile(r'<br>.*$').sub(u'', html_text)
+                while html_text.endswith(u'<br>'):
+                    html_text = html_text[:-4]
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        html_text = re.compile(r'<br>.*$').sub(u'', html_text)
+        while html_text.endswith(u'<br>'):
+            tml_text = html_text[:-4]
         formatted.append(html_text)
         log.debug(u'_paginate_slide - End')
         return formatted
@@ -372,7 +373,7 @@ class Renderer(object):
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = self._lines(text)
+        lines = text.split(u'\n')
         for line in lines:
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
@@ -386,8 +387,8 @@ class Renderer(object):
                     self.web.setHtml(html)
                     if self.web_frame.contentsSize().height() <= \
                         self.page_height:
-                        previous_raw = re.compile(
-                            r'<br>.*$').sub(u'', previous_raw)
+                        while previous_raw.endswith(u'<br>'):
+                            previous_raw = previous_raw[:-4]
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -410,8 +411,8 @@ class Renderer(object):
                     # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        previous_raw = re.compile(
-                            r'<br>.*$').sub(u'', previous_raw)
+                        while previous_raw.endswith(u'<br>'):
+                            previous_raw = previous_raw[:-4]
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -422,17 +423,11 @@ class Renderer(object):
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
-        previous_raw = re.compile(r'<br>.*$').sub(u'', previous_raw)
+        while previous_raw.endswith(u'<br>'):
+            previous_raw = previous_raw[:-4]
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
-
-    def _lines(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        return text.split(u'\n')
 
     def _words_split(self, line):
         """
