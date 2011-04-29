@@ -71,7 +71,7 @@ class Renderer(object):
         log.debug(u'Initilisation started')
         self.screens = screens
         self.image_manager = ImageManager()
-        self.display = MainDisplay(self, screens, False)
+        self.display = MainDisplay(self, screens, False, False)
         self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
         self.service_theme = u''

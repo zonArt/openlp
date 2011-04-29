@@ -50,7 +50,7 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.mediaObject = Phonon.MediaObject(self)
+        self.mediaObject = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
@@ -117,6 +117,8 @@ class MediaMediaItem(MediaManagerItem):
                     'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
+        if not self.mediaObject:
+            self.mediaObject = Phonon.MediaObject(self)
         if item is None:
             item = self.listView.currentItem()
             if item is None:

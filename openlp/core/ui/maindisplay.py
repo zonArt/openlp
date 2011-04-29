@@ -60,11 +60,12 @@ class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-    def __init__(self, parent, screens, live):
+    def __init__(self, parent, screens, live, needsPhonon=True):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
         self.screens = screens
         self.isLive = live
+        self.needsPhonon = needsPhonon
         self.alertTab = None
         self.hideMode = None
         self.videoHide = False
@@ -102,10 +103,11 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
         log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videoWidget)
-        Phonon.createPath(self.mediaObject, self.audio)
+        if self.needsPhonon:
+            self.mediaObject = Phonon.MediaObject(self)
+            self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+            Phonon.createPath(self.mediaObject, self.videoWidget)
+            Phonon.createPath(self.mediaObject, self.audio)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
             self.videoState)
