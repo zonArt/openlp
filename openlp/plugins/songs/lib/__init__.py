@@ -257,7 +257,7 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
-    song.title = song.title.strip() if song.title else u''
+    song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
