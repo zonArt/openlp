@@ -660,7 +660,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateImage(self, themeData, forcePage=False):
         """
-        Call the RenderManager to build a Sample Image
+        Call the renderer to build a Sample Image
 
         ``themeData``
             The theme to generated a preview for.
@@ -669,7 +669,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(
+        return self.mainwindow.renderer.generate_preview(
             themeData, forcePage)
 
     def getPreviewImage(self, theme):
