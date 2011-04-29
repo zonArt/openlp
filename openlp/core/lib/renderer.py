@@ -429,13 +429,8 @@ class Renderer(object):
         Split the slide up by physical line
         """
         # this parse we do not want to use this so remove it
-        verses_text = text.split(u'\n')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u'\n')
-            text.extend([line for line in lines])
-
-        return text
+        lines = text.split(u'\n')
+        return [line for line in lines]
 
     def _words_split(self, line):
         """
@@ -443,12 +438,8 @@ class Renderer(object):
         """
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
-        verses_text = line.split(u' ')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u' ')
-            text.extend([line + u' ' for line in lines])
-        return text
+        words = line.split(u' ')
+        return [word + u' ' for word in words]
 
     def _lines_split(self, text):
         """
@@ -457,9 +448,4 @@ class Renderer(object):
         # this parse we do not want to use this so remove it
         text = text.replace(u'\n[---]', u'')
         lines = text.split(u'\n')
-        real_lines = []
-        for line in lines:
-            line = line.replace(u'[---]', u'')
-            sub_lines = line.split(u'\n')
-            real_lines.extend([sub_line for sub_line in sub_lines])
-        return real_lines
+        return [line.replace(u'[---]', u'') for line in lines]
