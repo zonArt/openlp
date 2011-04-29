@@ -38,8 +38,6 @@ import logging
 import os
 import time
 
-from openlp.core.lib import Receiver
-
 if os.name == u'nt':
     from win32com.client import Dispatch
     import pywintypes
@@ -392,10 +390,9 @@ class ImpressDocument(PresentationDocument):
             self.presentation.start()
             self.control = self.presentation.getController()
             # start() returns before the Component is ready.
-            # Try for 30 seconds
+            # Try for 15 seconds
             i = 1
-            while not self.control and i < 300:
-                Receiver.send_message(u'openlp_process_events')
+            while not self.control and i < 150:
                 time.sleep(0.1)
                 i = i + 1
                 self.control = self.presentation.getController()
