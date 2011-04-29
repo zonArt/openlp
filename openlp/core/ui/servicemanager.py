@@ -461,7 +461,7 @@ class ServiceManager(QtGui.QWidget):
         write_list = []
         total_size = 0
         Receiver.send_message(u'cursor_busy')
-        # Number if items + 1 to zip it
+        # Number of items + 1 to zip it
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
             self.mainwindow.incrementProgressBar()
