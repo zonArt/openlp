@@ -285,7 +285,7 @@ class PresentationMediaItem(MediaManagerItem):
         "supports" the extension. If none found, then look for a controller
         which "also supports" it instead.
         """
-        filetype = filename.split(u'.')[-1]
+        filetype = os.path.splitext(filename)[1]
         if not filetype:
             return None
         for controller in self.controllers:

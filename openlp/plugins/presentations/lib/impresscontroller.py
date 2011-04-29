@@ -38,6 +38,8 @@ import logging
 import os
 import time
 
+from openlp.core.lib import Receiver
+
 if os.name == u'nt':
     from win32com.client import Dispatch
     import pywintypes
@@ -219,7 +221,6 @@ class ImpressDocument(PresentationDocument):
         The file name of the presentatios to the run.
         """
         log.debug(u'Load Presentation OpenOffice')
-        #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
             desktop = self.controller.get_com_desktop()
             if desktop is None:
@@ -234,7 +235,6 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
-        properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
         try:
             self.document = desktop.loadComponentFromURL(url, u'_blank',
@@ -242,6 +242,9 @@ class ImpressDocument(PresentationDocument):
         except:
             log.exception(u'Failed to load presentation %s' % url)
             return False
+        window = self.document.getCurrentController().getFrame() \
+            .getContainerWindow()
+        window.setPosSize(0, 0, 200, 400, 12)
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
             self.controller.plugin.renderer.screens.current_display + 1
@@ -387,14 +390,15 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
             self.presentation.start()
-            # start() returns before the getCurrentComponent is ready.
-            # Try for 5 seconds
+            self.control = self.presentation.getController()
+            # start() returns before the Component is ready.
+            # Try for 30 seconds
             i = 1
-            while self.desktop.getCurrentComponent() is None and i < 50:
+            while not self.control and i < 300:
+                Receiver.send_message(u'openlp_process_events')
                 time.sleep(0.1)
                 i = i + 1
-            self.control = \
-                self.desktop.getCurrentComponent().Presentation.getController()
+                self.control = self.presentation.getController()
         else:
             self.control.activate()
             self.goto_slide(1)
