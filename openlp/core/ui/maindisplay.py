@@ -81,6 +81,9 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'openlp_phonon_creation'),
+                self.createMediaObject)
 
     def retranslateUi(self):
         """
@@ -105,10 +108,8 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
         log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
-        if self.needsPhonon:
-            if self.firstTime:
-                self.firstTime = False
-            else:
+        if self.isLive:
+            if not self.firstTime:
                 self.createMediaObject()
         log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
         self.webView = QtWebKit.QWebView(self)
@@ -171,6 +172,8 @@ class MainDisplay(DisplayWidget):
             u'Finished setup for monitor %s' % self.screens.monitor_number)
 
     def createMediaObject(self):
+        self.firstTime = False
+        log.debug(u'Creating Phonon objects - Start for %s', self.isLive)
         self.mediaObject = Phonon.MediaObject(self)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.videoWidget)
@@ -184,6 +187,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'tick(qint64)'),
             self.videoTick)
+        log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
 
     def text(self, slide):
         """
