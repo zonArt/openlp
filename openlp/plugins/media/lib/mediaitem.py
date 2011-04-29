@@ -132,6 +132,8 @@ class MediaMediaItem(MediaManagerItem):
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
+        if not self.mediaObject:
+            self.mediaObject = Phonon.MediaObject(self)
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
         self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
@@ -217,4 +219,3 @@ class MediaMediaItem(MediaManagerItem):
     def createPhonon(self):
         if not self.mediaObject:
             self.mediaObject = Phonon.MediaObject(self)
-
