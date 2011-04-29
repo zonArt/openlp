@@ -460,7 +460,11 @@ class ServiceManager(QtGui.QWidget):
         service = []
         write_list = []
         total_size = 0
+        Receiver.send_message(u'cursor_busy')
+        # Number of items + 1 to zip it
+        self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
+            self.mainwindow.incrementProgressBar()
             service.append({u'serviceitem':
                 item[u'service_item'].get_service_repr()})
             if not item[u'service_item'].uses_file():
@@ -501,6 +505,7 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
         success = True
+        self.mainwindow.incrementProgressBar()
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
@@ -516,6 +521,8 @@ class ServiceManager(QtGui.QWidget):
         finally:
             if zip:
                 zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
         if success:
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
@@ -576,13 +583,15 @@ class ServiceManager(QtGui.QWidget):
                 items = cPickle.load(fileTo)
                 fileTo.close()
                 self.newFile()
+                self.mainwindow.displayProgressBar(len(items))
                 for item in items:
+                    self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
                     serviceItem.from_service = True
                     serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
-                    self.addServiceItem(serviceItem)
+                    self.addServiceItem(serviceItem, repaint=False)
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
@@ -592,7 +601,6 @@ class ServiceManager(QtGui.QWidget):
                 self.setModified(False)
                 QtCore.QSettings().setValue(
                     'service/last file', QtCore.QVariant(fileName))
-                Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
@@ -623,6 +631,9 @@ class ServiceManager(QtGui.QWidget):
                 fileTo.close()
             if zip:
                 zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
+        self.repaintServiceList(-1, -1)
 
     def loadLastFile(self):
         """
@@ -1056,7 +1067,8 @@ class ServiceManager(QtGui.QWidget):
                     newItem)
         self.setModified()
 
-    def addServiceItem(self, item, rebuild=False, expand=None, replace=False):
+    def addServiceItem(self, item, rebuild=False, expand=None, replace=False,
+        repaint=True):
         """
         Add a Service item to the list
 
@@ -1089,7 +1101,8 @@ class ServiceManager(QtGui.QWidget):
                     self.serviceItems.append({u'service_item': item,
                         u'order': len(self.serviceItems) + 1,
                         u'expanded': expand})
-                self.repaintServiceList(len(self.serviceItems) - 1, -1)
+                if repaint:
+                    self.repaintServiceList(len(self.serviceItems) - 1, -1)
             else:
                 self.serviceItems.insert(self.dropPosition,
                     {u'service_item': item, u'order': self.dropPosition,
