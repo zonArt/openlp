@@ -124,6 +124,7 @@ class UiStrings(object):
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
         self.Top = translate('OpenLP.Ui', 'Top')
+        self.UnsupportedFile = translate('OpenLP.Ui', 'Unsupported File')
         self.VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
         self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
         self.Version = translate('OpenLP.Ui', 'Version')
