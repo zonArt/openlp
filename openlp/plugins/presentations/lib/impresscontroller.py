@@ -233,6 +233,10 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
+        if os.name != u'nt':
+            # Recent versions of Impress on Windows won't start the presentation
+            # if it starts as minimized. It seems OK on Linux though.
+            properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
         try:
             self.document = desktop.loadComponentFromURL(url, u'_blank',
@@ -240,9 +244,12 @@ class ImpressDocument(PresentationDocument):
         except:
             log.exception(u'Failed to load presentation %s' % url)
             return False
-        window = self.document.getCurrentController().getFrame() \
-            .getContainerWindow()
-        window.setPosSize(0, 0, 200, 400, 12)
+        if os.name == u'nt':
+            # As we can't start minimized the Impress window gets in the way.
+            # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
+            window = self.document.getCurrentController().getFrame() \
+                .getContainerWindow()
+            window.setVisible(False)
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
             self.controller.plugin.renderer.screens.current_display + 1
