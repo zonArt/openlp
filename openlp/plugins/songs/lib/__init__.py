@@ -257,7 +257,7 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
-    song.title = song.title.strip() if song.title else u''
+    song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
@@ -293,7 +293,10 @@ def clean_song(manager, song):
     song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
     # Rebuild the verse order, to convert translated verse tags, which might
     # have been added prior to 1.9.5.
-    order = song.verse_order.strip().split()
+    if song.verse_order:
+        order = song.verse_order.strip().split()
+    else:
+        order = []
     new_order = []
     for verse_def in order:
         verse_type = VerseType.Tags[VerseType.from_loose_input(verse_def[0])]

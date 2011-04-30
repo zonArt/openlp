@@ -158,7 +158,12 @@ class PresentationMediaItem(MediaManagerItem):
         titles = []
         for file in currlist:
             titles.append(os.path.split(file)[1])
+        Receiver.send_message(u'cursor_busy')
+        if not initialLoad:
+            self.parent.formparent.displayProgressBar(len(list))
         for file in list:
+            if not initialLoad:
+                self.parent.formparent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -198,6 +203,9 @@ class PresentationMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
             self.listView.addItem(item_name)
+        Receiver.send_message(u'cursor_normal')
+        if not initialLoad:
+            self.parent.formparent.finishedProgressBar()
 
     def onDeleteClick(self):
         """
@@ -285,7 +293,7 @@ class PresentationMediaItem(MediaManagerItem):
         "supports" the extension. If none found, then look for a controller
         which "also supports" it instead.
         """
-        filetype = filename.split(u'.')[1]
+        filetype = os.path.splitext(filename)[1]
         if not filetype:
             return None
         for controller in self.controllers:
