@@ -132,6 +132,7 @@ class MediaMediaItem(MediaManagerItem):
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
+        # Guard incase the event fails to get object created.
         if not self.mediaObject:
             self.mediaObject = Phonon.MediaObject(self)
         self.mediaObject.stop()
@@ -217,5 +218,6 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def createPhonon(self):
+        log.debug(u'CreatePhonon')
         if not self.mediaObject:
             self.mediaObject = Phonon.MediaObject(self)
