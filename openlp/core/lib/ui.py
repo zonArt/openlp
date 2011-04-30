@@ -67,6 +67,7 @@ class UiStrings(object):
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
+        self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
         self.Edit = translate('OpenLP.Ui', '&Edit')
         self.EmptyField = translate('OpenLP.Ui', 'Empty Field')
         self.Error = translate('OpenLP.Ui', 'Error')
