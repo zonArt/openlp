@@ -252,7 +252,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             elif len(shortcuts) == 2:
                 primary_text = shortcuts[0].toString()
                 alternate_text = shortcuts[1].toString()
-        # When we are capturing a new shortcut, we do not want, that the buttons
+        # When we are capturing a new shortcut, we do not want, the buttons to
         # display the current shortcut.
         if self.primaryPushButton.isChecked():
             primary_text = u''
