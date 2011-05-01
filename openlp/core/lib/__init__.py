@@ -37,6 +37,7 @@ log = logging.getLogger(__name__)
 
 base_html_expands = []
 
+# Hex Color tags from http://www.w3schools.com/html/html_colornames.asp
 base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
     u'start html': u'<span style="-webkit-text-fill-color:red">',
     u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
@@ -53,13 +54,13 @@ base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
     u'start html': u'<span style="-webkit-text-fill-color:green">',
     u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
     u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
     u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
-    u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
+    u'start html': u'<span style="-webkit-text-fill-color:#800080">',
     u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
     u'start html': u'<span style="-webkit-text-fill-color:white">',
