@@ -42,6 +42,7 @@ class CaptureShortcutButton(QtGui.QPushButton):
         checked state.
         """
         if event.key() == QtCore.Qt.Key_Space and self.isChecked():
+            # Ignore the event, so that the parent can take care of this.
             event.ignore()
 
 
