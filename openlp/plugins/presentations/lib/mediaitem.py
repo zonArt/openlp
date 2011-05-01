@@ -193,9 +193,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')
                 else:
-                    critical_error_message_box(
-                        translate('PresentationPlugin.MediaItem',
-                        'Unsupported File'),
+                    critical_error_message_box(UiStrings().UnsupportedFile,
                         translate('PresentationPlugin.MediaItem',
                         'This type of presentation is not supported.'))
                     continue

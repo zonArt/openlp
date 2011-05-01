@@ -138,10 +138,8 @@ class MediaMediaItem(MediaManagerItem):
         if not self.mediaStateWait(Phonon.StoppedState):
             # Due to string freeze, borrow a message from presentations
             # This will be corrected in 1.9.6
-            critical_error_message_box(
-                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('PresentationPlugin.MediaItem',
-                'Unsupported File')))
+            critical_error_message_box(UiStrings().UnsupportedFile,
+                    UiStrings().UnsupportedFile)
             return False
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
@@ -152,15 +150,11 @@ class MediaMediaItem(MediaManagerItem):
                 # Due to string freeze, borrow a message from presentations
                 # This will be corrected in 1.9.6
                 self.mediaObject.stop()
-                critical_error_message_box(
-                    translate('PresentationPlugin.MediaItem',
-                    'Unsupported File'),
-                    unicode(translate('PresentationPlugin.MediaItem',
-                    'Unsupported File')))
+                critical_error_message_box(UiStrings().UnsupportedFile,
+                        UiStrings().UnsupportedFile)
                 return False
-            self.mediaLength = self.mediaObject.totalTime() / 1000
             self.mediaObject.stop()
-            service_item.media_length = self.mediaLength
+            service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
                 ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
