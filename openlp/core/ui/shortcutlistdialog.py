@@ -43,8 +43,6 @@ class CaptureShortcutButton(QtGui.QPushButton):
         """
         if event.key() == QtCore.Qt.Key_Space and self.isChecked():
             event.ignore()
-        else:
-            self.setChecked(True)
 
 
 class Ui_ShortcutListDialog(object):
