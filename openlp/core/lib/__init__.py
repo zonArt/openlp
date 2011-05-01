@@ -54,7 +54,7 @@ base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
     u'start html': u'<span style="-webkit-text-fill-color:green">',
     u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#FFCOCB">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
     u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
     u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
