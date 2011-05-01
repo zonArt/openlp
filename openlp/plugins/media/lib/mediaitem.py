@@ -153,7 +153,6 @@ class MediaMediaItem(MediaManagerItem):
                 critical_error_message_box(UiStrings().UnsupportedFile,
                         UiStrings().UnsupportedFile)
                 return False
-            #self.mediaLength = self.mediaObject.totalTime() / 1000
             self.mediaObject.stop()
             service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
