@@ -140,7 +140,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickLayout.addWidget(self.quickLayoutComboBox, 3, 1, 1, 2)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
-        self.quickLayout.addWidget(self.quickClearLabel, 4, 0, QtCore.Qt.AlignRight)
+        self.quickLayout.addWidget(
+            self.quickClearLabel, 4, 0, QtCore.Qt.AlignRight)
         self.quickClearComboBox = media_item_combo_box(self.quickTab,
             u'quickClearComboBox')
         self.quickLayout.addWidget(self.quickClearComboBox, 4, 1, 1, 2)
