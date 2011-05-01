@@ -215,6 +215,6 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def createPhonon(self):
+        log.debug(u'CreatePhonon')
         if not self.mediaObject:
             self.mediaObject = Phonon.MediaObject(self)
-
