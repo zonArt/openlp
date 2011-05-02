@@ -258,4 +258,3 @@ if __name__ == u'__main__':
     Instantiate and run the application.
     """
     main()
-
