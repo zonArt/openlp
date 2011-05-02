@@ -58,10 +58,7 @@ class LanguageManager(object):
         app_translator = QtCore.QTranslator()
         app_translator.load(language, lang_path)
         # A translator for buttons and other default strings provided by Qt.
-        if sys.platform == u'linux2':
-            # On Linux we use the qm files from qt directory, on other platforms
-            # the qm files have to be packaged and saved together with our own
-            # translations.
+        if sys.platform != u'win32' and sys.platform != u'darwin':
             lang_path = QtCore.QLibraryInfo.location(
                 QtCore.QLibraryInfo.TranslationsPath)
         default_translator = QtCore.QTranslator()
