@@ -46,7 +46,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version
+    get_application_version, DelayStartThread
 
 log = logging.getLogger()
 
@@ -130,6 +130,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
+        DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
     def isAlreadyRunning(self):

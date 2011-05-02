@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
     StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
-    context_menu_separator
+    context_menu_separator, critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -333,7 +333,21 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
-            self.loadList(files)
+            names = []
+            for count in range(0, self.listView.count()):
+                names.append(self.listView.item(count).text())
+            newFiles = []
+            for file in files:
+                filename = os.path.split(unicode(file))[1]
+                if filename in names:
+                    critical_error_message_box(
+                        UiStrings().Duplicate,
+                        unicode(translate('OpenLP.MediaManagerItem',
+                        'Duplicate file name %s.\nFilename already exists in '
+                        'list')) % filename)
+                else:
+                    newFiles.append(file)
+            self.loadList(newFiles)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
