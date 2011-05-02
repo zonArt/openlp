@@ -53,13 +53,19 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def exec_(self, name):
+    def exec_(self, name, books):
         items = []
         self.requestComboBox.addItem(u'')
         self.requestLabel.setText(name)
         items = BiblesResourcesDB.get_books()
         for item in items:
-            self.requestComboBox.addItem(item[u'name'])
+            addBook = True
+            for book in books:
+                if book.book_reference_id == item[u'id']:
+                    addBook = False
+                    break
+            if addBook == True:
+                self.requestComboBox.addItem(item[u'name'])
         return QDialog.exec_(self)
     
     def accept(self):

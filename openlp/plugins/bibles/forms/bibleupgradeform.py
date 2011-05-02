@@ -27,7 +27,7 @@
 The bible import functions for OpenLP
 """
 import logging
-import os
+#import os
 import os.path
 import re
 
@@ -637,6 +637,11 @@ class BibleUpgradeForm(OpenLPWizard):
                     db_book = self.newbibles[number].create_book(book[u'name'],
                         book_ref_id, book_details[u'testament_id'])
                     verses = oldbible.get_verses(book[u'id'])
+                    if not verses:
+                        log.exception(u'No verses found to import for book '
+                            u'"%s"', book[u'name'])
+                        self.newbibles[number].delete_book(db_book)
+                        continue
                     for verse in verses:
                         self.newbibles[number].create_verse(db_book.id, 
                             int(verse[u'chapter']), 

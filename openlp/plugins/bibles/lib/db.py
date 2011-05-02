@@ -218,6 +218,18 @@ class BibleDB(QtCore.QObject, Manager):
         self.save_object(book)
         return book
 
+    def delete_book(self, db_book):
+        """
+        Delete a book from the database.
+
+        ``db_book``
+            The book objekt.
+        """
+        log.debug(u'BibleDB.delete_book("%s")', db_book.name)
+        if self.delete_object(Book, db_book.id):
+            return True
+        return False
+
     def create_chapter(self, book_id, chapter, textlist):
         """
         Add a chapter and its verses to a book.
@@ -318,8 +330,8 @@ class BibleDB(QtCore.QObject, Manager):
     def get_book_ref_id_by_name(self, book, language_id=None):
         log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
             language_id)
-        if BiblesResourcesDB.get_book(book):
-            book_temp = BiblesResourcesDB.get_book(book)
+        if BiblesResourcesDB.get_book(book, True):
+            book_temp = BiblesResourcesDB.get_book(book, True)
             book_id = book_temp[u'id']
         elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
             book_id = BiblesResourcesDB.get_alternative_book_name(book, 
@@ -332,7 +344,7 @@ class BibleDB(QtCore.QObject, Manager):
             from openlp.plugins.bibles.forms import BookNameForm
             book_ref = None
             book_name = BookNameForm(self.wizard)
-            if book_name.exec_(book):
+            if book_name.exec_(book, self.get_books()):
                 book_ref = unicode(book_name.requestComboBox.currentText())
             if not book_ref:
                 return None
@@ -551,7 +563,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ]
 
     @staticmethod
-    def get_book(name):
+    def get_book(name, lower=False):
         """
         Return a book by name or abbreviation.
 
@@ -561,9 +573,15 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_book("%s")', name)
         if not isinstance(name, unicode):
             name = unicode(name)
-        books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
-                u'abbreviation, chapters FROM book_reference WHERE name = ? OR '
-                u'abbreviation = ?', (name, name))
+        if lower:
+            books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
+                    u'abbreviation, chapters FROM book_reference WHERE '
+                    u'LOWER(name) = ? OR LOWER(abbreviation) = ?', 
+                    (name.lower(), name.lower()))
+        else:
+            books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
+                    u'abbreviation, chapters FROM book_reference WHERE name = ?'
+                    u' OR abbreviation = ?', (name, name))
         if books:
             return {
                 u'id': books[0][0],
@@ -758,17 +776,16 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_alternative_book_name("%s", "%s")', 
             name, language_id)
         if language_id:
-            id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
-                u'FROM alternative_book_names WHERE name = ? and language_id '
-                u'= ? ORDER BY id', (name, language_id))
+            books = BiblesResourcesDB.run_sql(u'SELECT book_reference_id, name '
+                u'FROM alternative_book_names WHERE language_id = ? ORDER BY '
+                u'id', (language_id, ))
         else:
-            id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
-                u'FROM alternative_book_names WHERE name = ? ORDER BY id',
-                (name, ))
-        if id:
-            return int(id[0][0])
-        else:
-            return None
+            books = BiblesResourcesDB.run_sql(u'SELECT book_reference_id, name '
+                u'FROM alternative_book_names ORDER BY id')
+        for book in books:
+            if book[1].lower() == name.lower():
+                return book[0]
+        return None
 
     @staticmethod
     def get_language(name):
@@ -899,16 +916,16 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s", "%s")', 
             name, language_id)
         if language_id:
-            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM'
-                u' alternative_book_names WHERE name = ? AND language_id = ?',
-                (name, language_id))
+            books = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id, '
+                u'name FROM alternative_book_names WHERE language_id = ?',
+                (language_id, ))
         else:
-            id = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id FROM'
-                u' alternative_book_names WHERE name = ?', name)
-        if not id:
-            return None
-        else:
-            return id[0][0]
+            books = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id, '
+                u'name FROM alternative_book_names')
+        for book in books:
+            if book[1].lower() == name.lower():
+                return book[0]
+        return None
 
     @staticmethod
     def create_alternative_book_name(name, book_reference_id, language_id):
