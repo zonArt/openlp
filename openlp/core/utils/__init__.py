@@ -101,6 +101,20 @@ class VersionThread(QtCore.QThread):
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 
+class DelayStartThread(QtCore.QThread):
+    """
+    A special Qt thread class to build things after OpenLP has started
+    """
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        Receiver.send_message(u'openlp_phonon_creation')
+
+
 class AppLocation(object):
     """
     The :class:`AppLocation` class is a static class which retrieves a
