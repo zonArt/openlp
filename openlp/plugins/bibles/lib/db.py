@@ -1029,7 +1029,6 @@ class OldBibleDB(QtCore.QObject, Manager):
                 }
                 for book in books
             ]
-            book_list = []
         else:
             return None
 
