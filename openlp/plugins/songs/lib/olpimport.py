@@ -36,6 +36,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 from songimport import SongImport
@@ -93,13 +94,18 @@ class OpenLPSongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.import_source = u'sqlite:///%s' % self.import_source
         self.source_session = None
 
     def do_import(self):
         """
         Run the import for an OpenLP version 2 song database.
         """
+        if not self.import_source.endswith(u'.sqlite'):
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLPSongImport',
+                'Not a valid OpenLP 2.0 song database.'))
+            return
+        self.import_source = u'sqlite:///%s' % self.import_source
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
@@ -124,10 +130,10 @@ class OpenLPSongImport(SongImport):
                 mapper(OldMediaFile, source_media_files_table)
         song_props = {
             'authors': relation(OldAuthor, backref='songs',
-                secondary=source_authors_songs_table),
+            secondary=source_authors_songs_table),
             'book': relation(OldBook, backref='songs'),
             'topics': relation(OldTopic, backref='songs',
-                secondary=source_songs_topics_table)
+            secondary=source_songs_topics_table)
         }
         if has_media_files:
             song_props['media_files'] = relation(OldMediaFile, backref='songs',
@@ -150,15 +156,9 @@ class OpenLPSongImport(SongImport):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.source_session.query(OldSong).all()
-        song_total = len(source_songs)
         if self.import_wizard:
-            self.import_wizard.progressBar.setMaximum(song_total)
-        song_count = 1
+            self.import_wizard.progressBar.setMaximum(len(source_songs))
         for song in source_songs:
-            if self.import_wizard:
-                self.import_wizard.incrementProgressBar(
-                    unicode(translate('SongsPlugin.OpenLPSongImport',
-                    'Importing song %d of %d.')) % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files and hasattr(song, 'alternate_title'):
@@ -213,8 +213,9 @@ class OpenLPSongImport(SongImport):
 #                                file_name=media_file.file_name))
             clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
-            song_count += 1
+            if self.import_wizard:
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:
-                return False
+                break
         engine.dispose()
-        return True

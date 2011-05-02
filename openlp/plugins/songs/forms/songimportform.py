@@ -26,6 +26,7 @@
 """
 The song import functions for OpenLP.
 """
+import codecs
 import logging
 import os
 
@@ -55,6 +56,7 @@ class SongImportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
+        self.clipboard = plugin.formparent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
             u':/wizards/wizard_importsong.bmp')
 
@@ -330,6 +332,10 @@ class SongImportForm(OpenLPWizard):
                 'Please wait while your songs are imported.'))
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
+        self.errorCopyToButton.setText(translate('SongsPlugin.ImportWizardForm',
+            'Copy'))
+        self.errorSaveToButton.setText(translate('SongsPlugin.ImportWizardForm',
+            'Save to File'))
         # Align all QFormLayouts towards each other.
         width = max(self.formatLabel.minimumSizeHint().width(),
             self.openLP2FilenameLabel.minimumSizeHint().width())
@@ -459,10 +465,7 @@ class SongImportForm(OpenLPWizard):
         """
         Return a list of file from the listbox
         """
-        files = []
-        for row in range(0, listbox.count()):
-            files.append(unicode(listbox.item(row).text()))
-        return files
+        return [unicode(listbox.item(i).text()) for i in range(listbox.count())]
 
     def removeSelectedItems(self, listbox):
         """
@@ -659,6 +662,10 @@ class SongImportForm(OpenLPWizard):
         self.songShowPlusFileListWidget.clear()
         self.foilPresenterFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
+        self.errorReportTextEdit.clear()
+        self.errorReportTextEdit.setHidden(True)
+        self.errorCopyToButton.setHidden(True)
+        self.errorSaveToButton.setHidden(True)
 
     def preWizard(self):
         """
@@ -743,12 +750,30 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        if importer.do_import():
-            self.progressLabel.setText(WizardStrings.FinishedImport)
+        importer.do_import()
+        if importer.error_log:
+            self.progressLabel.setText(translate(
+                'SongsPlugin.SongImportForm', 'Your song import failed.'))
         else:
-            self.progressLabel.setText(
-                translate('SongsPlugin.SongImportForm',
-                'Your song import failed.'))
+            self.progressLabel.setText(WizardStrings.FinishedImport)
+
+    def onErrorCopyToButtonClicked(self):
+        """
+        Copy the error report to the clipboard.
+        """
+        self.clipboard.setText(self.errorReportTextEdit.toPlainText())
+
+    def onErrorSaveToButtonClicked(self):
+        """
+        Save the error report to a file.
+        """
+        filename = QtGui.QFileDialog.getSaveFileName(self,
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        if not filename:
+            return
+        file = codecs.open(filename, u'w', u'utf-8')
+        file.write(self.errorReportTextEdit.toPlainText())
+        file.close()
 
     def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
         single_select=False):
