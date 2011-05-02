@@ -333,13 +333,10 @@ class BibleDB(QtCore.QObject, Manager):
         if BiblesResourcesDB.get_book(book, True):
             book_temp = BiblesResourcesDB.get_book(book, True)
             book_id = book_temp[u'id']
-        elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
-            book_id = BiblesResourcesDB.get_alternative_book_name(book, 
-                language_id)
-        elif AlternativeBookNamesDB.get_book_reference_id(book, 
-            language_id):
-            book_id = AlternativeBookNamesDB.get_book_reference_id(
-                book, language_id)
+        elif BiblesResourcesDB.get_alternative_book_name(book):
+            book_id = BiblesResourcesDB.get_alternative_book_name(book)
+        elif AlternativeBookNamesDB.get_book_reference_id(book):
+            book_id = AlternativeBookNamesDB.get_book_reference_id(book)
         else:
             from openlp.plugins.bibles.forms import BookNameForm
             book_ref = None
@@ -569,6 +566,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         ``name``
             The name or abbreviation of the book.
+        
+        ``lower``
+            True if the comparsion should be only lowercase
         """
         log.debug(u'BiblesResourcesDB.get_book("%s")', name)
         if not isinstance(name, unicode):
