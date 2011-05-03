@@ -40,7 +40,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 
 log = logging.getLogger(__name__)
 
@@ -494,7 +494,7 @@ class BibleImportForm(OpenLPWizard):
                     'a different Bible or first delete the existing one.'))
                 self.versionNameEdit.setFocus()
                 return False
-            elif os.path.exists(os.path.join(path, self.clean_filename(
+            elif os.path.exists(os.path.join(path, clean_filename(
                 license_version))):
                 critical_error_message_box(
                     translate('BiblesPlugin.ImportWizardForm', 'Bible Exists'),
@@ -506,19 +506,6 @@ class BibleImportForm(OpenLPWizard):
             return True
         if self.currentPage() == self.progressPage:
             return True
-
-    def clean_filename(self, old_filename):
-        """
-        Clean up the version name of the Bible and convert it into a valid
-        file name.
-
-        ``old_filename``
-            The "dirty" file name or version name.
-        """
-        if not isinstance(old_filename, unicode):
-            old_filename = unicode(old_filename, u'utf-8')
-        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
-        return old_filename + u'.sqlite'
 
     def onWebSourceComboBoxIndexChanged(self, index):
         """

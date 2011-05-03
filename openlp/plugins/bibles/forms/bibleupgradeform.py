@@ -38,7 +38,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB,\
-    BiblesResourcesDB
+    BiblesResourcesDB, clean_filename
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 
 log = logging.getLogger(__name__)
@@ -97,19 +97,6 @@ class BibleUpgradeForm(OpenLPWizard):
         log.debug(u'Stopping import')
         self.stop_import_flag = True
 
-    def clean_filename(self, old_filename):
-        """
-        Clean up the version name of the Bible and convert it into a valid
-        file name.
-
-        ``old_filename``
-            The "dirty" file name or version name.
-        """
-        if not isinstance(old_filename, unicode):
-            old_filename = unicode(old_filename, u'utf-8')
-        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
-        return old_filename + u'.sqlite'
-
     def onCheckBoxIndexChanged(self, index):
         '''
         Show/ Hide warnings if CheckBox state has changed
@@ -131,7 +118,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.currentPage() == self.progressPage:
             Receiver.send_message(u'openlp_stop_wizard')
             for bible in self.newbibles.itervalues():
-                delete_database(self.newpath, bible.clean_filename(
+                delete_database(self.newpath, clean_filename(
                     bible.get_name())) 
         self.done(QtGui.QDialog.Rejected)
 
@@ -403,7 +390,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.versionNameEdit[number].setFocus()
                     return False
                 elif os.path.exists(os.path.join(self.newpath, 
-                    self.clean_filename(version_name))):
+                    clean_filename(version_name))):
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm', 
                         'Bible Exists'),
@@ -534,7 +521,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         u'name: "%s" failed' % (
                         meta_data[u'download source'], 
                         meta_data[u'download name']))
-                    delete_database(self.newpath, self.newbibles[number].\
+                    delete_database(self.newpath, 
                         clean_filename(self.newbibles[number].get_name())) 
                     del self.newbibles[number]
                     critical_error_message_box(
@@ -564,7 +551,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     log.exception(u'Upgrading from "%s" '\
                         'failed' % filename)
-                    delete_database(self.newpath, self.newbibles[number].\
+                    delete_database(self.newpath, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
@@ -588,7 +575,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'], 
                             meta_data[u'download name']))
-                        delete_database(self.newpath, self.newbibles[number].\
+                        delete_database(self.newpath, 
                             clean_filename(self.newbibles[number].get_name()))
                         del self.newbibles[number]
                         bible_failed = True
@@ -604,7 +591,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     log.exception(u'Importing books from "%s" '\
                         'failed' % name)
-                    delete_database(self.newpath, self.newbibles[number].\
+                    delete_database(self.newpath, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
@@ -628,7 +615,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.exception(u'Importing books from %s " '\
                             'failed - aborted by user' % name)
-                        delete_database(self.newpath, self.newbibles[number].\
+                        delete_database(self.newpath, 
                             clean_filename(self.newbibles[number].get_name()))
                         del self.newbibles[number]
                         bible_failed = True
@@ -647,6 +634,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             int(verse[u'chapter']), 
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
+                self.newbibles[number].session.commit()
             if not bible_failed:
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 

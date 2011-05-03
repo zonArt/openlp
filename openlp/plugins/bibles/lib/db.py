@@ -62,6 +62,19 @@ class Verse(BaseModel):
     """
     pass
 
+def clean_filename(old_filename):
+    """
+    Clean up the version name of the Bible and convert it into a valid
+    file name.
+
+    ``old_filename``
+        The "dirty" file name or version name.
+    """
+    if not isinstance(old_filename, unicode):
+        old_filename = unicode(old_filename, u'utf-8')
+    old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
+    return old_filename + u'.sqlite'
+
 def init_schema(url):
     """
     Setup a bible database connection and initialise the database schema.
@@ -144,7 +157,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
                 self.name = unicode(self.name, u'utf-8')
-            self.file = self.clean_filename(self.name)
+            self.file = clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
         Manager.__init__(self, u'bibles/bibles', init_schema, self.file)
@@ -170,19 +183,6 @@ class BibleDB(QtCore.QObject, Manager):
         version_name = self.get_object(BibleMeta, u'Version')
         self.name = version_name.value if version_name else None
         return self.name
-
-    def clean_filename(self, old_filename):
-        """
-        Clean up the version name of the Bible and convert it into a valid
-        file name.
-
-        ``old_filename``
-            The "dirty" file name or version name.
-        """
-        if not isinstance(old_filename, unicode):
-            old_filename = unicode(old_filename, u'utf-8')
-        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
-        return old_filename + u'.sqlite'
 
     def register(self, wizard):
         """
