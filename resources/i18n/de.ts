@@ -1313,7 +1313,7 @@ der Medienverwaltung angklickt werden</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="44"/>
         <source>Advanced</source>
-        <translation type="unfinished">Erweitert</translation>
+        <translation>Erweitert</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="161"/>
@@ -2671,17 +2671,17 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/ui/printserviceform.py" line="193"/>
         <source>Custom Service Notes: </source>
-        <translation type="unfinished"></translation>
+        <translation>Notizen zum Ablauf:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printserviceform.py" line="238"/>
         <source>Notes: </source>
-        <translation type="unfinished"></translation>
+        <translation>Notizen:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printserviceform.py" line="250"/>
         <source>Playing time: </source>
-        <translation type="unfinished"></translation>
+        <translation>Spiellänge:</translation>
     </message>
 </context>
 <context>
@@ -2848,12 +2848,12 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="396"/>
         <source>Previous Service</source>
-        <translation>Vorheriger Ablauf</translation>
+        <translation>Vorheriges Element</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="402"/>
         <source>Next Service</source>
-        <translation>Nächster Ablauf</translation>
+        <translation>Nächstes Element</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="408"/>
@@ -2863,7 +2863,7 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="199"/>
         <source>Start/Stop continuous loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Starte/Stoppe Endlosschleife</translation>
     </message>
 </context>
 <context>
@@ -3949,17 +3949,17 @@ Sie ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="128"/>
         <source>Unsupported File</source>
-        <translation type="unfinished">Nicht unterstütztes Dateiformat</translation>
+        <translation>Nicht unterstütztes Dateiformat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="43"/>
         <source>Title and/or verses not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel und/oder Strophen nicht gefunden</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="47"/>
         <source>XML syntax error</source>
-        <translation type="unfinished"></translation>
+        <translation>XML Syntax Fehler</translation>
     </message>
 </context>
 <context>
@@ -4508,7 +4508,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/cclifileimport.py" line="89"/>
         <source>The file does not have a valid extension.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei hat keine gültige Dateiendung.</translation>
     </message>
 </context>
 <context>
@@ -4516,7 +4516,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/ewimport.py" line="245"/>
         <source>Administered by %s</source>
-        <translation type="unfinished">Verwaltet durch %s</translation>
+        <translation>Verwaltet durch %s</translation>
     </message>
 </context>
 <context>
@@ -4903,12 +4903,12 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="335"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopieren</translation>
+        <translation>Kopieren</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="337"/>
         <source>Save to File</source>
-        <translation type="unfinished">In Datei speichern</translation>
+        <translation>In Datei speichern</translation>
     </message>
 </context>
 <context>
@@ -4957,7 +4957,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/olp1import.py" line="65"/>
         <source>Not a valid openlp.org 1.x song database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine gültige openlp.org 1.x Liederdatenbank.</translation>
     </message>
 </context>
 <context>
@@ -4965,7 +4965,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/olpimport.py" line="104"/>
         <source>Not a valid OpenLP 2.0 song database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine gültige OpenLP 2.x Liederdatenbank.</translation>
     </message>
 </context>
 <context>
@@ -5022,7 +5022,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/songimport.py" line="117"/>
         <source>The following songs could not be imported:</source>
-        <translation type="unfinished"></translation>
+        <translation>Die folgenden Lieder konnten nicht importiert werden:</translation>
     </message>
 </context>
 <context>
@@ -5161,7 +5161,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="82"/>
         <source>Update service from song edit</source>
-        <translation>Bei Liedbearbeitung im Ablauf das Lied in der Datenbank aktualisieren</translation>
+        <translation>Lieder im Ablauf nach Bearbeitung aktualisieren</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="84"/>
