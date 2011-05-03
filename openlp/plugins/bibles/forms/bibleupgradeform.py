@@ -27,7 +27,6 @@
 The bible import functions for OpenLP
 """
 import logging
-#import os
 import os.path
 import re
 
