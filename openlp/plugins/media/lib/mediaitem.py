@@ -50,21 +50,24 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.mediaObject = Phonon.MediaObject(self)
+        self.mediaObject = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_phonon_creation'),
+            self.createPhonon)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (
             u' '.join(self.parent.video_extensions_list),
-            u' '.join(self.parent.audio_extensions_list), UiStrings.AllFiles)
-        self.replaceAction.setText(UiStrings.ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
-        self.resetAction.setText(UiStrings.ResetBG)
-        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
+            u' '.join(self.parent.audio_extensions_list), UiStrings().AllFiles)
+        self.replaceAction.setText(UiStrings().ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
+        self.resetAction.setText(UiStrings().ResetBG)
+        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -111,7 +114,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(UiStrings.LiveBGError,
+                critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)
@@ -135,10 +138,8 @@ class MediaMediaItem(MediaManagerItem):
         if not self.mediaStateWait(Phonon.StoppedState):
             # Due to string freeze, borrow a message from presentations
             # This will be corrected in 1.9.6
-            critical_error_message_box(
-                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('PresentationPlugin.MediaItem',
-                'Unsupported File')))
+            critical_error_message_box(UiStrings().UnsupportedFile,
+                    UiStrings().UnsupportedFile)
             return False
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
@@ -149,15 +150,11 @@ class MediaMediaItem(MediaManagerItem):
                 # Due to string freeze, borrow a message from presentations
                 # This will be corrected in 1.9.6
                 self.mediaObject.stop()
-                critical_error_message_box(
-                    translate('PresentationPlugin.MediaItem',
-                    'Unsupported File'),
-                    unicode(translate('PresentationPlugin.MediaItem',
-                    'Unsupported File')))
+                critical_error_message_box(UiStrings().UnsupportedFile,
+                        UiStrings().UnsupportedFile)
                 return False
-            self.mediaLength = self.mediaObject.totalTime() / 1000
             self.mediaObject.stop()
-            service_item.media_length = self.mediaLength
+            service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
                 ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
@@ -210,3 +207,8 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+
+    def createPhonon(self):
+        log.debug(u'CreatePhonon')
+        if not self.mediaObject:
+            self.mediaObject = Phonon.MediaObject(self)

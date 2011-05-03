@@ -40,6 +40,8 @@ class SongStrings(object):
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    SongIncomplete = translate('OpenLP.Ui','Title and/or verses not found')
     SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
     Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
+    XMLSyntaxError = translate('OpenLP.Ui', 'XML syntax error')

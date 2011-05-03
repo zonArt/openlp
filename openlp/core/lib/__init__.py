@@ -37,6 +37,7 @@ log = logging.getLogger(__name__)
 
 base_html_expands = []
 
+# Hex Color tags from http://www.w3schools.com/html/html_colornames.asp
 base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
     u'start html': u'<span style="-webkit-text-fill-color:red">',
     u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
@@ -53,13 +54,13 @@ base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
     u'start html': u'<span style="-webkit-text-fill-color:green">',
     u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
     u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
     u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
-    u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
+    u'start html': u'<span style="-webkit-text-fill-color:#800080">',
     u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
     u'start html': u'<span style="-webkit-text-fill-color:white">',
@@ -165,58 +166,6 @@ def build_icon(icon):
         button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
-
-def context_menu_action(base, icon, text, slot, shortcuts=None):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
-
-    ``text``
-        The text to display for this action
-
-    ``slot``
-        The code to run when this action is triggered
-    """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-    if shortcuts:
-        action.setShortcuts(shortcuts)
-    return action
-
-def context_menu(base, icon, text):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent object to add this menu to
-
-    ``icon``
-        An icon for this menu
-
-    ``text``
-        The text to display for this menu
-    """
-    action = QtGui.QMenu(text, base)
-    action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    return action
 
 def image_to_byte(image):
     """
@@ -326,8 +275,8 @@ def check_directory_exists(dir):
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
-from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from spelltextedit import SpellTextEdit
 from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
@@ -341,5 +290,5 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from renderer import Renderer
-from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from openlp.core.utils.actions import ActionList

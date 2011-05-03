@@ -251,14 +251,14 @@ class PowerpointDocument(PresentationDocument):
                         win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            self.presentation.SlideShowSettings.Run()
-            self.presentation.SlideShowWindow.View.GotoSlide(1)
-            rendermanager = self.controller.plugin.renderManager
-            rect = rendermanager.screens.current[u'size']
-            self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
-            self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
-            self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
-            self.presentation.SlideShowWindow.Width = rect.width() * 72 / dpi
+            renderer = self.controller.plugin.renderer
+            rect = renderer.screens.current[u'size']
+            ppt_window = self.presentation.SlideShowSettings.Run()
+            ppt_window.Top = rect.y() * 72 / dpi
+            ppt_window.Height = rect.height() * 72 / dpi
+            ppt_window.Left = rect.x() * 72 / dpi
+            ppt_window.Width = rect.width() * 72 / dpi
+
 
     def get_slide_number(self):
         """

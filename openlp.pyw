@@ -46,7 +46,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version
+    get_application_version, DelayStartThread
 
 log = logging.getLogger()
 
@@ -116,11 +116,12 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         # start the main app window
         self.mainWindow = MainWindow(screens, self.clipboard(),
-             self.arguments())
+            self.arguments())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+            log.debug(u'Splashscreen closed')
         self.mainWindow.repaint()
         self.processEvents()
         if not has_run_wizard:
@@ -129,6 +130,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
+        DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
     def isAlreadyRunning(self):
@@ -139,7 +141,7 @@ class OpenLP(QtGui.QApplication):
         self.sharedMemory = QtCore.QSharedMemory('OpenLP')
         if self.sharedMemory.attach():
             status = QtGui.QMessageBox.critical(None,
-                UiStrings.Error, UiStrings.OpenLPStart,
+                UiStrings().Error, UiStrings().OpenLPStart,
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
             if status == QtGui.QMessageBox.No:
@@ -239,8 +241,14 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator = LanguageManager.get_translator(language)
-    app.installTranslator(appTranslator)
+    app_translator, default_translator = \
+        LanguageManager.get_translator(language)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
     sys.exit(app.run())

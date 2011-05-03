@@ -63,7 +63,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarButton(UiStrings.NewTheme,
+        self.toolbar.addToolbarButton(UiStrings().NewTheme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
@@ -280,6 +280,8 @@ class ThemeManager(QtGui.QWidget):
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             if self.fileRenameForm.exec_():
                 newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
+                if oldThemeName == newThemeName:
+                    return
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
@@ -333,6 +335,7 @@ class ThemeManager(QtGui.QWidget):
                 self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
+            self.oldBackgroundImage = None
 
     def onDeleteTheme(self):
         """
@@ -445,10 +448,11 @@ class ThemeManager(QtGui.QWidget):
         files = SettingsManager.get_files(self.settingsSection, u'.png')
         if firstTime:
             self.firstTime()
+            files = SettingsManager.get_files(self.settingsSection, u'.png')
             # No themes have been found so create one
             if len(files) == 0:
                 theme = ThemeXML()
-                theme.theme_name = UiStrings.Default
+                theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',
@@ -656,7 +660,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateImage(self, themeData, forcePage=False):
         """
-        Call the RenderManager to build a Sample Image
+        Call the renderer to build a Sample Image
 
         ``themeData``
             The theme to generated a preview for.
@@ -665,7 +669,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(
+        return self.mainwindow.renderer.generate_preview(
             themeData, forcePage)
 
     def getPreviewImage(self, theme):

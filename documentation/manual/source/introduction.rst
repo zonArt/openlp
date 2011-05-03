@@ -8,7 +8,7 @@ About
 OpenLP stands for "Open Source Lyrics Projection" and is presentation software
 developed for churches to provide a single easy to use interface for the
 projection needs of a typical worship service. First created in 2004, it has
-steadily grown in features and maturity such that is it now a mainstay in
+steadily grown in features and maturity such that it is now a mainstay in
 hundreds of churches around the world.
 
 OpenLP has searchable databases of songs and Bible verses allowing them to be
@@ -40,5 +40,4 @@ to charge for the software, and that you have to distribute the source code as
 well.
 
 You can find a copy of the GNU General Public License from the Help menu 
-selecting about OpenLP or on-line at:
-`<http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.
+selecting about OpenLP or `view the license on-line <http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.

@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    build_icon, translate
+    translate
 
 from openlp.core.ui import HideMode
 
@@ -69,9 +69,9 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         self.videoHide = False
         self.override = {}
-        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.setWindowIcon(mainIcon)
         self.retranslateUi()
+        self.mediaObject = None
+        self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -80,6 +80,9 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'openlp_phonon_creation'),
+                self.createMediaObject)
 
     def retranslateUi(self):
         """
@@ -104,19 +107,9 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
         log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videoWidget)
-        Phonon.createPath(self.mediaObject, self.audio)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoState)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'),
-            self.videoFinished)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'tick(qint64)'),
-            self.videoTick)
+        if self.isLive:
+            if not self.firstTime:
+                self.createMediaObject()
         log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
@@ -144,7 +137,8 @@ class MainDisplay(DisplayWidget):
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
-            background_color = QtGui.QColor(QtCore.QSettings().value(
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(QtCore.QSettings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
@@ -175,6 +169,24 @@ class MainDisplay(DisplayWidget):
                 self.primary = True
         log.debug(
             u'Finished setup for monitor %s' % self.screens.monitor_number)
+
+    def createMediaObject(self):
+        self.firstTime = False
+        log.debug(u'Creating Phonon objects - Start for %s', self.isLive)
+        self.mediaObject = Phonon.MediaObject(self)
+        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        Phonon.createPath(self.mediaObject, self.videoWidget)
+        Phonon.createPath(self.mediaObject, self.audio)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoState)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'),
+            self.videoFinished)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'tick(qint64)'),
+            self.videoTick)
+        log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
 
     def text(self, slide):
         """
@@ -349,6 +361,8 @@ class MainDisplay(DisplayWidget):
         """
         Loads and starts a video to run with the option of sound
         """
+        if not self.mediaObject:
+            self.createMediaObject()
         log.debug(u'video')
         self.webLoaded = True
         self.setGeometry(self.screen[u'size'])
@@ -453,7 +467,7 @@ class MainDisplay(DisplayWidget):
         painter.end()
         return preview
 
-    def buildHtml(self, serviceItem):
+    def buildHtml(self, serviceItem, image=None):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
@@ -480,8 +494,12 @@ class MainDisplay(DisplayWidget):
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
+        if image:
+            image_bytes = self.imageManager.get_image_bytes(image)
+        else:
+            image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background)
+            self.isLive, background, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

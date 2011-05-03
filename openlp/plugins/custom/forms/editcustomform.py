@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -98,11 +98,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             for slide in slideList:
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
-            id = self.themeComboBox.findText(theme, QtCore.Qt.MatchExactly)
-            # No theme match
-            if id == -1:
-                id = 0
-            self.themeComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(self.themeComboBox, theme)
         # If not preview hide the preview button.
         self.previewButton.setVisible(False)
         if preview:
@@ -173,7 +169,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             item = self.slideListView.item(row)
             slide_list += item.text()
             if row != self.slideListView.count() - 1:
-                slide_list += u'\n[---]\n'
+                slide_list += u'\n[===]\n'
         self.editSlideForm.setText(slide_list)
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText(), True)
