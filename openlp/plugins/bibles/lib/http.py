@@ -419,9 +419,11 @@ class HTTPBible(BibleDB):
                 'failed' % self.filename)
             return False
         for book in books:
+            if self.stop_import_flag:
+                break
             self.wizard.incrementProgressBar(unicode(translate(
-                            'BiblesPlugin.HTTPBible', 'Importing %s...',
-                            'Importing <book name>...')) % book)
+                'BiblesPlugin.HTTPBible', 'Importing %s...',
+                'Importing <book name>...')) % book)
             book_ref_id = self.get_book_ref_id_by_name(book, len(books), 
                 language_id)
             if not book_ref_id:
@@ -432,7 +434,10 @@ class HTTPBible(BibleDB):
             log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
                 book, book_ref_id, book_details[u'testament_id'])
             self.create_book(book, book_ref_id, book_details[u'testament_id'])
-        return True
+        if self.stop_import_flag:
+            return False
+        else:
+            return True
 
     def get_verses(self, reference_list):
         """

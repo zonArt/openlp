@@ -476,9 +476,9 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'BibleDB.get_language()')
         from openlp.plugins.bibles.forms import LanguageForm
         language = None
-        lang = LanguageForm(self.wizard)
-        if lang.exec_():
-            language = unicode(lang.requestComboBox.currentText())
+        language_form = LanguageForm(self.wizard)
+        if language_form.exec_():
+            language = unicode(language_form.requestComboBox.currentText())
         if not language:
             return False
         language = BiblesResourcesDB.get_language(language)
@@ -550,11 +550,11 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'abbreviation, chapters FROM book_reference ORDER BY id')
         return [
             {
-            u'id': book[0],
-            u'testament_id': book[1],
-            u'name': unicode(book[2]),
-            u'abbreviation': unicode(book[3]),
-            u'chapters': book[4]
+                u'id': book[0],
+                u'testament_id': book[1],
+                u'name': unicode(book[2]),
+                u'abbreviation': unicode(book[3]),
+                u'chapters': book[4]
             }
             for book in books
         ]

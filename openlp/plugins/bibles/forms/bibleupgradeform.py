@@ -98,11 +98,11 @@ class BibleUpgradeForm(OpenLPWizard):
         self.stop_import_flag = True
 
     def onCheckBoxIndexChanged(self, index):
-        '''
+        """
         Show/ Hide warnings if CheckBox state has changed
-        '''
+        """
         for number, filename in enumerate(self.files):
-            if not self.checkBox[number].checkState() == 2:
+            if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 self.verticalWidget[number].hide()
                 self.formWidget[number].hide()
             else:
@@ -134,15 +134,15 @@ class BibleUpgradeForm(OpenLPWizard):
             self.next()
 
     def onFinishButton(self):
-        '''
+        """
         Some cleanup while finishing
-        '''
-        if self.deleteCheckBox.checkState() == 2 or \
-            self.deleteAllCheckBox.checkState() == 2:
+        """
+        if self.deleteCheckBox.checkState() == QtCore.Qt.Checked or \
+            self.deleteAllCheckBox.checkState() == QtCore.Qt.Checked:
             for number, filename in enumerate(self.files):
-                if self.deleteAllCheckBox.checkState() == 2 or \
-                    (self.checkBox[number].checkState() == 2 and \
-                    self.success[number] == True):
+                if self.deleteAllCheckBox.checkState() == QtCore.Qt.Checked or \
+                    (self.checkBox[number].checkState() == QtCore.Qt.Checked \
+                    and self.success[number]):
                     delete_file(os.path.join(self.oldpath, filename))
 
     def customInit(self):
@@ -204,7 +204,7 @@ class BibleUpgradeForm(OpenLPWizard):
             checkBoxName = u'checkBox['+unicode(number)+u']'
             self.checkBox[number].setObjectName(checkBoxName)
             self.checkBox[number].setText(bible.get_name())
-            self.checkBox[number].setCheckState(2)
+            self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
             self.verticalWidget[number] = QtGui.QWidget(self.scrollAreaContents)
             verticalWidgetName = u'verticalWidget['+unicode(number)+u']'
@@ -356,7 +356,7 @@ class BibleUpgradeForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.selectPage:
             for number, filename in enumerate(self.files):
-                if not self.checkBox[number].checkState() == 2:
+                if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     continue
                 version_name = unicode(self.versionNameEdit[number].text())
                 oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
@@ -424,7 +424,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
         for number, filename in enumerate(self.files):
-            self.checkBox[number].setCheckState(2)
+            self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             if os.path.exists(os.path.join(self.newpath, filename)):
                 self.verticalWidget[number].show()
                 self.formWidget[number].show()
@@ -434,9 +434,9 @@ class BibleUpgradeForm(OpenLPWizard):
         self.progressBar.show()
         self.progressLabelAfter.hide()
         self.deleteCheckBox.hide()
-        self.deleteCheckBox.setCheckState(0)
+        self.deleteCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.deleteAllCheckBox.hide()
-        self.deleteAllCheckBox.setCheckState(0)
+        self.deleteAllCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.restart()
         settings.endGroup()
 
@@ -464,13 +464,13 @@ class BibleUpgradeForm(OpenLPWizard):
             return
         self.maxBibles = 0
         for number, file in enumerate(self.files):
-            if self.checkBox[number].checkState() == 2:
+            if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 self.maxBibles += 1
         number = 0
         for biblenumber, filename in enumerate(self.files):
             bible_failed = False
             self.success[biblenumber] = False
-            if not self.checkBox[biblenumber].checkState() == 2:
+            if not self.checkBox[biblenumber].checkState() == QtCore.Qt.Checked:
                 continue
             self.progressBar.reset()
             oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
@@ -655,7 +655,8 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, success in self.success.iteritems():
             if success == True:
                 successful_import += 1
-            elif success == False and self.checkBox[number].checkState() == 2:
+            elif success == False and self.checkBox[number].checkState() == \
+                QtCore.Qt.Checked:
                 failed_import += 1
         if failed_import > 0:
             failed_import_text = unicode(translate(

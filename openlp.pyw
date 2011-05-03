@@ -132,9 +132,9 @@ class OpenLP(QtGui.QApplication):
         if update_check:
             VersionThread(self.mainWindow).start()
         for plugin in self.mainWindow.pluginManager.plugins:
-            if plugin.name == u'Bibles' and plugin.isActive() and len(
-            SettingsManager.get_files(u'bibles/bibles', u'.sqlite')) == 0 \
-            and len(SettingsManager.get_files(u'bibles', u'.sqlite')) > 0:
+            if plugin.name == u'Bibles' and plugin.isActive() and not \
+                len(SettingsManager.get_files( u'bibles/bibles', u'.sqlite')) \
+                and SettingsManager.get_files(u'bibles', u'.sqlite'):
                 if QtGui.QMessageBox.information(self.mainWindow, 
                     translate('OpenLP', 'Information'), translate('OpenLP',
                     'Bible format has changed.\nYou have to upgrade your '

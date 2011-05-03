@@ -79,7 +79,6 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         '''
         Reload the Combobox items
         '''
-        items = []
         self.requestComboBox.clear()
         self.requestComboBox.addItem(u'')
         items = BiblesResourcesDB.get_books()
@@ -89,26 +88,26 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
                 if book.book_reference_id == item[u'id']:
                     addBook = False
                     break
-            if self.checkBoxOldTestament.checkState() == 0 and \
-                item[u'testament_id'] == 1:
+            if self.checkBoxOldTestament.checkState() == QtCore.Qt.Unchecked \
+                and item[u'testament_id'] == 1:
                 addBook = False
-            elif self.checkBoxNewTestament.checkState() == 0 and \
-                item[u'testament_id'] == 2:
+            elif self.checkBoxNewTestament.checkState() == QtCore.Qt.Unchecked \
+                and item[u'testament_id'] == 2:
                 addBook = False
-            elif self.checkBoxApocrypha.checkState() == 0 and \
-                item[u'testament_id'] == 3:
+            elif self.checkBoxApocrypha.checkState() == QtCore.Qt.Unchecked \
+                and item[u'testament_id'] == 3:
                 addBook = False
-            if addBook == True:
+            if addBook:
                 self.requestComboBox.addItem(item[u'name'])
 
     def exec_(self, name, books, maxbooks):
         self.books = books
         log.debug(maxbooks)
         if maxbooks <= 27:
-            self.checkBoxOldTestament.setCheckState(0)
-            self.checkBoxApocrypha.setCheckState(0)
+            self.checkBoxOldTestament.setCheckState(QtCore.Qt.Unchecked)
+            self.checkBoxApocrypha.setCheckState(QtCore.Qt.Unchecked)
         elif maxbooks <= 66:
-            self.checkBoxApocrypha.setCheckState(0)
+            self.checkBoxApocrypha.setCheckState(QtCore.Qt.Unchecked)
         self.reloadComboBox()
         self.requestLabel.setText(name)
         return QDialog.exec_(self)

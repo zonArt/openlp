@@ -53,7 +53,6 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         self.setupUi(self)
 
     def exec_(self):
-        items = []
         self.requestComboBox.addItem(u'')
         items = BiblesResourcesDB.get_languages()
         for item in items:

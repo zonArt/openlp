@@ -637,9 +637,9 @@ class BibleImportForm(OpenLPWizard):
         bibles = BiblesResourcesDB.get_webbibles(
             WebDownload.Names[download_type])
         for bible in bibles:
-            ver = bible[u'name']
+            version = bible[u'name']
             name = bible[u'abbreviation']
-            self.web_bible_list[download_type][ver] = name.strip()
+            self.web_bible_list[download_type][version] = name.strip()
 
     def preWizard(self):
         """
@@ -720,4 +720,5 @@ class BibleImportForm(OpenLPWizard):
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
-            delete_database(self.plugin.settingsSection, importer.file)
+            delete_database(AppLocation.get_section_data_path(u'bibles/bibles'),
+                importer.file)
