@@ -30,6 +30,7 @@ Module implementing BookNameForm.
 import logging
 
 from PyQt4.QtGui import QDialog
+from PyQt4 import QtCore
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -52,20 +53,64 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.customSignals()
 
-    def exec_(self, name, books):
+    def customSignals(self):
+        """
+        Set up the signals used in the booknameform.
+        """
+        QtCore.QObject.connect(self.checkBoxOldTestament,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onCheckBoxIndexChanged)
+        QtCore.QObject.connect(self.checkBoxNewTestament,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onCheckBoxIndexChanged)
+        QtCore.QObject.connect(self.checkBoxApocrypha,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onCheckBoxIndexChanged)
+
+    def onCheckBoxIndexChanged(self, index):
+        '''
+        Reload Combobox if CheckBox state has changed
+        '''
+        self.reloadComboBox()
+
+    def reloadComboBox(self):
+        '''
+        Reload the Combobox items
+        '''
         items = []
+        self.requestComboBox.clear()
         self.requestComboBox.addItem(u'')
-        self.requestLabel.setText(name)
         items = BiblesResourcesDB.get_books()
         for item in items:
             addBook = True
-            for book in books:
+            for book in self.books:
                 if book.book_reference_id == item[u'id']:
                     addBook = False
                     break
+            if self.checkBoxOldTestament.checkState() == 0 and \
+                item[u'testament_id'] == 1:
+                addBook = False
+            elif self.checkBoxNewTestament.checkState() == 0 and \
+                item[u'testament_id'] == 2:
+                addBook = False
+            elif self.checkBoxApocrypha.checkState() == 0 and \
+                item[u'testament_id'] == 3:
+                addBook = False
             if addBook == True:
                 self.requestComboBox.addItem(item[u'name'])
+
+    def exec_(self, name, books, maxbooks):
+        self.books = books
+        log.debug(maxbooks)
+        if maxbooks <= 27:
+            self.checkBoxOldTestament.setCheckState(0)
+            self.checkBoxApocrypha.setCheckState(0)
+        elif maxbooks <= 66:
+            self.checkBoxApocrypha.setCheckState(0)
+        self.reloadComboBox()
+        self.requestLabel.setText(name)
         return QDialog.exec_(self)
     
     def accept(self):

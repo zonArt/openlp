@@ -582,7 +582,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Importing %s ...')) % 
                         (number+1, self.maxBibles, name, book))
                     book_ref_id = self.newbibles[number].\
-                        get_book_ref_id_by_name(book, language_id)
+                        get_book_ref_id_by_name(book, len(books), language_id)
                     if not book_ref_id:
                         log.exception(u'Importing books from %s - download '\
                             u'name: "%s" aborted by user' % (
@@ -623,7 +623,8 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Importing %s ...')) % 
                         (number+1, self.maxBibles, name, book[u'name']))
                     book_ref_id = self.newbibles[number].\
-                        get_book_ref_id_by_name(book[u'name'], language_id)
+                        get_book_ref_id_by_name(book[u'name'], len(books), 
+                        language_id)
                     if not book_ref_id:
                         log.exception(u'Importing books from %s " '\
                             'failed - aborted by user' % name)

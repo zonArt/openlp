@@ -128,8 +128,8 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
                         log.debug(u'New book: "%s"' % self.books[book][0])
-                        book_ref_id = self.get_book_ref_id_by_name(
-                            unicode(self.books[book][0]), language_id)
+                        book_ref_id = self.get_book_ref_id_by_name(unicode(
+                            self.books[book][0]), 67, language_id)
                         if not book_ref_id:
                             log.exception(u'Importing books from "%s" '\
                                 'failed' % self.filename)

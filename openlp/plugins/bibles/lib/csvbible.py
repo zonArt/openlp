@@ -118,7 +118,7 @@ class CSVBible(BibleDB):
                     translate('BibleDB.Wizard', 'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
                 book_ref_id = self.get_book_ref_id_by_name(
-                    unicode(line[2], details['encoding']), language_id)
+                    unicode(line[2], details['encoding']), 67, language_id)
                 if not book_ref_id:
                     log.exception(u'Importing books from "%s" '\
                         'failed' % self.booksfile)

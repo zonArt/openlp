@@ -327,7 +327,7 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'BibleDB.get_book_by_book_ref_id("%s")', id)
         return self.get_object_filtered(Book, Book.book_reference_id.like(id))
 
-    def get_book_ref_id_by_name(self, book, language_id=None):
+    def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
         log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
             language_id)
         if BiblesResourcesDB.get_book(book, True):
@@ -341,7 +341,7 @@ class BibleDB(QtCore.QObject, Manager):
             from openlp.plugins.bibles.forms import BookNameForm
             book_ref = None
             book_name = BookNameForm(self.wizard)
-            if book_name.exec_(book, self.get_books()):
+            if book_name.exec_(book, self.get_books(), maxbooks):
                 book_ref = unicode(book_name.requestComboBox.currentText())
             if not book_ref:
                 return None

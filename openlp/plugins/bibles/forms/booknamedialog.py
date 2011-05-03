@@ -32,7 +32,7 @@ from openlp.core.lib.ui import create_accept_reject_button_box
 class Ui_BookNameDialog(object):
     def setupUi(self, bookNameDialog):
         bookNameDialog.setObjectName(u'BookNameDialog')
-        bookNameDialog.resize(400, 175)
+        bookNameDialog.resize(400, 275)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, 
             QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
@@ -41,7 +41,7 @@ class Ui_BookNameDialog(object):
             .hasHeightForWidth())
         bookNameDialog.setSizePolicy(sizePolicy)
         self.widget = QtGui.QWidget(bookNameDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 15, 381, 151))
+        self.widget.setGeometry(QtCore.QRect(10, 15, 381, 251))
         self.widget.setObjectName(u'widget')
         self.verticalLayout = QtGui.QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName(u'verticalLayout')
@@ -75,13 +75,28 @@ class Ui_BookNameDialog(object):
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, 
             self.requestComboBox)
         self.verticalLayout.addLayout(self.formLayout)
+        self.infoLabelTestaments = QtGui.QLabel(self.widget)
+        self.infoLabelTestaments.setObjectName(u'InfoLabelTestaments')
+        self.verticalLayout.addWidget(self.infoLabelTestaments)
+        self.checkBoxOldTestament = QtGui.QCheckBox(self.widget)
+        self.checkBoxOldTestament.setObjectName(u'OldTestament')
+        self.checkBoxOldTestament.setCheckState(2)
+        self.verticalLayout.addWidget(self.checkBoxOldTestament)
+        self.checkBoxNewTestament = QtGui.QCheckBox(self.widget)
+        self.checkBoxNewTestament.setObjectName(u'OldTestament')
+        self.checkBoxNewTestament.setCheckState(2)
+        self.verticalLayout.addWidget(self.checkBoxNewTestament)
+        self.checkBoxApocrypha = QtGui.QCheckBox(self.widget)
+        self.checkBoxApocrypha.setObjectName(u'OldTestament')
+        self.checkBoxApocrypha.setCheckState(2)
+        self.verticalLayout.addWidget(self.checkBoxApocrypha)
+        self.verticalLayout.addWidget(
+            create_accept_reject_button_box(bookNameDialog))
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, 
             QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
-        self.formLayout.addWidget(
-            create_accept_reject_button_box(bookNameDialog))
         self.retranslateUi(bookNameDialog)
-        QtCore.QMetaObject.connectSlotsByName(bookNameDialog)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self, bookNameDialog):
         bookNameDialog.setWindowTitle(
@@ -93,3 +108,11 @@ class Ui_BookNameDialog(object):
             'Please choose the book it is.'))
         self.requestLabel.setText(translate('BiblesPlugin.BookNameDialog', 
             'Book:'))
+        self.infoLabelTestaments.setText(translate(
+            'BiblesPlugin.BookNameDialog', 'Show books from:'))
+        self.checkBoxOldTestament.setText(translate(
+            'BiblesPlugin.BookNameDialog', 'Old Testament'))
+        self.checkBoxNewTestament.setText(translate(
+            'BiblesPlugin.BookNameDialog', 'New Testament'))
+        self.checkBoxApocrypha.setText(translate('BiblesPlugin.BookNameDialog', 
+            'Apocrypha'))
