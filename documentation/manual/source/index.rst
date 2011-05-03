@@ -13,7 +13,8 @@ Getting Started With OpenLP
    :maxdepth: 2
 
    introduction
-  
+   installation
+
 Reference Manual
 ----------------
 
@@ -26,7 +27,6 @@ Reference Manual
    dualmonitors
    wizard
    glossary
-   installation
    mediamanager
    songs
    themes
