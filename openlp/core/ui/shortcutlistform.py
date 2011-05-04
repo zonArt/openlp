@@ -71,7 +71,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             QtCore.SIGNAL(u'clicked(bool)'), self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
-        if self.primaryPushButton.isChecked() or \
+        if event.key() == QtCore.Qt.Key_Space:
+            self.keyReleaseEvent(event)
+        elif self.primaryPushButton.isChecked() or \
             self.alternatePushButton.isChecked():
             event.ignore()
         elif event.key() == QtCore.Qt.Key_Escape:
@@ -163,6 +165,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.customRadioButton.setChecked(True)
         if toggled:
             self.alternatePushButton.setChecked(False)
+            self.primaryPushButton.setText(u'')
             return
         action = self._currentItemAction()
         if action is None:
@@ -181,6 +184,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.customRadioButton.setChecked(True)
         if toggled:
             self.primaryPushButton.setChecked(False)
+            self.alternatePushButton.setText(u'')
             return
         action = self._currentItemAction()
         if action is None:
@@ -211,10 +215,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.primaryPushButton.setChecked(column in [0, 1])
         self.alternatePushButton.setChecked(column not in [0, 1])
         if column in [0, 1]:
+            self.primaryPushButton.setText(u'')
             self.primaryPushButton.setFocus(QtCore.Qt.OtherFocusReason)
         else:
+            self.alternatePushButton.setText(u'')
             self.alternatePushButton.setFocus(QtCore.Qt.OtherFocusReason)
-        self.onCurrentItemChanged(item)
 
     def onCurrentItemChanged(self, item=None, previousItem=None):
         """
@@ -247,6 +252,12 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             elif len(shortcuts) == 2:
                 primary_text = shortcuts[0].toString()
                 alternate_text = shortcuts[1].toString()
+        # When we are capturing a new shortcut, we do not want, the buttons to
+        # display the current shortcut.
+        if self.primaryPushButton.isChecked():
+            primary_text = u''
+        if self.alternatePushButton.isChecked():
+            alternate_text = u''
         self.primaryPushButton.setText(primary_text)
         self.alternatePushButton.setText(alternate_text)
         self.primaryLabel.setText(primary_label_text)
