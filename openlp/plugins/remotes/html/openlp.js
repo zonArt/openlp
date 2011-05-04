@@ -126,7 +126,7 @@ window.OpenLP = {
               item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
               return false;
             }
-          }); 
+          });
           $("#service-manager div[data-role=content] ul[data-role=listview]").listview("refresh");
         }
         if ($("#slide-controller").is(":visible")) {
