@@ -33,6 +33,7 @@ import os
 
 from PyQt4 import QtCore
 
+#from openlp.core.ui import ScreenList
 from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
@@ -40,8 +41,9 @@ class SettingsManager(object):
     Class to control the initial settings for the UI and provide helper
     functions for the loading and saving of application settings.
     """
-    def __init__(self, screen):
-        self.screen = screen.current
+    def __init__(self):
+        from openlp.core.ui import ScreenList
+        self.screen = ScreenList.get_instance().current
         self.width = self.screen[u'size'].width()
         self.height = self.screen[u'size'].height()
         self.mainwindow_height = self.height * 0.8
@@ -54,9 +56,6 @@ class SettingsManager(object):
         else:
             self.mainwindow_left = mainwindow_docbars
             self.mainwindow_right = mainwindow_docbars
-        self.slidecontroller = (self.width - (
-            self.mainwindow_left + self.mainwindow_right) - 100) / 2
-        self.slidecontroller_image = self.slidecontroller - 50
 
     @staticmethod
     def get_last_dir(section, num=None):

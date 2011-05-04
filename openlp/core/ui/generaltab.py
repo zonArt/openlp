@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -36,32 +37,15 @@ class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
     """
-    def __init__(self, parent, screens):
+    def __init__(self, parent):
         """
         Initialise the general settings tab
         """
-        self.screens = screens
+        self.screens = ScreenList.get_instance()
         self.monitorNumber = 0
-        # Set to True to allow PostSetup to work on application start up
-        self.overrideChanged = True
         self.icon_path = u':/icon/openlp-logo-16x16.png'
         generalTranslated = translate('GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
-
-    def preLoad(self):
-        """
-        Set up the display screen and set correct screen values.
-        If not set before default to last screen.
-        """
-        settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
-        self.monitorNumber = settings.value(u'monitor',
-            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
-        self.screens.set_current_display(self.monitorNumber)
-        self.screens.monitor_number = self.monitorNumber
-        self.screens.display = settings.value(
-            u'display on monitor', QtCore.QVariant(True)).toBool()
-        settings.endGroup()
 
     def setupUi(self):
         """
@@ -203,7 +187,6 @@ class GeneralTab(SettingsTab):
         self.passwordLabel.setVisible(False)
         self.passwordEdit.setVisible(False)
 
-
     def retranslateUi(self):
         """
         Translate the general settings tab to the currently selected language
@@ -300,6 +283,7 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
+        self.overrideChanged = False
 
     def save(self):
         """
@@ -395,3 +379,4 @@ class GeneralTab(SettingsTab):
         Called when the width, height, x position or y position has changed.
         """
         self.overrideChanged = True
+

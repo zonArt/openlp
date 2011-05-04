@@ -32,7 +32,7 @@ from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
     ItemCapabilities
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay
+from openlp.core.ui import MainDisplay, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -56,22 +56,21 @@ class Renderer(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
 
-    ``screens``
-        Contains information about the Screens.
-
     ``screen_number``
         Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, theme_manager, screens):
+    def __init__(self, theme_manager):
         """
         Initialise the render manager.
         """
         log.debug(u'Initilisation started')
-        self.screens = screens
-        self.image_manager = ImageManager()
-        self.display = MainDisplay(self, screens, False)
+        self.screens = ScreenList.get_instance()
+        self.width = self.screens.current[u'size'].width()
+        self.height = self.screens.current[u'size'].height()
+        self.image_manager = ImageManager(self.width, self.height)
+        self.display = MainDisplay(self, False)
         self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
         self.service_theme = u''
@@ -86,7 +85,7 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
-        self.display = MainDisplay(self, self.screens, False)
+        self.display = MainDisplay(self, False)
         self.display.imageManager = self.image_manager
         self.display.setup()
         self.bg_frame = None

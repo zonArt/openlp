@@ -36,7 +36,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate
 
-from openlp.core.ui import HideMode
+from openlp.core.ui import HideMode, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -60,10 +60,10 @@ class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-    def __init__(self, parent, screens, live):
+    def __init__(self, parent, live):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
-        self.screens = screens
+        self.screens = ScreenList.get_instance()
         self.isLive = live
         self.alertTab = None
         self.hideMode = None

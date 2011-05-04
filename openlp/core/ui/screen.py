@@ -41,6 +41,13 @@ class ScreenList(object):
     Wrapper to handle the parameters of the display screen
     """
     log.info(u'Screen loaded')
+    instance = None
+
+    @staticmethod
+    def get_instance(desktop=None):
+        if desktop is not None and ScreenList.instance is None:
+            ScreenList.instance = ScreenList(desktop)
+        return ScreenList.instance
 
     def __init__(self, desktop):
         """
@@ -60,6 +67,7 @@ class ScreenList(object):
         # save config display number
         self.monitor_number = 0
         self.screen_count_changed()
+        self._load_screen_settings()
         QtCore.QObject.connect(desktop,
             QtCore.SIGNAL(u'resized(int)'), self.screen_resolution_changed)
         QtCore.QObject.connect(desktop,
@@ -215,3 +223,31 @@ class ScreenList(object):
         """
         log.debug(u'reset_current_display')
         self.set_current_display(self.current_display)
+
+    def _load_screen_settings(self):
+        """
+        Loads the screen size and the monitor number from the settings.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'general')
+        self.monitor_number = settings.value(u'monitor',
+            QtCore.QVariant(self.display_count - 1)).toInt()[0]
+        self.set_current_display(self.monitor_number)
+        self.display = settings.value(
+            u'display on monitor', QtCore.QVariant(True)).toBool()
+        override_display = settings.value(
+            u'override position', QtCore.QVariant(False)).toBool()
+        x = settings.value(u'x position',
+            QtCore.QVariant(self.current[u'size'].x())).toInt()[0]
+        y = settings.value(u'y position',
+            QtCore.QVariant(self.current[u'size'].y())).toInt()[0]
+        width = settings.value(u'width',
+            QtCore.QVariant(self.current[u'size'].width())).toInt()[0]
+        height = settings.value(u'height',
+            QtCore.QVariant(self.current[u'size'].height())).toInt()[0]
+        settings.endGroup()
+        self.override[u'size'] = QtCore.QRect(x, y, width, height)
+        if override_display:
+            self.set_override_display()
+        else:
+            self.reset_current_display()

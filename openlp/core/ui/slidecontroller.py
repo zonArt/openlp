@@ -33,7 +33,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 from openlp.core.lib.ui import UiStrings, shortcut_action
-from openlp.core.ui import HideMode, MainDisplay
+from openlp.core.ui import HideMode, MainDisplay, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    def __init__(self, parent, settingsmanager, screens, isLive=False):
+    def __init__(self, parent, settingsmanager, isLive=False):
         """
         Set up the Slide Controller.
         """
@@ -61,10 +61,11 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.screens = screens
+        self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.display = MainDisplay(self, screens, isLive)
+        self.display = MainDisplay(self, isLive)
+        self.display.setup()
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -296,9 +297,6 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.slidePreview.sizePolicy().hasHeightForWidth())
         self.slidePreview.setSizePolicy(sizePolicy)
-        self.slidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio))
         self.slidePreview.setFrameShape(QtGui.QFrame.Box)
         self.slidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.slidePreview.setLineWidth(1)
@@ -424,7 +422,7 @@ class SlideController(QtGui.QWidget):
         screen previews.
         """
         # rebuild display as screen size changed
-        self.display = MainDisplay(self, self.screens, self.isLive)
+        self.display = MainDisplay(self, self.isLive)
         self.display.imageManager = self.parent.renderer.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()

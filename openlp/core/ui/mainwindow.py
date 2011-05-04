@@ -86,10 +86,8 @@ class Ui_MainWindow(object):
         self.controlSplitter.setObjectName(u'controlSplitter')
         self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
-        self.previewController = SlideController(self, self.settingsmanager,
-            self.screens)
-        self.liveController = SlideController(self, self.settingsmanager,
-            self.screens, True)
+        self.previewController = SlideController(self, self.settingsmanager)
+        self.liveController = SlideController(self, self.settingsmanager, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
         self.previewController.panel.setVisible(previewVisible)
@@ -461,13 +459,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens, clipboard, arguments):
+    def __init__(self, clipboard, arguments):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screens = screens
         self.clipboard = clipboard
         self.arguments = arguments
         # Set up settings sections for the main application
@@ -477,9 +474,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
-        self.settingsmanager = SettingsManager(screens)
+        self.settingsmanager = SettingsManager()
         self.aboutForm = AboutForm(self)
-        self.settingsForm = SettingsForm(self.screens, self, self)
+        self.settingsForm = SettingsForm(self, self)
         self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
@@ -552,8 +549,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(
-            self.themeManagerContents, self.screens)
+        self.renderer = Renderer(self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
