@@ -218,7 +218,7 @@ def copy_windows_files():
     copy(os.path.join(winres_path, u'OpenLP.ico'),
         os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(winres_path, u'LICENSE.txt'),
-        os.path.join(dist_path, u'LICENSE.txt'))
+        os.path.join(dist_path, u'LICENSE.txt'))          
 
 def update_translations():
     print u'Updating translations...'
@@ -243,7 +243,15 @@ def compile_translations():
             code = lconvert.wait()
             if code != 0:
                 raise Exception('Error running lconvert on %s' % source_path)
-
+    print u'Copying qm files...'
+    source = os.path.join(site_packages, u'PyQt4', u'translations')
+    files = os.listdir(source)
+    for filename in files:
+        if filename.startswith(u'qt_') and filename.endswith(u'.qm') and \
+            len(filename) == 8:
+            copy(os.path.join(source, filename),
+                os.path.join(dist_path, u'i18n', filename))
+                
 def run_sphinx():
     print u'Running Sphinx...'
     os.chdir(manual_path)
