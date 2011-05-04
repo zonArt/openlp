@@ -108,7 +108,6 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list, initialLoad=False):
-        Receiver.send_message(u'cursor_busy')
         if not initialLoad:
             self.parent.formparent.displayProgressBar(len(list))
         for imageFile in list:
@@ -127,7 +126,6 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
-        Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.parent.formparent.finishedProgressBar()
 
