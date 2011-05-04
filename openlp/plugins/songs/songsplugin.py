@@ -229,12 +229,14 @@ class SongsPlugin(Plugin):
         If the first time wizard has run, this function is run to import all the
         new songs into the database.
         """
+        self.onToolsReindexItemTriggered()
         db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        if not os.path.exists(db_dir):
+            return
         song_dbs = []
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
-        self.onToolsReindexItemTriggered()
         if len(song_dbs) == 0:
             return
         progress = QtGui.QProgressDialog(self.formparent)

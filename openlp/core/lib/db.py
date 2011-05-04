@@ -87,8 +87,7 @@ class BaseModel(object):
         Creates an instance of a class and populates it, returning the instance
         """
         instance = cls()
-        for key in kwargs:
-            instance.__setattr__(key, kwargs[key])
+        [instance.__setattr__(key, kwargs[key]) for key in kwargs]
         return instance
 
 

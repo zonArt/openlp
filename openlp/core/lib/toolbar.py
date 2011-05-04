@@ -140,8 +140,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``widgets``
             The list of names of widgets to be hidden.
         """
-        for widget in widgets:
-            self.actions[widget].setVisible(False)
+        [self.actions[widget].setVisible(False) for widget in widgets]
 
     def makeWidgetsVisible(self, widgets):
         """
@@ -150,8 +149,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``widgets``
             The list of names of widgets to be shown.
         """
-        for widget in widgets:
-            self.actions[widget].setVisible(True)
+        [self.actions[widget].setVisible(True) for widget in widgets]
 
     def addPushButton(self, image_file=None, text=u''):
         """

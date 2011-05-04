@@ -38,7 +38,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version
+    get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -657,9 +657,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        for filename in os.listdir(temp_dir):
-            os.remove(os.path.join(temp_dir, filename))
-        os.removedirs(temp_dir)
+        if os.path.exists(temp_dir):
+            for filename in os.listdir(temp_dir):
+                delete_file(os.path.join(temp_dir, filename))
+            os.removedirs(temp_dir)
 
     def blankCheck(self):
         """
