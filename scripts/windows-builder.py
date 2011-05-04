@@ -218,7 +218,7 @@ def copy_windows_files():
     copy(os.path.join(winres_path, u'OpenLP.ico'),
         os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(winres_path, u'LICENSE.txt'),
-        os.path.join(dist_path, u'LICENSE.txt'))          
+        os.path.join(dist_path, u'LICENSE.txt'))       
 
 def update_translations():
     print u'Updating translations...'
@@ -251,7 +251,7 @@ def compile_translations():
             len(filename) == 8:
             copy(os.path.join(source, filename),
                 os.path.join(dist_path, u'i18n', filename))
-                
+
 def run_sphinx():
     print u'Running Sphinx...'
     os.chdir(manual_path)
