@@ -89,7 +89,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.renderManager.theme_manager.onAddTheme)
+            self.parent.parent.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -576,11 +576,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     if verse_index is not None:
                         order.append(VerseType.Tags[verse_index] + u'1')
                     else:
-                        order.append(u'') # it matches no verses anyway
+                        # it matches no verses anyway
+                        order.append(u'')
                 else:
                     verse_index = VerseType.from_translated_tag(item[0])
                     if verse_index is None:
-                        order.append(u'') # same as above
+                        # it matches no verses anyway
+                        order.append(u'')
                     else:
                         verse_tag = VerseType.Tags[verse_index]
                         verse_num = item[1:].lower()
