@@ -277,7 +277,6 @@ from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
 from eventreceiver import Receiver
 from spelltextedit import SpellTextEdit
-from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
@@ -289,6 +288,7 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
+from imagemanager import ImageManager
 from renderer import Renderer
 from mediamanageritem import MediaManagerItem
 from openlp.core.utils.actions import ActionList

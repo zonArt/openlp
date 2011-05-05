@@ -79,6 +79,7 @@ class AlertsPlugin(Plugin):
         action_list = ActionList.get_instance()
         action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
         self.liveController.alertTab = self.settings_tab
+        self.liveController.display.alertTab = self.settings_tab
 
     def finalise(self):
         """
@@ -119,3 +120,4 @@ class AlertsPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
+
