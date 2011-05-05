@@ -218,7 +218,7 @@ def copy_windows_files():
     copy(os.path.join(winres_path, u'OpenLP.ico'),
         os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(winres_path, u'LICENSE.txt'),
-        os.path.join(dist_path, u'LICENSE.txt'))       
+        os.path.join(dist_path, u'LICENSE.txt'))
 
 def update_translations():
     print u'Updating translations...'
