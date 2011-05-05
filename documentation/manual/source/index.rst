@@ -6,20 +6,36 @@
 Welcome to the OpenLP 2.0 User Manual
 =====================================
 
-Contents:
+Getting Started With OpenLP
+---------------------------
 
 .. toctree::
    :maxdepth: 2
 
    introduction
-   glossary
-   wizard
-   dualmonitors
-   configure
+   installation
+
+Reference Manual
+----------------
+
+.. toctree::
+   :maxdepth: 2
+
+   alert
    bibles
-   themes
+   configure
+   dualmonitors
+   wizard
+   glossary
    mediamanager
    songs
-   alert
+   themes
+
+Questions and Troubleshooting
+-----------------------------
+
+.. toctree::
+   :maxdepth: 2
+
    faq
    troubleshooting
