@@ -53,18 +53,19 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    def __init__(self, parent, settingsmanager, isLive=False):
+    def __init__(self, parent, isLive=False):
         """
         Set up the Slide Controller.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.display = MainDisplay(self, isLive)
+        self.image_manager = self.parent.imageManager
+        self.display = MainDisplay(self, self.image_manager, isLive)
+        #self.display.alertTab = self.alertTab
         self.display.setup()
         self.loopList = [
             u'Start Loop',
@@ -422,8 +423,7 @@ class SlideController(QtGui.QWidget):
         screen previews.
         """
         # rebuild display as screen size changed
-        self.display = MainDisplay(self, self.isLive)
-        self.display.imageManager = self.parent.renderer.image_manager
+        self.display = MainDisplay(self, self.image_manager, self.isLive)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -637,10 +637,8 @@ class SlideController(QtGui.QWidget):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.parent.renderer.image_manager. \
-                            get_image_bytes(frame[u'title'])
-                    image = self.parent.renderer.image_manager. \
-                        get_image(frame[u'title'])
+                            self.image_manager.get_image_bytes(frame[u'title'])
+                    image = self.image_manager.get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.renderer.screen_ratio

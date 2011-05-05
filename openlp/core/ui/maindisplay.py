@@ -60,11 +60,12 @@ class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-    def __init__(self, parent, live):
-        DisplayWidget.__init__(self, live, parent=None)
+    def __init__(self, parent, imageManager, live):
+        DisplayWidget.__init__(self, live, parent)
         self.parent = parent
-        self.screens = ScreenList.get_instance()
         self.isLive = live
+        self.imageManager = imageManager
+        self.screens = ScreenList.get_instance()
         self.alertTab = None
         self.hideMode = None
         self.videoHide = False
