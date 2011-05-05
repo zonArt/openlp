@@ -63,7 +63,7 @@ class SlideController(QtGui.QWidget):
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.image_manager = self.parent.imageManager
+        self.image_manager = self.parent.image_manager
         self.display = MainDisplay(self, self.image_manager, isLive)
         self.display.setup()
         self.loopList = [

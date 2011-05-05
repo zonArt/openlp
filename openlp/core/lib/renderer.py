@@ -55,19 +55,16 @@ class Renderer(object):
 
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
-
-    ``screen_number``
-        Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, imageManager, theme_manager):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the render manager.
         """
         log.debug(u'Initilisation started')
         self.theme_manager = theme_manager
-        self.image_manager = imageManager
+        self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''

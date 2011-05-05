@@ -475,7 +475,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
-        self.imageManager = ImageManager()
+        self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -541,7 +541,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
+        self.renderer = Renderer(self.image_manager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -774,8 +774,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         log.debug(u'screenChanged')
-        self.setFocus()
         self.renderer.update_display()
+        self.setFocus()
         self.activateWindow()
 
     def closeEvent(self, event):
