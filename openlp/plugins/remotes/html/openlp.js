@@ -130,7 +130,7 @@ window.OpenLP = {
           $("#service-manager div[data-role=content] ul[data-role=listview]").listview("refresh");
         }
         if ($("#slide-controller").is(":visible")) {
-          if(prevItem != OpenLP.currentItem) {
+          if (prevItem != OpenLP.currentItem) {
             OpenLP.loadController();
             return;
           }
