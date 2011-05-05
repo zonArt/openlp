@@ -573,6 +573,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
+        # Create the displays as all necessary components are loaded.
+        self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():

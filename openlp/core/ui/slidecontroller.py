@@ -64,8 +64,6 @@ class SlideController(QtGui.QWidget):
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.image_manager = self.parent.image_manager
-        self.display = MainDisplay(self, self.image_manager, isLive)
-        self.display.setup()
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -326,7 +324,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.setLiveHotkeys(self)
             self.__addActionsToWidget(self.previewListWidget)
-            self.__addActionsToWidget(self.display)
         else:
             self.setPreviewHotkeys()
             self.previewListWidget.addActions(
