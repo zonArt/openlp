@@ -71,12 +71,12 @@ class ImagePlugin(Plugin):
         tooltips = {
             u'load': translate('ImagePlugin', 'Load a new Image'),
             u'import': u'',
-            u'new': translate('ImagePlugin', 'Add a new Image'),
-            u'edit': translate('ImagePlugin', 'Edit the selected Image'),
-            u'delete': translate('ImagePlugin', 'Delete the selected Image'),
-            u'preview': translate('ImagePlugin', 'Preview the selected Image'),
-            u'live': translate('ImagePlugin', 'Send the selected Image live'),
+            u'new': translate('ImagePlugin', 'Add a new Image.'),
+            u'edit': translate('ImagePlugin', 'Edit the selected Image.'),
+            u'delete': translate('ImagePlugin', 'Delete the selected Image.'),
+            u'preview': translate('ImagePlugin', 'Preview the selected Image.'),
+            u'live': translate('ImagePlugin', 'Send the selected Image live.'),
             u'service': translate('ImagePlugin',
-                'Add the selected Image to the service')
+                'Add the selected Image to the service.')
         }
         self.setPluginUiTextStrings(tooltips)

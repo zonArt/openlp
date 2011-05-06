@@ -115,11 +115,11 @@ class ServiceManager(QtGui.QWidget):
             UiStrings().CreateService, self.onNewServiceClicked)
         self.toolbar.addToolbarButton(
             UiStrings().OpenService, u':/general/general_open.png',
-            translate('OpenLP.ServiceManager', 'Load an existing service'),
+            translate('OpenLP.ServiceManager', 'Load an existing service.'),
             self.onLoadServiceClicked)
         self.toolbar.addToolbarButton(
             UiStrings().SaveService, u':/general/general_save.png',
-            translate('OpenLP.ServiceManager', 'Save this service'),
+            translate('OpenLP.ServiceManager', 'Save this service.'),
             self.saveFile)
         self.toolbar.addSeparator()
         self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
@@ -128,7 +128,7 @@ class ServiceManager(QtGui.QWidget):
         self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
         self.themeComboBox = QtGui.QComboBox(self.toolbar)
         self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
-            'Select a theme for the service'))
+            'Select a theme for the service.'))
         self.themeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.themeComboBox.setSizePolicy(
