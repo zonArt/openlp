@@ -43,25 +43,12 @@ log = logging.getLogger(__name__)
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 #http://html5demos.com/two-videos
 
-class DisplayWidget(QtGui.QGraphicsView):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    log.info(u'Display Widget loaded')
-
-    def __init__(self, live, parent=None):
-        QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
-        self.live = live
-
-
-class MainDisplay(DisplayWidget):
+class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
     def __init__(self, parent, image_manager, live):
-        DisplayWidget.__init__(self, live, parent)
+        QtGui.QGraphicsView.__init__(self)
         self.parent = parent
         self.isLive = live
         self.image_manager = image_manager
