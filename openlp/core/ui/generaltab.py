@@ -362,12 +362,11 @@ class GeneralTab(SettingsTab):
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.timeoutSpinBox.value())
         # Reset screens after initial definition
-        if self.overrideChanged:
-            self.screens.override[u'size'] = QtCore.QRect(
-                self.customXValueEdit.value(),
-                self.customYValueEdit.value(),
-                self.customWidthValueEdit.value(),
-                self.customHeightValueEdit.value())
+        self.screens.override[u'size'] = QtCore.QRect(
+            self.customXValueEdit.value(),
+            self.customYValueEdit.value(),
+            self.customWidthValueEdit.value(),
+            self.customHeightValueEdit.value())
         if self.overrideCheckBox.isChecked():
             self.screens.set_override_display()
         else:

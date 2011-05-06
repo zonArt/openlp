@@ -676,17 +676,17 @@ class ServiceManager(QtGui.QWidget):
         action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
         if action == self.editAction:
             self.remoteEdit()
-        if action == self.maintainAction:
+        elif action == self.maintainAction:
             self.onServiceItemEditForm()
-        if action == self.deleteAction:
+        elif action == self.deleteAction:
             self.onDeleteFromService()
-        if action == self.notesAction:
+        elif action == self.notesAction:
             self.onServiceItemNoteForm()
-        if action == self.timeAction:
+        elif action == self.timeAction:
             self.onStartTimeForm()
-        if action == self.previewAction:
+        elif action == self.previewAction:
             self.makePreview()
-        if action == self.liveAction:
+        elif action == self.liveAction:
             self.makeLive()
 
     def onServiceItemNoteForm(self):
