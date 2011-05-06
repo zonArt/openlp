@@ -360,7 +360,6 @@ class GeneralTab(SettingsTab):
             Receiver.send_message(u'config_screen_changed')
         self.display_changed = False
 
-
     def onOverrideCheckBoxToggled(self, checked):
         """
         Toggle screen state depending on check box state.
