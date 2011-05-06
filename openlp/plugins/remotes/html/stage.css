@@ -1,0 +1,21 @@
+body {
+  background-color: black;
+  font-family: sans-serif;
+}
+
+#currentslide {
+  font-size: 40pt;
+  color: white;
+}
+
+#nextslide {
+  font-size: 30pt;
+  color: #DDDDDD;
+  padding-top: 25px;
+}
+
+#clock {
+  font-size: 40pt;
+  color: yellow;
+  text-align: right;
+}
