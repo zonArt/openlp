@@ -193,7 +193,10 @@ class OpenSongImport(SongImport):
         verse_num = u'1'
         # for the case where song has several sections with same marker
         inst = 1
-        lyrics = unicode(root.lyrics)
+        if u'lyrics' in fields:
+            lyrics = unicode(root.lyrics)
+        else:
+            lyrics = u''
         for this_line in lyrics.split(u'\n'):
             # remove comments
             semicolon = this_line.find(u';')
@@ -214,7 +217,7 @@ class OpenSongImport(SongImport):
                 # have we got any digits?
                 # If so, verse number is everything from the digits
                 # to the end (even if there are some alpha chars on the end)
-                match = re.match(u'(.*)(\d+.*)', content)
+                match = re.match(u'(\D*)(\d+.*)', content)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
@@ -223,12 +226,13 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
+                verse_index = VerseType.from_loose_input(verse_tag)
+                verse_tag = VerseType.Tags[verse_index]
                 inst = 1
                 if [verse_tag, verse_num, inst] in our_verse_order \
                     and verses.has_key(verse_tag) \
                     and verses[verse_tag].has_key(verse_num):
                     inst = len(verses[verse_tag][verse_num]) + 1
-                our_verse_order.append([verse_tag, verse_num, inst])
                 continue
             # number at start of line.. it's verse number
             if this_line[0].isdigit():
@@ -241,6 +245,7 @@ class OpenSongImport(SongImport):
                 verses[verse_tag][verse_num] = {}
             if not verses[verse_tag][verse_num].has_key(inst):
                 verses[verse_tag][verse_num][inst] = []
+                our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
             this_line = self.tidy_text(this_line)
             this_line = this_line.replace(u'_', u'')
@@ -252,6 +257,8 @@ class OpenSongImport(SongImport):
             verse_def = u'%s%s' % (verse_tag, verse_num)
             lines = u'\n'.join(verses[verse_tag][verse_num][inst])
             self.add_verse(lines, verse_def)
+        if not self.verses:
+            self.add_verse('')
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation:
             order = unicode(root.presentation)
@@ -259,7 +266,7 @@ class OpenSongImport(SongImport):
             # and then split into a list on the whitespace
             order = order.lower().split()
             for verse_def in order:
-                match = re.match(u'(.*)(\d+.*)', verse_def)
+                match = re.match(u'(\D*)(\d+.*)', verse_def)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)

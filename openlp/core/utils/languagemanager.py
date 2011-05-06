@@ -28,6 +28,7 @@ The :mod:`languagemanager` module provides all the translation settings and
 language file loading for OpenLP.
 """
 import logging
+import sys
 
 from PyQt4 import QtCore, QtGui
 
@@ -55,8 +56,14 @@ class LanguageManager(object):
             language = QtCore.QLocale.system().name()
         lang_path = AppLocation.get_directory(AppLocation.LanguageDir)
         app_translator = QtCore.QTranslator()
-        if app_translator.load(language, lang_path):
-            return app_translator
+        app_translator.load(language, lang_path)
+        # A translator for buttons and other default strings provided by Qt.
+        if sys.platform != u'win32' and sys.platform != u'darwin':
+            lang_path = QtCore.QLibraryInfo.location(
+                QtCore.QLibraryInfo.TranslationsPath)
+        default_translator = QtCore.QTranslator()
+        default_translator.load(u'qt_%s' % language, lang_path)
+        return app_translator, default_translator
 
     @staticmethod
     def find_qm_files():

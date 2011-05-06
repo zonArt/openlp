@@ -175,3 +175,23 @@ only download the section you search for. If you do not have an internet
 connection where you intend to use OpenLP you will need another scripture
 source. For more information about acquiring Bibles please see :ref:`bibleimporter`.
 
+OpenLP is using a large amount of RAM when showing a presentation
+-----------------------------------------------------------------
+
+OpenLP uses a large amount of RAM when showing a presentation due to the way it
+handles presentations. OpenLP itself is unable to show those presentations or
+load the presentation files, so it interacts with the presentation through
+either Microsoft PowerPoint or LibreOffice Impress. In order to show the slides
+in the slide controller, OpenLP requests that the presentation application
+export the slides to images, and then uses those images as slides. This results
+in a large amount of RAM being used, especially in presentations with more than
+about 20 slides.
+
+OpenLP is not displaying correctly, or is not on the correct screen
+-------------------------------------------------------------------
+
+Please read the documentation on :ref:`dualmonitors`. It is very important to 
+have dual monitors setup properly for OpenLP to function as expected.
+
+
+
