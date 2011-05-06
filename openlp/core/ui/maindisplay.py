@@ -95,8 +95,7 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Start setup for monitor %s (live = %s)' %
-            (self.screens.monitor_number, self.isLive))
+        log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
@@ -107,11 +106,11 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
-        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
+        log.debug(u'Setup Phonon')
         if self.isLive:
             if not self.firstTime:
                 self.createMediaObject()
-        log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
+        log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -128,8 +127,8 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             # Build the initial frame.
             self.black = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
@@ -146,17 +145,16 @@ class MainDisplay(DisplayWidget):
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.initialFrame)
             painter_image.fillRect(self.initialFrame.rect(), background_color)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() -
-                splash_image.width()) / 2,
-                (self.screens.current[u'size'].height()
-                - splash_image.height()) / 2, splash_image)
+                (self.screen[u'size'].width() - splash_image.width()) / 2,
+                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
@@ -168,8 +166,7 @@ class MainDisplay(DisplayWidget):
                 self.primary = False
             else:
                 self.primary = True
-        log.debug(
-            u'Finished setup for monitor %s' % self.screens.monitor_number)
+        log.debug(u'Finished MainDisplay setup')
 
     def createMediaObject(self):
         self.firstTime = False
@@ -452,7 +449,7 @@ class MainDisplay(DisplayWidget):
                 self.hideDisplay(self.hideMode)
             else:
                 # Single screen active
-                if self.screens.monitor_number == 0:
+                if self.screens.display_count == 1:
                     # Only make visible if setting enabled
                     if QtCore.QSettings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():

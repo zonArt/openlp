@@ -36,9 +36,16 @@ from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
+class Screen(object):
+    primary = True
+    number = 0
+    size = QtCore.QRect(0, 0, 1024, 768)
+
 class ScreenList(object):
     """
-    Wrapper to handle the parameters of the display screen
+    Wrapper to handle the parameters of the display screen.
+
+    To get access to the screen list call ``ScreenList.get_instance()``.
     """
     log.info(u'Screen loaded')
     instance = None
@@ -62,10 +69,6 @@ class ScreenList(object):
         self.override = None
         self.screen_list = []
         self.display_count = 0
-        # actual display number
-        self.current_display = 0
-        # save config display number
-        self.monitor_number = 0
         self.screen_count_changed()
         self._load_screen_settings()
         QtCore.QObject.connect(desktop,
@@ -158,6 +161,7 @@ class ScreenList(object):
             screen[u'number'], screen[u'size'])
         if screen[u'primary']:
             self.current = screen
+            self.override = copy.deepcopy(self.current)
         self.screen_list.append(screen)
         self.display_count += 1
 
@@ -197,13 +201,10 @@ class ScreenList(object):
         log.debug(u'set_current_display %s', number)
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
-            self.override = copy.deepcopy(self.current)
-            self.current_display = 0
         else:
             self.current = self.screen_list[number]
-            self.override = copy.deepcopy(self.current)
             self.preview = copy.deepcopy(self.current)
-            self.current_display = number
+        self.override = copy.deepcopy(self.current)
         if self.display_count == 1:
             self.preview = self.screen_list[0]
 
@@ -222,7 +223,7 @@ class ScreenList(object):
         use the correct screen attributes.
         """
         log.debug(u'reset_current_display')
-        self.set_current_display(self.current_display)
+        self.set_current_display(self.current[u'number'])
 
     def _load_screen_settings(self):
         """
@@ -230,9 +231,8 @@ class ScreenList(object):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(u'general')
-        self.monitor_number = settings.value(u'monitor',
-            QtCore.QVariant(self.display_count - 1)).toInt()[0]
-        self.set_current_display(self.monitor_number)
+        self.set_current_display(settings.value(u'monitor',
+            QtCore.QVariant(self.display_count - 1)).toInt()[0])
         self.display = settings.value(
             u'display on monitor', QtCore.QVariant(True)).toBool()
         override_display = settings.value(
@@ -245,8 +245,8 @@ class ScreenList(object):
             QtCore.QVariant(self.current[u'size'].width())).toInt()[0]
         height = settings.value(u'height',
             QtCore.QVariant(self.current[u'size'].height())).toInt()[0]
-        settings.endGroup()
         self.override[u'size'] = QtCore.QRect(x, y, width, height)
+        settings.endGroup()
         if override_display:
             self.set_override_display()
         else:
