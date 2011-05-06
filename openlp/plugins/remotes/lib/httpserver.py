@@ -256,18 +256,18 @@ class HttpConnection(object):
     def _get_service_items(self):
         service_items = []
         service_manager = self.parent.parent.serviceManager
-        item = service_manager.findServiceItem()[0]
-        if item >= 0 and item < len(service_manager.serviceItems):
-            curitem = service_manager.serviceItems[item]
+        if self.parent.current_item:
+            cur_uuid = self.parent.current_item._uuid
         else:
-            curitem = None
+            cur_uuid = None
         for item in service_manager.serviceItems:
             service_item = item[u'service_item']
             service_items.append({
+                u'id': unicode(service_item._uuid),
                 u'title': unicode(service_item.get_display_title()),
                 u'plugin': unicode(service_item.name),
                 u'notes': unicode(service_item.notes),
-                u'selected': (item == curitem)
+                u'selected': (service_item._uuid == cur_uuid)
             })
         return service_items
 
@@ -349,7 +349,7 @@ class HttpConnection(object):
         """
         result = {
             u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item.title \
+            u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u''
         }
         return HttpResponse(json.dumps({u'results': result}),

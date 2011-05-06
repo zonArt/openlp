@@ -21,40 +21,67 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA                     *
  *****************************************************************************/
 window.OpenLP = {
-  loadSlides: function (event) {
+  loadService: function (event) {
     $.getJSON(
-      "/api/controller/live/text",
+      "/api/service/list",
       function (data, status) {
-        OpenLP.currentSlides = data.results.slides;
-        OpenLP.currentSlide = 0;
-        for (idx in data.results.slides) {
-          if (data.results.slides[idx]["selected"]) {
-            OpenLP.currentSlide = parseInt(idx, 10);
-            break;
+        OpenLP.nextSong = "";
+        $("#notes").html("");
+        var div = $("#service");
+        div.html("");
+        for (idx in data.results.items) {
+          idx = parseInt(idx, 10);
+          div.append(data.results.items[idx]["title"] + "<br />");
+          if ((data.results.items[idx]["selected"]) && 
+            (data.results.items.length > idx + 1)) {
+            $("#notes").html(data.results.items[idx]["notes"]);
+            OpenLP.nextSong = data.results.items[idx + 1]["title"];
           }
         }
         OpenLP.updateSlide();
       }
     );
   },
+  loadSlides: function (event) {
+    $.getJSON(
+      "/api/controller/live/text",
+      function (data, status) {
+        OpenLP.currentSlides = data.results.slides;
+        OpenLP.currentSlide = 0;
+        var div = $("#verseorder");
+        div.html("");
+        for (idx in data.results.slides) {
+          idx = parseInt(idx, 10);
+          div.append("&nbsp;<span>");
+          var tag = data.results.slides[idx]["tag"];
+          if (tag == 'None')
+            tag = idx;
+          $("#verseorder span").last().attr("id", "tag" + idx).text(tag);
+          if (data.results.slides[idx]["selected"]) 
+            OpenLP.currentSlide = idx;
+        }
+        OpenLP.loadService();
+      }
+    );
+  },
   updateSlide: function() {
-    var div = $("#currentslide");
-    div.html(OpenLP.currentSlides[OpenLP.currentSlide]["text"]);
-    var divnext = $("#nextslide");
+    $("#verseorder span").removeClass("currenttag");
+    $("#tag" + OpenLP.currentSlide).addClass("currenttag");
+    $("#currentslide").html(OpenLP.currentSlides[OpenLP.currentSlide]["text"]);
     if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) 
-        divnext.html(OpenLP.currentSlides[OpenLP.currentSlide + 1]["text"]);
-    else
-        divnext.html("");
+      $("#nextslide").html(OpenLP.currentSlides[OpenLP.currentSlide + 1]["text"]);
+    else 
+      $("#nextslide").html("Next: " + OpenLP.nextSong);
   },
   updateClock: function() {
     var div = $("#clock");
     var t = new Date(); 
     var h = t.getHours();
     if (h > 12) 
-        h = h - 12;
+      h = h - 12;
     var m = t.getMinutes();
-    if (m.length == 1)
-        m = '0' + m;
+    if (m < 10)
+      m = '0' + m + '';
     div.html(h + ":" + m);
   },
   pollServer: function () {
