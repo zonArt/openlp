@@ -36,11 +36,6 @@ from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
-class Screen(object):
-    primary = True
-    number = 0
-    size = QtCore.QRect(0, 0, 1024, 768)
-
 class ScreenList(object):
     """
     Wrapper to handle the parameters of the display screen.

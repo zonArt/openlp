@@ -382,6 +382,7 @@ class GeneralTab(SettingsTab):
 
     def onMonitorComboBoxChanged(self, index):
         """
+        The ``monitorComboBox`` has changed to the given ``index``.
         """
         self.display_changed = True
         if self.overrideCheckBox.isChecked():
