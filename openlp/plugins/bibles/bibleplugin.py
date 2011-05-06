@@ -148,3 +148,4 @@ class BiblePlugin(Plugin):
                 'Add the selected Bible to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
+

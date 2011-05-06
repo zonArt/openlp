@@ -165,3 +165,4 @@ class Ui_PrintServiceDialog(object):
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+
