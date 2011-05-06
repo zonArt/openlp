@@ -141,7 +141,7 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextButton.setText(UiStrings().Search)
         self.maintenanceAction.setText(SongStrings.SongMaintenance)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
-            'Maintain the lists of authors, topics and books'))
+            'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
