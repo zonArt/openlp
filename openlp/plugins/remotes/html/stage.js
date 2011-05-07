@@ -27,15 +27,13 @@ window.OpenLP = {
       function (data, status) {
         OpenLP.nextSong = "";
         $("#notes").html("");
-        var div = $("#service");
-        div.html("");
         for (idx in data.results.items) {
           idx = parseInt(idx, 10);
-          div.append(data.results.items[idx]["title"] + "<br />");
           if ((data.results.items[idx]["selected"]) && 
             (data.results.items.length > idx + 1)) {
             $("#notes").html(data.results.items[idx]["notes"]);
             OpenLP.nextSong = data.results.items[idx + 1]["title"];
+            break;
           }
         }
         OpenLP.updateSlide();

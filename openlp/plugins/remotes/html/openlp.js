@@ -113,6 +113,7 @@ window.OpenLP = {
     $.getJSON(
       "/api/poll",
       function (data, status) {
+        var prevItem = OpenLP.currentItem;      
         OpenLP.currentSlide = data.results.slide;
         OpenLP.currentItem = data.results.item;
         if ($("#service-manager").is(":visible")) {
@@ -130,6 +131,10 @@ window.OpenLP = {
           $("#service-manager div[data-role=content] ul[data-role=listview]").listview("refresh");
         }
         if ($("#slide-controller").is(":visible")) {
+          if (prevItem != OpenLP.currentItem) {
+            OpenLP.loadController();
+            return;
+          }
           var idx = 0;
           $("#slide-controller div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
           $("#slide-controller div[data-role=content] ul[data-role=listview] li a").each(function () {

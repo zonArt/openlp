@@ -34,6 +34,9 @@ the remotes.
 ``/``
     Go to the web interface.
 
+``/stage``
+    Show the stage view.
+
 ``/files/{filename}``
     Serve a static file.
 
@@ -241,6 +244,7 @@ class HttpConnection(object):
         self.parent = parent
         self.routes = [
             (u'^/$', self.serve_file),
+            (u'^/(stage)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
@@ -312,6 +316,8 @@ class HttpConnection(object):
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
+        elif filename == u'stage':
+            filename = u'stage.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
             return HttpResponse(code=u'404 Not Found')

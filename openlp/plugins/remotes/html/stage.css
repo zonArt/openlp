@@ -54,14 +54,6 @@ body {
   text-align: right;
 }
 
-#service {
-  font-size: 16pt;
-  color: lightblue;
-  text-align: right;
-  white-space: nowrap;
-  display: none;
-}
-
 #verseorder {
   font-size: 30pt;
   color: green;
