@@ -85,7 +85,6 @@ class Renderer(object):
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
-        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """

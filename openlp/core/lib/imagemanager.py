@@ -79,13 +79,14 @@ class ImageManager(QtCore.QObject):
         self._cache_dirty = False
         self.image_thread = ImageThread(self)
 
-    def update_display(self, width, height):
+    def update_display(self):
         """
         Screen has changed size so rebuild the cache to new size
         """
         log.debug(u'update_display')
-        self.width = width
-        self.height = height
+        current_screen = ScreenList.get_instance().current
+        self.width = current_screen[u'size'].width()
+        self.height = current_screen[u'size'].height()
         # mark the images as dirty for a rebuild
         for key in self._cache.keys():
             image = self._cache[key]
