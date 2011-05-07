@@ -214,13 +214,13 @@ class SongsPlugin(Plugin):
         tooltips = {
             u'load': u'',
             u'import': u'',
-            u'new': translate('SongsPlugin', 'Add a new Song'),
-            u'edit': translate('SongsPlugin', 'Edit the selected Song'),
-            u'delete': translate('SongsPlugin', 'Delete the selected Song'),
-            u'preview': translate('SongsPlugin', 'Preview the selected Song'),
-            u'live': translate('SongsPlugin', 'Send the selected Song live'),
+            u'new': translate('SongsPlugin', 'Add a new Song.'),
+            u'edit': translate('SongsPlugin', 'Edit the selected Song.'),
+            u'delete': translate('SongsPlugin', 'Delete the selected Song.'),
+            u'preview': translate('SongsPlugin', 'Preview the selected Song.'),
+            u'live': translate('SongsPlugin', 'Send the selected Song live.'),
             u'service': translate('SongsPlugin',
-                'Add the selected Song to the service')
+                'Add the selected Song to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
