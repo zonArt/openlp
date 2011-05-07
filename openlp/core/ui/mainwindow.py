@@ -657,10 +657,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        if os.path.exists(temp_dir):
-            for filename in os.listdir(temp_dir):
-                delete_file(os.path.join(temp_dir, filename))
-            os.removedirs(temp_dir)
+        if not os.path.exists(temp_dir):
+            return
+        for filename in os.listdir(temp_dir):
+            delete_file(os.path.join(temp_dir, filename))
+        os.removedirs(temp_dir)
 
     def blankCheck(self):
         """
