@@ -52,15 +52,19 @@ class Renderer(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
-
-    ``theme_manager``
-        The ThemeManager instance, used to get the current theme details.
     """
     log.info(u'Renderer Loaded')
 
     def __init__(self, image_manager, theme_manager):
         """
         Initialise the render manager.
+
+    ``image_manager``
+        A ImageManager instance which takes care of e. g. caching and resizing
+        images.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
         """
         log.debug(u'Initilisation started')
         self.theme_manager = theme_manager

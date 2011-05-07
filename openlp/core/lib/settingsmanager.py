@@ -37,8 +37,8 @@ from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
     """
-    Class to control the initial settings for the UI and provide helper
-    functions for the loading and saving of application settings.
+    Class to provide helper functions for the loading and saving of application
+    settings.
     """
 
     @staticmethod
