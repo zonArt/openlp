@@ -113,7 +113,7 @@ window.OpenLP = {
     $.getJSON(
       "/api/poll",
       function (data, status) {
-        var prevItem = OpenLP.currentItem;      
+        var prevItem = OpenLP.currentItem;
         OpenLP.currentSlide = data.results.slide;
         OpenLP.currentItem = data.results.item;
         if ($("#service-manager").is(":visible")) {
@@ -206,5 +206,6 @@ $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Poll the server twice a second to get any updates.
+$.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();
