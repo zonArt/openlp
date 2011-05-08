@@ -48,6 +48,7 @@ window.OpenLP = {
         $.each(data.results.items, function (idx, value) {
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(value["title"]));
+          li.attr("uuid", value["id"])
           li.children("a").click(OpenLP.setItem);
           ul.append(li);
         });
@@ -119,10 +120,10 @@ window.OpenLP = {
           $("#service-manager div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
           $("#service-manager div[data-role=content] ul[data-role=listview] li a").each(function () {
             var item = $(this);
-            if (item.text() == OpenLP.currentItem) {
-              while (item[0].tagName != "LI") {
-                item = item.parent();
-              }
+            while (item[0].tagName != "LI") {
+              item = item.parent();
+            }
+            if (item.attr("uuid") == OpenLP.currentItem) {
               item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
               return false;
             }

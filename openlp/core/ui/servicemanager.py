@@ -275,8 +275,6 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_set_item'), self.onSetItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_list_request'), self.listRequest)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'),
@@ -1306,23 +1304,6 @@ class ServiceManager(QtGui.QWidget):
             return item.data(0, QtCore.Qt.UserRole).toInt()[0]
         else:
             return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-
-    def listRequest(self, message=None):
-        data = []
-        item = self.findServiceItem()[0]
-        if item >= 0 and item < len(self.serviceItems):
-            curitem = self.serviceItems[item]
-        else:
-            curitem = None
-        for item in self.serviceItems:
-            service_item = item[u'service_item']
-            data_item = {}
-            data_item[u'title'] = unicode(service_item.get_display_title())
-            data_item[u'plugin'] = unicode(service_item.name)
-            data_item[u'notes'] = unicode(service_item.notes)
-            data_item[u'selected'] = (item == curitem)
-            data.append(data_item)
-        Receiver.send_message(u'servicemanager_list_response', data)
 
     def printServiceOrder(self):
         """
