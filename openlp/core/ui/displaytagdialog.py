@@ -112,11 +112,14 @@ class Ui_DisplayTagDialog(object):
         self.endTagLineEdit = QtGui.QLineEdit(self.editGroupBox)
         self.endTagLineEdit.setObjectName(u'endTagLineEdit')
         self.dataGridLayout.addWidget(self.endTagLineEdit, 4, 1, 1, 1)
-        self.updatePushButton = QtGui.QPushButton(self.editGroupBox)
-        self.updatePushButton.setObjectName(u'updatePushButton')
-        self.dataGridLayout.addWidget(self.updatePushButton, 4, 2, 1, 1)
+        self.savePushButton = QtGui.QPushButton(self.editGroupBox)
+        self.savePushButton.setObjectName(u'savePushButton')
+        self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_accept_reject_button_box(displayTagDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(displayTagDialog)
+        closeButton = QtGui.QDialogButtonBox.Close
+        self.buttonBox.setObjectName('displayTagDialogButtonBox')
+        self.buttonBox.setStandardButtons(closeButton)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(displayTagDialog)
@@ -127,8 +130,8 @@ class Ui_DisplayTagDialog(object):
             'Configure Display Tags'))
         self.editGroupBox.setTitle(
             translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
-        self.updatePushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Update'))
+        self.savePushButton.setText(
+            translate('OpenLP.DisplayTagDialog', 'Save'))
         self.descriptionLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
