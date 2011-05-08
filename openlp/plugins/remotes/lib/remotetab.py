@@ -93,7 +93,7 @@ class RemoteTab(SettingsTab):
             'Stage view URL:'))
 
     def setUrls(self):
-        ipAddress = 'localhost'
+        ipAddress = u'localhost'
         if self.addressEdit.text() == ZERO_URL:
             ifaces = QtNetwork.QNetworkInterface.allInterfaces()
             for iface in ifaces:
