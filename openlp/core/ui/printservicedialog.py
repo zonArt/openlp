@@ -152,7 +152,7 @@ class Ui_PrintServiceDialog(object):
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
-            'Add page break before each text item.'))
+            'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
@@ -165,3 +165,4 @@ class Ui_PrintServiceDialog(object):
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+
