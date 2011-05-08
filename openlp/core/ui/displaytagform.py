@@ -58,6 +58,8 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             QtCore.SIGNAL(u'pressed()'), self.onSavedPushed)
         QtCore.QObject.connect(self.deletePushButton,
             QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.close)
 
     def exec_(self):
         """
@@ -86,30 +88,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             # If we have some user ones added them as well
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
-
-    def accept(self):
-        """
-        Save Custom tags in a pickle .
-        """
-        temp = []
-        for tag in DisplayTags.get_html_tags():
-            if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
-        else:
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(u''))
-        return QtGui.QDialog.accept(self)
-
-    def reject(self):
-        """
-        Reset Custom tags from Settings.
-        """
-        self._resetTable()
-        return QtGui.QDialog.reject(self)
 
     def onRowSelected(self):
         """
@@ -176,7 +154,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
 
     def onSavedPushed(self):
         """
-        Update Custom Tag details if not duplicate.
+        Update Custom Tag details if not duplicate and save the data.
         """
         html_expands = DisplayTags.get_html_tags()
         if self.selected != -1:

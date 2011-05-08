@@ -120,8 +120,6 @@ class Ui_DisplayTagDialog(object):
         closeButton = QtGui.QDialogButtonBox.Close
         self.buttonBox.setObjectName('displayTagDialogButtonBox')
         self.buttonBox.setStandardButtons(closeButton)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(displayTagDialog)
