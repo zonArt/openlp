@@ -46,9 +46,7 @@ class ScreenList(object):
     instance = None
 
     @staticmethod
-    def get_instance(desktop=None):
-        if desktop is not None and ScreenList.instance is None:
-            ScreenList.instance = ScreenList(desktop)
+    def get_instance():
         return ScreenList.instance
 
     def __init__(self, desktop):
@@ -58,6 +56,7 @@ class ScreenList(object):
         ``desktop``
             A ``QDesktopWidget`` object.
         """
+        ScreenList.instance = self
         self.desktop = desktop
         self.preview = None
         self.current = None

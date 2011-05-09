@@ -97,7 +97,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
-        screens = ScreenList.get_instance(self.desktop())
+        screens = ScreenList(self.desktop())
         # First time checks in settings
         has_run_wizard = QtCore.QSettings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
