@@ -269,11 +269,9 @@ class ServiceItem(object):
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
-            for slide in self._raw_frames:
-                service_data.append(slide)
+            service_data = [slide for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
-                service_data.append(slide[u'title'])
+            service_data = [slide[u'title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
