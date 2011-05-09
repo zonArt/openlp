@@ -93,7 +93,6 @@ class MainDisplay(QtGui.QGraphicsView):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
-        log.debug(u'Setup Phonon')
         if self.isLive:
             if not self.firstTime:
                 self.createMediaObject()
