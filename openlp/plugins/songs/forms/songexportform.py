@@ -329,7 +329,7 @@ class SongExportForm(OpenLPWizard):
             self.availableListWidget, unicode(text))
         ]
         for item in self._findListWidgetItems(self.availableListWidget):
-            item.setHidden(False if item in search_result else True)
+            item.setHidden(item not in search_result)
 
     def onUncheckButtonClicked(self):
         """
@@ -361,3 +361,4 @@ class SongExportForm(OpenLPWizard):
             options=QtGui.QFileDialog.ShowDirsOnly))
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
         self.directoryLineEdit.setText(path)
+
