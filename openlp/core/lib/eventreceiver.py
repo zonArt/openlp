@@ -111,10 +111,6 @@ class EventReceiver(QtCore.QObject):
     ``servicemanager_set_item``
         Go live on a specific item, by index
 
-    ``servicemanager_list_request``
-        Request the service list. Responds with servicemanager_list_response
-        containing a array of dictionaries
-
     ``maindisplay_blank``
         Blank the maindisplay window
 
