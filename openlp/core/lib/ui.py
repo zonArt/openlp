@@ -67,6 +67,7 @@ class UiStrings(object):
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
+        self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
         self.Edit = translate('OpenLP.Ui', '&Edit')
         self.EmptyField = translate('OpenLP.Ui', 'Empty Field')
         self.Error = translate('OpenLP.Ui', 'Error')
@@ -124,11 +125,12 @@ class UiStrings(object):
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
         self.Top = translate('OpenLP.Ui', 'Top')
+        self.UnsupportedFile = translate('OpenLP.Ui', 'Unsupported File')
         self.VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
         self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
-        self.ViewMode = translate('OpenLP.Ui', 'View Model')
+        self.ViewMode = translate('OpenLP.Ui', 'View Mode')
 
 def add_welcome_page(parent, image):
     """

@@ -180,16 +180,25 @@ class SlideController(QtGui.QWidget):
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
-            self.toolbar.addToolbarButton(
+            startLoop = self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
-            self.toolbar.addToolbarButton(
+            action_list = ActionList.get_instance()
+            action_list.add_action(startLoop, UiStrings().LiveToolbar)
+            stopLoop = self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
+            action_list.add_action(stopLoop, UiStrings().LiveToolbar)
+            self.toogleLoop = shortcut_action(self, u'toogleLoop',
+                [QtGui.QKeySequence(u'L')], self.onToggleLoop,
+                category=UiStrings().LiveToolbar)
+            self.toogleLoop.setText(translate('OpenLP.SlideController',
+                'Start/Stop continuous loop'))
+            self.addAction(self.toogleLoop)
             self.delaySpinBox = QtGui.QSpinBox()
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
@@ -375,18 +384,21 @@ class SlideController(QtGui.QWidget):
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
         self.previousService = shortcut_action(parent, u'previousService',
-            [QtCore.Qt.Key_Left], self.servicePrevious, UiStrings().LiveToolbar)
-        self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+            [QtCore.Qt.Key_Left], self.servicePrevious,
+            category=UiStrings().LiveToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.previousService.setText(
             translate('OpenLP.SlideController', 'Previous Service'))
         self.nextService = shortcut_action(parent, 'nextService',
-            [QtCore.Qt.Key_Right], self.serviceNext, UiStrings().LiveToolbar)
-        self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+            [QtCore.Qt.Key_Right], self.serviceNext,
+            category=UiStrings().LiveToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextService.setText(
             translate('OpenLP.SlideController', 'Next Service'))
         self.escapeItem = shortcut_action(parent, 'escapeItem',
-            [QtCore.Qt.Key_Escape], self.liveEscape, UiStrings().LiveToolbar)
-        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+            [QtCore.Qt.Key_Escape], self.liveEscape,
+            category=UiStrings().LiveToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.escapeItem.setText(
             translate('OpenLP.SlideController', 'Escape Item'))
 
@@ -407,7 +419,7 @@ class SlideController(QtGui.QWidget):
         """
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
-        self.display.imageManager = self.parent.renderManager.image_manager
+        self.display.imageManager = self.parent.renderer.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -490,6 +502,9 @@ class SlideController(QtGui.QWidget):
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
+        self.toogleLoop.setEnabled(False)
+        self.toolbar.actions[u'Start Loop'].setEnabled(False)
+        self.toolbar.actions[u'Stop Loop'].setEnabled(False)
         self.toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
@@ -499,6 +514,9 @@ class SlideController(QtGui.QWidget):
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
+            self.toogleLoop.setEnabled(True)
+            self.toolbar.actions[u'Start Loop'].setEnabled(True)
+            self.toolbar.actions[u'Stop Loop'].setEnabled(True)
         if item.is_media():
             #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
@@ -613,19 +631,19 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     image = resize_image(frame[u'image'],
-                        self.parent.renderManager.width,
-                        self.parent.renderManager.height)
+                        self.parent.renderer.width,
+                        self.parent.renderer.height)
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.parent.renderManager.image_manager. \
+                            self.parent.renderer.image_manager. \
                             get_image_bytes(frame[u'title'])
-                    image = self.parent.renderManager.image_manager. \
+                    image = self.parent.renderer.image_manager. \
                         get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent.renderManager.screen_ratio
+                slideHeight = width * self.parent.renderer.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
@@ -990,6 +1008,15 @@ class SlideController(QtGui.QWidget):
             self.previewListWidget.selectRow(
                         self.previewListWidget.rowCount() - 1)
             self.slideSelected()
+
+    def onToggleLoop(self, toggled):
+        """
+        Toggles the loop state.
+        """
+        if self.toolbar.actions[u'Start Loop'].isVisible():
+            self.onStartLoop()
+        else:
+            self.onStopLoop()
 
     def onStartLoop(self):
         """

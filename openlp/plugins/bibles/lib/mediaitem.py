@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate
+    translate, check_search_result
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
@@ -61,6 +61,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.search_results = {}
         self.second_search_results = {}
+        check_search_result(self.listView, self.search_results)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -72,76 +73,85 @@ class BibleMediaItem(MediaManagerItem):
         self.hasDeleteIcon = False
         self.addToServiceItem = False
 
+    def addSearchTab(self, prefix, name):
+        """
+        Creates and adds generic search tab.
+
+        ``prefix``
+            The prefix of the tab, this is either ``quick`` or ``advanced``.
+
+        ``name``
+            The translated string to display.
+        """
+        tab = QtGui.QWidget()
+        tab.setObjectName(prefix + u'Tab')
+        layout = QtGui.QGridLayout(tab)
+        layout.setObjectName(prefix + u'Layout')
+        versionLabel = QtGui.QLabel(tab)
+        versionLabel.setObjectName(prefix + u'VersionLabel')
+        layout.addWidget(versionLabel, 0, 0, QtCore.Qt.AlignRight)
+        versionComboBox = media_item_combo_box(tab, prefix + u'VersionComboBox')
+        versionLabel.setBuddy(versionComboBox)
+        layout.addWidget(versionComboBox, 0, 1, 1, 2)
+        secondLabel = QtGui.QLabel(tab)
+        secondLabel.setObjectName(prefix + u'SecondLabel')
+        layout.addWidget(secondLabel, 1, 0, QtCore.Qt.AlignRight)
+        secondComboBox = media_item_combo_box(tab, prefix + u'SecondComboBox')
+        versionLabel.setBuddy(secondComboBox)
+        layout.addWidget(secondComboBox, 1, 1, 1, 2)
+        searchButtonLayout = QtGui.QHBoxLayout()
+        searchButtonLayout.setObjectName(prefix + u'SearchButtonLayout')
+        searchButtonLayout.addStretch()
+        searchButton = QtGui.QPushButton(tab)
+        searchButton.setObjectName(prefix + u'SearchButton')
+        searchButtonLayout.addWidget(searchButton)
+        self.searchTabWidget.addTab(tab, name)
+        setattr(self, prefix + u'Tab', tab)
+        setattr(self, prefix + u'Layout', layout)
+        setattr(self, prefix + u'VersionLabel', versionLabel)
+        setattr(self, prefix + u'VersionComboBox', versionComboBox)
+        setattr(self, prefix + u'SecondLabel', secondLabel)
+        setattr(self, prefix + u'SecondComboBox', secondComboBox)
+        setattr(self, prefix + u'SearchButtonLayout', searchButtonLayout)
+        setattr(self, prefix + u'SearchButton', searchButton)
+
     def addEndHeaderBar(self):
         self.searchTabWidget = QtGui.QTabWidget(self)
         self.searchTabWidget.setSizePolicy(
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-        self.searchTabWidget.setObjectName(u'SearchTabWidget')
+        self.searchTabWidget.setObjectName(u'searchTabWidget')
         # Add the Quick Search tab.
-        self.quickTab = QtGui.QWidget()
-        self.quickTab.setObjectName(u'quickTab')
-        self.quickLayout = QtGui.QFormLayout(self.quickTab)
-        self.quickLayout.setObjectName(u'quickLayout')
-        self.quickVersionLabel = QtGui.QLabel(self.quickTab)
-        self.quickVersionLabel.setObjectName(u'quickVersionLabel')
-        self.quickVersionComboBox = media_item_combo_box(self.quickTab,
-            u'quickVersionComboBox')
-        self.quickVersionLabel.setBuddy(self.quickVersionComboBox)
-        self.quickLayout.addRow(self.quickVersionLabel,
-            self.quickVersionComboBox)
-        self.quickSecondLabel = QtGui.QLabel(self.quickTab)
-        self.quickSecondLabel.setObjectName(u'quickSecondLabel')
-        self.quickSecondComboBox = media_item_combo_box(self.quickTab,
-            u'quickSecondComboBox')
-        self.quickSecondLabel.setBuddy(self.quickSecondComboBox)
-        self.quickLayout.addRow(self.quickSecondLabel, self.quickSecondComboBox)
+        self.addSearchTab(
+            u'quick', translate('BiblesPlugin.MediaItem', 'Quick'))
         self.quickSearchLabel = QtGui.QLabel(self.quickTab)
         self.quickSearchLabel.setObjectName(u'quickSearchLabel')
+        self.quickLayout.addWidget(
+            self.quickSearchLabel, 2, 0, QtCore.Qt.AlignRight)
         self.quickSearchEdit = SearchEdit(self.quickTab)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
-        self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
+        self.quickLayout.addWidget(self.quickSearchEdit, 2, 1, 1, 2)
         self.quickLayoutLabel = QtGui.QLabel(self.quickTab)
         self.quickLayoutLabel.setObjectName(u'quickClearLabel')
+        self.quickLayout.addWidget(
+            self.quickLayoutLabel, 3, 0, QtCore.Qt.AlignRight)
         self.quickLayoutComboBox = media_item_combo_box(self.quickTab,
             u'quickLayoutComboBox')
         self.quickLayoutComboBox.addItems([u'', u'', u''])
-        self.quickLayout.addRow(self.quickLayoutLabel, self.quickLayoutComboBox)
+        self.quickLayout.addWidget(self.quickLayoutComboBox, 3, 1, 1, 2)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
+        self.quickLayout.addWidget(
+            self.quickClearLabel, 4, 0, QtCore.Qt.AlignRight)
         self.quickClearComboBox = media_item_combo_box(self.quickTab,
             u'quickClearComboBox')
-        self.quickLayout.addRow(self.quickClearLabel, self.quickClearComboBox)
-        self.quickSearchButtonLayout = QtGui.QHBoxLayout()
-        self.quickSearchButtonLayout.setObjectName(u'quickSearchButtonLayout')
-        self.quickSearchButtonLayout.addStretch()
-        self.quickSearchButton = QtGui.QPushButton(self.quickTab)
-        self.quickSearchButton.setObjectName(u'quickSearchButton')
-        self.quickSearchButtonLayout.addWidget(self.quickSearchButton)
-        self.quickLayout.addRow(self.quickSearchButtonLayout)
-        self.searchTabWidget.addTab(self.quickTab,
-            translate('BiblesPlugin.MediaItem', 'Quick'))
+        self.quickLayout.addWidget(self.quickClearComboBox, 4, 1, 1, 2)
+        self.quickLayout.addLayout(self.quickSearchButtonLayout, 6, 1, 1, 2)
+        # Add a QWidget, so that the quick tab has as many rows as the advanced
+        # tab.
+        self.quickLayout.addWidget(QtGui.QWidget(), 7, 0)
         # Add the Advanced Search tab.
-        self.advancedTab = QtGui.QWidget()
-        self.advancedTab.setObjectName(u'advancedTab')
-        self.advancedLayout = QtGui.QGridLayout(self.advancedTab)
-        self.advancedLayout.setObjectName(u'advancedLayout')
-        self.advancedVersionLabel = QtGui.QLabel(self.advancedTab)
-        self.advancedVersionLabel.setObjectName(u'advancedVersionLabel')
-        self.advancedLayout.addWidget(self.advancedVersionLabel, 0, 0,
-            QtCore.Qt.AlignRight)
-        self.advancedVersionComboBox = media_item_combo_box(self.advancedTab,
-            u'advancedVersionComboBox')
-        self.advancedVersionLabel.setBuddy(self.advancedVersionComboBox)
-        self.advancedLayout.addWidget(self.advancedVersionComboBox, 0, 1, 1, 2)
-        self.advancedSecondLabel = QtGui.QLabel(self.advancedTab)
-        self.advancedSecondLabel.setObjectName(u'advancedSecondLabel')
-        self.advancedLayout.addWidget(self.advancedSecondLabel, 1, 0,
-            QtCore.Qt.AlignRight)
-        self.advancedSecondComboBox = media_item_combo_box(self.advancedTab,
-            u'advancedSecondComboBox')
-        self.advancedSecondLabel.setBuddy(self.advancedSecondComboBox)
-        self.advancedLayout.addWidget(self.advancedSecondComboBox, 1, 1, 1, 2)
+        self.addSearchTab(u'advanced', UiStrings().Advanced)
         self.advancedBookLabel = QtGui.QLabel(self.advancedTab)
         self.advancedBookLabel.setObjectName(u'advancedBookLabel')
         self.advancedLayout.addWidget(self.advancedBookLabel, 2, 0,
@@ -152,7 +162,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedBookComboBox, 2, 1, 1, 2)
         self.advancedChapterLabel = QtGui.QLabel(self.advancedTab)
         self.advancedChapterLabel.setObjectName(u'advancedChapterLabel')
-        self.advancedLayout.addWidget(self.advancedChapterLabel, 3, 1)
+        self.advancedLayout.addWidget(self.advancedChapterLabel, 3, 1, 1, 2)
         self.advancedVerseLabel = QtGui.QLabel(self.advancedTab)
         self.advancedVerseLabel.setObjectName(u'advancedVerseLabel')
         self.advancedLayout.addWidget(self.advancedVerseLabel, 3, 2)
@@ -184,16 +194,8 @@ class BibleMediaItem(MediaManagerItem):
             u'advancedClearComboBox')
         self.advancedClearLabel.setBuddy(self.advancedClearComboBox)
         self.advancedLayout.addWidget(self.advancedClearComboBox, 6, 1, 1, 2)
-        self.advancedSearchButtonLayout = QtGui.QHBoxLayout()
-        self.advancedSearchButtonLayout.setObjectName(
-            u'advancedSearchButtonLayout')
-        self.advancedSearchButtonLayout.addStretch()
-        self.advancedSearchButton = QtGui.QPushButton(self.advancedTab)
-        self.advancedSearchButton.setObjectName(u'advancedSearchButton')
-        self.advancedSearchButtonLayout.addWidget(self.advancedSearchButton)
         self.advancedLayout.addLayout(
             self.advancedSearchButtonLayout, 7, 0, 1, 3)
-        self.searchTabWidget.addTab(self.advancedTab, UiStrings().Advanced)
         # Add the search tab widget to the page layout.
         self.pageLayout.addWidget(self.searchTabWidget)
         # Combo Boxes
@@ -213,7 +215,7 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(
             self.quickLayoutComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onlayoutStyleComboBoxChanged)
+            self.onLayoutStyleComboBoxChanged)
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
@@ -521,8 +523,9 @@ class BibleMediaItem(MediaManagerItem):
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
-        Receiver.send_message(u'cursor_normal')
         self.advancedSearchButton.setEnabled(True)
+        check_search_result(self.listView, self.search_results)
+        Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
     def onQuickSearchButton(self):
@@ -562,6 +565,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
+        check_search_result(self.listView, self.search_results)
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -723,6 +727,7 @@ class BibleMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.AllowsWordSplit)
         # Service Item: Title
         service_item.title = u', '.join(raw_title)
         # Service Item: Theme
@@ -843,7 +848,7 @@ class BibleMediaItem(MediaManagerItem):
             return u'{su}[%s]{/su}' % verse_text
         return u'{su}%s{/su}' % verse_text
 
-    def onlayoutStyleComboBoxChanged(self):
+    def onLayoutStyleComboBoxChanged(self):
         self.settings.layout_style = self.quickLayoutComboBox.currentIndex()
         self.settings.layoutStyleComboBox.setCurrentIndex(
             self.settings.layout_style)

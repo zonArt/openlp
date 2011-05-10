@@ -30,7 +30,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
+from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
@@ -38,7 +38,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version
+    get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class Ui_MainWindow(object):
         mainWindow.setObjectName(u'MainWindow')
         mainWindow.resize(self.settingsmanager.width,
             self.settingsmanager.height)
-        mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-64x64.png'))
         mainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(mainWindow)
@@ -122,12 +122,17 @@ class Ui_MainWindow(object):
         self.HelpMenu = QtGui.QMenu(self.MenuBar)
         self.HelpMenu.setObjectName(u'HelpMenu')
         mainWindow.setMenuBar(self.MenuBar)
-        self.StatusBar = QtGui.QStatusBar(mainWindow)
-        self.StatusBar.setObjectName(u'StatusBar')
-        mainWindow.setStatusBar(self.StatusBar)
-        self.DefaultThemeLabel = QtGui.QLabel(self.StatusBar)
-        self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
-        self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
+        self.statusBar = QtGui.QStatusBar(mainWindow)
+        self.statusBar.setObjectName(u'statusBar')
+        mainWindow.setStatusBar(self.statusBar)
+        self.loadProgressBar = QtGui.QProgressBar(self.statusBar)
+        self.loadProgressBar.setObjectName(u'loadProgressBar')
+        self.statusBar.addPermanentWidget(self.loadProgressBar)
+        self.loadProgressBar.hide()
+        self.loadProgressBar.setValue(0)
+        self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
+        self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
+        self.statusBar.addPermanentWidget(self.defaultThemeLabel)
         # Create the MediaManager
         self.mediaManagerDock = OpenLPDockWidget(mainWindow,
             u'mediaManagerDock', u':/system/system_mediamanager.png')
@@ -545,9 +550,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
         # warning cyclic dependency
-        # RenderManager needs to call ThemeManager and
-        # ThemeManager needs to call RenderManager
-        self.renderManager = RenderManager(
+        # renderer needs to call ThemeManager and
+        # ThemeManager needs to call Renderer
+        self.renderer = Renderer(
             self.themeManagerContents, self.screens)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
@@ -555,7 +560,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # make the controllers available to the plugins
         self.pluginHelpers[u'preview'] = self.previewController
         self.pluginHelpers[u'live'] = self.liveController
-        self.pluginHelpers[u'render'] = self.renderManager
+        self.pluginHelpers[u'renderer'] = self.renderer
         self.pluginHelpers[u'service'] = self.ServiceManagerContents
         self.pluginHelpers[u'settings form'] = self.settingsForm
         self.pluginHelpers[u'toolbox'] = self.mediaDockManager
@@ -652,8 +657,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        if not os.path.exists(temp_dir):
+            return
         for filename in os.listdir(temp_dir):
-            os.remove(os.path.join(temp_dir, filename))
+            delete_file(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)
 
     def blankCheck(self):
@@ -781,7 +788,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         log.debug(u'screenChanged')
-        self.renderManager.update_display()
+        self.renderer.update_display()
         self.setFocus()
         self.activateWindow()
 
@@ -880,10 +887,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
-        self.StatusBar.showMessage(message)
+        self.statusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(
+        self.defaultThemeLabel.setText(
             unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
                 theme)
 
@@ -1008,3 +1015,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()
+
+    def displayProgressBar(self, size):
+        """
+        Make Progress bar visible and set size
+        """
+        self.loadProgressBar.show()
+        self.loadProgressBar.setMaximum(size)
+        self.loadProgressBar.setValue(0)
+        Receiver.send_message(u'openlp_process_events')
+
+    def incrementProgressBar(self):
+        """
+        Increase the Progress Bar value by 1
+        """
+        self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
+        Receiver.send_message(u'openlp_process_events')
+
+    def finishedProgressBar(self):
+        """
+        Trigger it's removal after 2.5 second
+        """
+        self.timer_id = self.startTimer(2500)
+
+    def timerEvent(self, event):
+        """
+        Remove the Progress bar from view.
+        """
+        if event.timerId() == self.timer_id:
+            self.timer_id = 0
+            self.loadProgressBar.hide()
+            Receiver.send_message(u'openlp_process_events')

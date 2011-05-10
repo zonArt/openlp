@@ -105,11 +105,7 @@ class WowImport(SongImport):
         if isinstance(self.import_source, list):
             self.import_wizard.progressBar.setMaximum(len(self.import_source))
             for file in self.import_source:
-                author = u''
-                copyright = u''
                 file_name = os.path.split(file)[1]
-                self.import_wizard.incrementProgressBar(
-                    WizardStrings.ImportingType % file_name, 0)
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]
                 songData = open(file, 'rb')
@@ -129,7 +125,7 @@ class WowImport(SongImport):
                         self.line_text = unicode(
                             songData.read(ord(songData.read(1))), u'cp1252')
                         songData.seek(1, os.SEEK_CUR)
-                        if block_text != u'':
+                        if block_text:
                             block_text += u'\n'
                         block_text += self.line_text
                         self.lines_to_read -= 1
@@ -138,22 +134,19 @@ class WowImport(SongImport):
                     songData.seek(3, os.SEEK_CUR)
                     # Blocks are seperated by 2 bytes, skip them, but not if
                     # this is the last block!
-                    if (block + 1) < no_of_blocks:
+                    if block + 1 < no_of_blocks:
                         songData.seek(2, os.SEEK_CUR)
                     self.add_verse(block_text, block_type)
                 # Now to extract the author
                 author_length = ord(songData.read(1))
-                if author_length != 0:
-                    author = unicode(songData.read(author_length), u'cp1252')
+                if author_length:
+                    self.parse_author(
+                        unicode(songData.read(author_length), u'cp1252'))
                 # Finally the copyright
                 copyright_length = ord(songData.read(1))
-                if copyright_length != 0:
-                    copyright = unicode(
-                        songData.read(copyright_length), u'cp1252')
-                self.parse_author(author)
-                self.add_copyright(copyright)
+                if copyright_length:
+                    self.add_copyright(unicode(
+                        songData.read(copyright_length), u'cp1252'))
                 songData.close()
-                self.finish()
-                self.import_wizard.incrementProgressBar(
-                    WizardStrings.ImportingType % file_name)
-            return True
+                if not self.finish():
+                    self.log_error(file)

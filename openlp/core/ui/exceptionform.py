@@ -130,9 +130,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                     file.close()
                     file = open(filename, u'wb')
                     file.write(report.encode(u'utf-8'))
-                file.close()
+                finally:
+                    file.close()
             except IOError:
                 log.exception(u'Failed to write crash report')
+            finally:
+                file.close()
 
     def onSendReportButtonPressed(self):
         """
@@ -186,3 +189,4 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     def __buttonState(self, state):
         self.saveReportButton.setEnabled(state)
         self.sendReportButton.setEnabled(state)
+

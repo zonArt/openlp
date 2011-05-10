@@ -48,6 +48,7 @@ window.OpenLP = {
         $.each(data.results.items, function (idx, value) {
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(value["title"]));
+          li.attr("uuid", value["id"])
           li.children("a").click(OpenLP.setItem);
           ul.append(li);
         });
@@ -112,16 +113,17 @@ window.OpenLP = {
     $.getJSON(
       "/api/poll",
       function (data, status) {
+        var prevItem = OpenLP.currentItem;
         OpenLP.currentSlide = data.results.slide;
         OpenLP.currentItem = data.results.item;
         if ($("#service-manager").is(":visible")) {
           $("#service-manager div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
           $("#service-manager div[data-role=content] ul[data-role=listview] li a").each(function () {
             var item = $(this);
-            if (item.text() == OpenLP.currentItem) {
-              while (item[0].tagName != "LI") {
-                item = item.parent();
-              }
+            while (item[0].tagName != "LI") {
+              item = item.parent();
+            }
+            if (item.attr("uuid") == OpenLP.currentItem) {
               item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
               return false;
             }
@@ -129,6 +131,10 @@ window.OpenLP = {
           $("#service-manager div[data-role=content] ul[data-role=listview]").listview("refresh");
         }
         if ($("#slide-controller").is(":visible")) {
+          if (prevItem != OpenLP.currentItem) {
+            OpenLP.loadController();
+            return;
+          }
           var idx = 0;
           $("#slide-controller div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
           $("#slide-controller div[data-role=content] ul[data-role=listview] li a").each(function () {
@@ -200,5 +206,6 @@ $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Poll the server twice a second to get any updates.
+$.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();
