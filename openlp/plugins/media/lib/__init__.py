@@ -32,16 +32,16 @@ class MediaBackends(object):
     Phonon = 1
     Vlc = 2
 
-class MediaStates(object):
+class MediaState(object):
     """
-    An enumeratioin for possible States of the Media Player
+    An enumeration for possible States of the Media Player
     (copied from Phonon::State
     """
-    LoadingState = 0
-    StoppedState = 1
-    PlayingState = 2
-    PausedState = 4
-    OffState = 6
+    Loading = 0
+    Stopped = 1
+    Playing = 2
+    Paused = 4
+    Off = 6
 
 class MediaController(object):
     """
@@ -50,9 +50,12 @@ class MediaController(object):
     """
     def __init__(self, parent):
         self.parent = parent
-        self.state = MediaStates.OffState
+        self.state = MediaState.Off
 
     def load(self, display, path, volume):
+        pass
+
+    def resize(self, display, controller):
         pass
 
     def play(self, display):
@@ -64,16 +67,19 @@ class MediaController(object):
     def stop(self, display):
         pass
 
+    def volume(self, display, vol):
+        pass
+
     def seek(self, display, seekVal):
         pass
 
     def reset(self, display):
         pass
 
-    def updateUI(self, display):
+    def update_ui(self, controller, display):
         pass
 
-    def getSupportedFileTypes(self):
+    def get_supported_file_types(self):
         pass
 
 from mediaitem import MediaMediaItem

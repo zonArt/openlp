@@ -27,7 +27,7 @@
 
 import sys
 
-from openlp.plugins.media.lib import MediaController, MediaStates
+from openlp.plugins.media.lib import MediaController, MediaState
 
 class VlcController(MediaController):
     """
@@ -35,8 +35,23 @@ class VlcController(MediaController):
     to reflect Features of the Vlc backend
     """
     def __init__(self, parent):
-        self.parent = parent
         MediaController.__init__(self, parent)
+        self.parent = parent
+        self.supported_file_types = ['avi']
+        self.additional_extensions = {
+            u'audio/ac3': [u'.ac3'],
+            u'audio/flac': [u'.flac'],
+            u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
+            u'audio/x-mp3': [u'.mp3'],
+            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+            u'audio/qcelp': [u'.qcp'],
+            u'audio/x-wma': [u'.wma'],
+            u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
+            u'video/x-matroska': [u'.mpv', u'.mkv'],
+            u'video/x-wmv': [u'.wmv'],
+            u'video/x-ms-wmv': [u'.wmv']}
 
     def load(self, display, path, volume):
         print "load vid in Vlc Controller"
@@ -61,34 +76,38 @@ class VlcController(MediaController):
             display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
         elif sys.platform == "darwin": # for MacOS
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
-        # start playing
-        self.play(display)
-        self.state = MediaStates.PlayingState
+
+    def resize(self, display):
+        display.vlcWidget.resize(display.size())
 
     def play(self, display):
         display.vlcMediaPlayer.play()
-        self.state = MediaStates.PlayingState
+        self.state = MediaState.Playing
 
     def pause(self, display):
         display.vlcMediaPlayer.pause()
-        self.state = MediaStates.PausedState
+        self.state = MediaState.Paused
 
     def stop(self, display):
         display.vlcMediaPlayer.stop()
-        self.state = MediaStates.StoppedState
+        self.state = MediaState.Stopped
+
+    def volume(self, display, vol):
+        pass
 
     def seek(self, display, seekVal):
         if display.vlcMediaPlayer.is_seekable():
             display.vlcMediaPlayer.set_position(seekVal/1000.0)
 
     def reset(self, display):
-        pass
+        display.vlcWidget.setVisible(False)
+        #display.webView.setVisible(True)
 
-    def updateUI(self, display):
-        display.parent.seekSlider.setMaximum(1000)
-        if not display.parent.seekSlider.isSliderDown():
+    def update_ui(self, controller, display):
+        controller.seekSlider.setMaximum(1000)
+        if not controller.seekSlider.isSliderDown():
             currentPos = display.vlcMediaPlayer.get_position() * 1000
-            display.parent.seekSlider.setSliderPosition(currentPos)
+            controller.seekSlider.setSliderPosition(currentPos)
 
-    def getSupportedFileTypes(self):
+    def get_supported_file_types(self):
         pass

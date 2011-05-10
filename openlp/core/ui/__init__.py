@@ -56,7 +56,7 @@ from firsttimelanguageform import FirstTimeLanguageForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
-from maindisplay import MainDisplay
+from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList

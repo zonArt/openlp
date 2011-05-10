@@ -25,17 +25,20 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.plugins.media.lib import MediaController, MediaStates
+from openlp.plugins.media.lib import MediaController, MediaState
 
 class WebkitController(MediaController):
     """
     Specialiced MediaController class
     to reflect Features of the QtWebkit backend
     """
+
     def __init__(self, parent):
-        self.parent = parent
         MediaController.__init__(self, parent)
+        self.parent = parent
         self.isFlash = False
+        self.additional_extensions = {
+            u'video/shockwave': [u'.swf']}
 
     def load(self, display, path, volume):
         print "load vid in Webkit Controller"
@@ -48,48 +51,60 @@ class WebkitController(MediaController):
                 (path.replace(u'\\', u'\\\\'))
             self.isFlash = True
         else:
-            js = u'show_video("init", "%s", %s, false); show_video("play");' % \
+            js = u'show_video("init", "%s", %s, false);' % \
                 (path.replace(u'\\', u'\\\\'), str(vol))
             self.isFlash = False
         display.frame.evaluateJavaScript(js)
-        self.state = MediaStates.PlayingState
+
+    def resize(self, display, controller):
+        if display == controller.previewDisplay:
+            print display.size()
+            display.webView.resize(display.size())
 
     def play(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("play");')
-        self.state = MediaStates.PlayingState
+        self.state = MediaState.Playing
 
     def pause(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("pause","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("pause");')
-        self.state = MediaStates.PausedState
+        self.state = MediaState.Paused
 
     def stop(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("stop","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
-        self.state = MediaStates.StoppedState
+        self.state = MediaState.Stopped
+
+    def volume(self, display, vol):
+        if not self.isFlash:
+            display.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
+                str(vol))
 
     def seek(self, display, seekVal):
         if not self.isFlash:
-            print seekVal, float(seekVal)/1000
             display.frame.evaluateJavaScript(u'show_video("seek", "%f");' % (float(seekVal)/1000))
 
     def reset(self, display):
-        display.frame.evaluateJavaScript(u'show_video("close");')
+        if self.isFlash:
+            display.frame.evaluateJavaScript(u'show_flash("close","");')
+        else:
+            display.frame.evaluateJavaScript(u'show_video("close");')
 
-    def updateUI(self, display):
+    def update_ui(self, controller, display):
+        return
         if not self.isFlash:
             length = display.frame.evaluateJavaScript(u'show_video("length");')
-            display.parent.seekSlider.setMaximum(length.toFloat()[0]*1000)
-            if not display.parent.seekSlider.isSliderDown():
+            controller.seekSlider.setMaximum(length.toFloat()[0]*1000)
+            if not controller.seekSlider.isSliderDown():
                 currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
-                display.parent.seekSlider.setSliderPosition(currentTime.toFloat()[0]*1000)
+                controller.seekSlider.setSliderPosition(currentTime.toFloat()[0]*1000)
 
-    def getSupportedFileTypes(self):
+    def get_supported_file_types(self):
         pass

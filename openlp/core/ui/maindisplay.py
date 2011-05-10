@@ -55,6 +55,30 @@ class DisplayWidget(QtGui.QGraphicsView):
         self.parent = parent
         self.live = live
 
+class Display(QtGui.QFrame):
+    """
+    This is the display screen for preview Widgets.
+    """
+    def __init__(self, parent):
+        QtGui.QFrame.__init__(self, parent)
+        self.parent = parent
+
+    def setup(self):
+        """
+        Set up and build the preview screen
+        """
+        self.webView = QtWebKit.QWebView(self)
+        self.webView.setGeometry(0, 0,
+            self.parent.width(), self.parent.height())
+        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
+        self.page = self.webView.page()
+        self.frame = self.page.mainFrame()
+        screen = {}
+        screen[u'size'] = self.size()
+        serviceItem = ServiceItem()
+        self.webView.setHtml(build_html(serviceItem, screen,
+            None, None, None))
+        self.webView.hide()
 
 class MainDisplay(DisplayWidget):
     """
@@ -103,7 +127,7 @@ class MainDisplay(DisplayWidget):
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled,True)
+        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -156,7 +180,6 @@ class MainDisplay(DisplayWidget):
                 self.primary = False
             else:
                 self.primary = True
-        Receiver.send_message(u'media_set_display', self)
         log.debug(
             u'Finished setup for monitor %s' % self.screens.monitor_number)
 

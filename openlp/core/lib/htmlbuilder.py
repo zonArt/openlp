@@ -325,22 +325,18 @@ sup {
             if (document.embeds && document.embeds[movieName])
             return document.embeds[movieName];
         }
-        else // if (navigator.appName.indexOf("Microsoft Internet")!=-1)
-        {
-            return document.getElementById(movieName);
-        }
     }
 
     function show_flash(state, path){
         var text = document.getElementById('flash');
-        var flashMovie=getFlashMovieObject("OpenLPFlashMovie");
+        var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
         var src = "src = 'file:///" + path + "'";
         var view_parm = " wmode='opaque'" +
-                           " width='" + window.innerWidth + "'" +
-                           " height='" + window.innerHeight + "'";
+            " width='" + window.innerWidth + "'" +
+            " height='" + window.innerHeight + "'";
         var swf_parm = " autostart='false' loop='false' play='false'" +
-                              " hidden='false' swliveconnect='true'" +
-                              " name='OpenLPFlashMovie'>";
+            " hidden='false' swliveconnect='true'" +
+            " name='OpenLPFlashMovie'>";
 
         switch(state){
             case 'load':
@@ -349,12 +345,10 @@ sup {
                 text.style.visibility = 'visible';
                 flashMovie.Play();
                 break;
-
             case 'play':
                 text.style.visibility = 'visible';
                 flashMovie.Play();
                 break;
-
             case 'rewind':
                 ret = 'rewind';
                 alert(' Wert: ' + flashMovie.TGetProperty("/", 4));
@@ -364,7 +358,7 @@ sup {
                 break;
             case 'stop':
                 flashMovie.StopPlay();
-                text.innerHTML = ''
+                text.innerHTML = '';
                 text.style.visibility = 'hidden';
                 break;
         }

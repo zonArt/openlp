@@ -91,7 +91,7 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         #self.parent.liveController.display.resetVideo()
         Receiver.send_message(u'media_reset',
-            self.parent.liveController.display)
+            self.parent.liveController)
 
     def videobackgroundReplaced(self):
         """
@@ -110,9 +110,8 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                #self.parent.liveController.display.video(filename, 0, True)
                 Receiver.send_message(u'media_video',
-                    [self.parent.liveController.display, filename, 0, True])
+                    [self.parent.liveController, filename, 0, True])
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
@@ -136,7 +135,7 @@ class MediaMediaItem(MediaManagerItem):
 #        self.mediaObject.stop()
 #        self.mediaObject.clearQueue()
 #        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-#        if not self.mediaStateWait(Phonon.StoppedState):
+#        if not self.mediaStateWait(Phonon.Stopped):
             # Due to string freeze, borrow a message from presentations
             # This will be corrected in 1.9.6
 #            critical_error_message_box(
@@ -147,7 +146,7 @@ class MediaMediaItem(MediaManagerItem):
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
 #            self.mediaObject.play()
-#            if not self.mediaStateWait(Phonon.PlayingState) \
+#            if not self.mediaStateWait(Phonon.Playing) \
 #                or self.mediaObject.currentSource().type() \
 #                == Phonon.MediaSource.Invalid:
 #                # Due to string freeze, borrow a message from presentations

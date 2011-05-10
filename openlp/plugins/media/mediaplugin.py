@@ -123,3 +123,12 @@ class MediaPlugin(Plugin):
                 'Add the selected Media to the service')
         }
         self.setPluginUiTextStrings(tooltips)
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'Media Finalising')
+        self.mediaManager.Timer.stop()
+        self.mediaManager.video_reset(self.previewController)
+        self.mediaManager.video_reset(self.liveController)
