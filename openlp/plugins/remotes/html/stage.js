@@ -65,10 +65,15 @@ window.OpenLP = {
   updateSlide: function() {
     $("#verseorder span").removeClass("currenttag");
     $("#tag" + OpenLP.currentSlide).addClass("currenttag");
-    $("#currentslide").html(OpenLP.currentSlides[OpenLP.currentSlide]["text"]);
-    if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) 
-      $("#nextslide").html(OpenLP.currentSlides[OpenLP.currentSlide + 1]["text"]);
-    else 
+    var text = OpenLP.currentSlides[OpenLP.currentSlide]["text"];
+    text = text.replace(/\n/g, '<br />');
+    $("#currentslide").html(text);
+    if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) {
+      text = OpenLP.currentSlides[OpenLP.currentSlide + 1]["text"];
+      text = text.replace(/\n/g, '<br />');
+      $("#nextslide").html(text);
+    }
+    else
       $("#nextslide").html("Next: " + OpenLP.nextSong);
   },
   updateClock: function() {

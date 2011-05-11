@@ -54,10 +54,12 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
-        QtCore.QObject.connect(self.updatePushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onUpdatePushed)
+        QtCore.QObject.connect(self.savePushButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSavedPushed)
         QtCore.QObject.connect(self.deletePushButton,
             QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.close)
 
     def exec_(self):
         """
@@ -87,30 +89,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
 
-    def accept(self):
-        """
-        Save Custom tags in a pickle .
-        """
-        temp = []
-        for tag in DisplayTags.get_html_tags():
-            if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
-        else:
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(u''))
-        return QtGui.QDialog.accept(self)
-
-    def reject(self):
-        """
-        Reset Custom tags from Settings.
-        """
-        self._resetTable()
-        return QtGui.QDialog.reject(self)
-
     def onRowSelected(self):
         """
         Table Row selected so display items and set field state.
@@ -127,14 +105,14 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             self.tagLineEdit.setEnabled(False)
             self.startTagLineEdit.setEnabled(False)
             self.endTagLineEdit.setEnabled(False)
-            self.updatePushButton.setEnabled(False)
+            self.savePushButton.setEnabled(False)
             self.deletePushButton.setEnabled(False)
         else:
             self.descriptionLineEdit.setEnabled(True)
             self.tagLineEdit.setEnabled(True)
             self.startTagLineEdit.setEnabled(True)
             self.endTagLineEdit.setEnabled(True)
-            self.updatePushButton.setEnabled(True)
+            self.savePushButton.setEnabled(True)
             self.deletePushButton.setEnabled(True)
 
     def onNewPushed(self):
@@ -174,9 +152,9 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             self.selected = -1
         self._resetTable()
 
-    def onUpdatePushed(self):
+    def onSavedPushed(self):
         """
-        Update Custom Tag details if not duplicate.
+        Update Custom Tag details if not duplicate and save the data.
         """
         html_expands = DisplayTags.get_html_tags()
         if self.selected != -1:
@@ -197,6 +175,17 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end tag'] = u'{/%s}' % tag
             self.selected = -1
         self._resetTable()
+        temp = []
+        for tag in DisplayTags.get_html_tags():
+            if not tag[u'protected']:
+                temp.append(tag)
+        if temp:
+            ctemp = cPickle.dumps(temp)
+            QtCore.QSettings().setValue(u'displayTags/html_tags',
+                QtCore.QVariant(ctemp))
+        else:
+            QtCore.QSettings().setValue(u'displayTags/html_tags',
+                QtCore.QVariant(u''))
 
     def _resetTable(self):
         """
@@ -205,7 +194,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
         self.newPushButton.setEnabled(True)
-        self.updatePushButton.setEnabled(False)
+        self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
         for linenumber, html in enumerate(DisplayTags.get_html_tags()):
             self.tagTableWidget.setRowCount(
