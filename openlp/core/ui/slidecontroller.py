@@ -616,7 +616,7 @@ class SlideController(QtGui.QWidget):
                 if frame[u'verseTag']:
                     # These tags are already translated.
                     verse_def = frame[u'verseTag']
-                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
                     two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                     if self.isLive:

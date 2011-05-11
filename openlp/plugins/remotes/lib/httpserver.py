@@ -404,11 +404,11 @@ class HttpConnection(object):
                         if frame[u'verseTag']:
                             item[u'tag'] = unicode(frame[u'verseTag'])
                         else:
-                            item[u'tag'] = unicode(index)
+                            item[u'tag'] = unicode(index + 1)
                         item[u'text'] = unicode(frame[u'text'])
                         item[u'html'] = unicode(frame[u'html'])
                     else:
-                        item[u'tag'] = unicode(index)
+                        item[u'tag'] = unicode(index + 1)
                         item[u'text'] = u''
                         item[u'html'] = u''
                     item[u'selected'] = (self.parent.current_slide == index)
