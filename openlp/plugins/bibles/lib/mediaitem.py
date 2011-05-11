@@ -55,6 +55,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
+        self.lockIcon = QtGui.QIcon(u':/bibles/bibles_search_lock.png')
+        self.unlockIcon = QtGui.QIcon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.settings = self.parent.settings_tab
@@ -112,27 +114,27 @@ class BibleMediaItem(MediaManagerItem):
         secondComboBox = media_item_combo_box(tab, prefix + u'SecondComboBox')
         versionLabel.setBuddy(secondComboBox)
         layout.addWidget(secondComboBox, idx + 1, 1, 1, 2)
-        clearLabel = QtGui.QLabel(tab)
-        clearLabel.setObjectName(prefix + u'ClearLabel')
-        layout.addWidget(clearLabel, idx + 2, 0, QtCore.Qt.AlignRight)
-        clearComboBox = media_item_combo_box(tab, prefix + u'ClearComboBox')
-        clearLabel.setBuddy(clearComboBox)
-        layout.addWidget(clearComboBox, idx + 2, 1, 1, 2)
         searchButtonLayout = QtGui.QHBoxLayout()
         searchButtonLayout.setObjectName(prefix + u'SearchButtonLayout')
         searchButtonLayout.addStretch()
+        lockButton = QtGui.QToolButton(tab)
+        lockButton.setIcon(self.unlockIcon)
+        lockButton.setCheckable(True)
+        lockButton.setObjectName(prefix + u'LockButton')
+        searchButtonLayout.addWidget(lockButton)
         searchButton = QtGui.QPushButton(tab)
         searchButton.setObjectName(prefix + u'SearchButton')
         searchButtonLayout.addWidget(searchButton)
-        layout.addLayout(searchButtonLayout, idx + 3, 1, 1, 2)
+        layout.addLayout(searchButtonLayout, idx + 2, 1, 1, 2)
         self.pageLayout.addWidget(tab)
         tab.setVisible(False)
+        QtCore.QObject.connect(lockButton, QtCore.SIGNAL(u'toggled(bool)'),
+            self.onLockButtonToggled)
         setattr(self, prefix + u'VersionLabel', versionLabel)
         setattr(self, prefix + u'VersionComboBox', versionComboBox)
         setattr(self, prefix + u'SecondLabel', secondLabel)
         setattr(self, prefix + u'SecondComboBox', secondComboBox)
-        setattr(self, prefix + u'ClearLabel', clearLabel)
-        setattr(self, prefix + u'ClearComboBox', clearComboBox)
+        setattr(self, prefix + u'LockButton', lockButton)
         setattr(self, prefix + u'SearchButtonLayout', searchButtonLayout)
         setattr(self, prefix + u'SearchButton', searchButton)
 
@@ -255,8 +257,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.quickSearchButton.setText(UiStrings().Search)
-        self.quickClearLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Results:'))
+        self.quickLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
+            'Toggle to keep or clear the previous results'))
         self.advancedVersionLabel.setText(u'%s:' % UiStrings().Version)
         self.advancedSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
@@ -270,17 +272,9 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'From:'))
         self.advancedToLabel.setText(
             translate('BiblesPlugin.MediaItem', 'To:'))
-        self.advancedClearLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Results:'))
         self.advancedSearchButton.setText(UiStrings().Search)
-        self.quickClearComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Clear'))
-        self.quickClearComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Keep'))
-        self.advancedClearComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Clear'))
-        self.advancedClearComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Keep'))
+        self.advancedLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
+            'Toggle to keep or clear the previous results'))
         self.quickLayoutLabel.setText(UiStrings().LayoutStyle)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
             UiStrings().VersePerSlide)
@@ -324,6 +318,12 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
+
+    def onLockButtonToggled(self, checked):
+        if checked:
+            self.sender().setIcon(self.lockIcon)
+        else:
+            self.sender().setIcon(self.unlockIcon)
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')
@@ -530,7 +530,7 @@ class BibleMediaItem(MediaManagerItem):
         if second_bible:
             self.second_search_results = self.parent.manager.get_verses(
                 second_bible, versetext)
-        if self.advancedClearComboBox.currentIndex() == 0:
+        if not self.advancedLockButton.isChecked():
             self.listView.clear()
         if self.listView.count() != 0:
             self.__checkSecondBible(bible, second_bible)
@@ -571,7 +571,7 @@ class BibleMediaItem(MediaManagerItem):
                         verse.verse))
                 self.second_search_results = \
                     bibles[second_bible].get_verses(text)
-        if self.quickClearComboBox.currentIndex() == 0:
+        if not self.quickLockButton.isChecked():
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
             self.__checkSecondBible(bible, second_bible)
