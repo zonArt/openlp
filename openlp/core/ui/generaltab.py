@@ -178,8 +178,7 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.customXValueEdit,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.monitorComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onMonitorComboBoxChanged)
+            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
@@ -378,16 +377,3 @@ class GeneralTab(SettingsTab):
         Called when the width, height, x position or y position has changed.
         """
         self.display_changed = True
-
-    def onMonitorComboBoxChanged(self, index):
-        """
-        The ``monitorComboBox`` has changed to the given ``index``.
-        """
-        self.display_changed = True
-        if self.overrideCheckBox.isChecked():
-            return
-        screen = self.screens.screen_list[index]
-        self.customXValueEdit.setValue(screen[u'size'].x())
-        self.customYValueEdit.setValue(screen[u'size'].y())
-        self.customHeightValueEdit.setValue(screen[u'size'].height())
-        self.customWidthValueEdit.setValue(screen[u'size'].width())
