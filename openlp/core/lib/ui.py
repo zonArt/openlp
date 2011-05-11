@@ -130,7 +130,7 @@ class UiStrings(object):
         self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
-        self.ViewMode = translate('OpenLP.Ui', 'View Model')
+        self.ViewMode = translate('OpenLP.Ui', 'View Mode')
 
 def add_welcome_page(parent, image):
     """
