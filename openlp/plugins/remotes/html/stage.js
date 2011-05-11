@@ -46,15 +46,21 @@ window.OpenLP = {
       function (data, status) {
         OpenLP.currentSlides = data.results.slides;
         OpenLP.currentSlide = 0;
+        OpenLP.currentTags = Array();
         var div = $("#verseorder");
         div.html("");
+        var tag = "";
+        var tags = 0;
         for (idx in data.results.slides) {
           idx = parseInt(idx, 10);
-          div.append("&nbsp;<span>");
-          var tag = data.results.slides[idx]["tag"];
-          if (tag == 'None')
-            tag = idx;
-          $("#verseorder span").last().attr("id", "tag" + idx).text(tag);
+          var prevtag = tag;
+          tag = data.results.slides[idx]["tag"];
+          if (tag != prevtag) {
+            tags = tags + 1;
+            div.append("&nbsp;<span>");       
+            $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
+          }
+          OpenLP.currentTags[idx] = tags;
           if (data.results.slides[idx]["selected"]) 
             OpenLP.currentSlide = idx;
         }
@@ -64,17 +70,30 @@ window.OpenLP = {
   },
   updateSlide: function() {
     $("#verseorder span").removeClass("currenttag");
-    $("#tag" + OpenLP.currentSlide).addClass("currenttag");
-    var text = OpenLP.currentSlides[OpenLP.currentSlide]["text"];
+    $("#tag" + OpenLP.currentTags[OpenLP.currentSlide]).addClass("currenttag");
+    var slide = OpenLP.currentSlides[OpenLP.currentSlide];
+    var text = slide["text"];
     text = text.replace(/\n/g, '<br />');
     $("#currentslide").html(text);
+    text = "";
     if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) {
-      text = OpenLP.currentSlides[OpenLP.currentSlide + 1]["text"];
+      for (var idx = OpenLP.currentSlide + 1; idx < OpenLP.currentSlides.length; idx++) {
+        var prevslide = slide;
+        slide = OpenLP.currentSlides[idx];
+        if (slide["tag"] != prevslide["tag"])
+            text = text + '<p class="nextslide">';
+        text = text + slide["text"]; 
+        if (slide["tag"] != prevslide["tag"])
+            text = text + '</p>';
+        else
+            text = text + '<br />';
+      }
       text = text.replace(/\n/g, '<br />');
       $("#nextslide").html(text);
     }
     else
-      $("#nextslide").html("Next: " + OpenLP.nextSong);
+      text = '<p class="nextslide">Next: ' + OpenLP.nextSong + '</p>';
+      $("#nextslide").html(text);
   },
   updateClock: function() {
     var div = $("#clock");

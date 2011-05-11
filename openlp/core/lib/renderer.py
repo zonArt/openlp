@@ -189,10 +189,10 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
             self.image_manager.del_image(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
