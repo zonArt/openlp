@@ -51,24 +51,50 @@ window.OpenLP = {
         div.html("");
         var tag = "";
         var tags = 0;
-        for (idx in data.results.slides) {
-          idx = parseInt(idx, 10);
+        var lastChange = 0;
+        $.each(data.results.slides, function(idx, slide) {
           var prevtag = tag;
-          tag = data.results.slides[idx]["tag"];
+          tag = slide["tag"];
           if (tag != prevtag) {
+            // If the tag has changed, add new one to the list
+            lastChange = idx;
             tags = tags + 1;
             div.append("&nbsp;<span>");       
             $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
           }
+          else {
+            if ((slide["text"] == data.results.slides[lastChange]["text"]) &&
+              (data.results.slides.length > idx + (idx - lastChange))) {
+              // If the tag hasn't changed, check to see if the same verse
+              // has been repeated consecutively. Note the verse may have been 
+              // split over several slides, so search through. If so, repeat the tag.
+              var match = true;
+              for (var idx2 = 0; idx2 < idx - lastChange; idx2++) {
+                if(data.results.slides[lastChange + idx2]["text"] != data.results.slides[idx + idx2]["text"]) {
+                    match = false;
+                    break;
+                }
+              }
+              if (match) {
+                lastChange = idx;
+                tags = tags + 1;
+                div.append("&nbsp;<span>");       
+                $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
+              }
+            }
+          }
           OpenLP.currentTags[idx] = tags;
-          if (data.results.slides[idx]["selected"]) 
+          if (slide["selected"]) 
             OpenLP.currentSlide = idx;
-        }
+        })
         OpenLP.loadService();
       }
     );
   },
   updateSlide: function() {
+    // Show the current slide on top. Any trailing slides for the same verse
+    // are shown too underneath in grey.
+    // Then leave a blank line between following verses
     $("#verseorder span").removeClass("currenttag");
     $("#tag" + OpenLP.currentTags[OpenLP.currentSlide]).addClass("currenttag");
     var slide = OpenLP.currentSlides[OpenLP.currentSlide];
@@ -78,12 +104,10 @@ window.OpenLP = {
     text = "";
     if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) {
       for (var idx = OpenLP.currentSlide + 1; idx < OpenLP.currentSlides.length; idx++) {
-        var prevslide = slide;
-        slide = OpenLP.currentSlides[idx];
-        if (slide["tag"] != prevslide["tag"])
+        if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
             text = text + '<p class="nextslide">';
-        text = text + slide["text"]; 
-        if (slide["tag"] != prevslide["tag"])
+        text = text + OpenLP.currentSlides[idx]["text"];
+        if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
             text = text + '</p>';
         else
             text = text + '<br />';
@@ -91,9 +115,10 @@ window.OpenLP = {
       text = text.replace(/\n/g, '<br />');
       $("#nextslide").html(text);
     }
-    else
+    else {
       text = '<p class="nextslide">Next: ' + OpenLP.nextSong + '</p>';
       $("#nextslide").html(text);
+    }
   },
   updateClock: function() {
     var div = $("#clock");
