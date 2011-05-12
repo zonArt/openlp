@@ -274,7 +274,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'To:'))
         self.advancedSearchButton.setText(UiStrings().Search)
         self.advancedLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
-            'Toggle to keep or clear the previous results'))
+            'Toggle to keep or clear the previous results.'))
         self.quickLayoutLabel.setText(UiStrings().LayoutStyle)
         self.quickLayoutComboBox.setItemText(LayoutStyle.VersePerSlide,
             UiStrings().VersePerSlide)
