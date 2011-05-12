@@ -25,6 +25,8 @@
     <file>bibles_search_text.png</file>
     <file>bibles_search_reference.png</file>
     <file>bibles_upgrade_alert.png</file>
+    <file>bibles_search_unlock.png</file>
+    <file>bibles_search_lock.png</file>
   </qresource>
   <qresource prefix="plugins">
     <file>plugin_alerts.png</file>
