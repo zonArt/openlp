@@ -223,7 +223,7 @@ class BibleDB(QtCore.QObject, Manager):
         Delete a book from the database.
 
         ``db_book``
-            The book objekt.
+            The book object.
         """
         log.debug(u'BibleDB.delete_book("%s")', db_book.name)
         if self.delete_object(Book, db_book.id):

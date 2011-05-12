@@ -105,7 +105,7 @@ class Ui_BookNameDialog(object):
             translate('BiblesPlugin.BookNameDialog', 'Choose Book:'))
         self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog', 
             'The following books cannot be clearly attributed. \n'
-            'Please choose the book it is.'))
+            'Please choose which book it is.'))
         self.requestLabel.setText(translate('BiblesPlugin.BookNameDialog', 
             'Book:'))
         self.infoLabelTestaments.setText(translate(

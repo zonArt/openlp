@@ -89,6 +89,6 @@ class Ui_LanguageDialog(object):
         self.headlineLabel.setText(
             translate('BiblesPlugin.LanguageDialog', 'Choose Language:'))
         self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
-            'Please choose the language the bible is.'))
+            'Please choose the Bible\'s language'))
         self.requestLabel.setText(translate('BiblesPlugin.languageDialog', 
             'Language:'))

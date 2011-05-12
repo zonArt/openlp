@@ -296,7 +296,7 @@ class BibleUpgradeForm(OpenLPWizard):
         the wizard is progressing with its task.
         """
         OpenLPWizard.addProgressPage(self)
-        self.progressLayout.setContentsMargins(48, 48, 48, 30)
+        self.progressLayout.setContentsMargins(48, 48, 48, 20)
         self.progressLabelAfter = QtGui.QLabel(self.progressPage)
         self.progressLabelAfter.setObjectName(u'progressLabelAfter')
         self.progressLayout.addWidget(self.progressLabelAfter)
@@ -319,19 +319,19 @@ class BibleUpgradeForm(OpenLPWizard):
             translate('BiblesPlugin.UpgradeWizardForm',
             'This wizard will help you to upgrade your existing Bibles from a '
             'prior version of OpenLP 2. Click the next button below to start '
-            'the process by selecting the bibles to upgrade.'))
+            'the process by selecting the Bibles to upgrade.'))
         self.selectPage.setTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
-            'Please choose'))
+            'Select Bibles'))
         self.selectPage.setSubTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
-            'Please choose the bibles which should be upgraded'))
+            'Please select the Bibles to upgrade'))
         for number, bible in enumerate(self.files):
             self.versionNameLabel[number].setText(
                 translate('BiblesPlugin.UpgradeWizardForm', 'Version name:'))
             self.versionInfoLabel[number].setText(
                 translate('BiblesPlugin.UpgradeWizardForm', 'This '
-                'bible still exists. Please change the name or uncheck it.'))
+                'Bible still exists. Please change the name or uncheck it.'))
         self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
@@ -339,14 +339,15 @@ class BibleUpgradeForm(OpenLPWizard):
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(u'%p%')
         self.deleteCheckBox.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'Delete old bible '
-            'database(s) from bibles which was upgraded\nsucessful right now'))
+            translate('BiblesPlugin.UpgradeWizardForm', 'Delete those files '
+            'which have been successfully upgraded.'))
         self.deleteAllCheckBox.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'Delete all old bible '
-            'database(s) (including not upgraded bibles)'))
+            translate('BiblesPlugin.UpgradeWizardForm', 'Delete all the old '
+            'files, including those which have not been \nupgraded.'))
         self.progressLabelAfter.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'If OpenLP should '
-            'delete the old bible databases please choose:'))
+            translate('BiblesPlugin.UpgradeWizardForm', 'A copy of the '
+            'pre-upgraded Bible database files have been made. \nWould you '
+            'like to:'))
 
     def validateCurrentPage(self):
         """
@@ -458,8 +459,8 @@ class BibleUpgradeForm(OpenLPWizard):
         proxy_server = None
         if self.maxBibles == 0:
             self.progressLabel.setText(
-                translate('BiblesPlugin.UpgradeWizardForm', 'Sorry, but OpenLP'
-                    ' could not find a Bible to upgrade.'))
+                translate('BiblesPlugin.UpgradeWizardForm', 'There are no '
+                'Bibles available to upgrade.'))
             self.progressBar.hide()
             return
         self.maxBibles = 0
@@ -482,13 +483,13 @@ class BibleUpgradeForm(OpenLPWizard):
                     'BiblesPlugin.UpgradeWizardForm', 
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                     (number+1, self.maxBibles, name), 
-                    self.progressBar.maximum()-self.progressBar.value())
+                    self.progressBar.maximum() - self.progressBar.value())
                 number += 1
                 continue
             self.progressLabel.setText(unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm', 
                 'Upgrading Bible %s of %s: "%s"\nImporting ...')) % 
-                (number+1, self.maxBibles, name))
+                (number + 1, self.maxBibles, name))
             if os.path.exists(os.path.join(self.newpath, filename)):
                 name = unicode(self.versionNameEdit[biblenumber].text())
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.oldpath,
@@ -528,10 +529,9 @@ class BibleUpgradeForm(OpenLPWizard):
                         translate('BiblesPlugin.UpgradeWizardForm', 
                         'Download Error'),
                         translate('BiblesPlugin.UpgradeWizardForm', 
-                        'To upgrade your webbibles a Internet connection is '
-                        'necessary. Please check your Internet connection, and '
-                        'if this error continues to occur please consider '
-                        'reporting a bug.'))
+                        'To upgrade your Web Bibles an Internet connection is '
+                        'required. If you have a working Internet connection '
+                        'and this error still occurs, please report a bug.'))
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\nFailed')) % 
@@ -668,14 +668,14 @@ class BibleUpgradeForm(OpenLPWizard):
             if include_webbible:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'bible(s) successful%s.\nPlease note, that verses from '
-                    'webbibles will be downloaded\non demand and thus an '
-                    'internet connection is required.')) % 
+                    'Bible(s) successful%s.\nPlease note, that verses from '
+                    'Web Bibles will be downloaded\non demand and so an '
+                    'Internet connection is required.')) % 
                     (successful_import, failed_import_text))
             else:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'bible(s) successful.%s')) % (successful_import, 
+                    'Bible(s) successful.%s')) % (successful_import, 
                     failed_import_text))
             self.deleteCheckBox.show()
             bibles = u''
@@ -684,7 +684,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 bibles += u'\n"' + name + u'"'
             self.deleteCheckBox.setToolTip(unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm', 
-                'Sucessful upgraded bible(s):%s')) % bibles)
+                'Successfully upgraded Bible(s):%s')) % bibles)
         else:
             self.progressLabel.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade '
