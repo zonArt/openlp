@@ -331,7 +331,7 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
     context=QtCore.Qt.WindowShortcut):
     """
-    Utility method to help build context menus for plugins
+    Utility method to help build context menus.
 
     ``base``
         The parent menu to add this menu item to
@@ -350,7 +350,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
 
     ``category``
         The category the shortcut should be listed in the shortcut dialog. If
-        left to None, then the action will be hidden in the shortcut dialog.
+        left to ``None``, then the action will be hidden in the shortcut dialog.
 
     ``context``
         The context the shortcut is valid.
@@ -369,7 +369,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
 
 def context_menu(base, icon, text):
     """
-    Utility method to help build context menus for plugins
+    Utility method to help build context menus.
 
     ``base``
         The parent object to add this menu to
