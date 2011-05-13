@@ -150,13 +150,13 @@ class SongShowPlusImport(SongImport):
                     self.ccli_number = int(data)
                 elif blockKey == VERSE:
                     self.add_verse(unicode(data, u'cp1252'),
-                        "V%s" % verseNo)
+                        "%s%s" % (VerseType.Tags[VerseType.Verse], verseNo))
                 elif blockKey == CHORUS:
                     self.add_verse(unicode(data, u'cp1252'),
-                        "C%s" % verseNo)
+                        "%s%s" % (VerseType.Tags[VerseType.Chorus], verseNo))
                 elif blockKey == BRIDGE:
                     self.add_verse(unicode(data, u'cp1252'),
-                        "B%s" % verseNo)
+                        "%s%s" % (VerseType.Tags[VerseType.Bridge], verseNo))
                 elif blockKey == TOPIC:
                     self.topics.append(unicode(data, u'cp1252'))
                 elif blockKey == COMMENTS:
