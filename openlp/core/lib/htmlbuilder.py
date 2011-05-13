@@ -324,17 +324,22 @@ def build_html(item, screen, alert, islive, background, image=None):
     """
     Build the full web paged structure for display
 
-    `item`
+    ``item``
         Service Item to be displayed
-    `screen`
+
+    ``screen``
         Current display information
-    `alert`
+
+    ``alert``
         Alert display display information
-    `islive`
+
+    ``islive``
         Item is going live, rather than preview/theme building
-    `background`
+
+    ``background``
         Theme background image - bytes
-    `image`
+
+    ``image``
         Image media item - bytes
     """
     width = screen[u'size'].width()
@@ -379,7 +384,7 @@ def build_background_css(item, width, height):
     """
     Build the background css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
     """
@@ -432,10 +437,10 @@ def build_lyrics_css(item, webkitvers):
     """
     Build the lyrics display css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
 
     """
@@ -509,10 +514,10 @@ def build_lyrics_outline_css(theme, is_shadow=False):
     Build the css which controls the theme outline
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `is_shadow`
+    ``is_shadow``
         If true, use the shadow colors instead
     """
     if theme.font_main_outline:
@@ -533,13 +538,13 @@ def build_lyrics_format_css(theme, width, height):
     Build the css which controls the theme format
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `width`
+    ``width``
         Width of the lyrics block
 
-    `height`
+    ``height``
         Height of the lyrics block
 
     """
@@ -569,10 +574,10 @@ def build_lyrics_html(item, webkitvers):
     """
     Build the HTML required to show the lyrics
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
     """
     # Bugs in some versions of QtWebKit mean we sometimes need additional
@@ -598,7 +603,7 @@ def build_footer_css(item, height):
     """
     Build the display of the item footer
 
-    `item`
+    ``item``
         Service Item to be processed.
     """
     style = """
@@ -624,7 +629,7 @@ def build_alert_css(alertTab, width):
     """
     Build the display of the footer
 
-    `alertTab`
+    ``alertTab``
         Details from the Alert tab for fonts etc
     """
     style = """

@@ -431,7 +431,7 @@ class FoilPresenter(object):
                     verse_sortnr = self._child(strophe.sortnr)
                     sortnr = True
                 # In older Version there is no sortnr, but we need one
-            if sortnr == False:
+            if not sortnr:
                 verse_sortnr = unicode(temp_sortnr_backup)
                 temp_sortnr_backup += 1
             # Foilpresenter allows e. g. "Ref" or "1", but we need "C1" or "V1".
@@ -467,7 +467,7 @@ class FoilPresenter(object):
                 # test if foilpresenter have the same versenumber two times with
                 # different parts raise the verse number
                 for value in temp_verse_order_backup:
-                    if value == (u''.join((verse_type, verse_number))):
+                    if value == u''.join((verse_type, verse_number)):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.Names[verse_type_index]
