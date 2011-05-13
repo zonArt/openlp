@@ -28,11 +28,11 @@ import logging
 
 from PyQt4 import QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
+from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
     ItemCapabilities
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay
+from openlp.core.ui import MainDisplay, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -52,33 +52,32 @@ class Renderer(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
-
-    ``theme_manager``
-        The ThemeManager instance, used to get the current theme details.
-
-    ``screens``
-        Contains information about the Screens.
-
-    ``screen_number``
-        Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, theme_manager, screens):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the render manager.
+
+    ``image_manager``
+        A ImageManager instance which takes care of e. g. caching and resizing
+        images.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
         """
         log.debug(u'Initilisation started')
-        self.screens = screens
-        self.image_manager = ImageManager()
-        self.display = MainDisplay(self, screens, False)
-        self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
+        self.image_manager = image_manager
+        self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
+        self.bg_frame = None
         self.force_page = False
+        self.display = MainDisplay(self, self.image_manager, False)
+        self.display.setup()
 
     def update_display(self):
         """
@@ -86,12 +85,10 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
-        self.display = MainDisplay(self, self.screens, False)
-        self.display.imageManager = self.image_manager
+        self.display = MainDisplay(self, self.image_manager, False)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
-        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -189,10 +186,10 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
             self.image_manager.del_image(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
@@ -222,13 +219,13 @@ class Renderer(object):
             # Songs and Custom
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
                 # Do not forget the line breaks !
-                slides = text.split(u'\n[---]\n')
+                slides = text.split(u'[---]')
                 pages = []
                 for slide in slides:
-                    lines = self._lines(slide)
+                    lines = slide.strip(u'\n').split(u'\n')
                     new_pages = self._paginate_slide(lines, line_break,
                         self.force_page)
-                    pages.extend([page for page in new_pages])
+                    pages.extend(new_pages)
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
                 pages = self._paginate_slide_words(text, line_break)
@@ -341,12 +338,14 @@ class Renderer(object):
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
                 line_count = -1
-                html_text = html_text.rstrip(u'<br>')
+                while html_text.endswith(u'<br>'):
+                    html_text = html_text[:-4]
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        html_text = html_text.rstrip(u'<br>')
+        while html_text.endswith(u'<br>'):
+            html_text = html_text[:-4]
         formatted.append(html_text)
         log.debug(u'_paginate_slide - End')
         return formatted
@@ -371,7 +370,7 @@ class Renderer(object):
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = self._lines(text)
+        lines = text.split(u'\n')
         for line in lines:
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
@@ -385,7 +384,8 @@ class Renderer(object):
                     self.web.setHtml(html)
                     if self.web_frame.contentsSize().height() <= \
                         self.page_height:
-                        previous_raw = previous_raw.rstrip(u'<br>')
+                        while previous_raw.endswith(u'<br>'):
+                            previous_raw = previous_raw[:-4]
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -408,7 +408,8 @@ class Renderer(object):
                     # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        previous_raw = previous_raw.rstrip(u'<br>')
+                        while previous_raw.endswith(u'<br>'):
+                            previous_raw = previous_raw[:-4]
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
@@ -419,23 +420,11 @@ class Renderer(object):
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
-        previous_raw = previous_raw.rstrip(u'<br>')
+        while previous_raw.endswith(u'<br>'):
+            previous_raw = previous_raw[:-4]
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
-
-    def _lines(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        verses_text = text.split(u'\n')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u'\n')
-            text.extend([line for line in lines])
-
-        return text
 
     def _words_split(self, line):
         """
@@ -443,12 +432,8 @@ class Renderer(object):
         """
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
-        verses_text = line.split(u' ')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u' ')
-            text.extend([line + u' ' for line in lines])
-        return text
+        words = line.split(u' ')
+        return [word + u' ' for word in words]
 
     def _lines_split(self, text):
         """
@@ -457,9 +442,4 @@ class Renderer(object):
         # this parse we do not want to use this so remove it
         text = text.replace(u'\n[---]', u'')
         lines = text.split(u'\n')
-        real_lines = []
-        for line in lines:
-            line = line.replace(u'[---]', u'')
-            sub_lines = line.split(u'\n')
-            real_lines.extend([sub_line for sub_line in sub_lines])
-        return real_lines
+        return [line.replace(u'[---]', u'') for line in lines]
