@@ -244,7 +244,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add the List widget
         self.listView = ListWidgetWithDnD(self, self.plugin.name)
-        self.listView.uniformItemSizes = True
+        self.listView.setUniformItemSizes(True)
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
@@ -254,54 +254,54 @@ class MediaManagerItem(QtGui.QWidget):
         # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
         # define and add the context menu
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.hasEditIcon:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_edit.png',
-                    self.plugin.getString(StringContent.Edit)[u'title'],
-                    self.onEditClick, context=QtCore.Qt.WidgetShortcut))
-            self.listView.addAction(context_menu_separator(self.listView))
+            context_menu_action(
+                self.listView, u':/general/general_edit.png',
+                self.plugin.getString(StringContent.Edit)[u'title'],
+                self.onEditClick, context=QtCore.Qt.WidgetShortcut)
+            context_menu_separator(self.listView)
         if self.hasDeleteIcon:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_delete.png',
-                    self.plugin.getString(StringContent.Delete)[u'title'],
-                    self.onDeleteClick, [QtCore.Qt.Key_Delete],
-                    context=QtCore.Qt.WidgetShortcut))
-            self.listView.addAction(context_menu_separator(self.listView))
-        self.listView.addAction(
             context_menu_action(
-                self.listView, u':/general/general_preview.png',
-                self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick, [QtCore.Qt.Key_Enter,
-                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
-        self.listView.addAction(
-            context_menu_action(
-                self.listView, u':/general/general_live.png',
-                self.plugin.getString(StringContent.Live)[u'title'],
-                self.onLiveClick, [QtCore.Qt.ShiftModifier + \
-                QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
-                QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut))
-        self.listView.addAction(
+                self.listView, u':/general/general_delete.png',
+                self.plugin.getString(StringContent.Delete)[u'title'],
+                self.onDeleteClick, [QtCore.Qt.Key_Delete],
+                context=QtCore.Qt.WidgetShortcut)
+            context_menu_separator(self.listView)
+        context_menu_action(
+            self.listView, u':/general/general_preview.png',
+            self.plugin.getString(StringContent.Preview)[u'title'],
+            self.onPreviewClick, [QtCore.Qt.Key_Enter,
+            QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut)
+        context_menu_action(
+            self.listView, u':/general/general_live.png',
+            self.plugin.getString(StringContent.Live)[u'title'],
+            self.onLiveClick, [QtCore.Qt.ShiftModifier + \
+            QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
+            QtCore.Qt.Key_Return], context=QtCore.Qt.WidgetShortcut)
+        context_menu_action(
+            self.listView, u':/general/general_add.png',
+            self.plugin.getString(StringContent.Service)[u'title'],
+            self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
+            context=QtCore.Qt.WidgetShortcut)
+        if self.addToServiceItem:
             context_menu_action(
                 self.listView, u':/general/general_add.png',
-                self.plugin.getString(StringContent.Service)[u'title'],
-                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
-                context=QtCore.Qt.WidgetShortcut))
-        if self.addToServiceItem:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_add.png',
-                    translate('OpenLP.MediaManagerItem',
-                    '&Add to selected Service Item'),
-                    self.onAddEditClick, context=QtCore.Qt.WidgetShortcut))
+                translate('OpenLP.MediaManagerItem',
+                '&Add to selected Service Item'),
+                self.onAddEditClick, context=QtCore.Qt.WidgetShortcut)
+        # Create the context menu and add all actions from the listView.
+        self.menu = QtGui.QMenu()
+        self.menu.addActions(self.listView.actions())
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onClickPressed)
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onSelectionChange)
+        QtCore.QObject.connect(self.listView,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
 
     def initialise(self):
         """
@@ -353,6 +353,14 @@ class MediaManagerItem(QtGui.QWidget):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
         Receiver.send_message(u'cursor_normal')
+
+    def contextMenu(self, point):
+        item = self.listView.itemAt(point)
+        if item is None:
+            return
+        if not item.flags() & QtCore.Qt.ItemIsSelectable:
+            return
+        self.menu.exec_(self.listView.mapToGlobal(point))
 
     def getFileList(self):
         """
