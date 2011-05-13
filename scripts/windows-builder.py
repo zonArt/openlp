@@ -117,7 +117,7 @@ vcbuild_exe = os.path.join(os.getenv(u'PROGRAMFILES'),
 script_path = os.path.split(os.path.abspath(__file__))[0]
 branch_path = os.path.abspath(os.path.join(script_path, u'..'))
 doc_branch_path = os.path.abspath(os.path.join(script_path, u'..',
-    u'..',u'documentation'))
+    u'..', u'documentation'))
 site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
     u'site-packages')
 
@@ -227,7 +227,7 @@ def copy_windows_files():
         os.path.join(dist_path, u'LICENSE.txt'))
     if os.path.isfile(os.path.join(helpfile_path, u'Openlp.chm')):
         print u'        Windows help file found'
-        copy(os.path.join(helpfile_path,u'Openlp.chm'),
+        copy(os.path.join(helpfile_path, u'Openlp.chm'),
             os.path.join(dist_path, u'Openlp.chm'))
     else:
         print u'  WARNING ---- Windows help file not found ---- WARNING'
@@ -265,7 +265,7 @@ def compile_translations():
                 os.path.join(dist_path, u'i18n', filename))
 
 def run_sphinx():
-    print u'Deleting previous manual build...',manual_build_path
+    print u'Deleting previous manual build...', manual_build_path
     if os.path.exists(manual_build_path):
         rmtree(manual_build_path)
     print u'Running Sphinx...'
