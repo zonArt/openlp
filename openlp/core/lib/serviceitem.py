@@ -219,6 +219,8 @@ class ServiceItem(object):
         ``raw_slide``
             The raw text of the slide.
         """
+        if verse_tag:
+            verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
         title = title.split(u'\n')[0]
         self._raw_frames.append(

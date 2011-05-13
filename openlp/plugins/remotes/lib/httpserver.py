@@ -115,7 +115,6 @@ import os
 import urlparse
 import re
 from pprint import pformat
-from lxml import html
 
 try:
     import json
@@ -402,12 +401,14 @@ class HttpConnection(object):
                 for index, frame in enumerate(current_item.get_frames()):
                     item = {}
                     if current_item.is_text():
-                        item[u'tag'] = unicode(frame[u'verseTag'])
-                        text = unicode(frame[u'html'].replace('<br>', '\n'))
-                        item[u'text'] = html.fromstring(text).text_content()
+                        if frame[u'verseTag']:
+                            item[u'tag'] = unicode(frame[u'verseTag'])
+                        else:
+                            item[u'tag'] = unicode(index + 1)
+                        item[u'text'] = unicode(frame[u'text'])
                         item[u'html'] = unicode(frame[u'html'])
                     else:
-                        item[u'tag'] = unicode(index)
+                        item[u'tag'] = unicode(index + 1)
                         item[u'text'] = u''
                         item[u'html'] = u''
                     item[u'selected'] = (self.parent.current_slide == index)
