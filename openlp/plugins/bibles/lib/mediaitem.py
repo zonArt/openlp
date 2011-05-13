@@ -590,7 +590,8 @@ class BibleMediaItem(MediaManagerItem):
         if not bitem.flags() & QtCore.Qt.ItemIsSelectable:
             # The item is the "No Search Results" item.
             self.listView.clear()
-            item_second_bible = None
+            self.displayResults(bible, second_bible)
+            return
         else:
             item_second_bible = self._decodeQtObject(bitem, 'second_bible')
         if item_second_bible and second_bible or not item_second_bible and \
