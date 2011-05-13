@@ -364,6 +364,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
         action.setShortcutContext(context)
         action_list = ActionList.get_instance()
         action_list.add_action(action)
+    base.addAction(action)
     return action
 
 def context_menu(base, icon, text):
@@ -392,6 +393,7 @@ def context_menu_separator(base):
     """
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
+    base.addAction(action)
     return action
 
 def add_widget_completer(cache, widget):
