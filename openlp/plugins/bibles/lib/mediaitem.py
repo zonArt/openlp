@@ -258,7 +258,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.quickSearchButton.setText(UiStrings().Search)
         self.quickLockButton.setToolTip(translate('BiblesPlugin.MediaItem',
-            'Toggle to keep or clear the previous results'))
+            'Toggle to keep or clear the previous results.'))
         self.advancedVersionLabel.setText(u'%s:' % UiStrings().Version)
         self.advancedSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
