@@ -47,6 +47,7 @@ VERSE_ORDER = 31
 SONG_BOOK = 35
 SONG_NUMBER = 36
 CUSTOM_VERSE = 37
+BRIDGE = 24
 
 log = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ class SongShowPlusImport(SongImport):
         if not isinstance(self.import_source, list):
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
+
         for file in self.import_source:
             self.sspVerseOrderList = []
             otherCount = 0
@@ -108,13 +110,15 @@ class SongShowPlusImport(SongImport):
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % file_name, 0)
             songData = open(file, 'rb')
+
             while True:
                 blockKey, = struct.unpack("I", songData.read(4))
                 # The file ends with 4 NUL's
                 if blockKey == 0:
                     break
                 nextBlockStarts, = struct.unpack("I", songData.read(4))
-                if blockKey == VERSE or blockKey == CHORUS:
+                nextBlockStarts += songData.tell()
+                if blockKey in (VERSE, CHORUS, BRIDGE):
                     null, verseNo,  = struct.unpack("BB", songData.read(2))
                 elif blockKey == CUSTOM_VERSE:
                     null, verseNameLength, = struct.unpack("BB",
@@ -146,10 +150,13 @@ class SongShowPlusImport(SongImport):
                     self.ccli_number = int(data)
                 elif blockKey == VERSE:
                     self.add_verse(unicode(data, u'cp1252'),
-                        "V%s" % verseNo)
+                        "%s%s" % (VerseType.Tags[VerseType.Verse], verseNo))
                 elif blockKey == CHORUS:
                     self.add_verse(unicode(data, u'cp1252'),
-                        "C%s" % verseNo)
+                        "%s%s" % (VerseType.Tags[VerseType.Chorus], verseNo))
+                elif blockKey == BRIDGE:
+                    self.add_verse(unicode(data, u'cp1252'),
+                        "%s%s" % (VerseType.Tags[VerseType.Bridge], verseNo))
                 elif blockKey == TOPIC:
                     self.topics.append(unicode(data, u'cp1252'))
                 elif blockKey == COMMENTS:
@@ -169,6 +176,7 @@ class SongShowPlusImport(SongImport):
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s"
                         % (blockKey, data))
+                    songData.seek(nextBlockStarts)
             self.verse_order_list = self.sspVerseOrderList
             songData.close()
             if not self.finish():

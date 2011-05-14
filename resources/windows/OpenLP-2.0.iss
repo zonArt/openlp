@@ -60,7 +60,7 @@ Name: spanish; MessagesFile: compiler:Languages\Spanish.isl
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
-Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}
+Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; OnlyBelowVersion: 0, 6.1
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -69,7 +69,7 @@ Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
 Name: {group}\{#AppName} (Debug); Filename: {app}\{#AppExeName}; Parameters: -l debug
-Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm
+Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm; Check: FileExists(ExpandConstant('{app}\{#AppName}.chm'))
 Name: {group}\{cm:ProgramOnTheWeb,{#AppName}}; Filename: {#AppURL}
 Name: {group}\{cm:UninstallProgram,{#AppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#AppName}; Filename: {app}\{#AppExeName}; Tasks: desktopicon
