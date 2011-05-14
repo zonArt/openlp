@@ -590,7 +590,7 @@ class BibleMediaItem(MediaManagerItem):
         item_second_bible = self._decodeQtObject(bitem, 'second_bible')
         if item_second_bible and second_bible or not item_second_bible and \
             not second_bible:
-            self.displayResults(bible, second_bible)
+            self.displayResults(bible, second_bible, self_search_results)
         elif critical_error_message_box(
             message=translate('BiblePlugin.MediaItem',
             'You cannot combine single and dual Bible verse search results. '
@@ -601,6 +601,18 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
 
     def displayResults(self, bible, second_bible=u''):
+        """
+        Displays the search results in the media manager. All data needed for
+        further action is saved for/in each row.
+        """
+        items = self.buildDisplayResults(bible, second_bible, self.search_results)
+        for bible_verse in items:
+            self.listView.addItem(bible_verse)
+        self.listView.selectAll()
+        self.search_results = {}
+        self.second_search_results = {}
+
+    def buildDisplayResults(self, bible, second_bible, search_results):
         """
         Displays the search results in the media manager. All data needed for
         further action is saved for/in each row.
@@ -620,7 +632,8 @@ class BibleMediaItem(MediaManagerItem):
                 second_bible, u'Copyright').value
             second_permissions = self.parent.manager.get_meta_data(
                 second_bible, u'Permissions').value
-        for count, verse in enumerate(self.search_results):
+        items = []
+        for count, verse in enumerate(search_results):
             data = {
                 'book': QtCore.QVariant(verse.book.name),
                 'chapter': QtCore.QVariant(verse.chapter),
@@ -652,10 +665,8 @@ class BibleMediaItem(MediaManagerItem):
                     verse.chapter, verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
-            self.listView.addItem(bible_verse)
-        self.listView.selectAll()
-        self.search_results = {}
-        self.second_search_results = {}
+            items.append(bible_verse)
+        return items
 
     def _decodeQtObject(self, bitem, key):
         reference = bitem.data(QtCore.Qt.UserRole)
@@ -672,7 +683,10 @@ class BibleMediaItem(MediaManagerItem):
         service item's title.
         """
         log.debug(u'generating slide data')
-        items = self.listView.selectedIndexes()
+        if item:
+            items = item
+        else:
+            items = self.listView.selectedItems()
         if len(items) == 0:
             return False
         bible_text = u''
@@ -681,8 +695,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_title = []
         verses = VerseReferenceList()
-        for item in items:
-            bitem = self.listView.item(item.row())
+        for bitem in items:
             book = self._decodeQtObject(bitem, 'book')
             chapter = int(self._decodeQtObject(bitem, 'chapter'))
             verse = int(self._decodeQtObject(bitem, 'verse'))
@@ -716,11 +729,11 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             if not old_item:
-                start_item = item
-            elif self.checkTitle(item, old_item):
+                start_item = bitem
+            elif self.checkTitle(bitem, old_item):
                 raw_title.append(self.formatTitle(start_item, old_item))
-                start_item = item
-            old_item = item
+                start_item = bitem
+            old_item = bitem
             old_chapter = chapter
         # Add footer
         service_item.raw_footer.append(verses.format_verses())
@@ -728,7 +741,7 @@ class BibleMediaItem(MediaManagerItem):
             verses.add_version(second_version, second_copyright,
                 second_permissions)
         service_item.raw_footer.append(verses.format_versions())
-        raw_title.append(self.formatTitle(start_item, item))
+        raw_title.append(self.formatTitle(start_item, bitem))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text.lstrip())
@@ -751,9 +764,9 @@ class BibleMediaItem(MediaManagerItem):
         [service_item.add_from_text(slide[:30], slide) for slide in raw_slides]
         return True
 
-    def formatTitle(self, start_item, old_item):
+    def formatTitle(self, start_bitem, old_bitem):
         """
-        This methode is called, when we have to change the title, because
+        This method is called, when we have to change the title, because
         we are at the end of a verse range. E. g. if we want to add
         Genesis 1:1-6 as well as Daniel 2:14.
 
@@ -765,10 +778,8 @@ class BibleMediaItem(MediaManagerItem):
         """
         verse_separator = get_reference_match(u'sep_v_display')
         range_separator = get_reference_match(u'sep_r_display')
-        old_bitem = self.listView.item(old_item.row())
         old_chapter = self._decodeQtObject(old_bitem, 'chapter')
         old_verse = self._decodeQtObject(old_bitem, 'verse')
-        start_bitem = self.listView.item(start_item.row())
         start_book = self._decodeQtObject(start_bitem, 'book')
         start_chapter = self._decodeQtObject(start_bitem, 'chapter')
         start_verse = self._decodeQtObject(start_bitem, 'verse')
@@ -789,9 +800,9 @@ class BibleMediaItem(MediaManagerItem):
                 range_separator + old_chapter + verse_separator + old_verse
         return u'%s %s (%s)' % (start_book, verse_range, bibles)
 
-    def checkTitle(self, item, old_item):
+    def checkTitle(self, bitem, old_bitem):
         """
-        This methode checks if we are at the end of an verse range. If that is
+        This method checks if we are at the end of an verse range. If that is
         the case, we return True, otherwise False. E. g. if we added
         Genesis 1:1-6, but the next verse is Daniel 2:14, we return True.
 
@@ -802,13 +813,11 @@ class BibleMediaItem(MediaManagerItem):
             The item we were previously dealing with.
         """
         # Get all the necessary meta data.
-        bitem = self.listView.item(item.row())
         book = self._decodeQtObject(bitem, 'book')
         chapter = int(self._decodeQtObject(bitem, 'chapter'))
         verse = int(self._decodeQtObject(bitem, 'verse'))
         bible = self._decodeQtObject(bitem, 'bible')
         second_bible = self._decodeQtObject(bitem, 'second_bible')
-        old_bitem = self.listView.item(old_item.row())
         old_book = self._decodeQtObject(old_bitem, 'book')
         old_chapter = int(self._decodeQtObject(old_bitem, 'chapter'))
         old_verse = int(self._decodeQtObject(old_bitem, 'verse'))
@@ -868,3 +877,32 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QSettings().setValue(
             self.settingsSection + u'/verse layout style',
             QtCore.QVariant(self.settings.layout_style))
+
+    def hasSearch(self):
+        """
+        Returns whether this plugin supports the search method
+        """
+        return True
+
+    def search(self, string):
+        """
+        Search for some Bible verses (by reference).
+        """
+        bible = unicode(self.quickVersionComboBox.currentText())
+        search_results = self.parent.manager.get_verses(bible, string, False)
+        results = []
+        if search_results:
+            versetext = u''
+            for verse in search_results:
+                if versetext:
+                    versetext += u' '
+                versetext += verse.text
+            results.append([string, versetext])
+        return results
+
+    def createItemFromId(self, item_id):
+        item = QtGui.QListWidgetItem()
+        bible = unicode(self.quickVersionComboBox.currentText())
+        search_results = self.parent.manager.get_verses(bible, item_id, False)
+        items = self.buildDisplayResults(bible, u'', search_results)
+        return items

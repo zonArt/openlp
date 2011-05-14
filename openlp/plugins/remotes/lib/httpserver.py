@@ -458,7 +458,7 @@ class HttpConnection(object):
             for plugin in self.parent.parent.pluginManager.plugins:
                 media_item = plugin.mediaItem
                 if media_item and media_item.hasSearch():
-                    searches.append(plugin.Name)
+                    searches.append(plugin.name)
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
                 {u'Content-Type': u'application/json'})

@@ -39,6 +39,19 @@ window.OpenLP = {
     }
     return $(targ);
   },
+  searchPlugins: function (event) {
+    $.getJSON(
+      "/api/plugin/search",
+      function (data, status) {
+        var select = $("#search-plugin");
+        select.html("");
+        $.each(data.results.items, function (idx, value) {
+          select.append("<option value='" + value + "'>" + value + "</option>");
+        });
+        select.selectmenu("refresh");
+      }
+    );
+  },
   loadService: function (event) {
     $.getJSON(
       "/api/service/list",
@@ -193,7 +206,7 @@ window.OpenLP = {
   search: function (event) {
     var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
     $.getJSON(
-      "/api/Songs/search",
+      "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
       function (data, status) {
         var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
@@ -220,9 +233,9 @@ window.OpenLP = {
     var id = slide.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
-      "/api/Songs/live",
+      "/api/" + $("#search-plugin").val() + "/live",
       {"data": text})
-    window.location.replace('/#slide-controller');
+    $.mobile.changePage("slide-controller");
     return false;
   }
 
@@ -234,6 +247,8 @@ $("#service-next").live("click", OpenLP.nextItem);
 $("#service-previous").live("click", OpenLP.previousItem);
 $("#service-blank").live("click", OpenLP.blankDisplay);
 $("#service-unblank").live("click", OpenLP.unblankDisplay);
+$("#service-nextslide").live("click", OpenLP.nextSlide);
+$("#service-previousslide").live("click", OpenLP.previousSlide);
 // Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 $("#controller-refresh").live("click", OpenLP.loadController);
@@ -241,11 +256,14 @@ $("#controller-next").live("click", OpenLP.nextSlide);
 $("#controller-previous").live("click", OpenLP.previousSlide);
 $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
+$("#controller-nextsong").live("click", OpenLP.nextItem);
+$("#controller-previoussong").live("click", OpenLP.previousItem);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
 // Poll the server twice a second to get any updates.
+OpenLP.searchPlugins();
 $.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();
