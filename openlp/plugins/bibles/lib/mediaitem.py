@@ -587,7 +587,13 @@ class BibleMediaItem(MediaManagerItem):
         Check if the first item is a second bible item or not.
         """
         bitem = self.listView.item(0)
-        item_second_bible = self._decodeQtObject(bitem, 'second_bible')
+        if not bitem.flags() & QtCore.Qt.ItemIsSelectable:
+            # The item is the "No Search Results" item.
+            self.listView.clear()
+            self.displayResults(bible, second_bible)
+            return
+        else:
+            item_second_bible = self._decodeQtObject(bitem, 'second_bible')
         if item_second_bible and second_bible or not item_second_bible and \
             not second_bible:
             self.displayResults(bible, second_bible)
