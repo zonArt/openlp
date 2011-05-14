@@ -45,7 +45,7 @@ class PluginManager(object):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-pluginmanager.py
+
         ``plugin_dir``
             The directory to search for plugins.
         """

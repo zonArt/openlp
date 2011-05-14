@@ -485,7 +485,8 @@ class MediaManagerItem(QtGui.QWidget):
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
         serviceItem = self.buildServiceItem(item)
         if serviceItem:
-            serviceItem.from_plugin = True
+            if not item_id:
+                serviceItem.from_plugin = True
             self.parent.liveController.addServiceItem(serviceItem)
 
     def onAddClick(self):
