@@ -115,8 +115,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.clipboard(),
-            self.arguments())
+        self.mainWindow = MainWindow(self.clipboard(), self.arguments())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -241,8 +240,14 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator = LanguageManager.get_translator(language)
-    app.installTranslator(appTranslator)
+    app_translator, default_translator = \
+        LanguageManager.get_translator(language)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
     sys.exit(app.run())

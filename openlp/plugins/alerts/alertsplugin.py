@@ -119,3 +119,4 @@ class AlertsPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
+

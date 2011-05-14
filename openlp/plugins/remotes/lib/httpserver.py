@@ -34,6 +34,9 @@ the remotes.
 ``/``
     Go to the web interface.
 
+``/stage``
+    Show the stage view.
+
 ``/files/{filename}``
     Serve a static file.
 
@@ -241,6 +244,7 @@ class HttpConnection(object):
         self.parent = parent
         self.routes = [
             (u'^/$', self.serve_file),
+            (u'^/(stage)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
@@ -256,18 +260,18 @@ class HttpConnection(object):
     def _get_service_items(self):
         service_items = []
         service_manager = self.parent.parent.serviceManager
-        item = service_manager.findServiceItem()[0]
-        if item >= 0 and item < len(service_manager.serviceItems):
-            curitem = service_manager.serviceItems[item]
+        if self.parent.current_item:
+            cur_uuid = self.parent.current_item._uuid
         else:
-            curitem = None
+            cur_uuid = None
         for item in service_manager.serviceItems:
             service_item = item[u'service_item']
             service_items.append({
+                u'id': unicode(service_item._uuid),
                 u'title': unicode(service_item.get_display_title()),
                 u'plugin': unicode(service_item.name),
                 u'notes': unicode(service_item.notes),
-                u'selected': (item == curitem)
+                u'selected': (service_item._uuid == cur_uuid)
             })
         return service_items
 
@@ -312,6 +316,8 @@ class HttpConnection(object):
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
+        elif filename == u'stage':
+            filename = u'stage.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
             return HttpResponse(code=u'404 Not Found')
@@ -349,7 +355,7 @@ class HttpConnection(object):
         """
         result = {
             u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item.title \
+            u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u''
         }
         return HttpResponse(json.dumps({u'results': result}),
@@ -395,11 +401,16 @@ class HttpConnection(object):
                 for index, frame in enumerate(current_item.get_frames()):
                     item = {}
                     if current_item.is_text():
-                        item[u'tag'] = unicode(frame[u'verseTag'])
-                        item[u'text'] = unicode(frame[u'html'])
+                        if frame[u'verseTag']:
+                            item[u'tag'] = unicode(frame[u'verseTag'])
+                        else:
+                            item[u'tag'] = unicode(index + 1)
+                        item[u'text'] = unicode(frame[u'text'])
+                        item[u'html'] = unicode(frame[u'html'])
                     else:
-                        item[u'tag'] = unicode(index)
+                        item[u'tag'] = unicode(index + 1)
                         item[u'text'] = u''
+                        item[u'html'] = u''
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
