@@ -45,7 +45,7 @@ class PluginManager(object):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
+pluginmanager.py
         ``plugin_dir``
             The directory to search for plugins.
         """
@@ -211,3 +211,12 @@ class PluginManager(object):
             if plugin.isActive():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
+
+    def get_plugin_by_name(self, name):
+        """
+        Return the plugin which has a name with value ``name``
+        """
+        for plugin in self.plugins:
+            if plugin.name == name:
+                return plugin
+        return None

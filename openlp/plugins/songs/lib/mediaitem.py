@@ -171,11 +171,7 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
-            search_results = self.parent.manager.get_all_objects(Song,
-                or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'),
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.comments.like(u'%' + search_keywords.lower() + u'%')))
+            search_results = self.searchEntire(search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
@@ -201,6 +197,13 @@ class SongMediaItem(MediaManagerItem):
             self.displayResultsSong(search_results)
         check_search_result(self.listView, search_results)
 
+    def searchEntire(self, search_keywords):
+        return self.parent.manager.get_all_objects(Song,
+            or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+            search_keywords.lower()) + u'%'),
+            Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+            Song.comments.like(u'%' + search_keywords.lower() + u'%')))
+
     def onSongListLoad(self):
         """
         Handle the exit from the edit dialog and trigger remote updates
@@ -217,7 +220,8 @@ class SongMediaItem(MediaManagerItem):
         # Push edits to the service manager to update items
         if self.editItem and self.updateServiceOnEdit and \
             not self.remoteTriggered:
-            item = self.buildServiceItem(self.editItem)
+            item_id = _getIdOfItemToGenerate(self.editItem)
+            item = self.buildServiceItem(item_id)
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
@@ -475,3 +479,19 @@ class SongMediaItem(MediaManagerItem):
         """
         return locale.strcoll(unicode(song_1.title.lower()),
              unicode(song_2.title.lower()))
+
+    def hasSearch(self):
+        """
+        Returns whether this plugin supports the search method
+        """
+        return True
+
+    def search(self, string):
+        """
+        Search for some songs
+        """
+        search_results = self.searchEntire(string)
+        results = []
+        for song in search_results:
+            results.append([song.id, song.title])
+        return results

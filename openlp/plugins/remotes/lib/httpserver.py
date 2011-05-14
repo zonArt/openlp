@@ -250,7 +250,10 @@ class HttpConnection(object):
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show)$', self.display),
-            (r'^/api/alert$', self.alert)
+            (r'^/api/alert$', self.alert),
+            (r'^/api/plugin/(search)$', self.plugin),
+            (r'^/api/(.*)/search$', self.search),
+            (r'^/api/(.*)/live$', self.go_live)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -442,6 +445,49 @@ class HttpConnection(object):
             Receiver.send_message(event)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
+
+    def plugin(self, action):
+        """
+        Return plugin related actions
+
+        ``action`` - The action to perform
+            if 'search' return a list of plugin names which support search
+        """
+        if action == u'search':
+            searches = []
+            for plugin in self.parent.parent.pluginManager.plugins:
+                media_item = plugin.mediaItem
+                if media_item and media_item.hasSearch():
+                    searches.append(plugin.Name)
+            return HttpResponse(
+                json.dumps({u'results': {u'items': searches}}),
+                {u'Content-Type': u'application/json'})
+
+    def search(self, type):
+        """
+        Return a list of items that match the search text
+
+        ``type``
+        The plugin name to search in.
+        """
+        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        media_item = plugin.mediaItem
+        if media_item and media_item.hasSearch():
+            results = media_item.search(text)
+            return HttpResponse(
+                json.dumps({u'results': {u'items': results}}),
+                {u'Content-Type': u'application/json'})
+
+    def go_live(self, type):
+        """
+        Go live on an item of type ``type``.
+        """
+        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        media_item = plugin.mediaItem
+        if media_item:
+            media_item.goLive(id)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code
