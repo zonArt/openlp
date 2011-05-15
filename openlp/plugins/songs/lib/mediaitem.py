@@ -197,7 +197,8 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords)
+                Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords) + u'%'))
             self.displayResultsSong(search_results)
         check_search_result(self.listView, search_results)
 
