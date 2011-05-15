@@ -294,6 +294,15 @@ class BibleManager(object):
             The text to search for (unicode).
         """
         log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
+        if not bible:
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
+                'No Bibles Available'),
+                u'message': translate('BiblesPlugin.BibleManager',
+                'There are no Bibles currently installed. Please use the '
+                'Import Wizard to install one or more Bibles.')
+                })
+            return None
         # Check if the bible or second_bible is a web bible.
         webbible = self.db_cache[bible].get_object(BibleMeta,
             u'download source')
