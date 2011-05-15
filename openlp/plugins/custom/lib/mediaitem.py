@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate, check_search_result
+    check_item_selected, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.lib import CustomXMLParser
@@ -63,7 +63,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
-        ## Song Maintenance Button ##
         self.searchWidget = QtGui.QWidget(self)
         self.searchWidget.setObjectName(u'searchWidget')
         self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
@@ -122,7 +121,7 @@ class CustomMediaItem(MediaManagerItem):
             CustomSlide, order_by_ref=CustomSlide.title))
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
-            QtCore.QVariant(SongSearch.Entire)).toInt()[0])
+            QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
@@ -242,7 +241,7 @@ class CustomMediaItem(MediaManagerItem):
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'))
             self.loadList(search_results)
-        check_search_result(self.listView, search_results)
+        self.check_search_result()
 
     def onSearchTextEditChanged(self, text):
         """

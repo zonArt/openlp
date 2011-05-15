@@ -26,7 +26,6 @@
 
 import logging
 import locale
-import re
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -72,7 +71,6 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
         self.quickPreviewAllowed = True
 
     def addEndHeaderBar(self):
