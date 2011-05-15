@@ -422,8 +422,6 @@ class BibleUpgradeForm(OpenLPWizard):
         self.customSignals()
         self.retranslateUi()
         self.maxBibles = len(self.files)
-        self.finishButton.setVisible(False)
-        self.cancelButton.setVisible(True)
         for number, filename in enumerate(self.files):
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             if os.path.exists(os.path.join(self.newpath, filename)):
@@ -439,6 +437,8 @@ class BibleUpgradeForm(OpenLPWizard):
         self.deleteAllCheckBox.hide()
         self.deleteAllCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.restart()
+        self.finishButton.setVisible(False)
+        self.cancelButton.setVisible(True)
         settings.endGroup()
 
     def preWizard(self):
@@ -469,6 +469,8 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.maxBibles += 1
         number = 0
         for biblenumber, filename in enumerate(self.files):
+            if self.stop_import_flag:
+                break
             bible_failed = False
             self.success[biblenumber] = False
             if not self.checkBox[biblenumber].checkState() == QtCore.Qt.Checked:
@@ -563,6 +565,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     continue
                 self.progressBar.setMaximum(len(books))
                 for book in books:
+                    if self.stop_import_flag:
+                        break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\n'
@@ -604,6 +608,8 @@ class BibleUpgradeForm(OpenLPWizard):
                 books = oldbible.get_books()
                 self.progressBar.setMaximum(len(books))
                 for book in books:
+                    if self.stop_import_flag:
+                        break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\n'

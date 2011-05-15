@@ -28,7 +28,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    SettingsManager
 from openlp.core.lib.ui import base_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
@@ -59,7 +60,8 @@ class BiblePlugin(Plugin):
         #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        self.toolsUpgradeItem.setVisible(True)
+        if SettingsManager.get_files(u'bibles', u'.sqlite'):
+            self.toolsUpgradeItem.setVisible(True)
 
     def finalise(self):
         """

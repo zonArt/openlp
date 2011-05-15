@@ -799,7 +799,6 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_language("%s")', name)
         if not isinstance(name, unicode):
             name = unicode(name)
-        name = name.title()
         language = BiblesResourcesDB.run_sql(u'SELECT id, name, code FROM '
                 u'language WHERE name = ? OR code = ?', (name, name.lower()))
         if language:
