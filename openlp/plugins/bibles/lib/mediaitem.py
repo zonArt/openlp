@@ -61,6 +61,7 @@ class BibleMediaItem(MediaManagerItem):
         # Place to store the search results for both bibles.
         self.settings = self.parent.settings_tab
         self.quickPreviewAllowed = True
+        self.hasSearch = True
         self.search_results = {}
         self.second_search_results = {}
         check_search_result(self.listView, self.search_results)
@@ -877,12 +878,6 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QSettings().setValue(
             self.settingsSection + u'/verse layout style',
             QtCore.QVariant(self.settings.layout_style))
-
-    def hasSearch(self):
-        """
-        Returns whether this plugin supports the search method
-        """
-        return True
 
     def search(self, string):
         """

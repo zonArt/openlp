@@ -74,6 +74,7 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
         self.quickPreviewAllowed = True
+        self.hasSearch = True
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -479,12 +480,6 @@ class SongMediaItem(MediaManagerItem):
         """
         return locale.strcoll(unicode(song_1.title.lower()),
              unicode(song_2.title.lower()))
-
-    def hasSearch(self):
-        """
-        Returns whether this plugin supports the search method
-        """
-        return True
 
     def search(self, string):
         """

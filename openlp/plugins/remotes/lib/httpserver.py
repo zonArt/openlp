@@ -457,7 +457,7 @@ class HttpConnection(object):
             searches = []
             for plugin in self.parent.parent.pluginManager.plugins:
                 media_item = plugin.mediaItem
-                if media_item and media_item.hasSearch():
+                if media_item and media_item.hasSearch:
                     searches.append(plugin.name)
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
@@ -473,7 +473,7 @@ class HttpConnection(object):
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
         plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
         media_item = plugin.mediaItem
-        if media_item and media_item.hasSearch():
+        if media_item and media_item.hasSearch:
             results = media_item.search(text)
             return HttpResponse(
                 json.dumps({u'results': {u'items': results}}),

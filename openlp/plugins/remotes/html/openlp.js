@@ -247,8 +247,6 @@ $("#service-next").live("click", OpenLP.nextItem);
 $("#service-previous").live("click", OpenLP.previousItem);
 $("#service-blank").live("click", OpenLP.blankDisplay);
 $("#service-unblank").live("click", OpenLP.unblankDisplay);
-$("#service-nextslide").live("click", OpenLP.nextSlide);
-$("#service-previousslide").live("click", OpenLP.previousSlide);
 // Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 $("#controller-refresh").live("click", OpenLP.loadController);
@@ -256,8 +254,6 @@ $("#controller-next").live("click", OpenLP.nextSlide);
 $("#controller-previous").live("click", OpenLP.previousSlide);
 $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
-$("#controller-nextsong").live("click", OpenLP.nextItem);
-$("#controller-previoussong").live("click", OpenLP.previousItem);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search

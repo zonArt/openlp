@@ -102,6 +102,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.singleServiceItem = True
         self.quickPreviewAllowed = False
+        self.hasSearch = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
@@ -585,12 +586,6 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
-
-    def hasSearch(self):
-        """
-        Returns whether this plugin supports the search method
-        """
-        return False
 
     def search(self, string):
         """
