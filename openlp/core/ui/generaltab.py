@@ -101,6 +101,7 @@ class GeneralTab(SettingsTab):
         self.timeoutLabel.setObjectName(u'timeoutLabel')
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
+        self.timeoutSpinBox.setRange(1, 180)
         self.settingsLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
         self.leftLayout.addWidget(self.settingsGroupBox)
         self.leftLayout.addStretch()
