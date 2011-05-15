@@ -111,7 +111,7 @@ class SettingsTab(QtGui.QWidget):
 
     def cancel(self):
         """
-        Reset any settings if cance pressed
+        Reset any settings if cancel pressed
         """
         self.load()
 
