@@ -62,6 +62,7 @@ class SearchEdit(QtGui.QLineEdit):
             self._onSearchEditTextChanged
         )
         self._updateStyleSheet()
+        self.setAcceptDrops(False)
 
     def _updateStyleSheet(self):
         """
