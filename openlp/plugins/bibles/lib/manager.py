@@ -285,7 +285,7 @@ class BibleManager(object):
         Does a verse search for the given bible and text.
 
         ``bible``
-            The bible to seach in (unicode).
+            The bible to search in (unicode).
 
         ``second_bible``
             The second bible (unicode). We do not search in this bible.
