@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_search_result
+    translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
@@ -63,7 +63,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.search_results = {}
         self.second_search_results = {}
-        check_search_result(self.listView, self.search_results)
+        self.check_search_result()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -537,7 +537,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
-        check_search_result(self.listView, self.search_results)
+        self.check_search_result()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -578,7 +578,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
-        check_search_result(self.listView, self.search_results)
+        self.check_search_result()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
