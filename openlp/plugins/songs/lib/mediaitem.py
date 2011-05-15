@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus, check_search_result
+    translate, check_item_selected, PluginStatus
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
@@ -200,7 +200,7 @@ class SongMediaItem(MediaManagerItem):
                 Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'))
             self.displayResultsSong(search_results)
-        check_search_result(self.listView, search_results)
+        self.check_search_result()
 
     def onSongListLoad(self):
         """
