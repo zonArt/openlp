@@ -92,7 +92,7 @@ class SongBeamerImport(SongImport):
             file_name = os.path.split(file)[1]
             if os.path.isfile(file):
                 detect_file = open(file, u'r')
-                details = chardet.detect(detect_file.read(2048))
+                details = chardet.detect(detect_file.read())
                 detect_file.close()
                 infile = codecs.open(file, u'r', details['encoding'])
                 songData = infile.readlines()

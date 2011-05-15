@@ -31,14 +31,14 @@ from tempfile import gettempdir
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    SettingsManager, PluginManager, Receiver, translate
+    PluginManager, Receiver, translate, ImageManager
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version
+    get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -69,8 +69,6 @@ class Ui_MainWindow(object):
         Set up the user interface
         """
         mainWindow.setObjectName(u'MainWindow')
-        mainWindow.resize(self.settingsmanager.width,
-            self.settingsmanager.height)
         mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-64x64.png'))
         mainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
@@ -86,10 +84,8 @@ class Ui_MainWindow(object):
         self.controlSplitter.setObjectName(u'controlSplitter')
         self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
-        self.previewController = SlideController(self, self.settingsmanager,
-            self.screens)
-        self.liveController = SlideController(self, self.settingsmanager,
-            self.screens, True)
+        self.previewController = SlideController(self)
+        self.liveController = SlideController(self, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
         self.previewController.panel.setVisible(previewVisible)
@@ -137,8 +133,6 @@ class Ui_MainWindow(object):
         self.mediaManagerDock = OpenLPDockWidget(mainWindow,
             u'mediaManagerDock', u':/system/system_mediamanager.png')
         self.mediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
-        self.mediaManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_left)
         # Create the media toolbox
         self.MediaToolBox = QtGui.QToolBox(self.mediaManagerDock)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
@@ -148,8 +142,6 @@ class Ui_MainWindow(object):
         # Create the service manager
         self.serviceManagerDock = OpenLPDockWidget(mainWindow,
             u'serviceManagerDock', u':/system/system_servicemanager.png')
-        self.serviceManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_right)
         self.ServiceManagerContents = ServiceManager(mainWindow,
             self.serviceManagerDock)
         self.serviceManagerDock.setWidget(self.ServiceManagerContents)
@@ -158,8 +150,6 @@ class Ui_MainWindow(object):
         # Create the theme manager
         self.themeManagerDock = OpenLPDockWidget(mainWindow,
             u'themeManagerDock', u':/system/system_thememanager.png')
-        self.themeManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_right)
         self.themeManagerContents = ThemeManager(mainWindow,
             self.themeManagerDock)
         self.themeManagerContents.setObjectName(u'themeManagerContents')
@@ -461,13 +451,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens, clipboard, arguments):
+    def __init__(self, clipboard, arguments):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screens = screens
         self.clipboard = clipboard
         self.arguments = arguments
         # Set up settings sections for the main application
@@ -477,9 +466,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
-        self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self)
-        self.settingsForm = SettingsForm(self.screens, self, self)
+        self.settingsForm = SettingsForm(self, self)
         self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
@@ -487,6 +475,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
+        self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -552,8 +541,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(
-            self.themeManagerContents, self.screens)
+        self.renderer = Renderer(self.image_manager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -585,6 +573,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
+        # Create the displays as all necessary components are loaded.
+        self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
@@ -657,8 +648,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        if not os.path.exists(temp_dir):
+            return
         for filename in os.listdir(temp_dir):
-            os.remove(os.path.join(temp_dir, filename))
+            delete_file(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)
 
     def blankCheck(self):
@@ -679,12 +672,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                          'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def onWarningMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
 
     def onInformationMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -786,7 +782,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         log.debug(u'screenChanged')
+        self.image_manager.update_display()
         self.renderer.update_display()
+        self.liveController.screenSizeChanged()
+        self.previewController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
 

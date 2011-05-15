@@ -32,6 +32,7 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -50,3 +51,11 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setObjectName(name)
         if icon:
             self.setWindowIcon(build_icon(icon))
+        # Sort out the minimum width.
+        screens = ScreenList.get_instance()
+        screen_width = screens.current[u'size'].width()
+        mainwindow_docbars = screen_width / 5
+        if mainwindow_docbars > 300:
+            self.setMinimumWidth(300)
+        else:
+            self.setMinimumWidth(mainwindow_docbars)
