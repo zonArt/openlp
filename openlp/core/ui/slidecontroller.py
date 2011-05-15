@@ -199,8 +199,7 @@ class SlideController(QtGui.QWidget):
                 'Start/Stop continuous loop'))
             self.addAction(self.toogleLoop)
             self.delaySpinBox = QtGui.QSpinBox()
-            self.delaySpinBox.setMinimum(1)
-            self.delaySpinBox.setMaximum(180)
+            self.delaySpinBox.setRange(1, 180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
@@ -608,7 +607,7 @@ class SlideController(QtGui.QWidget):
                 if frame[u'verseTag']:
                     # These tags are already translated.
                     verse_def = frame[u'verseTag']
-                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
                     two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                     if self.isLive:

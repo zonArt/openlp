@@ -30,12 +30,14 @@ body {
 #currentslide {
   font-size: 40pt;
   color: white;
+  padding-bottom: 0px;
 }
 
 #nextslide {
-  font-size: 30pt;
+  font-size: 40pt;
   color: grey;
-  padding-top: 25px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 #right {
