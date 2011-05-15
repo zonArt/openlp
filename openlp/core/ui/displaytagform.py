@@ -47,7 +47,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.preLoad()
+        self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
         QtCore.QObject.connect(self.defaultPushButton,
@@ -66,12 +66,12 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
-        self.preLoad()
+        self._loadDisplayTags()
         self._resetTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
 
-    def preLoad(self):
+    def _loadDisplayTags(self):
         """
         Load the Tags from store so can be used in the system or used to
         update the display. If Cancel was selected this is needed to reset the

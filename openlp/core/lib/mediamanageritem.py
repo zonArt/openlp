@@ -245,7 +245,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add the List widget
         self.listView = ListWidgetWithDnD(self, self.plugin.name)
-        self.listView.setUniformItemSizes(True)
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
@@ -564,6 +563,20 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def check_search_result(self):
+        """
+        Checks if the listView is empty and adds a "No Search Results" item.
+        """
+        if self.listView.count():
+            return
+        message = translate('OpenLP.MediaManagerItem', 'No Search Results')
+        item = QtGui.QListWidgetItem(message)
+        item.setFlags(QtCore.Qt.NoItemFlags)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        item.setFont(font)
+        self.listView.addItem(item)
 
     def _getIdOfItemToGenerate(self, item, remoteItem):
         """
