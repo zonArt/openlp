@@ -605,4 +605,4 @@ class MediaManagerItem(QtGui.QWidget):
         Performs a plugin specific search for items containing ``string``
         """
         raise NotImplementedError(
-            u'Plugin.about needs to be defined by the plugin')
+            u'Plugin.search needs to be defined by the plugin')

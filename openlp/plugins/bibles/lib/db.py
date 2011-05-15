@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -364,8 +364,8 @@ class BibleDB(QtCore.QObject, Manager):
                     critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
                         translate('BiblesPlugin', 'No matching book '
-                        'could be found in this Bible. Check that you have '
-                        'spelled the name of the book correctly.'))
+                        'could be found in this Bible. Check that you '
+                        'have spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):
