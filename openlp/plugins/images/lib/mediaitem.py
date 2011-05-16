@@ -47,6 +47,7 @@ class ImageMediaItem(MediaManagerItem):
         self.IconPath = u'images/image'
         MediaManagerItem.__init__(self, parent, self, icon)
         self.quickPreviewAllowed = True
+        self.listView.setSortingEnabled(True)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
