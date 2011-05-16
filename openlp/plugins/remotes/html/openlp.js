@@ -39,7 +39,7 @@ window.OpenLP = {
     }
     return $(targ);
   },
-  searchPlugins: function (event) {
+  getSearchablePlugins: function (event) {
     $.getJSON(
       "/api/plugin/search",
       function (data, status) {
@@ -259,7 +259,7 @@ $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
 // Poll the server twice a second to get any updates.
-OpenLP.searchPlugins();
+OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

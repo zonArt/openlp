@@ -251,7 +251,7 @@ class HttpConnection(object):
             (r'^/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show)$', self.display),
             (r'^/api/alert$', self.alert),
-            (r'^/api/plugin/(search)$', self.plugin),
+            (r'^/api/plugin/(search)$', self.pluginInfo),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live)
         ]
@@ -446,9 +446,9 @@ class HttpConnection(object):
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
-    def plugin(self, action):
+    def pluginInfo(self, action):
         """
-        Return plugin related actions
+        Return plugin related information, based on the action
 
         ``action`` - The action to perform
             if 'search' return a list of plugin names which support search
