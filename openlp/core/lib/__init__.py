@@ -223,28 +223,6 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
-def check_search_result(treeWidget, search_results):
-    """
-    Checks if the given ``search_results`` is empty and adds a
-    "No Search Results" item to the given ``treeWidget``.
-
-    ``treeWidget``
-        The ``QTreeWidget`` where the "No Search Results" item should be added
-        to, if the ``search_results`` is empty.
-
-    ``search_results``
-        This can either be a list or a dict.
-    """
-    if search_results or treeWidget.count():
-        return
-    message = translate('OpenLP.MediaManagerItem', 'No Search Results')
-    item = QtGui.QListWidgetItem(message)
-    item.setFlags(QtCore.Qt.NoItemFlags)
-    font = QtGui.QFont()
-    font.setItalic(True)
-    item.setFont(font)
-    treeWidget.addItem(item)
-
 def check_item_selected(list_widget, message):
     """
     Check if a list item is selected so an action may be performed on it

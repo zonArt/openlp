@@ -672,12 +672,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                          'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def onWarningMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
 
     def onInformationMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):

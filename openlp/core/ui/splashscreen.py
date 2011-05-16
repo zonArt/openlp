@@ -23,6 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+from openlp.core.lib import Receiver
 
 from PyQt4 import QtCore, QtGui
 
@@ -30,6 +31,8 @@ class SplashScreen(QtGui.QSplashScreen):
     def __init__(self):
         QtGui.QSplashScreen.__init__(self)
         self.setupUi()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
         self.setObjectName(u'splash_screen')

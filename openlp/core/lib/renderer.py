@@ -162,8 +162,10 @@ class Renderer(object):
             self.theme_data = self.theme_manager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
-        self.image_manager.add_image(self.theme_data.theme_name,
-            self.theme_data.background_filename)
+        # if No file do not update cache
+        if self.theme_data.background_filename:
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
