@@ -783,6 +783,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.renderer.update_display()
         self.liveController.screenSizeChanged()
         self.previewController.screenSizeChanged()
+        self.themeManagerContents.updatePreviewImages()
         self.setFocus()
         self.activateWindow()
 
