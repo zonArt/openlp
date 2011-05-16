@@ -778,17 +778,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screenChanged(self):
         """
-        The screen has changed to so tell the displays to update_display
-        their locations
+        The screen has changed so we have to update components such as the
+        renderer.
         """
         log.debug(u'screenChanged')
+        Receiver.send_message(u'cursor_busy')
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.liveController.screenSizeChanged()
-        self.previewController.screenSizeChanged()
         self.themeManagerContents.updatePreviewImages()
+        self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
+        Receiver.send_message(u'cursor_normal')
 
     def closeEvent(self, event):
         """
