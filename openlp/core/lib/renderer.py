@@ -300,7 +300,7 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         self.page_shell = u'<html><head><style>' \
             u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
