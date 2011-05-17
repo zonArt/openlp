@@ -76,7 +76,9 @@ window.OpenLP = {
         var ul = $("#slide-controller > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         for (idx in data.results.slides) {
-          var text = data.results.slides[idx]["text"];
+          var text = data.results.slides[idx]["tag"];
+          if (text != "") text = text + ": ";
+          text = text + data.results.slides[idx]["text"];
           text = text.replace(/\n/g, '<br />');
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(text));
