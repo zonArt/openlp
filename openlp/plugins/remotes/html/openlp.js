@@ -39,6 +39,19 @@ window.OpenLP = {
     }
     return $(targ);
   },
+  getSearchablePlugins: function (event) {
+    $.getJSON(
+      "/api/plugin/search",
+      function (data, status) {
+        var select = $("#search-plugin");
+        select.html("");
+        $.each(data.results.items, function (idx, value) {
+          select.append("<option value='" + value + "'>" + value + "</option>");
+        });
+        select.selectmenu("refresh");
+      }
+    );
+  },
   loadService: function (event) {
     $.getJSON(
       "/api/service/list",
@@ -189,7 +202,43 @@ window.OpenLP = {
       }
     );
     return false;
+  },
+  search: function (event) {
+    var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/search",
+      {"data": text},
+      function (data, status) {
+        var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
+        ul.html("");
+        if (data.results.items.length == 0) {
+          var li = $("<li data-icon=\"false\">").text('No results');
+          ul.append(li);
+        } 
+        else {
+            $.each(data.results.items, function (idx, value) {
+              var li = $("<li data-icon=\"false\">").append(
+                $("<a href=\"#\">").attr("value", value[0]).text(value[1]));
+              li.children("a").click(OpenLP.goLive);
+              ul.append(li);
+            });
+        }
+        ul.listview("refresh");
+      }
+    );
+    return false;
+  },
+  goLive: function (event) {
+    var slide = OpenLP.getElement(event);
+    var id = slide.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/live",
+      {"data": text})
+    $.mobile.changePage("slide-controller");
+    return false;
   }
+
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
@@ -207,7 +256,10 @@ $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
+// Search
+$("#search-submit").live("click", OpenLP.search);
 // Poll the server twice a second to get any updates.
+OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();
