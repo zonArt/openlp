@@ -33,7 +33,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 from openlp.core.lib.ui import UiStrings, shortcut_action
-from openlp.core.ui import HideMode, MainDisplay, Display
+from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -53,18 +53,18 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    def __init__(self, parent, settingsmanager, screens, isLive=False):
+    def __init__(self, parent, isLive=False):
         """
         Set up the Slide Controller.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.screens = screens
+        self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.display = MainDisplay(self, screens, isLive)
+        self.display = MainDisplay(self, self.screens, isLive)
+        self.image_manager = self.parent.image_manager
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -200,8 +200,7 @@ class SlideController(QtGui.QWidget):
                 'Start/Stop continuous loop'))
             self.addAction(self.toogleLoop)
             self.delaySpinBox = QtGui.QSpinBox()
-            self.delaySpinBox.setMinimum(1)
-            self.delaySpinBox.setMaximum(180)
+            self.delaySpinBox.setRange(1, 180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
@@ -288,9 +287,6 @@ class SlideController(QtGui.QWidget):
         sizePolicy.setHeightForWidth(
             self.slidePreview.sizePolicy().hasHeightForWidth())
         self.slidePreview.setSizePolicy(sizePolicy)
-        self.slidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio))
         self.slidePreview.setFrameShape(QtGui.QFrame.Box)
         self.slidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.slidePreview.setLineWidth(1)
@@ -322,7 +318,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.setLiveHotkeys(self)
             self.__addActionsToWidget(self.previewListWidget)
-            self.__addActionsToWidget(self.display)
         else:
             self.setPreviewHotkeys()
             self.previewListWidget.addActions(
@@ -365,8 +360,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
@@ -418,8 +411,7 @@ class SlideController(QtGui.QWidget):
         screen previews.
         """
         # rebuild display as screen size changed
-        self.display = MainDisplay(self, self.screens, self.isLive)
-        self.display.imageManager = self.parent.renderer.image_manager
+        self.display = MainDisplay(self, self.image_manager, self.isLive)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -614,7 +606,7 @@ class SlideController(QtGui.QWidget):
                 if frame[u'verseTag']:
                     # These tags are already translated.
                     verse_def = frame[u'verseTag']
-                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
                     two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                     if self.isLive:
@@ -637,10 +629,8 @@ class SlideController(QtGui.QWidget):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.parent.renderer.image_manager. \
-                            get_image_bytes(frame[u'title'])
-                    image = self.parent.renderer.image_manager. \
-                        get_image(frame[u'title'])
+                            self.image_manager.get_image_bytes(frame[u'title'])
+                    image = self.image_manager.get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.renderer.screen_ratio

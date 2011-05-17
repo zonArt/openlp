@@ -401,7 +401,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.name==book)\
+            .filter(Book.name == book)\
             .distinct().count()
         if not count:
             return 0
@@ -420,8 +420,8 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
-            .filter(Book.name==book)\
-            .filter(Verse.chapter==chapter)\
+            .filter(Book.name == book)\
+            .filter(Verse.chapter == chapter)\
             .count()
         if not count:
             return 0

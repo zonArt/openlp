@@ -56,10 +56,10 @@ from firsttimelanguageform import FirstTimeLanguageForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
+from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
