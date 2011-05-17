@@ -123,7 +123,7 @@ except ImportError:
 
 from PyQt4 import QtCore, QtNetwork
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, PluginStatus
 from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation
 
@@ -456,8 +456,8 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.parent.parent.pluginManager.plugins:
-                media_item = plugin.mediaItem
-                if media_item and media_item.hasSearch:
+                if plugin.status == PluginStatus.Active and \
+                    plugin.mediaItem and plugin.mediaItem.hasSearch:
                     searches.append(plugin.name)
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
@@ -472,12 +472,14 @@ class HttpConnection(object):
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
         plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
-        media_item = plugin.mediaItem
-        if media_item and media_item.hasSearch:
-            results = media_item.search(text)
-            return HttpResponse(
-                json.dumps({u'results': {u'items': results}}),
-                {u'Content-Type': u'application/json'})
+        if plugin.status == PluginStatus.Active and \
+            plugin.mediaItem and plugin.mediaItem.hasSearch:
+            results =plugin.mediaItem.search(text)
+        else:
+            results = []
+        return HttpResponse(
+            json.dumps({u'results': {u'items': results}}),
+            {u'Content-Type': u'application/json'})
 
     def go_live(self, type):
         """
@@ -485,9 +487,8 @@ class HttpConnection(object):
         """
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
-        media_item = plugin.mediaItem
-        if media_item:
-            media_item.goLive(id)
+        if plugin.status == PluginStatus.Active and plugin.mediaItem:
+            plugin.mediaItem.goLive(id)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

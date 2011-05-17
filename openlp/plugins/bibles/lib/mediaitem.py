@@ -916,13 +916,9 @@ class BibleMediaItem(MediaManagerItem):
         search_results = self.parent.manager.get_verses(bible, string, False)
         results = []
         if search_results:
-            versetext = u''
-            for verse in search_results:
-                if versetext:
-                    versetext += u' '
-                versetext += verse.text
-            results.append([string, versetext])
-        return results
+            versetext = u' '.join([verse.text for verse in search_results])
+            return [[string, versetext]]
+        return []
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()

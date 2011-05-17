@@ -265,7 +265,7 @@ class BibleManager(object):
         if reflist:
             return self.db_cache[bible].get_verses(reflist, show_error)
         else:
-            if show_message:
+            if show_error:
                 Receiver.send_message(u'openlp_information_message', {
                     u'title': translate('BiblesPlugin.BibleManager',
                     'Scripture Reference Error'),
