@@ -25,6 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui, QtWebKit
 from openlp.plugins.media.lib import MediaController, MediaState
 
 class WebkitController(MediaController):
@@ -40,12 +41,38 @@ class WebkitController(MediaController):
         self.additional_extensions = {
             u'video/shockwave': [u'.swf']}
 
+    def setup(self, display):
+#        if display == self.parent.previewController.previewDisplay or \
+#            display == self.parent.liveController.previewDisplay:
+#            display.webView.resize(display.size())
+        display.webView.raise_()
+        self.hasOwnWidget = False
+
+    @staticmethod
+    def is_available():
+        return True
+
+    def get_supported_file_types(self):
+        self.supported_file_types = ['avi']
+        self.additional_extensions = {
+            u'audio/ac3': [u'.ac3'],
+            u'audio/flac': [u'.flac'],
+            u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
+            u'audio/x-mp3': [u'.mp3'],
+            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+            u'audio/qcelp': [u'.qcp'],
+            u'audio/x-wma': [u'.wma'],
+            u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
+            u'video/x-matroska': [u'.mpv', u'.mkv'],
+            u'video/x-wmv': [u'.wmv'],
+            u'video/x-ms-wmv': [u'.wmv']}
+
     def load(self, display, path, volume):
         print "load vid in Webkit Controller"
         vol = float(volume) / float(10)
         display.webView.setVisible(True)
-        display.phononWidget.setVisible(False)
-        display.vlcWidget.setVisible(False)
         if path.endswith(u'.swf'):
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
@@ -58,10 +85,10 @@ class WebkitController(MediaController):
 
     def resize(self, display, controller):
         if display == controller.previewDisplay:
-            print display.size()
             display.webView.resize(display.size())
 
     def play(self, display):
+        self.set_visible(display, True)
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play","");')
         else:
@@ -89,22 +116,28 @@ class WebkitController(MediaController):
 
     def seek(self, display, seekVal):
         if not self.isFlash:
-            display.frame.evaluateJavaScript(u'show_video("seek", "%f");' % (float(seekVal)/1000))
+            seek = float(seekVal)/1000
+            display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("close","");')
         else:
             display.frame.evaluateJavaScript(u'show_video("close");')
+        self.state = MediaState.Off
+
+    def set_visible(self, display, status):
+        if self.hasOwnWidget:
+            display.webView.setVisible(status)
 
     def update_ui(self, controller, display):
-        return
         if not self.isFlash:
+            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             length = display.frame.evaluateJavaScript(u'show_video("length");')
-            controller.seekSlider.setMaximum(length.toFloat()[0]*1000)
-            if not controller.seekSlider.isSliderDown():
-                currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
-                controller.seekSlider.setSliderPosition(currentTime.toFloat()[0]*1000)
+            if int(currentTime.toFloat()[0]*1000) > 0:
+                controller.seekSlider.setMaximum(int(length.toFloat()[0]*1000))
+                if not controller.seekSlider.isSliderDown():
+                    controller.seekSlider.setSliderPosition(int(currentTime.toFloat()[0]*1000))
 
     def get_supported_file_types(self):
         pass

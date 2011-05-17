@@ -101,7 +101,7 @@ sup {
     var current_video = '1';
     var transition = %s;
 
-    function show_video(state, path, volume, loop){
+    function show_video(state, path, volume, loop, seekVal){
         // Note, the preferred method for looping would be to use the
         // video tag loop attribute.
         // But QtWebKit doesn't support this. Neither does it support the
@@ -183,7 +183,7 @@ sup {
             case 'currentTime':
                 return vid.currentTime;
             case 'seek':
-                vid.currentTime = path;
+                vid.currentTime = seekVal;
                 break;
        }
     }
@@ -356,11 +356,21 @@ sup {
 // PercentLoaded()
 // GotoFrame()
                 break;
-            case 'stop':
+            case 'pause':
                 flashMovie.StopPlay();
-                text.innerHTML = '';
                 text.style.visibility = 'hidden';
                 break;
+            case 'stop':
+                flashMovie.StopPlay();
+//                flashMovie.GotoFrame(0);
+                text.style.visibility = 'hidden';
+                break;
+            case 'close':
+                flashMovie.StopPlay();
+                text.style.visibility = 'hidden';
+                break;
+                text.innerHTML = '';
+            break;
         }
     }
 

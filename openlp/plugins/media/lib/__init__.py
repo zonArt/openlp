@@ -51,6 +51,10 @@ class MediaController(object):
     def __init__(self, parent):
         self.parent = parent
         self.state = MediaState.Off
+        self.hasOwnWidget = False
+
+    def setup(self, display):
+        pass
 
     def load(self, display, path, volume):
         pass
@@ -76,7 +80,14 @@ class MediaController(object):
     def reset(self, display):
         pass
 
+    def set_visible(self, display, status):
+        pass
+
     def update_ui(self, controller, display):
+        pass
+
+    @staticmethod
+    def is_available():
         pass
 
     def get_supported_file_types(self):

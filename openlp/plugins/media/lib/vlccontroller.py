@@ -26,7 +26,11 @@
 ###############################################################################
 
 import sys
-
+try:
+    import vlc
+except:
+    pass
+from PyQt4 import QtCore, QtGui
 from openlp.plugins.media.lib import MediaController, MediaState
 
 class VlcController(MediaController):
@@ -37,6 +41,28 @@ class VlcController(MediaController):
     def __init__(self, parent):
         MediaController.__init__(self, parent)
         self.parent = parent
+
+    def setup(self, display):
+        display.vlcWidget = QtGui.QFrame(display)
+        # creating a basic vlc instance
+        display.vlcInstance = vlc.Instance()
+        display.vlcInstance.set_log_verbosity(2)
+        # creating an empty vlc media player
+        display.vlcMediaPlayer = display.vlcInstance.media_player_new()
+        display.vlcWidget.resize(display.size())
+        display.vlcWidget.raise_()
+        display.vlcWidget.hide()
+        self.hasOwnWidget = True
+
+    @staticmethod
+    def is_available():
+        try:
+            import vlc
+            return True
+        except:
+            return False
+
+    def get_supported_file_types(self):
         self.supported_file_types = ['avi']
         self.additional_extensions = {
             u'audio/ac3': [u'.ac3'],
@@ -58,7 +84,8 @@ class VlcController(MediaController):
         vol = float(volume) / float(10)
 
         # create the media
-        display.vlcMedia = display.vlcInstance.media_new(unicode(path))
+        #display.vlcMedia = display.vlcInstance.media_new(unicode(path))
+        display.vlcMedia = display.vlcInstance.media_new_path(unicode(path))
         # put the media in the media player
         display.vlcMediaPlayer.set_media(display.vlcMedia)
 
@@ -77,10 +104,11 @@ class VlcController(MediaController):
         elif sys.platform == "darwin": # for MacOS
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
 
-    def resize(self, display):
+    def resize(self, display, controller):
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
+        self.set_visible(display, True)
         display.vlcMediaPlayer.play()
         self.state = MediaState.Playing
 
@@ -100,8 +128,14 @@ class VlcController(MediaController):
             display.vlcMediaPlayer.set_position(seekVal/1000.0)
 
     def reset(self, display):
+        display.vlcMediaPlayer.stop()
         display.vlcWidget.setVisible(False)
-        #display.webView.setVisible(True)
+        self.state = MediaState.Off
+
+    def set_visible(self, display, status):
+        print display.vlcWidget.isVisible(), status
+        if self.hasOwnWidget:
+            display.vlcWidget.setVisible(status)
 
     def update_ui(self, controller, display):
         controller.seekSlider.setMaximum(1000)

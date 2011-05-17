@@ -104,9 +104,6 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'openlp_phonon_creation'),
-                self.createMediaObject)
 
     def retranslateUi(self):
         """
@@ -120,8 +117,6 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Start setup for monitor %s (live = %s)' %
             (self.screens.monitor_number, self.isLive))
-        self.usePhonon = QtCore.QSettings().value(
-            u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
         self.screen = self.screens.current
         self.setVisible(False)
@@ -187,24 +182,6 @@ class MainDisplay(DisplayWidget):
         log.debug(
             u'Finished setup for monitor %s' % self.screens.monitor_number)
 
-    def createMediaObject(self):
-        self.firstTime = False
-        log.debug(u'Creating Phonon objects - Start for %s', self.isLive)
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videoWidget)
-        Phonon.createPath(self.mediaObject, self.audio)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoState)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'),
-            self.videoFinished)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'tick(qint64)'),
-            self.videoTick)
-        log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
-
     def text(self, slide):
         """
         Add the slide text from slideController
@@ -239,10 +216,7 @@ class MainDisplay(DisplayWidget):
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
-            if self.phononActive:
-                shrinkItem = self.webView
-            else:
-                shrinkItem = self
+            shrinkItem = self
             if text:
                 alert_height = int(height.toString())
                 shrinkItem.resize(self.width(), alert_height)
@@ -425,7 +399,6 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        Receiver.send_message(u'media_pause', self)
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -436,7 +409,6 @@ class MainDisplay(DisplayWidget):
         if mode != HideMode.Screen:
             if self.isHidden():
                 self.setVisible(True)
-            if self.phononActive:
                 self.webView.setVisible(True)
         self.hideMode = mode
 
@@ -448,11 +420,9 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'showDisplay')
         self.frame.evaluateJavaScript('show_blank("show");')
+        print "showDisplay", self.isHidden()
         if self.isHidden():
             self.setVisible(True)
-        if self.phononActive:
-            self.webView.setVisible(False)
-            Receiver.send_message(u'media_play', self)
         self.hideMode = None
         # Trigger actions when display is active again
         if self.isLive:

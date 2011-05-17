@@ -25,6 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.plugins.media.lib import MediaController, MediaState
@@ -53,10 +54,43 @@ class PhononController(MediaController):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
 
+    def setup(self, display):
+        display.phononWidget = Phonon.VideoWidget(display)
+        display.phononWidget.setVisible(False)
+        display.phononWidget.resize(display.size())
+        display.mediaObject = Phonon.MediaObject(display)
+        display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.mediaObject)
+        Phonon.createPath(display.mediaObject, display.phononWidget)
+        Phonon.createPath(display.mediaObject, display.audio)
+        display.phononWidget.raise_()
+        display.phononWidget.hide()
+        self.hasOwnWidget = True
+
+    @staticmethod
+    def is_available():
+#        usePhonon = QtCore.QSettings().value(
+#            u'media/use phonon', QtCore.QVariant(True)).toBool()
+        return True
+
+    def get_supported_file_types(self):
+        self.supported_file_types = ['avi']
+        self.additional_extensions = {
+            u'audio/ac3': [u'.ac3'],
+            u'audio/flac': [u'.flac'],
+            u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
+            u'audio/x-mp3': [u'.mp3'],
+            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+            u'audio/qcelp': [u'.qcp'],
+            u'audio/x-wma': [u'.wma'],
+            u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
+            u'video/x-matroska': [u'.mpv', u'.mkv'],
+            u'video/x-wmv': [u'.wmv'],
+            u'video/x-ms-wmv': [u'.wmv']}
 
     def load(self, display, path, volume):
         print "load vid in Phonon Controller"
-        display.phononActive = True
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
@@ -65,10 +99,11 @@ class PhononController(MediaController):
         vol = float(volume) / float(10)
         display.audio.setVolume(vol)
 
-    def resize(self, display):
+    def resize(self, display, controller):
         display.phononWidget.resize(display.size())
 
     def play(self, display):
+        self.set_visible(display, True)
         vol = float(display.parent.volume) / float(10)
         display.audio.setVolume(vol)
         display.mediaObject.play()
@@ -92,7 +127,11 @@ class PhononController(MediaController):
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
         display.phononWidget.setVisible(False)
-        #display.webView.setVisible(True)
+        self.state = MediaState.Off
+
+    def set_visible(self, display, status):
+        if self.hasOwnWidget:
+            display.phononWidget.setVisible(status)
 
     def update_ui(self, controller, display):
         controller.seekSlider.setMaximum(display.mediaObject.totalTime())

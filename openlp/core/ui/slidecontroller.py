@@ -303,9 +303,9 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
             QtCore.QObject.connect(self.seekSlider,
-                QtCore.SIGNAL(u'sliderReleased()'), self.mediaSeek)
+                QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaSeek)
             QtCore.QObject.connect(self.volumeSlider,
-                QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+                QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -854,6 +854,7 @@ class SlideController(QtGui.QWidget):
         """
         Tell the plugin to hide the display screen.
         """
+        print "hidePlugin", hide
         log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
