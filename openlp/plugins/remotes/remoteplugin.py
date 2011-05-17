@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, translate
+from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -37,7 +38,10 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', plugin_helpers,
+            settings_tab_class=RemoteTab)
+        self.icon_path = u':/plugins/plugin_remote.png'
+        self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
 
@@ -47,7 +51,6 @@ class RemotesPlugin(Plugin):
         """
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
         self.server = HttpServer(self)
 
     def finalise(self):
@@ -55,23 +58,30 @@ class RemotesPlugin(Plugin):
         Tidy up and close down the http server
         """
         log.debug(u'finalise')
-        self.remove_toolbox_item()
+        Plugin.finalise(self)
         if self.server:
             self.server.close()
-
-    def get_settings_tab(self):
-        """
-        Create the settings Tab
-        """
-        return RemoteTab(self.name)
 
     def about(self):
         """
         Information about this plugin
         """
-        about_text = translate('RemotePlugin',
-            '<b>Remote Plugin</b><br>This plugin '
-            'provides the ability to send messages to a running version of '
-            'openlp on a different computer via a web browser or other app<br>'
-            'The Primary use for this would be to send alerts from a creche')
+        about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
+            '<br />The remote plugin provides the ability to send messages to '
+            'a running version of OpenLP on a different computer via a web '
+            'browser or through the remote API.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
+            u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('RemotePlugin', 'Remote', 'container title')
+        }

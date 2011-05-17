@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,52 +23,42 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-import os
-import logging
 import cPickle
+import logging
+import os
 import zipfile
 
 log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate
-from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
-from openlp.core.utils import AppLocation
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
+    ItemCapabilities, SettingsManager, translate
+from openlp.core.lib.theme import ThemeLevel
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    context_menu_action, context_menu_separator, find_and_set_in_combo_box
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
+from openlp.core.ui.printserviceform import PrintServiceForm
+from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
+    split_filename
+from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
-    def __init__(self, parent=None, name=None):
+    def __init__(self, mainwindow, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self, parent)
-        self.parent = parent
+        self.mainwindow = mainwindow
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
-            #here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Enter:
-                self.parent.makeLive()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Home:
-                self.parent.onServiceTop()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_End:
-                self.parent.onServiceEnd()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageUp:
-                self.parent.onServiceUp()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
-                self.parent.onServiceDown()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Up:
-                self.parent.onMoveSelectionUp()
+            # here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Up:
+                self.mainwindow.onMoveSelectionUp()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                self.parent.onMoveSelectionDown()
+                self.mainwindow.onMoveSelectionDown()
                 event.accept()
             event.ignore()
         else:
@@ -82,128 +73,204 @@ class ServiceManagerList(QtGui.QTreeWidget):
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
             return
+        if not self.selectedItems():
+            event.ignore()
+            return
         drag = QtGui.QDrag(self)
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(u'ServiceManager')
         drag.start(QtCore.Qt.CopyAction)
 
+
 class ServiceManager(QtGui.QWidget):
     """
-    Manages the services.  This involves taking text strings from plugins and
-    adding them to the service.  This service can then be zipped up with all
+    Manages the services. This involves taking text strings from plugins and
+    adding them to the service. This service can then be zipped up with all
     the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
-    def __init__(self, parent):
+    def __init__(self, mainwindow, parent=None):
         """
         Sets up the service manager, toolbars, list view, et al.
         """
-        QtGui.QWidget.__init__(self)
-        self.parent = parent
+        QtGui.QWidget.__init__(self, parent)
+        self.mainwindow = mainwindow
         self.serviceItems = []
         self.serviceName = u''
         self.suffixes = []
-        self.droppos = 0
-        #is a new service and has not been saved
-        self.isNew = True
-        self.serviceNoteForm = ServiceNoteForm()
-        self.serviceItemEditForm = ServiceItemEditForm()
-        #start with the layout
-        self.Layout = QtGui.QVBoxLayout(self)
-        self.Layout.setSpacing(0)
-        self.Layout.setMargin(0)
+        self.dropPosition = 0
+        self.expandTabs = False
+        # is a new service and has not been saved
+        self._modified = False
+        self._fileName = u''
+        self.serviceNoteForm = ServiceNoteForm(self.mainwindow)
+        self.serviceItemEditForm = ServiceItemEditForm(self.mainwindow)
+        self.startTimeForm = StartTimeForm(self.mainwindow)
+        # start with the layout
+        self.layout = QtGui.QVBoxLayout(self)
+        self.layout.setSpacing(0)
+        self.layout.setMargin(0)
         # Create the top toolbar
-        self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'New Service'),
-            u':/general/general_new.png',
-            translate('ServiceManager', 'Create a new service'),
-            self.onNewService)
-        self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'Open Service'),
-            u':/general/general_open.png',
-            translate('ServiceManager', 'Load an existing service'),
-            self.onLoadService)
-        self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'Save Service'),
-            u':/general/general_save.png',
-            translate('ServiceManager', 'Save this service'),
-            self.onSaveService)
-        self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(translate('ServiceManager', 'Theme:'),
-            self)
-        self.ThemeLabel.setMargin(3)
-        self.Toolbar.addWidget(self.ThemeLabel)
-        self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setToolTip(translate('ServiceManager',
-            'Select a theme for the service'))
-        self.ThemeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
-        self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
-        self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
-        self.Toolbar.addAction(self.ThemeWidget)
-        self.Layout.addWidget(self.Toolbar)
+        self.toolbar = OpenLPToolbar(self)
+        self.toolbar.addToolbarButton(
+            UiStrings().NewService, u':/general/general_new.png',
+            UiStrings().CreateService, self.onNewServiceClicked)
+        self.toolbar.addToolbarButton(
+            UiStrings().OpenService, u':/general/general_open.png',
+            translate('OpenLP.ServiceManager', 'Load an existing service.'),
+            self.onLoadServiceClicked)
+        self.toolbar.addToolbarButton(
+            UiStrings().SaveService, u':/general/general_save.png',
+            translate('OpenLP.ServiceManager', 'Save this service.'),
+            self.saveFile)
+        self.toolbar.addSeparator()
+        self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
+        self.themeLabel.setMargin(3)
+        self.themeLabel.setObjectName(u'themeLabel')
+        self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
+        self.themeComboBox = QtGui.QComboBox(self.toolbar)
+        self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
+            'Select a theme for the service.'))
+        self.themeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.themeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.toolbar.addToolbarWidget(u'ThemeWidget', self.themeComboBox)
+        self.toolbar.setObjectName(u'toolbar')
+        self.layout.addWidget(self.toolbar)
         # Create the service manager list
-        self.ServiceManagerList = ServiceManagerList(self)
-        self.ServiceManagerList.setEditTriggers(
+        self.serviceManagerList = ServiceManagerList(self)
+        self.serviceManagerList.setEditTriggers(
             QtGui.QAbstractItemView.CurrentChanged |
             QtGui.QAbstractItemView.DoubleClicked |
             QtGui.QAbstractItemView.EditKeyPressed)
-        self.ServiceManagerList.setDragDropMode(
+        self.serviceManagerList.setDragDropMode(
             QtGui.QAbstractItemView.DragDrop)
-        self.ServiceManagerList.setAlternatingRowColors(True)
-        self.ServiceManagerList.setHeaderHidden(True)
-        self.ServiceManagerList.setExpandsOnDoubleClick(False)
-        self.ServiceManagerList.setContextMenuPolicy(
+        self.serviceManagerList.setAlternatingRowColors(True)
+        self.serviceManagerList.setHeaderHidden(True)
+        self.serviceManagerList.setExpandsOnDoubleClick(False)
+        self.serviceManagerList.setContextMenuPolicy(
             QtCore.Qt.CustomContextMenu)
-        QtCore.QObject.connect(self.ServiceManagerList,
+        QtCore.QObject.connect(self.serviceManagerList,
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
-        self.ServiceManagerList.setObjectName(u'ServiceManagerList')
+        self.serviceManagerList.setObjectName(u'serviceManagerList')
         # enable drop
-        self.ServiceManagerList.__class__.dragEnterEvent = self.dragEnterEvent
-        self.ServiceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
-        self.ServiceManagerList.__class__.dropEvent = self.dropEvent
-        self.Layout.addWidget(self.ServiceManagerList)
+        self.serviceManagerList.__class__.dragEnterEvent = self.dragEnterEvent
+        self.serviceManagerList.__class__.dragMoveEvent = self.dragEnterEvent
+        self.serviceManagerList.__class__.dropEvent = self.dropEvent
+        self.layout.addWidget(self.serviceManagerList)
         # Add the bottom toolbar
-        self.OrderToolbar = OpenLPToolbar(self)
-        self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move to &top'),
+        self.orderToolbar = OpenLPToolbar(self)
+        self.serviceManagerList.moveTop = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move to &top'),
             u':/services/service_top.png',
-            translate('ServiceManager', 'Move to top'), self.onServiceTop)
-        self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move &up'),
+            translate('OpenLP.ServiceManager',
+            'Move item to the top of the service.'),
+            self.onServiceTop, shortcuts=[QtCore.Qt.Key_Home])
+        self.serviceManagerList.moveTop.setObjectName(u'moveTop')
+        action_list = ActionList.get_instance()
+        action_list.add_category(
+            UiStrings().Service, CategoryOrder.standardToolbar)
+        action_list.add_action(
+            self.serviceManagerList.moveTop, UiStrings().Service)
+        self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move &up'),
             u':/services/service_up.png',
-            translate('ServiceManager', 'Move up order'), self.onServiceUp)
-        self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move &down'),
+            translate('OpenLP.ServiceManager',
+            'Move item up one position in the service.'),
+            self.onServiceUp, shortcuts=[QtCore.Qt.Key_PageUp])
+        self.serviceManagerList.moveUp.setObjectName(u'moveUp')
+        action_list.add_action(
+            self.serviceManagerList.moveUp, UiStrings().Service)
+        self.serviceManagerList.moveDown = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
-            translate('ServiceManager', 'Move down order'),
-            self.onServiceDown)
-        self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move to &bottom'),
+            translate('OpenLP.ServiceManager',
+            'Move item down one position in the service.'),
+            self.onServiceDown, shortcuts=[QtCore.Qt.Key_PageDown])
+        self.serviceManagerList.moveDown.setObjectName(u'moveDown')
+        action_list.add_action(
+            self.serviceManagerList.moveDown, UiStrings().Service)
+        self.serviceManagerList.moveBottom = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move to &bottom'),
             u':/services/service_bottom.png',
-            translate('ServiceManager', 'Move to end'),
-            self.onServiceEnd)
-        self.OrderToolbar.addSeparator()
-        self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', '&Delete From Service'),
+            translate('OpenLP.ServiceManager',
+            'Move item to the end of the service.'),
+            self.onServiceEnd, shortcuts=[QtCore.Qt.Key_End])
+        self.serviceManagerList.moveBottom.setObjectName(u'moveBottom')
+        action_list.add_action(
+            self.serviceManagerList.moveBottom, UiStrings().Service)
+        self.serviceManagerList.down = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move &down'),
+            None,
+            translate('OpenLP.ServiceManager',
+            'Moves the selection down the window.'),
+            self.onMoveSelectionDown, shortcuts=[QtCore.Qt.Key_Down])
+        self.serviceManagerList.down.setObjectName(u'down')
+        action_list.add_action(self.serviceManagerList.down)
+        self.serviceManagerList.down.setVisible(False)
+        self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move up'),
+            None,
+            translate('OpenLP.ServiceManager',
+            'Moves the selection up the window.'),
+            self.onMoveSelectionUp, shortcuts=[QtCore.Qt.Key_Up])
+        self.serviceManagerList.up.setObjectName(u'up')
+        action_list.add_action(self.serviceManagerList.up)
+        self.serviceManagerList.up.setVisible(False)
+        self.orderToolbar.addSeparator()
+        self.serviceManagerList.delete = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', '&Delete From Service'),
             u':/general/general_delete.png',
-            translate('ServiceManager', 'Delete From Service'),
+            translate('OpenLP.ServiceManager',
+            'Delete the selected item from the service.'),
             self.onDeleteFromService)
-        self.Layout.addWidget(self.OrderToolbar)
+        self.orderToolbar.addSeparator()
+        self.serviceManagerList.expand = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', '&Expand all'),
+            u':/services/service_expand_all.png',
+            translate('OpenLP.ServiceManager',
+            'Expand all the service items.'),
+            self.onExpandAll, shortcuts=[QtCore.Qt.Key_Plus])
+        self.serviceManagerList.expand.setObjectName(u'expand')
+        action_list.add_action(
+            self.serviceManagerList.expand, UiStrings().Service)
+        self.serviceManagerList.collapse = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', '&Collapse all'),
+            u':/services/service_collapse_all.png',
+            translate('OpenLP.ServiceManager',
+            'Collapse all the service items.'),
+            self.onCollapseAll, shortcuts=[QtCore.Qt.Key_Minus])
+        self.serviceManagerList.collapse.setObjectName(u'collapse')
+        action_list.add_action(
+            self.serviceManagerList.collapse, UiStrings().Service)
+        self.orderToolbar.addSeparator()
+        self.serviceManagerList.makeLive = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Go Live'),
+            u':/general/general_live.png',
+            translate('OpenLP.ServiceManager',
+            'Send the selected item to Live.'), self.makeLive,
+            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return])
+        self.serviceManagerList.makeLive.setObjectName(u'orderToolbar')
+        action_list.add_action(
+            self.serviceManagerList.makeLive, UiStrings().Service)
+        self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots
-        QtCore.QObject.connect(self.ThemeComboBox,
+        QtCore.QObject.connect(self.themeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
-        QtCore.QObject.connect(self.ServiceManagerList,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
-        QtCore.QObject.connect(self.ServiceManagerList,
+        QtCore.QObject.connect(self.serviceManagerList,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
+        QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
-        QtCore.QObject.connect(self.ServiceManagerList,
+        QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_preview_live'), self.previewLive)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -211,55 +278,380 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_set_item'), self.onSetItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_list_request'), self.listRequest)
+            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
+            QtCore.SIGNAL(u'config_screen_changed'),
+            self.regenerateServiceItems)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
-            self.parent.serviceSettingsSection + u'/service theme',
+            self.mainwindow.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
-        #build the drag and drop context menu
+        # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
-            translate('ServiceManager', '&Add New Item'))
+            translate('OpenLP.ServiceManager', '&Add New Item'))
         self.newAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.addToAction = self.dndMenu.addAction(
-            translate('ServiceManager', '&Add to Selected Item'))
+            translate('OpenLP.ServiceManager', '&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
-        #build the context menu
+        # build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = self.menu.addAction(
-            translate('ServiceManager', '&Edit Item'))
-        self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.maintainAction = self.menu.addAction(
-            translate('ServiceManager', '&Maintain Item'))
-        self.maintainAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.notesAction = self.menu.addAction(
-            translate('ServiceManager', '&Notes'))
-        self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
-        self.deleteAction = self.menu.addAction(
-            translate('ServiceManager', '&Delete From Service'))
-        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
-        self.sep1 = self.menu.addAction(u'')
-        self.sep1.setSeparator(True)
-        self.previewAction = self.menu.addAction(
-            translate('ServiceManager', '&Preview Verse'))
-        self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
-        self.liveAction = self.menu.addAction(
-            translate('ServiceManager', '&Live Verse'))
-        self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
-        self.sep2 = self.menu.addAction(u'')
-        self.sep2.setSeparator(True)
+        self.editAction = context_menu_action(
+            self.menu, u':/general/general_edit.png',
+            translate('OpenLP.ServiceManager', '&Edit Item'), self.remoteEdit)
+        self.maintainAction = context_menu_action(
+            self.menu, u':/general/general_edit.png',
+            translate('OpenLP.ServiceManager', '&Reorder Item'),
+            self.onServiceItemEditForm)
+        self.notesAction = context_menu_action(
+            self.menu, u':/services/service_notes.png',
+            translate('OpenLP.ServiceManager', '&Notes'),
+            self.onServiceItemNoteForm)
+        self.timeAction = context_menu_action(
+            self.menu, u':/media/media_time.png',
+            translate('OpenLP.ServiceManager', '&Start Time'),
+            self.onStartTimeForm)
+        self.deleteAction = context_menu_action(
+            self.menu, u':/general/general_delete.png',
+            translate('OpenLP.ServiceManager', '&Delete From Service'),
+            self.onDeleteFromService)
+        context_menu_separator(self.menu)
+        self.previewAction = context_menu_action(
+            self.menu, u':/general/general_preview.png',
+            translate('OpenLP.ServiceManager', 'Show &Preview'),
+            self.makePreview)
+        self.liveAction = context_menu_action(
+            self.menu, u':/general/general_live.png',
+            translate('OpenLP.ServiceManager', 'Show &Live'), self.makeLive)
+        context_menu_separator(self.menu)
         self.themeMenu = QtGui.QMenu(
-            translate('ServiceManager', '&Change Item Theme'))
+            translate('OpenLP.ServiceManager', '&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
+        self.serviceManagerList.addActions(
+            [self.serviceManagerList.moveDown,
+            self.serviceManagerList.moveUp,
+            self.serviceManagerList.makeLive,
+            self.serviceManagerList.moveTop,
+            self.serviceManagerList.moveBottom,
+            self.serviceManagerList.up,
+            self.serviceManagerList.down,
+            self.serviceManagerList.expand,
+            self.serviceManagerList.collapse
+            ])
+        self.configUpdated()
+
+    def setModified(self, modified=True):
+        """
+        Setter for property "modified". Sets whether or not the current service
+        has been modified.
+        """
+        self._modified = modified
+        serviceFile = self.shortFileName() or translate(
+            'OpenLP.ServiceManager', 'Untitled Service')
+        self.mainwindow.setServiceModified(modified, serviceFile)
+
+    def isModified(self):
+        """
+        Getter for boolean property "modified".
+        """
+        return self._modified
+
+    def setFileName(self, fileName):
+        """
+        Setter for service file.
+        """
+        self._fileName = unicode(fileName)
+        self.mainwindow.setServiceModified(self.isModified(),
+            self.shortFileName())
+        QtCore.QSettings(). \
+            setValue(u'service/last file',QtCore.QVariant(fileName))
+
+    def fileName(self):
+        """
+        Return the current file name including path.
+        """
+        return self._fileName
+
+    def shortFileName(self):
+        """
+        Return the current file name, excluding the path.
+        """
+        return split_filename(self._fileName)[1]
+
+    def configUpdated(self):
+        """
+        Triggered when Config dialog is updated.
+        """
+        self.expandTabs = QtCore.QSettings().value(
+            u'advanced/expand service item',
+            QtCore.QVariant(u'False')).toBool()
 
     def supportedSuffixes(self, suffix):
         self.suffixes.append(suffix)
 
+    def onNewServiceClicked(self):
+        """
+        Create a new service.
+        """
+        if self.isModified():
+            result = self.saveModifiedService()
+            if result == QtGui.QMessageBox.Cancel:
+                return False
+            elif result == QtGui.QMessageBox.Save:
+                if not self.saveFile():
+                    return False
+        self.newFile()
+
+    def onLoadServiceClicked(self):
+        if self.isModified():
+            result = self.saveModifiedService()
+            if result == QtGui.QMessageBox.Cancel:
+                return False
+            elif result == QtGui.QMessageBox.Save:
+                self.saveFile()
+        fileName = unicode(QtGui.QFileDialog.getOpenFileName(self.mainwindow,
+            translate('OpenLP.ServiceManager', 'Open File'),
+            SettingsManager.get_last_dir(
+            self.mainwindow.serviceSettingsSection),
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
+        if not fileName:
+            return False
+        SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
+            split_filename(fileName)[0])
+        self.loadFile(fileName)
+
+    def saveModifiedService(self):
+        return QtGui.QMessageBox.question(self.mainwindow,
+            translate('OpenLP.ServiceManager', 'Modified Service'),
+            translate('OpenLP.ServiceManager', 'The current service has '
+            'been modified. Would you like to save this service?'),
+            QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
+            QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
+
+    def onRecentServiceClicked(self):
+        sender = self.sender()
+        self.loadFile(sender.data().toString())
+
+    def newFile(self):
+        """
+        Create a blank new service file.
+        """
+        self.serviceManagerList.clear()
+        self.serviceItems = []
+        self.setFileName(u'')
+        self.setModified(False)
+        QtCore.QSettings(). \
+            setValue(u'service/last file',QtCore.QVariant(u''))
+
+    def saveFile(self):
+        """
+        Save the current Service file.
+        """
+        if not self.fileName():
+            return self.saveFileAs()
+        path_file_name = unicode(self.fileName())
+        (path, file_name) = os.path.split(path_file_name)
+        (basename, extension) = os.path.splitext(file_name)
+        service_file_name = basename + '.osd'
+        log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
+        SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
+            path)
+        service = []
+        write_list = []
+        total_size = 0
+        Receiver.send_message(u'cursor_busy')
+        # Number of items + 1 to zip it
+        self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
+        for item in self.serviceItems:
+            self.mainwindow.incrementProgressBar()
+            service.append({u'serviceitem':
+                item[u'service_item'].get_service_repr()})
+            if not item[u'service_item'].uses_file():
+                continue
+            for frame in item[u'service_item'].get_frames():
+                if item[u'service_item'].is_image():
+                    path_from = frame[u'path']
+                else:
+                    path_from = os.path.join(frame[u'path'], frame[u'title'])
+                # Only write a file once
+                if path_from in write_list:
+                    continue
+                file_size = os.path.getsize(path_from)
+                size_limit = 52428800 # 50MiB
+                #if file_size > size_limit:
+                #    # File exeeds size_limit bytes, ask user
+                #    message = unicode(translate('OpenLP.ServiceManager',
+                #        'Do you want to include \n%.1f MB file "%s"\n'
+                #        'into the service file?\nThis may take some time.\n\n'
+                #        'Please note that you need to\ntake care of that file'
+                #        ' yourself,\nif you leave it out.')) % \
+                #        (file_size/1048576, os.path.split(path_from)[1])
+                #    ans = QtGui.QMessageBox.question(self.mainwindow,
+                #        translate('OpenLP.ServiceManager', 'Including Large '
+                #        'File'), message, QtGui.QMessageBox.StandardButtons(
+                #        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
+                #        QtGui.QMessageBox.Ok)
+                #    if ans == QtGui.QMessageBox.Cancel:
+                #        continue
+                write_list.append(path_from)
+                total_size += file_size
+        log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
+            total_size)
+        service_content = cPickle.dumps(service)
+        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
+        # extracted using unzip in UNIX.
+        allow_zip_64 = (total_size > 2147483648 + len(service_content))
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
+        zip = None
+        success = True
+        self.mainwindow.incrementProgressBar()
+        try:
+            zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
+                allow_zip_64)
+            # First we add service contents.
+            # We save ALL filenames into ZIP using UTF-8.
+            zip.writestr(service_file_name.encode(u'utf-8'), service_content)
+            # Finally add all the listed media files.
+            for path_from in write_list:
+                zip.write(path_from, path_from.encode(u'utf-8'))
+        except IOError:
+            log.exception(u'Failed to save service to disk')
+            success = False
+        finally:
+            if zip:
+                zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
+        if success:
+            self.mainwindow.addRecentFile(path_file_name)
+            self.setModified(False)
+        else:
+            delete_file(path_file_name)
+        return success
+
+    def saveFileAs(self):
+        """
+        Get a file name and then call :func:`ServiceManager.saveFile` to
+        save the file.
+        """
+        fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
+            UiStrings().SaveService,
+            SettingsManager.get_last_dir(
+            self.mainwindow.serviceSettingsSection),
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
+        if not fileName:
+            return False
+        if os.path.splitext(fileName)[1] == u'':
+            fileName += u'.osz'
+        else:
+            ext = os.path.splitext(fileName)[1]
+            fileName.replace(ext, u'.osz')
+        self.setFileName(fileName)
+        return self.saveFile()
+
+    def loadFile(self, fileName):
+        if not fileName:
+            return False
+        fileName = unicode(fileName)
+        if not os.path.exists(fileName):
+            return False
+        zip = None
+        fileTo = None
+        try:
+            zip = zipfile.ZipFile(fileName)
+            for file in zip.namelist():
+                ucsfile = file_is_unicode(file)
+                if not ucsfile:
+                    critical_error_message_box(
+                        message=translate('OpenLP.ServiceManager',
+                        'File is not a valid service.\n'
+                        'The content encoding is not UTF-8.'))
+                    continue
+                osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
+                filePath = os.path.join(self.servicePath,
+                    os.path.split(osfile)[1])
+                fileTo = open(filePath, u'wb')
+                fileTo.write(zip.read(file))
+                fileTo.flush()
+                fileTo.close()
+                if filePath.endswith(u'osd'):
+                    p_file = filePath
+            if 'p_file' in locals():
+                Receiver.send_message(u'cursor_busy')
+                fileTo = open(p_file, u'r')
+                items = cPickle.load(fileTo)
+                fileTo.close()
+                self.newFile()
+                self.mainwindow.displayProgressBar(len(items))
+                for item in items:
+                    self.mainwindow.incrementProgressBar()
+                    serviceItem = ServiceItem()
+                    serviceItem.from_service = True
+                    serviceItem.renderer = self.mainwindow.renderer
+                    serviceItem.set_from_service(item, self.servicePath)
+                    self.validateItem(serviceItem)
+                    self.addServiceItem(serviceItem, repaint=False)
+                    if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
+                        Receiver.send_message(u'%s_service_load' %
+                            serviceItem.name.lower(), serviceItem)
+                delete_file(p_file)
+                self.setFileName(fileName)
+                self.mainwindow.addRecentFile(fileName)
+                self.setModified(False)
+                QtCore.QSettings().setValue(
+                    'service/last file', QtCore.QVariant(fileName))
+            else:
+                critical_error_message_box(
+                    message=translate('OpenLP.ServiceManager',
+                    'File is not a valid service.'))
+                log.exception(u'File contains no service data')
+        except (IOError, NameError, zipfile.BadZipfile):
+            critical_error_message_box(
+                message=translate('OpenLP.ServiceManager',
+                'File could not be opened because it is corrupt.'))
+            log.exception(u'Problem loading service file %s' % fileName)
+        except zipfile.BadZipfile:
+            if os.path.getsize(fileName) == 0:
+                log.exception(u'Service file is zero sized: %s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Empty File'),
+                    translate('OpenLP.ServiceManager', 'This service file '
+                    'does not contain any data.'))
+            else:
+                log.exception(u'Service file is cannot be extracted as zip: '
+                    u'%s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'Corrupt File'),
+                    translate('OpenLP.ServiceManager', 'This file is either '
+                    'corrupt or not an OpenLP 2.0 service file.'))
+            return
+        finally:
+            if fileTo:
+                fileTo.close()
+            if zip:
+                zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
+        self.repaintServiceList(-1, -1)
+
+    def loadLastFile(self):
+        """
+        Load the last service item from the service manager when the
+        service was last closed. Can be blank if there was no service
+        present.
+        """
+        fileName = QtCore.QSettings(). \
+            value(u'service/last file',QtCore.QVariant(u'')).toString()
+        if fileName:
+            self.loadFile(fileName)
+
     def contextMenu(self, point):
-        item = self.ServiceManagerList.itemAt(point)
+        item = self.serviceManagerList.itemAt(point)
         if item is None:
             return
         if item.parent() is None:
@@ -270,29 +662,22 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
+        self.timeAction.setVisible(False)
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
+            and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
+        if serviceItem[u'service_item']\
+            .is_capable(ItemCapabilities.AllowsVariableStartTime):
+            self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         if serviceItem[u'service_item'].is_text():
             self.themeMenu.menuAction().setVisible(True)
-        action = self.menu.exec_(self.ServiceManagerList.mapToGlobal(point))
-        if action == self.editAction:
-            self.remoteEdit()
-        if action == self.maintainAction:
-            self.onServiceItemEditForm()
-        if action == self.deleteAction:
-            self.onDeleteFromService()
-        if action == self.notesAction:
-            self.onServiceItemNoteForm()
-        if action == self.previewAction:
-            self.makePreview()
-        if action == self.liveAction:
-            self.makeLive()
+        action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
         item = self.findServiceItem()[0]
@@ -301,30 +686,48 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceNoteForm.exec_():
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceNoteForm.textEdit.toPlainText()
-            self.repaintServiceList(item, 0)
+            self.repaintServiceList(item, -1)
+            self.setModified()
+
+    def onStartTimeForm(self):
+        item = self.findServiceItem()[0]
+        self.startTimeForm.item = self.serviceItems[item]
+        if self.startTimeForm.exec_():
+            self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
         item = self.findServiceItem()[0]
         self.serviceItemEditForm.setServiceItem(
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
-            self.serviceItems[item][u'service_item'] = \
-                self.serviceItemEditForm.getServiceItem()
-            self.repaintServiceList(item, 0)
+            self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
+                replace=True, expand=self.serviceItems[item][u'expanded'])
+
+    def previewLive(self, message):
+        """
+        Called by the SlideController to request a preview item be made live
+        and allows the next preview to be updated if relevent.
+        """
+        uuid, row = message.split(u':')
+        for sitem in self.serviceItems:
+            if sitem[u'service_item']._uuid == uuid:
+                item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
+                self.serviceManagerList.setCurrentItem(item)
+                self.makeLive(int(row))
+                return
 
     def nextItem(self):
         """
-        Called by the SlideController to select the
-        next service item
+        Called by the SlideController to select the next service item.
         """
-        if len(self.ServiceManagerList.selectedItems()) == 0:
+        if len(self.serviceManagerList.selectedItems()) == 0:
             return
-        selected = self.ServiceManagerList.selectedItems()[0]
+        selected = self.serviceManagerList.selectedItems()[0]
         lookFor = 0
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         while serviceIterator.value():
             if lookFor == 1 and serviceIterator.value().parent() is None:
-                self.ServiceManagerList.setCurrentItem(serviceIterator.value())
+                self.serviceManagerList.setCurrentItem(serviceIterator.value())
                 self.makeLive()
                 return
             if serviceIterator.value() == selected:
@@ -333,18 +736,17 @@ class ServiceManager(QtGui.QWidget):
 
     def previousItem(self):
         """
-        Called by the SlideController to select the
-        previous service item
+        Called by the SlideController to select the previous service item.
         """
-        if len(self.ServiceManagerList.selectedItems()) == 0:
+        if len(self.serviceManagerList.selectedItems()) == 0:
             return
-        selected = self.ServiceManagerList.selectedItems()[0]
+        selected = self.serviceManagerList.selectedItems()[0]
         prevItem = None
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         while serviceIterator.value():
             if serviceIterator.value() == selected:
                 if prevItem:
-                    self.ServiceManagerList.setCurrentItem(prevItem)
+                    self.serviceManagerList.setCurrentItem(prevItem)
                     self.makeLive()
                 return
             if serviceIterator.value().parent() is None:
@@ -353,179 +755,178 @@ class ServiceManager(QtGui.QWidget):
 
     def onSetItem(self, message):
         """
-        Called by a signal to select a specific item
+        Called by a signal to select a specific item.
         """
         self.setItem(int(message[0]))
 
     def setItem(self, index):
         """
-        Makes a specific item in the service live
+        Makes a specific item in the service live.
         """
-        if index >= 0 and index < self.ServiceManagerList.topLevelItemCount:
-            item = self.ServiceManagerList.topLevelItem(index)
-            self.ServiceManagerList.setCurrentItem(item)
+        if index >= 0 and index < self.serviceManagerList.topLevelItemCount:
+            item = self.serviceManagerList.topLevelItem(index)
+            self.serviceManagerList.setCurrentItem(item)
             self.makeLive()
 
     def onMoveSelectionUp(self):
         """
-        Moves the selection up the window
-        Called by the up arrow
+        Moves the selection up the window. Called by the up arrow.
         """
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         tempItem = None
         setLastItem = False
-        while serviceIterator:
-            if serviceIterator.isSelected() and tempItem is None:
+        while serviceIterator.value():
+            if serviceIterator.value().isSelected() and tempItem is None:
                 setLastItem = True
-                serviceIterator.setSelected(False)
-            if serviceIterator.isSelected():
-                #We are on the first record
+                serviceIterator.value().setSelected(False)
+            if serviceIterator.value().isSelected():
+                # We are on the first record
                 if tempItem:
                     tempItem.setSelected(True)
-                    serviceIterator.setSelected(False)
+                    serviceIterator.value().setSelected(False)
             else:
-                tempItem = serviceIterator
-            lastItem = serviceIterator
-            ++serviceIterator
-        #Top Item was selected so set the last one
+                tempItem = serviceIterator.value()
+            lastItem = serviceIterator.value()
+            serviceIterator += 1
+        # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
+        self.setModified()
 
     def onMoveSelectionDown(self):
         """
-        Moves the selection down the window
-        Called by the down arrow
+        Moves the selection down the window. Called by the down arrow.
         """
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.ServiceManagerList)
-        firstItem = serviceIterator
+        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
+        firstItem = None
         setSelected = False
-        while serviceIterator:
+        while serviceIterator.value():
+            if not firstItem:
+                firstItem = serviceIterator.value()
             if setSelected:
                 setSelected = False
-                serviceIterator.setSelected(True)
-            elif serviceIterator.isSelected():
-                serviceIterator.setSelected(False)
+                serviceIterator.value().setSelected(True)
+            elif serviceIterator.value() and \
+                serviceIterator.value().isSelected():
+                serviceIterator.value().setSelected(False)
                 setSelected = True
-            ++serviceIterator
+            serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
+        self.setModified()
+
+    def onCollapseAll(self):
+        """
+        Collapse all the service items.
+        """
+        for item in self.serviceItems:
+            item[u'expanded'] = False
+        self.regenerateServiceItems()
 
     def collapsed(self, item):
         """
-        Record if an item is collapsed
-        Used when repainting the list to get the correct state
+        Record if an item is collapsed. Used when repainting the list to get the
+        correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        self.serviceItems[pos -1 ][u'expanded'] = False
+        self.serviceItems[pos - 1][u'expanded'] = False
+
+    def onExpandAll(self):
+        """
+        Collapse all the service items.
+        """
+        for item in self.serviceItems:
+            item[u'expanded'] = True
+        self.regenerateServiceItems()
 
     def expanded(self, item):
         """
-        Record if an item is collapsed
-        Used when repainting the list to get the correct state
+        Record if an item is collapsed. Used when repainting the list to get the
+        correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         self.serviceItems[pos -1 ][u'expanded'] = True
 
     def onServiceTop(self):
         """
-        Move the current ServiceItem to the top of the list
+        Move the current ServiceItem to the top of the list.
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
         if item < len(self.serviceItems) and item is not -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
-            self.repaintServiceList(0, count)
-        self.parent.serviceChanged(False, self.serviceName)
+            self.repaintServiceList(0, child)
+        self.setModified()
 
     def onServiceUp(self):
         """
-        Move the current ServiceItem up in the list
-        Note move up means move to top of area ie 0.
+        Move the current ServiceItem one position up in the list.
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
         if item > 0:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
-            self.repaintServiceList(item - 1, count)
-        self.parent.serviceChanged(False, self.serviceName)
+            self.repaintServiceList(item - 1, child)
+        self.setModified()
 
     def onServiceDown(self):
         """
-        Move the current ServiceItem down in the list
-        Note move down means move to bottom of area i.e len().
+        Move the current ServiceItem one position down in the list.
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
         if item < len(self.serviceItems) and item is not -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
-            self.repaintServiceList(item + 1, count)
-        self.parent.serviceChanged(False, self.serviceName)
+            self.repaintServiceList(item + 1, child)
+        self.setModified()
 
     def onServiceEnd(self):
         """
-        Move the current ServiceItem to the bottom of the list
+        Move the current ServiceItem to the bottom of the list.
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
         if item < len(self.serviceItems) and item is not -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
-            self.repaintServiceList(len(self.serviceItems) - 1, count)
-        self.parent.serviceChanged(False, self.serviceName)
-
-    def onNewService(self):
-        """
-        Clear the list to create a new service
-        """
-        if self.parent.serviceNotSaved and QtCore.QSettings().value(
-            self.parent.generalSettingsSection + u'/save prompt',
-            QtCore.QVariant(False)).toBool():
-            ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager', 'Save Changes to Service?'),
-                translate('ServiceManager',
-                    'Your service is unsaved, do you want to save '
-                    'those changes before creating a new one?'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Cancel |
-                    QtGui.QMessageBox.Save),
-                QtGui.QMessageBox.Save)
-            if ret == QtGui.QMessageBox.Save:
-                self.onSaveService()
-        self.ServiceManagerList.clear()
-        self.serviceItems = []
-        self.serviceName = u''
-        self.isNew = True
-        self.parent.serviceChanged(True, self.serviceName)
+            self.repaintServiceList(len(self.serviceItems) - 1, child)
+        self.setModified()
 
     def onDeleteFromService(self):
         """
-        Remove the current ServiceItem from the list
+        Remove the current ServiceItem from the list.
         """
         item = self.findServiceItem()[0]
-        if item is not -1:
+        if item != -1:
             self.serviceItems.remove(self.serviceItems[item])
-            self.repaintServiceList(0, 0)
-        self.parent.serviceChanged(False, self.serviceName)
+            self.repaintServiceList(item - 1, -1)
+        self.setModified()
 
-    def repaintServiceList(self, serviceItem, serviceItemCount):
+    def repaintServiceList(self, serviceItem, serviceItemChild):
         """
-        Clear the existing service list and prepaint all the items
-        Used when moving items as the move takes place in supporting array,
-        and when regenerating all the items due to theme changes
+        Clear the existing service list and prepaint all the items. This is
+        used when moving items as the move takes place in a supporting list,
+        and when regenerating all the items due to theme changes.
+
+        ``serviceItem``
+            The item which changed. (int)
+
+        ``serviceItemChild``
+            The child of the ``serviceItem``, which will be selected. (int)
         """
-        #Correct order of items in array
+        # Correct order of items in array
         count = 1
         for item in self.serviceItems:
             item[u'order'] = count
             count += 1
-        #Repaint the screen
-        self.ServiceManagerList.clear()
+        # Repaint the screen
+        self.serviceManagerList.clear()
         for itemcount, item in enumerate(self.serviceItems):
             serviceitem = item[u'service_item']
-            treewidgetitem = QtGui.QTreeWidgetItem(self.ServiceManagerList)
+            treewidgetitem = QtGui.QTreeWidgetItem(self.serviceManagerList)
             if serviceitem.is_valid:
                 if serviceitem.notes:
                     icon = QtGui.QImage(serviceitem.icon)
@@ -543,293 +944,179 @@ class ServiceManager(QtGui.QWidget):
             else:
                 treewidgetitem.setIcon(0,
                     build_icon(u':/general/general_delete.png'))
-            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setText(0, serviceitem.get_display_title())
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
+            # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
-                treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-                text = frame[u'title']
-                treewidgetitem1.setText(0, text[:40])
-                treewidgetitem1.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(count))
-                if serviceItem == itemcount and serviceItemCount == count:
-                    #preserve expanding status as setCurrentItem sets it to True
-                    temp = item[u'expanded']
-                    self.ServiceManagerList.setCurrentItem(treewidgetitem1)
-                    item[u'expanded'] = temp
+                child = QtGui.QTreeWidgetItem(treewidgetitem)
+                text = frame[u'title'].replace(u'\n', u' ')
+                child.setText(0, text[:40])
+                child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
+                if item[u'service_item'] \
+                    .is_capable(ItemCapabilities.AllowsVariableStartTime):
+                    tip = item[u'service_item'].get_media_time()
+                    if tip:
+                        child.setToolTip(0, tip)
+                if serviceItem == itemcount:
+                    if item[u'expanded'] and serviceItemChild == count:
+                        self.serviceManagerList.setCurrentItem(child)
+                    elif serviceItemChild == -1:
+                        self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
-
-    def onSaveService(self, quick=False):
-        """
-        Save the current service in a zip (OSZ) file
-        This file contains
-        * An osd which is a pickle of the service items
-        * All image, presentation and video files needed to run the service.
-        """
-        log.debug(u'onSaveService')
-        if not quick or self.isNew:
-            filename = QtGui.QFileDialog.getSaveFileName(self,
-            translate('ServiceManager', 'Save Service'),
-            SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
-            translate('ServiceManager', 'OpenLP Service Files (*.osz)'))
-        else:
-            filename = SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection)
-        if filename:
-            splittedFile = filename.split(u'.')
-            if splittedFile[-1] != u'osz':
-                filename = filename + u'.osz'
-            filename = unicode(filename)
-            self.isNew = False
-            SettingsManager.set_last_dir(
-                self.parent.serviceSettingsSection,
-                os.path.split(filename)[0])
-            service = []
-            servicefile = filename + u'.osd'
-            zip = None
-            file = None
-            try:
-                zip = zipfile.ZipFile(unicode(filename), 'w')
-                for item in self.serviceItems:
-                    service.append({u'serviceitem':item[u'service_item']
-                        .get_service_repr()})
-                    if item[u'service_item'].uses_file():
-                        for frame in item[u'service_item'].get_frames():
-                            path_from = unicode(os.path.join(
-                                frame[u'path'],
-                                frame[u'title']))
-                            zip.write(path_from.encode(u'utf-8'))
-                file = open(servicefile, u'wb')
-                cPickle.dump(service, file)
-                file.close()
-                zip.write(servicefile.encode(u'utf-8'))
-            except IOError:
-                log.exception(u'Failed to save service to disk')
-            finally:
-                if file:
-                    file.close()
-                if zip:
-                    zip.close()
-            try:
-                os.remove(servicefile)
-            except (IOError, OSError):
-                pass #if not present do not worry
-            name = filename.split(os.path.sep)
-            self.serviceName = name[-1]
-            self.parent.addRecentFile(filename)
-            self.parent.serviceChanged(True, self.serviceName)
-
-    def onQuickSaveService(self):
-        self.onSaveService(True)
-
-    def onLoadService(self, lastService=False):
-        if lastService:
-            filename = SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection)
-        else:
-            filename = QtGui.QFileDialog.getOpenFileName(
-                self, translate('ServiceManager', 'Open Service'),
-                SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection), u'Services (*.osz)')
-        self.loadService(filename)
-
-    def loadService(self, filename=None):
-        """
-        Load an existing service from disk and rebuild the serviceitems.  All
-        files retrieved from the zip file are placed in a temporary directory
-        and will only be used for this service.
-        """
-        if self.parent.serviceNotSaved:
-            ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager', 'Save Changes to Service?'),
-                translate('ServiceManager',
-                    'Your current service is unsaved, do you want to '
-                    'save the changes before opening a new one?'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Discard |
-                    QtGui.QMessageBox.Save),
-                QtGui.QMessageBox.Save)
-            if ret == QtGui.QMessageBox.Save:
-                self.onSaveService()
-        if filename is None:
-            action = self.sender()
-            if isinstance(action, QtGui.QAction):
-                filename = action.data().toString()
-            else:
-                return
-        filename = unicode(filename)
-        name = filename.split(os.path.sep)
-        if filename:
-            SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
-                os.path.split(filename)[0])
-            zip = None
-            file_to = None
-            try:
-                zip = zipfile.ZipFile(unicode(filename))
-                for file in zip.namelist():
-                    try:
-                        ucsfile = file.decode(u'utf-8')
-                    except UnicodeDecodeError:
-                        QtGui.QMessageBox.critical(
-                            self, translate('ServiceManager', 'Error'),
-                            translate('ServiceManager',
-                                'File is not a valid service.\n'
-                                'The content encoding is not UTF-8.'))
-                        log.exception(u'Filename "%s" is not valid UTF-8' %
-                            file.decode(u'utf-8', u'replace'))
-                        continue
-                    osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
-                    names = osfile.split(os.path.sep)
-                    file_path = os.path.join(self.servicePath,
-                        names[len(names) - 1])
-                    file_to = open(file_path, u'wb')
-                    file_to.write(zip.read(file))
-                    file_to.flush()
-                    file_to.close()
-                    if file_path.endswith(u'osd'):
-                        p_file = file_path
-                if 'p_file' in locals():
-                    file_to = open(p_file, u'r')
-                    items = cPickle.load(file_to)
-                    file_to.close()
-                    self.onNewService()
-                    for item in items:
-                        serviceitem = ServiceItem()
-                        serviceitem.render_manager = self.parent.RenderManager
-                        serviceitem.set_from_service(item, self.servicePath)
-                        self.validateItem(serviceitem)
-                        self.addServiceItem(serviceitem)
-                    try:
-                        if os.path.isfile(p_file):
-                            os.remove(p_file)
-                    except (IOError, OSError):
-                        log.exception(u'Failed to remove osd file')
-                else:
-                    QtGui.QMessageBox.critical(
-                        self, translate('ServiceManager', 'Error'),
-                        translate('ServiceManager',
-                            'File is not a valid service.'))
-                    log.exception(u'File contains no service data')
-            except (IOError, NameError):
-                log.exception(u'Problem loading a service file')
-            finally:
-                if file_to:
-                    file_to.close()
-                if zip:
-                    zip.close()
-        self.isNew = False
-        self.serviceName = name[len(name) - 1]
-        self.parent.addRecentFile(filename)
-        self.parent.serviceChanged(True, self.serviceName)
 
     def validateItem(self, serviceItem):
         """
         Validates the service item and if the suffix matches an accepted
-        one it allows the item to be displayed
+        one it allows the item to be displayed.
         """
         if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type not in self.suffixes:
                 serviceItem.is_valid = False
 
     def cleanUp(self):
         """
-        Empties the servicePath of temporary files
+        Empties the servicePath of temporary files.
         """
         for file in os.listdir(self.servicePath):
             file_path = os.path.join(self.servicePath, file)
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            except OSError:
-                log.exception(u'Failed to clean up servicePath')
+            delete_file(file_path)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
-        Set the theme for the current service
+        Set the theme for the current service.
         """
-        self.service_theme = unicode(self.ThemeComboBox.currentText())
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        log.debug(u'onThemeComboBoxSelected')
+        self.service_theme = unicode(self.themeComboBox.currentText())
+        self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
-            self.parent.serviceSettingsSection + u'/service theme',
+            self.mainwindow.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
+
+    def themeChange(self):
+        """
+        The theme may have changed in the settings dialog so make
+        sure the theme combo box is in the correct state.
+        """
+        log.debug(u'themeChange')
+        if self.mainwindow.renderer.theme_level == ThemeLevel.Global:
+            self.toolbar.actions[u'ThemeLabel'].setVisible(False)
+            self.toolbar.actions[u'ThemeWidget'].setVisible(False)
+        else:
+            self.toolbar.actions[u'ThemeLabel'].setVisible(True)
+            self.toolbar.actions[u'ThemeWidget'].setVisible(True)
 
     def regenerateServiceItems(self):
         """
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
-        #force reset of renderer as theme data has changed
-        self.parent.RenderManager.themedata = None
+        Receiver.send_message(u'cursor_busy')
+        log.debug(u'regenerateServiceItems')
+        # force reset of renderer as theme data has changed
+        self.mainwindow.renderer.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
-            self.ServiceManagerList.clear()
+            self.serviceManagerList.clear()
             self.serviceItems = []
             self.isNew = True
             for item in tempServiceItems:
                 self.addServiceItem(
-                    item[u'service_item'], False, item[u'expanded'])
-            #Set to False as items may have changed rendering
-            #does not impact the saved song so True may also be valid
-            self.parent.serviceChanged(False, self.serviceName)
+                    item[u'service_item'], False, expand=item[u'expanded'])
+            # Set to False as items may have changed rendering
+            # does not impact the saved song so True may also be valid
+            self.setModified()
+        Receiver.send_message(u'cursor_normal')
 
-    def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
+    def serviceItemUpdate(self, message):
+        """
+        Triggered from plugins to update service items.
+        """
+        editId, uuid = message.split(u':')
+        for item in self.serviceItems:
+            if item[u'service_item']._uuid == uuid:
+                item[u'service_item'].edit_id = int(editId)
+        self.setModified()
+
+    def replaceServiceItem(self, newItem):
+        """
+        Using the service item passed replace the one with the same edit id
+        if found.
+        """
+        newItem.render()
+        for itemcount, item in enumerate(self.serviceItems):
+            if item[u'service_item'].edit_id == newItem.edit_id and \
+                item[u'service_item'].name == newItem.name:
+                newItem.merge(item[u'service_item'])
+                item[u'service_item'] = newItem
+                self.repaintServiceList(itemcount + 1, 0)
+                self.mainwindow.liveController.replaceServiceManagerItem(
+                    newItem)
+        self.setModified()
+
+    def addServiceItem(self, item, rebuild=False, expand=None, replace=False,
+        repaint=True):
         """
         Add a Service item to the list
 
         ``item``
             Service Item to be added
 
+        ``expand``
+            Override the default expand settings. (Tristate)
         """
-        sitem = self.findServiceItem()[0]
+        # if not passed set to config value
+        if expand is None:
+            expand = self.expandTabs
         item.render()
+        item.from_service = True
         if replace:
+            sitem, child = self.findServiceItem()
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
-            self.repaintServiceList(sitem + 1, 0)
-            self.parent.LiveController.replaceServiceManagerItem(item)
+            self.repaintServiceList(sitem, child)
+            self.mainwindow.liveController.replaceServiceManagerItem(item)
         else:
-            #nothing selected for dnd
-            if self.droppos == 0:
+            # nothing selected for dnd
+            if self.dropPosition == 0:
                 if isinstance(item, list):
                     for inditem in item:
                         self.serviceItems.append({u'service_item': inditem,
                             u'order': len(self.serviceItems) + 1,
-                            u'expanded':expand})
+                            u'expanded': expand})
                 else:
                     self.serviceItems.append({u'service_item': item,
                         u'order': len(self.serviceItems) + 1,
-                        u'expanded':expand})
-                self.repaintServiceList(len(self.serviceItems) + 1, 0)
+                        u'expanded': expand})
+                if repaint:
+                    self.repaintServiceList(len(self.serviceItems) - 1, -1)
             else:
-                self.serviceItems.insert(self.droppos, {u'service_item': item,
-                    u'order': self.droppos,
-                    u'expanded':expand})
-                self.repaintServiceList(self.droppos, 0)
-            #if rebuilding list make sure live is fixed.
+                self.serviceItems.insert(self.dropPosition,
+                    {u'service_item': item, u'order': self.dropPosition,
+                    u'expanded': expand})
+                self.repaintServiceList(self.dropPosition, -1)
+            # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.parent.LiveController.replaceServiceManagerItem(item)
-        self.droppos = 0
-        self.parent.serviceChanged(False, self.serviceName)
+                self.mainwindow.liveController.replaceServiceManagerItem(item)
+        self.dropPosition = 0
+        self.setModified()
 
     def makePreview(self):
         """
         Send the current item to the Preview slide controller
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.PreviewController.addServiceManagerItem(
-                self.serviceItems[item][u'service_item'], count)
+            self.mainwindow.previewController.addServiceManagerItem(
+                self.serviceItems[item][u'service_item'], child)
         else:
-            QtGui.QMessageBox.critical(self,
-                translate('ServiceManager', 'Missing Display Handler'),
-                translate('ServiceManager', 'Your item cannot be displayed '
-                    'as there is no handler to display it'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+            critical_error_message_box(
+                translate('OpenLP.ServiceManager', 'Missing Display Handler'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be '
+                'displayed as there is no handler to display it'))
 
     def getServiceItem(self):
         """
@@ -841,31 +1128,46 @@ class ServiceManager(QtGui.QWidget):
         else:
             return self.serviceItems[item][u'service_item']
 
-    def makeLive(self):
+    def onMakeLive(self):
+        """
+        Send the current item to the Live slide controller but triggered
+        by a tablewidget click event.
+        """
+        self.makeLive()
+
+    def makeLive(self, row=-1):
         """
         Send the current item to the Live slide controller
+
+        ``row``
+            Row number to be displayed if from preview.
+            -1 is passed if the value is not set
         """
-        item, count = self.findServiceItem()
+        item, child = self.findServiceItem()
+        # No items in service
+        if item == -1:
+            return
+        if row != -1:
+            child = row
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.LiveController.addServiceManagerItem(
-                self.serviceItems[item][u'service_item'], count)
+            self.mainwindow.liveController.addServiceManagerItem(
+                self.serviceItems[item][u'service_item'], child)
             if QtCore.QSettings().value(
-                self.parent.generalSettingsSection + u'/auto preview',
+                self.mainwindow.generalSettingsSection + u'/auto preview',
                 QtCore.QVariant(False)).toBool():
                 item += 1
                 if self.serviceItems and item < len(self.serviceItems) and \
                     self.serviceItems[item][u'service_item'].is_capable(
                     ItemCapabilities.AllowsPreview):
-                    self.parent.PreviewController.addServiceManagerItem(
+                    self.mainwindow.previewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
+                    self.mainwindow.liveController.previewListWidget.setFocus()
         else:
-            QtGui.QMessageBox.critical(self,
-                translate('ServiceManager', 'Missing Display Handler'),
-                translate('ServiceManager', 'Your item cannot be displayed '
-                    'as there is no handler to display it'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+            critical_error_message_box(
+                translate('OpenLP.ServiceManager', 'Missing Display Handler'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be '
+                'displayed as the plugin required to display it is missing '
+                'or inactive'))
 
     def remoteEdit(self):
         """
@@ -875,26 +1177,31 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item']\
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
-                self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].editId )
+                self.serviceItems[item][u'service_item'].name.lower(),
+                u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
 
     def findServiceItem(self):
         """
-        Finds a ServiceItem in the list
+        Finds the selected ServiceItem in the list and returns the position of
+        the serviceitem and its selected child item. For example, if the third
+        child item (in the Slidecontroller known as slide) in the second service
+        item is selected this will return::
+
+            (1, 2)
         """
-        items = self.ServiceManagerList.selectedItems()
-        pos = 0
-        count = 0
+        items = self.serviceManagerList.selectedItems()
+        serviceItem = 0
+        serviceItemChild = -1
         for item in items:
             parentitem = item.parent()
             if parentitem is None:
-                pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                serviceItem = item.data(0, QtCore.Qt.UserRole).toInt()[0]
             else:
-                pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-                count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        #adjust for zero based arrays
-        pos = pos - 1
-        return pos, count
+                serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        # Adjust for zero based arrays.
+        serviceItem -= 1
+        return serviceItem, serviceItemChild
 
     def dragEnterEvent(self, event):
         """
@@ -902,7 +1209,6 @@ class ServiceManager(QtGui.QWidget):
 
         ``event``
             Handle of the event pint passed
-
         """
         event.accept()
 
@@ -917,11 +1223,14 @@ class ServiceManager(QtGui.QWidget):
         """
         link = event.mimeData()
         if link.hasText():
-            plugin = event.mimeData().text()
-            item = self.ServiceManagerList.itemAt(event.pos())
-            #ServiceManager started the drag and drop
+            plugin = unicode(event.mimeData().text())
+            item = self.serviceManagerList.itemAt(event.pos())
+            # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
-                startpos, startCount = self.findServiceItem()
+                startpos, child = self.findServiceItem()
+                # If no items selected
+                if startpos == -1:
+                    return
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
@@ -929,30 +1238,31 @@ class ServiceManager(QtGui.QWidget):
                 serviceItem = self.serviceItems[startpos]
                 self.serviceItems.remove(serviceItem)
                 self.serviceItems.insert(endpos, serviceItem)
-                self.repaintServiceList(endpos, startCount)
+                self.repaintServiceList(endpos, child)
+                self.setModified()
             else:
-                #we are not over anything so drop
+                # we are not over anything so drop
                 replace = False
                 if item is None:
-                    self.droppos = len(self.serviceItems)
+                    self.dropPosition = len(self.serviceItems)
                 else:
-                    #we are over somthing so lets investigate
+                    # we are over something so lets investigate
                     pos = self._getParentItemData(item) - 1
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
                         serviceItem[u'service_item'].is_capable(
                         ItemCapabilities.AllowsAdditions)):
                         action = self.dndMenu.exec_(QtGui.QCursor.pos())
-                        #New action required
+                        # New action required
                         if action == self.newAction:
-                            self.droppos = self._getParentItemData(item)
-                        #Append to existing action
+                            self.dropPosition = self._getParentItemData(item)
+                        # Append to existing action
                         if action == self.addToAction:
-                            self.droppos = self._getParentItemData(item)
+                            self.dropPosition = self._getParentItemData(item)
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.droppos = self._getParentItemData(item)
+                        self.dropPosition = self._getParentItemData(item)
                 Receiver.send_message(u'%s_add_service_item' % plugin, replace)
 
     def updateThemeList(self, theme_list):
@@ -962,24 +1272,15 @@ class ServiceManager(QtGui.QWidget):
         ``theme_list``
             A list of current themes to be displayed
         """
-        self.ThemeComboBox.clear()
+        self.themeComboBox.clear()
         self.themeMenu.clear()
-        self.ThemeComboBox.addItem(u'')
+        self.themeComboBox.addItem(u'')
         for theme in theme_list:
-            self.ThemeComboBox.addItem(theme)
-            action = context_menu_action(
-                self.ServiceManagerList,
-                None,
-                theme , self.onThemeChangeAction)
-            self.themeMenu.addAction(action)
-        id = self.ThemeComboBox.findText(self.service_theme,
-            QtCore.Qt.MatchExactly)
-        # Not Found
-        if id == -1:
-            id = 0
-            self.service_theme = u''
-        self.ThemeComboBox.setCurrentIndex(id)
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+            self.themeComboBox.addItem(theme)
+            context_menu_action(self.themeMenu, None, theme,
+                self.onThemeChangeAction)
+        find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
+        self.mainwindow.renderer.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
@@ -995,20 +1296,9 @@ class ServiceManager(QtGui.QWidget):
         else:
             return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
 
-    def listRequest(self, message=None):
-        data = []
-        curindex = self.findServiceItem()[0]
-        if curindex >= 0 and curindex < len(self.serviceItems):
-            curitem = self.serviceItems[curindex]
-        else:
-            curitem = None
-        for item in self.serviceItems:
-            service_item = item[u'service_item']
-            data_item = {}
-            data_item[u'title'] = unicode(service_item.title)
-            data_item[u'plugin'] = unicode(service_item.name)
-            data_item[u'notes'] = unicode(service_item.notes)
-            data_item[u'selected'] = (item == curitem)
-            data.append(data_item)
-        Receiver.send_message(u'servicemanager_list_response', data)
-
+    def printServiceOrder(self):
+        """
+        Print a Service Order Sheet.
+        """
+        settingDialog = PrintServiceForm(self.mainwindow, self)
+        settingDialog.exec_()

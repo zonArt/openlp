@@ -5,10 +5,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -61,15 +62,48 @@ setup(
     description="Open source Church presentation and lyrics projection application.",
     long_description="""\
 OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
-    classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Environment :: MacOS X',
+        'Environment :: Win32 (MS Windows)',
+        'Environment :: X11 Applications',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Religion',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Natural Language :: Afrikaans',
+        'Natural Language :: Dutch',
+        'Natural Language :: English',
+        'Natural Language :: French',
+        'Natural Language :: German',
+        'Natural Language :: Hungarian',
+        'Natural Language :: Indonesian',
+        'Natural Language :: Japanese',
+        'Natural Language :: Norwegian',
+        'Natural Language :: Portuguese (Brazilian)',
+        'Natural Language :: Russian',
+        'Natural Language :: Swedish',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: BSD :: FreeBSD',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Topic :: Desktop Environment :: Gnome',
+        'Topic :: Desktop Environment :: K Desktop Environment (KDE)',
+        'Topic :: Multimedia',
+        'Topic :: Multimedia :: Graphics :: Presentation',
+        'Topic :: Multimedia :: Sound/Audio',
+        'Topic :: Multimedia :: Video',
+        'Topic :: Religion'
+    ], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='open source church presentation lyrics projection song bible display project',
     author='Raoul Snyman',
     author_email='raoulsnyman@openlp.org',
     url='http://openlp.org/',
     license='GNU General Public License',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    scripts=['openlp.pyw', 'scripts/openlp-1to2-converter.py',
-        'scripts/bible-1to2-converter.py','scripts/openlp-remoteclient.py'],
+    scripts=['openlp.pyw', 'scripts/openlp-remoteclient.py'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

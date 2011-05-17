@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide event handling code for OpenLP
+"""
 import logging
 
 from PyQt4 import QtCore
@@ -72,7 +75,7 @@ class EventReceiver(QtCore.QObject):
         Broadcasts that an item has been made live/previewed
 
     ``slidecontroller_{live|preview}_change``
-        Informs the slidecontroller that a slide change has occurred and to 
+        Informs the slidecontroller that a slide change has occurred and to
         update itself
 
     ``slidecontroller_{live|preview}_changed``
@@ -80,7 +83,7 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_text_request``
         Request the text for the current item in the controller
-        Returns a slidecontroller_{live|preview}_text_response with an 
+        Returns a slidecontroller_{live|preview}_text_response with an
         array of dictionaries with the tag and verse text
 
     ``slidecontroller_{live|preview}_blank``
@@ -98,28 +101,28 @@ class EventReceiver(QtCore.QObject):
     ``servicemanager_previous_item``
         Display the previous item in the service
 
+    ``servicemanager_preview_live``
+        Requests a Preview item from the Service Manager to update live and
+        add a new item to the preview panel
+
     ``servicemanager_next_item``
         Display the next item in the service
 
     ``servicemanager_set_item``
         Go live on a specific item, by index
-        
-    ``servicemanager_list_request``
-        Request the service list. Responds with servicemanager_list_response
-        containing a array of dictionaries
 
     ``maindisplay_blank``
-        Blank the maindisplay window 
+        Blank the maindisplay window
 
     ``maindisplay_hide``
-        Hide the maindisplay window 
+        Hide the maindisplay window
 
     ``maindisplay_show``
-        Return the maindisplay window 
+        Return the maindisplay window
 
     ``maindisplay_active``
         The maindisplay has been made active
-    
+
     ``maindisplay_status_text``
         Changes the bottom status bar text on the maindisplay window
 
@@ -190,24 +193,41 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_add_service_item``
         Ask the plugin to push the selected items to the service item
 
+    ``{plugin}_service_load``
+        Ask the plugin to process an individual service item after it has been
+        loaded
+
+    ``service_item_update``
+        Passes back to the service manager the service item after it has been
+        processed by the plugin
+
     ``alerts_text``
         Displays an alert message
-    
+
     ``bibles_nobook``
         Attempt to find book resulted in no match
 
-    ``bibles_showprogress``
-        Show progress of bible verse import
-
-    ``bibles_hideprogress``
-        Hide progress of bible verse import
-
-    ``bibles_stop_import``
-        Stops the Bible Import
+    ``openlp_stop_wizard``
+        Stops a wizard before completion
 
     ``remotes_poll_request``
         Waits for openlp to do something "interesting" and sends a
         remotes_poll_response signal when it does
+
+    ``openlp_warning_message``
+        Displays a standalone Warning Message
+
+    ``openlp_error_message``
+        Displays a standalone Error Message
+
+    ``openlp_information_message``
+        Displays a standalone Information Message
+
+    ``cursor_busy``
+        Makes the cursor got to a busy form
+
+    ``cursor_normal``
+        Resets the cursor to default
 
     """
     def __init__(self):
@@ -241,7 +261,11 @@ class Receiver(object):
        ``Receiver.send_message(u'<<Message ID>>', data)``
 
     To receive a Message
-        ``QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
+        ``QtCore.QObject.connect(
+            Receiver.get_receiver(),
+            QtCore.SIGNAL(u'<<Message ID>>'),
+            <<ACTION>>
+        )``
     """
     eventreceiver = EventReceiver()
 

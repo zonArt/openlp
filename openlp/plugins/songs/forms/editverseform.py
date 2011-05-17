@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +29,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.plugins.songs.lib import VerseType
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.plugins.songs.lib import VerseType, translate
 
 from editversedialog import Ui_EditVerseDialog
 
@@ -44,52 +46,77 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(
-            self.InsertButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onInsertButtonClicked
-        )
-        QtCore.QObject.connect(
-            self.VerseTextEdit,
+        QtCore.QObject.connect(self.verseTextEdit,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
+        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'),
+            self.onInsertButtonClicked)
+        QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL(u'cursorPositionChanged()'),
-            self.onCursorPositionChanged
-        )
-        self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
+            self.onCursorPositionChanged)
+        QtCore.QObject.connect(self.verseTypeComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onVerseTypeComboBoxChanged)
+        self.verse_regex = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
-    def insertVerse(self, title, num=1):
-        if self.VerseTextEdit.textCursor().columnNumber() != 0:
-            self.VerseTextEdit.insertPlainText(u'\n')
-        self.VerseTextEdit.insertPlainText(u'---[%s:%s]---\n' % (title, num))
-        self.VerseTextEdit.setFocus()
+    def contextMenu(self, point):
+        item = self.serviceManagerList.itemAt(point)
+
+    def insertVerse(self, verse_tag, verse_num=1):
+        if self.verseTextEdit.textCursor().columnNumber() != 0:
+            self.verseTextEdit.insertPlainText(u'\n')
+        verse_tag = VerseType.translated_name(verse_tag)
+        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' %
+            (verse_tag, verse_num))
+        self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
-        if self.VerseTextEdit.textCursor().columnNumber() != 0:
-            self.VerseTextEdit.insertPlainText(u'\n')
-        verse_type = self.VerseTypeComboBox.currentIndex()
-        if verse_type == VerseType.Verse:
-            self.insertVerse(VerseType.to_string(VerseType.Verse),
-                self.VerseNumberBox.value())
-        elif verse_type == VerseType.Chorus:
-            self.insertVerse(VerseType.to_string(VerseType.Chorus),
-                self.VerseNumberBox.value())
-        elif verse_type == VerseType.Bridge:
-            self.insertVerse(VerseType.to_string(VerseType.Bridge))
-        elif verse_type == VerseType.PreChorus:
-            self.insertVerse(VerseType.to_string(VerseType.PreChorus))
-        elif verse_type == VerseType.Intro:
-            self.insertVerse(VerseType.to_string(VerseType.Intro))
-        elif verse_type == VerseType.Ending:
-            self.insertVerse(VerseType.to_string(VerseType.Ending))
-        elif verse_type == VerseType.Other:
-            self.insertVerse(VerseType.to_string(VerseType.Other))
+        verse_type_index = self.verseTypeComboBox.currentIndex()
+        self.insertVerse(VerseType.Tags[verse_type_index],
+            self.verseNumberBox.value())
+
+    def onVerseTypeComboBoxChanged(self):
+        """
+        Adjusts the verse number SpinBox in regard to the selected verse type
+        and the cursor's position.
+        """
+        position = self.verseTextEdit.textCursor().position()
+        text = unicode(self.verseTextEdit.toPlainText())
+        verse_name = VerseType.TranslatedNames[
+            self.verseTypeComboBox.currentIndex()]
+        if not text:
+            return
+        position = text.rfind(u'---[%s' % verse_name, 0, position)
+        if position == -1:
+            self.verseNumberBox.setValue(1)
+            return
+        text = text[position:]
+        position = text.find(u']---')
+        if position == -1:
+            return
+        text = text[:position + 4]
+        match = self.verse_regex.match(text)
+        if match:
+            verse_tag = match.group(1)
+            try:
+                verse_num = int(match.group(2))
+            except ValueError:
+                verse_num = 1
+            verse_type_index = VerseType.from_loose_input(verse_tag)
+            if verse_type_index is not None:
+                self.verseNumberBox.setValue(verse_num)
 
     def onCursorPositionChanged(self):
-        position = self.VerseTextEdit.textCursor().position()
-        text = unicode(self.VerseTextEdit.toPlainText())
+        """
+        Determines the previous verse type and number in regard to the cursor's
+        position and adjusts the ComboBox and SpinBox to these values.
+        """
+        position = self.verseTextEdit.textCursor().position()
+        text = unicode(self.verseTextEdit.toPlainText())
         if not text:
             return
         if text.rfind(u'[', 0, position) > text.rfind(u']', 0, position) and \
-           text.find(u']', position) < text.find(u'[', position):
+            text.find(u']', position) < text.find(u'[', position):
             return
         position = text.rfind(u'---[', 0, position)
         if position == -1:
@@ -102,40 +129,56 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         match = self.verse_regex.match(text)
         if match:
             verse_type = match.group(1)
-            verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_string(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type)
+            try:
+                verse_number = int(match.group(2))
+            except ValueError:
+                verse_number = 1
             if verse_type_index is not None:
-                self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
-                self.VerseNumberBox.setValue(verse_number)
+                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
+                self.verseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
-        tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
+        tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
+        self.hasSingleVerse = single
         if single:
-            verse_type, verse_number = tag.split(u':')
-            verse_type_index = VerseType.from_string(verse_type)
+            verse_type_index = VerseType.from_tag(tag[0])
+            verse_number = tag[1:]
             if verse_type_index is not None:
-                self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
-            self.VerseNumberBox.setValue(int(verse_number))
-            self.InsertButton.setVisible(False)
+                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
+            self.verseNumberBox.setValue(int(verse_number))
+            self.insertButton.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % VerseType.to_string(VerseType.Verse)
-            self.VerseTypeComboBox.setCurrentIndex(0)
-            self.VerseNumberBox.setValue(1)
-            self.InsertButton.setVisible(True)
-        self.VerseTextEdit.setPlainText(text)
-        self.VerseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
-        self.VerseTextEdit.moveCursor(QtGui.QTextCursor.End)
+                text = u'---[%s:1]---\n' % \
+                    VerseType.TranslatedNames[VerseType.Verse]
+            self.verseTypeComboBox.setCurrentIndex(0)
+            self.verseNumberBox.setValue(1)
+            self.insertButton.setVisible(True)
+        self.verseTextEdit.setPlainText(text)
+        self.verseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.verseTextEdit.moveCursor(QtGui.QTextCursor.End)
 
     def getVerse(self):
-        return self.VerseTextEdit.toPlainText(), \
-            VerseType.to_string(self.VerseTypeComboBox.currentIndex()), \
-            unicode(self.VerseNumberBox.value())
+        return self.verseTextEdit.toPlainText(), \
+            VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
+            unicode(self.verseNumberBox.value())
 
     def getVerseAll(self):
-        text = self.VerseTextEdit.toPlainText()
+        text = self.verseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse),
-                text)
+            text = u'---[%s:1]---\n%s' % \
+                (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
 
+    def accept(self):
+        if self.hasSingleVerse:
+            value = unicode(self.getVerse()[0])
+        else:
+            value = self.getVerse()[0].split(u'\n')[1]
+        if len(value) == 0:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                'You need to type some text in to the verse.'))
+            return False
+        QtGui.QDialog.accept(self)

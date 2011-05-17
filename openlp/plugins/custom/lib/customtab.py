@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,34 +32,31 @@ class CustomTab(SettingsTab):
     """
     CustomTab is the Custom settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, parent, title, visible_title, icon_path):
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        self.tabTitleVisible = translate('CustomPlugin.CustomTab', 'Custom')
-        self.CustomLayout = QtGui.QFormLayout(self)
-        self.CustomLayout.setObjectName(u'CustomLayout')
-        self.CustomModeGroupBox = QtGui.QGroupBox(self)
-        self.CustomModeGroupBox.setObjectName(u'CustomModeGroupBox')
-        self.CustomModeLayout = QtGui.QVBoxLayout(self.CustomModeGroupBox)
-        self.CustomModeLayout.setSpacing(8)
-        self.CustomModeLayout.setMargin(8)
-        self.CustomModeLayout.setObjectName(u'CustomModeLayout')
-        self.DisplayFooterCheckBox = QtGui.QCheckBox(self.CustomModeGroupBox)
-        self.DisplayFooterCheckBox.setObjectName(u'DisplayFooterCheckBox')
-        self.CustomModeLayout.addWidget(self.DisplayFooterCheckBox)
-        self.CustomLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.CustomModeGroupBox)
-        QtCore.QObject.connect(self.DisplayFooterCheckBox,
+        SettingsTab.setupUi(self)
+        self.customModeGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.customModeGroupBox.setObjectName(u'customModeGroupBox')
+        self.customModeLayout = QtGui.QFormLayout(self.customModeGroupBox)
+        self.customModeLayout.setObjectName(u'customModeLayout')
+        self.displayFooterCheckBox = QtGui.QCheckBox(self.customModeGroupBox)
+        self.displayFooterCheckBox.setObjectName(u'displayFooterCheckBox')
+        self.customModeLayout.addRow(self.displayFooterCheckBox)
+        self.leftLayout.addWidget(self.customModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
+        QtCore.QObject.connect(self.displayFooterCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)
 
     def retranslateUi(self):
-        self.CustomModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
+        self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
             'Custom Display'))
-        self.DisplayFooterCheckBox.setText(
-            translate('CustomPlugin.CustomTab', 'Display Footer'))
+        self.displayFooterCheckBox.setText(
+            translate('CustomPlugin.CustomTab', 'Display footer'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False
@@ -70,7 +68,7 @@ class CustomTab(SettingsTab):
         self.displayFooter = QtCore.QSettings().value(
             self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool()
-        self.DisplayFooterCheckBox.setChecked(self.displayFooter)
+        self.displayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
         QtCore.QSettings().setValue(self.settingsSection + u'/display footer',

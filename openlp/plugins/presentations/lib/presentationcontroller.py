@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,134 +30,10 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, resize_image
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
-
-class PresentationController(object):
-    """
-    Base class for presentation controllers to inherit from
-    Class to control interactions with presentations.
-    It creates the runtime environment
-    To create a new controller, take a copy of this file and name it
-    so it ends in controller.py, i.e. foobarcontroller.py
-    Make sure it inherits PresentationController
-    Then fill in the blanks. If possible try and make sure it loads
-    on all platforms, using for example os.name checks, although
-    __init__, check_available and presentation_deleted should always work.
-    See impresscontroller, powerpointcontroller or pptviewcontroller
-    for examples.
-
-    **Basic Attributes**
-
-    ``name``
-        The name that appears in the options and the media manager
-
-    ``enabled``
-        The controller is enabled
-
-    ``available``
-        The controller is available on this machine. Set by init via
-        call to check_available
-
-    ``plugin``
-        The presentationplugin object
-
-    **Hook Functions**
-
-    ``kill()``
-        Called at system exit to clean up any running presentations
-
-    ``check_available()``
-        Returns True if presentation application is installed/can run on this
-        machine
-
-    ``presentation_deleted()``
-        Deletes presentation specific files, e.g. thumbnails
-
-    """
-    log.info(u'PresentationController loaded')
-
-    def __init__(self, plugin=None, name=u'PresentationController'):
-        """
-        This is the constructor for the presentationcontroller object.  This
-        provides an easy way for descendent plugins to populate common data.
-        This method *must* be overridden, like so::
-
-            class MyPresentationController(PresentationController):
-                def __init__(self, plugin):
-                    PresentationController.__init(
-                        self, plugin, u'My Presenter App')
-
-        ``plugin``
-            Defaults to *None*. The presentationplugin object
-
-        ``name``
-            Name of the application, to appear in the application
-        """
-        self.supports = []
-        self.alsosupports = []
-        self.docs = []
-        self.plugin = plugin
-        self.name = name
-        self.settings_section = self.plugin.settingsSection
-        self.available = self.check_available()
-        if self.available:
-            self.enabled = QtCore.QSettings().value(
-                self.settings_section + u'/' + name,
-                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
-                    QtCore.Qt.Checked
-        else:
-            self.enabled = False
-        self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
-            name, u'thumbnails')
-        self.thumbnailprefix = u'slide'
-        if not os.path.isdir(self.thumbnailroot):
-            os.makedirs(self.thumbnailroot)
-
-    def check_available(self):
-        """
-        Presentation app is able to run on this machine
-        """
-        return False
-
-    def start_process(self):
-        """
-        Loads a running version of the presentation application in the
-        background.
-        """
-        pass
-
-    def kill(self):
-        """
-        Called at system exit to clean up any running presentations and
-        close the application
-        """
-        log.debug(u'Kill')
-        self.close_presentation()
-
-    def add_doc(self, name):
-        """
-        Called when a new presentation document is opened
-        """
-        doc = PresentationDocument(self, name)
-        self.docs.append(doc)
-        return doc
-
-    def remove_doc(self, doc=None):
-        """
-        Called to remove an open document from the collection
-        """
-        log.debug(u'remove_doc Presentation')
-        if doc is None:
-            return
-        if doc in self.docs:
-            self.docs.remove(doc)
-
-    def close_presentation(self):
-        pass
 
 class PresentationDocument(object):
     """
@@ -208,14 +85,19 @@ class PresentationDocument(object):
     ``previous_step()``
         Triggers the previous slide on the running presentation
 
-    ``get_slide_preview_file(slide_no)``
+    ``get_thumbnail_path(slide_no, check_exists)``
         Returns a path to an image containing a preview for the requested slide
 
     """
     def __init__(self, controller, name):
+        """
+        Constructor for the PresentationController class
+        """
         self.slidenumber = 0
         self.controller = controller
-        self.store_filename(name)
+        self.filepath = name
+        if not os.path.isdir(self.get_thumbnail_folder()):
+            os.mkdir(self.get_thumbnail_folder())
 
     def load_presentation(self):
         """
@@ -223,10 +105,11 @@ class PresentationDocument(object):
         Loads the presentation and starts it
 
         ``presentation``
-        The file name of the presentations to the run.
+            The file name of the presentations to the run.
 
+        Returns False if the file could not be opened
         """
-        pass
+        return False
 
     def presentation_deleted(self):
         """
@@ -234,33 +117,37 @@ class PresentationDocument(object):
         a file, e.g. thumbnails
         """
         try:
-            shutil.rmtree(self.thumbnailpath)
+            shutil.rmtree(self.get_thumbnail_folder())
+            shutil.rmtree(self.get_temp_folder())
         except OSError:
             log.exception(u'Failed to delete presentation controller files')
 
-    def store_filename(self, presentation):
+    def get_file_name(self):
         """
-        Set properties for the filename and thumbnail paths
+        Return just the filename of the presention, without the directory
         """
-        self.filepath = presentation
-        self.filename = self.get_file_name(presentation)
-        self.thumbnailpath = self.get_thumbnail_path(presentation)
-        if not os.path.isdir(self.thumbnailpath):
-            os.mkdir(self.thumbnailpath)
+        return os.path.split(self.filepath)[1]
 
-    def get_file_name(self, presentation):
-        return os.path.split(presentation)[1]
-
-    def get_thumbnail_path(self, presentation):
+    def get_thumbnail_folder(self):
+        """
+        The location where thumbnail images will be stored
+        """
         return os.path.join(
-            self.controller.thumbnailroot, self.get_file_name(presentation))
+            self.controller.thumbnail_folder, self.get_file_name())
+
+    def get_temp_folder(self):
+        """
+        The location where thumbnail images will be stored
+        """
+        return os.path.join(
+            self.controller.temp_folder, self.get_file_name())
 
     def check_thumbnails(self):
         """
         Returns true if the thumbnail images look to exist and are more
         recent than the powerpoint
         """
-        lastimage = self.get_slide_preview_file(self.get_slide_count())
+        lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
         if not (lastimage and os.path.isfile(lastimage)):
             return False
         imgdate = os.stat(lastimage).st_mtime
@@ -350,16 +237,27 @@ class PresentationDocument(object):
         """
         pass
 
-    def get_slide_preview_file(self, slide_no):
+    def convert_thumbnail(self, file, idx):
+        """
+        Convert the slide image the application made to a standard 320x240
+        .png image.
+        """
+        if self.check_thumbnails():
+            return
+        if os.path.isfile(file):
+            img = resize_image(file, 320, 240)
+            img.save(self.get_thumbnail_path(idx, False))
+
+    def get_thumbnail_path(self, slide_no, check_exists):
         """
         Returns an image path containing a preview for the requested slide
 
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
+        path = os.path.join(self.get_thumbnail_folder(),
+            self.controller.thumbnail_prefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path) or not check_exists:
             return path
         else:
             return None
@@ -399,3 +297,150 @@ class PresentationDocument(object):
         """
         return ''
 
+
+class PresentationController(object):
+    """
+    This class is used to control interactions with presentation applications
+    by creating a runtime environment. This is a base class for presentation
+    controllers to inherit from.
+
+    To create a new controller, take a copy of this file and name it so it ends
+    with ``controller.py``, i.e. ``foobarcontroller.py``. Make sure it inherits
+    :class:`~openlp.plugins.presentations.lib.presentationcontroller.PresentationController`,
+    and then fill in the blanks. If possible try to make sure it loads on all
+    platforms, usually by using :mod:``os.name`` checks, although
+    ``__init__``, ``check_available`` and ``presentation_deleted`` should
+    always be implemented.
+
+    See :class:`~openlp.plugins.presentations.lib.impresscontroller.ImpressController`,
+    :class:`~openlp.plugins.presentations.lib.powerpointcontroller.PowerpointController` or
+    :class:`~openlp.plugins.presentations.lib.pptviewcontroller.PptviewController`
+    for examples.
+
+    **Basic Attributes**
+
+    ``name``
+        The name that appears in the options and the media manager
+
+    ``enabled``
+        The controller is enabled
+
+    ``available``
+        The controller is available on this machine. Set by init via
+        call to check_available
+
+    ``plugin``
+        The presentationplugin object
+
+    ``supports``
+        The primary native file types this application supports
+
+    ``alsosupports``
+        Other file types the application can import, although not necessarily
+        the first choice due to potential incompatibilities
+
+    **Hook Functions**
+
+    ``kill()``
+        Called at system exit to clean up any running presentations
+
+    ``check_available()``
+        Returns True if presentation application is installed/can run on this
+        machine
+
+    ``presentation_deleted()``
+        Deletes presentation specific files, e.g. thumbnails
+
+    """
+    log.info(u'PresentationController loaded')
+
+    def __init__(self, plugin=None, name=u'PresentationController',
+        document_class=PresentationDocument):
+        """
+        This is the constructor for the presentationcontroller object. This
+        provides an easy way for descendent plugins to populate common data.
+        This method *must* be overridden, like so::
+
+            class MyPresentationController(PresentationController):
+                def __init__(self, plugin):
+                    PresentationController.__init(
+                        self, plugin, u'My Presenter App')
+
+        ``plugin``
+            Defaults to *None*. The presentationplugin object
+
+        ``name``
+            Name of the application, to appear in the application
+        """
+        self.supports = []
+        self.alsosupports = []
+        self.docs = []
+        self.plugin = plugin
+        self.name = name
+        self.document_class = document_class
+        self.settings_section = self.plugin.settingsSection
+        self.available = self.check_available()
+        self.temp_folder = os.path.join(
+            AppLocation.get_section_data_path(self.settings_section), name)
+        self.thumbnail_folder = os.path.join(
+            AppLocation.get_section_data_path(self.settings_section),
+            u'thumbnails')
+        self.thumbnail_prefix = u'slide'
+        if not os.path.isdir(self.thumbnail_folder):
+            os.makedirs(self.thumbnail_folder)
+        if not os.path.isdir(self.temp_folder):
+            os.makedirs(self.temp_folder)
+
+    def enabled(self):
+        """
+        Return whether the controller is currently enabled
+        """
+        if self.available:
+            return QtCore.QSettings().value(
+                self.settings_section + u'/' + self.name,
+                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
+                    QtCore.Qt.Checked
+        else:
+            return False
+
+    def check_available(self):
+        """
+        Presentation app is able to run on this machine
+        """
+        return False
+
+    def start_process(self):
+        """
+        Loads a running version of the presentation application in the
+        background.
+        """
+        pass
+
+    def kill(self):
+        """
+        Called at system exit to clean up any running presentations and
+        close the application
+        """
+        log.debug(u'Kill')
+        self.close_presentation()
+
+    def add_document(self, name):
+        """
+        Called when a new presentation document is opened
+        """
+        document = self.document_class(self, name)
+        self.docs.append(document)
+        return document
+
+    def remove_doc(self, doc=None):
+        """
+        Called to remove an open document from the collection
+        """
+        log.debug(u'remove_doc Presentation')
+        if doc is None:
+            return
+        if doc in self.docs:
+            self.docs.remove(doc)
+
+    def close_presentation(self):
+        pass

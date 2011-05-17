@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,34 +32,45 @@ class SongsTab(SettingsTab):
     """
     SongsTab is the Songs settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, parent, title, visible_title, icon_path):
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.tabTitleVisible = translate('SongsPlugin.SongsTab', 'Songs')
-        self.SongsLayout = QtGui.QFormLayout(self)
-        self.SongsLayout.setObjectName(u'SongsLayout')
-        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.SongsModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
         self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
-        self.SongsModeLayout.setSpacing(8)
-        self.SongsModeLayout.setMargin(8)
         self.SongsModeLayout.setObjectName(u'SongsModeLayout')
         self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
         self.SongsModeLayout.addWidget(self.SearchAsTypeCheckBox)
         self.SongBarActiveCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
-        self.SongBarActiveCheckBox.setObjectName(u'SearchAsTypeCheckBox')
+        self.SongBarActiveCheckBox.setObjectName(u'SongBarActiveCheckBox')
         self.SongsModeLayout.addWidget(self.SongBarActiveCheckBox)
-        self.SongsLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        self.SongUpdateOnEditCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SongUpdateOnEditCheckBox.setObjectName(u'SongUpdateOnEditCheckBox')
+        self.SongsModeLayout.addWidget(self.SongUpdateOnEditCheckBox)
+        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(
+            self.SongsModeGroupBox)
+        self.SongAddFromServiceCheckBox.setObjectName(
+            u'SongAddFromServiceCheckBox')
+        self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
+        self.leftLayout.addWidget(self.SongsModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)
         QtCore.QObject.connect(self.SongBarActiveCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.SongBarActiveCheckBoxChanged)
+            self.onSongBarActiveCheckBoxChanged)
+        QtCore.QObject.connect(self.SongUpdateOnEditCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSongUpdateOnEditCheckBoxChanged)
+        QtCore.QObject.connect(self.SongAddFromServiceCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSongAddFromServiceCheckBoxChanged)
 
     def retranslateUi(self):
         self.SongsModeGroupBox.setTitle(
@@ -66,7 +78,12 @@ class SongsTab(SettingsTab):
         self.SearchAsTypeCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.SongBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
-            'Display Verses on Live Tool bar'))
+            'Display verses on live tool bar'))
+        self.SongUpdateOnEditCheckBox.setText(
+            translate('SongsPlugin.SongsTab', 'Update service from song edit'))
+        self.SongAddFromServiceCheckBox.setText(
+            translate('SongsPlugin.SongsTab',
+            'Add missing songs when opening service'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False
@@ -74,11 +91,23 @@ class SongsTab(SettingsTab):
         if check_state == QtCore.Qt.Checked:
             self.song_search = True
 
-    def SongBarActiveCheckBoxChanged(self, check_state):
+    def onSongBarActiveCheckBoxChanged(self, check_state):
         self.song_bar = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
             self.song_bar = True
+
+    def onSongUpdateOnEditCheckBoxChanged(self, check_state):
+        self.update_edit = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.update_edit = True
+
+    def onSongAddFromServiceCheckBoxChanged(self, check_state):
+        self.update_load = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.update_load = True
 
     def load(self):
         settings = QtCore.QSettings()
@@ -87,8 +116,14 @@ class SongsTab(SettingsTab):
             u'search as type', QtCore.QVariant(False)).toBool()
         self.song_bar = settings.value(
             u'display songbar', QtCore.QVariant(True)).toBool()
+        self.update_edit = settings.value(
+            u'update service on edit', QtCore.QVariant(False)).toBool()
+        self.update_load = settings.value(
+            u'add song from service', QtCore.QVariant(True)).toBool()
         self.SearchAsTypeCheckBox.setChecked(self.song_search)
         self.SongBarActiveCheckBox.setChecked(self.song_bar)
+        self.SongUpdateOnEditCheckBox.setChecked(self.update_edit)
+        self.SongAddFromServiceCheckBox.setChecked(self.update_load)
         settings.endGroup()
 
     def save(self):
@@ -96,4 +131,8 @@ class SongsTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
+        settings.setValue(u'update service on edit',
+            QtCore.QVariant(self.update_edit))
+        settings.setValue(u'add song from service',
+            QtCore.QVariant(self.update_load))
         settings.endGroup()

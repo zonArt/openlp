@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to
+manage settings persistence.  QSettings provides a single API for saving and
+retrieving settings from the application but writes to disk in an OS dependant
+format.
+"""
 import os
 
 from PyQt4 import QtCore
@@ -31,33 +37,9 @@ from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
     """
-    Class to control the initial settings for the UI and provide helper
-    functions for the loading and saving of application settings.
+    Class to provide helper functions for the loading and saving of application
+    settings.
     """
-    def __init__(self, screen):
-        self.screen = screen.current
-        self.width = self.screen[u'size'].width()
-        self.height = self.screen[u'size'].height()
-        self.mainwindow_height = self.height * 0.8
-        mainwindow_docbars = self.width / 5
-        self.mainwindow_left = 0
-        self.mainwindow_right = 0
-        if mainwindow_docbars > 300:
-            self.mainwindow_left = 300
-            self.mainwindow_right = 300
-        else:
-            self.mainwindow_left = mainwindow_docbars
-            self.mainwindow_right = mainwindow_docbars
-        self.slidecontroller = (self.width - (
-            self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
-        self.slidecontroller_image = self.slidecontroller - 50
-
-        self.showPreviewPanel = QtCore.QSettings().value(
-            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
-
-    def togglePreviewPanel(self, isVisible):
-        QtCore.QSettings().setValue(u'user interface/preview panel',
-            QtCore.QVariant(isVisible))
 
     @staticmethod
     def get_last_dir(section, num=None):
@@ -65,7 +47,7 @@ class SettingsManager(object):
         Read the last directory used for plugin.
 
         ``section``
-            The section of code calling the method.  This is used in the
+            The section of code calling the method. This is used in the
             settings key.
 
         ``num``
@@ -85,7 +67,7 @@ class SettingsManager(object):
         Save the last directory used for plugin.
 
         ``section``
-            The section of code calling the method.  This is used in the
+            The section of code calling the method. This is used in the
             settings key.
 
         ``directory``
@@ -161,11 +143,11 @@ class SettingsManager(object):
         Get a list of files from the data files path.
 
         ``section``
-            Defaults to *None*.  The section of code getting the files - used
+            Defaults to *None*. The section of code getting the files - used
             to load from a section's data subdirectory.
 
         ``extension``
-            Defaults to *None*.  The extension to search for.
+            Defaults to *None*. The extension to search for.
         """
         path = AppLocation.get_data_path()
         if section:
@@ -180,4 +162,3 @@ class SettingsManager(object):
         else:
             # no filtering required
             return files
-

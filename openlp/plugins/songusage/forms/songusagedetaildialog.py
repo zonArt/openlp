@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,74 +25,71 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SongUsageDetailDialog(object):
-    def setupUi(self, SongUsageDetailDialog):
-        SongUsageDetailDialog.setObjectName(u'SongUsageDetailDialog')
-        SongUsageDetailDialog.resize(609, 413)
-        self.verticalLayout = QtGui.QVBoxLayout(SongUsageDetailDialog)
+    def setupUi(self, songUsageDetailDialog):
+        songUsageDetailDialog.setObjectName(u'songUsageDetailDialog')
+        songUsageDetailDialog.resize(609, 413)
+        self.verticalLayout = QtGui.QVBoxLayout(songUsageDetailDialog)
         self.verticalLayout.setObjectName(u'verticalLayout')
-        self.DateRangeGroupBox = QtGui.QGroupBox(SongUsageDetailDialog)
-        self.DateRangeGroupBox.setObjectName(u'DateRangeGroupBox')
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.DateRangeGroupBox)
-        self.verticalLayout_2.setObjectName(u'verticalLayout_2')
-        self.DateHorizontalLayout = QtGui.QHBoxLayout()
-        self.DateHorizontalLayout.setObjectName(u'DateHorizontalLayout')
-        self.FromDate = QtGui.QCalendarWidget(self.DateRangeGroupBox)
-        self.FromDate.setObjectName(u'FromDate')
-        self.DateHorizontalLayout.addWidget(self.FromDate)
-        self.ToLabel = QtGui.QLabel(self.DateRangeGroupBox)
-        self.ToLabel.setScaledContents(False)
-        self.ToLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.ToLabel.setObjectName(u'ToLabel')
-        self.DateHorizontalLayout.addWidget(self.ToLabel)
-        self.ToDate = QtGui.QCalendarWidget(self.DateRangeGroupBox)
-        self.ToDate.setObjectName(u'ToDate')
-        self.DateHorizontalLayout.addWidget(self.ToDate)
-        self.verticalLayout_2.addLayout(self.DateHorizontalLayout)
-        self.FileGroupBox = QtGui.QGroupBox(self.DateRangeGroupBox)
-        self.FileGroupBox.setObjectName(u'FileGroupBox')
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.FileGroupBox)
-        self.verticalLayout_4.setObjectName(u'verticalLayout_4')
+        self.dateRangeGroupBox = QtGui.QGroupBox(songUsageDetailDialog)
+        self.dateRangeGroupBox.setObjectName(u'dateRangeGroupBox')
+        self.verticalLayout2 = QtGui.QVBoxLayout(self.dateRangeGroupBox)
+        self.verticalLayout2.setObjectName(u'verticalLayout2')
+        self.dateHorizontalLayout = QtGui.QHBoxLayout()
+        self.dateHorizontalLayout.setObjectName(u'dateHorizontalLayout')
+        self.fromDate = QtGui.QCalendarWidget(self.dateRangeGroupBox)
+        self.fromDate.setObjectName(u'fromDate')
+        self.dateHorizontalLayout.addWidget(self.fromDate)
+        self.toLabel = QtGui.QLabel(self.dateRangeGroupBox)
+        self.toLabel.setScaledContents(False)
+        self.toLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.toLabel.setObjectName(u'toLabel')
+        self.dateHorizontalLayout.addWidget(self.toLabel)
+        self.toDate = QtGui.QCalendarWidget(self.dateRangeGroupBox)
+        self.toDate.setObjectName(u'toDate')
+        self.dateHorizontalLayout.addWidget(self.toDate)
+        self.verticalLayout2.addLayout(self.dateHorizontalLayout)
+        self.fileGroupBox = QtGui.QGroupBox(self.dateRangeGroupBox)
+        self.fileGroupBox.setObjectName(u'fileGroupBox')
+        self.verticalLayout4 = QtGui.QVBoxLayout(self.fileGroupBox)
+        self.verticalLayout4.setObjectName(u'verticalLayout4')
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.FileLineEdit = QtGui.QLineEdit(self.FileGroupBox)
-        self.FileLineEdit.setObjectName(u'FileLineEdit')
-        self.horizontalLayout.addWidget(self.FileLineEdit)
-        self.SaveFilePushButton = QtGui.QPushButton(self.FileGroupBox)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/general/general_load.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.SaveFilePushButton.setIcon(icon)
-        self.SaveFilePushButton.setObjectName(u'SaveFilePushButton')
-        self.horizontalLayout.addWidget(self.SaveFilePushButton)
-        self.verticalLayout_4.addLayout(self.horizontalLayout)
-        self.verticalLayout_2.addWidget(self.FileGroupBox)
-        self.verticalLayout.addWidget(self.DateRangeGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(SongUsageDetailDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
+        self.fileLineEdit.setObjectName(u'fileLineEdit')
+        self.fileLineEdit.setReadOnly(True)
+        self.fileLineEdit.setEnabled(False)
+        self.horizontalLayout.addWidget(self.fileLineEdit)
+        self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
+        self.saveFilePushButton.setIcon(
+            build_icon(u':/general/general_open.png'))
+        self.saveFilePushButton.setObjectName(u'saveFilePushButton')
+        self.horizontalLayout.addWidget(self.saveFilePushButton)
+        self.verticalLayout4.addLayout(self.horizontalLayout)
+        self.verticalLayout2.addWidget(self.fileGroupBox)
+        self.verticalLayout.addWidget(self.dateRangeGroupBox)
+        self.buttonBox = create_accept_reject_button_box(
+            songUsageDetailDialog, True)
         self.verticalLayout.addWidget(self.buttonBox)
-
-        self.retranslateUi(SongUsageDetailDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            SongUsageDetailDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            SongUsageDetailDialog.close)
-        QtCore.QObject.connect(self.SaveFilePushButton,
+        self.retranslateUi(songUsageDetailDialog)
+        QtCore.QObject.connect(self.saveFilePushButton,
             QtCore.SIGNAL(u'pressed()'),
-            SongUsageDetailDialog.defineOutputLocation)
-        QtCore.QMetaObject.connectSlotsByName(SongUsageDetailDialog)
+            songUsageDetailDialog.defineOutputLocation)
+        QtCore.QMetaObject.connectSlotsByName(songUsageDetailDialog)
 
-    def retranslateUi(self, SongUsageDetailDialog):
-        SongUsageDetailDialog.setWindowTitle(
-            translate('SongsPlugin.AuditDetailDialog',
-                'Song Usage Extraction'))
-        self.DateRangeGroupBox.setTitle(
-            translate('SongsPlugin.AuditDetailDialog', 'Select Date Range'))
-        self.ToLabel.setText(
-            translate('SongsPlugin.AuditDetailDialog', 'to'))
-        self.FileGroupBox.setTitle(
-            translate('SongsPlugin.AuditDetailDialog', 'Report Location'))
+    def retranslateUi(self, songUsageDetailDialog):
+        songUsageDetailDialog.setWindowTitle(
+            translate('SongUsagePlugin.SongUsageDetailForm',
+            'Song Usage Extraction'))
+        self.dateRangeGroupBox.setTitle(
+            translate('SongUsagePlugin.SongUsageDetailForm',
+            'Select Date Range'))
+        self.toLabel.setText(
+            translate('SongUsagePlugin.SongUsageDetailForm', 'to'))
+        self.fileGroupBox.setTitle(
+            translate('SongUsagePlugin.SongUsageDetailForm',
+            'Report Location'))

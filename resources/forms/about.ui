@@ -23,7 +23,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="AboutDialogLayout">
+  <layout class="QVBoxLayout" name="aboutDialogLayout">
    <property name="spacing">
     <number>8</number>
    </property>
@@ -47,11 +47,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QTabWidget" name="AboutNotebook">
+    <widget class="QTabWidget" name="aboutNotebook">
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="AboutTab">
+     <widget class="QWidget" name="aboutTab">
       <attribute name="title">
        <string>About</string>
       </attribute>
@@ -63,7 +63,7 @@
         <number>8</number>
        </property>
        <item>
-        <widget class="QPlainTextEdit" name="AboutTextEdit">
+        <widget class="QPlainTextEdit" name="aboutTextEdit">
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -80,11 +80,11 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="CreditsTab">
+     <widget class="QWidget" name="creditsTab">
       <attribute name="title">
        <string>Credits</string>
       </attribute>
-      <layout class="QVBoxLayout" name="CreditsTabLayout">
+      <layout class="QVBoxLayout" name="creditsTabLayout">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -92,7 +92,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
         <number>8</number>
        </property>
        <item>
-        <widget class="QPlainTextEdit" name="CreditsTextEdit">
+        <widget class="QPlainTextEdit" name="creditsTextEdit">
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -116,11 +116,11 @@ Testers
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="LicenseTab">
+     <widget class="QWidget" name="licenseTab">
       <attribute name="title">
        <string>License</string>
       </attribute>
-      <layout class="QVBoxLayout" name="LicenseTabLayout">
+      <layout class="QVBoxLayout" name="licenseTabLayout">
        <property name="spacing">
         <number>8</number>
        </property>
@@ -128,7 +128,7 @@ Testers
         <number>8</number>
        </property>
        <item>
-        <widget class="QPlainTextEdit" name="LicenseTextEdit">
+        <widget class="QPlainTextEdit" name="licenseTextEdit">
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -272,8 +272,8 @@ This General Public License does not permit incorporating your program into prop
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="ButtonWidget" native="true">
-     <layout class="QHBoxLayout" name="ButtonWidgetLayout">
+    <widget class="QWidget" name="buttonWidget" native="true">
+     <layout class="QHBoxLayout" name="buttonWidgetLayout">
       <property name="spacing">
        <number>8</number>
       </property>
@@ -294,7 +294,7 @@ This General Public License does not permit incorporating your program into prop
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="ContributeButton">
+       <widget class="QPushButton" name="contributeButton">
         <property name="text">
          <string>Contribute</string>
         </property>
@@ -305,7 +305,7 @@ This General Public License does not permit incorporating your program into prop
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="CloseButton">
+       <widget class="QPushButton" name="closeButton">
         <property name="text">
          <string>Close</string>
         </property>
@@ -326,14 +326,14 @@ This General Public License does not permit incorporating your program into prop
   </action>
  </widget>
  <tabstops>
-  <tabstop>ContributeButton</tabstop>
+  <tabstop>contributeButton</tabstop>
  </tabstops>
  <resources>
   <include location="../images/openlp-2.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>CloseButton</sender>
+   <sender>closeButton</sender>
    <signal>clicked()</signal>
    <receiver>AboutDialog</receiver>
    <slot>close()</slot>

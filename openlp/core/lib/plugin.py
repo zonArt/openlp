@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,12 +23,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide the generic plugin functionality for OpenLP plugins.
+"""
 import logging
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +43,23 @@ class PluginStatus(object):
     Active = 1
     Inactive = 0
     Disabled = -1
+
+
+class StringContent(object):
+    """
+    Provide standard strings for objects to use.
+    """
+    Name = u'name'
+    Import = u'import'
+    Load = u'load'
+    New = u'new'
+    Edit = u'edit'
+    Delete = u'delete'
+    Preview = u'preview'
+    Live = u'live'
+    Service = u'service'
+    VisibleName = u'visible_name'
+
 
 class Plugin(QtCore.QObject):
     """
@@ -65,23 +87,23 @@ class Plugin(QtCore.QObject):
 
     **Hook Functions**
 
-    ``check_pre_conditions()``
+    ``checkPreConditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``get_media_manager_item()``
+    ``getMediaManagerItem()``
         Returns an instance of MediaManagerItem to be used in the Media Manager.
 
-    ``add_import_menu_item(import_menu)``
+    ``addImportMenuItem(import_menu)``
         Add an item to the Import menu.
 
-    ``add_export_menu_item(export_menu)``
+    ``addExportMenuItem(export_menu)``
         Add an item to the Export menu.
 
-    ``get_settings_tab()``
+    ``getSettingsTab()``
         Returns an instance of SettingsTabItem to be used in the Settings
         dialog.
 
-    ``add_to_menu(menubar)``
+    ``addToMenu(menubar)``
         A method to add a menu item to anywhere in the menu, given the menu bar.
 
     ``handle_event(event)``
@@ -93,7 +115,8 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, version=None, plugin_helpers=None):
+    def __init__(self, name, plugin_helpers=None, media_item_class=None,
+        settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -101,7 +124,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init(self, u'MyPlugin', u'0.1')
+                    Plugin.__init__(self, u'MyPlugin', version=u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.
@@ -111,29 +134,44 @@ class Plugin(QtCore.QObject):
 
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
+
+        ``media_item_class``
+            The class name of the plugin's media item.
+
+        ``settings_tab_class``
+            The class name of the plugin's settings tab.
         """
+        log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
+        self.textStrings = {}
+        self.setPluginTextStrings()
+        self.nameStrings = self.textStrings[StringContent.Name]
         if version:
             self.version = version
+        else:
+            self.version = get_application_version()[u'version']
         self.settingsSection = self.name.lower()
         self.icon = None
+        self.media_item_class = media_item_class
+        self.settings_tab_class = settings_tab_class
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.preview_controller = plugin_helpers[u'preview']
-        self.live_controller = plugin_helpers[u'live']
-        self.render_manager = plugin_helpers[u'render']
-        self.service_manager = plugin_helpers[u'service']
-        self.settings_form = plugin_helpers[u'settings form']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderer = plugin_helpers[u'renderer']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
         self.mediadock = plugin_helpers[u'toolbox']
-        self.maindisplay = plugin_helpers[u'maindisplay']
+        self.pluginManager = plugin_helpers[u'pluginmanager']
+        self.formparent = plugin_helpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
-            self.process_add_service_event)
+            self.processAddServiceEvent)
 
-    def check_pre_conditions(self):
+    def checkPreConditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
@@ -142,7 +180,7 @@ class Plugin(QtCore.QObject):
         """
         return True
 
-    def set_status(self):
+    def setStatus(self):
         """
         Sets the status of the plugin
         """
@@ -150,15 +188,19 @@ class Plugin(QtCore.QObject):
             self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
-    def toggle_status(self, new_status):
+    def toggleStatus(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        if new_status == PluginStatus.Active:
+            self.initialise()
+        elif new_status == PluginStatus.Inactive:
+            self.finalise()
 
-    def is_active(self):
+    def isActive(self):
         """
         Indicates if the plugin is active
 
@@ -166,47 +208,54 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
-        pass
+        if self.media_item_class:
+            return self.media_item_class(self, self, self.icon)
+        return None
 
-    def add_import_menu_item(self, import_menu):
+    def addImportMenuItem(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``import_menu``
+        ``importMenu``
             The Import menu.
         """
         pass
 
-    def add_export_menu_item(self, export_menu):
+    def addExportMenuItem(self, exportMenu):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``export_menu``
+        ``exportMenu``
             The Export menu
         """
         pass
 
-    def add_tools_menu_item(self, tools_menu):
+    def addToolsMenuItem(self, toolsMenu):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``tools_menu``
+        ``toolsMenu``
             The Tools menu
         """
         pass
 
-    def get_settings_tab(self):
+    def getSettingsTab(self, parent):
         """
-        Create a tab for the settings window.
+        Create a tab for the settings window to display the configurable
+        options for this plugin to the user.
         """
-        pass
+        if self.settings_tab_class:
+            return self.settings_tab_class(parent, self.name,
+                self.getString(StringContent.VisibleName)[u'title'],
+                self.icon_path)
+        return None
 
-    def add_to_menu(self, menubar):
+    def addToMenu(self, menubar):
         """
         Add menu items to the menu, given the menubar.
 
@@ -215,16 +264,16 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def process_add_service_event(self, replace=False):
+    def processAddServiceEvent(self, replace=False):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'process_add_service_event event called for plugin %s' %
+        log.debug(u'processAddServiceEvent event called for plugin %s' %
             self.name)
         if replace:
-            self.media_item.onAddEditClick()
+            self.mediaItem.onAddEditClick()
         else:
-            self.media_item.onAddClick()
+            self.mediaItem.onAddClick()
 
     def about(self):
         """
@@ -238,33 +287,76 @@ class Plugin(QtCore.QObject):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        if self.media_item:
-            self.media_item.initialise()
+        if self.mediaItem:
+            self.mediaItem.initialise()
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
+        if self.mediaItem:
+            self.mediadock.remove_dock(self.mediaItem)
+
+    def usesTheme(self, theme):
+        """
+        Called to find out if a plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
+        return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme a plugin is using making the plugin use the new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
         pass
 
-    def remove_toolbox_item(self):
+    def getString(self, name):
         """
-        Called by the plugin to remove toolbar
+        encapsulate access of plugins translated text strings
         """
-        self.mediadock.remove_dock(self.name)
-        self.settings_form.removeTab(self.name)
+        return self.textStrings[name]
 
-    def insert_toolbox_item(self):
+    def setPluginUiTextStrings(self, tooltips):
         """
-        Called by plugin to replace toolbar
+        Called to define all translatable texts of the plugin
         """
-        if self.media_item:
-            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
-        if self.settings_tab:
-            self.settings_form.insertTab(self.settings_tab, self.weight)
+        ## Load Action ##
+        self.__setNameTextString(StringContent.Load,
+            UiStrings().Load, tooltips[u'load'])
+        ## Import Action ##
+        self.__setNameTextString(StringContent.Import,
+            UiStrings().Import, tooltips[u'import'])
+        ## New Action ##
+        self.__setNameTextString(StringContent.New,
+            UiStrings().Add, tooltips[u'new'])
+        ## Edit Action ##
+        self.__setNameTextString(StringContent.Edit,
+            UiStrings().Edit, tooltips[u'edit'])
+        ## Delete Action ##
+        self.__setNameTextString(StringContent.Delete,
+            UiStrings().Delete, tooltips[u'delete'])
+        ## Preview Action ##
+        self.__setNameTextString(StringContent.Preview,
+            UiStrings().Preview, tooltips[u'preview'])
+        ## Send Live Action ##
+        self.__setNameTextString(StringContent.Live,
+            UiStrings().Live, tooltips[u'live'])
+        ## Add to Service Action ##
+        self.__setNameTextString(StringContent.Service,
+            UiStrings().Service, tooltips[u'service'])
 
-    def can_delete_theme(self, theme):
+    def __setNameTextString(self, name, title, tooltip):
         """
-        Called to ask the plugin if a theme can be deleted
+        Utility method for creating a plugin's textStrings. This method makes
+        use of the singular name of the plugin object so must only be called
+        after this has been set.
         """
-        return True
+        self.textStrings[name] = {u'title': title, u'tooltip': tooltip}

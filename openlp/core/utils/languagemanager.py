@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,92 +23,141 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`languagemanager` module provides all the translation settings and
+language file loading for OpenLP.
+"""
 import logging
-import os
+import sys
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 class LanguageManager(object):
     """
     Helper for Language selection
     """
-    __qmList__ = None
-    AutoLanguage = False
+    __qm_list__ = {}
+    auto_language = False
 
     @staticmethod
     def get_translator(language):
-        if LanguageManager.AutoLanguage:
+        """
+        Set up a translator to use in this instance of OpenLP
+
+        ``language``
+            The language to load into the translator
+        """
+        if LanguageManager.auto_language:
             language = QtCore.QLocale.system().name()
-        lang_Path = AppLocation.get_directory(AppLocation.AppDir)
-        lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
-        appTranslator = QtCore.QTranslator()
-        if appTranslator.load("openlp_" + language, lang_Path):
-            return appTranslator
+        lang_path = AppLocation.get_directory(AppLocation.LanguageDir)
+        app_translator = QtCore.QTranslator()
+        app_translator.load(language, lang_path)
+        # A translator for buttons and other default strings provided by Qt.
+        if sys.platform != u'win32' and sys.platform != u'darwin':
+            lang_path = QtCore.QLibraryInfo.location(
+                QtCore.QLibraryInfo.TranslationsPath)
+        default_translator = QtCore.QTranslator()
+        default_translator.load(u'qt_%s' % language, lang_path)
+        return app_translator, default_translator
 
     @staticmethod
     def find_qm_files():
-        trans_dir = AppLocation.get_directory(AppLocation.AppDir)
-        trans_dir = QtCore.QDir(os.path.join(trans_dir, u'resources', u'i18n'))
-        fileNames = trans_dir.entryList(QtCore.QStringList("*.qm"),
+        """
+        Find all available language files in this OpenLP install
+        """
+        log.debug(u'Translation files: %s', AppLocation.get_directory(
+            AppLocation.LanguageDir))
+        trans_dir = QtCore.QDir(AppLocation.get_directory(
+            AppLocation.LanguageDir))
+        file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
-        for name in fileNames:
-            fileNames.replaceInStrings(name, trans_dir.filePath(name))
-        return fileNames
+        for name in file_names:
+            file_names.replaceInStrings(name, trans_dir.filePath(name))
+        return file_names
 
     @staticmethod
-    def language_name(qmFile):
+    def language_name(qm_file):
+        """
+        Load the language name from a language file
+
+        ``qm_file``
+            The file to obtain the name from
+        """
         translator = QtCore.QTranslator()
-        translator.load(qmFile)
-        return translator.translate('MainWindow', 'English')
+        translator.load(qm_file)
+        return translator.translate('OpenLP.MainWindow', 'English',
+            'Please add the name of your language here')
 
     @staticmethod
     def get_language():
-        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        """
+        Retrieve a saved language to use from settings
+        """
+        settings = QtCore.QSettings()
         language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
-        regEx = QtCore.QRegExp("^\[(.*)\]")
-        if regEx.exactMatch(language):
-            LanguageManager.AutoLanguage = True
-            language = regEx.cap(1)
+        reg_ex = QtCore.QRegExp("^\[(.*)\]")
+        if reg_ex.exactMatch(language):
+            LanguageManager.auto_language = True
+            language = reg_ex.cap(1)
         return language
 
     @staticmethod
-    def set_language(action):
-        actionName = u'%s' % action.objectName()
-        qmList = LanguageManager.get_qm_list()
-        if LanguageManager.AutoLanguage:
-            language = u'[%s]' % qmList[actionName]
-        else:
-            language = u'%s' % qmList[actionName]
+    def set_language(action, message=True):
+        """
+        Set the language to translate OpenLP into
+
+        ``action``
+            The language menu option
+
+        ``message``
+            Display the message option
+        """
+        language = u'en'
+        if action:
+            action_name = unicode(action.objectName())
+            if action_name == u'AutoLanguageItem':
+                LanguageManager.auto_language = True
+            else:
+                LanguageManager.auto_language = False
+                qm_list = LanguageManager.get_qm_list()
+                language = unicode(qm_list[action_name])
+        if LanguageManager.auto_language:
+            language = u'[%s]' % language
         QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
-        QtGui.QMessageBox.information(None,
-            translate('LanguageManager', 'Language'),
-            translate('LanguageManager',
-                'After restart new Language settings will be used.'))
+        if message:
+            QtGui.QMessageBox.information(None,
+                translate('OpenLP.LanguageManager', 'Language'),
+                translate('OpenLP.LanguageManager',
+                    'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():
-        LanguageManager.__qmList__ = {}
-        qmFiles = LanguageManager.find_qm_files()
-        for i, qmf in enumerate(qmFiles):
-            regEx = QtCore.QRegExp("^.*openlp_(.*).qm")
-            if regEx.exactMatch(qmf):
-                langName = regEx.cap(1)
-                LanguageManager.__qmList__[u'%#2i %s' % (i+1,
-                    LanguageManager.language_name(qmf))] = langName
+        """
+        Initialise the list of available translations
+        """
+        LanguageManager.__qm_list__ = {}
+        qm_files = LanguageManager.find_qm_files()
+        for counter, qmf in enumerate(qm_files):
+            reg_ex = QtCore.QRegExp("^.*i18n/(.*).qm")
+            if reg_ex.exactMatch(qmf):
+                name = u'%s' % reg_ex.cap(1)
+                LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1,
+                    LanguageManager.language_name(qmf))] = name
 
     @staticmethod
     def get_qm_list():
-        if LanguageManager.__qmList__ is None:
+        """
+        Return the list of available translations
+        """
+        if not LanguageManager.__qm_list__:
             LanguageManager.init_qm_list()
-        return LanguageManager.__qmList__
-
+        return LanguageManager.__qm_list__

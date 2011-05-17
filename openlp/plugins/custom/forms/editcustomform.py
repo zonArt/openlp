@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,257 +28,237 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
-from openlp.plugins.custom.lib.models import CustomSlide
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
+from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
+from openlp.plugins.custom.lib.db import CustomSlide
+from editcustomdialog import Ui_CustomEditDialog
+from editcustomslideform import EditCustomSlideForm
 
 log = logging.getLogger(__name__)
 
-class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
+class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     """
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, custommanager, parent = None):
+    def __init__(self, parent):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
-        #self.parent = parent
+        QtGui.QDialog.__init__(self)
+        self.parent = parent
+        self.manager = self.parent.manager
         self.setupUi(self)
+        # Create other objects and forms.
+        self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
-        self.previewButton = QtGui.QPushButton()
-        self.previewButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Save && Preview'))
-        self.buttonBox.addButton(
-            self.previewButton, QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
-        QtCore.QObject.connect(self.AddButton,
+        QtCore.QObject.connect(self.previewButton,
+            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)
+        QtCore.QObject.connect(self.addButton,
             QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
-        QtCore.QObject.connect(self.EditButton,
+        QtCore.QObject.connect(self.editButton,
             QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
-        QtCore.QObject.connect(self.EditAllButton,
+        QtCore.QObject.connect(self.editAllButton,
             QtCore.SIGNAL(u'pressed()'), self.onEditAllButtonPressed)
-        QtCore.QObject.connect(self.SaveButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSaveButtonPressed)
-        QtCore.QObject.connect(self.DeleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonPressed)
-        QtCore.QObject.connect(self.ClearButton,
-            QtCore.SIGNAL(u'pressed()'), self.onClearButtonPressed)
-        QtCore.QObject.connect(self.UpButton,
-            QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
-        QtCore.QObject.connect(self.DownButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
-        QtCore.QObject.connect(self.SplitButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
-        QtCore.QObject.connect(self.VerseListView,
-            QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem*)'),
-            self.onVerseListViewSelected)
-        QtCore.QObject.connect(self.VerseListView,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onVerseListViewPressed)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
-        # Create other objects and forms
-        self.custommanager = custommanager
-        self.initialise()
-
-    def onPreview(self, button):
-        log.debug(u'onPreview')
-        if button.text() == \
-            unicode(translate('CustomPlugin.EditCustomForm', 'Save && Preview')) \
-            and self.saveCustom():
-            Receiver.send_message(u'custom_preview')
-
-    def initialise(self):
-        self.editAll = False
-        self.AddButton.setEnabled(True)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.EditAllButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.ClearButton.setEnabled(False)
-        self.SplitButton.setEnabled(False)
-        self.TitleEdit.setText(u'')
-        self.CreditEdit.setText(u'')
-        self.VerseTextEdit.clear()
-        self.VerseListView.clear()
-        #make sure we have a new item
-        self.customSlide = CustomSlide()
-        self.ThemeComboBox.addItem(u'')
+        QtCore.QObject.connect(self.slideListView,
+            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def loadThemes(self, themelist):
-        self.ThemeComboBox.clear()
-        self.ThemeComboBox.addItem(u'')
+        self.themeComboBox.clear()
+        self.themeComboBox.addItem(u'')
         for themename in themelist:
-            self.ThemeComboBox.addItem(themename)
+            self.themeComboBox.addItem(themename)
 
     def loadCustom(self, id, preview=False):
-        self.customSlide = CustomSlide()
-        self.initialise()
-        if id != 0:
-            self.customSlide = self.custommanager.get_custom(id)
-            self.TitleEdit.setText(self.customSlide.title)
-            self.CreditEdit.setText(self.customSlide.credits)
-            songXML = SongXMLParser(self.customSlide.text)
-            verseList = songXML.get_verses()
-            for verse in verseList:
-                self.VerseListView.addItem(verse[1])
-            theme = self.customSlide.theme_name
-            id = self.ThemeComboBox.findText(theme, QtCore.Qt.MatchExactly)
-            if id == -1:
-                id = 0 # Not Found
-            self.ThemeComboBox.setCurrentIndex(id)
+        """
+        Called when editing or creating a new custom.
+
+        ``id``
+            The cutom's id. If zero, then a new custom is created.
+
+        ``preview``
+            States whether the custom is edited while being previewed in the
+            preview panel.
+        """
+        self.slideListView.clear()
+        if id == 0:
+            self.customSlide = CustomSlide()
+            self.titleEdit.setText(u'')
+            self.creditEdit.setText(u'')
+            self.themeComboBox.setCurrentIndex(0)
         else:
-            self.ThemeComboBox.setCurrentIndex(0)
-        #if not preview hide the preview button
+            self.customSlide = self.manager.get_object(CustomSlide, id)
+            self.titleEdit.setText(self.customSlide.title)
+            self.creditEdit.setText(self.customSlide.credits)
+            customXML = CustomXMLParser(self.customSlide.text)
+            slideList = customXML.get_verses()
+            for slide in slideList:
+                self.slideListView.addItem(slide[1])
+            theme = self.customSlide.theme_name
+            find_and_set_in_combo_box(self.themeComboBox, theme)
+        # If not preview hide the preview button.
         self.previewButton.setVisible(False)
         if preview:
             self.previewButton.setVisible(True)
 
-    def closePressed(self):
+    def reject(self):
         Receiver.send_message(u'custom_edit_clear')
-        self.close()
+        QtGui.QDialog.reject(self)
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
             Receiver.send_message(u'custom_load_list')
-            self.close()
+            QtGui.QDialog.accept(self)
 
     def saveCustom(self):
-        valid, message = self._validate()
-        if not valid:
-            QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'), message,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+        """
+        Saves the custom.
+        """
+        if not self._validate():
             return False
-        sxml = SongXMLBuilder()
+        sxml = CustomXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
-        for i in range (0, self.VerseListView.count()):
+        for i in range(0, self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
-                unicode(self.VerseListView.item(i).text()))
+                unicode(self.slideListView.item(i).text()))
             count += 1
-        self.customSlide.title = unicode(self.TitleEdit.displayText(), u'utf-8')
+        self.customSlide.title = unicode(self.titleEdit.text())
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
-        self.customSlide.credits = unicode(self.CreditEdit.displayText(),
-            u'utf-8')
-        self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(),
-            u'utf-8')
-        self.custommanager.save_slide(self.customSlide)
-        return True
+        self.customSlide.credits = unicode(self.creditEdit.text())
+        self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
+        return self.manager.save_object(self.customSlide)
 
-    def onUpButtonPressed(self):
-        selectedRow = self.VerseListView.currentRow()
+    def onUpButtonClicked(self):
+        selectedRow = self.slideListView.currentRow()
         if selectedRow != 0:
-            qw = self.VerseListView.takeItem(selectedRow)
-            self.VerseListView.insertItem(selectedRow - 1, qw)
-            self.VerseListView.setCurrentRow(selectedRow - 1)
+            qw = self.slideListView.takeItem(selectedRow)
+            self.slideListView.insertItem(selectedRow - 1, qw)
+            self.slideListView.setCurrentRow(selectedRow - 1)
 
-    def onDownButtonPressed(self):
-        selectedRow = self.VerseListView.currentRow()
+    def onDownButtonClicked(self):
+        selectedRow = self.slideListView.currentRow()
         # zero base arrays
-        if selectedRow != self.VerseListView.count() - 1:
-            qw = self.VerseListView.takeItem(selectedRow)
-            self.VerseListView.insertItem(selectedRow + 1, qw)
-            self.VerseListView.setCurrentRow(selectedRow + 1)
-
-    def onClearButtonPressed(self):
-        self.VerseTextEdit.clear()
-        self.editAll = False
-        self.AddButton.setEnabled(True)
-        self.EditAllButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-
-    def onVerseListViewPressed(self, item):
-        self.DeleteButton.setEnabled(True)
-        self.EditButton.setEnabled(True)
-
-    def onVerseListViewSelected(self, item):
-        self.editText(item.text())
+        if selectedRow != self.slideListView.count() - 1:
+            qw = self.slideListView.takeItem(selectedRow)
+            self.slideListView.insertItem(selectedRow + 1, qw)
+            self.slideListView.setCurrentRow(selectedRow + 1)
 
     def onAddButtonPressed(self):
-        self.VerseListView.addItem(self.VerseTextEdit.toPlainText())
-        self.DeleteButton.setEnabled(False)
-        self.VerseTextEdit.clear()
+        self.editSlideForm.setText(u'')
+        if self.editSlideForm.exec_():
+            for slide in self.editSlideForm.getText():
+                self.slideListView.addItem(slide)
 
     def onEditButtonPressed(self):
-        self.editText(self.VerseListView.currentItem().text())
+        self.editSlideForm.setText(self.slideListView.currentItem().text())
+        if self.editSlideForm.exec_():
+            self.updateSlideList(self.editSlideForm.getText())
 
     def onEditAllButtonPressed(self):
-        self.editAll = True
-        self.AddButton.setEnabled(False)
-        self.SplitButton.setEnabled(True)
-        if self.VerseListView.count() > 0:
-            verse_list = u''
-            for row in range(0, self.VerseListView.count()):
-                item = self.VerseListView.item(row)
-                verse_list += item.text()
-                if row != self.VerseListView.count() - 1:
-                    verse_list += u'\n[---]\n'
-            self.editText(verse_list)
+        """
+        Edits all slides.
+        """
+        slide_list = u''
+        for row in range(0, self.slideListView.count()):
+            item = self.slideListView.item(row)
+            slide_list += item.text()
+            if row != self.slideListView.count() - 1:
+                slide_list += u'\n[===]\n'
+        self.editSlideForm.setText(slide_list)
+        if self.editSlideForm.exec_():
+            self.updateSlideList(self.editSlideForm.getText(), True)
 
-    def editText(self, text):
-        self.beforeText = text
-        self.VerseTextEdit.setPlainText(text)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.EditAllButton.setEnabled(False)
-        self.SaveButton.setEnabled(True)
-        self.ClearButton.setEnabled(True)
+    def onPreviewButtonPressed(self):
+        """
+        Save the custom item and preview it.
+        """
+        log.debug(u'onPreview')
+        if self.saveCustom():
+            Receiver.send_message(u'custom_preview')
 
-    def onSaveButtonPressed(self):
-        if self.editAll:
-            self.VerseListView.clear()
-            for row in unicode(self.VerseTextEdit.toPlainText()).split(
-                u'\n[---]\n'):
-                self.VerseListView.addItem(row)
+    def updateSlideList(self, slides, edit_all=False):
+        """
+        Updates the slide list after editing slides.
+
+        ``slides``
+            A list of all slides which have been edited.
+
+        ``edit_all``
+            Indicates if all slides or only one slide has been edited.
+        """
+        if edit_all:
+            self.slideListView.clear()
+            for slide in slides:
+                self.slideListView.addItem(slide)
         else:
-            self.VerseListView.currentItem().setText(
-                self.VerseTextEdit.toPlainText())
-            #number of lines has change
-            if len(self.beforeText.split(u'\n')) != \
-                len(self.VerseTextEdit.toPlainText().split(u'\n')):
-                tempList = {}
-                for row in range(0, self.VerseListView.count()):
-                    tempList[row] = self.VerseListView.item(row).text()
-                self.VerseListView.clear()
-                for row in range (0, len(tempList)):
-                    self.VerseListView.addItem(tempList[row])
-                self.VerseListView.repaint()
-        self.AddButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.EditAllButton.setEnabled(True)
-        self.SplitButton.setEnabled(False)
-        self.VerseTextEdit.clear()
+            old_slides = []
+            old_row = self.slideListView.currentRow()
+            # Create a list with all (old/unedited) slides.
+            old_slides = [self.slideListView.item(row).text() for row in \
+                range(0, self.slideListView.count())]
+            self.slideListView.clear()
+            old_slides.pop(old_row)
+            # Insert all slides to make the old_slides list complete.
+            for slide in slides:
+                old_slides.insert(old_row, slide)
+            for slide in old_slides:
+                self.slideListView.addItem(slide)
+        self.slideListView.repaint()
 
-    def onSplitButtonPressed(self):
-        if self.VerseTextEdit.textCursor().columnNumber() != 0:
-            self.VerseTextEdit.insertPlainText(u'\n')
-        self.VerseTextEdit.insertPlainText(u'[---]\n' )
-        self.VerseTextEdit.setFocus()
+    def onDeleteButtonClicked(self):
+        """
+        Removes the current row from the list.
+        """
+        self.slideListView.takeItem(self.slideListView.currentRow())
+        self.onCurrentRowChanged(self.slideListView.currentRow())
 
-    def onDeleteButtonPressed(self):
-        self.VerseListView.takeItem(self.VerseListView.currentRow())
-        self.EditButton.setEnabled(False)
-        self.EditAllButton.setEnabled(True)
+    def onCurrentRowChanged(self, row):
+        """
+        Called when the *slideListView*'s current row has been changed. This
+        enables or disables buttons which require an slide to act on.
+
+        ``row``
+            The row (int). If there is no current row, the value is -1.
+        """
+        if row == -1:
+            self.deleteButton.setEnabled(False)
+            self.editButton.setEnabled(False)
+            self.upButton.setEnabled(False)
+            self.downButton.setEnabled(False)
+        else:
+            self.deleteButton.setEnabled(True)
+            self.editButton.setEnabled(True)
+            # Decide if the up/down buttons should be enabled or not.
+            if self.slideListView.count() - 1 == row:
+                self.downButton.setEnabled(False)
+            else:
+                self.downButton.setEnabled(True)
+            if row == 0:
+                self.upButton.setEnabled(False)
+            else:
+                self.upButton.setEnabled(True)
 
     def _validate(self):
-        if len(self.TitleEdit.displayText()) == 0:
-            self.TitleEdit.setFocus()
-            return False, translate('CustomPlugin.EditCustomForm',
-                'You need to enter a title')
-        # must have 1 slide
-        if self.VerseListView.count() == 0:
-            self.VerseTextEdit.setFocus()
-            return False, translate('CustomPlugin.EditCustomForm',
-                'You need to enter a slide')
-        if self.VerseTextEdit.toPlainText():
-            self.VerseTextEdit.setFocus()
-            return False, translate('CustomPlugin.editCustomForm',
-                'You have unsaved data, please save or clear')
-        return True, u''
+        """
+        Checks whether a custom is valid or not.
+        """
+        # We must have a title.
+        if len(self.titleEdit.displayText()) == 0:
+            self.titleEdit.setFocus()
+            critical_error_message_box(
+                message=translate('CustomPlugin.EditCustomForm',
+                'You need to type in a title.'))
+            return False
+        # We must have at least one slide.
+        if self.slideListView.count() == 0:
+            critical_error_message_box(
+                message=translate('CustomPlugin.EditCustomForm',
+                'You need to add at least one slide'))
+            return False
+        return True

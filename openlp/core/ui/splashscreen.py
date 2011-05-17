@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,51 +23,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+from openlp.core.lib import Receiver
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
-
-class SplashScreen(object):
-    def __init__(self, version):
-        self.splash_screen = QtGui.QSplashScreen()
+class SplashScreen(QtGui.QSplashScreen):
+    def __init__(self):
+        QtGui.QSplashScreen.__init__(self)
         self.setupUi()
-        self.message = translate(
-            'Splashscreen',  'Starting')\
-            + '..... ' + version
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
-        self.splash_screen.setObjectName(u'splash_screen')
-        self.splash_screen.setWindowModality(QtCore.Qt.NonModal)
-        self.splash_screen.setEnabled(True)
-        self.splash_screen.resize(370, 370)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.splash_screen.sizePolicy().hasHeightForWidth())
-        self.splash_screen.setSizePolicy(sizePolicy)
-        self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        icon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.splash_screen.setWindowIcon(icon)
+        self.setObjectName(u'splash_screen')
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
-        self.splash_screen.setPixmap(splash_image)
-        self.splash_screen.setMask(splash_image.mask())
-        self.splash_screen.setWindowFlags(
-            QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
-        self.retranslateUi()
-        QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
-
-    def retranslateUi(self):
-        self.splash_screen.setWindowTitle(
-            translate('Splashscreen', 'Splash Screen'))
-
-    def show(self):
-        self.splash_screen.show()
-        self.splash_screen.showMessage(self.message,
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom, QtCore.Qt.black)
-        self.splash_screen.repaint()
-
-    def finish(self, widget):
-        self.splash_screen.finish(widget)
+        self.setPixmap(splash_image)
+        self.setMask(splash_image.mask())
+        self.resize(370, 370)
+        QtCore.QMetaObject.connectSlotsByName(self)

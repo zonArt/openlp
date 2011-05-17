@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,19 +30,32 @@ from ctypes import *
 from ctypes.wintypes import RECT
 
 class PPTViewer(QtGui.QWidget):
+    """
+    Standalone Test Harness for the pptviewlib library
+    """
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         self.pptid = -1
         self.setWindowTitle(u'PowerPoint Viewer Test')
 
-        PPTLabel = QtGui.QLabel(u'Open PowerPoint file')
-        slideLabel = QtGui.QLabel(u'Go to slide #')
-        self.PPTEdit = QtGui.QLineEdit()
+        ppt_label = QtGui.QLabel(u'Open PowerPoint file')
+        slide_label = QtGui.QLabel(u'Go to slide #')
+        self.pptEdit = QtGui.QLineEdit()
         self.slideEdit = QtGui.QLineEdit()
+        x_label = QtGui.QLabel(u'X pos')
+        y_label = QtGui.QLabel(u'Y pos')
+        width_label = QtGui.QLabel(u'Width')
+        height_label = QtGui.QLabel(u'Height')
+        self.xEdit = QtGui.QLineEdit(u'100')
+        self.yEdit = QtGui.QLineEdit(u'100')
+        self.widthEdit = QtGui.QLineEdit(u'900')
+        self.heightEdit = QtGui.QLineEdit(u'700')
         self.total = QtGui.QLabel()
-        PPTBtn = QtGui.QPushButton(u'Open')
-        PPTDlgBtn = QtGui.QPushButton(u'...')
-        slideBtn = QtGui.QPushButton(u'Go')
+        ppt_btn = QtGui.QPushButton(u'Open')
+        ppt_dlg_btn = QtGui.QPushButton(u'...')
+        folder_label = QtGui.QLabel(u'Slide .bmp path')
+        self.folderEdit = QtGui.QLineEdit(u'slide')
+        slide_btn = QtGui.QPushButton(u'Go')
         prev = QtGui.QPushButton(u'Prev')
         next = QtGui.QPushButton(u'Next')
         blank = QtGui.QPushButton(u'Blank')
@@ -50,122 +64,149 @@ class PPTViewer(QtGui.QWidget):
         close = QtGui.QPushButton(u'Close')
         resume = QtGui.QPushButton(u'Resume')
         stop = QtGui.QPushButton(u'Stop')
-        pptwindow = QtGui.QWidget()
-
         grid = QtGui.QGridLayout()
-        grid.addWidget(PPTLabel, 0, 0)
-        grid.addWidget(self.PPTEdit, 0, 1)
-        grid.addWidget(PPTDlgBtn, 0, 2)
-        grid.addWidget(PPTBtn, 0, 3)
-        grid.addWidget(slideLabel, 1, 0)
-        grid.addWidget(self.slideEdit, 1, 1)
-        grid.addWidget(slideBtn, 1, 3)
-        grid.addWidget(prev, 2, 0)
-        grid.addWidget(next, 2, 1)
-        grid.addWidget(blank, 3, 0)
-        grid.addWidget(unblank, 3, 1)
-        grid.addWidget(restart, 4, 0)
-        grid.addWidget(close, 4, 1)
-        grid.addWidget(stop, 5, 0)
-        grid.addWidget(resume, 5, 1)
-        grid.addWidget(pptwindow, 6, 0, 10, 3)
-        self.connect(PPTBtn, QtCore.SIGNAL(u'clicked()'), self.OpenClick)
-        self.connect(PPTDlgBtn, QtCore.SIGNAL(u'clicked()'), self.OpenDialog)
-        self.connect(slideBtn, QtCore.SIGNAL(u'clicked()'), self.GotoClick)
-        self.connect(prev, QtCore.SIGNAL(u'clicked()'), self.PrevClick)
-        self.connect(next, QtCore.SIGNAL(u'clicked()'), self.NextClick)
-        self.connect(blank, QtCore.SIGNAL(u'clicked()'), self.BlankClick)
-        self.connect(unblank, QtCore.SIGNAL(u'clicked()'), self.UnblankClick)
-        self.connect(restart, QtCore.SIGNAL(u'clicked()'), self.RestartClick)
-        self.connect(close, QtCore.SIGNAL(u'clicked()'), self.CloseClick)
-        self.connect(stop, QtCore.SIGNAL(u'clicked()'), self.StopClick)
-        self.connect(resume, QtCore.SIGNAL(u'clicked()'), self.ResumeClick)
-
+        row = 0
+        grid.addWidget(folder_label, 0, 0)
+        grid.addWidget(self.folderEdit, 0, 1)
+        row = row + 1
+        grid.addWidget(x_label, row, 0)
+        grid.addWidget(self.xEdit, row, 1)
+        grid.addWidget(y_label, row, 2)
+        grid.addWidget(self.yEdit, row, 3)
+        row = row + 1
+        grid.addWidget(width_label, row, 0)
+        grid.addWidget(self.widthEdit, row, 1)
+        grid.addWidget(height_label, row, 2)
+        grid.addWidget(self.heightEdit, row, 3)
+        row = row + 1
+        grid.addWidget(ppt_label, row, 0)
+        grid.addWidget(self.pptEdit, row, 1)
+        grid.addWidget(ppt_dlg_btn, row, 2)
+        grid.addWidget(ppt_btn, row, 3)
+        row = row + 1
+        grid.addWidget(slide_label, row, 0)
+        grid.addWidget(self.slideEdit, row, 1)
+        grid.addWidget(slide_btn, row, 2)
+        row = row + 1
+        grid.addWidget(prev, row, 0)
+        grid.addWidget(next, row, 1)
+        row = row + 1
+        grid.addWidget(blank, row, 0)
+        grid.addWidget(unblank, row, 1)
+        row = row + 1
+        grid.addWidget(restart, row, 0)
+        grid.addWidget(close, row, 1)
+        row = row + 1
+        grid.addWidget(stop, row, 0)
+        grid.addWidget(resume, row, 1)
+        self.connect(ppt_btn, QtCore.SIGNAL(u'clicked()'), self.openClick)
+        self.connect(ppt_dlg_btn, QtCore.SIGNAL(u'clicked()'), self.openDialog)
+        self.connect(slide_btn, QtCore.SIGNAL(u'clicked()'), self.gotoClick)
+        self.connect(prev, QtCore.SIGNAL(u'clicked()'), self.prevClick)
+        self.connect(next, QtCore.SIGNAL(u'clicked()'), self.nextClick)
+        self.connect(blank, QtCore.SIGNAL(u'clicked()'), self.blankClick)
+        self.connect(unblank, QtCore.SIGNAL(u'clicked()'), self.unblankClick)
+        self.connect(restart, QtCore.SIGNAL(u'clicked()'), self.restartClick)
+        self.connect(close, QtCore.SIGNAL(u'clicked()'), self.closeClick)
+        self.connect(stop, QtCore.SIGNAL(u'clicked()'), self.stopClick)
+        self.connect(resume, QtCore.SIGNAL(u'clicked()'), self.resumeClick)
         self.setLayout(grid)
-
         self.resize(300, 150)
 
-    def PrevClick(self):
-        if self.pptid<0: return
-        pptdll.PrevStep(self.pptid)
-        self.UpdateCurrSlide()
+    def prevClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.PrevStep(self.pptid)
+        self.updateCurrSlide()
         app.processEvents()
 
-    def NextClick(self):
-        if(self.pptid<0): return
-        pptdll.NextStep(self.pptid)
-        self.UpdateCurrSlide()
+    def nextClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.NextStep(self.pptid)
+        self.updateCurrSlide()
         app.processEvents()
 
-    def BlankClick(self):
-        if(self.pptid<0): return
-        pptdll.Blank(self.pptid)
+    def blankClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.Blank(self.pptid)
         app.processEvents()
 
-    def UnblankClick(self):
-        if(self.pptid<0): return
-        pptdll.Unblank(self.pptid)
+    def unblankClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.Unblank(self.pptid)
         app.processEvents()
 
-    def RestartClick(self):
-        if(self.pptid<0): return
-        pptdll.RestartShow(self.pptid)
-        self.UpdateCurrSlide()
+    def restartClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.RestartShow(self.pptid)
+        self.updateCurrSlide()
         app.processEvents()
 
-    def StopClick(self):
-        if(self.pptid<0): return
-        pptdll.Stop(self.pptid)
+    def stopClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.Stop(self.pptid)
         app.processEvents()
 
-    def ResumeClick(self):
-        if(self.pptid<0): return
-        pptdll.Resume(self.pptid)
+    def resumeClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.Resume(self.pptid)
         app.processEvents()
 
-    def CloseClick(self):
-        if(self.pptid<0): return
-        pptdll.ClosePPT(self.pptid)
+    def closeClick(self):
+        if self.pptid < 0:
+            return
+        self.pptdll.ClosePPT(self.pptid)
         self.pptid = -1
         app.processEvents()
 
-    def OpenClick(self):
+    def openClick(self):
         oldid = self.pptid;
-        rect = RECT(100,100,900,700)
-        filename = unicode(self.PPTEdit.text())
-        print filename
-        self.pptid = pptdll.OpenPPT(filename, None, rect, 'c:\\temp\\slide')
-        print "id: " + unicode(self.pptid)
-        if oldid>=0:
-            pptdll.ClosePPT(oldid);
-        slides = pptdll.GetSlideCount(self.pptid)
-        print "slidecount: " + unicode(slides)
-        self.total.setNum(pptdll.GetSlideCount(self.pptid))
-        self.UpdateCurrSlide()
+        rect = RECT(int(self.xEdit.text()), int(self.yEdit.text()),
+            int(self.widthEdit.text()), int(self.heightEdit.text()))
+        filename = str(self.pptEdit.text().replace(u'/', u'\\'))
+        folder = str(self.folderEdit.text().replace(u'/', u'\\'))
+        print filename, folder
+        self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
+        print u'id: ' + unicode(self.pptid)
+        if oldid >= 0:
+            self.pptdll.ClosePPT(oldid);
+        slides = self.pptdll.GetSlideCount(self.pptid)
+        print u'slidecount: ' + unicode(slides)
+        self.total.setNum(self.pptdll.GetSlideCount(self.pptid))
+        self.updateCurrSlide()
 
-    def UpdateCurrSlide(self):
-        if(self.pptid<0): return
-        slide = unicode(pptdll.GetCurrentSlide(self.pptid))
-        print "currslide: " + slide
+    def updateCurrSlide(self):
+        if self.pptid < 0:
+            return
+        slide = unicode(self.pptdll.GetCurrentSlide(self.pptid))
+        print u'currslide: ' + slide
         self.slideEdit.setText(slide)
         app.processEvents()
 
-    def GotoClick(self):
-        if(self.pptid<0): return
+    def gotoClick(self):
+        if self.pptid < 0:
+            return
         print self.slideEdit.text()
-        pptdll.GotoSlide(self.pptid, int(self.slideEdit.text()))
-        self.UpdateCurrSlide()
+        self.pptdll.GotoSlide(self.pptid, int(self.slideEdit.text()))
+        self.updateCurrSlide()
         app.processEvents()
 
-    def OpenDialog(self):
-        self.PPTEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 'Open file'))
+    def openDialog(self):
+        self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self,
+            u'Open file'))
 
 if __name__ == '__main__':
-    #pptdll = cdll.LoadLibrary(r'C:\Documents and Settings\jonathan\Desktop\pptviewlib.dll')
     pptdll = cdll.LoadLibrary(r'pptviewlib.dll')
     pptdll.SetDebug(1)
-    print "Begin..."
+    print u'Begin...'
     app = QtGui.QApplication(sys.argv)
-    qb = PPTViewer()
-    qb.show()
+    window = PPTViewer()
+    window.pptdll = pptdll
+    window.show()
     sys.exit(app.exec_())

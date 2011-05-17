@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +31,7 @@ if os.name == u'nt':
     from win32com.client import Dispatch
     import _winreg
     import win32ui
+    import pywintypes
 
 from presentationcontroller import PresentationController, PresentationDocument
 
@@ -51,8 +53,9 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint')
-        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        PresentationController.__init__(self, plugin, u'Powerpoint',
+            PowerpointDocument)
+        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
     def check_available(self):
@@ -65,7 +68,7 @@ class PowerpointController(PresentationController):
                 _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
                     u'PowerPoint.Application').Close()
                 return True
-            except:
+            except WindowsError:
                 pass
         return False
 
@@ -74,7 +77,9 @@ class PowerpointController(PresentationController):
             """
             Loads PowerPoint process
             """
-            self.process = Dispatch(u'PowerPoint.Application')
+            log.debug(u'start_process')
+            if not self.process:
+                self.process = Dispatch(u'PowerPoint.Application')
             self.process.Visible = True
             self.process.WindowState = 2
 
@@ -91,18 +96,20 @@ class PowerpointController(PresentationController):
                 return
             try:
                 self.process.Quit()
-            except:
+            except pywintypes.com_error:
                 pass
             self.process = None
 
-        def add_doc(self, name):
-            log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PowerpointDocument(PresentationDocument):
+    """
+    Class which holds information and controls a single presentation
+    """
+
     def __init__(self, controller, presentation):
+        """
+        Constructor, store information about the file and initialise
+        """
         log.debug(u'Init Presentation Powerpoint')
         PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
@@ -110,59 +117,64 @@ class PowerpointDocument(PresentationDocument):
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
-        It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is is
-        started.  Once the environment is available the presentation is loaded
-        and started.
+        Opens the PowerPoint file using the process created earlier
 
         ``presentation``
-        The file name of the presentations to run.
+            The file name of the presentations to run.
         """
-        log.debug(u'LoadPresentation')
-        if not self.controller.process.Visible:
+        log.debug(u'load_presentation')
+        if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
-        #try:
-        self.controller.process.Presentations.Open(self.filepath, False, False,
-            True)
-        #except:
-        #    return
+        try:
+            self.controller.process.Presentations.Open(self.filepath, False,
+                False, True)
+        except pywintypes.com_error:
+            log.debug(u'PPT open failed')
+            return False
         self.presentation = self.controller.process.Presentations(
             self.controller.process.Presentations.Count)
         self.create_thumbnails()
+        return True
 
     def create_thumbnails(self):
         """
         Create the thumbnail images for the current presentation.
-        Note an alternative and quicker method would be do
+
+        Note an alternative and quicker method would be do::
+
             self.presentation.Slides[n].Copy()
             thumbnail = QApplication.clipboard.image()
-        But for now we want a physical file since it makes
-        life easier elsewhere
+
+        However, for the moment, we want a physical file since it makes life
+        easier elsewhere.
         """
+        log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
-            320, 240)
+        for num in range(0, self.presentation.Slides.Count):
+            self.presentation.Slides(num + 1).Export(os.path.join(
+                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)),
+                'png', 320, 240)
 
     def close_presentation(self):
         """
-        Close presentation and clean up objects
-        Triggerent by new object being added to SlideController orOpenLP
-        being shut down
+        Close presentation and clean up objects. This is triggered by a new
+        object being added to SlideController or OpenLP being shut down.
         """
         log.debug(u'ClosePresentation')
         if self.presentation:
             try:
                 self.presentation.Close()
-            except:
+            except pywintypes.com_error:
                 pass
         self.presentation = None
         self.controller.remove_doc(self)
 
     def is_loaded(self):
         """
-        Returns true if a presentation is loaded
+        Returns ``True`` if a presentation is loaded.
         """
+        log.debug(u'is_loaded')
         try:
             if not self.controller.process.Visible:
                 return False
@@ -170,15 +182,16 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.controller.process.Presentations.Count == 0:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
 
     def is_active(self):
         """
-        Returns true if a presentation is currently active
+        Returns ``True`` if a presentation is currently active.
         """
+        log.debug(u'is_active')
         if not self.is_loaded():
             return False
         try:
@@ -186,115 +199,131 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.presentation.SlideShowWindow.View is None:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
     def unblank_screen(self):
         """
-        Unblanks (restores) the presentationn
+        Unblanks (restores) the presentation.
         """
+        log.debug(u'unblank_screen')
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
         self.presentation.SlideShowWindow.Activate()
 
     def blank_screen(self):
         """
-        Blanks the screen
+        Blanks the screen.
         """
+        log.debug(u'blank_screen')
         self.presentation.SlideShowWindow.View.State = 3
 
     def is_blank(self):
         """
-        Returns true if screen is blank
+        Returns ``True`` if screen is blank.
         """
-        return self.presentation.SlideShowWindow.View.State == 3
+        log.debug(u'is_blank')
+        if self.is_active():
+            return self.presentation.SlideShowWindow.View.State == 3
+        else:
+            return False
 
     def stop_presentation(self):
         """
-        Stops the current presentation and hides the output
+        Stops the current presentation and hides the output.
         """
+        log.debug(u'stop_presentation')
         self.presentation.SlideShowWindow.View.Exit()
 
     if os.name == u'nt':
         def start_presentation(self):
             """
-            Starts a presentation from the beginning
+            Starts a presentation from the beginning.
             """
+            log.debug(u'start_presentation')
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
-            except:
+            except win32ui.error:
                 try:
                     dpi = \
                         win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
-                except:
+                except win32ui.error:
                     dpi = 96
-            self.presentation.SlideShowSettings.Run()
-            self.presentation.SlideShowWindow.View.GotoSlide(1)
-            rendermanager = self.controller.plugin.render_manager
-            rect = rendermanager.screens.current[u'size']
-            self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
-            self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
-            self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
-            self.presentation.SlideShowWindow.Width = rect.width() * 72 / dpi
+            renderer = self.controller.plugin.renderer
+            rect = renderer.screens.current[u'size']
+            ppt_window = self.presentation.SlideShowSettings.Run()
+            ppt_window.Top = rect.y() * 72 / dpi
+            ppt_window.Height = rect.height() * 72 / dpi
+            ppt_window.Left = rect.x() * 72 / dpi
+            ppt_window.Width = rect.width() * 72 / dpi
+
 
     def get_slide_number(self):
         """
-        Returns the current slide number
+        Returns the current slide number.
         """
+        log.debug(u'get_slide_number')
         return self.presentation.SlideShowWindow.View.CurrentShowPosition
 
     def get_slide_count(self):
         """
-        Returns total number of slides
+        Returns total number of slides.
         """
+        log.debug(u'get_slide_count')
         return self.presentation.Slides.Count
 
     def goto_slide(self, slideno):
         """
-        Moves to a specific slide in the presentation
+        Moves to a specific slide in the presentation.
         """
+        log.debug(u'goto_slide')
         self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
     def next_step(self):
         """
-        Triggers the next effect of slide on the running presentation
+        Triggers the next effect of slide on the running presentation.
         """
+        log.debug(u'next_step')
         self.presentation.SlideShowWindow.View.Next()
 
     def previous_step(self):
         """
-        Triggers the previous slide on the running presentation
+        Triggers the previous slide on the running presentation.
         """
+        log.debug(u'previous_step')
         self.presentation.SlideShowWindow.View.Previous()
 
     def get_slide_text(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the text is required for, starting at 1
+            The slide the text is required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(self.presentation.Slides(slide_no).Shapes)
 
     def get_slide_notes(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the notes are required for, starting at 1
+            The slide the notes are required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).NotesPage.Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(
+            self.presentation.Slides(slide_no).NotesPage.Shapes)
+
+def _get_text_from_shapes(shapes):
+    """
+    Returns any text extracted from the shapes on a presentation slide.
+
+    ``shapes``
+        A set of shapes to search for text.
+    """
+    text = ''
+    for idx in range(shapes.Count):
+        shape = shapes(idx + 1)
+        if shape.HasTextFrame:
+            text += shape.TextFrame.TextRange.Text + '\n'
+    return text

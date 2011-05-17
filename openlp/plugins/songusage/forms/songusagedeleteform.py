@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,33 +26,38 @@
 
 from PyQt4 import QtGui
 
+from openlp.core.lib import translate, Receiver
+from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
-from openlp.core.lib import translate
 
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, songusagemanager, parent=None):
+    def __init__(self, manager, parent):
         """
         Constructor
         """
-        self.songusagemanager = songusagemanager
+        self.manager = manager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Delete Selected Song Usage Events?'),
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Are you sure you want to delete selected Song Usage data?'),
-            QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok |
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),
             QtGui.QMessageBox.Cancel)
         if ret == QtGui.QMessageBox.Ok:
-            deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
-            self.songusagemanager.delete_to_date(deleteDate)
+            deleteDate = self.deleteCalendar.selectedDate().toPyDate()
+            self.manager.delete_all_objects(SongUsageItem,
+                SongUsageItem.usagedate <= deleteDate)
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
+                'Deletion Successful'),
+                u'message': translate('SongUsagePlugin.SongUsageDeleteForm',
+                'All requested data has been deleted successfully. ')})
         self.close()
-

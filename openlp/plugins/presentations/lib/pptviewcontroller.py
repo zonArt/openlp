@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import os
 import logging
 
 if os.name == u'nt':
-    from ctypes import *
+    from ctypes import cdll
     from ctypes.wintypes import RECT
 
 from presentationcontroller import PresentationController, PresentationDocument
@@ -48,8 +49,9 @@ class PptviewController(PresentationController):
         """
         log.debug(u'Initialising')
         self.process = None
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
-        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer',
+            PptviewDocument)
+        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
         """
@@ -58,10 +60,7 @@ class PptviewController(PresentationController):
         log.debug(u'check_available')
         if os.name != u'nt':
             return False
-        try:
-            return self.check_installed()
-        except:
-            return False
+        return self.check_installed()
 
     if os.name == u'nt':
         def check_installed(self):
@@ -72,7 +71,7 @@ class PptviewController(PresentationController):
             try:
                 self.start_process()
                 return self.process.CheckInstalled()
-            except:
+            except WindowsError:
                 return False
 
         def start_process(self):
@@ -82,8 +81,11 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            self.process = cdll.LoadLibrary(
-                r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
+            dllpath = os.path.join(self.plugin.pluginManager.basepath,
+                u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
+            self.process = cdll.LoadLibrary(dllpath)
+            if log.isEnabledFor(logging.DEBUG):
+                self.process.SetDebug(1)
 
         def kill(self):
             """
@@ -93,19 +95,21 @@ class PptviewController(PresentationController):
             while self.docs:
                 self.docs[0].close_presentation()
 
-        def add_doc(self, name):
-            log.debug(u'Add Doc PPTView')
-            doc = PptviewDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PptviewDocument(PresentationDocument):
+    """
+    Class which holds information and controls a single presentation
+    """
     def __init__(self, controller, presentation):
+        """
+        Constructor, store information about the file and initialise
+        """
         log.debug(u'Init Presentation PowerPoint')
         PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
         self.pptid = None
         self.blanked = False
+        self.hidden = False
 
     def load_presentation(self):
         """
@@ -117,19 +121,34 @@ class PptviewDocument(PresentationDocument):
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        #if self.pptid >= 0:
-        #    self.close_presentation()
-        rendermanager = self.controller.plugin.render_manager
-        rect = rendermanager.screens.current[u'size']
+        renderer = self.controller.plugin.renderer
+        rect = renderer.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
-        try:
-            self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-                str(os.path.join(self.thumbnailpath,
-                self.controller.thumbnailprefix)))
+        if not os.path.isdir(self.get_temp_folder()):
+            os.makedirs(self.get_temp_folder())
+        self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
+            str(self.get_temp_folder()) + '\\slide')
+        if self.pptid >= 0:
+            self.create_thumbnails()
             self.stop_presentation()
-        except:
-            log.exception(u'Failed to load presentation')
+            return True
+        else:
+            return False
+
+    def create_thumbnails(self):
+        """
+        PPTviewLib creates large BMP's, but we want small PNG's for consistency.
+        Convert them here.
+        """
+        log.debug(u'create_thumbnails')
+        if self.check_thumbnails():
+            return
+        log.debug(u'create_thumbnails proceeding')
+        for idx in range(self.get_slide_count()):
+            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
+                unicode(idx + 1))
+            self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):
         """
@@ -138,8 +157,9 @@ class PptviewDocument(PresentationDocument):
         being shut down
         """
         log.debug(u'ClosePresentation')
-        self.controller.process.ClosePPT(self.pptid)
-        self.pptid = -1
+        if self.controller.process:
+            self.controller.process.ClosePPT(self.pptid)
+            self.pptid = -1
         self.controller.remove_doc(self)
 
     def is_loaded(self):
@@ -156,7 +176,7 @@ class PptviewDocument(PresentationDocument):
         """
         Returns true if a presentation is currently active
         """
-        return self.is_loaded()
+        return self.is_loaded() and not self.hidden
 
     def blank_screen(self):
         """
@@ -183,13 +203,18 @@ class PptviewDocument(PresentationDocument):
         """
         Stops the current presentation and hides the output
         """
+        self.hidden = True
         self.controller.process.Stop(self.pptid)
 
     def start_presentation(self):
         """
         Starts a presentation from the beginning
         """
-        self.controller.process.RestartShow(self.pptid)
+        if self.hidden:
+            self.hidden = False
+            self.controller.process.Resume(self.pptid)
+        else:
+            self.controller.process.RestartShow(self.pptid)
 
     def get_slide_number(self):
         """
@@ -220,18 +245,3 @@ class PptviewDocument(PresentationDocument):
         Triggers the previous slide on the running presentation
         """
         self.controller.process.PrevStep(self.pptid)
-
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the requested slide
-
-        ``slide_no``
-            The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.bmp')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
-

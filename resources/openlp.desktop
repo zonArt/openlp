@@ -1,10 +1,21 @@
 [Desktop Entry]
+Categories=AudioVideo;
+Comment[de]=
+Comment=
 Encoding=UTF-8
-Name=OpenLP
+Exec=openlp %F
+GenericName[de]=Church lyrics projection
 GenericName=Church lyrics projection
-Exec=openlp
 Icon=openlp
+MimeType=application/x-openlp-service;
+Name[de]=OpenLP
+Name=OpenLP
+Path=
 StartupNotify=true
 Terminal=false
+TerminalOptions=
 Type=Application
-Categories=AudioVideo;
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

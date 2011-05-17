@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,11 +33,14 @@ processing version 1 themes in OpenLP version 2.
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DELPHI_COLORS = {"clRed":0xFF0000,
-                 "clBlue":0x0000FF,
-                 "clYellow":0xFFFF00,
-                 "clBlack":0x000000,
-                 "clWhite":0xFFFFFF}
+DELPHI_COLORS = {
+    u'clAqua': 0x00FFFF,    u'clBlack': 0x000000,   u'clBlue': 0x0000FF,
+    u'clFuchsia': 0xFF00FF, u'clGray': 0x808080,    u'clGreen': 0x008000,
+    u'clLime': 0x00FF00,    u'clMaroon': 0x800000,  u'clNavy': 0x000080,
+    u'clOlive': 0x808000,   u'clPurple': 0x800080,  u'clRed': 0xFF0000,
+    u'clSilver': 0xC0C0C0,  u'clTeal': 0x008080,    u'clWhite': 0xFFFFFF,
+    u'clYellow': 0xFFFF00
+}
 
 BLANK_STYLE_XML = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
@@ -67,38 +71,45 @@ class Theme(object):
         Theme name
 
     ``BackgroundMode``
-        The behaviour of the background.  Valid modes are:
-            - 0 - Transparent
-            - 1 - Opaque
+        The behaviour of the background. Valid modes are:
+
+            * ``0`` - Transparent
+            * ``1`` - Opaque
 
     ``BackgroundType``
-        The content of the background.  Valid types are:
-            - 0 - solid color
-            - 1 - gradient color
-            - 2 - image
+        The content of the background. Valid types are:
+
+            * ``0`` - solid color
+            * ``1`` - gradient color
+            * ``2`` - image
 
     ``BackgroundParameter1``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
-            - image: image filename
-            - gradient: start color
-            - solid: color
+
+            * ``image`` - image filename
+            * ``gradient`` - start color
+            * ``solid`` - color
 
     ``BackgroundParameter2``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
-            - image: border color
-            - gradient: end color
-            - solid: N/A
+
+            * ``image`` - border color
+            * ``gradient`` - end color
+            * ``solid`` - N/A
 
     ``BackgroundParameter3``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
-            - image: N/A
-            - gradient: The direction of the gradient. Valid entries are:
-                - 0 -> vertical
-                - 1 -> horizontal
-            - solid: N/A
+
+            * ``image`` - N/A
+            * ``gradient`` - The direction of the gradient. Valid entries are:
+
+                * ``0`` - vertical
+                * ``1`` - horizontal
+
+            * ``solid`` - N/A
 
     ``FontName``
         Name of the font to use for the main font.
@@ -114,36 +125,41 @@ class Theme(object):
 
     ``Shadow``
         The shadow type to apply to the main font.
-            - 0 - no shadow
-            - non-zero - use shadow
+
+            * ``0`` - no shadow
+            * non-zero - use shadow
 
     ``ShadowColor``
         Color for the shadow
 
     ``Outline``
         The outline to apply to the main font
-            - 0 - no outline
-            - non-zero - use outline
+
+            * ``0`` - no outline
+            * non-zero - use outline
 
     ``OutlineColor``
         Color for the outline (or None if Outline is 0)
 
     ``HorizontalAlign``
-        The horizontal alignment to apply to text.  Valid alignments are:
-            - 0 - left align
-            - 1 - right align
-            - 2 - centre align
+        The horizontal alignment to apply to text. Valid alignments are:
+
+            * ``0`` - left align
+            * ``1`` - right align
+            * ``2`` - centre align
 
     ``VerticalAlign``
         The vertical alignment to apply to the text. Valid alignments are:
-            - 0 - top align
-            - 1 - bottom align
-            - 2 - centre align
+
+            * ``0`` - top align
+            * ``1`` - bottom align
+            * ``2`` - centre align
 
     ``WrapStyle``
-        The wrap style to apply to the text.  Valid styles are:
-            - 0 - normal
-            - 1 - lyrics
+        The wrap style to apply to the text. Valid styles are:
+
+            * ``0`` - normal
+            * ``1`` - lyrics
     """
     def __init__(self, xml):
         """
@@ -168,7 +184,7 @@ class Theme(object):
                 theme_strings.append(u'_%s_' % (getattr(self, key)))
         return u''.join(theme_strings)
 
-    def _set_from_XML(self, xml):
+    def _set_from_xml(self, xml):
         """
         Set theme class attributes with data from XML
 
@@ -183,7 +199,6 @@ class Theme(object):
             if element.tag != u'Theme':
                 element_text = element.text
                 val = 0
-                # easy!
                 if element_text is None:
                     val = element_text
                 # strings need special handling to sort the colours out
@@ -203,7 +218,7 @@ class Theme(object):
                             val = element_text
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and
-                    type(val) == type(0))):
+                    isinstance(val, int))):
                     # convert to a wx.Colour
                     if not delphi_color_change:
                         val = QtGui.QColor(
@@ -222,4 +237,3 @@ class Theme(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s : %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
-

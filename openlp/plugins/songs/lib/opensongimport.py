@@ -1,0 +1,287 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+
+import logging
+import os
+import re
+from zipfile import ZipFile
+
+from lxml import objectify
+from lxml.etree import Error, LxmlError
+
+from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
+
+log = logging.getLogger(__name__)
+
+class OpenSongImport(SongImport):
+    """
+    Import songs exported from OpenSong
+
+    The format is described loosly on the `OpenSong File Format Specification
+    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on
+    the OpenSong web site. However, it doesn't describe the <lyrics> section,
+    so here's an attempt:
+
+    Verses can be expressed in one of 2 ways, either in complete verses, or by
+    line grouping, i.e. grouping all line 1's of a verse together, all line 2's
+    of a verse together, and so on.
+
+    An example of complete verses::
+
+        <lyrics>
+        [v1]
+         List of words
+         Another Line
+
+        [v2]
+         Some words for the 2nd verse
+         etc...
+        </lyrics>
+
+    The 'v' in the verse specifiers above can be left out, it is implied.
+
+    An example of line grouping::
+
+        <lyrics>
+        [V]
+        1List of words
+        2Some words for the 2nd Verse
+
+        1Another Line
+        2etc...
+        </lyrics>
+
+    Either or both forms can be used in one song. The number does not
+    necessarily appear at the start of the line. Additionally, the [v1] labels
+    can have either upper or lower case Vs.
+
+    Other labels can be used also:
+
+    C
+        Chorus
+
+    B
+        Bridge
+
+    All verses are imported and tagged appropriately.
+
+    Guitar chords can be provided "above" the lyrics (the line is preceeded by
+    a period "."), and one or more "_" can be used to signify long-drawn-out
+    words. Chords and "_" are removed by this importer. For example::
+
+        . A7        Bm
+        1 Some____ Words
+
+    The <presentation> tag is used to populate the OpenLP verse display order
+    field. The Author and Copyright tags are also imported to the appropriate
+    places.
+
+    """
+    def __init__(self, manager, **kwargs):
+        """
+        Initialise the class.
+        """
+        SongImport.__init__(self, manager, **kwargs)
+
+    def do_import(self):
+        """
+        Import either each of the files in self.import_source - each element of
+        which can be either a single opensong file, or a zipfile containing
+        multiple opensong files.
+        """
+        numfiles = 0
+        for filename in self.import_source:
+            ext = os.path.splitext(filename)[1]
+            if ext.lower() == u'.zip':
+                z = ZipFile(filename, u'r')
+                numfiles += len(z.infolist())
+                z.close()
+            else:
+                numfiles += 1
+        log.debug(u'Total number of files: %d', numfiles)
+        self.import_wizard.progressBar.setMaximum(numfiles)
+        for filename in self.import_source:
+            if self.stop_import_flag:
+                return
+            ext = os.path.splitext(filename)[1]
+            if ext.lower() == u'.zip':
+                log.debug(u'Zipfile found %s', filename)
+                z = ZipFile(filename, u'r')
+                for song in z.infolist():
+                    if self.stop_import_flag:
+                        z.close()
+                        return
+                    parts = os.path.split(song.filename)
+                    if parts[-1] == u'':
+                        # No final part => directory
+                        continue
+                    log.info(u'Zip importing %s', parts[-1])
+                    song_file = z.open(song)
+                    self.do_import_file(song_file)
+                    song_file.close()
+                z.close()
+            else:
+                # not a zipfile
+                log.info(u'Direct import %s', filename)
+                song_file = open(filename)
+                self.do_import_file(song_file)
+                song_file.close()
+
+    def do_import_file(self, file):
+        """
+        Process the OpenSong file - pass in a file-like object, not a file path.
+        """
+        self.set_defaults()
+        try:
+            tree = objectify.parse(file)
+        except (Error, LxmlError):
+            self.log_error(file.name, SongStrings.XMLSyntaxError)
+            log.exception(u'Error parsing XML')
+            return
+        root = tree.getroot()
+        fields = dir(root)
+        decode = {
+            u'copyright': self.add_copyright,
+            u'ccli': u'ccli_number',
+            u'author': self.parse_author,
+            u'title': u'title',
+            u'aka': u'alternate_title',
+            u'hymn_number': u'song_number'
+        }
+        for attr, fn_or_string in decode.items():
+            if attr in fields:
+                ustring = unicode(root.__getattr__(attr))
+                if isinstance(fn_or_string, basestring):
+                    setattr(self, fn_or_string, ustring)
+                else:
+                    fn_or_string(ustring)
+        if u'theme' in fields and unicode(root.theme) not in self.topics:
+            self.topics.append(unicode(root.theme))
+        if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
+            self.topics.append(unicode(root.alttheme))
+        # data storage while importing
+        verses = {}
+        # keep track of verses appearance order
+        our_verse_order = []
+        # default verse
+        verse_tag = VerseType.Tags[VerseType.Verse]
+        verse_num = u'1'
+        # for the case where song has several sections with same marker
+        inst = 1
+        if u'lyrics' in fields:
+            lyrics = unicode(root.lyrics)
+        else:
+            lyrics = u''
+        for this_line in lyrics.split(u'\n'):
+            # remove comments
+            semicolon = this_line.find(u';')
+            if semicolon >= 0:
+                this_line = this_line[:semicolon]
+            this_line = this_line.strip()
+            if not len(this_line):
+                continue
+            # skip guitar chords and page and column breaks
+            if this_line.startswith(u'.') or this_line.startswith(u'---') \
+                or this_line.startswith(u'-!!'):
+                continue
+            # verse/chorus/etc. marker
+            if this_line.startswith(u'['):
+                # drop the square brackets
+                right_bracket = this_line.find(u']')
+                content = this_line[1:right_bracket].lower()
+                # have we got any digits?
+                # If so, verse number is everything from the digits
+                # to the end (even if there are some alpha chars on the end)
+                match = re.match(u'(\D*)(\d+.*)', content)
+                if match is not None:
+                    verse_tag = match.group(1)
+                    verse_num = match.group(2)
+                else:
+                    # otherwise we assume number 1 and take the whole prefix as
+                    # the verse tag
+                    verse_tag = content
+                    verse_num = u'1'
+                verse_index = VerseType.from_loose_input(verse_tag)
+                verse_tag = VerseType.Tags[verse_index]
+                inst = 1
+                if [verse_tag, verse_num, inst] in our_verse_order \
+                    and verses.has_key(verse_tag) \
+                    and verses[verse_tag].has_key(verse_num):
+                    inst = len(verses[verse_tag][verse_num]) + 1
+                continue
+            # number at start of line.. it's verse number
+            if this_line[0].isdigit():
+                verse_num = this_line[0]
+                this_line = this_line[1:].strip()
+                our_verse_order.append([verse_tag, verse_num, inst])
+            if not verses.has_key(verse_tag):
+                verses[verse_tag] = {}
+            if not verses[verse_tag].has_key(verse_num):
+                verses[verse_tag][verse_num] = {}
+            if not verses[verse_tag][verse_num].has_key(inst):
+                verses[verse_tag][verse_num][inst] = []
+                our_verse_order.append([verse_tag, verse_num, inst])
+            # Tidy text and remove the ____s from extended words
+            this_line = self.tidy_text(this_line)
+            this_line = this_line.replace(u'_', u'')
+            this_line = this_line.replace(u'|', u'\n')
+            verses[verse_tag][verse_num][inst].append(this_line)
+        # done parsing
+        # add verses in original order
+        for (verse_tag, verse_num, inst) in our_verse_order:
+            verse_def = u'%s%s' % (verse_tag, verse_num)
+            lines = u'\n'.join(verses[verse_tag][verse_num][inst])
+            self.add_verse(lines, verse_def)
+        if not self.verses:
+            self.add_verse('')
+        # figure out the presentation order, if present
+        if u'presentation' in fields and root.presentation:
+            order = unicode(root.presentation)
+            # We make all the tags in the lyrics lower case, so match that here
+            # and then split into a list on the whitespace
+            order = order.lower().split()
+            for verse_def in order:
+                match = re.match(u'(\D*)(\d+.*)', verse_def)
+                if match is not None:
+                    verse_tag = match.group(1)
+                    verse_num = match.group(2)
+                    if not len(verse_tag):
+                        verse_tag =  VerseType.Tags[VerseType.Verse]
+                else:
+                    # Assume it's no.1 if there are no digits
+                    verse_tag = verse_def
+                    verse_num = u'1'
+                verse_def = u'%s%s' % (verse_tag, verse_num)
+                if verses.has_key(verse_tag) and \
+                    verses[verse_tag].has_key(verse_num):
+                    self.verse_order_list.append(verse_def)
+                else:
+                    log.info(u'Got order %s but not in verse tags, dropping'
+                        u'this item from presentation order', verse_def)
+        if not self.finish():
+            self.log_error(file.name)

@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,90 +25,64 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_PluginViewDialog(object):
-    def setupUi(self, PluginViewDialog):
-        PluginViewDialog.setObjectName(u'PluginViewDialog')
-        PluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        PluginViewDialog.resize(554, 344)
-        self.PluginLayout = QtGui.QVBoxLayout(PluginViewDialog)
-        self.PluginLayout.setSpacing(8)
-        self.PluginLayout.setMargin(8)
-        self.PluginLayout.setObjectName(u'PluginLayout')
-        self.ListLayout = QtGui.QHBoxLayout()
-        self.ListLayout.setSpacing(8)
-        self.ListLayout.setObjectName(u'ListLayout')
-        self.PluginListWidget = QtGui.QListWidget(PluginViewDialog)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.PluginListWidget.sizePolicy().hasHeightForWidth())
-        self.PluginListWidget.setSizePolicy(sizePolicy)
-        self.PluginListWidget.setMaximumSize(QtCore.QSize(192, 16777215))
-        self.PluginListWidget.setObjectName(u'PluginListWidget')
-        self.ListLayout.addWidget(self.PluginListWidget)
-        self.PluginInfoGroupBox = QtGui.QGroupBox(PluginViewDialog)
-        self.PluginInfoGroupBox.setAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.PluginInfoGroupBox.setFlat(False)
-        self.PluginInfoGroupBox.setObjectName(u'PluginInfoGroupBox')
-        self.PluginInfoLayout = QtGui.QFormLayout(self.PluginInfoGroupBox)
-        self.PluginInfoLayout.setMargin(8)
-        self.PluginInfoLayout.setSpacing(8)
-        self.PluginInfoLayout.setObjectName(u'PluginInfoLayout')
-        self.VersionLabel = QtGui.QLabel(self.PluginInfoGroupBox)
-        self.VersionLabel.setObjectName(u'VersionLabel')
-        self.PluginInfoLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.VersionLabel)
-        self.VersionNumberLabel = QtGui.QLabel(self.PluginInfoGroupBox)
-        self.VersionNumberLabel.setObjectName(u'VersionNumberLabel')
-        self.PluginInfoLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.VersionNumberLabel)
-        self.AboutLabel = QtGui.QLabel(self.PluginInfoGroupBox)
-        self.AboutLabel.setObjectName(u'AboutLabel')
-        self.PluginInfoLayout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, self.AboutLabel)
-        self.StatusLabel = QtGui.QLabel(self.PluginInfoGroupBox)
-        self.StatusLabel.setObjectName(u'StatusLabel')
-        self.PluginInfoLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.StatusLabel)
-        self.StatusComboBox = QtGui.QComboBox(self.PluginInfoGroupBox)
-        self.StatusComboBox.setObjectName(u'StatusComboBox')
-        self.StatusComboBox.addItem(QtCore.QString())
-        self.StatusComboBox.addItem(QtCore.QString())
-        self.PluginInfoLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.StatusComboBox)
-        self.AboutTextBrowser = QtGui.QTextBrowser(self.PluginInfoGroupBox)
-        self.AboutTextBrowser.setTextInteractionFlags(
+    def setupUi(self, pluginViewDialog):
+        pluginViewDialog.setObjectName(u'pluginViewDialog')
+        pluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.pluginLayout = QtGui.QVBoxLayout(pluginViewDialog)
+        self.pluginLayout.setObjectName(u'pluginLayout')
+        self.listLayout = QtGui.QHBoxLayout()
+        self.listLayout.setObjectName(u'listLayout')
+        self.pluginListWidget = QtGui.QListWidget(pluginViewDialog)
+        self.pluginListWidget.setObjectName(u'pluginListWidget')
+        self.listLayout.addWidget(self.pluginListWidget)
+        self.pluginInfoGroupBox = QtGui.QGroupBox(pluginViewDialog)
+        self.pluginInfoGroupBox.setObjectName(u'pluginInfoGroupBox')
+        self.pluginInfoLayout = QtGui.QFormLayout(self.pluginInfoGroupBox)
+        self.pluginInfoLayout.setObjectName(u'pluginInfoLayout')
+        self.statusLabel = QtGui.QLabel(self.pluginInfoGroupBox)
+        self.statusLabel.setObjectName(u'statusLabel')
+        self.statusComboBox = QtGui.QComboBox(self.pluginInfoGroupBox)
+        self.statusComboBox.addItems((u'', u''))
+        self.statusComboBox.setObjectName(u'statusComboBox')
+        self.pluginInfoLayout.addRow(self.statusLabel, self.statusComboBox)
+        self.versionLabel = QtGui.QLabel(self.pluginInfoGroupBox)
+        self.versionLabel.setObjectName(u'versionLabel')
+        self.versionNumberLabel = QtGui.QLabel(self.pluginInfoGroupBox)
+        self.versionNumberLabel.setObjectName(u'versionNumberLabel')
+        self.pluginInfoLayout.addRow(self.versionLabel, self.versionNumberLabel)
+        self.aboutLabel = QtGui.QLabel(self.pluginInfoGroupBox)
+        self.aboutLabel.setObjectName(u'aboutLabel')
+        self.aboutTextBrowser = QtGui.QTextBrowser(self.pluginInfoGroupBox)
+        self.aboutTextBrowser.setTextInteractionFlags(
             QtCore.Qt.LinksAccessibleByMouse)
-        self.AboutTextBrowser.setObjectName(u'AboutTextBrowser')
-        self.PluginInfoLayout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self.AboutTextBrowser)
-        self.ListLayout.addWidget(self.PluginInfoGroupBox)
-        self.PluginLayout.addLayout(self.ListLayout)
-        self.PluginListButtonBox = QtGui.QDialogButtonBox(PluginViewDialog)
-        self.PluginListButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-        self.PluginListButtonBox.setObjectName(u'PluginListButtonBox')
-        self.PluginLayout.addWidget(self.PluginListButtonBox)
+        self.aboutTextBrowser.setObjectName(u'aboutTextBrowser')
+        self.pluginInfoLayout.addRow(self.aboutLabel, self.aboutTextBrowser)
+        self.listLayout.addWidget(self.pluginInfoGroupBox)
+        self.pluginLayout.addLayout(self.listLayout)
+        self.pluginListButtonBox = QtGui.QDialogButtonBox(pluginViewDialog)
+        self.pluginListButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+        self.pluginListButtonBox.setObjectName(u'pluginListButtonBox')
+        self.pluginLayout.addWidget(self.pluginListButtonBox)
+        self.retranslateUi(pluginViewDialog)
+        QtCore.QObject.connect(self.pluginListButtonBox,
+            QtCore.SIGNAL(u'accepted()'), pluginViewDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(pluginViewDialog)
 
-        self.retranslateUi(PluginViewDialog)
-        QtCore.QObject.connect(self.PluginListButtonBox,
-            QtCore.SIGNAL(u'accepted()'), PluginViewDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(PluginViewDialog)
-
-    def retranslateUi(self, PluginViewDialog):
-        PluginViewDialog.setWindowTitle(
-            translate('PluginForm', 'Plugin List'))
-        self.PluginInfoGroupBox.setTitle(
-            translate('PluginForm', 'Plugin Details'))
-        self.VersionLabel.setText(
-            translate('PluginForm', 'Version:'))
-        self.VersionNumberLabel.setText(translate('PluginForm', 'TextLabel'))
-        self.AboutLabel.setText(translate('PluginForm', 'About:'))
-        self.StatusLabel.setText(translate('PluginForm', 'Status:'))
-        self.StatusComboBox.setItemText(0, translate('PluginForm', 'Active'))
-        self.StatusComboBox.setItemText(1,
-            translate('PluginForm', 'Inactive'))
+    def retranslateUi(self, pluginViewDialog):
+        pluginViewDialog.setWindowTitle(
+            translate('OpenLP.PluginForm', 'Plugin List'))
+        self.pluginInfoGroupBox.setTitle(
+            translate('OpenLP.PluginForm', 'Plugin Details'))
+        self.versionLabel.setText(u'%s:' % UiStrings().Version)
+        self.aboutLabel.setText(u'%s:' % UiStrings().About)
+        self.statusLabel.setText(
+            translate('OpenLP.PluginForm', 'Status:'))
+        self.statusComboBox.setItemText(0,
+            translate('OpenLP.PluginForm', 'Active'))
+        self.statusComboBox.setItemText(1,
+            translate('OpenLP.PluginForm', 'Inactive'))

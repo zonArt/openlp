@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,20 +24,104 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
 import chardet
 import re
 
-from sqlalchemy import or_
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
+from sqlalchemy import Column, ForeignKey, or_, Table, types
+from sqlalchemy.orm import class_mapper, mapper, relation
+from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
-from openlp.plugins.bibles.lib.models import *
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.db import BaseModel, init_db, Manager
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
-class BibleDB(QtCore.QObject):
+class BibleMeta(BaseModel):
+    """
+    Bible Meta Data
+    """
+    pass
+
+
+class Testament(BaseModel):
+    """
+    Bible Testaments
+    """
+    pass
+
+
+class Book(BaseModel):
+    """
+    Song model
+    """
+    pass
+
+
+class Verse(BaseModel):
+    """
+    Topic model
+    """
+    pass
+
+
+def init_schema(url):
+    """
+    Setup a bible database connection and initialise the database schema.
+
+    ``url``
+        The database to setup.
+    """
+    session, metadata = init_db(url)
+
+    meta_table = Table(u'metadata', metadata,
+        Column(u'key', types.Unicode(255), primary_key=True, index=True),
+        Column(u'value', types.Unicode(255)),
+    )
+    testament_table = Table(u'testament', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'name', types.Unicode(50)),
+    )
+    book_table = Table(u'book', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'testament_id', types.Integer, ForeignKey(u'testament.id')),
+        Column(u'name', types.Unicode(50), index=True),
+        Column(u'abbreviation', types.Unicode(5), index=True),
+    )
+    verse_table = Table(u'verse', metadata,
+        Column(u'id', types.Integer, primary_key=True, index=True),
+        Column(u'book_id', types.Integer, ForeignKey(u'book.id'), index=True),
+        Column(u'chapter', types.Integer, index=True),
+        Column(u'verse', types.Integer, index=True),
+        Column(u'text', types.UnicodeText, index=True),
+    )
+
+    try:
+        class_mapper(BibleMeta)
+    except UnmappedClassError:
+        mapper(BibleMeta, meta_table)
+    try:
+        class_mapper(Testament)
+    except UnmappedClassError:
+        mapper(Testament, testament_table,
+            properties={'books': relation(Book, backref='testament')})
+    try:
+        class_mapper(Book)
+    except UnmappedClassError:
+        mapper(Book, book_table,
+            properties={'verses': relation(Verse, backref='book')})
+    try:
+        class_mapper(Verse)
+    except UnmappedClassError:
+        mapper(Verse, verse_table)
+
+    metadata.create_all(checkfirst=True)
+    return session
+
+
+class BibleDB(QtCore.QObject, Manager):
     """
     This class represents a database-bound Bible. It is used as a base class
     for all the custom importers, so that the can implement their own import
@@ -73,43 +158,26 @@ class BibleDB(QtCore.QObject):
             self.file = self.clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
-        self.db_file = os.path.join(kwargs[u'path'], self.file)
-        log.debug(u'Load bible %s on path %s', self.file, self.db_file)
-        settings = QtCore.QSettings()
-        settings.beginGroup(u'bibles')
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
-        db_url = u''
-        if db_type == u'sqlite':
-            db_url = u'sqlite:///' + self.db_file
-        else:
-            db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'db username').toString()),
-                unicode(settings.value(u'db password').toString()),
-                unicode(settings.value(u'db hostname').toString()),
-                unicode(settings.value(u'db database').toString()))
-        settings.endGroup()
-        self.session = init_models(db_url)
-        metadata.create_all(checkfirst=True)
+        Manager.__init__(self, u'bibles', init_schema, self.file)
         if u'file' in kwargs:
             self.get_name()
+        self.wizard = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def stop_import(self):
         """
         Stops the import of the Bible.
         """
-        log.debug('Stopping import')
+        log.debug(u'Stopping import')
         self.stop_import_flag = True
 
     def get_name(self):
         """
         Returns the version name of the Bible.
         """
-        version_name = self.get_meta(u'Version')
-        if version_name:
-            self.name = version_name.value
-        else:
-            self.name = None
+        version_name = self.get_object(BibleMeta, u'Version')
+        self.name = version_name.value if version_name else None
         return self.name
 
     def clean_filename(self, old_filename):
@@ -125,16 +193,6 @@ class BibleDB(QtCore.QObject):
         old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'
 
-    def delete(self):
-        """
-        Remove the Bible database file. Used when a Bible import fails.
-        """
-        try:
-            os.remove(self.db_file)
-            return True
-        except OSError:
-            return False
-
     def register(self, wizard):
         """
         This method basically just initialialises the database. It is called
@@ -146,36 +204,17 @@ class BibleDB(QtCore.QObject):
             The actual Qt wizard form.
         """
         self.wizard = wizard
-        self.create_tables()
+        self.create_meta(u'dbversion', u'2')
+        self.setup_testaments()
         return self.name
 
-    def commit(self):
+    def setup_testaments(self):
         """
-        Perform a database commit.
+        Initialise the testaments section of a bible with suitable defaults.
         """
-        log.debug('Committing...')
-        self.session.commit()
-
-    def create_tables(self):
-        """
-        Create some initial metadata.
-        """
-        log.debug(u'createTables')
-        self.create_meta(u'dbversion', u'2')
-        self.create_testament(u'Old Testament')
-        self.create_testament(u'New Testament')
-        self.create_testament(u'Apocrypha')
-
-    def create_testament(self, testament):
-        """
-        Add a testament to the database.
-
-        ``testament``
-            The testament name.
-        """
-        log.debug(u'BibleDB.create_testament("%s")', testament)
-        self.session.add(Testament.populate(name=testament))
-        self.commit()
+        self.save_object(Testament.populate(name=u'Old Testament'))
+        self.save_object(Testament.populate(name=u'New Testament'))
+        self.save_object(Testament.populate(name=u'Apocrypha'))
 
     def create_book(self, name, abbrev, testament=1):
         """
@@ -193,13 +232,12 @@ class BibleDB(QtCore.QObject):
         log.debug(u'create_book %s,%s', name, abbrev)
         book = Book.populate(name=name, abbreviation=abbrev,
             testament_id=testament)
-        self.session.add(book)
-        self.commit()
+        self.save_object(book)
         return book
 
     def create_chapter(self, book_id, chapter, textlist):
         """
-        Add a chapter and it's verses to a book.
+        Add a chapter and its verses to a book.
 
         ``book_id``
             The id of the book being appended.
@@ -212,16 +250,16 @@ class BibleDB(QtCore.QObject):
             and the value is the verse text.
         """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
-        #text list has book and chapter as first two elements of the array
+        # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
-                book_id = book_id,
-                chapter = chapter,
-                verse = verse_number,
-                text = verse_text
+                book_id=book_id,
+                chapter=chapter,
+                verse=verse_number,
+                text=verse_text
             )
             self.session.add(verse)
-        self.commit()
+        self.session.commit()
 
     def create_verse(self, book_id, chapter, verse, text):
         """
@@ -252,33 +290,40 @@ class BibleDB(QtCore.QObject):
         return verse
 
     def create_meta(self, key, value):
-        log.debug(u'save_meta %s/%s', key, value)
-        self.session.add(BibleMeta.populate(key=key, value=value))
-        self.commit()
+        """
+        Utility method to save BibleMeta objects in a Bible database.
 
-    def get_books(self):
-        log.debug(u'BibleDB.get_books()')
-        return self.session.query(Book).order_by(Book.id).all()
+        ``key``
+            The key for this instance.
+
+        ``value``
+            The value for this instance.
+        """
+        log.debug(u'save_meta %s/%s', key, value)
+        self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
+        """
+        Return a book object from the database.
+
+        ``book``
+            The name of the book to return.
+        """
         log.debug(u'BibleDb.get_book("%s")', book)
-        db_book = self.session.query(Book)\
-            .filter(Book.name.like(book + u'%'))\
-            .first()
+        db_book = self.get_object_filtered(Book, Book.name.like(book + u'%'))
         if db_book is None:
-            db_book = self.session.query(Book)\
-                .filter(Book.abbreviation.like(book + u'%'))\
-                .first()
+            db_book = self.get_object_filtered(Book,
+                Book.abbreviation.like(book + u'%'))
         return db_book
 
-    def get_chapter(self, id, chapter):
-        log.debug(u'BibleDB.get_chapter("%s", %s)', id, chapter)
-        return self.session.query(Verse)\
-            .filter_by(chapter=chapter)\
-            .filter_by(book_id=id)\
-            .first()
+    def get_books(self):
+        """
+        A wrapper so both local and web bibles have a get_books() method that
+        manager can call. Used in the media manager advanced search tab.
+        """
+        return self.get_all_objects(Book, order_by_ref=Book.id)
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         This is probably the most used function. It retrieves the list of
         verses based on the user's query.
@@ -300,11 +345,11 @@ class BibleDB(QtCore.QObject):
         verse_list = []
         for book, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book(book)
-            if end_verse == -1:
-                end_verse = self.get_verse_count(book, chapter)
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)
+                if end_verse == -1:
+                    end_verse = self.get_verse_count(book, chapter)
                 verses = self.session.query(Verse)\
                     .filter_by(book_id=db_book.id)\
                     .filter_by(chapter=chapter)\
@@ -315,12 +360,12 @@ class BibleDB(QtCore.QObject):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                QtGui.QMessageBox.information(self.bible_plugin.media_item,
-                    translate('BibleDB', 'Book not found'),
-                    translate('BibleDB', u'The book you requested could not '
-                        'be found in this bible.  Please check your spelling '
-                        'and that this is a complete bible not just one '
-                        'testament.'))
+                if show_error:
+                    critical_error_message_box(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching book '
+                        'could be found in this Bible. Check that you '
+                        'have spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):
@@ -336,24 +381,28 @@ class BibleDB(QtCore.QObject):
         log.debug(u'BibleDB.verse_search("%s")', text)
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
-            or_clause = []
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u',')]
-            for keyword in keywords:
-                or_clause.append(Verse.text.like(keyword))
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u',')]
+            or_clause = [Verse.text.like(keyword) for keyword in keywords]
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = [u'%%%s%%' % keyword.strip()
-                for keyword in text.split(u' ')]
+            keywords = \
+                [u'%%%s%%' % keyword.strip() for keyword in text.split(u' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()
         return verses
 
     def get_chapter_count(self, book):
+        """
+        Return the number of chapters in a book.
+
+        ``book``
+            The book to get the chapter count for.
+        """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.name==book)\
+            .filter(Book.name == book)\
             .distinct().count()
         if not count:
             return 0
@@ -361,32 +410,31 @@ class BibleDB(QtCore.QObject):
             return count
 
     def get_verse_count(self, book, chapter):
+        """
+        Return the number of verses in a chapter.
+
+        ``book``
+            The book containing the chapter.
+
+        ``chapter``
+            The chapter to get the verse count for.
+        """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
-            .filter(Book.name==book)\
-            .filter(Verse.chapter==chapter)\
+            .filter(Book.name == book)\
+            .filter(Verse.chapter == chapter)\
             .count()
         if not count:
             return 0
         else:
             return count
 
-    def get_meta(self, key):
-        log.debug(u'get meta %s', key)
-        return self.session.query(BibleMeta).get(key)
-
-    def delete_meta(self, metakey):
-        biblemeta = self.get_meta(metakey)
-        try:
-            self.session.delete(biblemeta)
-            self.commit()
-            return True
-        except:
-            return False
-
     def dump_bible(self):
+        """
+        Utility debugging method to dump the contents of a bible.
+        """
         log.debug(u'.........Dumping Bible Database')
-        log.debug('...............................Books ')
+        log.debug(u'...............................Books ')
         books = self.session.query(Book).all()
         log.debug(books)
         log.debug(u'...............................Verses ')

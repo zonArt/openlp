@@ -4,10 +4,11 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,21 +23,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`http` module enables OpenLP to retrieve scripture from bible
+websites.
+"""
 import logging
-import urllib2
 import os
-import sqlite3
 import re
+import sqlite3
+import socket
+import urllib
+from HTMLParser import HTMLParseError
 
-from BeautifulSoup import BeautifulSoup, Tag, NavigableString
+from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
-from openlp.core.lib import Receiver
-from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
-    unescape
-from openlp.plugins.bibles.lib.db import BibleDB
-from openlp.plugins.bibles.lib.models import Book
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.utils import AppLocation, get_web_page
+from openlp.plugins.bibles.lib import SearchResults
+from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
 
@@ -105,6 +110,7 @@ class HTTPBooks(object):
         """
         if not isinstance(name, unicode):
             name = unicode(name)
+        name = name.title()
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM books WHERE name = ? OR '
                 u'abbreviation = ?', (name, name))
@@ -137,10 +143,10 @@ class HTTPBooks(object):
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
         if chapters:
             return {
-                u'id': chapters[chapter][0],
-                u'book_id': chapters[chapter][1],
-                u'chapter': chapters[chapter][2],
-                u'verses': chapters[chapter][3]
+                u'id': chapters[chapter-1][0],
+                u'book_id': chapters[chapter-1][1],
+                u'chapter': chapters[chapter-1][2],
+                u'verses': chapters[chapter-1][3]
             }
         else:
             return None
@@ -175,105 +181,142 @@ class HTTPBooks(object):
         return 0
 
 
-class BGExtract(BibleCommon):
+class BGExtract(object):
     """
     Extract verses from BibleGateway
     """
-
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
-        Access and decode bibles via the BibleGateway website
+        Access and decode bibles via the BibleGateway website.
 
         ``version``
-            The version of the bible like 31 for New International version
+            The version of the bible like 31 for New International version.
 
         ``bookname``
-            Name of the Book
+            Name of the Book.
+
+        ``chapter``
+            Chapter number.
+        """
+        log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
+        url_params = urllib.urlencode(
+            {u'search': u'%s %s' % (bookname, chapter),
+            u'version': u'%s' % version})
+        cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
+        soup = get_soup_for_bible_ref(
+            u'http://www.biblegateway.com/passage/?%s' % url_params,
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='',
+            cleaner=cleaner)
+        if not soup:
+            return None
+        Receiver.send_message(u'openlp_process_events')
+        footnotes = soup.findAll(u'sup', u'footnote')
+        if footnotes:
+            [footnote.extract() for footnote in footnotes]
+        crossrefs = soup.findAll(u'sup', u'xref')
+        if crossrefs:
+            [crossref.extract() for crossref in crossrefs]
+        headings = soup.findAll(u'h5')
+        if headings:
+            [heading.extract() for heading in headings]
+        cleanup = [(re.compile('\s+'), lambda match: ' ')]
+        verses = BeautifulSoup(str(soup), markupMassage=cleanup)
+        verse_list = {}
+        # Cater for inconsistent mark up in the first verse of a chapter.
+        first_verse = verses.find(u'versenum')
+        if first_verse:
+            verse_list[1] = unicode(first_verse.contents[0])
+        for verse in verses(u'sup', u'versenum'):
+            raw_verse_num =  verse.next
+            clean_verse_num = 0
+            # Not all verses exist in all translations and may or may not be
+            # represented by a verse number. If they are not fine, if they are
+            # it will probably be in a format that breaks int(). We will then
+            # have no idea what garbage may be sucked in to the verse text so
+            # if we do not get a clean int() then ignore the verse completely.
+            try:
+                clean_verse_num = int(str(raw_verse_num))
+            except ValueError:
+                log.exception(u'Illegal verse number in %s %s %s:%s',
+                    version, bookname, chapter, unicode(raw_verse_num))
+            if clean_verse_num:
+                verse_text = raw_verse_num.next
+                part = raw_verse_num.next.next
+                while not (isinstance(part, Tag) and part.attrMap and
+                    part.attrMap[u'class'] == u'versenum'):
+                    # While we are still in the same verse grab all the text.
+                    if isinstance(part, NavigableString):
+                        verse_text = verse_text + part
+                    if isinstance(part.next, Tag) and part.next.name == u'div':
+                        # Run out of verses so stop.
+                        break
+                    part = part.next
+                verse_list[clean_verse_num] = unicode(verse_text)
+        if not verse_list:
+            log.debug(u'No content found in the BibleGateway response.')
+            send_error_message(u'parse')
+            return None
+        return SearchResults(bookname, chapter, verse_list)
+
+
+class BSExtract(object):
+    """
+    Extract verses from Bibleserver.com
+    """
+    def __init__(self, proxyurl=None):
+        log.debug(u'init %s', proxyurl)
+        self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
+
+    def get_bible_chapter(self, version, bookname, chapter):
+        """
+        Access and decode bibles via Bibleserver mobile website
+
+        ``version``
+            The version of the bible like NIV for New International Version
+
+        ``bookname``
+            Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
 
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
-            u'&version=%s' % (bookname, chapter, version)
-        log.debug(u'BibleGateway url = %s' % urlstring)
-        # Let's get the page, and then open it in BeautifulSoup, so as to
-        # attempt to make "easy" work of bad HTML.
-        page = urllib2.urlopen(urlstring)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
+            (version, bookname, chapter)
+        header = (u'Accept-Language', u'en')
+        soup = get_soup_for_bible_ref(chapter_url, header)
+        if not soup:
+            return None
         Receiver.send_message(u'openlp_process_events')
-        soup = BeautifulSoup(page)
-        Receiver.send_message(u'openlp_process_events')
-        verses = soup.find(u'div', u'result-text-style-normal')
-        verse_number = 0
-        verse_list = {0: u''}
-        # http://www.codinghorror.com/blog/2009/11/parsing-html-the-cthulhu-way.html
-        # This is a PERFECT example of opening the Cthulu tag!
-        # O Bible Gateway, why doth ye such horrific HTML produce?
-        for verse in verses:
+        content = soup.find(u'div', u'content')
+        if not content:
+            log.exception(u'No verses found in the Bibleserver response.')
+            send_error_message(u'parse')
+            return None
+        content = content.find(u'div').findAll(u'div')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
+        verses = {}
+        for verse in content:
             Receiver.send_message(u'openlp_process_events')
-            if isinstance(verse, Tag) and verse.name == u'div' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] == u'footnotes':
-                break
-            if isinstance(verse, Tag) and verse.name == u'sup' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] != u'versenum':
-                continue
-            if isinstance(verse, Tag) and verse.name == u'p' and not verse.contents:
-                continue
-            if isinstance(verse, Tag) and (verse.name == u'p' or verse.name == u'font') and verse.contents:
-                for item in verse.contents:
-                    Receiver.send_message(u'openlp_process_events')
-                    if isinstance(item, Tag) and (item.name == u'h4' or item.name == u'h5'):
-                        continue
-                    if isinstance(item, Tag) and item.name == u'sup' and filter(lambda a: a[0] == u'class', item.attrs)[0][1] != u'versenum':
-                        continue
-                    if isinstance(item, Tag) and item.name == u'p' and not item.contents:
-                        continue
-                    if isinstance(item, Tag) and item.name == u'sup':
-                        verse_number = int(str(item.contents[0]))
-                        verse_list[verse_number] = u''
-                        continue
-                    if isinstance(item, Tag) and item.name == u'font':
-                        for subitem in item.contents:
-                            Receiver.send_message(u'openlp_process_events')
-                            if isinstance(subitem, Tag) and subitem.name == u'sup' and filter(lambda a: a[0] == u'class', subitem.attrs)[0][1] != u'versenum':
-                                continue
-                            if isinstance(subitem, Tag) and subitem.name == u'p' and not subitem.contents:
-                                continue
-                            if isinstance(subitem, Tag) and subitem.name == u'sup':
-                                verse_number = int(str(subitem.contents[0]))
-                                verse_list[verse_number] = u''
-                                continue
-                            if isinstance(subitem, NavigableString):
-                                verse_list[verse_number] = verse_list[verse_number] + subitem.replace(u'&nbsp;', u' ')
-                        continue
-                    if isinstance(item, NavigableString):
-                        verse_list[verse_number] = verse_list[verse_number] + item.replace(u'&nbsp;', u' ')
-                continue
-            if isinstance(verse, Tag) and verse.name == u'sup':
-                verse_number = int(str(verse.contents[0]))
-                verse_list[verse_number] = u''
-                continue
-            if isinstance(verse, NavigableString):
-                if not isinstance(verse, unicode):
-                    verse = unicode(verse, u'utf8')
-                verse_list[verse_number] = verse_list[verse_number] + \
-                    unescape(verse.replace(u'&nbsp;', u' '))
-        # Delete the "0" element, since we don't need it, it's just there for
-        # some stupid initial whitespace, courtesy of Bible Gateway.
-        del verse_list[0]
-        # Finally, return the list of verses in a "SearchResults" object.
-        return SearchResults(bookname, chapter, verse_list)
+            versenumber = int(verse_number.sub(r'\3', verse[u'class']))
+            verses[versenumber] = verse.contents[1].rstrip(u'\n')
+        return SearchResults(bookname, chapter, verses)
 
-class CWExtract(BibleCommon):
+
+class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """
-
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
@@ -292,14 +335,15 @@ class CWExtract(BibleCommon):
         urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)
-        log.debug(u'URL: %s', chapter_url)
-        page = urllib2.urlopen(chapter_url)
-        Receiver.send_message(u'openlp_process_events')
-        if not page:
+        soup = get_soup_for_bible_ref(chapter_url)
+        if not soup:
             return None
-        soup = BeautifulSoup(page)
         Receiver.send_message(u'openlp_process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
+        if not htmlverses:
+            log.debug(u'No verses found in the CrossWalk response.')
+            send_error_message(u'parse')
+            return None
         verses = {}
         reduce_spaces = re.compile(r'[ ]{2,}')
         fix_punctuation = re.compile(r'[ ]+([.,;])')
@@ -313,13 +357,13 @@ class CWExtract(BibleCommon):
                     versetext = versetext + part
                 elif part and part.attrMap and \
                     (part.attrMap[u'class'] == u'WordsOfChrist' or \
-                     part.attrMap[u'class'] == u'strongs'):
+                    part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
                         Receiver.send_message(u'openlp_process_events')
                         if isinstance(subpart, NavigableString):
                             versetext = versetext + subpart
                         elif subpart and subpart.attrMap and \
-                             subpart.attrMap[u'class'] == u'strongs':
+                            subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
                                 Receiver.send_message(u'openlp_process_events')
                                 if isinstance(subsub, NavigableString):
@@ -348,46 +392,40 @@ class HTTPBible(BibleDB):
         Init confirms the bible exists and stores the database path.
         """
         BibleDB.__init__(self, parent, **kwargs)
-        if u'download_source' not in kwargs:
-            raise KeyError(u'Missing keyword argument "download_source"')
-        if u'download_name' not in kwargs:
-            raise KeyError(u'Missing keyword argument "download_name"')
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
+        # TODO: Clean up proxy stuff. We probably want one global proxy per
+        # connection type (HTTP and HTTPS) at most.
+        self.proxy_server = None
+        self.proxy_username = None
+        self.proxy_password = None
         if u'proxy_server' in kwargs:
             self.proxy_server = kwargs[u'proxy_server']
-        else:
-            self.proxy_server = None
         if u'proxy_username' in kwargs:
             self.proxy_username = kwargs[u'proxy_username']
-        else:
-            self.proxy_username = None
         if u'proxy_password' in kwargs:
             self.proxy_password = kwargs[u'proxy_password']
-        else:
-            self.proxy_password = None
 
     def do_import(self):
         """
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.ImportProgressBar.setMaximum(2)
+        self.wizard.progressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
         if self.proxy_server:
             self.create_meta(u'proxy server', self.proxy_server)
         if self.proxy_username:
-            # store the proxy userid
+            # Store the proxy userid.
             self.create_meta(u'proxy username', self.proxy_username)
         if self.proxy_password:
-            # store the proxy password
+            # Store the proxy password.
             self.create_meta(u'proxy password', self.proxy_password)
-        self.wizard.incrementProgressBar('Registered.')
         return True
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         A reimplementation of the ``BibleDB.get_verses`` method, this one is
         specifically for web Bibles. It first checks to see if the particular
@@ -409,54 +447,55 @@ class HTTPBible(BibleDB):
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
         for reference in reference_list:
-            log.debug('Reference: %s', reference)
+            log.debug(u'Reference: %s', reference)
             book = reference[0]
             db_book = self.get_book(book)
             if not db_book:
-                book_details = self.lookup_book(book)
+                book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    Receiver.send_message(u'bibles_nobook')
+                    if show_error:
+                        critical_error_message_box(
+                            translate('BiblesPlugin', 'No Book Found'),
+                            translate('BiblesPlugin', 'No matching '
+                            'book could be found in this Bible. Check that you '
+                            'have spelled the name of the book correctly.'))
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'],
                     book_details[u'testament_id'])
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
-                Receiver.send_message(u'bibles_showprogress')
-                Receiver.send_message(u'openlp_process_events')
+                Receiver.send_message(u'cursor_busy')
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
-                    ## if it was there.  By reusing the returned book name
-                    ## we get a correct book.  For example it is possible
+                    ## if it was there. By reusing the returned book name
+                    ## we get a correct book. For example it is possible
                     ## to request ac and get Acts back.
-                    bookname = search_results.get_book()
+                    bookname = search_results.book
                     Receiver.send_message(u'openlp_process_events')
-                    # check to see if book/chapter exists
+                    # Check to see if book/chapter exists.
                     db_book = self.get_book(bookname)
-                    self.create_chapter(db_book.id,
-                        search_results.get_chapter(),
-                        search_results.get_verselist())
+                    self.create_chapter(db_book.id, search_results.chapter,
+                        search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'bibles_hideprogress')
+                Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
-        return BibleDB.get_verses(self, reference_list)
+        return BibleDB.get_verses(self, reference_list, show_error)
 
     def get_chapter(self, book, chapter):
         """
-        Receive the request and call the relevant handler methods
+        Receive the request and call the relevant handler methods.
         """
         log.debug(u'get_chapter %s, %s', book, chapter)
         log.debug(u'source = %s', self.download_source)
-        try:
-            if self.download_source.lower() == u'crosswalk':
-                ev = CWExtract(self.proxy_server)
-            else:
-                ev = BGExtract(self.proxy_server)
-            return ev.get_bible_chapter(self.download_name, book, chapter)
-        except:
-            log.exception("Failed to get bible chapter")
-            return None
+        if self.download_source.lower() == u'crosswalk':
+            handler = CWExtract(self.proxy_server)
+        elif self.download_source.lower() == u'biblegateway':
+            handler = BGExtract(self.proxy_server)
+        elif self.download_source.lower() == u'bibleserver':
+            handler = BSExtract(self.proxy_server)
+        return handler.get_bible_chapter(self.download_name, book, chapter)
 
     def get_books(self):
         """
@@ -464,12 +503,6 @@ class HTTPBible(BibleDB):
         """
         return [Book.populate(name=book['name'])
             for book in HTTPBooks.get_books()]
-
-    def lookup_book(self, book):
-        """
-        Look up the name of a book.
-        """
-        return HTTPBooks.get_book(book)
 
     def get_chapter_count(self, book):
         """
@@ -489,13 +522,67 @@ class HTTPBible(BibleDB):
         """
         return HTTPBooks.get_verse_count(book, chapter)
 
-    def set_proxy_server(self, server):
-        """
-        Sets the proxy server.
+def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
+    pre_parse_substitute=None, cleaner=None):
+    """
+    Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
-        **Note: This is not actually used.**
+    ``reference_url``
+        The URL to obtain the soup from.
 
-        ``server``
-            The hostname or IP address of the proxy server.
-        """
-        self.proxy_server = server
+    ``header``
+        An optional HTTP header to pass to the bible web server.
+
+    ``pre_parse_regex``
+        A regular expression to run on the webpage. Allows manipulation of the
+        webpage before passing to BeautifulSoup for parsing.
+
+    ``pre_parse_substitute``
+        The text to replace any matches to the regular expression with.
+
+    ``cleaner``
+        An optional regex to use during webpage parsing.
+    """
+    if not reference_url:
+        return None
+    page = get_web_page(reference_url, header, True)
+    if not page:
+        send_error_message(u'download')
+        return None
+    page_source = page.read()
+    if pre_parse_regex and pre_parse_substitute is not None:
+        page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
+    soup = None
+    try:
+        if cleaner:
+            soup = BeautifulSoup(page_source, markupMassage=cleaner)
+        else:
+            soup = BeautifulSoup(page_source)
+    except HTMLParseError:
+        log.exception(u'BeautifulSoup could not parse the bible page.')
+    if not soup:
+        send_error_message(u'parse')
+        return None
+    Receiver.send_message(u'openlp_process_events')
+    return soup
+
+def send_error_message(error_type):
+    """
+    Send a standard error message informing the user of an issue.
+
+    ``error_type``
+        The type of error that occured for the issue.
+    """
+    if error_type == u'download':
+        critical_error_message_box(
+            translate('BiblePlugin.HTTPBible', 'Download Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
+            'problem downloading your verse selection. Please check your '
+            'Internet connection, and if this error continues to occur '
+            'please consider reporting a bug.'))
+    elif error_type == u'parse':
+        critical_error_message_box(
+            translate('BiblePlugin.HTTPBible', 'Parse Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
+            'problem extracting your verse selection. If this error continues '
+            'to occur please consider reporting a bug.'))

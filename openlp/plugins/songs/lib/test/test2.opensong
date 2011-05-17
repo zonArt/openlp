@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<song>
+  <title>Martins 2nd Test</title>
+  <author>Martin Thompson</author>
+  <copyright>2010 Martin Thompson</copyright>
+  <hymn_number>2</hymn_number>
+  <presentation></presentation>
+  <ccli>Blah</ccli>
+  <capo print="false"></capo>
+  <key></key>
+  <aka></aka>
+  <key_line></key_line>
+  <user1></user1>
+  <user2></user2>
+  <user3></user3>
+  <theme></theme>
+  <tempo></tempo>
+  <time_sig></time_sig>
+  <lyrics>;Comment
+[V]
+. A   B C
+1 v1 Line 1___
+2 v2 Line 1___
+. A B C7
+1 V1 Line 2
+2 V2 Line 2
+ 
+[b1]
+ Bridge 1
+ Bridge 1 line 2
+[C1]
+ Chorus 1
+ 
+[C2]
+ Chorus 2
+ </lyrics>
+  <style index="default_style">
+  <title enabled="true" valign="bottom" align="center" include_verse="false" margin-left="0" margin-right="0" margin-top="0" margin-bottom="0" font="Helvetica" size="26" bold="true" italic="true" underline="false" color="#FFFFFF" border="true" border_color="#000000" shadow="true" shadow_color="#000000" fill="false" fill_color="#000000"/>
+  <subtitle enabled="true" valign="bottom" align="center" descriptive="false" margin-left="0" margin-right="0" margin-top="0" margin-bottom="0" font="Helvetica" size="18" bold="true" italic="true" underline="false" color="#FFFFFF" border="true" border_color="#000000" shadow="true" shadow_color="#000000" fill="false" fill_color="#000000"/>
+  <song_subtitle>author</song_subtitle>
+  <body enabled="true" auto_scale="false" valign="middle" align="center" highlight_chorus="true" margin-left="0" margin-right="0" margin-top="0" margin-bottom="0" font="Helvetica" size="34" bold="true" italic="false" underline="false" color="#FFFFFF" border="true" border_color="#000000" shadow="true" shadow_color="#000000" fill="false" fill_color="#FF0000">
+  <tabs/>
+</body>
+  <background strip_footer="0" color="#408080" position="1"/>
+</style></song>

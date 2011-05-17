@@ -57,7 +57,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="AlertParameter">
        <property name="text">
-        <string>&amp;Parameter(s):</string>
+        <string>&amp;Parameter:</string>
        </property>
        <property name="buddy">
         <cstring>ParameterEdit</cstring>
