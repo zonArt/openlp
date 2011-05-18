@@ -102,6 +102,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.singleServiceItem = True
         self.quickPreviewAllowed = False
+        self.hasSearch = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
@@ -244,7 +245,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add the List widget
         self.listView = ListWidgetWithDnD(self, self.plugin.name)
-        self.listView.setUniformItemSizes(True)
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
@@ -475,11 +475,23 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(u'%s Live requested', self.plugin.name)
-            serviceItem = self.buildServiceItem()
-            if serviceItem:
+            self.goLive()
+
+    def goLive(self, item_id=None):
+        log.debug(u'%s Live requested', self.plugin.name)
+        item = None
+        if item_id:
+            item = self.createItemFromId(item_id)
+        serviceItem = self.buildServiceItem(item)
+        if serviceItem:
+            if not item_id:
                 serviceItem.from_plugin = True
-                self.parent.liveController.addServiceItem(serviceItem)
+            self.parent.liveController.addServiceItem(serviceItem)
+
+    def createItemFromId(self, item_id):
+        item = QtGui.QListWidgetItem()
+        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
+        return item
 
     def onAddClick(self):
         """
@@ -552,6 +564,20 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
+    def check_search_result(self):
+        """
+        Checks if the listView is empty and adds a "No Search Results" item.
+        """
+        if self.listView.count():
+            return
+        message = translate('OpenLP.MediaManagerItem', 'No Search Results')
+        item = QtGui.QListWidgetItem(message)
+        item.setFlags(QtCore.Qt.NoItemFlags)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        item.setFont(font)
+        self.listView.addItem(item)
+
     def _getIdOfItemToGenerate(self, item, remoteItem):
         """
         Utility method to check items being submitted for slide generation.
@@ -573,3 +599,10 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def search(self, string):
+        """
+        Performs a plugin specific search for items containing ``string``
+        """
+        raise NotImplementedError(
+            u'Plugin.search needs to be defined by the plugin')
