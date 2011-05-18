@@ -412,8 +412,8 @@ class HttpConnection(object):
                         item[u'html'] = unicode(frame[u'html'])
                     else:
                         item[u'tag'] = unicode(index + 1)
-                        item[u'text'] = u''
-                        item[u'html'] = u''
+                        item[u'text'] = unicode(frame[u'title'])
+                        item[u'html'] = unicode(frame[u'title'])
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
