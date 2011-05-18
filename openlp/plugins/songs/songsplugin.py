@@ -268,4 +268,3 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.songExportItem, UiStrings().Export)
         action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)
-
