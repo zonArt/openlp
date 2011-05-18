@@ -248,7 +248,7 @@ class CustomMediaItem(MediaManagerItem):
     def onSearchTextEditChanged(self, text):
         """
         If search as type enabled invoke the search on each key press.
-        If the Lyrics are being searched do not start till 7 characters
+        If the Title is being searched do not start till 2 characters
         have been entered.
         """
         search_length = 2
