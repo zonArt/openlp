@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 
 class CustomSearch(object):
     """
-    An enumeration for song search methods.
+    An enumeration for custom search methods.
     """
     Titles = 1
     Themes = 2
