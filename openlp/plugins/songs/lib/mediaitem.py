@@ -221,8 +221,7 @@ class SongMediaItem(MediaManagerItem):
         # Push edits to the service manager to update items
         if self.editItem and self.updateServiceOnEdit and \
             not self.remoteTriggered:
-            item_id = self._getIdOfItemToGenerate(self.editItem)
-            item = self.buildServiceItem(item_id)
+            item = self.buildServiceItem(self.editItem)
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
