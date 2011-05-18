@@ -137,13 +137,9 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Some cleanup while finishing
         """
-        if self.deleteCheckBox.checkState() == QtCore.Qt.Checked or \
-            self.deleteAllCheckBox.checkState() == QtCore.Qt.Checked:
-            for number, filename in enumerate(self.files):
-                if self.deleteAllCheckBox.checkState() == QtCore.Qt.Checked or \
-                    (self.checkBox[number].checkState() == QtCore.Qt.Checked \
-                    and self.success[number]):
-                    delete_file(os.path.join(self.oldpath, filename))
+        for number, filename in enumerate(self.files):
+            if self.success[number]:
+                delete_file(os.path.join(self.oldpath, filename))
 
     def customInit(self):
         """
@@ -290,23 +286,6 @@ class BibleUpgradeForm(OpenLPWizard):
             self.formWidget[number].setParent(None)
         self.formLayout.removeItem(self.spacerItem)  
 
-    def addProgressPage(self):
-        """
-        Add the progress page for the wizard. This page informs the user how
-        the wizard is progressing with its task.
-        """
-        OpenLPWizard.addProgressPage(self)
-        self.progressLayout.setContentsMargins(48, 48, 48, 20)
-        self.progressLabelAfter = QtGui.QLabel(self.progressPage)
-        self.progressLabelAfter.setObjectName(u'progressLabelAfter')
-        self.progressLayout.addWidget(self.progressLabelAfter)
-        self.deleteCheckBox = QtGui.QCheckBox(self.progressPage)
-        self.deleteCheckBox.setObjectName(u'deleteCheckBox')
-        self.progressLayout.addWidget(self.deleteCheckBox)
-        self.deleteAllCheckBox = QtGui.QCheckBox(self.progressPage)
-        self.deleteAllCheckBox.setObjectName(u'deleteAllCheckBox')
-        self.progressLayout.addWidget(self.deleteAllCheckBox)
-
     def retranslateUi(self):
         """
         Allow for localisation of the bible import wizard.
@@ -338,16 +317,6 @@ class BibleUpgradeForm(OpenLPWizard):
             'Please wait while your Bibles are upgraded.'))
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(u'%p%')
-        self.deleteCheckBox.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'Delete those files '
-            'which have been successfully upgraded.'))
-        self.deleteAllCheckBox.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'Delete all the old '
-            'files, including those which have not been \nupgraded.'))
-        self.progressLabelAfter.setText(
-            translate('BiblesPlugin.UpgradeWizardForm', 'A copy of the '
-            'pre-upgraded Bible database files have been made. \nWould you '
-            'like to:'))
 
     def validateCurrentPage(self):
         """
@@ -431,11 +400,6 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.verticalWidget[number].hide()
                 self.formWidget[number].hide()
         self.progressBar.show()
-        self.progressLabelAfter.hide()
-        self.deleteCheckBox.hide()
-        self.deleteCheckBox.setCheckState(QtCore.Qt.Unchecked)
-        self.deleteAllCheckBox.hide()
-        self.deleteAllCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
@@ -683,17 +647,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
                     'Bible(s) successful.%s')) % (successful_import, 
                     failed_import_text))
-            self.deleteCheckBox.show()
-            bibles = u''
-            for bible in self.newbibles.itervalues():
-                name = bible.get_name()
-                bibles += u'\n"' + name + u'"'
-            self.deleteCheckBox.setToolTip(unicode(translate(
-                'BiblesPlugin.UpgradeWizardForm', 
-                'Successfully upgraded Bible(s):%s')) % bibles)
         else:
             self.progressLabel.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade '
                     'failed.'))
-        self.progressLabelAfter.show()
-        self.deleteAllCheckBox.show()
