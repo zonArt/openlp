@@ -425,7 +425,7 @@ class HTTPBible(BibleDB):
             self.create_meta(u'proxy password', self.proxy_password)
         return True
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         A reimplementation of the ``BibleDB.get_verses`` method, this one is
         specifically for web Bibles. It first checks to see if the particular
@@ -453,11 +453,12 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    critical_error_message_box(
-                        translate('BiblesPlugin', 'No Book Found'),
-                        translate('BiblesPlugin', 'No matching '
-                        'book could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.'))
+                    if show_error:
+                        critical_error_message_box(
+                            translate('BiblesPlugin', 'No Book Found'),
+                            translate('BiblesPlugin', 'No matching '
+                            'book could be found in this Bible. Check that you '
+                            'have spelled the name of the book correctly.'))
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'],
@@ -480,7 +481,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
-        return BibleDB.get_verses(self, reference_list)
+        return BibleDB.get_verses(self, reference_list, show_error)
 
     def get_chapter(self, book, chapter):
         """

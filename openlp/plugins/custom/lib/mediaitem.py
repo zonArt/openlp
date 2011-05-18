@@ -27,6 +27,7 @@
 import logging
 
 from PyQt4 import QtCore, QtGui
+from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_item_selected
@@ -47,6 +48,7 @@ class CustomMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
+        self.hasSearch = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
@@ -162,3 +164,15 @@ class CustomMediaItem(MediaManagerItem):
             raw_footer.append(u'')
         service_item.raw_footer = raw_footer
         return True
+
+    def search(self, string):
+        search_results = self.manager.get_all_objects(CustomSlide,
+            or_(func.lower(CustomSlide.title).like(u'%' +
+            string.lower() + u'%'),
+            func.lower(CustomSlide.text).like(u'%' +
+            string.lower() + u'%')),
+            order_by_ref=CustomSlide.title)
+        results = []
+        for custom in search_results:
+            results.append([custom.id, custom.title])
+        return results

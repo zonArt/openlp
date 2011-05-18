@@ -53,6 +53,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.Automatic = u''
         MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
+        self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
 
@@ -231,17 +232,19 @@ class PresentationMediaItem(MediaManagerItem):
         in the slidecontroller. In the case of powerpoints, an image
         for each slide
         """
-        items = self.listView.selectedIndexes()
-        if len(items) > 1:
-            return False
+        if item:
+            items = [item]
+        else:
+            items = self.listView.selectedItems()
+            if len(items) > 1:
+                return False
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = unicode(self.displayTypeComboBox.currentText())
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.AllowsDetailedTitleDisplay)
         shortname = service_item.shortname
         if shortname:
-            for item in items:
-                bitem = self.listView.item(item.row())
+            for bitem in items:
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 if os.path.exists(filename):
                     if shortname == self.Automatic:
@@ -303,3 +306,12 @@ class PresentationMediaItem(MediaManagerItem):
                 if filetype in self.controllers[controller].alsosupports:
                     return controller
         return None
+
+    def search(self, string):
+        list = SettingsManager.load_list(self.settingsSection, u'presentations')
+        results = []
+        string = string.lower()
+        for file in list:
+            if file.lower().find(string) > -1:
+                results.append([file, file])
+        return results
