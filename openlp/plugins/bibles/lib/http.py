@@ -439,7 +439,7 @@ class HTTPBible(BibleDB):
         else:
             return True
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         A reimplementation of the ``BibleDB.get_verses`` method, this one is
         specifically for web Bibles. It first checks to see if the particular
@@ -465,11 +465,12 @@ class HTTPBible(BibleDB):
             book_id = reference[0]
             db_book = self.get_book_by_book_ref_id(book_id)
             if not db_book:
-                critical_error_message_box(
-                    translate('BiblesPlugin', 'No Book Found'),
-                    translate('BiblesPlugin', 'No matching '
-                    'book could be found in this Bible. Check that you '
-                    'have spelled the name of the book correctly.'))
+                if show_error:
+                    critical_error_message_box(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching '
+                        'book could be found in this Bible. Check that you '
+                        'have spelled the name of the book correctly.'))
                 return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
@@ -489,7 +490,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
-        return BibleDB.get_verses(self, reference_list)
+        return BibleDB.get_verses(self, reference_list, show_error)
 
     def get_chapter(self, book, chapter):
         """

@@ -242,7 +242,7 @@ class BibleManager(object):
         book_ref_id = db_book.book_reference_id
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_verses(self, bible, versetext, firstbible=False):
+    def get_verses(self, bible, versetext, firstbible=False, show_error=True):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
@@ -263,13 +263,14 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
         if not bible:
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('BiblesPlugin.BibleManager',
-                'No Bibles Available'),
-                u'message': translate('BiblesPlugin.BibleManager',
-                'There are no Bibles currently installed. Please use the '
-                'Import Wizard to install one or more Bibles.')
-                })
+            if show_error:
+                Receiver.send_message(u'openlp_information_message', {
+                    u'title': translate('BiblesPlugin.BibleManager',
+                    'No Bibles Available'),
+                    u'message': translate('BiblesPlugin.BibleManager',
+                    'There are no Bibles currently installed. Please use the '
+                    'Import Wizard to install one or more Bibles.')
+                    })
             return None
         reflist = parse_reference(versetext)
         if reflist:
@@ -295,22 +296,23 @@ class BibleManager(object):
                             'could be found in this Bible. Check that you have '
                             'spelled the name of the book correctly.'))
             reflist = new_reflist
-            return self.db_cache[bible].get_verses(reflist)
+            return self.db_cache[bible].get_verses(reflist, show_error)
         else:
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('BiblesPlugin.BibleManager',
-                'Scripture Reference Error'),
-                u'message': translate('BiblesPlugin.BibleManager',
-                'Your scripture reference is either not supported by OpenLP '
-                'or is invalid. Please make sure your reference conforms to '
-                'one of the following patterns:\n\n'
-                'Book Chapter\n'
-                'Book Chapter-Chapter\n'
-                'Book Chapter:Verse-Verse\n'
-                'Book Chapter:Verse-Verse,Verse-Verse\n'
-                'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                'Book Chapter:Verse-Chapter:Verse')
-                })
+            if show_error:
+                Receiver.send_message(u'openlp_information_message', {
+                    u'title': translate('BiblesPlugin.BibleManager',
+                    'Scripture Reference Error'),
+                    u'message': translate('BiblesPlugin.BibleManager',
+                    'Your scripture reference is either not supported by '
+                    'OpenLP or is invalid. Please make sure your reference '
+                    'conforms to one of the following patterns:\n\n'
+                    'Book Chapter\n'
+                    'Book Chapter-Chapter\n'
+                    'Book Chapter:Verse-Verse\n'
+                    'Book Chapter:Verse-Verse,Verse-Verse\n'
+                    'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
+                    'Book Chapter:Verse-Chapter:Verse')
+                    })
             return None
 
     def verse_search(self, bible, second_bible, text):
@@ -318,7 +320,7 @@ class BibleManager(object):
         Does a verse search for the given bible and text.
 
         ``bible``
-            The bible to seach in (unicode).
+            The bible to search in (unicode).
 
         ``second_bible``
             The second bible (unicode). We do not search in this bible.
@@ -327,6 +329,15 @@ class BibleManager(object):
             The text to search for (unicode).
         """
         log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
+        if not bible:
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
+                'No Bibles Available'),
+                u'message': translate('BiblesPlugin.BibleManager',
+                'There are no Bibles currently installed. Please use the '
+                'Import Wizard to install one or more Bibles.')
+                })
+            return None
         # Check if the bible or second_bible is a web bible.
         webbible = self.db_cache[bible].get_object(BibleMeta,
             u'download source')
