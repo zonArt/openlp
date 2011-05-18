@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,7 +85,12 @@ body {
 }
 /* lyric css */
 %s
-
+sup {
+    font-size:0.6em;
+    vertical-align:top;
+    position:relative;
+    top:-0.3em;
+}
 </style>
 <script language="javascript">
     var timer = null;
@@ -302,7 +307,7 @@ body {
 </head>
 <body>
 <img id="bgimage" class="size" %s />
-<img id="image" class="size" style="display:none" />
+<img id="image" class="size" %s />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -315,18 +320,27 @@ body {
 </html>
     """
 
-def build_html(item, screen, alert, islive, background):
+def build_html(item, screen, alert, islive, background, image=None):
     """
     Build the full web paged structure for display
 
-    `item`
+    ``item``
         Service Item to be displayed
-    `screen`
+
+    ``screen``
         Current display information
-    `alert`
+
+    ``alert``
         Alert display display information
-    `islive`
+
+    ``islive``
         Item is going live, rather than preview/theme building
+
+    ``background``
+        Theme background image - bytes
+
+    ``image``
+        Image media item - bytes
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -334,11 +348,15 @@ def build_html(item, screen, alert, islive, background):
     webkitvers = webkit_version()
     # Image generated and poked in
     if background:
-        image = u'src="data:image/png;base64,%s"' % background
+        bgimage_src = u'src="data:image/png;base64,%s"' % background
     elif item.bg_image_bytes:
-        image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage_src = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        image = u'style="display:none;"'
+        bgimage_src = u'style="display:none;"'
+    if image:
+        image_src = u'src="data:image/png;base64,%s"' % image
+    else:
+        image_src = u'style="display:none;"'
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
@@ -346,7 +364,7 @@ def build_html(item, screen, alert, islive, background):
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        image,
+        bgimage_src, image_src,
         build_lyrics_html(item, webkitvers))
     return html
 
@@ -366,7 +384,7 @@ def build_background_css(item, width, height):
     """
     Build the background css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
     """
@@ -419,10 +437,10 @@ def build_lyrics_css(item, webkitvers):
     """
     Build the lyrics display css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
 
     """
@@ -447,7 +465,7 @@ def build_lyrics_css(item, webkitvers):
 .lyricsshadow {
 %s
 }
-     """
+    """
     theme = item.themedata
     lyricstable = u''
     lyrics = u''
@@ -455,8 +473,7 @@ def build_lyrics_css(item, webkitvers):
     outline = u''
     shadow = u''
     if theme and item.main:
-        lyricstable = u'left: %spx; top: %spx;' % \
-            (item.main.x(), item.main.y())
+        lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(),
             item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
@@ -497,10 +514,10 @@ def build_lyrics_outline_css(theme, is_shadow=False):
     Build the css which controls the theme outline
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `is_shadow`
+    ``is_shadow``
         If true, use the shadow colors instead
     """
     if theme.font_main_outline:
@@ -521,13 +538,13 @@ def build_lyrics_format_css(theme, width, height):
     Build the css which controls the theme format
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `width`
+    ``width``
         Width of the lyrics block
 
-    `height`
+    ``height``
         Height of the lyrics block
 
     """
@@ -557,10 +574,10 @@ def build_lyrics_html(item, webkitvers):
     """
     Build the HTML required to show the lyrics
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
     """
     # Bugs in some versions of QtWebKit mean we sometimes need additional
@@ -586,7 +603,7 @@ def build_footer_css(item, height):
     """
     Build the display of the item footer
 
-    `item`
+    ``item``
         Service Item to be processed.
     """
     style = """
@@ -612,7 +629,7 @@ def build_alert_css(alertTab, width):
     """
     Build the display of the footer
 
-    `alertTab`
+    ``alertTab``
         Details from the Alert tab for fonts etc
     """
     style = """

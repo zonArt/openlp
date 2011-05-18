@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,8 +85,18 @@ class BibleImportForm(OpenLPWizard):
         """
         OpenLPWizard.setupUi(self, image)
         QtCore.QObject.connect(self.formatComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.selectStack,
-            QtCore.SLOT(u'setCurrentIndex(int)'))
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onCurrentIndexChanged)
+
+    def onCurrentIndexChanged(self, index):
+        """
+        Called when the format combo box's index changed. We have to check if
+        the import is available and accordingly to disable or enable the next
+        button.
+        """
+        self.selectStack.setCurrentIndex(index)
+        next_button = self.button(QtGui.QWizard.NextButton)
+        next_button.setEnabled(BibleFormat.get_availability(index))
 
     def customInit(self):
         """
@@ -367,7 +377,7 @@ class BibleImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(BibleFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(BibleFormat.WebDownload,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
-        self.formatComboBox.setItemText(BibleFormat.OpenLP1, UiStrings.OLPV1)
+        self.formatComboBox.setItemText(BibleFormat.OpenLP1, UiStrings().OLPV1)
         self.openlp1FileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.osisFileLabel.setText(
@@ -441,13 +451,13 @@ class BibleImportForm(OpenLPWizard):
         elif self.currentPage() == self.selectPage:
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
                 if not self.field(u'csv_testamentsfile').toString():
-                    answer = critical_error_message_box(UiStrings.NFSs,
+                    answer = critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You have not specified a testaments file. Do you '
                         'want to proceed with the import?'), question=True)
@@ -455,14 +465,14 @@ class BibleImportForm(OpenLPWizard):
                         self.csvTestamentsEdit.setFocus()
                         return False
                 if not self.field(u'csv_booksfile').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of '
                         'the Bible to use in the import.'))
                     self.csvBooksEdit.setFocus()
                     return False
                 elif not self.field(u'csv_versefile').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file of Bible '
                         'verses to import.'))
@@ -471,14 +481,14 @@ class BibleImportForm(OpenLPWizard):
             elif self.field(u'source_format').toInt()[0] == \
                 BibleFormat.OpenSong:
                 if not self.field(u'opensong_file').toString():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
-                    critical_error_message_box(UiStrings.NFSs,
-                        WizardStrings.YouSpecifyFile % UiStrings.OLPV1)
+                    critical_error_message_box(UiStrings().NFSs,
+                        WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
                     self.openlp1FileEdit.setFocus()
                     return False
             return True
@@ -487,13 +497,13 @@ class BibleImportForm(OpenLPWizard):
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
             if not license_version:
-                critical_error_message_box(UiStrings.EmptyField,
+                critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
                     'You need to specify a version name for your Bible.'))
                 self.versionNameEdit.setFocus()
                 return False
             elif not license_copyright:
-                critical_error_message_box(UiStrings.EmptyField,
+                critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
                     'You need to set a copyright for your Bible. '
                     'Bibles in the Public Domain need to be marked as such.'))
@@ -566,9 +576,10 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1,
             self.openlp1FileEdit, u'%s (*.bible)' %
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x bible'))
+            translate('BiblesPlugin.ImportWizardForm',
+            'openlp.org 1.x Bible Files'))
 
     def registerFields(self):
         """

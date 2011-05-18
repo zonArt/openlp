@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,13 +38,27 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers,
+        Plugin.__init__(self, u'Media', plugin_helpers,
             MediaMediaItem, MediaTab)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
+        self.additional_extensions = {
+            u'audio/ac3': [u'.ac3'],
+            u'audio/flac': [u'.flac'],
+            u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
+            u'audio/x-mp3': [u'.mp3'],
+            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+            u'audio/qcelp': [u'.qcp'],
+            u'audio/x-wma': [u'.wma'],
+            u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
+            u'video/x-matroska': [u'.mpv', u'.mkv'],
+            u'video/x-wmv': [u'.wmv'],
+            u'video/x-ms-wmv': [u'.wmv']}
         self.audio_extensions_list = []
         self.video_extensions_list = []
         mimetypes.init()
@@ -65,6 +79,17 @@ class MediaPlugin(Plugin):
                 self.serviceManager.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
+        # Add extensions for this mimetype from self.additional_extensions.
+        # This hack clears mimetypes' and operating system's shortcomings
+        # by providing possibly missing extensions.
+        if mimetype in self.additional_extensions.keys():
+            for extension in self.additional_extensions[mimetype]:
+                ext = u'*%s' % extension
+                if ext not in list:
+                    list.append(ext)
+                    self.serviceManager.supportedSuffixes(extension[1:])
+            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
+                u' '.join(self.additional_extensions[mimetype])))
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -86,14 +111,14 @@ class MediaPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('MediaPlugin', 'Load a new Media'),
+            u'load': translate('MediaPlugin', 'Load a new Media.'),
             u'import': u'',
-            u'new': translate('MediaPlugin', 'Add a new Media'),
-            u'edit': translate('MediaPlugin', 'Edit the selected Media'),
-            u'delete': translate('MediaPlugin', 'Delete the selected Media'),
-            u'preview': translate('MediaPlugin', 'Preview the selected Media'),
-            u'live': translate('MediaPlugin', 'Send the selected Media live'),
+            u'new': translate('MediaPlugin', 'Add a new Media.'),
+            u'edit': translate('MediaPlugin', 'Edit the selected Media.'),
+            u'delete': translate('MediaPlugin', 'Delete the selected Media.'),
+            u'preview': translate('MediaPlugin', 'Preview the selected Media.'),
+            u'live': translate('MediaPlugin', 'Send the selected Media live.'),
             u'service': translate('MediaPlugin',
-                'Add the selected Media to the service')
+                'Add the selected Media to the service.')
         }
         self.setPluginUiTextStrings(tooltips)

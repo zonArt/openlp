@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,9 +24,97 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+"""
+The :mod:`http` module contains the API web server. This is a lightweight web
+server used by remotes to interact with OpenLP. It uses JSON to communicate with
+the remotes.
+
+*Routes:*
+
+``/``
+    Go to the web interface.
+
+``/stage``
+    Show the stage view.
+
+``/files/{filename}``
+    Serve a static file.
+
+``/api/poll``
+    Poll to see if there are any changes. Returns a JSON-encoded dict of
+    any changes that occurred::
+
+        {"results": {"type": "controller"}}
+
+    Or, if there were no results, False::
+
+        {"results": False}
+
+``/api/display/{hide|show}``
+    Blank or unblank the screen.
+
+``/api/alert``
+    Sends an alert message to the alerts plugin. This method expects a
+    JSON-encoded dict like this::
+
+        {"request": {"text": "<your alert text>"}}
+
+``/api/controller/{live|preview}/{action}``
+    Perform ``{action}`` on the live or preview controller. Valid actions
+    are:
+
+    ``next``
+        Load the next slide.
+
+    ``previous``
+        Load the previous slide.
+
+    ``set``
+        Set a specific slide. Requires an id return in a JSON-encoded dict like
+        this::
+
+            {"request": {"id": 1}}
+
+    ``first``
+        Load the first slide.
+
+    ``last``
+        Load the last slide.
+
+    ``text``
+        Fetches the text of the current song. The output is a JSON-encoded
+        dict which looks like this::
+
+            {"result": {"slides": ["...", "..."]}}
+
+``/api/service/{action}``
+    Perform ``{action}`` on the service manager (e.g. go live). Data is
+    passed as a json-encoded ``data`` parameter. Valid actions are:
+
+    ``next``
+        Load the next item in the service.
+
+    ``previous``
+        Load the previews item in the service.
+
+    ``set``
+        Set a specific item in the service. Requires an id returned in a
+        JSON-encoded dict like this::
+
+            {"request": {"id": 1}}
+
+    ``list``
+        Request a list of items in the service. Returns a list of items in the
+        current service in a JSON-encoded dict like this::
+
+            {"results": {"items": [{...}, {...}]}}
+"""
+
 import logging
 import os
 import urlparse
+import re
+from pprint import pformat
 
 try:
     import json
@@ -35,10 +123,29 @@ except ImportError:
 
 from PyQt4 import QtCore, QtNetwork
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, PluginStatus
+from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
+
+class HttpResponse(object):
+    """
+    A simple object to encapsulate a pseudo-http response.
+    """
+    code = '200 OK'
+    content = ''
+    headers = {
+        'Content-Type': 'text/html; charset="utf-8"\r\n'
+    }
+
+    def __init__(self, content='', headers={}, code=None):
+        self.content = content
+        for key, value in headers.iteritems():
+            self.headers[key] = value
+        if code:
+            self.code = code
+
 
 class HttpServer(object):
     """
@@ -90,22 +197,12 @@ class HttpServer(object):
         Slide change listener. Store the item and tell the clients
         """
         self.current_slide = row
-        self.send_poll()
 
     def item_change(self, items):
         """
         Item (song) change listener. Store the slide and tell the clients
         """
-        self.current_item = items[0].title
-        self.send_poll()
-
-    def send_poll(self):
-        """
-        Tell the clients something has changed
-        """
-        Receiver.send_message(u'remotes_poll_response',
-            {'slide': self.current_slide,
-             'item': self.current_item})
+        self.current_item = items[0]
 
     def new_connection(self):
         """
@@ -122,7 +219,8 @@ class HttpServer(object):
         The connection has been closed. Clean up
         """
         log.debug(u'close http connection')
-        self.connections.remove(connection)
+        if connection in self.connections:
+            self.connections.remove(connection)
 
     def close(self):
         """
@@ -138,16 +236,47 @@ class HttpConnection(object):
     """
     def __init__(self, parent, socket):
         """
-        Initialise the http connection. Listen out for socket signals
+        Initialise the http connection. Listen out for socket signals.
         """
         log.debug(u'Initialise HttpConnection: %s' %
             socket.peerAddress().toString())
         self.socket = socket
         self.parent = parent
+        self.routes = [
+            (u'^/$', self.serve_file),
+            (u'^/(stage)$', self.serve_file),
+            (r'^/files/(.*)$', self.serve_file),
+            (r'^/api/poll$', self.poll),
+            (r'^/api/controller/(live|preview)/(.*)$', self.controller),
+            (r'^/api/service/(.*)$', self.service),
+            (r'^/api/display/(hide|show)$', self.display),
+            (r'^/api/alert$', self.alert),
+            (r'^/api/plugin/(search)$', self.pluginInfo),
+            (r'^/api/(.*)/search$', self.search),
+            (r'^/api/(.*)/live$', self.go_live)
+        ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'),
             self.disconnected)
+
+    def _get_service_items(self):
+        service_items = []
+        service_manager = self.parent.parent.serviceManager
+        if self.parent.current_item:
+            cur_uuid = self.parent.current_item._uuid
+        else:
+            cur_uuid = None
+        for item in service_manager.serviceItems:
+            service_item = item[u'service_item']
+            service_items.append({
+                u'id': unicode(service_item._uuid),
+                u'title': unicode(service_item.get_display_title()),
+                u'plugin': unicode(service_item.name),
+                u'notes': unicode(service_item.notes),
+                u'selected': (service_item._uuid == cur_uuid)
+            })
+        return service_items
 
     def ready_read(self):
         """
@@ -158,32 +287,27 @@ class HttpConnection(object):
             data = unicode(self.socket.readLine())
             log.debug(u'received: ' + data)
             words = data.split(u' ')
-            html = None
-            mimetype = None
+            response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
-                params = self.load_params(url.query)
-                folders = url.path.split(u'/')
-                if folders[1] == u'':
-                    mimetype, html = self.serve_file(u'')
-                elif folders[1] == u'files':
-                    mimetype, html = self.serve_file(os.sep.join(folders[2:]))
-                elif folders[1] == u'send':
-                    html = self.process_event(folders[2], params)
-                elif folders[1] == u'request':
-                    if self.process_request(folders[2], params):
-                        return
-            if html:
-                if mimetype:
-                    self.send_200_ok(mimetype)
-                else:
-                    self.send_200_ok()
-                self.socket.write(html)
+                self.url_params = urlparse.parse_qs(url.query)
+                # Loop through the routes we set up earlier and execute them
+                for route, func in self.routes:
+                    match = re.match(route, url.path)
+                    if match:
+                        log.debug('Route "%s" matched "%s"', route, url.path)
+                        args = []
+                        for param in match.groups():
+                            args.append(param)
+                        response = func(*args)
+                        break
+            if response:
+                self.send_response(response)
             else:
-                self.send_404_not_found()
+                self.send_response(HttpResponse(code='404 Not Found'))
             self.close()
 
-    def serve_file(self, filename):
+    def serve_file(self, filename=None):
         """
         Send a file to the socket. For now, just a subset of file types
         and must be top level inside the html folder.
@@ -195,9 +319,11 @@ class HttpConnection(object):
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
+        elif filename == u'stage':
+            filename = u'stage.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
-            return None
+            return HttpResponse(code=u'404 Not Found')
         ext = os.path.splitext(filename)[1]
         if ext == u'.html':
             mimetype = u'text/html'
@@ -212,126 +338,165 @@ class HttpConnection(object):
         elif ext == u'.png':
             mimetype = u'image/png'
         else:
-            return (None, None)
+            mimetype = u'text/plain'
         file_handle = None
         try:
             file_handle = open(path, u'rb')
             log.debug(u'Opened %s' % path)
-            html = file_handle.read()
+            content = file_handle.read()
         except IOError:
             log.exception(u'Failed to open %s' % path)
-            return None
+            return HttpResponse(code=u'404 Not Found')
         finally:
             if file_handle:
                 file_handle.close()
-        return (mimetype, html)
+        return HttpResponse(content, {u'Content-Type': mimetype})
 
-    def load_params(self, query):
+    def poll(self):
         """
-        Decode the query string parameters sent from the browser
+        Poll OpenLP to determine the current slide number and item name.
         """
-        log.debug(u'loading params %s' % query)
-        params = urlparse.parse_qs(query)
-        if not params:
-            return None
+        result = {
+            u'slide': self.parent.current_slide or 0,
+            u'item': self.parent.current_item._uuid \
+                if self.parent.current_item else u''
+        }
+        return HttpResponse(json.dumps({u'results': result}),
+             {u'Content-Type': u'application/json'})
+
+    def display(self, action):
+        """
+        Hide or show the display screen.
+
+        ``action``
+            This is the action, either ``hide`` or ``show``.
+        """
+        event = u'maindisplay_%s' % action
+        Receiver.send_message(event, HideMode.Blank)
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
+
+    def alert(self):
+        """
+        Send an alert.
+        """
+        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        Receiver.send_message(u'alerts_text', [text])
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
+
+    def controller(self, type, action):
+        """
+        Perform an action on the slide controller.
+
+        ``type``
+            This is the type of slide controller, either ``preview`` or
+            ``live``.
+
+        ``action``
+            The action to perform.
+        """
+        event = u'slidecontroller_%s_%s' % (type, action)
+        if action == u'text':
+            current_item = self.parent.current_item
+            data = []
+            if current_item:
+                for index, frame in enumerate(current_item.get_frames()):
+                    item = {}
+                    if current_item.is_text():
+                        if frame[u'verseTag']:
+                            item[u'tag'] = unicode(frame[u'verseTag'])
+                        else:
+                            item[u'tag'] = unicode(index + 1)
+                        item[u'text'] = unicode(frame[u'text'])
+                        item[u'html'] = unicode(frame[u'html'])
+                    else:
+                        item[u'tag'] = unicode(index + 1)
+                        item[u'text'] = unicode(frame[u'title'])
+                        item[u'html'] = unicode(frame[u'title'])
+                    item[u'selected'] = (self.parent.current_slide == index)
+                    data.append(item)
+            json_data = {u'results': {u'slides': data}}
         else:
-            return params['q']
+            if self.url_params and self.url_params.get(u'data'):
+                data = json.loads(self.url_params[u'data'][0])
+                log.info(data)
+                # This slot expects an int within a list.
+                id = data[u'request'][u'id']
+                Receiver.send_message(event, [id])
+            else:
+                Receiver.send_message(event)
+            json_data = {u'results': {u'success': True}}
+        return HttpResponse(json.dumps(json_data),
+            {u'Content-Type': u'application/json'})
 
-    def process_event(self, event, params):
-        """
-        Send a signal to openlp to perform an action.
-        Currently lets anything through. Later we should restrict and perform
-        basic parameter checking, otherwise rogue clients could crash openlp
-        """
-        log.debug(u'Processing event %s' % event)
-        if params:
-            Receiver.send_message(event, params)
+    def service(self, action):
+        event = u'servicemanager_%s' % action
+        if action == u'list':
+            return HttpResponse(
+                json.dumps({u'results': {u'items': self._get_service_items()}}),
+                {u'Content-Type': u'application/json'})
+        else:
+            event += u'_item'
+        if self.url_params and self.url_params.get(u'data'):
+            data = json.loads(self.url_params[u'data'][0])
+            Receiver.send_message(event, data[u'request'][u'id'])
         else:
             Receiver.send_message(event)
-        return json.dumps([u'OK'])
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
 
-    def process_request(self, event, params):
+    def pluginInfo(self, action):
         """
-        Client has requested data. Send the signal and parameters for openlp
-        to handle, then listen out for a corresponding ``_request`` signal
-        which will have the data to return.
+        Return plugin related information, based on the action
 
-        For most events, timeout after 10 seconds (i.e. in case the signal
-        recipient isn't listening). ``remotes_poll_request`` is a special case
-        however, this is a ajax long poll which is just waiting for slide
-        change/song change activity. This can wait longer (one minute).
-
-        ``event``
-            The event from the web page.
-
-        ``params``
-            Parameters sent with the event.
+        ``action`` - The action to perform
+            if 'search' return a list of plugin names which support search
         """
-        log.debug(u'Processing request %s' % event)
-        if not event.endswith(u'_request'):
-            return False
-        self.event = event
-        response = event.replace(u'_request', u'_response')
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(response), self.process_response)
-        self.timer = QtCore.QTimer()
-        self.timer.setSingleShot(True)
-        QtCore.QObject.connect(self.timer,
-            QtCore.SIGNAL(u'timeout()'), self.timeout)
-        if event == 'remotes_poll_request':
-            self.timer.start(60000)
+        if action == u'search':
+            searches = []
+            for plugin in self.parent.parent.pluginManager.plugins:
+                if plugin.status == PluginStatus.Active and \
+                    plugin.mediaItem and plugin.mediaItem.hasSearch:
+                    searches.append(plugin.name)
+            return HttpResponse(
+                json.dumps({u'results': {u'items': searches}}),
+                {u'Content-Type': u'application/json'})
+
+    def search(self, type):
+        """
+        Return a list of items that match the search text
+
+        ``type``
+        The plugin name to search in.
+        """
+        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and \
+            plugin.mediaItem and plugin.mediaItem.hasSearch:
+            results =plugin.mediaItem.search(text)
         else:
-            self.timer.start(10000)
-        if params:
-            Receiver.send_message(event, params)
-        else:
-            Receiver.send_message(event)
-        return True
+            results = []
+        return HttpResponse(
+            json.dumps({u'results': {u'items': results}}),
+            {u'Content-Type': u'application/json'})
 
-    def process_response(self, data):
+    def go_live(self, type):
         """
-        The recipient of a _request signal has sent data. Convert this to
-        json and return it to client
+        Go live on an item of type ``type``.
         """
-        log.debug(u'Processing response for %s' % self.event)
-        if not self.socket:
-            return
-        self.timer.stop()
-        html = json.dumps(data)
-        self.send_200_ok()
-        self.socket.write(html)
-        self.close()
+        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and plugin.mediaItem:
+            plugin.mediaItem.goLive(id)
 
-    def send_200_ok(self, mimetype='text/html; charset="utf-8"'):
-        """
-        Successful request. Send OK headers. Assume html for now.
-        """
-        self.socket.write(u'HTTP/1.1 200 OK\r\n' + \
-            u'Content-Type: %s\r\n\r\n' % mimetype)
-
-    def send_404_not_found(self):
-        """
-        Invalid url. Say so
-        """
-        self.socket.write(u'HTTP/1.1 404 Not Found\r\n'+ \
-            u'Content-Type: text/html; charset="utf-8"\r\n' + \
-            u'\r\n')
-
-    def send_408_timeout(self):
-        """
-        A _request hasn't returned anything in the timeout period.
-        Return timeout
-        """
-        self.socket.write(u'HTTP/1.1 408 Request Timeout\r\n')
-
-    def timeout(self):
-        """
-        Listener for timeout signal
-        """
-        if not self.socket:
-            return
-        self.send_408_timeout()
-        self.close()
+    def send_response(self, response):
+        http = u'HTTP/1.1 %s\r\n' % response.code
+        for header, value in response.headers.iteritems():
+            http += '%s: %s\r\n' % (header, value)
+        http += '\r\n'
+        self.socket.write(http)
+        self.socket.write(response.content)
 
     def disconnected(self):
         """

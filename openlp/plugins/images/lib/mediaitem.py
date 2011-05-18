@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,6 +46,8 @@ class ImageMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         MediaManagerItem.__init__(self, parent, self, icon)
+        self.quickPreviewAllowed = True
+        self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
@@ -54,11 +56,11 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            UiStrings.AllFiles)
-        self.replaceAction.setText(UiStrings.ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
-        self.resetAction.setText(UiStrings.ResetBG)
-        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
+            UiStrings().AllFiles)
+        self.replaceAction.setText(UiStrings().ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
+        self.resetAction.setText(UiStrings().ResetBG)
+        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -76,7 +78,7 @@ class ImageMediaItem(MediaManagerItem):
             u'thumbnails')
         check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.settingsSection, self.settingsSection))
+            self.settingsSection, self.settingsSection), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -106,8 +108,12 @@ class ImageMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
-    def loadList(self, list):
+    def loadList(self, list, initialLoad=False):
+        if not initialLoad:
+            self.parent.formparent.displayProgressBar(len(list))
         for imageFile in list:
+            if not initialLoad:
+                self.parent.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
@@ -121,53 +127,55 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
+        if not initialLoad:
+            self.parent.formparent.finishedProgressBar()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
-        items = self.listView.selectedIndexes()
-        if items:
-            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
-            service_item.add_capability(ItemCapabilities.AllowsMaintain)
-            service_item.add_capability(ItemCapabilities.AllowsPreview)
-            service_item.add_capability(ItemCapabilities.AllowsLoop)
-            service_item.add_capability(ItemCapabilities.AllowsAdditions)
-            # force a nonexistent theme
-            service_item.theme = -1
-            missing_items = []
-            missing_items_filenames = []
-            for item in items:
-                bitem = self.listView.item(item.row())
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if not os.path.exists(filename):
-                    missing_items.append(item)
-                    missing_items_filenames.append(filename)
-            for item in missing_items:
-                items.remove(item)
-            # We cannot continue, as all images do not exist.
-            if not items:
-                critical_error_message_box(
-                    translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'The following image(s) no longer exist: %s')) %
-                    u'\n'.join(missing_items_filenames))
-                return False
-            # We have missing as well as existing images. We ask what to do.
-            elif missing_items and QtGui.QMessageBox.question(self,
-                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                unicode(translate('ImagePlugin.MediaItem', 'The following '
-                'image(s) no longer exist: %s\nDo you want to add the other '
-                'images anyway?')) % u'\n'.join(missing_items_filenames),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
-                return False
-            # Continue with the existing images.
-            for item in items:
-                bitem = self.listView.item(item.row())
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                (path, name) = os.path.split(filename)
-                service_item.add_from_image(filename, name)
-            return True
+        if item:
+            items = [item]
         else:
+            items = self.listView.selectedItems()
+            if not items:
+                return False
+        service_item.title = unicode(self.plugin.nameStrings[u'plural'])
+        service_item.add_capability(ItemCapabilities.AllowsMaintain)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        # force a nonexistent theme
+        service_item.theme = -1
+        missing_items = []
+        missing_items_filenames = []
+        for bitem in items:
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if not os.path.exists(filename):
+                missing_items.append(item)
+                missing_items_filenames.append(filename)
+        for item in missing_items:
+            items.remove(item)
+        # We cannot continue, as all images do not exist.
+        if not items:
+            critical_error_message_box(
+                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                unicode(translate('ImagePlugin.MediaItem',
+                'The following image(s) no longer exist: %s')) %
+                u'\n'.join(missing_items_filenames))
             return False
+        # We have missing as well as existing images. We ask what to do.
+        elif missing_items and QtGui.QMessageBox.question(self,
+            translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+            unicode(translate('ImagePlugin.MediaItem', 'The following '
+            'image(s) no longer exist: %s\nDo you want to add the other '
+            'images anyway?')) % u'\n'.join(missing_items_filenames),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+            return False
+        # Continue with the existing images.
+        for bitem in items:
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            (path, name) = os.path.split(filename)
+            service_item.add_from_image(filename, name)
+        return True
 
     def onResetClick(self):
         """
@@ -197,7 +205,18 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(UiStrings.LiveBGError,
+                critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
+
+    def search(self, string):
+        list = SettingsManager.load_list(self.settingsSection,
+            self.settingsSection)
+        results = []
+        string = string.lower()
+        for file in list:
+            filename = os.path.split(unicode(file))[1]
+            if filename.lower().find(string) > -1:
+                results.append([file, filename])
+        return results

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,7 +47,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.4', plugin_helpers,
+        Plugin.__init__(self, u'Custom', plugin_helpers,
             CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
@@ -106,17 +106,18 @@ class CustomPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('CustomsPlugin', 'Load a new Custom'),
-            u'import': translate('CustomsPlugin', 'Import a Custom'),
-            u'new': translate('CustomsPlugin', 'Add a new Custom'),
-            u'edit': translate('CustomsPlugin', 'Edit the selected Custom'),
-            u'delete': translate('CustomsPlugin', 'Delete the selected Custom'),
+            u'load': translate('CustomsPlugin', 'Load a new Custom.'),
+            u'import': translate('CustomsPlugin', 'Import a Custom.'),
+            u'new': translate('CustomsPlugin', 'Add a new Custom.'),
+            u'edit': translate('CustomsPlugin', 'Edit the selected Custom.'),
+            u'delete': translate('CustomsPlugin',
+                'Delete the selected Custom.'),
             u'preview': translate('CustomsPlugin',
-                'Preview the selected Custom'),
+                'Preview the selected Custom.'),
             u'live': translate('CustomsPlugin',
-                'Send the selected Custom live'),
+                'Send the selected Custom live.'),
             u'service': translate('CustomsPlugin',
-                'Add the selected Custom to the service')
+                'Add the selected Custom to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 

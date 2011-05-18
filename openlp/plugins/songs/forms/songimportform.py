@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,6 +26,7 @@
 """
 The song import functions for OpenLP.
 """
+import codecs
 import logging
 import os
 
@@ -55,6 +56,7 @@ class SongImportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
+        self.clipboard = plugin.formparent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
             u':/wizards/wizard_importsong.bmp')
 
@@ -66,7 +68,17 @@ class SongImportForm(OpenLPWizard):
         self.formatStack.setCurrentIndex(0)
         QtCore.QObject.connect(self.formatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.formatStack.setCurrentIndex)
+            self.onCurrentIndexChanged)
+
+    def onCurrentIndexChanged(self, index):
+        """
+        Called when the format combo box's index changed. We have to check if
+        the import is available and accordingly to disable or enable the next
+        button.
+        """
+        self.formatStack.setCurrentIndex(index)
+        next_button = self.button(QtGui.QWizard.NextButton)
+        next_button.setEnabled(SongFormat.get_availability(index))
 
     def customInit(self):
         """
@@ -225,8 +237,8 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-        self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings.OLPV2)
-        self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings.OLPV1)
+        self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings().OLPV2)
+        self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings().OLPV1)
         self.formatComboBox.setItemText(
             SongFormat.OpenLyrics, WizardStrings.OL)
         self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
@@ -251,10 +263,10 @@ class SongImportForm(OpenLPWizard):
 #        self.formatComboBox.setItemText(SongFormat.CSV, WizardStrings.CSV)
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.openLP2BrowseButton.setText(UiStrings.Browse)
+        self.openLP2BrowseButton.setText(UiStrings().Browse)
         self.openLP1FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.openLP1BrowseButton.setText(UiStrings.Browse)
+        self.openLP1BrowseButton.setText(UiStrings().Browse)
         self.openLP1DisabledLabel.setText(WizardStrings.NoSqlite)
         self.openLyricsAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
@@ -295,10 +307,10 @@ class SongImportForm(OpenLPWizard):
             'find OpenOffice.org on your computer.'))
         self.easiSlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.easiSlidesBrowseButton.setText(UiStrings.Browse)
+        self.easiSlidesBrowseButton.setText(UiStrings().Browse)
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.ewBrowseButton.setText(UiStrings.Browse)
+        self.ewBrowseButton.setText(UiStrings().Browse)
         self.songBeamerAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songBeamerRemoveButton.setText(
@@ -313,13 +325,17 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-#        self.csvBrowseButton.setText(UiStrings.Browse)
+#        self.csvBrowseButton.setText(UiStrings().Browse)
         self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
+        self.errorCopyToButton.setText(translate('SongsPlugin.ImportWizardForm',
+            'Copy'))
+        self.errorSaveToButton.setText(translate('SongsPlugin.ImportWizardForm',
+            'Save to File'))
         # Align all QFormLayouts towards each other.
         width = max(self.formatLabel.minimumSizeHint().width(),
             self.openLP2FilenameLabel.minimumSizeHint().width())
@@ -336,49 +352,49 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
-                    critical_error_message_box(UiStrings.NFSs,
-                        WizardStrings.YouSpecifyFile % UiStrings.OLPV2)
+                    critical_error_message_box(UiStrings().NFSs,
+                        WizardStrings.YouSpecifyFile % UiStrings().OLPV2)
                     self.openLP2BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLP1:
                 if self.openLP1FilenameEdit.text().isEmpty():
-                    critical_error_message_box(UiStrings.NFSs,
-                        WizardStrings.YouSpecifyFile % UiStrings.OLPV1)
+                    critical_error_message_box(UiStrings().NFSs,
+                        WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
                     self.openLP1BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.OL)
                     self.openLyricsAddButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.WordsOfWorship:
                 if self.wordsOfWorshipFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.WoW)
                     self.wordsOfWorshipAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.CCLI)
                     self.ccliAddButton.setFocus()
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.SoF)
                     self.songsOfFellowshipAddButton.setFocus()
                     return False
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to specify at least one document or '
                         'presentation file to import from.'))
@@ -386,31 +402,31 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasiSlides:
                 if self.easiSlidesFilenameEdit.text().isEmpty():
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.ES)
                     self.easiSlidesBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
-                    critical_error_message_box(UiStrings.NFSs,
+                    critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.EW)
                     self.ewBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.SongBeamer:
                 if self.songBeamerFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.SB)
                     self.songBeamerAddButton.setFocus()
                     return False
             elif source_format == SongFormat.SongShowPlus:
                 if self.songShowPlusFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.SSP)
                     self.wordsOfWorshipAddButton.setFocus()
                     return False
             elif source_format == SongFormat.FoilPresenter:
                 if self.foilPresenterFileListWidget.count() == 0:
-                    critical_error_message_box(UiStrings.NFSp,
+                    critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.FP)
                     self.foilPresenterAddButton.setFocus()
                     return False
@@ -436,7 +452,7 @@ class SongImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
+        filters += u'%s (*)' % UiStrings().AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             filters)
@@ -449,10 +465,7 @@ class SongImportForm(OpenLPWizard):
         """
         Return a list of file from the listbox
         """
-        files = []
-        for row in range(0, listbox.count()):
-            files.append(unicode(listbox.item(row).text()))
-        return files
+        return [unicode(listbox.item(i).text()) for i in range(listbox.count())]
 
     def removeSelectedItems(self, listbox):
         """
@@ -466,7 +479,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get OpenLP v2 song database file
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV2,
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV2,
             self.openLP2FilenameEdit, u'%s (*.sqlite)'
             % (translate('SongsPlugin.ImportWizardForm',
             'OpenLP 2.0 Databases'))
@@ -476,7 +489,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get OpenLP v1 song database file
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1,
             self.openLP1FilenameEdit, u'%s (*.olp)'
             % translate('SongsPlugin.ImportWizardForm',
             'openlp.org v1.x Databases')
@@ -649,6 +662,10 @@ class SongImportForm(OpenLPWizard):
         self.songShowPlusFileListWidget.clear()
         self.foilPresenterFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
+        self.errorReportTextEdit.clear()
+        self.errorReportTextEdit.setHidden(True)
+        self.errorCopyToButton.setHidden(True)
+        self.errorSaveToButton.setHidden(True)
 
     def preWizard(self):
         """
@@ -733,12 +750,30 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        if importer.do_import():
-            self.progressLabel.setText(WizardStrings.FinishedImport)
+        importer.do_import()
+        if importer.error_log:
+            self.progressLabel.setText(translate(
+                'SongsPlugin.SongImportForm', 'Your song import failed.'))
         else:
-            self.progressLabel.setText(
-                translate('SongsPlugin.SongImportForm',
-                'Your song import failed.'))
+            self.progressLabel.setText(WizardStrings.FinishedImport)
+
+    def onErrorCopyToButtonClicked(self):
+        """
+        Copy the error report to the clipboard.
+        """
+        self.clipboard.setText(self.errorReportTextEdit.toPlainText())
+
+    def onErrorSaveToButtonClicked(self):
+        """
+        Save the error report to a file.
+        """
+        filename = QtGui.QFileDialog.getSaveFileName(self,
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        if not filename:
+            return
+        file = codecs.open(filename, u'w', u'utf-8')
+        file.write(self.errorReportTextEdit.toPlainText())
+        file.close()
 
     def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
         single_select=False):

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -71,6 +71,8 @@ class Ui_EditSongDialog(object):
         self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
+        self.verseListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.SingleSelection)
         self.verseListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.verseListWidget.setObjectName(u'verseListWidget')
@@ -258,11 +260,11 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.verseOrderLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Verse order:'))
-        self.verseAddButton.setText(UiStrings.Add)
-        self.verseEditButton.setText(UiStrings.Edit)
+        self.verseAddButton.setText(UiStrings().Add)
+        self.verseEditButton.setText(UiStrings().Edit)
         self.verseEditAllButton.setText(
             translate('SongsPlugin.EditSongForm', 'Ed&it All'))
-        self.verseDeleteButton.setText(UiStrings.Delete)
+        self.verseDeleteButton.setText(UiStrings().Delete)
         self.songTabWidget.setTabText(
             self.songTabWidget.indexOf(self.lyricsTab),
             translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
@@ -287,13 +289,13 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.authorsTab),
             translate('SongsPlugin.EditSongForm',
                 'Authors, Topics && Song Book'))
-        self.themeGroupBox.setTitle(UiStrings.Theme)
+        self.themeGroupBox.setTitle(UiStrings().Theme)
         self.themeAddButton.setText(
             translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.rightsGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Copyright Information'))
         self.copyrightInsertButton.setText(SongStrings.CopyrightSymbol)
-        self.CCLILabel.setText(UiStrings.CCLINumberLabel)
+        self.CCLILabel.setText(UiStrings().CCLINumberLabel)
         self.commentsGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Comments'))
         self.songTabWidget.setTabText(

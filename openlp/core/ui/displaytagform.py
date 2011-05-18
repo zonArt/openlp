@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,29 +47,31 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.preLoad()
+        self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
         QtCore.QObject.connect(self.defaultPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
-        QtCore.QObject.connect(self.updatePushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onUpdatePushed)
+        QtCore.QObject.connect(self.savePushButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSavedPushed)
         QtCore.QObject.connect(self.deletePushButton,
             QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.close)
 
     def exec_(self):
         """
         Load Display and set field state.
         """
         # Create initial copy from master
-        self.preLoad()
+        self._loadDisplayTags()
         self._resetTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
 
-    def preLoad(self):
+    def _loadDisplayTags(self):
         """
         Load the Tags from store so can be used in the system or used to
         update the display. If Cancel was selected this is needed to reset the
@@ -87,30 +89,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
 
-    def accept(self):
-        """
-        Save Custom tags in a pickle .
-        """
-        temp = []
-        for tag in DisplayTags.get_html_tags():
-            if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
-        else:
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(u''))
-        return QtGui.QDialog.accept(self)
-
-    def reject(self):
-        """
-        Reset Custom tags from Settings.
-        """
-        self._resetTable()
-        return QtGui.QDialog.reject(self)
-
     def onRowSelected(self):
         """
         Table Row selected so display items and set field state.
@@ -127,14 +105,14 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             self.tagLineEdit.setEnabled(False)
             self.startTagLineEdit.setEnabled(False)
             self.endTagLineEdit.setEnabled(False)
-            self.updatePushButton.setEnabled(False)
+            self.savePushButton.setEnabled(False)
             self.deletePushButton.setEnabled(False)
         else:
             self.descriptionLineEdit.setEnabled(True)
             self.tagLineEdit.setEnabled(True)
             self.startTagLineEdit.setEnabled(True)
             self.endTagLineEdit.setEnabled(True)
-            self.updatePushButton.setEnabled(True)
+            self.savePushButton.setEnabled(True)
             self.deletePushButton.setEnabled(True)
 
     def onNewPushed(self):
@@ -174,9 +152,9 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             self.selected = -1
         self._resetTable()
 
-    def onUpdatePushed(self):
+    def onSavedPushed(self):
         """
-        Update Custom Tag details if not duplicate.
+        Update Custom Tag details if not duplicate and save the data.
         """
         html_expands = DisplayTags.get_html_tags()
         if self.selected != -1:
@@ -197,6 +175,17 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end tag'] = u'{/%s}' % tag
             self.selected = -1
         self._resetTable()
+        temp = []
+        for tag in DisplayTags.get_html_tags():
+            if not tag[u'protected']:
+                temp.append(tag)
+        if temp:
+            ctemp = cPickle.dumps(temp)
+            QtCore.QSettings().setValue(u'displayTags/html_tags',
+                QtCore.QVariant(ctemp))
+        else:
+            QtCore.QSettings().setValue(u'displayTags/html_tags',
+                QtCore.QVariant(u''))
 
     def _resetTable(self):
         """
@@ -205,7 +194,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
         self.newPushButton.setEnabled(True)
-        self.updatePushButton.setEnabled(False)
+        self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
         for linenumber, html in enumerate(DisplayTags.get_html_tags()):
             self.tagTableWidget.setRowCount(

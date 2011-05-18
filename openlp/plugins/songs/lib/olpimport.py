@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +36,8 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
-from openlp.plugins.songs.lib import add_author_unknown
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import clean_song
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 from songimport import SongImport
 
@@ -93,13 +94,18 @@ class OpenLPSongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.import_source = u'sqlite:///%s' % self.import_source
         self.source_session = None
 
     def do_import(self):
         """
         Run the import for an OpenLP version 2 song database.
         """
+        if not self.import_source.endswith(u'.sqlite'):
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLPSongImport',
+                'Not a valid OpenLP 2.0 song database.'))
+            return
+        self.import_source = u'sqlite:///%s' % self.import_source
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
@@ -124,10 +130,10 @@ class OpenLPSongImport(SongImport):
                 mapper(OldMediaFile, source_media_files_table)
         song_props = {
             'authors': relation(OldAuthor, backref='songs',
-                secondary=source_authors_songs_table),
+            secondary=source_authors_songs_table),
             'book': relation(OldBook, backref='songs'),
             'topics': relation(OldTopic, backref='songs',
-                secondary=source_songs_topics_table)
+            secondary=source_songs_topics_table)
         }
         if has_media_files:
             song_props['media_files'] = relation(OldMediaFile, backref='songs',
@@ -150,13 +156,9 @@ class OpenLPSongImport(SongImport):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.source_session.query(OldSong).all()
-        song_total = len(source_songs)
-        self.import_wizard.progressBar.setMaximum(song_total)
-        song_count = 1
+        if self.import_wizard:
+            self.import_wizard.progressBar.setMaximum(len(source_songs))
         for song in source_songs:
-            self.import_wizard.incrementProgressBar(unicode(translate(
-                'SongsPlugin.OpenLPSongImport', 'Importing song %d of %d.')) %
-                (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files and hasattr(song, 'alternate_title'):
@@ -165,12 +167,11 @@ class OpenLPSongImport(SongImport):
                 old_titles = song.search_title.split(u'@')
                 if len(old_titles) > 1:
                     new_song.alternate_title = old_titles[1]
-                else:
-                    new_song.alternate_title = u''
-            new_song.search_title = song.search_title
+            # Values will be set when cleaning the song.
+            new_song.search_title = u''
+            new_song.search_lyrics = u''
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
-            new_song.search_lyrics = song.search_lyrics
             new_song.verse_order = song.verse_order
             new_song.copyright = song.copyright
             new_song.comments = song.comments
@@ -179,31 +180,26 @@ class OpenLPSongImport(SongImport):
             for author in song.authors:
                 existing_author = self.manager.get_object_filtered(
                     Author, Author.display_name == author.display_name)
-                if existing_author:
-                    new_song.authors.append(existing_author)
-                else:
-                    new_song.authors.append(Author.populate(
+                if existing_author is None:
+                    existing_author = Author.populate(
                         first_name=author.first_name,
                         last_name=author.last_name,
-                        display_name=author.display_name))
-            if not new_song.authors:
-                add_author_unknown(self.manager, new_song)
+                        display_name=author.display_name)
+                new_song.authors.append(existing_author)
             if song.book:
                 existing_song_book = self.manager.get_object_filtered(
                     Book, Book.name == song.book.name)
-                if existing_song_book:
-                    new_song.book = existing_song_book
-                else:
-                    new_song.book = Book.populate(name=song.book.name,
+                if existing_song_book is None:
+                    existing_song_book = Book.populate(name=song.book.name,
                         publisher=song.book.publisher)
+                new_song.book = existing_song_book
             if song.topics:
                 for topic in song.topics:
                     existing_topic = self.manager.get_object_filtered(
                         Topic, Topic.name == topic.name)
-                    if existing_topic:
-                        new_song.topics.append(existing_topic)
-                    else:
-                        new_song.topics.append(Topic.populate(name=topic.name))
+                    if existing_topic is None:
+                        existing_topic = Topic.populate(name=topic.name)
+                    new_song.topics.append(existing_topic)
 #            if has_media_files:
 #                if song.media_files:
 #                    for media_file in song.media_files:
@@ -215,9 +211,11 @@ class OpenLPSongImport(SongImport):
 #                        else:
 #                            new_song.media_files.append(MediaFile.populate(
 #                                file_name=media_file.file_name))
+            clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
-            song_count += 1
+            if self.import_wizard:
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % new_song.title)
             if self.stop_import_flag:
-                return False
+                break
         engine.dispose()
-        return True

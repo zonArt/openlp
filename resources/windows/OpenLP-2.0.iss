@@ -31,9 +31,9 @@ OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
 Compression=lzma
 SolidCompression=true
-SetupIconFile=C:\Program Files\Inno Setup 5\Examples\Setup.ico
-WizardImageFile=C:\Program Files\Inno Setup 5\WizModernImage-IS.bmp
-WizardSmallImageFile=C:\Program Files\Inno Setup 5\WizModernSmallImage-IS.bmp
+SetupIconFile=OpenLP.ico
+WizardImageFile=WizImageBig.bmp
+WizardSmallImageFile=WizImageSmall.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -60,7 +60,7 @@ Name: spanish; MessagesFile: compiler:Languages\Spanish.isl
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
-Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}
+Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; OnlyBelowVersion: 0, 6.1
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -69,6 +69,7 @@ Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
 Name: {group}\{#AppName} (Debug); Filename: {app}\{#AppExeName}; Parameters: -l debug
+Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm; Check: FileExists(ExpandConstant('{app}\{#AppName}.chm'))
 Name: {group}\{cm:ProgramOnTheWeb,{#AppName}}; Filename: {#AppURL}
 Name: {group}\{cm:UninstallProgram,{#AppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#AppName}; Filename: {app}\{#AppExeName}; Tasks: desktopicon
@@ -78,15 +79,6 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\alerts; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\bibles; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\custom; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\images; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\media; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\presentations; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\remotes; ValueType: dword; ValueName: status; ValueData: $00000000
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songs; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songusage; ValueType: dword; ValueName: status; ValueData: $00000001
 
 [Code]
 function GetUninstallString(): String;

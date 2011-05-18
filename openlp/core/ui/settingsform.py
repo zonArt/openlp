@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,9 +28,9 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
@@ -40,55 +40,59 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, screens, mainWindow, parent=None):
+    def __init__(self, mainWindow, parent=None):
         """
         Initialise the settings form
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        generalTab = GeneralTab(screens)
-        self.addTab(u'General', generalTab)
+        self.generalTab = GeneralTab(self)
         # Themes tab
-        themesTab = ThemesTab(mainWindow)
-        self.addTab(u'Themes', themesTab)
+        self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab
-        advancedTab = AdvancedTab()
-        self.addTab(u'Advanced', advancedTab)
+        self.advancedTab = AdvancedTab(self)
 
-    def addTab(self, name, tab):
-        """
-        Add a tab to the form
-        """
-        log.info(u'Adding %s tab' % tab.tabTitle)
-        self.settingsTabWidget.addTab(tab, tab.tabTitleVisible)
+    def exec_(self):
+        # load all the settings
+        self.settingListWidget.clear()
+        for tabIndex in range(0, self.stackedLayout.count() + 1):
+            # take at 0 and the rest shuffell up.
+            self.stackedLayout.takeAt(0)
+        self.insertTab(self.generalTab, 0, PluginStatus.Active)
+        self.insertTab(self.themesTab, 1, PluginStatus.Active)
+        self.insertTab(self.advancedTab, 2, PluginStatus.Active)
+        count = 3
+        for plugin in self.plugins:
+            if plugin.settings_tab:
+                self.insertTab(plugin.settings_tab, count, plugin.status)
+                count += 1
+        self.settingListWidget.setCurrentRow(0)
+        return QtGui.QDialog.exec_(self)
 
-    def insertTab(self, tab, location):
+    def insertTab(self, tab, location, is_active):
         """
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
-        # 14 : There are 3 tables currently and locations starts at -10
-        self.settingsTabWidget.insertTab(
-            location + 14, tab, tab.tabTitleVisible)
-
-    def removeTab(self, tab):
-        """
-        Remove a tab from the form
-        """
-        log.debug(u'remove %s tab' % tab.tabTitleVisible)
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            if self.settingsTabWidget.widget(tabIndex):
-                if self.settingsTabWidget.widget(tabIndex).tabTitleVisible == \
-                    tab.tabTitleVisible:
-                    self.settingsTabWidget.removeTab(tabIndex)
+        # add the tab to get it to display in the correct part of the screen
+        pos = self.stackedLayout.addWidget(tab)
+        if is_active:
+            item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
+            icon = build_icon(tab.icon_path)
+            item_name.setIcon(icon)
+            self.settingListWidget.insertItem(location, item_name)
+        else:
+            # then remove tab to stop the UI displaying it even if
+            # it is not required.
+            self.stackedLayout.takeAt(pos)
 
     def accept(self):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).save()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
@@ -97,13 +101,17 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).cancel()
+        for tabIndex in range(0, self.stackedLayout.count()):
+            self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
     def postSetUp(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        for tabIndex in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tabIndex).postSetUp()
+        self.generalTab.postSetUp()
+        self.themesTab.postSetUp()
+        self.advancedTab.postSetUp()
+        for plugin in self.plugins:
+            if plugin.settings_tab:
+                plugin.settings_tab.postSetUp()

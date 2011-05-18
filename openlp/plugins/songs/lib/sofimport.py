@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,6 @@
 import os
 import re
 
-from songimport import SongImport
 from oooimport import OooImport
 
 if os.name == u'nt':
@@ -72,6 +71,7 @@ class SofImport(OooImport):
         to SongImport for writing song to disk
         """
         OooImport.__init__(self, manager, **kwargs)
+        self.song = False
 
     def process_ooo_document(self):
         """
@@ -88,14 +88,13 @@ class SofImport(OooImport):
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
             if self.stop_import_flag:
-                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
                 self.process_paragraph(paragraph)
         if self.song:
-            self.song.finish()
-            self.song = None
+            self.finish()
+            self.song = False
 
     def process_paragraph(self, paragraph):
         """
@@ -143,7 +142,7 @@ class SofImport(OooImport):
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.title != u'':
+            if self.title != u'':
                 self.finish_verse()
             return
         self.blanklines = 0
@@ -161,17 +160,17 @@ class SofImport(OooImport):
             self.skip_to_close_bracket = True
             return
         if text.startswith(u'Copyright'):
-            self.song.add_copyright(text)
+            self.add_copyright(text)
             return
         if text == u'(Repeat)':
             self.finish_verse()
-            self.song.repeat_verse()
+            self.repeat_verse()
             return
-        if self.song.title == u'':
-            if self.song.copyright == u'':
-                self.add_author(text)
+        if self.title == u'':
+            if self.copyright == u'':
+                self.add_sof_author(text)
             else:
-                self.song.add_copyright(text)
+                self.add_copyright(text)
             return
         self.add_verse_line(text)
 
@@ -183,15 +182,15 @@ class SofImport(OooImport):
         into line
         """
         text = textportion.getString()
-        text = SongImport.tidy_text(text)
+        text = self.tidy_text(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song.song_number == '':
+            if boldtext.isdigit() and self.song_number == '':
                 self.add_songnumber(boldtext)
                 return u''
-            if self.song.title == u'':
+            if self.title == u'':
                 text = self.uncap_text(text)
                 self.add_title(text)
             return text
@@ -207,10 +206,11 @@ class SofImport(OooImport):
         """
         if self.song:
             self.finish_verse()
-            if not self.song.check_complete():
+            if not self.check_complete():
                 return
-            self.song.finish()
-        self.song = SongImport(self.manager)
+            self.finish()
+        self.song = True
+        self.set_defaults()
         self.skip_to_close_bracket = False
         self.is_chorus = False
         self.italics = False
@@ -221,17 +221,17 @@ class SofImport(OooImport):
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.song.song_number = song_no
-        self.song.alternate_title = song_no + u'.'
-        self.song.song_book_pub = u'Kingsway Publications'
+        self.song_number = song_no
+        self.alternate_title = song_no + u'.'
+        self.song_book_pub = u'Kingsway Publications'
         if int(song_no) <= 640:
-            self.song.song_book = u'Songs of Fellowship 1'
+            self.song_book = u'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.song.song_book = u'Songs of Fellowship 2'
+            self.song_book = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.song.song_book = u'Songs of Fellowship 3'
+            self.song_book = u'Songs of Fellowship 3'
         else:
-            self.song.song_book = u'Songs of Fellowship 4'
+            self.song_book = u'Songs of Fellowship 4'
 
     def add_title(self, text):
         """
@@ -243,10 +243,10 @@ class SofImport(OooImport):
             title = title[1:]
         if title.endswith(u','):
             title = title[:-1]
-        self.song.title = title
+        self.title = title
         self.import_wizard.incrementProgressBar(u'Processing song ' + title, 0)
 
-    def add_author(self, text):
+    def add_sof_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
@@ -254,7 +254,7 @@ class SofImport(OooImport):
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
-        self.song.parse_author(text)
+        self.parse_author(text)
 
     def add_verse_line(self, text):
         """
@@ -262,7 +262,7 @@ class SofImport(OooImport):
         we're beyond the second line of first verse, then this indicates
         a change of verse. Italics are a chorus
         """
-        if self.italics != self.is_chorus and ((len(self.song.verses) > 0) or
+        if self.italics != self.is_chorus and ((len(self.verses) > 0) or
             (self.currentverse.count(u'\n') > 1)):
             self.finish_verse()
         if self.italics:
@@ -282,14 +282,14 @@ class SofImport(OooImport):
             splitat = None
         else:
             versetag = u'V'
-            splitat = self.verse_splits(self.song.song_number)
+            splitat = self.verse_splits(self.song_number)
         if splitat:
             ln = 0
             verse = u''
             for line in self.currentverse.split(u'\n'):
                 ln += 1
                 if line == u'' or ln > splitat:
-                    self.song.add_verse(verse, versetag)
+                    self.add_sof_verse(verse, versetag)
                     ln = 0
                     if line:
                         verse = line + u'\n'
@@ -298,11 +298,17 @@ class SofImport(OooImport):
                 else:
                     verse += line + u'\n'
             if verse:
-                self.song.add_verse(verse, versetag)
+                self.add_sof_verse(verse, versetag)
         else:
-            self.song.add_verse(self.currentverse, versetag)
+            self.add_sof_verse(self.currentverse, versetag)
         self.currentverse = u''
         self.is_chorus = False
+
+    def add_sof_verse(self, lyrics, tag):
+        self.add_verse(lyrics, tag)
+        if not self.is_chorus and u'C1' in self.verse_order_list_generated:
+            self.verse_order_list_generated.append(u'C1')
+            self.verse_order_list_generated_useful = True
 
     def uncap_text(self, text):
         """

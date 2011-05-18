@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -64,8 +64,7 @@ class Ui_PrintServiceDialog(object):
             'Options'))
         self.optionsButton.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextBesideIcon)
-        self.optionsButton.setIcon(QtGui.QIcon(
-            build_icon(u':/system/system_configure.png')))
+        self.optionsButton.setIcon(build_icon(u':/system/system_configure.png'))
         self.optionsButton.setCheckable(True)
         self.toolbar.addWidget(self.optionsButton)
         self.closeButton = self.toolbar.addAction(
@@ -80,24 +79,23 @@ class Ui_PrintServiceDialog(object):
             translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoomInButton = QtGui.QToolButton(self.toolbar)
-        self.zoomInButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_in.png')))
+        self.zoomInButton.setIcon(build_icon(u':/general/general_zoom_in.png'))
         self.zoomInButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom In'))
         self.zoomInButton.setObjectName(u'zoomInButton')
         self.zoomInButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomInButton)
         self.zoomOutButton = QtGui.QToolButton(self.toolbar)
-        self.zoomOutButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_out.png')))
+        self.zoomOutButton.setIcon(
+            build_icon(u':/general/general_zoom_out.png'))
         self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom Out'))
         self.zoomOutButton.setObjectName(u'zoomOutButton')
         self.zoomOutButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOutButton)
         self.zoomOriginalButton = QtGui.QToolButton(self.toolbar)
-        self.zoomOriginalButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_original.png')))
+        self.zoomOriginalButton.setIcon(
+            build_icon(u':/general/general_zoom_original.png'))
         self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom Original'))
         self.zoomOriginalButton.setObjectName(u'zoomOriginalButton')
@@ -134,6 +132,8 @@ class Ui_PrintServiceDialog(object):
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
+        self.pageBreakAfterText = QtGui.QCheckBox()
+        self.groupLayout.addWidget(self.pageBreakAfterText)
         self.notesCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.notesCheckBox)
         self.metaDataCheckBox = QtGui.QCheckBox()
@@ -148,9 +148,11 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(UiStrings.PrintServiceOrder)
+        printServiceDialog.setWindowTitle(UiStrings().PrintServiceOrder)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
+        self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
+            'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
@@ -163,3 +165,4 @@ class Ui_PrintServiceDialog(object):
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+

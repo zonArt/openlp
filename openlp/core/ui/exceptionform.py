@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,6 +57,7 @@ except ImportError:
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -78,7 +79,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
-        openlp_version = self.parent().applicationVersion[u'full']
+        openlp_version = get_application_version()
         description = unicode(self.descriptionTextEdit.toPlainText())
         traceback = unicode(self.exceptionTextEdit.toPlainText())
         system = unicode(translate('OpenLP.ExceptionForm',
@@ -129,9 +130,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                     file.close()
                     file = open(filename, u'wb')
                     file.write(report.encode(u'utf-8'))
-                file.close()
+                finally:
+                    file.close()
             except IOError:
                 log.exception(u'Failed to write crash report')
+            finally:
+                file.close()
 
     def onSendReportButtonPressed(self):
         """
@@ -177,7 +181,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             self,translate('ImagePlugin.ExceptionDialog',
             'Select Attachment'),
             SettingsManager.get_last_dir(u'exceptions'),
-            u'%s (*.*) (*)' % UiStrings.AllFiles)
+            u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)
@@ -185,3 +189,4 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     def __buttonState(self, state):
         self.saveReportButton.setEnabled(state)
         self.sendReportButton.setEnabled(state)
+

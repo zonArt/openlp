@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -94,9 +94,10 @@ import os
 from lxml import etree, objectify
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
@@ -121,17 +122,16 @@ class FoilPresenterImport(SongImport):
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
-                return False
+                return
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))
-                if self.FoilPresenter.xml_to_song(xml) is None:
-                    log.debug(u'File could not be imported: %s' % file_path)
+                self.FoilPresenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
+                self.log_error(file_path, SongStrings.XMLSyntaxError)
                 log.exception(u'XML syntax error in file %s' % file_path)
-        return True
 
 
 class FoilPresenter(object):
@@ -211,10 +211,14 @@ class FoilPresenter(object):
         """
         # No xml get out of here.
         if not xml:
-            return None
-        song = Song()
+            return
         if xml[:5] == u'<?xml':
             xml = xml[38:]
+        song = Song()
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
+        song.search_title = u''
         # Because "text" seems to be an reserverd word, we have to recompile it.
         xml = re.compile(u'<text>').sub(u'<text_>', xml)
         xml = re.compile(u'</text>').sub(u'</text_>', xml)
@@ -229,8 +233,8 @@ class FoilPresenter(object):
         self._process_authors(foilpresenterfolie, song)
         self._process_songbooks(foilpresenterfolie, song)
         self._process_topics(foilpresenterfolie, song)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
-        return song.id
 
     def _child(self, element):
         """
@@ -300,9 +304,8 @@ class FoilPresenter(object):
             for marker in markers:
                 copyright = re.compile(marker).sub(u'<marker>', copyright, re.U)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
-            i = 0
             x = 0
-            while i != 1:
+            while True:
                 if copyright.find(u'<marker>') != -1:
                     temp = copyright.partition(u'<marker>')
                     if temp[0].strip() and x > 0:
@@ -311,9 +314,9 @@ class FoilPresenter(object):
                     x += 1
                 elif x > 0:
                     strings.append(copyright)
-                    i = 1
+                    break
                 else:
-                    i = 1
+                    break
             author_temp = []
             for author in strings:
                 temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
@@ -344,12 +347,10 @@ class FoilPresenter(object):
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
-                    last_name = display_name.split(u' ')[-1],
-                    first_name = u' '.join(display_name.split(u' ')[:-1]))
+                    last_name=display_name.split(u' ')[-1],
+                    first_name=u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
-        if not song.authors:
-            add_author_unknown(self.manager, song)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
         """
@@ -407,13 +408,19 @@ class FoilPresenter(object):
             The song object.
         """
         sxml = SongXML()
-        search_text = u''
         temp_verse_order = {}
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {u'V': 1, u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1,
-            u'P': 1}
+        versenumber = {
+            VerseType.Tags[VerseType.Verse]: 1,
+            VerseType.Tags[VerseType.Chorus]: 1, 
+            VerseType.Tags[VerseType.Bridge]: 1,
+            VerseType.Tags[VerseType.Ending]: 1,
+            VerseType.Tags[VerseType.Other]: 1,
+            VerseType.Tags[VerseType.Intro]: 1,
+            VerseType.Tags[VerseType.PreChorus]: 1
+        }
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
@@ -424,7 +431,7 @@ class FoilPresenter(object):
                     verse_sortnr = self._child(strophe.sortnr)
                     sortnr = True
                 # In older Version there is no sortnr, but we need one
-            if sortnr == False:
+            if not sortnr:
                 verse_sortnr = unicode(temp_sortnr_backup)
                 temp_sortnr_backup += 1
             # Foilpresenter allows e. g. "Ref" or "1", but we need "C1" or "V1".
@@ -432,27 +439,26 @@ class FoilPresenter(object):
             temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
             if temp_verse_name == u'ref':
-                verse_type = u'C'
+                verse_type = VerseType.Tags[VerseType.Chorus]
             elif temp_verse_name == u'r':
-                verse_type = u'C'
+                verse_type = VerseType.Tags[VerseType.Chorus]
             elif temp_verse_name == u'':
-                verse_type = u'V'
+                verse_type = VerseType.Tags[VerseType.Verse]
             elif temp_verse_name == u'v':
-                verse_type = u'V'
+                verse_type = VerseType.Tags[VerseType.Verse]
             elif temp_verse_name == u'bri':
-                verse_type = u'B'
+                verse_type = VerseType.Tags[VerseType.Bridge]
             elif temp_verse_name == u'cod':
-                verse_type = u'E'
+                verse_type = VerseType.Tags[VerseType.Ending]
             elif temp_verse_name == u'sch':
-                verse_type = u'E'
+                verse_type = VerseType.Tags[VerseType.Ending]
             elif temp_verse_name == u'pre':
-                verse_type = u'P'
+                verse_type = VerseType.Tags[VerseType.PreChorus]
             elif temp_verse_name == u'int':
-                verse_type = u'I'
+                verse_type = VerseType.Tags[VerseType.Intro]
             else:
-                verse_type = u'O'
+                verse_type = VerseType.Tags[VerseType.Other]
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
-            #verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
                 verse_number = unicode(versenumber[verse_type])
@@ -461,17 +467,15 @@ class FoilPresenter(object):
                 # test if foilpresenter have the same versenumber two times with
                 # different parts raise the verse number
                 for value in temp_verse_order_backup:
-                    if value == (u''.join((verse_type, verse_number))):
+                    if value == u''.join((verse_type, verse_number)):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.Names[verse_type_index]
-            temp_verse_order[verse_sortnr] = (u''.join((verse_type[0],
-                verse_number)))
+            temp_verse_order[verse_sortnr] = u''.join((verse_type[0],
+                verse_number))
             temp_verse_order_backup.append(u''.join((verse_type[0],
                 verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)
-            search_text = search_text + text
-        song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         verse_order = []
@@ -534,13 +538,9 @@ class FoilPresenter(object):
         for titelstring in foilpresenterfolie.titel.titelstring:
             if not song.title:
                 song.title = self._child(titelstring)
-                song.search_title = unicode(song.title)
                 song.alternate_title = u''
             else:
                 song.alternate_title = self._child(titelstring)
-                song.search_title += u'@' + song.alternate_title
-        song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(song.search_title)).lower()
 
     def _process_topics(self, foilpresenterfolie, song):
         """
@@ -565,10 +565,3 @@ class FoilPresenter(object):
                     song.topics.append(topic)
         except AttributeError:
             pass
-
-    def _dump_xml(self, xml):
-        """
-        Debugging aid to dump XML so that we can see what we have.
-        """
-        return etree.tostring(xml, encoding=u'UTF-8',
-            xml_declaration=True, pretty_print=True)

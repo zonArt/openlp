@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,13 +23,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import logging
 import re
+
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.ui.wizard import WizardStrings
+from openlp.core.utils import AppLocation
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
@@ -62,9 +64,11 @@ class SongImport(QtCore.QObject):
         else:
             raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
         log.debug(self.import_source)
+        self.import_wizard = None
         self.song = None
         self.stop_import_flag = False
         self.set_defaults()
+        self.error_log = []
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
@@ -93,6 +97,32 @@ class SongImport(QtCore.QObject):
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
 
+    def log_error(self, filepath, reason=SongStrings.SongIncomplete):
+        """
+        This should be called, when a song could not be imported.
+
+        ``filepath``
+            This should be the file path if ``self.import_source`` is a list
+            with different files. If it is not a list, but a  single file (for
+            instance a database), then this should be the song's title.
+
+        ``reason``
+            The reason, why the import failed. The string should be as
+            informative as possible.
+        """
+        self.set_defaults()
+        if self.import_wizard is None:
+            return
+        if self.import_wizard.errorReportTextEdit.isHidden():
+            self.import_wizard.errorReportTextEdit.setText(
+                translate('SongsPlugin.SongImport',
+                'The following songs could not be imported:'))
+            self.import_wizard.errorReportTextEdit.setVisible(True)
+            self.import_wizard.errorCopyToButton.setVisible(True)
+            self.import_wizard.errorSaveToButton.setVisible(True)
+        self.import_wizard.errorReportTextEdit.append(
+            u'- %s (%s)' % (filepath, reason))
+
     def stop_import(self):
         """
         Sets the flag for importers to stop their import
@@ -103,23 +133,7 @@ class SongImport(QtCore.QObject):
     def register(self, import_wizard):
         self.import_wizard = import_wizard
 
-    @staticmethod
-    def process_songs_text(manager, text):
-        songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\f')
-        song = SongImport(manager)
-        for songtext in songtexts:
-            if songtext.strip():
-                song.process_song_text(songtext.strip())
-                if song.check_complete():
-                    songs.append(song)
-                    song = SongImport(manager)
-        if song.check_complete():
-            songs.append(song)
-        return songs
-
-    @staticmethod
-    def tidy_text(text):
+    def tidy_text(self, text):
         """
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
@@ -146,12 +160,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.find(SongStrings.CopyrightSymbol) >= 0:
+            or text.find(unicode(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.find(SongStrings.CopyrightSymbol) >= 0):
+                    line.find(unicode(SongStrings.CopyrightSymbol)) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -255,29 +269,30 @@ class SongImport(QtCore.QObject):
         Author not checked here, if no author then "Author unknown" is
         automatically added
         """
-        if self.title == u'' or len(self.verses) == 0:
+        if not self.title or not len(self.verses):
             return False
         else:
             return True
-
-    def remove_punctuation(self, text):
-        """
-        Extracts alphanumeric words for searchable fields
-        """
-        return re.sub(r'\W+', u' ', text, re.UNICODE)
 
     def finish(self):
         """
         All fields have been set to this song. Write the song to disk.
         """
+        if not self.check_complete():
+            self.set_defaults()
+            return False
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
+        if self.import_wizard is not None:
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % song.title)
         song.alternate_title = self.alternate_title
-        song.search_title = self.remove_punctuation(self.title).lower() \
-            + '@' + self.remove_punctuation(self.alternate_title).lower()
-        song.song_number = self.song_number
+        # Values will be set when cleaning the song.
+        song.search_title = u''
         song.search_lyrics = u''
+        song.verse_order = u''
+        song.song_number = self.song_number
         verses_changed_to_other = {}
         sxml = SongXML()
         other_count = 1
@@ -294,8 +309,6 @@ class SongImport(QtCore.QObject):
                     new_verse_def)
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
-            song.search_lyrics += u' ' + self.remove_punctuation(verse_text)
-        song.search_lyrics = song.search_lyrics.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         if not len(self.verse_order_list) and \
             self.verse_order_list_generated_useful:
@@ -317,9 +330,6 @@ class SongImport(QtCore.QObject):
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
-        # No author, add the default author.
-        if not song.authors:
-            add_author_unknown(self.manager, song)
         for filename in self.media_files:
             media_file = self.manager.get_object_filtered(MediaFile,
                 MediaFile.file_name == filename)
@@ -333,15 +343,17 @@ class SongImport(QtCore.QObject):
                     publisher=self.song_book_pub)
             song.book = song_book
         for topictext in self.topics:
-            if len(topictext) == 0:
+            if not topictext:
                 continue
             topic = self.manager.get_object_filtered(Topic,
                 Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
         self.set_defaults()
+        return True
 
     def print_song(self):
         """

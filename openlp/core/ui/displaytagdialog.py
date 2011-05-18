@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -112,11 +112,14 @@ class Ui_DisplayTagDialog(object):
         self.endTagLineEdit = QtGui.QLineEdit(self.editGroupBox)
         self.endTagLineEdit.setObjectName(u'endTagLineEdit')
         self.dataGridLayout.addWidget(self.endTagLineEdit, 4, 1, 1, 1)
-        self.updatePushButton = QtGui.QPushButton(self.editGroupBox)
-        self.updatePushButton.setObjectName(u'updatePushButton')
-        self.dataGridLayout.addWidget(self.updatePushButton, 4, 2, 1, 1)
+        self.savePushButton = QtGui.QPushButton(self.editGroupBox)
+        self.savePushButton.setObjectName(u'savePushButton')
+        self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_accept_reject_button_box(displayTagDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(displayTagDialog)
+        closeButton = QtGui.QDialogButtonBox.Close
+        self.buttonBox.setObjectName('displayTagDialogButtonBox')
+        self.buttonBox.setStandardButtons(closeButton)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(displayTagDialog)
@@ -127,8 +130,8 @@ class Ui_DisplayTagDialog(object):
             'Configure Display Tags'))
         self.editGroupBox.setTitle(
             translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
-        self.updatePushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Update'))
+        self.savePushButton.setText(
+            translate('OpenLP.DisplayTagDialog', 'Save'))
         self.descriptionLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
@@ -136,18 +139,18 @@ class Ui_DisplayTagDialog(object):
             translate('OpenLP.DisplayTagDialog', 'Start tag'))
         self.endTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'End tag'))
-        self.deletePushButton.setText(UiStrings.Delete)
+        self.deletePushButton.setText(UiStrings().Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagDialog', 'Default'))
-        self.newPushButton.setText(UiStrings.New)
+        self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagDialog', 'Tag id'))
+            translate('OpenLP.DisplayTagDialog', 'Tag Id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagDialog', 'Start Html'))
+            translate('OpenLP.DisplayTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagDialog', 'End Html'))
+            translate('OpenLP.DisplayTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)
