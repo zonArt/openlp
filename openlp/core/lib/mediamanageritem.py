@@ -28,6 +28,7 @@ Provides the generic functions for interfacing plugins with the Media Manager.
 """
 import logging
 import os
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -90,6 +91,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
         #TODO: plugin should not be the parent in future
         self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
