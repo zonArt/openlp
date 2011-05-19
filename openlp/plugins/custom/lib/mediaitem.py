@@ -235,13 +235,13 @@ class CustomMediaItem(MediaManagerItem):
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(CustomSlide,
                 CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords) + u'%'))
+                search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(CustomSlide,
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords) + u'%'))
+                search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         self.check_search_result()
 
