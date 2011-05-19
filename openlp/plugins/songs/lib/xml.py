@@ -233,6 +233,7 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
+        self.chord_regex = re.compile(u'<chord name=".*?"/>')
 
     def song_to_xml(self, song):
         """
@@ -317,7 +318,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
+        xml = self.chord_regex.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties
