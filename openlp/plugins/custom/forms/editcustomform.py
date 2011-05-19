@@ -65,6 +65,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.slideListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onEditButtonPressed)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
