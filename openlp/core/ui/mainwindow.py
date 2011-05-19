@@ -785,7 +785,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Receiver.send_message(u'cursor_busy')
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.themeManagerContents.updatePreviewImages()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         self.setFocus()

@@ -660,15 +660,6 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
-    def updatePreviewImages(self):
-        """
-        Called to update the themes' preview images.
-        """
-        for theme in self.themelist:
-            self.generateAndSaveImage(
-                self.path, theme, self.getThemeData(theme))
-        self.loadThemes()
-
     def generateImage(self, themeData, forcePage=False):
         """
         Call the renderer to build a Sample Image
