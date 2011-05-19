@@ -422,7 +422,8 @@ class FoilPresenter(object):
             VerseType.Tags[VerseType.PreChorus]: 1
         }
         for strophe in foilpresenterfolie.strophen.strophe:
-            text = self._child(strophe.text_)
+            text = self._child(strophe.text_) if hasattr(strophe, u'text_') \
+                else u''
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = False
