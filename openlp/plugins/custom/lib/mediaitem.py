@@ -153,7 +153,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
-        self.parent.edit_custom_fom.exec_()
+        self.parent.edit_custom_form.exec_()
         self.initialise()
 
     def onRemoteEditClear(self):
