@@ -62,6 +62,7 @@ class CustomMediaItem(MediaManagerItem):
         # which Custom is required.
         self.remoteCustom = -1
         self.manager = parent.manager
+        self.setAutoSelectItem()
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -106,6 +107,9 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'custom_set_autoselect_item'),
+            self.setAutoSelectItem)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def retranslateUi(self):
@@ -140,10 +144,16 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(
                 QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
             self.listView.addItem(custom_name)
+            # Auto-select the item if name has been set
+            if customSlide.title == self.autoSelectItem :
+                self.listView.setCurrentItem(custom_name)
+
+    def setAutoSelectItem(self,itemToSelect="*"):
+        self.autoSelectItem = itemToSelect
 
     def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)
-        self.parent.edit_custom_form.exec_()
+        self.parent.edit_custom_fom.exec_()
         self.initialise()
 
     def onRemoteEditClear(self):
