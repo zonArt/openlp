@@ -253,7 +253,8 @@ class HttpConnection(object):
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
             (r'^/api/(.*)/search$', self.search),
-            (r'^/api/(.*)/live$', self.go_live)
+            (r'^/api/(.*)/live$', self.go_live),
+            (r'^/api/(.*)/add$', self.add_to_service)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -489,6 +490,16 @@ class HttpConnection(object):
         plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id)
+
+    def add_to_service(self, type):
+        """
+        Add item of type ``type`` to the end of the service
+        """
+        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and plugin.mediaItem:
+            item_id = plugin.mediaItem.createItemFromId(id)
+            plugin.mediaItem.addToService([item_id])
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

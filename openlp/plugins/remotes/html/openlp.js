@@ -219,9 +219,13 @@ window.OpenLP = {
         } 
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li data-icon=\"false\">").append(
-                $("<a href=\"#\">").attr("value", value[0]).text(value[1]));
-              li.children("a").click(OpenLP.goLive);
+              var li = $("<li>");
+              li.append($("<a href=\"#\">").text(value[1]).click(function () {
+                OpenLP.goLive(value[0]);
+              }));
+              li.append($("<a href=\"#\">").click(function () {
+                OpenLP.addToService(value[0]);
+              }));
               ul.append(li);
             });
         }
@@ -230,17 +234,21 @@ window.OpenLP = {
     );
     return false;
   },
-  goLive: function (event) {
-    var slide = OpenLP.getElement(event);
-    var id = slide.attr("value");
+  goLive: function (id) {
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
       {"data": text})
     $.mobile.changePage("slide-controller");
     return false;
+  },
+  addToService: function (id) {
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text})
+    return false;
   }
-
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
