@@ -210,6 +210,11 @@ class SlideController(QtGui.QWidget):
                 u'Go Live', u':/general/general_live.png',
                 translate('OpenLP.SlideController', 'Move to live'),
                 self.onGoLive)
+            self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
+                u'Add to Service', u':/general/general_add.png',
+                translate('OpenLP.SlideController', 'Add to Service'),
+                self.onPreviewAddToService)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
@@ -1043,6 +1048,12 @@ class SlideController(QtGui.QWidget):
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.edit_id)
+
+    def onPreviewAddToService(self):
+        """
+        From the preview display request the Item to be added to service
+        """
+        Receiver.send_message(u'%s_add_service_item' % self.serviceItem.name)
 
     def onGoLiveClick(self):
         """

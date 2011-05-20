@@ -113,7 +113,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
-            self.serviceLoad)
 
     def requiredIcons(self):
         """
@@ -499,10 +498,11 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add a selected item to the current service
         """
+        print "OnAddClick"
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items.'))
+                    'You must select one or more items to add.'))
         else:
             # Is it posssible to process multiple list items to generate
             # multiple service items?
