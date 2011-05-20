@@ -219,22 +219,23 @@ window.OpenLP = {
         } 
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li>");
-              li.append($("<a href=\"#\">").text(value[1]).click(function () {
-                OpenLP.goLive(value[0]);
-              }));
-              li.append($("<a href=\"#\">").click(function () {
-                OpenLP.addToService(value[0]);
-              }));
+              var li = $("<li><ul>").text(value[1]);
+              li.append($("<ul><li><a id=\"go-live\" href=\"#\">Go Live</a></li>" +
+              "<li><a id =\"add-service\" href=\"#\">Add To Service</a></li></ul>"));
+              li.find("a").attr("value", value[0]);
               ul.append(li);
             });
+            ul.find("#go-live").click(OpenLP.goLive);
+            ul.find("#add-service").click(OpenLP.addToService);
         }
         ul.listview("refresh");
       }
     );
     return false;
   },
-  goLive: function (id) {
+  goLive: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
@@ -242,11 +243,14 @@ window.OpenLP = {
     $.mobile.changePage("slide-controller");
     return false;
   },
-  addToService: function (id) {
+  addToService: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text})
+    history.back();
     return false;
   }
 }
