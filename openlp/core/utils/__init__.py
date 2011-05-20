@@ -342,7 +342,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added. An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword ``None``
         will result in a separator being inserted into the target.
     """
     for action in actions:

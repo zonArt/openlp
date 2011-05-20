@@ -660,6 +660,31 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        progressDialog = QtGui.QProgressDialog(self.mainwindow)
+        progressDialog.setWindowModality(QtCore.Qt.WindowModal)
+        progressDialog.setLabelText(
+            translate('OpenLP.ThemeManager', 'Starting update...',
+            'Shown when you update the theme images.'))
+        progressDialog.setCancelButton(None)
+        progressDialog.setRange(0, len(self.themelist))
+        progressDialog.setMinimumDuration(0)
+        progressDialog.forceShow()
+        Receiver.send_message(u'openlp_process_events')  
+        for index, theme in enumerate(self.themelist):
+            progressDialog.setValue(index)
+            progressDialog.setLabelText(unicode(translate('OpenLP.ThemeManager',
+                'Updating %s...',
+                'Shown when you update the theme images.')) % theme)
+            Receiver.send_message(u'openlp_process_events')
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        progressDialog.setValue(len(self.themelist))
+        self.loadThemes()
+
     def generateImage(self, themeData, forcePage=False):
         """
         Call the renderer to build a Sample Image
