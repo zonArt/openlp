@@ -135,15 +135,15 @@ class CustomMediaItem(MediaManagerItem):
             self.onPreviewClick()
         self.onRemoteEditClear()
 
-    def loadList(self, list):
+    def loadList(self, custom_slides):
         self.listView.clear()
         # Sort the customs by its title considering language specific
         # characters.
-        list.sort(cmp=locale.strcoll, key=operator.attrgetter('title'))
-        for customSlide in list:
-            custom_name = QtGui.QListWidgetItem(customSlide.title)
+        custom_slides.sort(cmp=locale.strcoll, key=operator.attrgetter('title'))
+        for custom_slide in custom_slides:
+            custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
+                QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
             self.listView.addItem(custom_name)
 
     def onNewClick(self):
