@@ -113,10 +113,11 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
+            self.serviceLoad)
 
     def requiredIcons(self):
         """
-        This method is called to define the icons for the plugin.
+        Tis method is called to define the icons for the plugin.
         It provides a default set and the plugin is able to override
         the if required.
         """
