@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import locale
+import operator
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
@@ -135,6 +137,9 @@ class CustomMediaItem(MediaManagerItem):
 
     def loadList(self, list):
         self.listView.clear()
+        # Sort the customs by its title considering language specific
+        # characters.
+        list.sort(cmp=locale.strcoll, key=operator.attrgetter('title'))
         for customSlide in list:
             custom_name = QtGui.QListWidgetItem(customSlide.title)
             custom_name.setData(
