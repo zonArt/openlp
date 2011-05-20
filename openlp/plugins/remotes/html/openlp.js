@@ -221,7 +221,7 @@ window.OpenLP = {
             $.each(data.results.items, function (idx, value) {
               var li = $("<li><ul>").text(value[1]);
               li.append($("<ul><li><a id=\"go-live\" href=\"#\">Go Live</a></li>" +
-              "<li><a id =\"add-service\" href=\"#\">Add To Service</a></li></ul>"));
+                "<li><a id =\"add-service\" href=\"#\">Add To Service</a></li></ul>"));
               li.find("a").attr("value", value[0]);
               ul.append(li);
             });
