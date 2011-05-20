@@ -498,7 +498,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add a selected item to the current service
         """
-        print "OnAddClick"
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
