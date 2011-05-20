@@ -139,7 +139,8 @@ class CustomMediaItem(MediaManagerItem):
         self.listView.clear()
         # Sort the customs by its title considering language specific
         # characters.
-        custom_slides.sort(cmp=locale.strcoll, key=operator.attrgetter('title'))
+        custom_slides.sort(
+            cmp=locale.strcoll, key=operator.attrgetter('title').lower())
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(
