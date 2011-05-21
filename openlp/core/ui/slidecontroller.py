@@ -1054,7 +1054,7 @@ class SlideController(QtGui.QWidget):
         From the preview display request the Item to be added to service
         """
         self.serviceItem.from_plugin = False
-        self.parent.serviceManager.addServiceItem(self.serviceItem)
+        Receiver.send_message('preview_add_service_item',self.serviceItem)
 
     def onGoLiveClick(self):
         """
@@ -1062,6 +1062,14 @@ class SlideController(QtGui.QWidget):
         """
         if QtCore.QSettings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
+            # Live and Preview have issues if we have video or presentations
+            # playing in both at the same time.
+            if self.serviceItem.is_command():
+                Receiver.send_message(u'%s_stop' %
+                    self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            if self.serviceItem.is_media():
+                self.onMediaClose()
             self.onGoLive()
 
     def onGoLive(self):

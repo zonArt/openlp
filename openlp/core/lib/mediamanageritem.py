@@ -114,7 +114,10 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
-
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
+            self.setAutoSelectItem)
+ 
     def requiredIcons(self):
         """
         Tis method is called to define the icons for the plugin.
@@ -466,6 +469,9 @@ class MediaManagerItem(QtGui.QWidget):
                 self.parent.previewController.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
+
+    def setAutoSelectItem(self, itemToSelect=None):
+        self.autoSelectItem = itemToSelect
 
     def onLiveClick(self):
         """

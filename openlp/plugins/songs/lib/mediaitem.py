@@ -73,7 +73,7 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        self.setAutoSelectItem()
+        self.autoSelectItem = None
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -124,9 +124,6 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_set_autoselect_item'),
-            self.setAutoSelectItem)
 
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
@@ -162,9 +159,6 @@ class SongMediaItem(MediaManagerItem):
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
-
-    def setAutoSelectItem(self,itemToSelect="*"):
-        self.autoSelectItem = itemToSelect
 
     def onSearchTextButtonClick(self):
         # Save the current search type to the configuration.
