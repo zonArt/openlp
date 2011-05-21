@@ -499,7 +499,7 @@ class HttpConnection(object):
         plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService([item_id])
+            plugin.mediaItem.addToService(item_id)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

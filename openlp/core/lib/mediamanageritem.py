@@ -506,18 +506,18 @@ class MediaManagerItem(QtGui.QWidget):
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
-                self.addToService([None], self.remoteTriggered)
+                self.addToService(replace=self.remoteTriggered)
             else:
                 items = self.listView.selectedIndexes()
-                self.addToService(items)
+                for item in items:
+                    self.addToService(item)
 
-    def addToService(self, items, replace=None):
-        for item in items:
-            serviceItem = self.buildServiceItem(item, True)
-            if serviceItem:
-                serviceItem.from_plugin = False
-                self.parent.serviceManager.addServiceItem(serviceItem,
-                    replace=replace)
+    def addToService(self, item=None, replace=None):
+        serviceItem = self.buildServiceItem(item, True)
+        if serviceItem:
+            serviceItem.from_plugin = False
+            self.parent.serviceManager.addServiceItem(serviceItem,
+                replace=replace)
 
     def onAddEditClick(self):
         """

@@ -247,8 +247,11 @@ window.OpenLP = {
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
-      {"data": text})
-    history.back();
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
     return false;
   }
 }
