@@ -25,8 +25,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+
 from PyQt4 import QtCore, QtGui, QtWebKit
 from openlp.plugins.media.lib import MediaController, MediaState
+
+log = logging.getLogger(__name__)
 
 class WebkitController(MediaController):
     """
@@ -70,7 +74,7 @@ class WebkitController(MediaController):
             u'video/x-ms-wmv': [u'.wmv']}
 
     def load(self, display, path, volume):
-        print "load vid in Webkit Controller"
+        log.debug(u'load vid in Webkit Controller')
         vol = float(volume) / float(10)
         display.webView.setVisible(True)
         if path.endswith(u'.swf'):
@@ -82,6 +86,7 @@ class WebkitController(MediaController):
                 (path.replace(u'\\', u'\\\\'), str(vol))
             self.isFlash = False
         display.frame.evaluateJavaScript(js)
+        return True
 
     def resize(self, display, controller):
         if display == controller.previewDisplay:
@@ -117,7 +122,8 @@ class WebkitController(MediaController):
     def seek(self, display, seekVal):
         if not self.isFlash:
             seek = float(seekVal)/1000
-            display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
+            display.frame.evaluateJavaScript( \
+                u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
         if self.isFlash:
@@ -132,12 +138,14 @@ class WebkitController(MediaController):
 
     def update_ui(self, controller, display):
         if not self.isFlash:
-            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+            currentTime = display.frame.evaluateJavaScript( \
+                u'show_video("currentTime");')
             length = display.frame.evaluateJavaScript(u'show_video("length");')
             if int(currentTime.toFloat()[0]*1000) > 0:
                 controller.seekSlider.setMaximum(int(length.toFloat()[0]*1000))
                 if not controller.seekSlider.isSliderDown():
-                    controller.seekSlider.setSliderPosition(int(currentTime.toFloat()[0]*1000))
+                    controller.seekSlider.setSliderPosition( \
+                        int(currentTime.toFloat()[0]*1000))
 
     def get_supported_file_types(self):
         pass

@@ -297,11 +297,11 @@ class SlideController(QtGui.QWidget):
         # Signals
         QtCore.QObject.connect(self.previewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        QtCore.QObject.connect(self.seekSlider,
+            QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaSeek)
+        QtCore.QObject.connect(self.volumeSlider,
+            QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaVolume)
         if self.isLive:
-            QtCore.QObject.connect(self.seekSlider,
-                QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaSeek)
-            QtCore.QObject.connect(self.volumeSlider,
-                QtCore.SIGNAL(u'sliderMoved(int)'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
             QtCore.QObject.connect(Receiver.get_receiver(),

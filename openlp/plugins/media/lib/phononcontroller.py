@@ -25,10 +25,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+from datetime import datetime
+
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
+from openlp.core.lib import Receiver
 from openlp.plugins.media.lib import MediaController, MediaState
+
+log = logging.getLogger(__name__)
 
 class PhononController(MediaController):
     """
@@ -59,7 +65,8 @@ class PhononController(MediaController):
         display.phononWidget.setVisible(False)
         display.phononWidget.resize(display.size())
         display.mediaObject = Phonon.MediaObject(display)
-        display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.mediaObject)
+        display.audio = Phonon.AudioOutput( \
+            Phonon.VideoCategory, display.mediaObject)
         Phonon.createPath(display.mediaObject, display.phononWidget)
         Phonon.createPath(display.mediaObject, display.audio)
         display.phononWidget.raise_()
@@ -90,14 +97,27 @@ class PhononController(MediaController):
             u'video/x-ms-wmv': [u'.wmv']}
 
     def load(self, display, path, volume):
-        print "load vid in Phonon Controller"
-        display.mediaObject.stop()
-        display.mediaObject.clearQueue()
+        log.debug(u'load vid in Phonon Controller')
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
-        # Need the timer to trigger set the trigger to 200ms
-        # Value taken from web documentation.
+        if not self.mediaStateWait(display, Phonon.StoppedState):
+            return False
         vol = float(volume) / float(10)
         display.audio.setVolume(vol)
+        return True
+
+    def mediaStateWait(self, display, mediaState):
+        """
+        Wait for the video to change its state
+        Wait no longer than 5 seconds.
+        """
+        start = datetime.now()
+        while display.mediaObject.state() != mediaState:
+            if display.mediaObject.state() == Phonon.ErrorState:
+                return False
+            Receiver.send_message(u'openlp_process_events')
+            if (datetime.now() - start).seconds > 5:
+                return False
+        return True
 
     def resize(self, display, controller):
         display.phononWidget.resize(display.size())
@@ -136,7 +156,8 @@ class PhononController(MediaController):
     def update_ui(self, controller, display):
         controller.seekSlider.setMaximum(display.mediaObject.totalTime())
         if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition(display.mediaObject.currentTime())
+            controller.seekSlider.setSliderPosition( \
+                display.mediaObject.currentTime())
 #        if newState == Phonon.Playing \
 #            and oldState != Phonon.Paused \
 #            and self.serviceItem.start_time > 0:

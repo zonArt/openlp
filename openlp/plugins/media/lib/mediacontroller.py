@@ -28,15 +28,10 @@
 import logging
 
 import sys, os
-from PyQt4 import QtCore
-#try:
-#    import vlc
-#except:
-#    pass
 from PyQt4 import QtCore, QtGui, QtWebKit
-from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.media.lib import MediaBackends, MediaState
 from webkitcontroller import WebkitController
 from phononcontroller import PhononController
@@ -47,30 +42,28 @@ log = logging.getLogger(__name__)
 class MediaManager(object):
     """
     The implementation of a Media Manager
-    The idea is to separate the media related implementation into the plugin files
-    and unify the access from other parts of code
+    The idea is to separate the media related implementation
+    into the plugin files and unify the access from other parts of code
     The media manager adds an own class for every type of backend
     Currently these are QtWebkit, Phonon and planed Vlc.
-    On the other hand currently the previewController display only use phonon for media output.
-    So I would suggest to rename the maindisplay.py to display.py and modify the code,
-    so that the display class can be used for the maindisplay as well as for the previewController display.
     """
 
     def __init__(self, parent):
         self.parent = parent
-        self.backend = {}
+        self.backends = {}
         self.curDisplayMediaController = {}
-        #one controller for every backend
+        #Create Backend Controllers
         if WebkitController.is_available():
-            self.backend['webkit'] = WebkitController(self)
+            self.backends['webkit'] = WebkitController(self)
         if PhononController.is_available():
-            self.backend['phonon'] = PhononController(self)
+            self.backends['phonon'] = PhononController(self)
         if VlcController.is_available():
-            self.backend['vlc'] = VlcController(self)
+            self.backends['vlc'] = VlcController(self)
         #Timer for video state
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
-        #signals
+        self.withLivePreview = False
+        #Signals
         QtCore.QObject.connect(self.Timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -108,28 +101,35 @@ class MediaManager(object):
             for display in self.curDisplayMediaController.keys():
                 if display == self.parent.previewController.previewDisplay or \
                     display == self.parent.previewController.display:
-                    self.curDisplayMediaController[display].update_ui(self.parent.previewController, display)
+                    self.curDisplayMediaController[display] \
+                        .update_ui(self.parent.previewController, display)
                 else:
-                    self.curDisplayMediaController[display].update_ui(self.parent.liveController, display)
-                if self.curDisplayMediaController[display].state == MediaState.Playing:
+                    self.curDisplayMediaController[display] \
+                        .update_ui(self.parent.liveController, display)
+                if self.curDisplayMediaController[display] \
+                    .state == MediaState.Playing:
                     isAnyonePlaying = True
         if not isAnyonePlaying:
             self.Timer.stop()
 
     def setup_display(self, display):
-        # check controller relevant displays
-        if display == self.parent.previewController.previewDisplay or \
-            display == self.parent.liveController.display:
-            for backend_typ in self.backend.values():
-                backend_typ.setup(display)
+        """
+        After a new display is configured, all media related widget
+        will be created too
+        """
+        if not self.withLivePreview and \
+            display == self.parent.liveController.previewDisplay:
+            return
+        for backend in self.backends.values():
+            backend.setup(display)
 
     def resize(self, controller):
         """
-        after Mainwindow changes or Splitter moved all related media
+        After Mainwindow changes or Splitter moved all related media
         widgets have to be resized
         """
         pass
-        #has to be clarified
+        #TODO
         #for display in self.curDisplayMediaController.keys():
         #    self.curDisplayMediaController[display].resize(display, controller)
 
@@ -143,29 +143,41 @@ class MediaManager(object):
         isBackground = msg[3]
         log.debug(u'video')
         vol = float(volume) / float(10)
+        isValid = False
         #stop running videos
         self.video_reset(controller)
         if controller.isLive:
+#            if isBackground:
             # We are running a background theme
             controller.display.override[u'theme'] = u''
             controller.display.override[u'video'] = True
-#            display = controller.previewDisplay
-#            self.check_file_type(display, videoPath, False)
-#            self.curDisplayMediaController[display].load(display, videoPath, volume)
+            if self.withLivePreview:
+                display = controller.previewDisplay
+                if self.check_file_type(display, videoPath, False):
+                    self.curDisplayMediaController[display] \
+                        .load(display, videoPath, volume)
             display = controller.display
-            self.check_file_type(display, videoPath, False)
-            self.curDisplayMediaController[display].load(display, videoPath, volume)
+            if self.check_file_type(display, videoPath, isBackground):
+                isValid = self.curDisplayMediaController[display] \
+                    .load(display, videoPath, volume)
             controller.display.webLoaded = True
         else:
             display = controller.previewDisplay
-            self.check_file_type(display, videoPath, False)
-            self.curDisplayMediaController[display].load(display, videoPath, volume)
+            self.check_file_type(display, videoPath, isBackground)
+            isValid = self.curDisplayMediaController[display] \
+                .load(display, videoPath, volume)
+        if not isValid:
+            #Media could not be loaded correctly
+            critical_error_message_box(
+                translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                'Unsupported File')))
+            return
         #check size of all media_widgets
         self.resize(controller)
         #now start playing
-        for display in self.curDisplayMediaController.keys():
-            if display.parent == controller:
-                self.curDisplayMediaController[display].play(display)
+        print self.curDisplayMediaController[display]
+        self.video_play(controller)
 
     def check_file_type(self, display, videoPath, isBackground):
         """
@@ -173,19 +185,19 @@ class MediaManager(object):
         from the prioritized backend list
         """
         if videoPath.endswith(u'.swf') or isBackground:
-            self.curDisplayMediaController[display] = self.backend['webkit']
-        elif videoPath.endswith(u'.wmv'):
-            self.curDisplayMediaController[display] = self.backend['phonon']
+            self.curDisplayMediaController[display] = self.backends['webkit']
+        elif QtCore.QSettings().value(u'media/use webkit',
+            QtCore.QVariant(True)).toInt()[0] == 0:
+            self.curDisplayMediaController[display] = self.backends['webkit']
+        elif QtCore.QSettings().value(u'media/use vlc',
+            QtCore.QVariant(True)).toInt()[0] == 0:
+            self.curDisplayMediaController[display] = self.backends['vlc']
+        elif QtCore.QSettings().value(u'media/use phonon',
+            QtCore.QVariant(True)).toInt()[0] == 0:
+            self.curDisplayMediaController[display] = self.backends['phonon']
         else:
-            self.curDisplayMediaController[display] = self.backend['vlc']
-        for key in self.backend.keys():
-            if self.backend[key] == self.curDisplayMediaController[display]:
-                self.backend[key].set_visible(display, True)
-#            else:
-#                self.backend[key].set_visible(display, False)
-        if len(self.curDisplayMediaController) > 0:
-            if not self.Timer.isActive():
-                self.Timer.start()
+            return False
+        return True
 
     def video_play(self, controller):
         """
@@ -198,7 +210,6 @@ class MediaManager(object):
         # show screen
         if not self.Timer.isActive():
             self.Timer.start()
-        #display.setVisible(True)
 
     def video_pause(self, controller):
         """
@@ -258,7 +269,6 @@ class MediaManager(object):
             if display.parent == controller:
                 self.curDisplayMediaController[display].seek(display, seekVal)
 
-
     def video_reset(self, controller):
         """
         Responds to the request to reset a loaded video
@@ -268,48 +278,49 @@ class MediaManager(object):
             if display.parent == controller:
                 self.curDisplayMediaController[display].reset(display)
                 del self.curDisplayMediaController[display]
-#        if controller.isLive:
-            #Receiver.send_message(u'maindisplay_active')
 
     def video_hide(self, msg):
         """
         Hide the related video Widget
         """
-        print "hide"
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaController.keys():
                 if display.parent == controller:
-                    if self.curDisplayMediaController[display].state == MediaState.Playing:
+                    if self.curDisplayMediaController[display] \
+                        .state == MediaState.Playing:
                         self.curDisplayMediaController[display].pause(display)
-                        self.curDisplayMediaController[display].set_visible(display, False)
+                        self.curDisplayMediaController[display] \
+                            .set_visible(display, False)
 
     def video_blank(self, msg):
         """
         Blank the related video Widget
         """
-        print "blank"
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaController.keys():
                 if display.parent == controller:
-                    if self.curDisplayMediaController[display].state == MediaState.Playing:
+                    if self.curDisplayMediaController[display] \
+                        .state == MediaState.Playing:
                         self.curDisplayMediaController[display].pause(display)
-                        self.curDisplayMediaController[display].set_visible(display, False)
+                        self.curDisplayMediaController[display] \
+                            .set_visible(display, False)
 
     def video_unblank(self, msg):
         """
         Unblank the related video Widget
         """
-        print "unblank"
         Receiver.send_message(u'maindisplay_show')
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaController.keys():
                 if display.parent == controller:
-                    if self.curDisplayMediaController[display].state == MediaState.Paused:
+                    if self.curDisplayMediaController[display] \
+                        .state == MediaState.Paused:
                         self.curDisplayMediaController[display].play(display)
-                        self.curDisplayMediaController[display].set_visible(display, True)
+                        self.curDisplayMediaController[display] \
+                            .set_visible(display, True)

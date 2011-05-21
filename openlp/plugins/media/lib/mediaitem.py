@@ -24,7 +24,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import datetime
 import logging
 import os
 
@@ -89,7 +88,6 @@ class MediaMediaItem(MediaManagerItem):
         Called to reset the Live backgound with the media selected,
         """
         self.resetAction.setVisible(False)
-        #self.parent.liveController.display.resetVideo()
         Receiver.send_message(u'media_reset',
             self.parent.liveController)
 
@@ -132,17 +130,6 @@ class MediaMediaItem(MediaManagerItem):
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
-#        self.mediaObject.stop()
-#        self.mediaObject.clearQueue()
-#        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-#        if not self.mediaStateWait(Phonon.Stopped):
-            # Due to string freeze, borrow a message from presentations
-            # This will be corrected in 1.9.6
-#            critical_error_message_box(
-#                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
-#                unicode(translate('PresentationPlugin.MediaItem',
-#                'Unsupported File')))
-            #return False
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
 #            self.mediaObject.play()
@@ -170,20 +157,6 @@ class MediaMediaItem(MediaManagerItem):
         frame = u':/media/image_clapperboard.png'
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)
-        return True
-
-    def mediaStateWait(self, mediaState):
-        """
-        Wait for the video to change its state
-        Wait no longer than 5 seconds.
-        """
-        start = datetime.now()
-        while self.mediaObject.state() != mediaState:
-            if self.mediaObject.state() == Phonon.ErrorState:
-                return False
-            Receiver.send_message(u'openlp_process_events')
-            if (datetime.now() - start).seconds > 5:
-                return False
         return True
 
     def initialise(self):

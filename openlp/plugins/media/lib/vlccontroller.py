@@ -25,13 +25,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import sys
+from datetime import datetime
 try:
     import vlc
 except:
     pass
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import Receiver
 from openlp.plugins.media.lib import MediaController, MediaState
+
+log = logging.getLogger(__name__)
 
 class VlcController(MediaController):
     """
@@ -52,6 +57,17 @@ class VlcController(MediaController):
         display.vlcWidget.resize(display.size())
         display.vlcWidget.raise_()
         display.vlcWidget.hide()
+        # the media player has to be 'connected' to the QFrame
+        # (otherwise a video would be displayed in it's own window)
+        # this is platform specific!
+        # you have to give the id of the QFrame (or similar object) to
+        # vlc, different platforms have different functions for this
+        if sys.platform == "linux2": # for Linux using the X Server
+            display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
+        elif sys.platform == "win32": # for Windows
+            display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
+        elif sys.platform == "darwin": # for MacOS
+            display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
         self.hasOwnWidget = True
 
     @staticmethod
@@ -80,29 +96,31 @@ class VlcController(MediaController):
             u'video/x-ms-wmv': [u'.wmv']}
 
     def load(self, display, path, volume):
-        print "load vid in Vlc Controller"
+        log.debug(u'load vid in Vlc Controller')
         vol = float(volume) / float(10)
-
         # create the media
-        #display.vlcMedia = display.vlcInstance.media_new(unicode(path))
         display.vlcMedia = display.vlcInstance.media_new_path(unicode(path))
         # put the media in the media player
         display.vlcMediaPlayer.set_media(display.vlcMedia)
-
         # parse the metadata of the file
         display.vlcMedia.parse()
+        if not self.mediaStateWait(display):
+            return False
+        return True
 
-        # the media player has to be 'connected' to the QFrame
-        # (otherwise a video would be displayed in it's own window)
-        # this is platform specific!
-        # you have to give the id of the QFrame (or similar object) to
-        # vlc, different platforms have different functions for this
-        if sys.platform == "linux2": # for Linux using the X Server
-            display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
-        elif sys.platform == "win32": # for Windows
-            display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
-        elif sys.platform == "darwin": # for MacOS
-            display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
+    def mediaStateWait(self, display):
+        """
+        Wait for the video to change its state
+        Wait no longer than 5 seconds.
+        """
+        start = datetime.now()
+        while not display.vlcMedia.is_parsed():
+            if display.vlcMedia.get_state() == vlc.State.Error:
+                return False
+            Receiver.send_message(u'openlp_process_events')
+            if (datetime.now() - start).seconds > 5:
+                return False
+        return True
 
     def resize(self, display, controller):
         display.vlcWidget.resize(display.size())
@@ -133,7 +151,6 @@ class VlcController(MediaController):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
-        print display.vlcWidget.isVisible(), status
         if self.hasOwnWidget:
             display.vlcWidget.setVisible(status)
 

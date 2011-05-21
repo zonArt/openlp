@@ -35,7 +35,7 @@ class MediaBackends(object):
 class MediaState(object):
     """
     An enumeration for possible States of the Media Player
-    (copied from Phonon::State
+    (copied partially from Phonon::State)
     """
     Loading = 0
     Stopped = 1
@@ -50,54 +50,96 @@ class MediaController(object):
     """
     def __init__(self, parent):
         self.parent = parent
+        self.isActive = False
         self.state = MediaState.Off
         self.hasOwnWidget = False
 
     def setup(self, display):
+        """
+        Create the related widgets for the current display
+        """
         pass
 
     def load(self, display, path, volume):
-        pass
+        """
+        Load a new media file and check if it is valid
+        """
+        return True
 
     def resize(self, display, controller):
+        """
+        If the main display size or position is changed,
+        the media widgets should also resized
+        """
         pass
 
     def play(self, display):
+        """
+        Starts playing of current Media File
+        """
         pass
 
     def pause(self, display):
+        """
+        Pause of current Media File
+        """
         pass
 
     def stop(self, display):
+        """
+        Stop playing of current Media File
+        """
         pass
 
     def volume(self, display, vol):
+        """
+        Change volume of current Media File
+        """
         pass
 
     def seek(self, display, seekVal):
+        """
+        Change playing position of current Media File
+        """
         pass
 
     def reset(self, display):
+        """
+        Remove the current loaded video
+        """
         pass
 
     def set_visible(self, display, status):
+        """
+        Show/Hide the media widgets
+        """
         pass
 
     def update_ui(self, controller, display):
+        """
+        Do some ui related stuff
+        (e.g. update the seek slider)
+        """
         pass
 
     @staticmethod
     def is_available():
-        pass
+        """
+        Check availability of the related backend
+        """
+        return False
 
     def get_supported_file_types(self):
+        """
+        Returns the supported file types for
+        Audio
+        Video
+        Locations
+        """
         pass
 
 from mediaitem import MediaMediaItem
 from mediatab import MediaTab
 from mediacontroller import MediaManager
-from webkitcontroller import WebkitController
-#from phononcontroller import PhononController
-#from vlccontroller import VlcController
 
 __all__ = ['MediaMediaItem']
