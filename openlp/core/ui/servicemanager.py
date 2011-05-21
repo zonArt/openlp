@@ -286,8 +286,6 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'preview_add_service_item'), self.addServiceItem)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
             self.mainwindow.serviceSettingsSection + u'/service theme',

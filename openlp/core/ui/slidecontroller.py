@@ -1053,8 +1053,7 @@ class SlideController(QtGui.QWidget):
         """
         From the preview display request the Item to be added to service
         """
-        self.serviceItem.from_plugin = False
-        Receiver.send_message('preview_add_service_item',self.serviceItem)
+        self.parent.ServiceManagerContents.addServiceItem(self.serviceItem)
 
     def onGoLiveClick(self):
         """
