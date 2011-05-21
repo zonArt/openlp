@@ -219,14 +219,12 @@ window.OpenLP = {
         } 
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li><ul>").text(value[1]);
-              li.append($("<ul><li><a id=\"go-live\" href=\"#\">Go Live</a></li>" +
-                "<li><a id =\"add-service\" href=\"#\">Add To Service</a></li></ul>"));
-              li.find("a").attr("value", value[0]);
-              ul.append(li);
+              var item = $("<li>").text(value[1]);
+              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
+              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
+              item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
+              ul.append(item);
             });
-            ul.find("#go-live").click(OpenLP.goLive);
-            ul.find("#add-service").click(OpenLP.addToService);
         }
         ul.listview("refresh");
       }
