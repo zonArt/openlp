@@ -120,7 +120,7 @@ class MediaManagerItem(QtGui.QWidget):
  
     def requiredIcons(self):
         """
-        Tis method is called to define the icons for the plugin.
+        This method is called to define the icons for the plugin.
         It provides a default set and the plugin is able to override
         the if required.
         """
