@@ -110,6 +110,7 @@ class WowImport(SongImport):
                 self.title = file_name.rpartition(u'.')[0]
                 songData = open(file, 'rb')
                 if songData.read(19) != u'WoW File\nSong Words':
+                    self.log_error(file)
                     continue
                 # Seek to byte which stores number of blocks in the song
                 songData.seek(56)

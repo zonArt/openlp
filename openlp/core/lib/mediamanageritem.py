@@ -111,10 +111,14 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        self.autoSelectItem = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
-
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
+            self.setAutoSelectItem)
+ 
     def requiredIcons(self):
         """
         This method is called to define the icons for the plugin.
@@ -467,6 +471,9 @@ class MediaManagerItem(QtGui.QWidget):
                 if keepFocus:
                     self.listView.setFocus()
 
+    def setAutoSelectItem(self, itemToSelect=None):
+        self.autoSelectItem = itemToSelect
+
     def onLiveClick(self):
         """
         Send an item live by building a service item then adding that service
@@ -502,7 +509,7 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items.'))
+                    'You must select one or more items to add.'))
         else:
             # Is it posssible to process multiple list items to generate
             # multiple service items?

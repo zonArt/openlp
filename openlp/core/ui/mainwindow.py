@@ -229,6 +229,8 @@ class Ui_MainWindow(object):
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.updateThemeImages = base_action(mainWindow,
+            u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings, CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
@@ -292,6 +294,7 @@ class Ui_MainWindow(object):
             self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
+        add_actions(self.ToolsMenu, [self.updateThemeImages])
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
@@ -433,6 +436,11 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.updateThemeImages.setText(
+            translate('OpenLP.MainWindow', 'Update Theme Images'))
+        self.updateThemeImages.setStatusTip(
+            translate('OpenLP.MainWindow', 'Update the preview images for all '
+                'themes.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -505,6 +513,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.updateThemeImages,
+            QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.DisplayTagItem,
             QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -717,6 +727,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
 
+    def onUpdateThemeImages(self):
+        """
+        Updates the new theme preview images.
+        """
+        self.themeManagerContents.updatePreviewImages()
+
     def onDisplayTagItemClicked(self):
         """
         Show the Settings dialog
@@ -778,16 +794,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screenChanged(self):
         """
-        The screen has changed to so tell the displays to update_display
-        their locations
+        The screen has changed so we have to update components such as the
+        renderer.
         """
         log.debug(u'screenChanged')
+        Receiver.send_message(u'cursor_busy')
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.liveController.screenSizeChanged()
         self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
+        Receiver.send_message(u'cursor_normal')
 
     def closeEvent(self, event):
         """
