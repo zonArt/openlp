@@ -271,7 +271,7 @@ class ImpressDocument(PresentationDocument):
         else:
             thumbdirurl = uno.systemPathToFileUrl(self.get_temp_folder())
         props = []
-        props.append(self.create_property(u'FilterName', u'impress_jpg_Export'))
+        props.append(self.create_property(u'FilterName', u'impress_png_Export'))
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
