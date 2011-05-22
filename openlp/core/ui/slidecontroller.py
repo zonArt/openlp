@@ -935,7 +935,7 @@ class SlideController(QtGui.QWidget):
     def onSlideSelectedNextNoloop(self):
         self.onSlideSelectedNext(False)
 
-    def onSlideSelectedNext(self, loop=QtCore.QSettings().setValue('stop loop',  'stoploop')):
+    def onSlideSelectedNext(self, loop=(not QtCore.QSettings().value(u'enable slide loop', QtCore.QVariant(True)).toBool())):
         """
         Go to the next slide.
         """
@@ -959,7 +959,7 @@ class SlideController(QtGui.QWidget):
     def onSlideSelectedPreviousNoloop(self):
         self.onSlideSelectedPrevious(False)
 
-    def onSlideSelectedPrevious(self, loop=QtCore.QSettings().setValue('stop loop',  'stoploop')):
+    def onSlideSelectedPrevious(self, loop=(not QtCore.QSettings().value(u'enable slide loop', QtCore.QVariant(True)).toBool())):
         """
         Go to the previous slide.
         """
