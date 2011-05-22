@@ -111,6 +111,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        self.autoSelectItem = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)

@@ -62,7 +62,6 @@ class CustomMediaItem(MediaManagerItem):
         # which Custom is required.
         self.remoteCustom = -1
         self.manager = parent.manager
-        self.autoSelectItem = None
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()

@@ -73,7 +73,6 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        self.autoSelectItem = None
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
