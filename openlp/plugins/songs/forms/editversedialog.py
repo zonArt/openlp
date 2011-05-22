@@ -42,6 +42,10 @@ class Ui_EditVerseDialog(object):
         self.dialogLayout.addWidget(self.verseTextEdit)
         self.verseTypeLayout = QtGui.QHBoxLayout()
         self.verseTypeLayout.setObjectName(u'verseTypeLayout')
+        self.splitButton = QtGui.QPushButton(editVerseDialog)
+        self.splitButton.setIcon(build_icon(u':/general/general_add.png'))
+        self.splitButton.setObjectName(u'splitButton')
+        self.verseTypeLayout.addWidget(self.splitButton)
         self.verseTypeLabel = QtGui.QLabel(editVerseDialog)
         self.verseTypeLabel.setObjectName(u'verseTypeLabel')
         self.verseTypeLayout.addWidget(self.verseTypeLabel)
@@ -84,5 +88,7 @@ class Ui_EditVerseDialog(object):
             VerseType.TranslatedNames[VerseType.Ending])
         self.verseTypeComboBox.setItemText(VerseType.Other,
             VerseType.TranslatedNames[VerseType.Other])
+        self.splitButton.setText(
+            translate('SongsPlugin.EditVerseForm', '&Split'))
         self.insertButton.setText(
             translate('SongsPlugin.EditVerseForm', '&Insert'))
