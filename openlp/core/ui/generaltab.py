@@ -222,7 +222,7 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
         self.enableLoopCheckbox.setText(translate('OpenLP.GeneralTab',
-            'Enable slide loop'))
+            'enable slide loop'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Slide loop delay:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
@@ -320,7 +320,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'Enable slide loop',
+        settings.setValue(u'enable slide loop',
             QtCore.QVariant(self.enableLoopCheckbox.isChecked()))
         settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
