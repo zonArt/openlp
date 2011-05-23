@@ -272,7 +272,7 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox.setChecked(settings.value(u'show splash',
             QtCore.QVariant(True)).toBool())
         self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
-            QtCore.QVariant(True)).toBool())
+            QtCore.QVariant(False)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
         self.enableLoopCheckbox.setChecked(settings.value(u'enable slide loop',
