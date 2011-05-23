@@ -51,6 +51,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.contextMenu)
         QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'),
             self.onInsertButtonClicked)
+        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'),
+            self.onSplitButtonClicked)
         QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged)
@@ -68,6 +70,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         verse_tag = VerseType.translated_name(verse_tag)
         self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' %
             (verse_tag, verse_num))
+        self.verseTextEdit.setFocus()
+
+    def onSplitButtonClicked(self):
+        verse_type_index = self.verseTypeComboBox.currentIndex()
+        if self.verseTextEdit.textCursor().columnNumber() != 0:
+            self.verseTextEdit.insertPlainText(u'\n')
+        self.verseTextEdit.insertPlainText(u'[---]')
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
