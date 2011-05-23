@@ -695,6 +695,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
+            Receiver.send_message(u'songs_set_autoselect_item',
+                unicode(self.titleEdit.text()))
             Receiver.send_message(u'songs_load_list')
             QtGui.QDialog.accept(self)
 

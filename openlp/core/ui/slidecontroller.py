@@ -199,8 +199,7 @@ class SlideController(QtGui.QWidget):
                 'Start/Stop continuous loop'))
             self.addAction(self.toogleLoop)
             self.delaySpinBox = QtGui.QSpinBox()
-            self.delaySpinBox.setMinimum(1)
-            self.delaySpinBox.setMaximum(180)
+            self.delaySpinBox.setRange(1, 180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
@@ -211,6 +210,11 @@ class SlideController(QtGui.QWidget):
                 u'Go Live', u':/general/general_live.png',
                 translate('OpenLP.SlideController', 'Move to live'),
                 self.onGoLive)
+            self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
+                u'Add to Service', u':/general/general_add.png',
+                translate('OpenLP.SlideController', 'Add to Service'),
+                self.onPreviewAddToService)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
@@ -608,7 +612,7 @@ class SlideController(QtGui.QWidget):
                 if frame[u'verseTag']:
                     # These tags are already translated.
                     verse_def = frame[u'verseTag']
-                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
                     two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                     if self.isLive:
@@ -1045,12 +1049,26 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.edit_id)
 
+    def onPreviewAddToService(self):
+        """
+        From the preview display request the Item to be added to service
+        """
+        self.parent.ServiceManagerContents.addServiceItem(self.serviceItem)
+
     def onGoLiveClick(self):
         """
         triggered by clicking the Preview slide items
         """
         if QtCore.QSettings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
+            # Live and Preview have issues if we have video or presentations
+            # playing in both at the same time.
+            if self.serviceItem.is_command():
+                Receiver.send_message(u'%s_stop' %
+                    self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            if self.serviceItem.is_media():
+                self.onMediaClose()
             self.onGoLive()
 
     def onGoLive(self):

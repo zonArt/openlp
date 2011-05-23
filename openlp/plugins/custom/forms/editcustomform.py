@@ -65,6 +65,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.slideListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onEditButtonPressed)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
@@ -111,6 +114,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
+            Receiver.send_message(u'custom_set_autoselect_item',
+                self.customSlide.title)
             Receiver.send_message(u'custom_load_list')
             QtGui.QDialog.accept(self)
 

@@ -162,8 +162,10 @@ class Renderer(object):
             self.theme_data = self.theme_manager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
-        self.image_manager.add_image(self.theme_data.theme_name,
-            self.theme_data.background_filename)
+        # if No file do not update cache
+        if self.theme_data.background_filename:
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -186,10 +188,10 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
             self.image_manager.del_image(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
@@ -298,7 +300,7 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         self.page_shell = u'<html><head><style>' \
             u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))

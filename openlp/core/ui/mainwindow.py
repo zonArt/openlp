@@ -229,6 +229,8 @@ class Ui_MainWindow(object):
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.updateThemeImages = base_action(mainWindow,
+            u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings, CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
@@ -292,6 +294,7 @@ class Ui_MainWindow(object):
             self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
+        add_actions(self.ToolsMenu, [self.updateThemeImages])
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
@@ -433,6 +436,11 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.updateThemeImages.setText(
+            translate('OpenLP.MainWindow', 'Update Theme Images'))
+        self.updateThemeImages.setStatusTip(
+            translate('OpenLP.MainWindow', 'Update the preview images for all '
+                'themes.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -505,6 +513,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.updateThemeImages,
+            QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.DisplayTagItem,
             QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -615,11 +625,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        # On Windows, arguments contains the entire commandline
-        # So args[0]=='python' args[1]=='openlp.pyw'
-        # Therefore this approach is not going to work
-        # Bypass for now.
-        if len(self.arguments) and os.name != u'nt':
+        if len(self.arguments):
             args = []
             for a in self.arguments:
                 args.extend([a])
@@ -672,12 +678,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                          'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def onWarningMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
 
     def onInformationMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -713,6 +722,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
+
+    def onUpdateThemeImages(self):
+        """
+        Updates the new theme preview images.
+        """
+        self.themeManagerContents.updatePreviewImages()
 
     def onDisplayTagItemClicked(self):
         """
@@ -775,16 +790,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screenChanged(self):
         """
-        The screen has changed to so tell the displays to update_display
-        their locations
+        The screen has changed so we have to update components such as the
+        renderer.
         """
         log.debug(u'screenChanged')
+        Receiver.send_message(u'cursor_busy')
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.liveController.screenSizeChanged()
         self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
+        Receiver.send_message(u'cursor_normal')
 
     def closeEvent(self, event):
         """

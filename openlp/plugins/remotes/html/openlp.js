@@ -39,6 +39,19 @@ window.OpenLP = {
     }
     return $(targ);
   },
+  getSearchablePlugins: function (event) {
+    $.getJSON(
+      "/api/plugin/search",
+      function (data, status) {
+        var select = $("#search-plugin");
+        select.html("");
+        $.each(data.results.items, function (idx, value) {
+          select.append("<option value='" + value + "'>" + value + "</option>");
+        });
+        select.selectmenu("refresh");
+      }
+    );
+  },
   loadService: function (event) {
     $.getJSON(
       "/api/service/list",
@@ -63,7 +76,9 @@ window.OpenLP = {
         var ul = $("#slide-controller > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         for (idx in data.results.slides) {
-          var text = data.results.slides[idx]["text"];
+          var text = data.results.slides[idx]["tag"];
+          if (text != "") text = text + ": ";
+          text = text + data.results.slides[idx]["text"];
           text = text.replace(/\n/g, '<br />');
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(text));
@@ -189,6 +204,55 @@ window.OpenLP = {
       }
     );
     return false;
+  },
+  search: function (event) {
+    var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/search",
+      {"data": text},
+      function (data, status) {
+        var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
+        ul.html("");
+        if (data.results.items.length == 0) {
+          var li = $("<li data-icon=\"false\">").text('No results');
+          ul.append(li);
+        } 
+        else {
+            $.each(data.results.items, function (idx, value) {
+              var item = $("<li>").text(value[1]);
+              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
+              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
+              item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
+              ul.append(item);
+            });
+        }
+        ul.listview("refresh");
+      }
+    );
+    return false;
+  },
+  goLive: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/live",
+      {"data": text})
+    $.mobile.changePage("slide-controller");
+    return false;
+  },
+  addToService: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
+    return false;
   }
 }
 // Service Manager
@@ -207,7 +271,10 @@ $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
+// Search
+$("#search-submit").live("click", OpenLP.search);
 // Poll the server twice a second to get any updates.
+OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

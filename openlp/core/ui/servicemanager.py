@@ -36,7 +36,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
     ItemCapabilities, SettingsManager, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    context_menu_action, find_and_set_in_combo_box
+    context_menu_action, context_menu_separator, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -301,31 +301,34 @@ class ServiceManager(QtGui.QWidget):
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         # build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Edit Item'))
-        self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.maintainAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Reorder Item'))
-        self.maintainAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.notesAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Notes'))
-        self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
-        self.timeAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Start Time'))
-        self.timeAction.setIcon(build_icon(u':/media/media_time.png'))
-        self.deleteAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Delete From Service'))
-        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
-        self.sep1 = self.menu.addAction(u'')
-        self.sep1.setSeparator(True)
-        self.previewAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', 'Show &Preview'))
-        self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
-        self.liveAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', 'Show &Live'))
-        self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
-        self.sep2 = self.menu.addAction(u'')
-        self.sep2.setSeparator(True)
+        self.editAction = context_menu_action(
+            self.menu, u':/general/general_edit.png',
+            translate('OpenLP.ServiceManager', '&Edit Item'), self.remoteEdit)
+        self.maintainAction = context_menu_action(
+            self.menu, u':/general/general_edit.png',
+            translate('OpenLP.ServiceManager', '&Reorder Item'),
+            self.onServiceItemEditForm)
+        self.notesAction = context_menu_action(
+            self.menu, u':/services/service_notes.png',
+            translate('OpenLP.ServiceManager', '&Notes'),
+            self.onServiceItemNoteForm)
+        self.timeAction = context_menu_action(
+            self.menu, u':/media/media_time.png',
+            translate('OpenLP.ServiceManager', '&Start Time'),
+            self.onStartTimeForm)
+        self.deleteAction = context_menu_action(
+            self.menu, u':/general/general_delete.png',
+            translate('OpenLP.ServiceManager', '&Delete From Service'),
+            self.onDeleteFromService)
+        context_menu_separator(self.menu)
+        self.previewAction = context_menu_action(
+            self.menu, u':/general/general_preview.png',
+            translate('OpenLP.ServiceManager', 'Show &Preview'),
+            self.makePreview)
+        self.liveAction = context_menu_action(
+            self.menu, u':/general/general_live.png',
+            translate('OpenLP.ServiceManager', 'Show &Live'), self.makeLive)
+        context_menu_separator(self.menu)
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
@@ -675,20 +678,6 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem[u'service_item'].is_text():
             self.themeMenu.menuAction().setVisible(True)
         action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
-        if action == self.editAction:
-            self.remoteEdit()
-        elif action == self.maintainAction:
-            self.onServiceItemEditForm()
-        elif action == self.deleteAction:
-            self.onDeleteFromService()
-        elif action == self.notesAction:
-            self.onServiceItemNoteForm()
-        elif action == self.timeAction:
-            self.onStartTimeForm()
-        elif action == self.previewAction:
-            self.makePreview()
-        elif action == self.liveAction:
-            self.makeLive()
 
     def onServiceItemNoteForm(self):
         item = self.findServiceItem()[0]
@@ -768,7 +757,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by a signal to select a specific item.
         """
-        self.setItem(int(message[0]))
+        self.setItem(int(message))
 
     def setItem(self, index):
         """
@@ -840,7 +829,7 @@ class ServiceManager(QtGui.QWidget):
         correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        self.serviceItems[pos -1 ][u'expanded'] = False
+        self.serviceItems[pos - 1][u'expanded'] = False
 
     def onExpandAll(self):
         """
@@ -1288,9 +1277,8 @@ class ServiceManager(QtGui.QWidget):
         self.themeComboBox.addItem(u'')
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
-            action = context_menu_action(self.serviceManagerList, None, theme,
-                self.onThemeChangeAction, context=QtCore.Qt.WidgetShortcut)
-            self.themeMenu.addAction(action)
+            context_menu_action(self.themeMenu, None, theme,
+                self.onThemeChangeAction)
         find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         self.regenerateServiceItems()

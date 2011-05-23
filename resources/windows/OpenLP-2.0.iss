@@ -16,7 +16,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{AA7699FA-B2D2-43F4-8A70-D497D03C9485}
+AppID={{AA7699FA-B2D2-43F4-8A70-D497D03C9485}
 AppName={#AppName}
 AppVerName={#AppVerName}
 AppPublisher={#AppPublisher}
@@ -29,11 +29,12 @@ AllowNoIcons=true
 LicenseFile=LICENSE.txt
 OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
-Compression=lzma
+Compression=lzma/Max
 SolidCompression=true
 SetupIconFile=OpenLP.ico
 WizardImageFile=WizImageBig.bmp
 WizardSmallImageFile=WizImageSmall.bmp
+ChangesAssociations=true
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -69,7 +70,7 @@ Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
 Name: {group}\{#AppName} (Debug); Filename: {app}\{#AppExeName}; Parameters: -l debug
-Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm
+Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm; Check: FileExists(ExpandConstant('{app}\{#AppName}.chm'))
 Name: {group}\{cm:ProgramOnTheWeb,{#AppName}}; Filename: {#AppURL}
 Name: {group}\{cm:UninstallProgram,{#AppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#AppName}; Filename: {app}\{#AppExeName}; Tasks: desktopicon
@@ -79,6 +80,10 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
+Root: HKCR; Subkey: ".osz"; ValueType: string; ValueName: ""; ValueData: "OpenLP"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "OpenLP"; ValueType: string; ValueName: ""; ValueData: "OpenLP Service"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\OpenLP.exe,0"
+Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
 
 [Code]
 function GetUninstallString(): String;
