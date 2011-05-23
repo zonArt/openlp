@@ -231,7 +231,11 @@ class Renderer(object):
                     pages.extend(new_pages)
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
+                import time
+                import datetime
+                start = time.time()
                 pages = self._paginate_slide_words(text, line_break)
+                print unicode(datetime.timedelta(seconds=time.time() - start))
         return pages
 
     def _calculate_default(self, screen):
@@ -367,7 +371,7 @@ class Renderer(object):
 
         """
         log.debug(u'_paginate_slide_words - Start')
-        line_end = u''
+        line_end = u' '
         if line_break:
             line_end = u'<br>'
         formatted = []
@@ -375,6 +379,7 @@ class Renderer(object):
         previous_raw = u''
         lines = text.split(u'\n')
         for line in lines:
+            line = line.strip()
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
             self.web.setHtml(html)
@@ -402,24 +407,59 @@ class Renderer(object):
                             previous_html = styled_line + line_end
                             previous_raw = line + line_end
                             continue
-                words = self._words_split(line)
-                for word in words:
-                    styled_word = expand_tags(word)
-                    html = self.page_shell + previous_html + styled_word + \
-                        HTML_END
+                # Figure out how many words of the line will fit on screen.
+                # Instead of just looping of the list of words we follow a
+                # certain tactic, namely we try if the half of line fits. If it
+                # does we try if the half of the other half and the first half
+                # (75%) will still fit. In the case that the first half does not
+                # fit, we try if 25% will fit.
+                raw_words = self._words_split(line)
+                html_words = [expand_tags(word) for word in raw_words]
+                smallest_index = 0
+                highest_index = len(html_words) - 1
+                index = int(highest_index / 2)
+                while True:
+                    html = self.page_shell + previous_html + \
+                        u''.join(html_words[:index + 1]).strip() + HTML_END
                     self.web.setHtml(html)
-                    # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        while previous_raw.endswith(u'<br>'):
-                            previous_raw = previous_raw[:-4]
-                        formatted.append(previous_raw)
+                        # We know that it does not fit, so change/calculate the
+                        # new index and highest_index accordingly.
+                        highest_index = index
+                        index = int(index - (index - smallest_index) / 2)
+                    else:
+                        smallest_index = index
+                        index = int(index + (highest_index - index) / 2)
+                    # We found the number of words which will fit
+                    if smallest_index == index or highest_index == index:
+                        formatted.append(previous_raw.rstrip(u'<br>') +
+                            u''.join(raw_words[:index + 1]))
                         previous_html = u''
                         previous_raw = u''
-                    previous_html += styled_word
-                    previous_raw += word
-                previous_html += line_end
-                previous_raw += line_end
+                    else:
+                        continue
+                    # Check if the rest of the line fits on the slide. If it
+                    # does we do not have to do the much more intensive "word by
+                    # word" checking.
+                    html = self.page_shell + \
+                        u''.join(html_words[index + 1:]).strip() + HTML_END
+                    self.web.setHtml(html)
+                    if self.web_frame.contentsSize().height() <= \
+                        self.page_height:
+                        previous_html = \
+                            u''.join(html_words[index + 1:]).strip() + line_end
+                        previous_raw = \
+                            u''.join(raw_words[index + 1:]).strip() + line_end
+                        break
+                    else:
+                        # The other words do not fit, thus reset the indexes,
+                        # create a new list and continue with "word by word".
+                        raw_words = raw_words[index + 1:]
+                        html_words = html_words[index + 1:]
+                        smallest_index = 0
+                        highest_index = len(html_words) - 1
+                        index = int(highest_index / 2)
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
