@@ -232,7 +232,7 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         # Sort the songs by its title considering language specific characters.
         searchresults.sort(
-            cmp=locale.strcoll, key=operator.attrgetter('title').lower())
+            cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
