@@ -335,7 +335,7 @@ class Renderer(object):
             styled_text += styled_line
             html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
@@ -378,7 +378,7 @@ class Renderer(object):
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
@@ -426,7 +426,7 @@ class Renderer(object):
                     else:
                         smallest_index = index
                         index = int(index + (highest_index - index) / 2)
-                    # We found the number of words which will fit
+                    # We found the number of words which will fit.
                     if smallest_index == index or highest_index == index:
                         formatted.append(previous_raw.rstrip(u'<br>') +
                             u''.join(raw_words[:index + 1]))
