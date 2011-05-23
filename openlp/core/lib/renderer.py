@@ -231,11 +231,7 @@ class Renderer(object):
                     pages.extend(new_pages)
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-                import time
-                import datetime
-                start = time.time()
                 pages = self._paginate_slide_words(text, line_break)
-                print unicode(datetime.timedelta(seconds=time.time() - start))
         return pages
 
     def _calculate_default(self, screen):
