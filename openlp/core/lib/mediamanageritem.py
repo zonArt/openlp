@@ -28,6 +28,7 @@ Provides the generic functions for interfacing plugins with the Media Manager.
 """
 import logging
 import os
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -90,6 +91,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
         #TODO: plugin should not be the parent in future
         self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
@@ -102,16 +104,21 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.singleServiceItem = True
         self.quickPreviewAllowed = False
+        self.hasSearch = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        self.autoSelectItem = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
-
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
+            self.setAutoSelectItem)
+ 
     def requiredIcons(self):
         """
         This method is called to define the icons for the plugin.
@@ -464,6 +471,9 @@ class MediaManagerItem(QtGui.QWidget):
                 if keepFocus:
                     self.listView.setFocus()
 
+    def setAutoSelectItem(self, itemToSelect=None):
+        self.autoSelectItem = itemToSelect
+
     def onLiveClick(self):
         """
         Send an item live by building a service item then adding that service
@@ -474,11 +484,23 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(u'%s Live requested', self.plugin.name)
-            serviceItem = self.buildServiceItem()
-            if serviceItem:
+            self.goLive()
+
+    def goLive(self, item_id=None):
+        log.debug(u'%s Live requested', self.plugin.name)
+        item = None
+        if item_id:
+            item = self.createItemFromId(item_id)
+        serviceItem = self.buildServiceItem(item)
+        if serviceItem:
+            if not item_id:
                 serviceItem.from_plugin = True
-                self.parent.liveController.addServiceItem(serviceItem)
+            self.parent.liveController.addServiceItem(serviceItem)
+
+    def createItemFromId(self, item_id):
+        item = QtGui.QListWidgetItem()
+        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
+        return item
 
     def onAddClick(self):
         """
@@ -487,24 +509,24 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items.'))
+                    'You must select one or more items to add.'))
         else:
             # Is it posssible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
-                serviceItem = self.buildServiceItem(None, True)
-                if serviceItem:
-                    serviceItem.from_plugin = False
-                    self.parent.serviceManager.addServiceItem(serviceItem,
-                        replace=self.remoteTriggered)
+                self.addToService(replace=self.remoteTriggered)
             else:
                 items = self.listView.selectedIndexes()
                 for item in items:
-                    serviceItem = self.buildServiceItem(item, True)
-                    if serviceItem:
-                        serviceItem.from_plugin = False
-                        self.parent.serviceManager.addServiceItem(serviceItem)
+                    self.addToService(item)
+
+    def addToService(self, item=None, replace=None):
+        serviceItem = self.buildServiceItem(item, True)
+        if serviceItem:
+            serviceItem.from_plugin = False
+            self.parent.serviceManager.addServiceItem(serviceItem,
+                replace=replace)
 
     def onAddEditClick(self):
         """
@@ -586,3 +608,10 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def search(self, string):
+        """
+        Performs a plugin specific search for items containing ``string``
+        """
+        raise NotImplementedError(
+            u'Plugin.search needs to be defined by the plugin')

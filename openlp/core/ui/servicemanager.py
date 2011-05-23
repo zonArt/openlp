@@ -757,7 +757,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by a signal to select a specific item.
         """
-        self.setItem(int(message[0]))
+        self.setItem(int(message))
 
     def setItem(self, index):
         """

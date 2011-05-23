@@ -323,7 +323,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         This is probably the most used function. It retrieves the list of
         verses based on the user's query.
@@ -360,11 +360,12 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                critical_error_message_box(
-                    translate('BiblesPlugin', 'No Book Found'),
-                    translate('BiblesPlugin', 'No matching book '
-                    'could be found in this Bible. Check that you have '
-                    'spelled the name of the book correctly.'))
+                if show_error:
+                    critical_error_message_box(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching book '
+                        'could be found in this Bible. Check that you '
+                        'have spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):

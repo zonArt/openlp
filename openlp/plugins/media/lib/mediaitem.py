@@ -49,6 +49,7 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
+        self.hasSearch = True
         self.mediaObject = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
@@ -186,3 +187,14 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+
+    def search(self, string):
+        list = SettingsManager.load_list(self.settingsSection,
+            self.settingsSection)
+        results = []
+        string = string.lower()
+        for file in list:
+            filename = os.path.split(unicode(file))[1]
+            if filename.lower().find(string) > -1:
+                results.append([file, filename])
+        return results

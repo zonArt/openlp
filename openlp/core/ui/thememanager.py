@@ -660,6 +660,18 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        self.mainwindow.displayProgressBar(len(self.themelist))
+        for theme in self.themelist:
+            self.mainwindow.incrementProgressBar()
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        self.mainwindow.finishedProgressBar()
+        self.loadThemes()
+
     def generateImage(self, themeData, forcePage=False):
         """
         Call the renderer to build a Sample Image

@@ -123,7 +123,7 @@ except ImportError:
 
 from PyQt4 import QtCore, QtNetwork
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, PluginStatus
 from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation
 
@@ -250,7 +250,11 @@ class HttpConnection(object):
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show)$', self.display),
-            (r'^/api/alert$', self.alert)
+            (r'^/api/alert$', self.alert),
+            (r'^/api/plugin/(search)$', self.pluginInfo),
+            (r'^/api/(.*)/search$', self.search),
+            (r'^/api/(.*)/live$', self.go_live),
+            (r'^/api/(.*)/add$', self.add_to_service)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -409,8 +413,8 @@ class HttpConnection(object):
                         item[u'html'] = unicode(frame[u'html'])
                     else:
                         item[u'tag'] = unicode(index + 1)
-                        item[u'text'] = u''
-                        item[u'html'] = u''
+                        item[u'text'] = unicode(frame[u'title'])
+                        item[u'html'] = unicode(frame[u'title'])
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
@@ -442,6 +446,60 @@ class HttpConnection(object):
             Receiver.send_message(event)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
+
+    def pluginInfo(self, action):
+        """
+        Return plugin related information, based on the action
+
+        ``action`` - The action to perform
+            if 'search' return a list of plugin names which support search
+        """
+        if action == u'search':
+            searches = []
+            for plugin in self.parent.parent.pluginManager.plugins:
+                if plugin.status == PluginStatus.Active and \
+                    plugin.mediaItem and plugin.mediaItem.hasSearch:
+                    searches.append(plugin.name)
+            return HttpResponse(
+                json.dumps({u'results': {u'items': searches}}),
+                {u'Content-Type': u'application/json'})
+
+    def search(self, type):
+        """
+        Return a list of items that match the search text
+
+        ``type``
+        The plugin name to search in.
+        """
+        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and \
+            plugin.mediaItem and plugin.mediaItem.hasSearch:
+            results =plugin.mediaItem.search(text)
+        else:
+            results = []
+        return HttpResponse(
+            json.dumps({u'results': {u'items': results}}),
+            {u'Content-Type': u'application/json'})
+
+    def go_live(self, type):
+        """
+        Go live on an item of type ``type``.
+        """
+        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and plugin.mediaItem:
+            plugin.mediaItem.goLive(id)
+
+    def add_to_service(self, type):
+        """
+        Add item of type ``type`` to the end of the service
+        """
+        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        if plugin.status == PluginStatus.Active and plugin.mediaItem:
+            item_id = plugin.mediaItem.createItemFromId(id)
+            plugin.mediaItem.addToService(item_id)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code
