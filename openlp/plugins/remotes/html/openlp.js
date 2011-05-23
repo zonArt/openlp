@@ -219,10 +219,11 @@ window.OpenLP = {
         } 
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li data-icon=\"false\">").append(
-                $("<a href=\"#\">").attr("value", value[0]).text(value[1]));
-              li.children("a").click(OpenLP.goLive);
-              ul.append(li);
+              var item = $("<li>").text(value[1]);
+              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
+              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
+              item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
+              ul.append(item);
             });
         }
         ul.listview("refresh");
@@ -231,16 +232,28 @@ window.OpenLP = {
     return false;
   },
   goLive: function (event) {
-    var slide = OpenLP.getElement(event);
-    var id = slide.attr("value");
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
       {"data": text})
     $.mobile.changePage("slide-controller");
     return false;
+  },
+  addToService: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
+    return false;
   }
-
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
