@@ -46,7 +46,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version
+    get_application_version, DelayStartThread
 
 log = logging.getLogger()
 
@@ -85,10 +85,13 @@ class OpenLP(QtGui.QApplication):
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
-    def run(self):
+    def run(self, args):
         """
         Run the OpenLP application.
         """
+        # On Windows, the args passed into the constructor are
+        # ignored. Not very handy, so set the ones we want to use.
+        self.args = args
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -115,8 +118,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.clipboard(),
-            self.arguments())
+        self.mainWindow = MainWindow(self.clipboard(), self.args)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -130,6 +132,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
+        DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
     def isAlreadyRunning(self):
@@ -240,11 +243,17 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator = LanguageManager.get_translator(language)
-    app.installTranslator(appTranslator)
+    app_translator, default_translator = \
+        LanguageManager.get_translator(language)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit(app.run())
+    sys.exit(app.run(qt_args))
 
 if __name__ == u'__main__':
     """

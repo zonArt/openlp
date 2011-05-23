@@ -28,11 +28,11 @@ import logging
 
 from PyQt4 import QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
+from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
     ItemCapabilities
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay
+from openlp.core.ui import MainDisplay, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -52,33 +52,32 @@ class Renderer(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
-
-    ``theme_manager``
-        The ThemeManager instance, used to get the current theme details.
-
-    ``screens``
-        Contains information about the Screens.
-
-    ``screen_number``
-        Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, theme_manager, screens):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the render manager.
+
+    ``image_manager``
+        A ImageManager instance which takes care of e. g. caching and resizing
+        images.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
         """
         log.debug(u'Initilisation started')
-        self.screens = screens
-        self.image_manager = ImageManager()
-        self.display = MainDisplay(self, screens, False)
-        self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
+        self.image_manager = image_manager
+        self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
+        self.bg_frame = None
         self.force_page = False
+        self.display = MainDisplay(self, self.image_manager, False)
+        self.display.setup()
 
     def update_display(self):
         """
@@ -86,12 +85,10 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
-        self.display = MainDisplay(self, self.screens, False)
-        self.display.imageManager = self.image_manager
+        self.display = MainDisplay(self, self.image_manager, False)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
-        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -165,8 +162,10 @@ class Renderer(object):
             self.theme_data = self.theme_manager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
-        self.image_manager.add_image(self.theme_data.theme_name,
-            self.theme_data.background_filename)
+        # if No file do not update cache
+        if self.theme_data.background_filename:
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -189,10 +188,10 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
             self.image_manager.del_image(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
@@ -301,7 +300,7 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         self.page_shell = u'<html><head><style>' \
             u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))

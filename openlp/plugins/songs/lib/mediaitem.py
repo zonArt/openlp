@@ -26,7 +26,6 @@
 
 import logging
 import locale
-import re
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -72,8 +71,8 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
         self.quickPreviewAllowed = True
+        self.hasSearch = True
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -141,7 +140,7 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextButton.setText(UiStrings().Search)
         self.maintenanceAction.setText(SongStrings.SongMaintenance)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
-            'Maintain the lists of authors, topics and books'))
+            'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
@@ -171,11 +170,7 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
-            search_results = self.parent.manager.get_all_objects(Song,
-                or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'),
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.comments.like(u'%' + search_keywords.lower() + u'%')))
+            search_results = self.searchEntire(search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
@@ -197,8 +192,17 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords)
+                Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords) + u'%'))
             self.displayResultsSong(search_results)
+        self.check_search_result()
+
+    def searchEntire(self, search_keywords):
+        return self.parent.manager.get_all_objects(Song,
+            or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+            search_keywords.lower()) + u'%'),
+            Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+            Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
     def onSongListLoad(self):
         """
@@ -233,6 +237,9 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
+            # Auto-select the item if name has been set
+            if song.title == self.autoSelectItem :
+                self.listView.setCurrentItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -474,3 +481,13 @@ class SongMediaItem(MediaManagerItem):
         """
         return locale.strcoll(unicode(song_1.title.lower()),
              unicode(song_2.title.lower()))
+
+    def search(self, string):
+        """
+        Search for some songs
+        """
+        search_results = self.searchEntire(string)
+        results = []
+        for song in search_results:
+            results.append([song.id, song.title])
+        return results

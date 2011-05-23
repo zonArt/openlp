@@ -40,14 +40,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, screens, mainWindow, parent=None):
+    def __init__(self, mainWindow, parent=None):
         """
         Initialise the settings form
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.generalTab = GeneralTab(self, screens)
+        self.generalTab = GeneralTab(self)
         # Themes tab
         self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab

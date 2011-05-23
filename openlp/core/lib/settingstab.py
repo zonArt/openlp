@@ -50,7 +50,6 @@ class SettingsTab(QtGui.QWidget):
         self.setupUi()
         self.retranslateUi()
         self.initialise()
-        self.preLoad()
         self.load()
 
     def setupUi(self):
@@ -86,12 +85,6 @@ class SettingsTab(QtGui.QWidget):
         left_width = max(left_width, self.leftColumn.minimumSizeHint().width())
         self.leftColumn.setFixedWidth(left_width)
 
-    def preLoad(self):
-        """
-        Setup the tab's interface.
-        """
-        pass
-
     def retranslateUi(self):
         """
         Setup the interface translation strings.
@@ -118,9 +111,9 @@ class SettingsTab(QtGui.QWidget):
 
     def cancel(self):
         """
-        Reset any settings
+        Reset any settings if cancel pressed
         """
-        pass
+        self.load()
 
     def postSetUp(self, postUpdate=False):
         """

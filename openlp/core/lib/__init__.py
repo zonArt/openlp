@@ -37,6 +37,7 @@ log = logging.getLogger(__name__)
 
 base_html_expands = []
 
+# Hex Color tags from http://www.w3schools.com/html/html_colornames.asp
 base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
     u'start html': u'<span style="-webkit-text-fill-color:red">',
     u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
@@ -53,13 +54,13 @@ base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
     u'start html': u'<span style="-webkit-text-fill-color:green">',
     u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
     u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
+    u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
     u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
-    u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
+    u'start html': u'<span style="-webkit-text-fill-color:#800080">',
     u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
     u'start html': u'<span style="-webkit-text-fill-color:white">',
@@ -84,7 +85,8 @@ base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
     u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
 def translate(context, text, comment=None,
-    encoding=QtCore.QCoreApplication.CodecForTr, n=-1):
+    encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+    translate=QtCore.QCoreApplication.translate):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -101,8 +103,7 @@ def translate(context, text, comment=None,
         An identifying string for when the same text is used in different roles
         within the same context.
     """
-    return QtCore.QCoreApplication.translate(
-        context, text, comment, encoding, n)
+    return translate(context, text, comment, encoding, n)
 
 def get_text_file_string(text_file):
     """
@@ -276,7 +277,6 @@ from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
 from eventreceiver import Receiver
 from spelltextedit import SpellTextEdit
-from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
@@ -288,6 +288,7 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
+from imagemanager import ImageManager
 from renderer import Renderer
 from mediamanageritem import MediaManagerItem
 from openlp.core.utils.actions import ActionList

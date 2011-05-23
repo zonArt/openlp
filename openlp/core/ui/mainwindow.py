@@ -31,14 +31,14 @@ from tempfile import gettempdir
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    SettingsManager, PluginManager, Receiver, translate
+    PluginManager, Receiver, translate, ImageManager
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version
+    get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -69,8 +69,6 @@ class Ui_MainWindow(object):
         Set up the user interface
         """
         mainWindow.setObjectName(u'MainWindow')
-        mainWindow.resize(self.settingsmanager.width,
-            self.settingsmanager.height)
         mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-64x64.png'))
         mainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
@@ -86,10 +84,8 @@ class Ui_MainWindow(object):
         self.controlSplitter.setObjectName(u'controlSplitter')
         self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
-        self.previewController = SlideController(self, self.settingsmanager,
-            self.screens)
-        self.liveController = SlideController(self, self.settingsmanager,
-            self.screens, True)
+        self.previewController = SlideController(self)
+        self.liveController = SlideController(self, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
         self.previewController.panel.setVisible(previewVisible)
@@ -122,18 +118,21 @@ class Ui_MainWindow(object):
         self.HelpMenu = QtGui.QMenu(self.MenuBar)
         self.HelpMenu.setObjectName(u'HelpMenu')
         mainWindow.setMenuBar(self.MenuBar)
-        self.StatusBar = QtGui.QStatusBar(mainWindow)
-        self.StatusBar.setObjectName(u'StatusBar')
-        mainWindow.setStatusBar(self.StatusBar)
-        self.DefaultThemeLabel = QtGui.QLabel(self.StatusBar)
-        self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
-        self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
+        self.statusBar = QtGui.QStatusBar(mainWindow)
+        self.statusBar.setObjectName(u'statusBar')
+        mainWindow.setStatusBar(self.statusBar)
+        self.loadProgressBar = QtGui.QProgressBar(self.statusBar)
+        self.loadProgressBar.setObjectName(u'loadProgressBar')
+        self.statusBar.addPermanentWidget(self.loadProgressBar)
+        self.loadProgressBar.hide()
+        self.loadProgressBar.setValue(0)
+        self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
+        self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
+        self.statusBar.addPermanentWidget(self.defaultThemeLabel)
         # Create the MediaManager
         self.mediaManagerDock = OpenLPDockWidget(mainWindow,
             u'mediaManagerDock', u':/system/system_mediamanager.png')
         self.mediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
-        self.mediaManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_left)
         # Create the media toolbox
         self.MediaToolBox = QtGui.QToolBox(self.mediaManagerDock)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
@@ -143,8 +142,6 @@ class Ui_MainWindow(object):
         # Create the service manager
         self.serviceManagerDock = OpenLPDockWidget(mainWindow,
             u'serviceManagerDock', u':/system/system_servicemanager.png')
-        self.serviceManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_right)
         self.ServiceManagerContents = ServiceManager(mainWindow,
             self.serviceManagerDock)
         self.serviceManagerDock.setWidget(self.ServiceManagerContents)
@@ -153,8 +150,6 @@ class Ui_MainWindow(object):
         # Create the theme manager
         self.themeManagerDock = OpenLPDockWidget(mainWindow,
             u'themeManagerDock', u':/system/system_thememanager.png')
-        self.themeManagerDock.setMinimumWidth(
-            self.settingsmanager.mainwindow_right)
         self.themeManagerContents = ThemeManager(mainWindow,
             self.themeManagerDock)
         self.themeManagerContents.setObjectName(u'themeManagerContents')
@@ -234,6 +229,8 @@ class Ui_MainWindow(object):
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.updateThemeImages = base_action(mainWindow,
+            u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings, CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
@@ -297,6 +294,7 @@ class Ui_MainWindow(object):
             self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
+        add_actions(self.ToolsMenu, [self.updateThemeImages])
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
@@ -438,6 +436,11 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.updateThemeImages.setText(
+            translate('OpenLP.MainWindow', 'Update Theme Images'))
+        self.updateThemeImages.setStatusTip(
+            translate('OpenLP.MainWindow', 'Update the preview images for all '
+                'themes.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -456,13 +459,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, screens, clipboard, arguments):
+    def __init__(self, clipboard, arguments):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.screens = screens
         self.clipboard = clipboard
         self.arguments = arguments
         # Set up settings sections for the main application
@@ -472,9 +474,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
-        self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self)
-        self.settingsForm = SettingsForm(self.screens, self, self)
+        self.settingsForm = SettingsForm(self, self)
         self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
@@ -482,6 +483,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
+        self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -511,6 +513,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.updateThemeImages,
+            QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.DisplayTagItem,
             QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -547,8 +551,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(
-            self.themeManagerContents, self.screens)
+        self.renderer = Renderer(self.image_manager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -580,6 +583,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
+        # Create the displays as all necessary components are loaded.
+        self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
@@ -619,11 +625,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        # On Windows, arguments contains the entire commandline
-        # So args[0]=='python' args[1]=='openlp.pyw'
-        # Therefore this approach is not going to work
-        # Bypass for now.
-        if len(self.arguments) and os.name != u'nt':
+        if len(self.arguments):
             args = []
             for a in self.arguments:
                 args.extend([a])
@@ -652,8 +654,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        if not os.path.exists(temp_dir):
+            return
         for filename in os.listdir(temp_dir):
-            os.remove(os.path.join(temp_dir, filename))
+            delete_file(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)
 
     def blankCheck(self):
@@ -674,12 +678,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                          'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def onWarningMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
 
     def onInformationMessage(self, data):
+        Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -715,6 +722,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
+
+    def onUpdateThemeImages(self):
+        """
+        Updates the new theme preview images.
+        """
+        self.themeManagerContents.updatePreviewImages()
 
     def onDisplayTagItemClicked(self):
         """
@@ -777,13 +790,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screenChanged(self):
         """
-        The screen has changed to so tell the displays to update_display
-        their locations
+        The screen has changed so we have to update components such as the
+        renderer.
         """
         log.debug(u'screenChanged')
+        Receiver.send_message(u'cursor_busy')
+        self.image_manager.update_display()
         self.renderer.update_display()
+        self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
+        Receiver.send_message(u'cursor_normal')
 
     def closeEvent(self, event):
         """
@@ -880,10 +898,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
-        self.StatusBar.showMessage(message)
+        self.statusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
-        self.DefaultThemeLabel.setText(
+        self.defaultThemeLabel.setText(
             unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
                 theme)
 
@@ -979,7 +997,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             for fileId, filename in enumerate(recentFilesToDisplay):
                 log.debug('Recent file name: %s', filename)
                 action =  base_action(self, u'')
-                action.setText(u'&%d %s' % 
+                action.setText(u'&%d %s' %
                     (fileId + 1, QtCore.QFileInfo(filename).fileName()))
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
@@ -1008,3 +1026,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()
+
+    def displayProgressBar(self, size):
+        """
+        Make Progress bar visible and set size
+        """
+        self.loadProgressBar.show()
+        self.loadProgressBar.setMaximum(size)
+        self.loadProgressBar.setValue(0)
+        Receiver.send_message(u'openlp_process_events')
+
+    def incrementProgressBar(self):
+        """
+        Increase the Progress Bar value by 1
+        """
+        self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
+        Receiver.send_message(u'openlp_process_events')
+
+    def finishedProgressBar(self):
+        """
+        Trigger it's removal after 2.5 second
+        """
+        self.timer_id = self.startTimer(2500)
+
+    def timerEvent(self, event):
+        """
+        Remove the Progress bar from view.
+        """
+        if event.timerId() == self.timer_id:
+            self.timer_id = 0
+            self.loadProgressBar.hide()
+            Receiver.send_message(u'openlp_process_events')
