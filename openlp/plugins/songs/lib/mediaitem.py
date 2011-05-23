@@ -26,7 +26,6 @@
 
 import logging
 import locale
-import operator
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
