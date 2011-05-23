@@ -229,7 +229,8 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
-        searchresults.sort(cmp=self.collateSongTitles)
+        searchresults.sort(key=lambda song: unicode(song.title),
+            cmp=locale.strcoll)
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
@@ -474,13 +475,6 @@ class SongMediaItem(MediaManagerItem):
         if editId:
             Receiver.send_message(u'service_item_update',
                 u'%s:%s' % (editId, item._uuid))
-
-    def collateSongTitles(self, song_1, song_2):
-        """
-        Locale aware collation of song titles
-        """
-        return locale.strcoll(unicode(song_1.title.lower()),
-             unicode(song_2.title.lower()))
 
     def search(self, string):
         """
