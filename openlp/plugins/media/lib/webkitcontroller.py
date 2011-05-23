@@ -42,13 +42,33 @@ class WebkitController(MediaController):
         MediaController.__init__(self, parent)
         self.parent = parent
         self.isFlash = False
-        self.additional_extensions = {
-            u'video/shockwave': [u'.swf']}
+        self.canBackground = True
+        self.video_extensions_list = [
+             u'*.3gp'
+            , u'*.3gpp'
+            , u'*.3g2'
+            , u'*.3gpp2'
+            , u'*.aac'
+            , u'*.flv'
+            , u'*.f4a'
+            , u'*.f4b'
+            , u'*.f4p'
+            , u'*.f4v'
+            , u'*.mov'
+            , u'*.m4a'
+            , u'*.m4b'
+            , u'*.m4p'
+            , u'*.m4v'
+            , u'*.mkv'
+            , u'*.mp4'
+            , u'*.mp3'
+            , u'*.ogg'
+            , u'*.ogv'
+            , u'*.webm'
+            , u'*.swf', u'*.mpg', u'*.wmv'
+        ]
 
-    def setup(self, display):
-#        if display == self.parent.previewController.previewDisplay or \
-#            display == self.parent.liveController.previewDisplay:
-#            display.webView.resize(display.size())
+    def setup(self, display, hasAudio):
         display.webView.raise_()
         self.hasOwnWidget = False
 
@@ -57,21 +77,7 @@ class WebkitController(MediaController):
         return True
 
     def get_supported_file_types(self):
-        self.supported_file_types = ['avi']
-        self.additional_extensions = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-ms-wmv': [u'.wmv']}
+        pass
 
     def load(self, display, path, volume):
         log.debug(u'load vid in Webkit Controller')

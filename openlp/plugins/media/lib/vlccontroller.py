@@ -46,11 +46,37 @@ class VlcController(MediaController):
     def __init__(self, parent):
         MediaController.__init__(self, parent)
         self.parent = parent
+        self.video_extensions_list = [
+            u'*.3gp'
+            , u'*.asf', u'*.wmv'
+            , u'*.au'
+            , u'*.avi'
+            , u'*.flv'
+            , u'*.mov'
+            , u'*.mp4'
+            , u'*.ogm', u'*.ogg'
+            , u'*.mkv', u'*.mka'
+            , u'*.ts', u'*.mpg'
+            , u'*.mpg', u'*.mp3', u'*.mp2'
+            , u'*.nsc'
+            , u'*.nsv'
+            , u'*.nut'
+            , u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv'
+            , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
+            , u'*.tta', u'*.tac'
+            , u'*.ty'
+            , u'*.wav', u'*.dts'
+            , u'*.xa'
+            , u'*.iso'
+            ]
 
-    def setup(self, display):
+    def setup(self, display, hasAudio):
         display.vlcWidget = QtGui.QFrame(display)
         # creating a basic vlc instance
-        display.vlcInstance = vlc.Instance()
+        if hasAudio:
+            display.vlcInstance = vlc.Instance()
+        else:
+            display.vlcInstance = vlc.Instance('--no-audio')
         display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()

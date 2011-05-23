@@ -104,17 +104,28 @@ class MediaTab(SettingsTab):
 
     def onUsePhononCheckBoxChanged(self, check_state):
         if check_state == QtCore.Qt.Checked:
-            self.usePhonon = self.backendOrderlistWidget.count()
+            self.usePhonon = True
+            if u'Phonon' not in self.usedBackends:
+                self.usedBackends.append(u'Phonon')
         else:
-            self.usePhonon = -1
+            self.usePhonon = False
+            self.usedBackends.takeAt(self.usedBackends.indexOf(u'Phonon'))
         self.updateBackendList()
 
     def onUseVlcCheckBoxChanged(self, check_state):
         if check_state == QtCore.Qt.Checked:
-            self.useVlc = self.backendOrderlistWidget.count()
+            self.useVlc = True
+            if u'Vlc' not in self.usedBackends:
+                self.usedBackends.append(u'Vlc')
         else:
-            self.useVlc = -1
+            self.useVlc = False
+            self.usedBackends.takeAt(self.usedBackends.indexOf(u'Vlc'))
         self.updateBackendList()
+
+    def updateBackendList(self):
+        self.backendOrderlistWidget.clear()
+        for backend in self.usedBackends:
+            self.backendOrderlistWidget.addItem(backend)
 
     def onOrderingUpButtonPressed(self):
         currentRow = self.backendOrderlistWidget.currentRow()
@@ -122,7 +133,7 @@ class MediaTab(SettingsTab):
             item = self.backendOrderlistWidget.takeItem(currentRow)
             self.backendOrderlistWidget.insertItem(currentRow-1, item)
             self.backendOrderlistWidget.setCurrentRow(currentRow-1)
-            self.updateOrdering()
+            self.usedBackends.move(currentRow, currentRow-1)
 
     def onOrderingDownButtonPressed(self):
         currentRow = self.backendOrderlistWidget.currentRow()
@@ -130,60 +141,25 @@ class MediaTab(SettingsTab):
             item = self.backendOrderlistWidget.takeItem(currentRow)
             self.backendOrderlistWidget.insertItem(currentRow+1, item)
             self.backendOrderlistWidget.setCurrentRow(currentRow+1)
-            self.updateOrdering()
-
-    def updateOrdering(self):
-        for num in range (0, self.backendOrderlistWidget.count()):
-            item = self.backendOrderlistWidget.item(num)
-            if item.text == u'Webkit':
-                self.useWebkit = num
-            elif item.text == u'Phonon':
-                self.usePhonon = num
-            elif item.text == u'Vlc':
-                self.useVlc = num
-
-    def updateBackendList(self):
-        self.backendOrderlistWidget.clear()
-        for num in range(0, 3):
-            if self.useWebkit == num:
-                self.backendOrderlistWidget.addItem(u'Webkit')
-            elif self.usePhonon == num:
-                self.backendOrderlistWidget.addItem(u'Phonon')
-            elif self.useVlc == num:
-                self.backendOrderlistWidget.addItem(u'Vlc')
+            self.usedBackends.move(currentRow, currentRow+1)
 
     def load(self):
-        self.useWebkit = QtCore.QSettings().value(
-            self.settingsSection + u'/use webkit',
-            QtCore.QVariant(True)).toInt()[0]
-        self.usePhonon = QtCore.QSettings().value(
-            self.settingsSection + u'/use phonon',
-            QtCore.QVariant(True)).toInt()[0]
-        self.useVlc = QtCore.QSettings().value(
-            self.settingsSection + u'/use vlc',
-            QtCore.QVariant(True)).toInt()[0]
-        self.usePhononCheckBox.setChecked((self.usePhonon != -1))
-        self.useVlcCheckBox.setChecked((self.useVlc != -1))
+        self.usedBackends = QtCore.QSettings().value(
+            self.settingsSection + u'/backends',
+            QtCore.QVariant(u'Webkit')).toString().split(u',')
+        self.useWebkit = u'Webkit' in self.usedBackends
+        self.usePhonon = u'Phonon' in self.usedBackends
+        self.useVlc = u'Vlc' in self.usedBackends
+        self.usePhononCheckBox.setChecked(self.usePhonon)
+        self.useVlcCheckBox.setChecked(self.useVlc)
+        self.updateBackendList()
 
     def save(self):
-        changedValues = False
-        oldUseWebkit = QtCore.QSettings().value(
-            u'media/use webkit', QtCore.QVariant(True)).toInt()[0]
-        if oldUseWebkit != self.useWebkit:
-            QtCore.QSettings().setValue(self.settingsSection + u'/use webkit',
-                QtCore.QVariant(self.useWebkit))
-            changedValues = True
-        oldUsePhonon = QtCore.QSettings().value(
-            u'media/use phonon', QtCore.QVariant(True)).toInt()[0]
-        if oldUsePhonon != self.usePhonon:
-            QtCore.QSettings().setValue(self.settingsSection + u'/use phonon',
-                QtCore.QVariant(self.usePhonon))
-            changedValues = True
-        oldUseVlc = QtCore.QSettings().value(
-            u'media/use vlc', QtCore.QVariant(True)).toInt()[0]
-        if oldUseVlc != self.useVlc:
-            QtCore.QSettings().setValue(self.settingsSection + u'/use vlc',
-                QtCore.QVariant(self.useVlc))
-            changedValues = True
-        if changedValues:
+        oldBackendString = QtCore.QSettings().value(
+            self.settingsSection + u'/backends',
+            QtCore.QVariant(True)).toString()
+        newBackendString = self.usedBackends.join(u',')
+        if oldBackendString != newBackendString:
+            QtCore.QSettings().setValue(self.settingsSection + u'/backends',
+                QtCore.QVariant(newBackendString))
             Receiver.send_message(u'config_screen_changed')

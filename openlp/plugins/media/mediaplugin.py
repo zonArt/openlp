@@ -25,9 +25,6 @@
 ###############################################################################
 
 import logging
-import mimetypes
-
-from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab, MediaManager
@@ -45,52 +42,11 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.additional_extensions = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-ms-wmv': [u'.wmv']}
-        self.audio_extensions_list = []
-        self.video_extensions_list = []
-        mimetypes.init()
-        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
-            mimetype = unicode(mimetype)
-            if mimetype.startswith(u'audio/'):
-                self._addToList(self.audio_extensions_list, mimetype)
-            elif mimetype.startswith(u'video/'):
-                self._addToList(self.video_extensions_list, mimetype)
         self.mediaManager = MediaManager(self)
-
-    def _addToList(self, list, mimetype):
-        # Add all extensions which mimetypes provides us for supported types.
-        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
-        for extension in extensions:
-            ext = u'*%s' % extension
-            if ext not in list:
-                list.append(ext)
-                self.serviceManager.supportedSuffixes(extension[1:])
-        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
-            u' '.join(extensions)))
-        # Add extensions for this mimetype from self.additional_extensions.
-        # This hack clears mimetypes' and operating system's shortcomings
-        # by providing possibly missing extensions.
-        if mimetype in self.additional_extensions.keys():
-            for extension in self.additional_extensions[mimetype]:
-                ext = u'*%s' % extension
-                if ext not in list:
-                    list.append(ext)
-                    self.serviceManager.supportedSuffixes(extension[1:])
-            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
-                u' '.join(self.additional_extensions[mimetype])))
+        self.audio_extensions_list = \
+            self.mediaManager.get_audio_extensions_list()
+        self.video_extensions_list = \
+            self.mediaManager.get_video_extensions_list()
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

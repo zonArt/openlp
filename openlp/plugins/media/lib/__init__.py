@@ -51,10 +51,13 @@ class MediaController(object):
     def __init__(self, parent):
         self.parent = parent
         self.isActive = False
+        self.canBackground = False
         self.state = MediaState.Off
         self.hasOwnWidget = False
+        self.audio_extensions_list = []
+        self.video_extensions_list = []
 
-    def setup(self, display):
+    def setup(self, display, hasAudio):
         """
         Create the related widgets for the current display
         """

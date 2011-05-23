@@ -54,11 +54,11 @@ class MediaManager(object):
         self.curDisplayMediaController = {}
         #Create Backend Controllers
         if WebkitController.is_available():
-            self.backends['webkit'] = WebkitController(self)
+            self.backends[u'Webkit'] = WebkitController(self)
         if PhononController.is_available():
-            self.backends['phonon'] = PhononController(self)
+            self.backends[u'Phonon'] = PhononController(self)
         if VlcController.is_available():
-            self.backends['vlc'] = VlcController(self)
+            self.backends[u'Vlc'] = VlcController(self)
         #Timer for video state
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
@@ -117,21 +117,26 @@ class MediaManager(object):
         After a new display is configured, all media related widget
         will be created too
         """
+        hasAudio = True
         if not self.withLivePreview and \
             display == self.parent.liveController.previewDisplay:
             return
+        if display == self.parent.previewController.previewDisplay or \
+            display == self.parent.liveController.previewDisplay:
+            hasAudio = False
         for backend in self.backends.values():
-            backend.setup(display)
+            backend.setup(display, hasAudio)
 
     def resize(self, controller):
         """
         After Mainwindow changes or Splitter moved all related media
         widgets have to be resized
         """
-        pass
-        #TODO
-        #for display in self.curDisplayMediaController.keys():
-        #    self.curDisplayMediaController[display].resize(display, controller)
+        for display in self.curDisplayMediaController.keys():
+            if display == self.parent.previewController.previewDisplay or \
+               display == self.parent.liveController.previewDisplay:
+                display.resize(display.parent.slidePreview.size())
+        self.curDisplayMediaController[display].resize(display, controller)
 
     def video(self, msg):
         """
@@ -154,18 +159,23 @@ class MediaManager(object):
             if self.withLivePreview:
                 display = controller.previewDisplay
                 if self.check_file_type(display, videoPath, False):
+                    #check size of all media_widgets
+                    self.resize(controller)
                     self.curDisplayMediaController[display] \
                         .load(display, videoPath, volume)
             display = controller.display
             if self.check_file_type(display, videoPath, isBackground):
+                #check size of all media_widgets
+                self.resize(controller)
                 isValid = self.curDisplayMediaController[display] \
                     .load(display, videoPath, volume)
-            controller.display.webLoaded = True
         else:
             display = controller.previewDisplay
-            self.check_file_type(display, videoPath, isBackground)
-            isValid = self.curDisplayMediaController[display] \
-                .load(display, videoPath, volume)
+            if self.check_file_type(display, videoPath, isBackground):
+                #check size of all media_widgets
+                self.resize(controller)
+                isValid = self.curDisplayMediaController[display] \
+                    .load(display, videoPath, volume)
         if not isValid:
             #Media could not be loaded correctly
             critical_error_message_box(
@@ -173,10 +183,8 @@ class MediaManager(object):
                 unicode(translate('MediaPlugin.MediaItem',
                 'Unsupported File')))
             return
-        #check size of all media_widgets
-        self.resize(controller)
+#        controller.display.webLoaded = True
         #now start playing
-        print self.curDisplayMediaController[display]
         self.video_play(controller)
 
     def check_file_type(self, display, videoPath, isBackground):
@@ -184,20 +192,30 @@ class MediaManager(object):
         Used to choose the right media backend type
         from the prioritized backend list
         """
-        if videoPath.endswith(u'.swf') or isBackground:
-            self.curDisplayMediaController[display] = self.backends['webkit']
-        elif QtCore.QSettings().value(u'media/use webkit',
-            QtCore.QVariant(True)).toInt()[0] == 0:
-            self.curDisplayMediaController[display] = self.backends['webkit']
-        elif QtCore.QSettings().value(u'media/use vlc',
-            QtCore.QVariant(True)).toInt()[0] == 0:
-            self.curDisplayMediaController[display] = self.backends['vlc']
-        elif QtCore.QSettings().value(u'media/use phonon',
-            QtCore.QVariant(True)).toInt()[0] == 0:
-            self.curDisplayMediaController[display] = self.backends['phonon']
-        else:
-            return False
-        return True
+        usedBackends = QtCore.QSettings().value(u'media/backends',
+            QtCore.QVariant(u'Webkit')).toString().split(u',')
+        media_path = QtCore.QFileInfo(videoPath)
+        if media_path.isFile():
+            suffix = u'*.%s' % media_path.suffix()
+            for title in usedBackends:
+                backend = self.backends[str(title)]
+                if suffix in backend.video_extensions_list:
+                    if isBackground:
+                        if backend.canBackground:
+                            self.curDisplayMediaController[display] = backend
+                            return True
+                    else:
+                        self.curDisplayMediaController[display] = backend
+                        return True
+        return False
+#        # Special FileType Check
+#        if videoPath.endswith(u'.swf') or isBackground:
+#            self.curDisplayMediaController[display] = self.backends[u'Webkit']
+#        else:
+#            # search extension in available backends
+#            # currently only use the first available backend
+#            self.curDisplayMediaController[display] = self.backends[str(usedBackends[0])]
+#        return True
 
     def video_play(self, controller):
         """
@@ -324,3 +342,19 @@ class MediaManager(object):
                         self.curDisplayMediaController[display].play(display)
                         self.curDisplayMediaController[display] \
                             .set_visible(display, True)
+
+    def get_audio_extensions_list(self):
+        audio_list = []
+        for backend in self.backends.values():
+            for item in backend.audio_extensions_list:
+                if not item in audio_list:
+                    audio_list.append(item)
+        return audio_list
+
+    def get_video_extensions_list(self):
+        video_list = []
+        for backend in self.backends.values():
+            for item in backend.video_extensions_list:
+                if not item in video_list:
+                    video_list.append(item)
+        return video_list

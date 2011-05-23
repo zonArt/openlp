@@ -26,6 +26,7 @@
 ###############################################################################
 
 import logging
+import mimetypes
 from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
@@ -59,8 +60,37 @@ class PhononController(MediaController):
             u'video/x-matroska': [u'.mpv', u'.mkv'],
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
+        mimetypes.init()
+        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
+            mimetype = unicode(mimetype)
+            if mimetype.startswith(u'audio/'):
+                self._addToList(self.audio_extensions_list, mimetype)
+            elif mimetype.startswith(u'video/'):
+                self._addToList(self.video_extensions_list, mimetype)
 
-    def setup(self, display):
+    def _addToList(self, list, mimetype):
+        # Add all extensions which mimetypes provides us for supported types.
+        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
+        for extension in extensions:
+            ext = u'*%s' % extension
+            if ext not in list:
+                list.append(ext)
+                self.parent.parent.serviceManager.supportedSuffixes(extension[1:])
+        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
+            u' '.join(extensions)))
+        # Add extensions for this mimetype from self.additional_extensions.
+        # This hack clears mimetypes' and operating system's shortcomings
+        # by providing possibly missing extensions.
+        if mimetype in self.additional_extensions.keys():
+            for extension in self.additional_extensions[mimetype]:
+                ext = u'*%s' % extension
+                if ext not in list:
+                    list.append(ext)
+                    self.parent.parent.serviceManager.supportedSuffixes(extension[1:])
+            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
+                u' '.join(self.additional_extensions[mimetype])))
+
+    def setup(self, display, hasAudio):
         display.phononWidget = Phonon.VideoWidget(display)
         display.phononWidget.setVisible(False)
         display.phononWidget.resize(display.size())
