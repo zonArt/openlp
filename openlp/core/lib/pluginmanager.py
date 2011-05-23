@@ -211,3 +211,12 @@ class PluginManager(object):
             if plugin.isActive():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
+
+    def get_plugin_by_name(self, name):
+        """
+        Return the plugin which has a name with value ``name``
+        """
+        for plugin in self.plugins:
+            if plugin.name == name:
+                return plugin
+        return None

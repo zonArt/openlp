@@ -52,6 +52,13 @@ UPX
     http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
     add that directory to your PATH environment variable.
 
+Sphinx
+    This is used to build the documentation.  The documentation trunk must be at
+    the same directory level as Openlp trunk and named "documentation"
+
+HTML Help Workshop
+    This is used to create the help file
+
 PyInstaller
     PyInstaller should be a checkout of revision 844 of trunk, and in a
     directory called, "pyinstaller" on the same level as OpenLP's Bazaar shared
@@ -81,6 +88,10 @@ OpenLP
     shared repository directory. This means your code should be in a directory
     structure like this: "openlp\branch-name".
 
+Visual C++ 2008 Express Edition
+    This is to build pptviewlib.dll, the library for controlling the
+    PowerPointViewer
+
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
 
@@ -89,6 +100,7 @@ windows-builder.py
 import os
 import sys
 from shutil import copy
+from shutil import rmtree
 from subprocess import Popen, PIPE
 
 python_exe = sys.executable
@@ -98,10 +110,14 @@ sphinx_exe = os.path.join(os.path.split(python_exe)[0], u'Scripts',
     u'sphinx-build.exe')
 hhc_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'HTML Help Workshop',
     u'hhc.exe')
+vcbuild_exe = os.path.join(os.getenv(u'PROGRAMFILES'),
+    u'Microsoft Visual Studio 9.0', u'VC', u'vcpackages', u'vcbuild.exe')
 
 # Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
 branch_path = os.path.abspath(os.path.join(script_path, u'..'))
+doc_branch_path = os.path.abspath(os.path.join(script_path, u'..',
+    u'..', u'documentation'))
 site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
     u'site-packages')
 
@@ -113,12 +129,16 @@ i18n_utils = os.path.join(script_path, u'translation_utils.py')
 
 # Paths
 source_path = os.path.join(branch_path, u'openlp')
-manual_path = os.path.join(branch_path, u'documentation', u'manual')
+manual_path = os.path.join(doc_branch_path, u'manual')
+manual_build_path = os.path.join(manual_path, u'build')
+helpfile_path = os.path.join(manual_build_path, u'htmlhelp')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
+pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
+    u'lib', u'pptviewlib')
 
 def update_code():
     os.chdir(branch_path)
@@ -205,6 +225,12 @@ def copy_windows_files():
         os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(winres_path, u'LICENSE.txt'),
         os.path.join(dist_path, u'LICENSE.txt'))
+    if os.path.isfile(os.path.join(helpfile_path, u'Openlp.chm')):
+        print u'        Windows help file found'
+        copy(os.path.join(helpfile_path, u'Openlp.chm'),
+            os.path.join(dist_path, u'Openlp.chm'))
+    else:
+        print u'  WARNING ---- Windows help file not found ---- WARNING'
 
 def update_translations():
     print u'Updating translations...'
@@ -229,8 +255,19 @@ def compile_translations():
             code = lconvert.wait()
             if code != 0:
                 raise Exception('Error running lconvert on %s' % source_path)
+    print u'Copying qm files...'
+    source = os.path.join(site_packages, u'PyQt4', u'translations')
+    files = os.listdir(source)
+    for filename in files:
+        if filename.startswith(u'qt_') and filename.endswith(u'.qm') and \
+            len(filename) == 8:
+            copy(os.path.join(source, filename),
+                os.path.join(dist_path, u'i18n', filename))
 
 def run_sphinx():
+    print u'Deleting previous manual build...', manual_build_path
+    if os.path.exists(manual_build_path):
+        rmtree(manual_build_path)
     print u'Running Sphinx...'
     os.chdir(manual_path)
     sphinx = Popen((sphinx_exe, u'-b', u'htmlhelp', u'-d', u'build/doctrees',
@@ -243,7 +280,7 @@ def run_sphinx():
 
 def run_htmlhelp():
     print u'Running HTML Help Workshop...'
-    os.chdir(os.path.join(manual_path, u'build', u'htmlhelp'))
+    os.chdir(os.path.join(manual_build_path, u'htmlhelp'))
     hhc = Popen((hhc_exe, u'OpenLP.chm'), stdout=PIPE)
     output, error = hhc.communicate()
     code = hhc.wait()
@@ -251,9 +288,6 @@ def run_htmlhelp():
         print u'Exit code:', code
         print output
         raise Exception(u'Error running HTML Help Workshop')
-    else:
-        copy(os.path.join(manual_path, u'build', 'htmlhelp', u'OpenLP.chm'),
-            os.path.join(dist_path, u'OpenLP.chm'))
 
 def run_innosetup():
     print u'Running Inno Setup...'
@@ -264,26 +298,57 @@ def run_innosetup():
     if code != 0:
         raise Exception(u'Error running Inno Setup')
 
+def build_pptviewlib():
+    print u'Building PPTVIEWLIB.DLL...'
+    vcbuild = Popen((vcbuild_exe, u'/rebuild',
+        os.path.join(pptviewlib_path, u'pptviewlib.vcproj'), u'Release|Win32'))
+    code = vcbuild.wait()
+    if code != 0:
+        raise Exception(u'Error building pptviewlib.dll')
+    copy(os.path.join(pptviewlib_path, u'Release', u'pptviewlib.dll'),
+        pptviewlib_path)
+
 def main():
+    skip_update = False
     import sys
-    if len(sys.argv) > 1 and (sys.argv[1] == u'-v' or sys.argv[1] == u'--verbose'):
-       print "Script path:", script_path
-       print "Branch path:", branch_path
-       print "Source path:", source_path
-       print "\"dist\" path:", dist_path
-       print "PyInstaller:", pyi_build
-       print "Inno Setup path:", innosetup_path
-       print "Windows resources:", winres_path
-    update_code()
+    for arg in sys.argv:
+        if arg == u'-v' or arg == u'--verbose':
+            print "Script path:", script_path
+            print "Branch path:", branch_path
+            print "Source path:", source_path
+            print "\"dist\" path:", dist_path
+            print "PyInstaller:", pyi_build
+            print "Documentation branch path:", doc_branch_path
+            print "Help file build path;", helpfile_path
+            print "Inno Setup path:", innosetup_exe
+            print "Windows resources:", winres_path
+            print "VCBuild path:", vcbuild_exe
+            print "PPTVIEWLIB path:", pptviewlib_path
+        elif arg == u'--skip-update':
+            skip_update = True
+        elif arg == u'/?' or arg == u'-h' or arg == u'--help':
+            print u'Command options:'
+            print u' -v --verbose : More verbose output'
+            print u' --skip-update : Do not update or revert current branch'
+            exit()
+    if not skip_update:
+        update_code()
+    build_pptviewlib()
     run_pyinstaller()
     write_version_file()
     copy_enchant()
     copy_plugins()
+    if os.path.exists(manual_path):
+        run_sphinx()
+        run_htmlhelp()
+    else:
+        print u' '
+        print u'  WARNING ---- Documentation Trunk not found ---- WARNING'
+        print u'  --- Windows Help file will not be included in build ---'
+        print u' '
     copy_windows_files()
     update_translations()
     compile_translations()
-    run_sphinx()
-    run_htmlhelp()
     run_innosetup()
     print "Done."
 

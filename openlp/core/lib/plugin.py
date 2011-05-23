@@ -161,7 +161,7 @@ class Plugin(QtCore.QObject):
         self.log = logging.getLogger(self.name)
         self.previewController = plugin_helpers[u'preview']
         self.liveController = plugin_helpers[u'live']
-        self.renderManager = plugin_helpers[u'render']
+        self.renderer = plugin_helpers[u'renderer']
         self.serviceManager = plugin_helpers[u'service']
         self.settingsForm = plugin_helpers[u'settings form']
         self.mediadock = plugin_helpers[u'toolbox']

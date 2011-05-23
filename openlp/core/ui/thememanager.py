@@ -127,8 +127,8 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
-        QtCore.QObject.connect(self.themeListWidget,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem *)'),
+        QtCore.QObject.connect(self.themeListWidget, QtCore.SIGNAL(
+            u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'),
             self.checkListState)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
@@ -170,6 +170,8 @@ class ThemeManager(QtGui.QWidget):
         """
         If Default theme selected remove delete button.
         """
+        if item is None:
+            return
         realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         themeName = unicode(item.text())
         # If default theme restrict actions
@@ -658,9 +660,21 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        self.mainwindow.displayProgressBar(len(self.themelist))
+        for theme in self.themelist:
+            self.mainwindow.incrementProgressBar()
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        self.mainwindow.finishedProgressBar()
+        self.loadThemes()
+
     def generateImage(self, themeData, forcePage=False):
         """
-        Call the RenderManager to build a Sample Image
+        Call the renderer to build a Sample Image
 
         ``themeData``
             The theme to generated a preview for.
@@ -669,7 +683,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(
+        return self.mainwindow.renderer.generate_preview(
             themeData, forcePage)
 
     def getPreviewImage(self, theme):
@@ -748,7 +762,8 @@ class ThemeManager(QtGui.QWidget):
                             'Theme %s is used in the %s plugin.')) % \
                             (theme, plugin.name))
                         return False
-        return True
+            return True
+        return False
 
     def _migrateVersion122(self, xml_data):
         """
@@ -807,3 +822,4 @@ class ThemeManager(QtGui.QWidget):
         newtheme.display_horizontal_align = theme.HorizontalAlign
         newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()
+
