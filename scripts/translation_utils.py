@@ -291,7 +291,7 @@ def generate_binaries():
         run(u'lrelease openlp.pro')
         os.chdir(os.path.abspath(u'scripts'))
         src_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
-        dest_path = os.path.join(os.path.abspath(u'..'), u'openlp', u'i18n')
+        dest_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
         if not os.path.exists(dest_path):
             os.makedirs(dest_path)
         src_list = os.listdir(src_path)

@@ -223,11 +223,13 @@ class Ui_AboutDialog(object):
             translate('OpenLP.AboutForm', 'Credits'))
         copyright = translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2011 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2011 '
-            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
-            'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
-            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
-            'Tinggaard, Frode Woldsund')
+            'Portions copyright \xa9 2004-2011')
+        copyright = copyright + ' ' + ', '.join(developers)
+        copyright = copyright + ', ' + ', '.join(contributors)
+            #'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
+            #'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
+            #'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
+            #'Tinggaard, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

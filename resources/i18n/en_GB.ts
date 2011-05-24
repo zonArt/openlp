@@ -225,11 +225,6 @@ Do you want to continue anyway?</translation>
         <translation>&amp;Bible</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="95"/>
-        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display bible verses from different sources during the service.</source>
-        <translation>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display bible verses from different sources during the service.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="130"/>
         <source>Bible</source>
         <comment>name singular</comment>
@@ -290,6 +285,11 @@ Do you want to continue anyway?</translation>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Add the selected Bible to the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="95"/>
+        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -520,18 +520,6 @@ Changes do not affect verses already in the service.</translation>
         <translation>This Bible already exists. Please import a different Bible or first delete the existing one.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="695"/>
-        <source>Starting Registering bible...</source>
-        <translation>Starting Registering Bible...</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="758"/>
-        <source>Registered bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</source>
-        <translation>Registered Bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>Permissions:</source>
         <translation>Permissions:</translation>
@@ -575,6 +563,17 @@ demand and thus an internet connection is required.</translation>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="579"/>
         <source>openlp.org 1.x Bible Files</source>
         <translation>openlp.org 1.x Bible Files</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="695"/>
+        <source>Registering Bible...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="758"/>
+        <source>Registered Bible. Please note, that verses will be downloaded on
+demand and thus an internet connection is required.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1075,12 +1074,12 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
         <translation>Credits</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="616"/>
         <source>License</source>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="619"/>
         <source>Contribute</source>
         <translation>Contribute</translation>
     </message>
@@ -1090,12 +1089,12 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
         <translation> build %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="233"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; version 2 of the Licence.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="238"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</translation>
     </message>
@@ -1227,15 +1226,8 @@ Final Credit
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
         <source>Copyright &#xa9; 2004-2011 Raoul Snyman
-Portions copyright &#xa9; 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
-Meinert Jordan, Andreas Preikschat, Christian Richter, Philip
-Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten
-Tinggaard, Frode Woldsund</source>
-        <translation>Copyright © 2004-2011 Raoul Snyman
-Portions copyright © 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
-Meinert Jordan, Andreas Preikschat, Christian Richter, Philip
-Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten
-Tinggaard, Frode Woldsund</translation>
+Portions copyright &#xa9; 2004-2011 </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1584,77 +1576,72 @@ Version: %s
         <translation>Welcome to the First Time Wizard</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="202"/>
-        <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selection your initial options. </source>
-        <translation>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selecting your initial options.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
         <source>Activate required Plugins</source>
         <translation>Activate required Plugins</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>Select the Plugins you wish to use. </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Songs</source>
         <translation>Songs</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
         <source>Custom Text</source>
         <translation>Custom Text</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="212"/>
         <source>Bible</source>
         <translation>Bible</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
         <source>Images</source>
         <translation>Images</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="216"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Presentations</source>
         <translation>Presentations</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="220"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
         <source>Media (Audio and Video)</source>
         <translation>Media (Audio and Video)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="222"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>Allow remote access</source>
         <translation>Allow remote access</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Monitor Song Usage</source>
         <translation>Monitor Song Usage</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
         <source>Allow Alerts</source>
         <translation>Allow Alerts</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="227"/>
         <source>No Internet Connection</source>
         <translation>No Internet Connection</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
         <source>Unable to detect an Internet connection.</source>
         <translation>Unable to detect an Internet connection.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="232"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.
 
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
@@ -1667,69 +1654,74 @@ To re-run the First Time Wizard and import this sample data at a later stage, pr
 To cancel the First Time Wizard completely, press the finish button now.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Sample Songs</source>
         <translation>Sample Songs</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Select and download public domain songs.</source>
         <translation>Select and download public domain songs.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Sample Bibles</source>
         <translation>Sample Bibles</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Select and download free Bibles.</source>
         <translation>Select and download free Bibles.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Sample Themes</source>
         <translation>Sample Themes</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="251"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Select and download sample themes.</source>
         <translation>Select and download sample themes.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="253"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Default Settings</source>
         <translation>Default Settings</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="255"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>Set up default settings to be used by OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="257"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Setting Up And Importing</source>
         <translation>Setting Up And Importing</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="259"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Please wait while OpenLP is set up and your data is imported.</source>
         <translation>Please wait while OpenLP is set up and your data is imported.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
         <source>Default output display:</source>
         <translation>Default output display:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
         <source>Select default theme:</source>
         <translation>Select default theme:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
         <source>Starting configuration process...</source>
         <translation>Starting configuration process...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="202"/>
+        <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2104,62 +2096,62 @@ To cancel the First Time Wizard completely, press the finish button now.</transl
         <translation>&amp;Online Help</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>&amp;Web Site</source>
         <translation>&amp;Web Site</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
         <source>Use the system language, if available.</source>
         <translation>Use the system language, if available.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Set the interface language to %s</source>
         <translation>Set the interface language to %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
         <source>Add &amp;Tool...</source>
         <translation>Add &amp;Tool...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="432"/>
         <source>Add an application to the list of tools.</source>
         <translation>Add an application to the list of tools.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
         <source>&amp;Default</source>
         <translation>&amp;Default</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="446"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>Set the view mode back to the default.</source>
         <translation>Set the view mode back to the default.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>&amp;Setup</source>
         <translation>&amp;Setup</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
         <source>Set the view mode to Setup.</source>
         <translation>Set the view mode to Setup.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
         <source>&amp;Live</source>
         <translation>&amp;Live</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>Set the view mode to Live.</source>
         <translation>Set the view mode to Live.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="612"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="611"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -2167,22 +2159,22 @@ You can download the latest version from http://openlp.org/.</source>
 You can download the latest version from http://openlp.org/.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="616"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="615"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLP Version Updated</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="674"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="673"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLP Main Display Blanked</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="674"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="673"/>
         <source>The Main Display has been blanked out</source>
         <translation>The Main Display has been blanked out</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="904"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
         <source>Default Theme: %s</source>
         <translation>Default Theme: %s</translation>
     </message>
@@ -2198,12 +2190,12 @@ You can download the latest version from http://openlp.org/.</translation>
         <translation>Configure &amp;Shortcuts...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="825"/>
         <source>Close OpenLP</source>
         <translation>Close OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="825"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Are you sure you want to close OpenLP?</translation>
     </message>
@@ -2213,12 +2205,12 @@ You can download the latest version from http://openlp.org/.</translation>
         <translation>Print the current Service Order.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>Open &amp;Data Folder...</source>
         <translation>Open &amp;Data Folder...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="436"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>Open the folder where songs, Bibles and other data resides.</translation>
     </message>
@@ -2228,18 +2220,23 @@ You can download the latest version from http://openlp.org/.</translation>
         <translation>&amp;Configure Display Tags</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
         <source>&amp;Autodetect</source>
         <translation>&amp;Autodetect</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="438"/>
         <source>Update Theme Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
         <source>Update the preview images for all themes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4795,11 +4792,6 @@ The encoding is responsible for the correct character representation.</translati
         <translation>Select Directory</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="185"/>
-        <source>Select the directory you want the songs to be saved.</source>
-        <translation>Select the directory where you want the songs to be saved.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="188"/>
         <source>Directory:</source>
         <translation>Directory:</translation>
@@ -4843,6 +4835,11 @@ The encoding is responsible for the correct character representation.</translati
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="357"/>
         <source>Select Destination Folder</source>
         <translation>Select Destination Folder</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="185"/>
+        <source>Select the directory where you want the songs to be saved.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -225,11 +225,6 @@ Do you want to continue anyway?</source>
         <translation>聖書(&amp;B)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="95"/>
-        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display bible verses from different sources during the service.</source>
-        <translation>&lt;strong&gt;聖書プラグイン&lt;/strong&gt;&lt;br /&gt;聖書プラグインは、礼拝プログラムで様々な訳の御言葉を表示する機能を提供します。</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="130"/>
         <source>Bible</source>
         <comment>name singular</comment>
@@ -291,6 +286,11 @@ Do you want to continue anyway?</source>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="147"/>
         <source>Add the selected Bible to the service.</source>
         <translation>選択した聖書を礼拝プログラムに追加します。</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="95"/>
+        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -519,17 +519,6 @@ Changes do not affect verses already in the service.</source>
         <translation>聖書データの取り込みに失敗しました。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="695"/>
-        <source>Starting Registering bible...</source>
-        <translation>聖書を登録しています...</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="758"/>
-        <source>Registered bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</source>
-        <translation>聖書が登録されました。節ごとに必要に応じてダウンロードされますので、インターネットへの接続が要求される事を留意しておいてください。</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="425"/>
         <source>Permissions:</source>
         <translation>使用許可:</translation>
@@ -573,6 +562,17 @@ demand and thus an internet connection is required.</source>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="579"/>
         <source>openlp.org 1.x Bible Files</source>
         <translation>openlp.org 1x 聖書ファイル</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="695"/>
+        <source>Registering Bible...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="758"/>
+        <source>Registered Bible. Please note, that verses will be downloaded on
+demand and thus an internet connection is required.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1073,12 +1073,12 @@ OpenLPは、ボランティアの手により開発保守されています。�
         <translation>著作情報</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="616"/>
         <source>License</source>
         <translation>ライセンス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="619"/>
         <source>Contribute</source>
         <translation>貢献する</translation>
     </message>
@@ -1088,12 +1088,12 @@ OpenLPは、ボランティアの手により開発保守されています。�
         <translation> ビルド %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="233"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>このプログラムは、フリーソフトです。あなたは、これを再配布したり、the Free Software Foundationが発行したGNU General Public Licenseバージョン2の元で改変する事が出来ます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="238"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>このプログラムは、皆様のお役に立てると期待し、配布しています。しかし、完全に無保障である事を覚えて下さい。商品としての暗黙の保障としての商品適格性や特定の使用適合性もありません。詳しくは、以下の文をお読みください。</translation>
     </message>
@@ -1227,15 +1227,8 @@ Final Credit
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
         <source>Copyright &#xa9; 2004-2011 Raoul Snyman
-Portions copyright &#xa9; 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
-Meinert Jordan, Andreas Preikschat, Christian Richter, Philip
-Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten
-Tinggaard, Frode Woldsund</source>
-        <translation>Copyright © 2004-2011 Raoul Snyman
-Portions copyright © 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
-Meinert Jordan, Andreas Preikschat, Christian Richter, Philip
-Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten
-Tinggaard, Frode Woldsund</translation>
+Portions copyright &#xa9; 2004-2011 </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1584,77 +1577,72 @@ Version: %s
         <translation>初回起動ガイドへようこそ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="202"/>
-        <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selection your initial options. </source>
-        <translation>このガイドは、初回起動時に、OpenLPを設定するお手伝いをします。次へボタンを押下し、OpenLPを設定していきましょう。</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
         <source>Activate required Plugins</source>
         <translation>必要なプラグインを有効化する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>ご利用になるプラグインを選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Songs</source>
         <translation>賛美</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
         <source>Custom Text</source>
         <translation>カスタムテキスト</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="212"/>
         <source>Bible</source>
         <translation>聖書</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
         <source>Images</source>
         <translation>画像</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="216"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Presentations</source>
         <translation>プレゼンテーション</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="220"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
         <source>Media (Audio and Video)</source>
         <translation>メディア(音声と動画)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="222"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>Allow remote access</source>
         <translation>リモートアクセスを許可</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Monitor Song Usage</source>
         <translation>賛美利用記録</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
         <source>Allow Alerts</source>
         <translation>警告を許可</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="227"/>
         <source>No Internet Connection</source>
         <translation>インターネット接続が見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
         <source>Unable to detect an Internet connection.</source>
         <translation>インターネット接続が検知されませんでした。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="232"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.
 
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
@@ -1667,69 +1655,74 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 初回起動ガイドを完全にキャンセルする場合は、終了ボタンを押下してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Sample Songs</source>
         <translation>サンプル賛美</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Select and download public domain songs.</source>
         <translation>以下のキリスト教化において合法的に利用が可能な賛美を選択して下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Sample Bibles</source>
         <translation>サンプル聖書</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Select and download free Bibles.</source>
         <translation>以下のフリー聖書を選択する事でダウンロードできます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Sample Themes</source>
         <translation>サンプル外観テーマ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="251"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Select and download sample themes.</source>
         <translation>サンプル外観テーマを選択して、ダウンロードして下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="253"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Default Settings</source>
         <translation>既定設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="255"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>既定設定がOpenLPに使われるようにセットアップします。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="257"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Setting Up And Importing</source>
         <translation>セットアップとインポート中</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="259"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Please wait while OpenLP is set up and your data is imported.</source>
         <translation>OpenLPがセットアップされ、あなたのデータがインポートされるまでお待ち下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
         <source>Default output display:</source>
         <translation>既定出力先:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
         <source>Select default theme:</source>
         <translation>既定外観テーマを選択:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
         <source>Starting configuration process...</source>
         <translation>設定処理を開始しています...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="202"/>
+        <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2104,62 +2097,62 @@ To cancel the First Time Wizard completely, press the finish button now.</source
         <translation>オンラインヘルプ(&amp;O)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>&amp;Web Site</source>
         <translation>ウェブサイト(&amp;W)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
         <source>Use the system language, if available.</source>
         <translation>システム言語を可能であれば使用します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Set the interface language to %s</source>
         <translation>インターフェイス言語を%sに設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
         <source>Add &amp;Tool...</source>
         <translation>ツールの追加(&amp;T)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="432"/>
         <source>Add an application to the list of tools.</source>
         <translation>ツールの一覧にアプリケーションを追加。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
         <source>&amp;Default</source>
         <translation>デフォルト(&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="446"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>Set the view mode back to the default.</source>
         <translation>表示モードを既定に戻す。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>&amp;Setup</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
         <source>Set the view mode to Setup.</source>
         <translation>ビューモードに設定します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
         <source>&amp;Live</source>
         <translation>ライブ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>Set the view mode to Live.</source>
         <translation>表示モードをライブにします。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="612"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="611"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -2168,22 +2161,22 @@ You can download the latest version from http://openlp.org/.</source>
 http://openlp.org/から最新版がダウンロード可能です。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="616"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="615"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLPのバージョンアップ完了</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="674"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="673"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLPのプライマリディスプレイがブランクです</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="674"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="673"/>
         <source>The Main Display has been blanked out</source>
         <translation>OpenLPのプライマリディスプレイがブランクになりました</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="904"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
         <source>Default Theme: %s</source>
         <translation>既定外観テーマ</translation>
     </message>
@@ -2199,12 +2192,12 @@ http://openlp.org/から最新版がダウンロード可能です。</translati
         <translation>ショートカットの設定(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="825"/>
         <source>Close OpenLP</source>
         <translation>OpenLPの終了</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="825"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>本当にOpenLPを終了してもよろしいですか?</translation>
     </message>
@@ -2219,28 +2212,33 @@ http://openlp.org/から最新版がダウンロード可能です。</translati
         <translation>表示タグを設定(&amp;C)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>Open &amp;Data Folder...</source>
         <translation>データフォルダを開く(&amp;D)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="436"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>賛美、聖書データなどのデータが含まれているフォルダを開く。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
         <source>&amp;Autodetect</source>
         <translation>自動検出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="438"/>
         <source>Update Theme Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
         <source>Update the preview images for all themes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4798,11 +4796,6 @@ The encoding is responsible for the correct character representation.</source>
         <translation>フォルダを選択して下さい</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="185"/>
-        <source>Select the directory you want the songs to be saved.</source>
-        <translation>賛美を保存するフォルダを選択して下さい。</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="188"/>
         <source>Directory:</source>
         <translation>フォルダ:</translation>
@@ -4841,6 +4834,11 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="357"/>
         <source>Select Destination Folder</source>
         <translation>出力先フォルダを選択して下さい</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="185"/>
+        <source>Select the directory where you want the songs to be saved.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
