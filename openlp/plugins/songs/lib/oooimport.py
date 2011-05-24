@@ -29,6 +29,7 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.utils import get_uno_command, get_uno_instance
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -64,7 +65,8 @@ class OooImport(SongImport):
         except NoConnectException as exc:
             self.log_error(
                 self.import_source[0],
-                u'Unable to connect to OpenOffice.org or LibreOffice')
+                translate('SongsPlugin.SongImport',
+                    u'Unable to open OpenOffice.org or LibreOffice'))
             log.error(exc)
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
