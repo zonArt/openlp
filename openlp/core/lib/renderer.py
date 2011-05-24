@@ -402,12 +402,8 @@ class Renderer(object):
                             previous_html = styled_line + line_end
                             previous_raw = line + line_end
                             continue
-                # Figure out how many words of the line will fit on screen.
-                # Instead of just looping of the list of words we follow a
-                # certain tactic, namely we try if the half of line fits. If it
-                # does we try if the half of the other half and the first half
-                # (75%) will still fit. In the case that the first half does not
-                # fit, we try if 25% will fit.
+                # Figure out how many words of the line will fit on screen by
+                # using the algorithm known as "binary chop".
                 raw_words = self._words_split(line)
                 html_words = [expand_tags(word) for word in raw_words]
                 smallest_index = 0
@@ -428,6 +424,7 @@ class Renderer(object):
                         index = int(index + (highest_index - index) / 2)
                     # We found the number of words which will fit.
                     if smallest_index == index or highest_index == index:
+                        index = smallest_index
                         formatted.append(previous_raw.rstrip(u'<br>') +
                             u''.join(raw_words[:index + 1]))
                         previous_html = u''
