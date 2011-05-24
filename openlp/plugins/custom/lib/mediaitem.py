@@ -137,7 +137,7 @@ class CustomMediaItem(MediaManagerItem):
     def loadList(self, custom_slides):
         self.listView.clear()
         # Sort the customs by its title considering language specific
-        # characters.
+        # characters. lower() is needed for windows!
         custom_slides.sort(
             cmp=locale.strcoll, key=lambda custom: custom.title.lower())
         for custom_slide in custom_slides:

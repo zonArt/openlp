@@ -230,6 +230,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.listView.clear()
         # Sort the songs by its title considering language specific characters.
+        # lower() is needed for windows!
         searchresults.sort(
             cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
