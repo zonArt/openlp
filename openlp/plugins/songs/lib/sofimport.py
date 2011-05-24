@@ -30,10 +30,14 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
+import logging
 import os
 import re
 
 from oooimport import OooImport
+from com.sun.star.uno import RuntimeException
+
+log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     BOLD = 150.0
@@ -85,16 +89,18 @@ class SofImport(OooImport):
         """
         self.blanklines = 0
         self.new_song()
-        paragraphs = self.document.getText().createEnumeration()
-        while paragraphs.hasMoreElements():
-            if self.stop_import_flag:
-                return
-            paragraph = paragraphs.nextElement()
-            if paragraph.supportsService("com.sun.star.text.Paragraph"):
-                self.process_paragraph(paragraph)
-        if self.song:
-            self.finish()
-            self.song = False
+        try:
+            paragraphs = self.document.getText().createEnumeration()
+            while paragraphs.hasMoreElements():
+                if self.stop_import_flag:
+                    return
+                paragraph = paragraphs.nextElement()
+                if paragraph.supportsService("com.sun.star.text.Paragraph"):
+                    self.process_paragraph(paragraph)
+        except RuntimeException as exc:
+            log.exception(u'Error processing file: %s', exc)
+        if not self.finish():
+            self.log_error(self.filepath)
 
     def process_paragraph(self, paragraph):
         """
