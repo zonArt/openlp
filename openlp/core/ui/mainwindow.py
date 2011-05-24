@@ -415,9 +415,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
-        # Uncomment after 1.9.5 beta string freeze
-        #self.HelpOnlineHelpItem.setShortcut(
-        #    translate('OpenLP.MainWindow', 'F1'))
+        self.HelpOnlineHelpItem.setShortcut(
+            translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.LanguageGroup.actions():

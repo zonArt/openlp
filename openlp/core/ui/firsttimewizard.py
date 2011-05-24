@@ -201,8 +201,7 @@ class Ui_FirstTimeWizard(object):
             'Welcome to the First Time Wizard'))
         self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
             'This wizard will help you to configure OpenLP for initial use.'
-            ' Click the next button below to start the process of selection '
-            'your initial options. '))
+            ' Click the next button below to start.'))
         self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Activate required Plugins'))
         self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard',

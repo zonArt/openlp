@@ -184,7 +184,7 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
         self.exportSongPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-            'Select the directory you want the songs to be saved.'))
+            'Select the directory where you want the songs to be saved.'))
         self.directoryLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'Directory:'))
         self.progressPage.setTitle(

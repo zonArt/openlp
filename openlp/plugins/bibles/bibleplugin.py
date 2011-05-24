@@ -93,7 +93,7 @@ class BiblePlugin(Plugin):
 
     def about(self):
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
-            '<br />The Bible plugin provides the ability to display bible '
+            '<br />The Bible plugin provides the ability to display Bible '
             'verses from different sources during the service.')
         return about_text
 
