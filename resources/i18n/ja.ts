@@ -1051,17 +1051,17 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="221"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="223"/>
         <source>Credits</source>
         <translation>著作情報</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
         <source>License</source>
         <translation>ライセンス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="620"/>
         <source>Contribute</source>
         <translation>貢献する</translation>
     </message>
@@ -1071,17 +1071,17 @@ Do you want to add the other images anyway?</source>
         <translation> ビルド %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="234"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>このプログラムは、フリーソフトです。あなたは、これを再配布したり、the Free Software Foundationが発行したGNU General Public Licenseバージョン2の元で改変する事が出来ます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="239"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>このプログラムは、皆様のお役に立てると期待し、配布しています。しかし、完全に無保障である事を覚えて下さい。商品としての暗黙の保障としての商品適格性や特定の使用適合性もありません。詳しくは、以下の文をお読みください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="145"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="147"/>
         <source>Project Lead
     %s
 
@@ -1208,7 +1208,7 @@ Final Credit
     します。それは神が私たちをフリー(自由)にして下さった故です。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="92"/>
         <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
 OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if Impress, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
@@ -1219,7 +1219,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="226"/>
         <source>Copyright &#xa9; 2004-2011 %s
 Portions copyright &#xa9; 2004-2011 %s</source>
         <translation type="unfinished"></translation>

@@ -1052,17 +1052,17 @@ Voeg steeds die ander beelde by?</translation>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="221"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="223"/>
         <source>Credits</source>
         <translation>Krediete</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
         <source>License</source>
         <translation>Lisensie</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="620"/>
         <source>Contribute</source>
         <translation>Dra By</translation>
     </message>
@@ -1072,17 +1072,17 @@ Voeg steeds die ander beelde by?</translation>
         <translation>bou %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="234"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>Hierdie program is gratis sagteware; dit kan verspei en/of verander word onder die terme van die GNU Algemene Publieke Lisensie soos deur die Gratis Sagteware Vondasie gepubliseer is; weergawe 2 van die Lisensie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="239"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>Hierdie program word versprei in die hoop dat dit nuttig sal wees, maar SONDER ENIGE WAARBORG; sonder die geïmpliseerde waarborg van VERHANDELBAARHEID of GESKIKTHEID VIR &apos;N SPESIFIEKE DOEL. Sien hieronder vir meer inligting.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="145"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="147"/>
         <source>Project Lead
     %s
 
@@ -1208,7 +1208,7 @@ Finale Krediet
     Hy ons vry gemaak het.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="92"/>
         <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
 OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if Impress, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
@@ -1219,7 +1219,7 @@ OpenLP is written and maintained by volunteers. If you would like to see more fr
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="226"/>
         <source>Copyright &#xa9; 2004-2011 %s
 Portions copyright &#xa9; 2004-2011 %s</source>
         <translation type="unfinished"></translation>
