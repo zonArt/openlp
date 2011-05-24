@@ -95,6 +95,12 @@ Visual C++ 2008 Express Edition
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
 
+psvince.dll
+    This dll is used during the actual install of OpenLP to check if OpenLP is
+    running on the users machine prior to the setup.  If OpenLP is running,
+    the install will fail.  The dll can be obtained from here:
+    http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+
 """
 
 import os
