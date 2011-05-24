@@ -1052,34 +1052,17 @@ Voeg steeds die ander beelde by?</translation>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
-        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
-
-OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
-
-Find out more about OpenLP: http://openlp.org/
-
-OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
-        <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
-
-OpenLP is gratis kerk aanbieding sagteware of lirieke projeksie sagteware wat gebruik word vir die vertoning van liedere, Bybel verse, video&apos;s, beelde tot ook aanbiedings (as OpenOffice.org, PowerPoint of PowerPoint Viewer geïnstalleer is) vir kerklike aanbidding deur middel van &apos;n rekenaar en &apos;n data projektor.
-
-Vind meer uit oor OpenLP: http://openlp.org/
-
-OpenLP is geskryf en word onderhou deur vrywilligers. As u graag wil sien dat meer Christelike sagteware geskryf word, oorweeg dit asseblief om by te dra deur die knoppie hieronder te gebruik.</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="221"/>
         <source>Credits</source>
         <translation>Krediete</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="616"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
         <source>License</source>
         <translation>Lisensie</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="619"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
         <source>Contribute</source>
         <translation>Dra By</translation>
     </message>
@@ -1089,12 +1072,12 @@ OpenLP is geskryf en word onderhou deur vrywilligers. As u graag wil sien dat me
         <translation>bou %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="233"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>Hierdie program is gratis sagteware; dit kan verspei en/of verander word onder die terme van die GNU Algemene Publieke Lisensie soos deur die Gratis Sagteware Vondasie gepubliseer is; weergawe 2 van die Lisensie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="238"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>Hierdie program word versprei in die hoop dat dit nuttig sal wees, maar SONDER ENIGE WAARBORG; sonder die geïmpliseerde waarborg van VERHANDELBAARHEID of GESKIKTHEID VIR &apos;N SPESIFIEKE DOEL. Sien hieronder vir meer inligting.</translation>
     </message>
@@ -1225,9 +1208,20 @@ Finale Krediet
     Hy ons vry gemaak het.</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
+        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
+
+OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if Impress, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
+
+Find out more about OpenLP: http://openlp.org/
+
+OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
-        <source>Copyright &#xa9; 2004-2011 Raoul Snyman
-Portions copyright &#xa9; 2004-2011 </source>
+        <source>Copyright &#xa9; 2004-2011 %s
+Portions copyright &#xa9; 2004-2011 %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

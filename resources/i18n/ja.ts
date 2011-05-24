@@ -1051,34 +1051,17 @@ Do you want to add the other images anyway?</source>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
-        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
-
-OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
-
-Find out more about OpenLP: http://openlp.org/
-
-OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
-        <translation>OpenLPは、教会専用のフリー(無償及び利用に関して)のプレゼンテーション及び賛美詞投射ソフトウェアです。
-
-パソコンとプロジェクターを用いて、聖書箇所、画像また他プレゼンテーションデータ(OpenOffice.orgやPowerPoint/Viewerが必要)をスライド表示する事ができます。
-
-http://openlp.org/にて詳しくご紹介しております。
-
-OpenLPは、ボランティアの手により開発保守されています。もっと多くのクリスチャンの手によるフリーのソフトウェア開発に興味がある方は、以下のボタンからどうぞ。</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="221"/>
         <source>Credits</source>
         <translation>著作情報</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="616"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="614"/>
         <source>License</source>
         <translation>ライセンス</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="619"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="617"/>
         <source>Contribute</source>
         <translation>貢献する</translation>
     </message>
@@ -1088,12 +1071,12 @@ OpenLPは、ボランティアの手により開発保守されています。�
         <translation> ビルド %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="233"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="231"/>
         <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
         <translation>このプログラムは、フリーソフトです。あなたは、これを再配布したり、the Free Software Foundationが発行したGNU General Public Licenseバージョン2の元で改変する事が出来ます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="238"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="236"/>
         <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
         <translation>このプログラムは、皆様のお役に立てると期待し、配布しています。しかし、完全に無保障である事を覚えて下さい。商品としての暗黙の保障としての商品適格性や特定の使用適合性もありません。詳しくは、以下の文をお読みください。</translation>
     </message>
@@ -1225,9 +1208,20 @@ Final Credit
     します。それは神が私たちをフリー(自由)にして下さった故です。</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="91"/>
+        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
+
+OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if Impress, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
+
+Find out more about OpenLP: http://openlp.org/
+
+OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
-        <source>Copyright &#xa9; 2004-2011 Raoul Snyman
-Portions copyright &#xa9; 2004-2011 </source>
+        <source>Copyright &#xa9; 2004-2011 %s
+Portions copyright &#xa9; 2004-2011 %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
