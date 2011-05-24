@@ -96,9 +96,9 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
         self.settingsLayout.addRow(self.autoPreviewCheckBox)
-        self.enableLoopCheckbox = QtGui.QCheckBox(self.settingsGroupBox)
-        self.enableLoopCheckbox.setObjectName(u'enableLoopCheckbox')
-        self.settingsLayout.addRow(self.enableLoopCheckbox)
+        self.enableLoopCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
+        self.enableLoopCheckBox.setObjectName(u'enableLoopCheckBox')
+        self.settingsLayout.addRow(self.enableLoopCheckBox)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
         self.timeoutLabel.setObjectName(u'timeoutLabel')
@@ -221,8 +221,8 @@ class GeneralTab(SettingsTab):
             'Unblank display when adding new live item'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
-        self.enableLoopCheckbox.setText(translate('OpenLP.GeneralTab',
-            'enable slide loop'))
+        self.enableLoopCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Enable slide loop'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Slide loop delay:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
@@ -272,10 +272,10 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox.setChecked(settings.value(u'show splash',
             QtCore.QVariant(True)).toBool())
         self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
-            QtCore.QVariant(False)).toBool())
+            QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
-        self.enableLoopCheckbox.setChecked(settings.value(u'enable slide loop',
+        self.enableLoopCheckBox.setChecked(settings.value(u'enable slide loop',
             QtCore.QVariant(True)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
@@ -321,7 +321,7 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
         settings.setValue(u'enable slide loop',
-            QtCore.QVariant(self.enableLoopCheckbox.isChecked()))
+            QtCore.QVariant(self.enableLoopCheckBox.isChecked()))
         settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
         settings.setValue(u'ccli number',

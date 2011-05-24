@@ -924,11 +924,11 @@ class SlideController(QtGui.QWidget):
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
+
     def onSlideSelectedNext(self):
         """
         Go to the next slide.
         """
-        loopcheck = QtCore.QSettings().value( self.parent.generalSettingsSection + u'generalSettingsSection/enable slide loop', QtCore.QVariant(True).toBool)
         if not self.serviceItem:
             return
         Receiver.send_message(u'%s_next' % self.serviceItem.name.lower(),
@@ -938,17 +938,18 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if loopcheck == True:
+                if QtCore.QSettings().value(self.parent.generalSettingsSection
+                    + u'generalSettingsSection/enable slide loop', QtCore.QVariant(True).toBool):
                     row = 0
                 else:
                     return
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
+
     def onSlideSelectedPrevious(self):
         """
         Go to the previous slide.
         """
-        loopcheck =QtCore.QSettings().value( self.parent.generalSettingsSection + u'enable slide loop', QtCore.QVariant(True).toBool)
         if not self.serviceItem:
             return
         Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(),
@@ -958,7 +959,8 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if loopcheck == True:
+                if QtCore.QSettings().value(self.parent.generalSettingsSection
+                    + u'generalSettingsSection/enable slide loop', QtCore.QVariant(True).toBool):
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     return
