@@ -226,6 +226,8 @@ def copy_windows_files():
         os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(winres_path, u'LICENSE.txt'),
         os.path.join(dist_path, u'LICENSE.txt'))
+    copy(os.path.join(winres_path, u'psvince.dll'),
+        os.path.join(dist_path, u'psvince.dll'))
     if os.path.isfile(os.path.join(helpfile_path, u'Openlp.chm')):
         print u'        Windows help file found'
         copy(os.path.join(helpfile_path, u'Openlp.chm'),
