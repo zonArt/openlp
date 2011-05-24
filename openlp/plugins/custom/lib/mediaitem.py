@@ -140,6 +140,9 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(
                 QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
             self.listView.addItem(custom_name)
+            # Auto-select the item if name has been set
+            if customSlide.title == self.autoSelectItem :
+                self.listView.setCurrentItem(custom_name)
 
     def onNewClick(self):
         self.parent.edit_custom_form.loadCustom(0)

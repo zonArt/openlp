@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib import translate, SpellTextEdit, build_icon
 from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_CustomSlideEditDialog(object):
@@ -39,8 +39,14 @@ class Ui_CustomSlideEditDialog(object):
         self.dialogLayout.addWidget(self.slideTextEdit)
         self.buttonBox = create_accept_reject_button_box(customSlideEditDialog)
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
+        self.splitButton.setIcon(build_icon(u':/general/general_add.png'))
         self.splitButton.setObjectName(u'splitButton')
         self.buttonBox.addButton(self.splitButton,
+            QtGui.QDialogButtonBox.ActionRole)
+        self.insertButton = QtGui.QPushButton(customSlideEditDialog)
+        self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
+        self.insertButton.setObjectName(u'insertButton')
+        self.buttonBox.addButton(self.insertButton,
             QtGui.QDialogButtonBox.ActionRole)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
@@ -50,5 +56,10 @@ class Ui_CustomSlideEditDialog(object):
         self.splitButton.setText(
             translate('CustomPlugin.EditCustomForm', 'Split Slide'))
         self.splitButton.setToolTip(
+            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
+            'only if it does not fit on the screen as one slide.'))
+        self.insertButton.setText(
+            translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
+        self.insertButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
             'by inserting a slide splitter.'))

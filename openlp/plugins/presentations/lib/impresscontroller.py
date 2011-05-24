@@ -45,6 +45,7 @@ else:
     try:
         import uno
         from com.sun.star.beans import PropertyValue
+        from com.sun.star.task import ErrorCodeIOException
         uno_available = True
     except ImportError:
         uno_available = False
@@ -286,6 +287,9 @@ class ImpressDocument(PresentationDocument):
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
                 delete_file(path)
+            except ErrorCodeIOException, exception:
+                log.exception(u'ERROR! ErrorCodeIOException %d' %
+                    exception.ErrCode)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
