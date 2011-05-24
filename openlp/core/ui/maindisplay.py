@@ -405,7 +405,6 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         log.debug(u'showDisplay')
         self.frame.evaluateJavaScript('show_blank("show");')
-        print "showDisplay", self.isHidden()
         if self.isHidden():
             self.setVisible(True)
         self.hideMode = None

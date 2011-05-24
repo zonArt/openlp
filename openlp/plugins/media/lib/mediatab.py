@@ -38,26 +38,32 @@ class MediaTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.mediaLayoutWidget = QtGui.QWidget(self.leftColumn)
-        self.mediaBackendLayout = QtGui.QVBoxLayout(self.mediaLayoutWidget)
-        self.mediaBackendLayout.setObjectName(u'mediaBackendLayout')
-        self.mediaBackendsGroupBox = QtGui.QGroupBox(self.mediaLayoutWidget)
+        self.mediaBackendsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaBackendsGroupBox.setObjectName(u'mediaBackendsGroupBox')
-        self.mediaBackendsGroupLayout = QtGui.QVBoxLayout( \
-            self.mediaBackendsGroupBox)
-        self.mediaBackendsGroupLayout.setObjectName( \
-            u'mediaBackendsGroupLayout')
+        self.mediaBackendLayout = QtGui.QVBoxLayout(self.mediaBackendsGroupBox)
+        self.mediaBackendLayout.setObjectName(u'mediaBackendLayout')
         self.usePhononCheckBox = QtGui.QCheckBox(self.mediaBackendsGroupBox)
         self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaBackendsGroupLayout.addWidget(self.usePhononCheckBox)
+        self.mediaBackendLayout.addWidget(self.usePhononCheckBox)
         self.useVlcCheckBox = QtGui.QCheckBox(self.mediaBackendsGroupBox)
         self.useVlcCheckBox.setObjectName(u'useVlcCheckBox')
-        self.mediaBackendsGroupLayout.addWidget(self.useVlcCheckBox)
-        self.mediaBackendLayout.addWidget(self.mediaBackendsGroupBox)
-        self.backendOrderLabel = QtGui.QLabel(self.mediaLayoutWidget)
-        self.backendOrderLabel.setObjectName(u'backendOrderLabel')
-        self.mediaBackendLayout.addWidget(self.backendOrderLabel)
-        self.backendOrderlistWidget = QtGui.QListWidget(self.mediaLayoutWidget)
+        self.mediaBackendLayout.addWidget(self.useVlcCheckBox)
+        self.leftLayout.addWidget(self.mediaBackendsGroupBox)
+
+        self.backendOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.backendOrderGroupBox.setObjectName(u'backendOrderGroupBox')
+        self.backendOrderLayout = QtGui.QVBoxLayout(self.backendOrderGroupBox)
+        self.backendOrderLayout.setObjectName(u'backendOrderLayout')
+        self.backendOrderlistWidget = QtGui.QListWidget( \
+            self.backendOrderGroupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.backendOrderlistWidget. \
+            sizePolicy().hasHeightForWidth())
+        self.backendOrderlistWidget.setSizePolicy(sizePolicy)
+
         self.backendOrderlistWidget.setVerticalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAsNeeded)
         self.backendOrderlistWidget.setHorizontalScrollBarPolicy( \
@@ -65,18 +71,19 @@ class MediaTab(SettingsTab):
         self.backendOrderlistWidget.setEditTriggers( \
             QtGui.QAbstractItemView.NoEditTriggers)
         self.backendOrderlistWidget.setObjectName(u'backendOrderlistWidget')
-        self.mediaBackendLayout.addWidget(self.backendOrderlistWidget)
-        self.orderingButtonLayout = QtGui.QHBoxLayout()
+        self.backendOrderLayout.addWidget(self.backendOrderlistWidget)
+        self.orderingButtonsWidget = QtGui.QWidget(self.backendOrderGroupBox)
+        self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
+        self.orderingButtonLayout = QtGui.QHBoxLayout(self.orderingButtonsWidget)
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
-        self.orderingDownButton = QtGui.QPushButton(self.mediaLayoutWidget)
+        self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
         self.orderingDownButton.setObjectName(u'orderingDownButton')
         self.orderingButtonLayout.addWidget(self.orderingDownButton)
-        self.orderingUpButton = QtGui.QPushButton(self.mediaLayoutWidget)
+        self.orderingUpButton = QtGui.QPushButton(self.backendOrderGroupBox)
         self.orderingUpButton.setObjectName(u'orderingUpButton')
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
-        self.mediaBackendLayout.addLayout(self.orderingButtonLayout)
-
-        self.leftLayout.addWidget(self.mediaLayoutWidget)
+        self.backendOrderLayout.addWidget(self.orderingButtonsWidget)
+        self.leftLayout.addWidget(self.backendOrderGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.usePhononCheckBox,
@@ -91,12 +98,14 @@ class MediaTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
+        self.mediaBackendsGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Media Backends'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'use Phonon'))
         self.useVlcCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'use Vlc'))
-        self.backendOrderLabel.setText(
-            translate('MediaPlugin.MediaTab', 'Backend Order'))
+        self.backendOrderGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Backends Order'))
         self.orderingDownButton.setText(
             translate('MediaPlugin.MediaTab', 'Down'))
         self.orderingUpButton.setText(
@@ -157,7 +166,7 @@ class MediaTab(SettingsTab):
     def save(self):
         oldBackendString = QtCore.QSettings().value(
             self.settingsSection + u'/backends',
-            QtCore.QVariant(True)).toString()
+            QtCore.QVariant(u'Webkit')).toString()
         newBackendString = self.usedBackends.join(u',')
         if oldBackendString != newBackendString:
             QtCore.QSettings().setValue(self.settingsSection + u'/backends',

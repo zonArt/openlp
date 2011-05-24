@@ -152,30 +152,26 @@ class MediaManager(object):
         #stop running videos
         self.video_reset(controller)
         if controller.isLive:
-#            if isBackground:
-            # We are running a background theme
-            controller.display.override[u'theme'] = u''
-            controller.display.override[u'video'] = True
             if self.withLivePreview:
                 display = controller.previewDisplay
                 if self.check_file_type(display, videoPath, False):
                     #check size of all media_widgets
                     self.resize(controller)
                     self.curDisplayMediaController[display] \
-                        .load(display, videoPath, volume)
+                        .load(display, videoPath, volume, isBackground)
             display = controller.display
             if self.check_file_type(display, videoPath, isBackground):
                 #check size of all media_widgets
                 self.resize(controller)
                 isValid = self.curDisplayMediaController[display] \
-                    .load(display, videoPath, volume)
+                    .load(display, videoPath, volume, isBackground)
         else:
             display = controller.previewDisplay
             if self.check_file_type(display, videoPath, isBackground):
                 #check size of all media_widgets
                 self.resize(controller)
                 isValid = self.curDisplayMediaController[display] \
-                    .load(display, videoPath, volume)
+                    .load(display, videoPath, volume, isBackground)
         if not isValid:
             #Media could not be loaded correctly
             critical_error_message_box(

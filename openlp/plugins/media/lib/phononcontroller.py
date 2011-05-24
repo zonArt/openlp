@@ -126,7 +126,7 @@ class PhononController(MediaController):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
 
-    def load(self, display, path, volume):
+    def load(self, display, path, volume, isBackground):
         log.debug(u'load vid in Phonon Controller')
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
         if not self.mediaStateWait(display, Phonon.StoppedState):
@@ -185,14 +185,17 @@ class PhononController(MediaController):
 
     def update_ui(self, controller, display):
         controller.seekSlider.setMaximum(display.mediaObject.totalTime())
+        if display.serviceItem.end_time > 0:
+            if display.mediaObject.currentTime() > \
+                display.serviceItem.end_time:
+                self.stop(display)
+        if display.serviceItem.start_time > 0:
+            if display.mediaObject.currentTime() < \
+                display.serviceItem.start_time:
+                self.seek(display, self.serviceItem.start_time * 1000)
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition( \
                 display.mediaObject.currentTime())
-#        if newState == Phonon.Playing \
-#            and oldState != Phonon.Paused \
-#            and self.serviceItem.start_time > 0:
-#            # set start time in milliseconds
-#            self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
     def get_supported_file_types(self):
         pass

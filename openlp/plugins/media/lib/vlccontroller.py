@@ -121,7 +121,7 @@ class VlcController(MediaController):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
 
-    def load(self, display, path, volume):
+    def load(self, display, path, volume, isBackground):
         log.debug(u'load vid in Vlc Controller')
         vol = float(volume) / float(10)
         # create the media

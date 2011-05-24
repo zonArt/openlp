@@ -65,7 +65,7 @@ class WebkitController(MediaController):
             , u'*.ogg'
             , u'*.ogv'
             , u'*.webm'
-            , u'*.swf', u'*.mpg', u'*.wmv'
+            , u'*.swf', u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
         ]
 
     def setup(self, display, hasAudio):
@@ -79,17 +79,21 @@ class WebkitController(MediaController):
     def get_supported_file_types(self):
         pass
 
-    def load(self, display, path, volume):
+    def load(self, display, path, volume, isBackground):
         log.debug(u'load vid in Webkit Controller')
         vol = float(volume) / float(10)
+        if isBackground:
+            loop = u'true'
+        else:
+            loop = u'false'
         display.webView.setVisible(True)
         if path.endswith(u'.swf'):
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
             self.isFlash = True
         else:
-            js = u'show_video("init", "%s", %s, false);' % \
-                (path.replace(u'\\', u'\\\\'), str(vol))
+            js = u'show_video("init", "%s", %s, %s);' % \
+                (path.replace(u'\\', u'\\\\'), str(vol), loop)
             self.isFlash = False
         display.frame.evaluateJavaScript(js)
         return True
@@ -99,6 +103,9 @@ class WebkitController(MediaController):
             display.webView.resize(display.size())
 
     def play(self, display):
+        display.override[u'theme'] = u''
+        display.override[u'video'] = True
+        display.webLoaded = True
         self.set_visible(display, True)
         if self.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play","");')

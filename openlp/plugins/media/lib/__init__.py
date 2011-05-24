@@ -63,7 +63,7 @@ class MediaController(object):
         """
         pass
 
-    def load(self, display, path, volume):
+    def load(self, display, path, volume, isBackground):
         """
         Load a new media file and check if it is valid
         """

@@ -849,7 +849,6 @@ class SlideController(QtGui.QWidget):
         """
         Tell the plugin to hide the display screen.
         """
-        print "hidePlugin", hide
         log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
