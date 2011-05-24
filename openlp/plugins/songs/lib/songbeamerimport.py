@@ -68,6 +68,30 @@ class SongBeamerImport(SongImport):
     Song Beamer file format is text based
     in the beginning are one or more control tags written
     """
+    HTML_TAG_PAIRS = [
+        (re.compile(u'<b>'), u'{st}'),
+        (re.compile(u'</b>'), u'{/st}'),
+        (re.compile(u'<i>'), u'{it}'),
+        (re.compile(u'</i>'), u'{/it}'),
+        (re.compile(u'<u>'), u'{u}'),
+        (re.compile(u'</u>'), u'{/u}'),
+        (re.compile(u'<p>'), u'{p}'),
+        (re.compile(u'</p>'), u'{/p}'),
+        (re.compile(u'<super>'), u'{su}'),
+        (re.compile(u'</super>'), u'{/su}'),
+        (re.compile(u'<sub>'), u'{sb}'),
+        (re.compile(u'</sub>'), u'{/sb}'),
+        (re.compile(u'<br.*?>'), u'{br}'),
+        (re.compile(u'<[/]?wordwrap>'), u''),
+        (re.compile(u'<[/]?strike>'), u''),
+        (re.compile(u'<[/]?h.*?>'), u''),
+        (re.compile(u'<[/]?s.*?>'), u''),
+        (re.compile(u'<[/]?linespacing.*?>'), u''),
+        (re.compile(u'<[/]?c.*?>'), u''),
+        (re.compile(u'<align.*?>'), u''),
+        (re.compile(u'<valign.*?>'), u'')
+    ]
+    
     def __init__(self, manager, **kwargs):
         """
         Initialise the Song Beamer importer.
@@ -133,32 +157,8 @@ class SongBeamerImport(SongImport):
         This can be called to replace SongBeamer's specific (html) tags with
         OpenLP's specific (html) tags.
         """
-        tag_pairs = [
-            (u'<b>', u'{st}'),
-            (u'</b>', u'{/st}'),
-            (u'<i>', u'{it}'),
-            (u'</i>', u'{/it}'),
-            (u'<u>', u'{u}'),
-            (u'</u>', u'{/u}'),
-            (u'<p>', u'{p}'),
-            (u'</p>', u'{/p}'),
-            (u'<super>', u'{su}'),
-            (u'</super>', u'{/su}'),
-            (u'<sub>', u'{sb}'),
-            (u'</sub>', u'{/sb}'),
-            (u'<[/]?br.*?>', u'{st}'),
-            (u'<[/]?wordwrap>', u''),
-            (u'<[/]?strike>', u''),
-            (u'<[/]?h.*?>', u''),
-            (u'<[/]?s.*?>', u''),
-            (u'<[/]?linespacing.*?>', u''),
-            (u'<[/]?c.*?>', u''),
-            (u'<align.*?>', u''),
-            (u'<valign.*?>', u'')
-        ]
-        for pair in tag_pairs:
-            self.current_verse = re.compile(pair[0]).sub(pair[1],
-                self.current_verse)
+        for pair in SongBeamerImport.HTML_TAG_PAIRS:
+            self.current_verse = pair[0].sub(pair[1], self.current_verse)
 
     def parse_tags(self, line):
         """
