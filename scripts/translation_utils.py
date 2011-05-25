@@ -290,16 +290,6 @@ def generate_binaries():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'lrelease openlp.pro')
-        os.chdir(os.path.abspath(u'scripts'))
-        src_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
-        dest_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
-        if not os.path.exists(dest_path):
-            os.makedirs(dest_path)
-        src_list = os.listdir(src_path)
-        for file in src_list:
-            if re.search('.qm$', file):
-                copy(os.path.join(src_path, u'%s' % file),
-                    os.path.join(dest_path, u'%s' % file))
         print_quiet(u'   Done.')
 
 
