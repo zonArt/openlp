@@ -80,6 +80,10 @@ class OooImport(SongImport):
                 if self.document:
                     self.process_ooo_document()
                     self.close_ooo_file()
+                else:
+                    self.log_error(self.filepath)
+            else:
+                self.log_error(self.filepath)
         self.close_ooo()
 
     def process_ooo_document(self):
@@ -160,8 +164,8 @@ class OooImport(SongImport):
             else:
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
-        except:
-            log.exception("open_ooo_file failed")
+        except AttributeError:
+            log.exception("open_ooo_file failed: %s", url)
         return
 
     def close_ooo_file(self):
