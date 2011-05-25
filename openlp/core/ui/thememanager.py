@@ -463,7 +463,10 @@ class ThemeManager(QtGui.QWidget):
                     QtCore.QVariant(theme.theme_name))
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
-        files.sort(key=lambda filename: unicode(filename), cmp=locale.strcoll)
+        # Sort the themes by its name considering language specific characters.
+        # lower() is needed for windows!
+        files.sort(key=lambda filename: unicode(filename).lower(),
+           cmp=locale.strcoll)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory
