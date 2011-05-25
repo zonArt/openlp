@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +26,7 @@
 ###############################################################################
 
 import logging
+import locale
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
@@ -133,15 +135,19 @@ class CustomMediaItem(MediaManagerItem):
             self.onPreviewClick()
         self.onRemoteEditClear()
 
-    def loadList(self, list):
+    def loadList(self, custom_slides):
         self.listView.clear()
-        for customSlide in list:
-            custom_name = QtGui.QListWidgetItem(customSlide.title)
+        # Sort the customs by its title considering language specific
+        # characters. lower() is needed for windows!
+        custom_slides.sort(
+            cmp=locale.strcoll, key=lambda custom: custom.title.lower())
+        for custom_slide in custom_slides:
+            custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
+                QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
             self.listView.addItem(custom_name)
             # Auto-select the item if name has been set
-            if customSlide.title == self.autoSelectItem :
+            if custom_slide.title == self.autoSelectItem:
                 self.listView.setCurrentItem(custom_name)
 
     def onNewClick(self):

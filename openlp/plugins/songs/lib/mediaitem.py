@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -229,8 +230,10 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
-        searchresults.sort(key=lambda song: unicode(song.title),
-            cmp=locale.strcoll)
+        # Sort the songs by its title considering language specific characters.
+        # lower() is needed for windows!
+        searchresults.sort(
+            cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
