@@ -68,7 +68,7 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.serviceManager.mainwindow.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
