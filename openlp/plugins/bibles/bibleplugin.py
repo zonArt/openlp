@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -93,7 +94,7 @@ class BiblePlugin(Plugin):
 
     def about(self):
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
-            '<br />The Bible plugin provides the ability to display bible '
+            '<br />The Bible plugin provides the ability to display Bible '
             'verses from different sources during the service.')
         return about_text
 
@@ -137,13 +138,15 @@ class BiblePlugin(Plugin):
         # Middle Header Bar
         tooltips = {
             u'load': u'',
-            u'import': translate('BiblesPlugin', 'Import a Bible'),
-            u'new': translate('BiblesPlugin', 'Add a new Bible'),
-            u'edit': translate('BiblesPlugin', 'Edit the selected Bible'),
-            u'delete': translate('BiblesPlugin', 'Delete the selected Bible'),
-            u'preview': translate('BiblesPlugin', 'Preview the selected Bible'),
-            u'live': translate('BiblesPlugin', 'Send the selected Bible live'),
+            u'import': translate('BiblesPlugin', 'Import a Bible.'),
+            u'new': translate('BiblesPlugin', 'Add a new Bible.'),
+            u'edit': translate('BiblesPlugin', 'Edit the selected Bible.'),
+            u'delete': translate('BiblesPlugin', 'Delete the selected Bible.'),
+            u'preview': translate('BiblesPlugin',
+                'Preview the selected Bible.'),
+            u'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
             u'service': translate('BiblesPlugin',
-                'Add the selected Bible to the service')
+                'Add the selected Bible to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
+

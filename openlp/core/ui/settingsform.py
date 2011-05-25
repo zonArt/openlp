@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,14 +41,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, screens, mainWindow, parent=None):
+    def __init__(self, mainWindow, parent=None):
         """
         Initialise the settings form
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.generalTab = GeneralTab(self, screens)
+        self.generalTab = GeneralTab(self)
         # Themes tab
         self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab

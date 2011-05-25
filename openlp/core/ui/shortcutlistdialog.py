@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,24 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
 
+class CaptureShortcutButton(QtGui.QPushButton):
+    """
+    A class to encapsulate a ``QPushButton``.
+    """
+    def __init__(self, *args):
+        QtGui.QPushButton.__init__(self, *args)
+        self.setCheckable(True)
+
+    def keyPressEvent(self, event):
+        """
+        Block the ``Key_Space`` key, so that the button will not change the
+        checked state.
+        """
+        if event.key() == QtCore.Qt.Key_Space and self.isChecked():
+            # Ignore the event, so that the parent can take care of this.
+            event.ignore()
+
+
 class Ui_ShortcutListDialog(object):
     def setupUi(self, shortcutListDialog):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
@@ -36,7 +55,7 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListLayout.setObjectName(u'shortcutListLayout')
         self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
         self.descriptionLabel.setObjectName(u'descriptionLabel')
-        self.descriptionLabel.setWordWrap(True) 
+        self.descriptionLabel.setWordWrap(True)
         self.shortcutListLayout.addWidget(self.descriptionLabel)
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
         self.treeWidget.setObjectName(u'treeWidget')
@@ -56,12 +75,11 @@ class Ui_ShortcutListDialog(object):
         self.detailsLayout.addWidget(self.customRadioButton, 1, 0, 1, 1)
         self.primaryLayout = QtGui.QHBoxLayout()
         self.primaryLayout.setObjectName(u'primaryLayout')
-        self.primaryPushButton = QtGui.QPushButton(shortcutListDialog)
+        self.primaryPushButton = CaptureShortcutButton(shortcutListDialog)
         self.primaryPushButton.setObjectName(u'primaryPushButton')
         self.primaryPushButton.setMinimumSize(QtCore.QSize(84, 0))
         self.primaryPushButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
-        self.primaryPushButton.setCheckable(True)
         self.primaryLayout.addWidget(self.primaryPushButton)
         self.clearPrimaryButton = QtGui.QToolButton(shortcutListDialog)
         self.clearPrimaryButton.setObjectName(u'clearPrimaryButton')
@@ -72,9 +90,8 @@ class Ui_ShortcutListDialog(object):
         self.detailsLayout.addLayout(self.primaryLayout, 1, 1, 1, 1)
         self.alternateLayout = QtGui.QHBoxLayout()
         self.alternateLayout.setObjectName(u'alternateLayout')
-        self.alternatePushButton = QtGui.QPushButton(shortcutListDialog)
+        self.alternatePushButton = CaptureShortcutButton(shortcutListDialog)
         self.alternatePushButton.setObjectName(u'alternatePushButton')
-        self.alternatePushButton.setCheckable(True)
         self.alternatePushButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
         self.alternateLayout.addWidget(self.alternatePushButton)

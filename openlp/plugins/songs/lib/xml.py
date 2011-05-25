@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +33,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <song version="1.0">
         <lyrics>
             <verse type="c" label="1" lang="en">
-                <![CDATA[ ... ]]>
+                <![CDATA[Chorus virtual slide 1[---]Chorus  virtual slide 2]]>
             </verse>
         </lyrics>
     </song>
@@ -129,18 +130,31 @@ class SongXML(object):
 
         The returned list has the following format::
 
-            [[{'lang': 'en', 'type': 'v', 'label': '1'}, u"English verse"],
+            [[{'type': 'v', 'label': '1'},
+            u"virtual slide 1[---]virtual slide 2"],
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
-        if xml[:5] == u'<?xml':
+        verse_list = []
+        if not xml.startswith(u'<?xml') and not xml.startswith(u'<song'):
+            # This is an old style song, without XML. Let's handle it correctly
+            # by iterating through the verses, and then recreating the internal
+            # xml object as well.
+            self.song_xml = objectify.fromstring(u'<song version="1.0" />')
+            self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
+            verses = xml.split(u'\n\n')
+            for count, verse in enumerate(verses):
+                verse_list.append([{u'type': u'v', u'label': unicode(count)},
+                    unicode(verse)])
+                self.add_verse_to_lyrics(u'v', unicode(count), verse)
+            return verse_list
+        elif xml.startswith(u'<?xml'):
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
         xml_iter = self.song_xml.getiterator()
-        verse_list = []
         for element in xml_iter:
             if element.tag == u'verse':
                 if element.text is None:
@@ -220,13 +234,13 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
+        self.chord_regex = re.compile(u'<chord name=".*?"/>')
 
     def song_to_xml(self, song):
         """
         Convert the song to OpenLyrics Format.
         """
         sxml = SongXML()
-        verse_list = sxml.get_verses(song.lyrics)
         song_xml = objectify.fromstring(u'<song/>')
         # Append the necessary meta data to the song.
         song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
@@ -268,17 +282,26 @@ class OpenLyrics(object):
             themes = etree.SubElement(properties, u'themes')
             for topic in song.topics:
                 self._add_text_to_element(u'theme', themes, topic.name)
+        # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
+        verse_list = sxml.get_verses(song.lyrics)
         for verse in verse_list:
-            verse_tag = u'%s%s' % (
-                verse[0][u'type'][0].lower(), verse[0][u'label'])
-            element = \
-                self._add_text_to_element(u'verse', lyrics, None, verse_tag)
-            if verse[0].has_key(u'lang'):
-                element.set(u'lang', verse[0][u'lang'])
-            element = self._add_text_to_element(u'lines', element)
-            for line in unicode(verse[1]).split(u'\n'):
-                self._add_text_to_element(u'line', element, line)
+            verse_tag = verse[0][u'type'][0].lower()
+            verse_number = verse[0][u'label']
+            # Create a list with all "virtual" verses.
+            virtual_verses = verse[1].split(u'[---]')
+            for index, virtual_verse in enumerate(virtual_verses):
+                verse_def = verse_tag + verse_number
+                # We need "v1a" because we have more than one virtual verse.
+                if len(virtual_verses) > 1:
+                    verse_def += list(u'abcdefghijklmnopqrstuvwxyz')[index]
+                element = \
+                    self._add_text_to_element(u'verse', lyrics, None, verse_def)
+                if verse[0].has_key(u'lang'):
+                    element.set(u'lang', verse[0][u'lang'])
+                element = self._add_text_to_element(u'lines', element)
+                for line in virtual_verse.strip(u'\n').split(u'\n'):
+                    self._add_text_to_element(u'line', element, line)
         return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml):
@@ -296,7 +319,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
+        xml = self.chord_regex.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties
@@ -446,6 +469,8 @@ class OpenLyrics(object):
             The song object.
         """
         sxml = SongXML()
+        verses = {}
+        verse_def_list = []
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -465,7 +490,15 @@ class OpenLyrics(object):
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
-            sxml.add_verse_to_lyrics(verse_tag, verse_number, text, lang)
+            if verses.has_key((verse_tag, verse_number, lang)):
+                verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
+            else:
+                verses[(verse_tag, verse_number, lang)] = text
+                verse_def_list.append((verse_tag, verse_number, lang))
+        # We have to use a list to keep the order, as dicts are not sorted.
+        for verse in verse_def_list:
+            sxml.add_verse_to_lyrics(
+                verse[0], verse[1], verses[verse], verse[2])
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):

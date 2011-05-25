@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -184,7 +185,7 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
         self.exportSongPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-            'Select the directory you want the songs to be saved.'))
+            'Select the directory where you want the songs to be saved.'))
         self.directoryLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'Directory:'))
         self.progressPage.setTitle(
@@ -329,7 +330,7 @@ class SongExportForm(OpenLPWizard):
             self.availableListWidget, unicode(text))
         ]
         for item in self._findListWidgetItems(self.availableListWidget):
-            item.setHidden(False if item in search_result else True)
+            item.setHidden(item not in search_result)
 
     def onUncheckButtonClicked(self):
         """
@@ -361,3 +362,4 @@ class SongExportForm(OpenLPWizard):
             options=QtGui.QFileDialog.ShowDirsOnly))
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
         self.directoryLineEdit.setText(path)
+

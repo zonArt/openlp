@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -167,17 +168,18 @@ class PresentationPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('PresentationPlugin', 'Load a new Presentation'),
+            u'load': translate('PresentationPlugin',
+                'Load a new Presentation.'),
             u'import': u'',
             u'new': u'',
             u'edit': u'',
             u'delete': translate('PresentationPlugin',
-                'Delete the selected Presentation'),
+                'Delete the selected Presentation.'),
             u'preview': translate('PresentationPlugin',
-                'Preview the selected Presentation'),
+                'Preview the selected Presentation.'),
             u'live': translate('PresentationPlugin',
-                'Send the selected Presentation live'),
+                'Send the selected Presentation live.'),
             u'service': translate('PresentationPlugin',
-                'Add the selected Presentation to the service')
+                'Add the selected Presentation to the service.')
         }
         self.setPluginUiTextStrings(tooltips)

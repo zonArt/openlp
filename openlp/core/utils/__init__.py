@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -99,6 +100,20 @@ class VersionThread(QtCore.QThread):
             local_version.get(u'revision') and \
             remote_version[u'revision'] > local_version[u'revision']:
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
+
+
+class DelayStartThread(QtCore.QThread):
+    """
+    A special Qt thread class to build things after OpenLP has started
+    """
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        Receiver.send_message(u'openlp_phonon_creation')
 
 
 class AppLocation(object):
@@ -328,7 +343,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added. An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword ``None``
         will result in a separator being inserted into the target.
     """
     for action in actions:

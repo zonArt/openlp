@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -152,7 +153,7 @@ class Ui_PrintServiceDialog(object):
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
-            'Add page break before each text item.'))
+            'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
@@ -165,3 +166,4 @@ class Ui_PrintServiceDialog(object):
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+

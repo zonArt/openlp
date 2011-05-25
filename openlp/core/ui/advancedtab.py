@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,11 +42,11 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        generalTranslated = translate('AdvancedTab', 'Advanced')
-        SettingsTab.__init__(self, parent ,u'Advanced', generalTranslated)
+        advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
+        SettingsTab.__init__(self, parent, u'Advanced', advancedTranslated)
 
     def setupUi(self):
         """
@@ -82,14 +83,6 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
-        self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
-        self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
-        self.hideMouseLayout.setObjectName(u'hideMouseLayout')
-        self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
-        self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
-        self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
-        self.leftLayout.addWidget(self.hideMouseGroupBox)
         self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.defaultImageGroupBox.setObjectName(u'defaultImageGroupBox')
@@ -109,26 +102,42 @@ class AdvancedTab(SettingsTab):
         self.defaultBrowseButton.setObjectName(u'defaultBrowseButton')
         self.defaultBrowseButton.setIcon(
             build_icon(u':/general/general_open.png'))
+        self.defaultRevertButton = QtGui.QToolButton(self.defaultImageGroupBox)
+        self.defaultRevertButton.setObjectName(u'defaultRevertButton')
+        self.defaultRevertButton.setIcon(
+            build_icon(u':/general/general_revert.png'))
         self.defaultFileLayout = QtGui.QHBoxLayout()
         self.defaultFileLayout.setObjectName(u'defaultFileLayout')
         self.defaultFileLayout.addWidget(self.defaultFileEdit)
         self.defaultFileLayout.addWidget(self.defaultBrowseButton)
+        self.defaultFileLayout.addWidget(self.defaultRevertButton)
         self.defaultImageLayout.addRow(self.defaultFileLabel,
             self.defaultFileLayout)
         self.rightLayout.addWidget(self.defaultImageGroupBox)
+        self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
+        self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
+        self.hideMouseLayout.setObjectName(u'hideMouseLayout')
+        self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
+        self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
+        self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
+        self.rightLayout.addWidget(self.hideMouseGroupBox)
         self.rightLayout.addStretch()
 
         QtCore.QObject.connect(self.defaultColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
         QtCore.QObject.connect(self.defaultBrowseButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
+        QtCore.QObject.connect(self.defaultRevertButton,
+            QtCore.SIGNAL(u'pressed()'), self.onDefaultRevertButtonPressed)
 
     def retranslateUi(self):
         """
         Setup the interface translation strings.
         """
         self.tabTitleVisible = UiStrings().Advanced
-        self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
+        self.uiGroupBox.setTitle(
+            translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
                 'Number of recent files to display:'))
@@ -150,8 +159,14 @@ class AdvancedTab(SettingsTab):
             'Default Image'))
         self.defaultColorLabel.setText(translate('OpenLP.AdvancedTab',
             'Background color:'))
+        self.defaultColorButton.setToolTip(translate('OpenLP.AdvancedTab',
+            'Click to select a color.'))
         self.defaultFileLabel.setText(translate('OpenLP.AdvancedTab',
             'Image file:'))
+        self.defaultBrowseButton.setToolTip(translate('OpenLP.AdvancedTab',
+            'Browse for an image file to display.'))
+        self.defaultRevertButton.setToolTip(translate('OpenLP.AdvancedTab',
+            'Revert to the default OpenLP logo.'))
 
     def load(self):
         """
@@ -232,4 +247,8 @@ class AdvancedTab(SettingsTab):
             file_filters)
         if filename:
             self.defaultFileEdit.setText(filename)
+        self.defaultFileEdit.setFocus()
+
+    def onDefaultRevertButtonPressed(self):
+        self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
         self.defaultFileEdit.setFocus()

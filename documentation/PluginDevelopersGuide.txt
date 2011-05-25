@@ -1,8 +1,0 @@
-openlp.org 2.x Plugin Developer's Guide
-========================================================================
-
-Introduction
-------------
-This document will show you how to write your own module for openlp.org.
-openlp.org has been written in plugins so that you can add your own
-functionality to openlp.org.

@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -251,13 +252,14 @@ class PowerpointDocument(PresentationDocument):
                         win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            rendermanager = self.controller.plugin.renderManager
-            rect = rendermanager.screens.current[u'size']
+            renderer = self.controller.plugin.renderer
+            rect = renderer.screens.current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
             ppt_window.Top = rect.y() * 72 / dpi
             ppt_window.Height = rect.height() * 72 / dpi
             ppt_window.Left = rect.x() * 72 / dpi
             ppt_window.Width = rect.width() * 72 / dpi
+
 
     def get_slide_number(self):
         """

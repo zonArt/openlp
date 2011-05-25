@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -149,7 +150,7 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -167,7 +168,7 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         self.__previewGlobalTheme()
 
@@ -188,7 +189,7 @@ class ThemesTab(SettingsTab):
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
