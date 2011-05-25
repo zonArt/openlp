@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -95,7 +96,7 @@ class Ui_AboutDialog(object):
             'OpenLP is free church presentation software, or lyrics '
             'projection software, used to display slides of songs, Bible '
             'verses, videos, images, and even presentations (if '
-            'OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) '
+            'Impress, PowerPoint or PowerPoint Viewer is installed) '
             'for church worship using a computer and a data projector.\n'
             '\n'
             'Find out more about OpenLP: http://openlp.org/\n'
@@ -137,7 +138,8 @@ class Ui_AboutDialog(object):
             u'ja': [u'Kunio "Kunio" Nakamaru'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim'],
+            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim',
+                u'Simon "samscudder" Scudder'],
             u'ru': [u'Sergey "ratz" Ratz']
         }
         documentors = [u'Wesley "wrst" Stout',
@@ -221,13 +223,14 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        copyright = translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2011 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2011 '
-            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
-            'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
-            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
-            'Tinggaard, Frode Woldsund')
+        copyright = unicode(translate('OpenLP.AboutForm',
+            'Copyright \xa9 2004-2011 %s\n'
+            'Portions copyright \xa9 2004-2011 %s')) % (u'Raoul Snyman',
+            u'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
+            u'Matthias Hub, Meinert Jordan, Armin K\xf6hler, Andreas '
+            u'Preikschat, Mattias P\xf5ldaru, Christian Richter, Philip '
+            u'Ridout, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon '
+            u'Tibble, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
