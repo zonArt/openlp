@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,7 @@ Provides the generic functions for interfacing plugins with the Media Manager.
 """
 import logging
 import os
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -90,6 +92,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
         #TODO: plugin should not be the parent in future
         self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
@@ -109,9 +112,13 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        self.autoSelectItem = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
+            self.setAutoSelectItem)
 
     def requiredIcons(self):
         """
@@ -465,6 +472,9 @@ class MediaManagerItem(QtGui.QWidget):
                 if keepFocus:
                     self.listView.setFocus()
 
+    def setAutoSelectItem(self, itemToSelect=None):
+        self.autoSelectItem = itemToSelect
+
     def onLiveClick(self):
         """
         Send an item live by building a service item then adding that service
@@ -500,24 +510,24 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items.'))
+                    'You must select one or more items to add.'))
         else:
             # Is it posssible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
-                serviceItem = self.buildServiceItem(None, True)
-                if serviceItem:
-                    serviceItem.from_plugin = False
-                    self.parent.serviceManager.addServiceItem(serviceItem,
-                        replace=self.remoteTriggered)
+                self.addToService(replace=self.remoteTriggered)
             else:
                 items = self.listView.selectedIndexes()
                 for item in items:
-                    serviceItem = self.buildServiceItem(item, True)
-                    if serviceItem:
-                        serviceItem.from_plugin = False
-                        self.parent.serviceManager.addServiceItem(serviceItem)
+                    self.addToService(item)
+
+    def addToService(self, item=None, replace=None):
+        serviceItem = self.buildServiceItem(item, True)
+        if serviceItem:
+            serviceItem.from_plugin = False
+            self.parent.serviceManager.addServiceItem(serviceItem,
+                replace=replace)
 
     def onAddEditClick(self):
         """

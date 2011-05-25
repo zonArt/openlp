@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -233,6 +234,7 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
+        self.chord_regex = re.compile(u'<chord name=".*?"/>')
 
     def song_to_xml(self, song):
         """
@@ -317,7 +319,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
+        xml = self.chord_regex.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties

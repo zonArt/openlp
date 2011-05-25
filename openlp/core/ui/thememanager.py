@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -659,6 +660,18 @@ class ThemeManager(QtGui.QWidget):
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
+
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        self.mainwindow.displayProgressBar(len(self.themelist))
+        for theme in self.themelist:
+            self.mainwindow.incrementProgressBar()
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        self.mainwindow.finishedProgressBar()
+        self.loadThemes()
 
     def generateImage(self, themeData, forcePage=False):
         """

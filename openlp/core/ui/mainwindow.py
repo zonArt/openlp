@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -229,6 +230,8 @@ class Ui_MainWindow(object):
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.updateThemeImages = base_action(mainWindow,
+            u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings, CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
@@ -265,8 +268,10 @@ class Ui_MainWindow(object):
         self.HelpAboutItem = shortcut_action(mainWindow, u'HelpAboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
-        self.HelpOnlineHelpItem = base_action(
-            mainWindow, u'HelpOnlineHelpItem', category=UiStrings().Help)
+        self.HelpOnlineHelpItem = shortcut_action(
+            mainWindow, u'HelpOnlineHelpItem', [QtGui.QKeySequence(u'F1')],
+            self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
+            category=UiStrings().Help)
         self.helpWebSiteItem = base_action(
             mainWindow, u'helpWebSiteItem', category=UiStrings().Help)
         add_actions(self.FileImportMenu,
@@ -292,6 +297,7 @@ class Ui_MainWindow(object):
             self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
+        add_actions(self.ToolsMenu, [self.updateThemeImages])
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
@@ -412,9 +418,6 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
-        # Uncomment after 1.9.5 beta string freeze
-        #self.HelpOnlineHelpItem.setShortcut(
-        #    translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.LanguageGroup.actions():
@@ -433,6 +436,11 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.updateThemeImages.setText(
+            translate('OpenLP.MainWindow', 'Update Theme Images'))
+        self.updateThemeImages.setStatusTip(
+            translate('OpenLP.MainWindow', 'Update the preview images for all '
+                'themes.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -501,10 +509,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
-        QtCore.QObject.connect(self.HelpOnlineHelpItem,
-            QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.updateThemeImages,
+            QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.DisplayTagItem,
             QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -615,11 +623,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        # On Windows, arguments contains the entire commandline
-        # So args[0]=='python' args[1]=='openlp.pyw'
-        # Therefore this approach is not going to work
-        # Bypass for now.
-        if len(self.arguments) and os.name != u'nt':
+        if len(self.arguments):
             args = []
             for a in self.arguments:
                 args.extend([a])
@@ -699,7 +703,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
 
-    def onHelpOnLineHelpClicked(self):
+    def onHelpOnlineHelpClicked(self):
         """
         Load the online OpenLP manual
         """
@@ -725,6 +729,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
+
+    def onUpdateThemeImages(self):
+        """
+        Updates the new theme preview images.
+        """
+        self.themeManagerContents.updatePreviewImages()
 
     def onDisplayTagItemClicked(self):
         """
@@ -787,16 +797,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screenChanged(self):
         """
-        The screen has changed to so tell the displays to update_display
-        their locations
+        The screen has changed so we have to update components such as the
+        renderer.
         """
         log.debug(u'screenChanged')
+        Receiver.send_message(u'cursor_busy')
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.liveController.screenSizeChanged()
         self.previewController.screenSizeChanged()
+        self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
+        Receiver.send_message(u'cursor_normal')
 
     def closeEvent(self, event):
         """

@@ -5,7 +5,8 @@
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
  * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
  * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
+ * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
+ * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -216,13 +217,14 @@ window.OpenLP = {
         if (data.results.items.length == 0) {
           var li = $("<li data-icon=\"false\">").text('No results');
           ul.append(li);
-        } 
+        }
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li data-icon=\"false\">").append(
-                $("<a href=\"#\">").attr("value", value[0]).text(value[1]));
-              li.children("a").click(OpenLP.goLive);
-              ul.append(li);
+              var item = $("<li>").text(value[1]);
+              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
+              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
+              item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
+              ul.append(item);
             });
         }
         ul.listview("refresh");
@@ -231,16 +233,28 @@ window.OpenLP = {
     return false;
   },
   goLive: function (event) {
-    var slide = OpenLP.getElement(event);
-    var id = slide.attr("value");
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
       {"data": text})
     $.mobile.changePage("slide-controller");
     return false;
+  },
+  addToService: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
+    return false;
   }
-
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);

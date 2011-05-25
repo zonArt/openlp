@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -650,7 +651,7 @@ class BibleImportForm(OpenLPWizard):
         if bible_type == BibleFormat.WebDownload:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm',
-                'Starting Registering bible...'))
+                'Registering Bible...'))
         else:
             self.progressLabel.setText(WizardStrings.StartingImport)
         Receiver.send_message(u'openlp_process_events')
@@ -712,7 +713,7 @@ class BibleImportForm(OpenLPWizard):
             if bible_type == BibleFormat.WebDownload:
                 self.progressLabel.setText(
                     translate('BiblesPlugin.ImportWizardForm', 'Registered '
-                    'bible. Please note, that verses will be downloaded on\n'
+                    'Bible. Please note, that verses will be downloaded on\n'
                     'demand and thus an internet connection is required.'))
             else:
                 self.progressLabel.setText(WizardStrings.FinishedImport)
@@ -720,5 +721,4 @@ class BibleImportForm(OpenLPWizard):
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
-            delete_database(AppLocation.get_section_data_path(u'bibles'),
-                importer.file)
+            delete_database(self.plugin.settingsSection, importer.file)

@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,6 @@
 
 import logging
 import locale
-import re
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -72,7 +72,6 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
         self.quickPreviewAllowed = True
         self.hasSearch = True
 
@@ -194,7 +193,8 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords)
+                Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords) + u'%'))
             self.displayResultsSong(search_results)
         self.check_search_result()
 
@@ -221,8 +221,7 @@ class SongMediaItem(MediaManagerItem):
         # Push edits to the service manager to update items
         if self.editItem and self.updateServiceOnEdit and \
             not self.remoteTriggered:
-            item_id = _getIdOfItemToGenerate(self.editItem)
-            item = self.buildServiceItem(item_id)
+            item = self.buildServiceItem(self.editItem)
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
@@ -231,7 +230,10 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
-        searchresults.sort(cmp=self.collateSongTitles)
+        # Sort the songs by its title considering language specific characters.
+        # lower() is needed for windows!
+        searchresults.sort(
+            cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
@@ -239,6 +241,9 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
+            # Auto-select the item if name has been set
+            if song.title == self.autoSelectItem :
+                self.listView.setCurrentItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -473,13 +478,6 @@ class SongMediaItem(MediaManagerItem):
         if editId:
             Receiver.send_message(u'service_item_update',
                 u'%s:%s' % (editId, item._uuid))
-
-    def collateSongTitles(self, song_1, song_2):
-        """
-        Locale aware collation of song titles
-        """
-        return locale.strcoll(unicode(song_1.title.lower()),
-             unicode(song_2.title.lower()))
 
     def search(self, string):
         """
