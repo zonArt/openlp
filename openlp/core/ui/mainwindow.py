@@ -73,14 +73,14 @@ class Ui_MainWindow(object):
         mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-64x64.png'))
         mainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
-        self.MainContent = QtGui.QWidget(mainWindow)
-        self.MainContent.setObjectName(u'MainContent')
-        self.mainContentLayout = QtGui.QHBoxLayout(self.MainContent)
+        self.mainContent = QtGui.QWidget(mainWindow)
+        self.mainContent.setObjectName(u'mainContent')
+        self.mainContentLayout = QtGui.QHBoxLayout(self.mainContent)
         self.mainContentLayout.setSpacing(0)
         self.mainContentLayout.setMargin(0)
         self.mainContentLayout.setObjectName(u'mainContentLayout')
-        mainWindow.setCentralWidget(self.MainContent)
-        self.controlSplitter = QtGui.QSplitter(self.MainContent)
+        mainWindow.setCentralWidget(self.mainContent)
+        self.controlSplitter = QtGui.QSplitter(self.mainContent)
         self.controlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.controlSplitter.setObjectName(u'controlSplitter')
         self.mainContentLayout.addWidget(self.controlSplitter)
@@ -94,31 +94,31 @@ class Ui_MainWindow(object):
             QtCore.QVariant(True)).toBool()
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
-        self.MenuBar = QtGui.QMenuBar(mainWindow)
-        self.MenuBar.setObjectName(u'MenuBar')
-        self.FileMenu = QtGui.QMenu(self.MenuBar)
-        self.FileMenu.setObjectName(u'FileMenu')
-        self.FileImportMenu = QtGui.QMenu(self.FileMenu)
-        self.FileImportMenu.setObjectName(u'FileImportMenu')
-        self.FileExportMenu = QtGui.QMenu(self.FileMenu)
-        self.FileExportMenu.setObjectName(u'FileExportMenu')
+        self.menuBar = QtGui.QMenuBar(mainWindow)
+        self.menuBar.setObjectName(u'menuBar')
+        self.fileMenu = QtGui.QMenu(self.menuBar)
+        self.fileMenu.setObjectName(u'fileMenu')
+        self.fileImportMenu = QtGui.QMenu(self.fileMenu)
+        self.fileImportMenu.setObjectName(u'fileImportMenu')
+        self.fileExportMenu = QtGui.QMenu(self.fileMenu)
+        self.fileExportMenu.setObjectName(u'fileExportMenu')
         # View Menu
-        self.viewMenu = QtGui.QMenu(self.MenuBar)
+        self.viewMenu = QtGui.QMenu(self.menuBar)
         self.viewMenu.setObjectName(u'viewMenu')
-        self.ViewModeMenu = QtGui.QMenu(self.viewMenu)
-        self.ViewModeMenu.setObjectName(u'ViewModeMenu')
+        self.viewModeMenu = QtGui.QMenu(self.viewMenu)
+        self.viewModeMenu.setObjectName(u'viewModeMenu')
         # Tools Menu
-        self.ToolsMenu = QtGui.QMenu(self.MenuBar)
-        self.ToolsMenu.setObjectName(u'ToolsMenu')
+        self.toolsMenu = QtGui.QMenu(self.menuBar)
+        self.toolsMenu.setObjectName(u'toolsMenu')
         # Settings Menu
-        self.SettingsMenu = QtGui.QMenu(self.MenuBar)
-        self.SettingsMenu.setObjectName(u'SettingsMenu')
-        self.SettingsLanguageMenu = QtGui.QMenu(self.SettingsMenu)
-        self.SettingsLanguageMenu.setObjectName(u'SettingsLanguageMenu')
+        self.settingsMenu = QtGui.QMenu(self.menuBar)
+        self.settingsMenu.setObjectName(u'settingsMenu')
+        self.settingsLanguageMenu = QtGui.QMenu(self.settingsMenu)
+        self.settingsLanguageMenu.setObjectName(u'settingsLanguageMenu')
         # Help Menu
-        self.HelpMenu = QtGui.QMenu(self.MenuBar)
-        self.HelpMenu.setObjectName(u'HelpMenu')
-        mainWindow.setMenuBar(self.MenuBar)
+        self.helpMenu = QtGui.QMenu(self.menuBar)
+        self.helpMenu.setObjectName(u'helpMenu')
+        mainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtGui.QStatusBar(mainWindow)
         self.statusBar.setObjectName(u'statusBar')
         mainWindow.setStatusBar(self.statusBar)
@@ -274,41 +274,41 @@ class Ui_MainWindow(object):
             category=UiStrings().Help)
         self.helpWebSiteItem = base_action(
             mainWindow, u'helpWebSiteItem', category=UiStrings().Help)
-        add_actions(self.FileImportMenu,
+        add_actions(self.fileImportMenu,
             (self.ImportThemeItem, self.ImportLanguageItem))
-        add_actions(self.FileExportMenu,
+        add_actions(self.fileExportMenu,
             (self.ExportThemeItem, self.ExportLanguageItem))
-        self.FileMenuActions = (self.FileNewItem, self.FileOpenItem,
+        self.fileMenuActions = (self.FileNewItem, self.FileOpenItem,
             self.FileSaveItem, self.FileSaveAsItem, None,
-            self.printServiceOrderItem, None, self.FileImportMenu.menuAction(),
-            self.FileExportMenu.menuAction(), self.FileExitItem)
-        add_actions(self.ViewModeMenu, (self.ModeDefaultItem,
+            self.printServiceOrderItem, None, self.fileImportMenu.menuAction(),
+            self.fileExportMenu.menuAction(), self.FileExitItem)
+        add_actions(self.viewModeMenu, (self.ModeDefaultItem,
             self.ModeSetupItem, self.ModeLiveItem))
-        add_actions(self.viewMenu, (self.ViewModeMenu.menuAction(),
+        add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
             self.ViewThemeManagerItem, None, self.ViewPreviewPanel,
             self.ViewLivePanel))
         # i18n add Language Actions
-        add_actions(self.SettingsLanguageMenu, (self.AutoLanguageItem, None))
-        add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
-        add_actions(self.SettingsMenu, (self.settingsPluginListItem,
-            self.SettingsLanguageMenu.menuAction(), None,
+        add_actions(self.settingsLanguageMenu, (self.AutoLanguageItem, None))
+        add_actions(self.settingsLanguageMenu, self.LanguageGroup.actions())
+        add_actions(self.settingsMenu, (self.settingsPluginListItem,
+            self.settingsLanguageMenu.menuAction(), None,
             self.DisplayTagItem, self.SettingsShortcutsItem,
             self.SettingsConfigureItem))
-        add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
-        add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
-        add_actions(self.ToolsMenu, [self.updateThemeImages])
-        add_actions(self.HelpMenu, (self.HelpDocumentationItem,
+        add_actions(self.toolsMenu, (self.ToolsAddToolItem, None))
+        add_actions(self.toolsMenu, (self.ToolsOpenDataFolder, None))
+        add_actions(self.toolsMenu, [self.updateThemeImages])
+        add_actions(self.helpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
-        add_actions(self.MenuBar, (self.FileMenu.menuAction(),
-            self.viewMenu.menuAction(), self.ToolsMenu.menuAction(),
-            self.SettingsMenu.menuAction(), self.HelpMenu.menuAction()))
+        add_actions(self.menuBar, (self.fileMenu.menuAction(),
+            self.viewMenu.menuAction(), self.toolsMenu.menuAction(),
+            self.settingsMenu.menuAction(), self.helpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(mainWindow)
         self.MediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
-        QtCore.QObject.connect(self.FileMenu,
+        QtCore.QObject.connect(self.fileMenu,
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
@@ -323,16 +323,16 @@ class Ui_MainWindow(object):
         """
         mainWindow.mainTitle = UiStrings().OLPV2
         mainWindow.setWindowTitle(mainWindow.mainTitle)
-        self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
-        self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
-        self.FileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
+        self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
+        self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
+        self.fileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
         self.viewMenu.setTitle(translate('OpenLP.MainWindow', '&View'))
-        self.ViewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
-        self.ToolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
-        self.SettingsMenu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
-        self.SettingsLanguageMenu.setTitle(translate('OpenLP.MainWindow',
+        self.viewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
+        self.toolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
+        self.settingsMenu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
+        self.settingsLanguageMenu.setTitle(translate('OpenLP.MainWindow',
             '&Language'))
-        self.HelpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
+        self.helpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
         self.mediaManagerDock.setWindowTitle(
             translate('OpenLP.MainWindow', 'Media Manager'))
         self.serviceManagerDock.setWindowTitle(
@@ -573,11 +573,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.hook_media_manager(self.mediaDockManager)
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
-        self.pluginManager.hook_import_menu(self.FileImportMenu)
+        self.pluginManager.hook_import_menu(self.fileImportMenu)
         # Call the hook method to pull in export menus.
-        self.pluginManager.hook_export_menu(self.FileExportMenu)
+        self.pluginManager.hook_export_menu(self.fileExportMenu)
         # Call the hook method to pull in tools menus.
-        self.pluginManager.hook_tools_menu(self.ToolsMenu)
+        self.pluginManager.hook_tools_menu(self.toolsMenu)
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
@@ -985,13 +985,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         recentFileCount = QtCore.QSettings().value(
             u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
-        self.FileMenu.clear()
-        add_actions(self.FileMenu, self.FileMenuActions[:-1])
+        self.fileMenu.clear()
+        add_actions(self.fileMenu, self.fileMenuActions[:-1])
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if QtCore.QFile.exists(recentFile)]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
         if recentFilesToDisplay:
-            self.FileMenu.addSeparator()
+            self.fileMenu.addSeparator()
             for fileId, filename in enumerate(recentFilesToDisplay):
                 log.debug('Recent file name: %s', filename)
                 action =  base_action(self, u'')
@@ -1000,9 +1000,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
                     self.ServiceManagerContents.onRecentServiceClicked)
-                self.FileMenu.addAction(action)
-        self.FileMenu.addSeparator()
-        self.FileMenu.addAction(self.FileMenuActions[-1])
+                self.fileMenu.addAction(action)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.fileMenuActions[-1])
 
     def addRecentFile(self, filename):
         """
