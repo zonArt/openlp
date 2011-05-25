@@ -62,18 +62,18 @@ class Verse(BaseModel):
     """
     pass
 
-def clean_filename(old_filename):
+def clean_filename(filename):
     """
     Clean up the version name of the Bible and convert it into a valid
     file name.
 
-    ``old_filename``
+    ``filename``
         The "dirty" file name or version name.
     """
-    if not isinstance(old_filename, unicode):
-        old_filename = unicode(old_filename, u'utf-8')
-    old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
-    return old_filename + u'.sqlite'
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    filename = re.sub(r'[^\w]+', u'_', filename).strip(u'_')
+    return filename + u'.sqlite'
 
 def init_schema(url):
     """
@@ -160,7 +160,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.file = clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
-        Manager.__init__(self, u'bibles/bibles', init_schema, self.file)
+        Manager.__init__(self, u'bibles', init_schema, self.file)
         if u'file' in kwargs:
             self.get_name()
         if u'path' in kwargs:
@@ -486,6 +486,16 @@ class BibleDB(QtCore.QObject, Manager):
         language_id = language[u'id']
         self.create_meta(u'language_id', language_id)
         return language_id
+
+    def find_old_database(self):
+        """
+        Returns true if it is an old bible database.
+        """
+        try:
+            columns = self.session.query(Book).all()
+        except:
+            return True
+        return False
 
     def dump_bible(self):
         """
@@ -863,12 +873,9 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         database doesn't exist.
         """
         if AlternativeBookNamesDB.cursor is None:
-            check_directory_exists(os.path.join(AppLocation.get_directory(
-                AppLocation.DataDir), u'bibles', u'resources'))
             filepath = os.path.join(
                 AppLocation.get_directory(AppLocation.DataDir), u'bibles',
-                    u'resources', u'alternative_book_names.sqlite')
-            log.debug(u'Filepath: %s' % filepath)
+                    u'alternative_book_names.sqlite')
             if not os.path.exists(filepath):
                 #create new DB, create table alternative_book_names
                 AlternativeBookNamesDB.conn = sqlite3.connect(filepath)

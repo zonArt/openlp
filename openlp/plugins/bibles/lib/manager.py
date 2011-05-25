@@ -33,7 +33,7 @@ from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -120,7 +120,7 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
-        self.settingsSection = u'bibles/bibles'
+        self.settingsSection = u'bibles'
         self.web = u'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
@@ -140,14 +140,21 @@ class BibleManager(object):
         """
         log.debug(u'Reload bibles')
         files = SettingsManager.get_files(self.settingsSection, self.suffix)
+        if u'alternative_book_names.sqlite' in files:
+            files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
+        self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
             # Remove corrupted files.
             if name is None:
                 delete_file(os.path.join(self.path, filename))
+                continue
+            # Find old database versions
+            if bible.find_old_database():
+                self.old_bible_databases.append(filename)
                 continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible

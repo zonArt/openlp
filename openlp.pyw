@@ -37,8 +37,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, check_directory_exists, SettingsManager, \
-    translate
+from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -130,18 +129,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
-        for plugin in self.mainWindow.pluginManager.plugins:
-            if plugin.name == u'Bibles' and plugin.isActive() and not \
-                len(SettingsManager.get_files( u'bibles/bibles', u'.sqlite')) \
-                and SettingsManager.get_files(u'bibles', u'.sqlite'):
-                if QtGui.QMessageBox.information(self.mainWindow, 
-                    translate('OpenLP', 'Information'), translate('OpenLP',
-                    'Bible format has changed.\nYou have to upgrade your '
-                    'existing bibles.\nShould OpenLP upgrade now?'), 
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
-                    QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
-                    plugin.onToolsUpgradeItemTriggered()
-                break
+        self.mainWindow.appStartup()
         DelayStartThread(self.mainWindow).start()
         return self.exec_()
 

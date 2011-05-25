@@ -639,6 +639,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.setViewMode(False, True, False, False, True)
             self.ModeLiveItem.setChecked(True)
 
+    def appStartup(self):
+        # Give all the plugins a chance to perform some tasks at startup
+        Receiver.send_message(u'openlp_process_events')
+        for plugin in self.pluginManager.plugins:
+            if hasattr(plugin, u'appStartup'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.appStartup()
+        Receiver.send_message(u'openlp_process_events')
+
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')

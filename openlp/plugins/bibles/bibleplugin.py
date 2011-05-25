@@ -60,7 +60,7 @@ class BiblePlugin(Plugin):
         #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        if SettingsManager.get_files(u'bibles', u'.sqlite'):
+        if len(self.manager.old_bible_databases):
             self.toolsUpgradeItem.setVisible(True)
 
     def finalise(self):
@@ -75,6 +75,20 @@ class BiblePlugin(Plugin):
         self.importBibleItem.setVisible(False)
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
+
+    def appStartup(self):
+        """
+        Perform tasks on application starup
+        """
+        if not len(self.manager.db_cache) and \
+            len(self.manager.old_bible_databases):
+            if QtGui.QMessageBox.information(self.formparent, 
+                translate('OpenLP', 'Information'), translate('OpenLP',
+                'Bible format has changed.\nYou have to upgrade your '
+                'existing bibles.\nShould OpenLP upgrade now?'), 
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                self.onToolsUpgradeItemTriggered()
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = base_action(import_menu, u'importBibleItem')

@@ -472,7 +472,7 @@ class BibleImportForm(OpenLPWizard):
             license_version = unicode(self.field(u'license_version').toString())
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
-            path = AppLocation.get_section_data_path(u'bibles/bibles')
+            path = AppLocation.get_section_data_path(u'bibles')
             if not license_version:
                 critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm',
@@ -720,5 +720,5 @@ class BibleImportForm(OpenLPWizard):
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
-            delete_database(AppLocation.get_section_data_path(u'bibles/bibles'),
+            delete_database(AppLocation.get_section_data_path(u'bibles'),
                 importer.file)

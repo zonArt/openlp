@@ -67,18 +67,12 @@ class BibleUpgradeForm(OpenLPWizard):
         self.manager = manager
         self.mediaItem = bibleplugin.mediaItem
         self.suffix = u'.sqlite'
-        self.settingsSection = u'bibles/bibles'
-        self.oldsettingsSection = u'bibles'
-        self.oldpath = AppLocation.get_section_data_path(
-            self.oldsettingsSection)
-        self.newpath = AppLocation.get_section_data_path(
+        self.settingsSection = u'bibles'
+        self.path = AppLocation.get_section_data_path(
             self.settingsSection)
-        self.files = SettingsManager.get_files(self.oldsettingsSection, 
-            self.suffix)
+        self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
-        self.maxBibles = len(self.files)
-        self.stop_import_flag = False
         OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleUpgradeWizard',
             u':/wizards/wizard_importbible.bmp')
 
@@ -106,7 +100,8 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.verticalWidget[number].hide()
                 self.formWidget[number].hide()
             else:
-                if os.path.exists(os.path.join(self.newpath, filename)):
+                version_name = unicode(self.versionNameEdit[number].text())
+                if self.manager.exists(version_name):
                     self.verticalWidget[number].show()
                     self.formWidget[number].show()
 
@@ -118,7 +113,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.currentPage() == self.progressPage:
             Receiver.send_message(u'openlp_stop_wizard')
             for bible in self.newbibles.itervalues():
-                delete_database(self.newpath, clean_filename(
+                delete_database(self.path, clean_filename(
                     bible.get_name())) 
         self.done(QtGui.QDialog.Rejected)
 
@@ -139,7 +134,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         for number, filename in enumerate(self.files):
             if self.success[number]:
-                delete_file(os.path.join(self.oldpath, filename))
+                delete_file(os.path.join(self.path, filename))
 
     def customInit(self):
         """
@@ -152,10 +147,6 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        for number, filename in enumerate(self.files):
-            QtCore.QObject.connect(self.checkBox[number],
-                QtCore.SIGNAL(u'stateChanged(int)'),
-                self.onCheckBoxIndexChanged)
         QtCore.QObject.connect(self.finishButton,
             QtCore.SIGNAL(u'clicked()'), self.onFinishButton)
 
@@ -195,24 +186,24 @@ class BibleUpgradeForm(OpenLPWizard):
         self.formWidget = {}
         self.formLayoutAttention = {}
         for number, filename in enumerate(self.files):
-            bible = OldBibleDB(self.mediaItem, path=self.oldpath, file=filename)
+            bible = OldBibleDB(self.mediaItem, path=self.path, file=filename)
             self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
-            checkBoxName = u'checkBox['+unicode(number)+u']'
+            checkBoxName = u'checkBox[%d]' % number
             self.checkBox[number].setObjectName(checkBoxName)
             self.checkBox[number].setText(bible.get_name())
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
             self.verticalWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            verticalWidgetName = u'verticalWidget['+unicode(number)+u']'
+            verticalWidgetName = u'verticalWidget[%d]' % number
             self.verticalWidget[number].setObjectName(verticalWidgetName)
             self.horizontalLayout[number] = QtGui.QHBoxLayout(
                 self.verticalWidget[number])
             self.horizontalLayout[number].setContentsMargins(25, 0, 0, 0)
-            horizontalLayoutName = u'horizontalLayout['+unicode(number)+u']'
+            horizontalLayoutName = u'horizontalLayout[%d]' % number
             self.horizontalLayout[number].setObjectName(horizontalLayoutName)
             self.versionInfoPixmap[number] = QtGui.QLabel(
                 self.verticalWidget[number])
-            versionInfoPixmapName = u'versionInfoPixmap['+unicode(number)+u']'
+            versionInfoPixmapName = u'versionInfoPixmap[%d]' % number
             self.versionInfoPixmap[number].setObjectName(versionInfoPixmapName)
             self.versionInfoPixmap[number].setPixmap(QtGui.QPixmap(
                 u':/bibles/bibles_upgrade_alert.png'))
@@ -221,7 +212,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.versionInfoPixmap[number])
             self.versionInfoLabel[number] = QtGui.QLabel(
                 self.verticalWidget[number])
-            versionInfoLabelName = u'versionInfoLabel['+unicode(number)+u']'
+            versionInfoLabelName = u'versionInfoLabel[%d]' % number
             self.versionInfoLabel[number].setObjectName(versionInfoLabelName)
             sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, 
                 QtGui.QSizePolicy.Preferred)
@@ -234,13 +225,12 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.versionInfoLabel[number])
             self.formLayout.addWidget(self.verticalWidget[number])
             self.formWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            formWidgetName = u'formWidget['+unicode(number)+u']'
+            formWidgetName = u'formWidget[%d]' % number
             self.formWidget[number].setObjectName(formWidgetName)
             self.formLayoutAttention[number] = QtGui.QFormLayout(
                 self.formWidget[number])
             self.formLayoutAttention[number].setContentsMargins(25, 0, 0, 5)
-            formLayoutAttentionName = u'formLayoutAttention['+unicode(number)+\
-                u']'
+            formLayoutAttentionName = u'formLayoutAttention[%d]' % number
             self.formLayoutAttention[number].setObjectName(
                 formLayoutAttentionName)
             self.versionNameLabel[number] = QtGui.QLabel(
@@ -255,6 +245,10 @@ class BibleUpgradeForm(OpenLPWizard):
                 QtGui.QFormLayout.FieldRole, self.versionNameEdit[number])
             self.versionNameEdit[number].setText(bible.get_name())
             self.formLayout.addWidget(self.formWidget[number])
+            #Set up the Signal for the checkbox
+            QtCore.QObject.connect(self.checkBox[number],
+                QtCore.SIGNAL(u'stateChanged(int)'),
+                self.onCheckBoxIndexChanged)
         self.spacerItem = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.formLayout.addItem(self.spacerItem)
@@ -329,7 +323,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     continue
                 version_name = unicode(self.versionNameEdit[number].text())
-                oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
+                oldbible = OldBibleDB(self.mediaItem, path=self.path, 
                     file=filename)
                 oldname = oldbible.get_name()
                 if not version_name:
@@ -348,18 +342,28 @@ class BibleUpgradeForm(OpenLPWizard):
                         'uncheck.'))
                     self.versionNameEdit[number].setFocus()
                     return False
-                elif os.path.exists(os.path.join(self.newpath, filename)) and \
-                    version_name == oldname:
-                    critical_error_message_box(
-                        translate('BiblesPlugin.UpgradeWizardForm', 
+                elif os.path.exists(os.path.join(self.path, clean_filename(
+                    version_name))) and version_name == oldname:
+                    newfilename = u'old_database_%s' % filename
+                    if not os.path.exists(os.path.join(self.path, 
+                        newfilename)):
+                        os.rename(os.path.join(self.path, filename), 
+                            os.path.join(self.path, newfilename))
+                        self.files[number] = newfilename
+                        continue
+                    else:
+                        critical_error_message_box(
+                            translate('BiblesPlugin.UpgradeWizardForm', 
                             'Bible Exists'),
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'This Bible already exists. Please upgrade '
-                        'a different Bible, delete the existing one or '
-                        'uncheck.'))
-                    self.versionNameEdit[number].setFocus()
-                    return False
-                elif os.path.exists(os.path.join(self.newpath, 
+                            translate('BiblesPlugin.UpgradeWizardForm',
+                            'This Bible already exists. Please upgrade '
+                            'a different Bible, delete the existing one or '
+                            'uncheck.'))
+                        self.verticalWidget[number].show()
+                        self.formWidget[number].show()
+                        self.versionNameEdit[number].setFocus()
+                        return False
+                elif os.path.exists(os.path.join(self.path, 
                     clean_filename(version_name))):
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm', 
@@ -385,15 +389,16 @@ class BibleUpgradeForm(OpenLPWizard):
         self.success.clear()
         self.newbibles.clear()
         self.clearScrollArea()
-        self.files = SettingsManager.get_files(self.oldsettingsSection, 
-            self.suffix)
+        self.files = self.manager.old_bible_databases
         self.addScrollArea()
-        self.customSignals()
         self.retranslateUi()
         self.maxBibles = len(self.files)
         for number, filename in enumerate(self.files):
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
-            if os.path.exists(os.path.join(self.newpath, filename)):
+            oldbible = OldBibleDB(self.mediaItem, path=self.path, 
+                file=filename)
+            oldname = oldbible.get_name()
+            if self.manager.exists(oldname):
                 self.verticalWidget[number].show()
                 self.formWidget[number].show()
             else:
@@ -440,11 +445,11 @@ class BibleUpgradeForm(OpenLPWizard):
             if not self.checkBox[biblenumber].checkState() == QtCore.Qt.Checked:
                 continue
             self.progressBar.reset()
-            oldbible = OldBibleDB(self.mediaItem, path=self.oldpath, 
+            oldbible = OldBibleDB(self.mediaItem, path=self.path, 
                 file=filename)
             name = oldbible.get_name()
             if name is None:
-                delete_file(os.path.join(self.oldpath, filename))
+                delete_file(os.path.join(self.path, filename))
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
@@ -456,9 +461,9 @@ class BibleUpgradeForm(OpenLPWizard):
                 'BiblesPlugin.UpgradeWizardForm', 
                 'Upgrading Bible %s of %s: "%s"\nImporting ...')) % 
                 (number + 1, self.maxBibles, name))
-            if os.path.exists(os.path.join(self.newpath, filename)):
+            if os.path.exists(os.path.join(self.path, filename)):
                 name = unicode(self.versionNameEdit[biblenumber].text())
-            self.newbibles[number] = BibleDB(self.mediaItem, path=self.oldpath,
+            self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name)
             metadata = oldbible.get_metadata()
             webbible = False
@@ -488,7 +493,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         u'name: "%s" failed' % (
                         meta_data[u'download source'], 
                         meta_data[u'download name']))
-                    delete_database(self.newpath, 
+                    delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name())) 
                     del self.newbibles[number]
                     critical_error_message_box(
@@ -517,7 +522,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     log.exception(u'Upgrading from "%s" '\
                         'failed' % filename)
-                    delete_database(self.newpath, 
+                    delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
@@ -543,7 +548,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'], 
                             meta_data[u'download name']))
-                        delete_database(self.newpath, 
+                        delete_database(self.path, 
                             clean_filename(self.newbibles[number].get_name()))
                         del self.newbibles[number]
                         bible_failed = True
@@ -559,7 +564,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     log.exception(u'Importing books from "%s" '\
                         'failed' % name)
-                    delete_database(self.newpath, 
+                    delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
@@ -585,7 +590,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.exception(u'Importing books from %s " '\
                             'failed - aborted by user' % name)
-                        delete_database(self.newpath, 
+                        delete_database(self.path, 
                             clean_filename(self.newbibles[number].get_name()))
                         del self.newbibles[number]
                         bible_failed = True
