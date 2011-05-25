@@ -116,7 +116,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         if self.requestComboBox.currentText() == u'':
             critical_error_message_box(
                 message=translate('BiblesPlugin.BookNameForm',
-                'You need to choose a book.'))
+                'You need to select a book.'))
             self.requestComboBox.setFocus()
             return False
         else:

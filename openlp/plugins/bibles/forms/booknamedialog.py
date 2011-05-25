@@ -100,12 +100,12 @@ class Ui_BookNameDialog(object):
 
     def retranslateUi(self, bookNameDialog):
         bookNameDialog.setWindowTitle(
-            translate('BiblesPlugin.BookNameDialog', 'Choose Book'))
+            translate('BiblesPlugin.BookNameDialog', 'Select Book'))
         self.headlineLabel.setText(
-            translate('BiblesPlugin.BookNameDialog', 'Choose Book:'))
+            translate('BiblesPlugin.BookNameDialog', 'Select Book:'))
         self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog', 
             'The following books cannot be clearly attributed. \n'
-            'Please choose which book it is.'))
+            'Please select which book it is.'))
         self.requestLabel.setText(translate('BiblesPlugin.BookNameDialog', 
             'Book:'))
         self.infoLabelTestaments.setText(translate(

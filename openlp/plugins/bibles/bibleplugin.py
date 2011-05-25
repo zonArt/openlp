@@ -80,8 +80,7 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application starup
         """
-        if not len(self.manager.db_cache) and \
-            len(self.manager.old_bible_databases):
+        if len(self.manager.old_bible_databases):
             if QtGui.QMessageBox.information(self.formparent, 
                 translate('OpenLP', 'Information'), translate('OpenLP',
                 'Bible format has changed.\nYou have to upgrade your '
@@ -114,7 +113,7 @@ class BiblePlugin(Plugin):
             The actual **Tools** menu item, so that your actions can
             use it as their parent.
         """
-        log.info(u'add tools menu')
+        log.debug(u'add tools menu')
         self.toolsUpgradeItem = QtGui.QAction(tools_menu)
         self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
         self.toolsUpgradeItem.setText(

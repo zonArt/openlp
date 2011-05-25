@@ -154,7 +154,7 @@ class BibleManager(object):
                 delete_file(os.path.join(self.path, filename))
                 continue
             # Find old database versions
-            if bible.find_old_database():
+            if bible.is_old_database():
                 self.old_bible_databases.append(filename)
                 continue
             log.debug(u'Bible Name: "%s"', name)

@@ -52,8 +52,13 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def exec_(self):
+    def exec_(self, bible_name):
         self.requestComboBox.addItem(u'')
+        if bible_name:
+            self.infoLabel.setText(unicode(translate(
+                'BiblesPlugin.LanguageDialog', 
+                'Please select the language for Bible:\n"%s"')) % 
+                bible_name)
         items = BiblesResourcesDB.get_languages()
         for item in items:
             self.requestComboBox.addItem(item[u'name'])
@@ -63,7 +68,7 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         if self.requestComboBox.currentText() == u'':
             critical_error_message_box(
                 message=translate('BiblesPlugin.LanguageForm',
-                'You need to choose a language.'))
+                'You need to select a language.'))
             self.requestComboBox.setFocus()
             return False
         else:

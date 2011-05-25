@@ -396,7 +396,7 @@ class BibleDB(QtCore.QObject, Manager):
                     .all()
                 verse_list.extend(verses)
             else:
-                log.debug(u'OpenLP failed to find book %s', book)
+                log.debug(u'OpenLP failed to find book with id "%s"', book_id)
                 if show_error:
                     critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
@@ -466,10 +466,10 @@ class BibleDB(QtCore.QObject, Manager):
         else:
             return count
 
-    def get_language(self):
+    def get_language(self, bible_name=None):
         """
         If no language is given it calls a dialog window where the user could 
-        choose the bible language.
+        select the bible language.
         Return the language id of a bible.
 
         ``book``
@@ -479,7 +479,7 @@ class BibleDB(QtCore.QObject, Manager):
         from openlp.plugins.bibles.forms import LanguageForm
         language = None
         language_form = LanguageForm(self.wizard)
-        if language_form.exec_():
+        if language_form.exec_(bible_name):
             language = unicode(language_form.requestComboBox.currentText())
         if not language:
             return False
@@ -488,9 +488,10 @@ class BibleDB(QtCore.QObject, Manager):
         self.create_meta(u'language_id', language_id)
         return language_id
 
-    def find_old_database(self):
+    def is_old_database(self):
         """
-        Returns true if it is an old bible database.
+        Returns ``True`` if it is a bible database, which has been created
+        prior to 1.9.6.
         """
         try:
             columns = self.session.query(Book).all()

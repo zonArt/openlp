@@ -31,7 +31,6 @@ import csv
 import logging
 import os
 import os.path
-import re
 
 from PyQt4 import QtCore, QtGui
 

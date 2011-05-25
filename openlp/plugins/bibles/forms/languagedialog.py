@@ -85,10 +85,10 @@ class Ui_LanguageDialog(object):
 
     def retranslateUi(self, languageDialog):
         languageDialog.setWindowTitle(
-            translate('BiblesPlugin.LanguageDialog', 'Choose Language'))
+            translate('BiblesPlugin.LanguageDialog', 'Select Language'))
         self.headlineLabel.setText(
-            translate('BiblesPlugin.LanguageDialog', 'Choose Language:'))
+            translate('BiblesPlugin.LanguageDialog', 'Select Language:'))
         self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
-            'Please choose the Bible\'s language'))
+            'Please select the Bible\'s language'))
         self.requestLabel.setText(translate('BiblesPlugin.languageDialog', 
             'Language:'))
