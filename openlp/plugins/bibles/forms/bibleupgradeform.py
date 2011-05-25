@@ -110,12 +110,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Stop the wizard on cancel button, close button or ESC key.
         """
         log.debug(u'Wizard cancelled by user')
-        if self.currentPage() == self.progressPage:
-            Receiver.send_message(u'openlp_stop_wizard')
-            for bible in self.newbibles.itervalues():
-                delete_database(self.path, clean_filename(
-                    bible.get_name())) 
-        self.done(QtGui.QDialog.Rejected)
+        self.stop_import_flag = True
 
     def onCurrentIdChanged(self, pageId):
         """
@@ -133,7 +128,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Some cleanup while finishing
         """
         for number, filename in enumerate(self.files):
-            if self.success[number]:
+            if number in self.success and self.success[number] == True:
                 delete_file(os.path.join(self.path, filename))
 
     def customInit(self):
@@ -440,6 +435,7 @@ class BibleUpgradeForm(OpenLPWizard):
         number = 0
         for biblenumber, filename in enumerate(self.files):
             if self.stop_import_flag:
+                bible_failed = True
                 break
             bible_failed = False
             self.success[biblenumber] = False
@@ -536,6 +532,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     if self.stop_import_flag:
+                        bible_failed = True
                         break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
@@ -579,6 +576,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     if self.stop_import_flag:
+                        bible_failed = True
                         break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
@@ -624,15 +622,17 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                     (number+1, self.maxBibles, name), 
                     self.progressBar.maximum()-self.progressBar.value())
+                delete_database(self.path, 
+                    clean_filename(self.newbibles[number].get_name()))
             number += 1
         self.mediaItem.reloadBibles()
         successful_import = 0
         failed_import = 0
-        for number, success in self.success.iteritems():
-            if success == True:
+        for number, filename in enumerate(self.files):
+        #for number, success in self.success.iteritems():
+            if number in self.success and self.success[number] == True:
                 successful_import += 1
-            elif success == False and self.checkBox[number].checkState() == \
-                QtCore.Qt.Checked:
+            elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 failed_import += 1
         if failed_import > 0:
             failed_import_text = unicode(translate(
