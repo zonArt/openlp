@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -267,8 +268,10 @@ class Ui_MainWindow(object):
         self.HelpAboutItem = shortcut_action(mainWindow, u'HelpAboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
-        self.HelpOnlineHelpItem = base_action(
-            mainWindow, u'HelpOnlineHelpItem', category=UiStrings().Help)
+        self.HelpOnlineHelpItem = shortcut_action(
+            mainWindow, u'HelpOnlineHelpItem', [QtGui.QKeySequence(u'F1')],
+            self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
+            category=UiStrings().Help)
         self.helpWebSiteItem = base_action(
             mainWindow, u'helpWebSiteItem', category=UiStrings().Help)
         add_actions(self.FileImportMenu,
@@ -415,9 +418,6 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
-        # Uncomment after 1.9.5 beta string freeze
-        #self.HelpOnlineHelpItem.setShortcut(
-        #    translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.LanguageGroup.actions():
@@ -509,8 +509,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
-        QtCore.QObject.connect(self.HelpOnlineHelpItem,
-            QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
         QtCore.QObject.connect(self.updateThemeImages,
@@ -696,7 +694,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
 
-    def onHelpOnLineHelpClicked(self):
+    def onHelpOnlineHelpClicked(self):
         """
         Load the online OpenLP manual
         """
