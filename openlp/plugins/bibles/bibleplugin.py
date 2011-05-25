@@ -29,8 +29,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    SettingsManager
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import base_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
