@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -149,20 +150,18 @@ class PresentationMediaItem(MediaManagerItem):
         else:
             self.presentationWidget.hide()
 
-    def loadList(self, list, initialLoad=False):
+    def loadList(self, files, initialLoad=False):
         """
         Add presentations into the media manager
         This is called both on initial load of the plugin to populate with
         existing files, and when the user adds new files via the media manager
         """
         currlist = self.getFileList()
-        titles = []
-        for file in currlist:
-            titles.append(os.path.split(file)[1])
+        titles = [os.path.split(file)[1] for file in currlist]
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
-            self.parent.formparent.displayProgressBar(len(list))
-        for file in list:
+            self.parent.formparent.displayProgressBar(len(files))
+        for file in files:
             if not initialLoad:
                 self.parent.formparent.incrementProgressBar()
             if currlist.count(file) > 0:

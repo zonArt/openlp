@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -229,7 +230,10 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
-        searchresults.sort(cmp=self.collateSongTitles)
+        # Sort the songs by its title considering language specific characters.
+        # lower() is needed for windows!
+        searchresults.sort(
+            cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
@@ -474,13 +478,6 @@ class SongMediaItem(MediaManagerItem):
         if editId:
             Receiver.send_message(u'service_item_update',
                 u'%s:%s' % (editId, item._uuid))
-
-    def collateSongTitles(self, song_1, song_2):
-        """
-        Locale aware collation of song titles
-        """
-        return locale.strcoll(unicode(song_1.title.lower()),
-             unicode(song_2.title.lower()))
 
     def search(self, string):
         """
