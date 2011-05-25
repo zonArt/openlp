@@ -185,6 +185,7 @@ class SlideController(QtGui.QWidget):
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
+            startLoop.setObjectName(u'startLoop')
             action_list = ActionList.get_instance()
             action_list.add_action(startLoop, UiStrings().LiveToolbar)
             stopLoop = self.toolbar.addToolbarButton(
@@ -192,6 +193,7 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
+            stopLoop.setObjectName(u'stopLoop')
             action_list.add_action(stopLoop, UiStrings().LiveToolbar)
             self.toogleLoop = shortcut_action(self, u'toogleLoop',
                 [QtGui.QKeySequence(u'L')], self.onToggleLoop,
