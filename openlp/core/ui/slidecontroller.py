@@ -937,12 +937,13 @@ class SlideController(QtGui.QWidget):
             self.updatePreview()
         else:
             row = self.previewListWidget.currentRow() + 1
-            enable_loop = QtCore.QSettings().value(self.parent.generalSettingsSection + u'/enable slide loop', QtCore.QVariant(True)).toBool()
+            can_loop = QtCore.QSettings().value(self.parent.generalSettingsSection
+                + u'/enable slide loop', QtCore.QVariant(True)).toBool()
             if row == self.previewListWidget.rowCount():
-                if enable_loop:
+                if can_loop:
                     row = 0
                 else:
-                    pass
+                    row = self.previewListWidget.rowCount() - 1
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
 
@@ -959,8 +960,9 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                enable_loop = QtCore.QSettings().value(self.parent.generalSettingsSection + u'/enable slide loop', QtCore.QVariant(True)).toBool()
-                if enable_loop:
+                can_loop = QtCore.QSettings().value(self.parent.generalSettingsSection
+                    + u'/enable slide loop', QtCore.QVariant(True)).toBool()
+                if can_loop:
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     row = 0
