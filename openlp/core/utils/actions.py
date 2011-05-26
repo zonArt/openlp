@@ -203,7 +203,8 @@ class ActionList(object):
         Add an action to the list of actions.
 
         ``action``
-            The action to add (QAction).
+            The action to add (QAction). **Note**, the action must not have an
+            empty ``objectName``.
 
         ``category``
             The category this action belongs to. The category can be a QString

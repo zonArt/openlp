@@ -123,7 +123,7 @@ class LanguageManager(object):
         language = u'en'
         if action:
             action_name = unicode(action.objectName())
-            if action_name == u'AutoLanguageItem':
+            if action_name == u'autoLanguageItem':
                 LanguageManager.auto_language = True
             else:
                 LanguageManager.auto_language = False
