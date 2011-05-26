@@ -7,7 +7,7 @@
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
 # Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
@@ -116,7 +116,7 @@ class Ui_AboutDialog(object):
             u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
             u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
-            u'Stevan "smpettit" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
+            u'Stevan "StevanP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
             u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
             u'Frode "frodus" Woldsund']
@@ -230,7 +230,7 @@ class Ui_AboutDialog(object):
             'Portions copyright \xa9 2004-2011 %s')) % (u'Raoul Snyman',
             u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
             u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
-            u'Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias '
+            u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
             u'P\xf5ldaru, Christian Richter, Philip Ridout, Jeffrey Smith, '
             u'Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
