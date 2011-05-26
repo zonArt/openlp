@@ -387,4 +387,3 @@ class GeneralTab(SettingsTab):
         Called when the width, height, x position or y position has changed.
         """
         self.display_changed = True
-
