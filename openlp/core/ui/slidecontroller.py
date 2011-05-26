@@ -349,13 +349,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.typePrefix),
             self.onSlideSelectedPrevious)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.typePrefix),
-            self.onSlideSelectedNextNoloop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' %
-            self.typePrefix),
-            self.onSlideSelectedPreviousNoloop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_last' % self.typePrefix),
             self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -940,10 +933,7 @@ class SlideController(QtGui.QWidget):
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNextNoloop(self):
-        self.onSlideSelectedNext(False)
-
-    def onSlideSelectedNext(self, loop=True):
+    def onSlideSelectedNext(self):
         """
         Go to the next slide.
         """
@@ -956,18 +946,15 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if loop:
+                if QtCore.QSettings().value(self.parent.generalSettingsSection +
+                    u'/enable slide loop', QtCore.QVariant(True)).toBool():
                     row = 0
                 else:
-                    Receiver.send_message('servicemanager_next_item')
-                    return
+                    row = self.previewListWidget.rowCount() - 1
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
 
-    def onSlideSelectedPreviousNoloop(self):
-        self.onSlideSelectedPrevious(False)
-
-    def onSlideSelectedPrevious(self, loop=True):
+    def onSlideSelectedPrevious(self):
         """
         Go to the previous slide.
         """
@@ -980,7 +967,8 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if loop:
+                if QtCore.QSettings().value(self.parent.generalSettingsSection +
+                    u'/enable slide loop', QtCore.QVariant(True)).toBool():
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     row = 0
