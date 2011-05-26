@@ -84,6 +84,9 @@ base_html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
 base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
     u'start html': u'<span style="text-decoration: underline;">',
     u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Break', u'start tag': u'{br}',
+    u'start html': u'<br>', u'end tag': u'', u'end html': u'',
+    u'protected': True})
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -245,6 +248,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
+    text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
