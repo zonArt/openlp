@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -1121,6 +1121,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Send the current item to the Preview slide controller
         """
+        Receiver.send_message(u'cursor_busy')
         item, child = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.previewController.addServiceManagerItem(
@@ -1130,6 +1131,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
+        Receiver.send_message(u'cursor_normal')
 
     def getServiceItem(self):
         """
@@ -1162,6 +1164,7 @@ class ServiceManager(QtGui.QWidget):
             return
         if row != -1:
             child = row
+        Receiver.send_message(u'cursor_busy')
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
@@ -1181,6 +1184,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
                 'or inactive'))
+        Receiver.send_message(u'cursor_normal')
 
     def remoteEdit(self):
         """
