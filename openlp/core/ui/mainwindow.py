@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -537,6 +537,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+        # Media Manager
+        QtCore.QObject.connect(self.mediaToolBox,
+            QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         Receiver.send_message(u'cursor_busy')
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -601,6 +604,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.languageGroup.setDisabled(value)
         LanguageManager.auto_language = value
         LanguageManager.set_language(self.languageGroup.checkedAction())
+
+    def onMediaToolBoxChanged(self, index):
+        widget = self.mediaToolBox.widget(index)
+        if widget:
+            widget.onFocus()
 
     def versionNotice(self, version):
         """
