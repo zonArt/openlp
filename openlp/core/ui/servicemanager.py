@@ -1109,6 +1109,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Send the current item to the Preview slide controller
         """
+        Receiver.send_message(u'cursor_busy')
         item, child = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.previewController.addServiceManagerItem(
@@ -1118,6 +1119,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
+        Receiver.send_message(u'cursor_normal')
 
     def getServiceItem(self):
         """
@@ -1150,6 +1152,7 @@ class ServiceManager(QtGui.QWidget):
             return
         if row != -1:
             child = row
+        Receiver.send_message(u'cursor_busy')
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
@@ -1169,6 +1172,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
                 'or inactive'))
+        Receiver.send_message(u'cursor_normal')
 
     def remoteEdit(self):
         """

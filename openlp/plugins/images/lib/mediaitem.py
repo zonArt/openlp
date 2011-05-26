@@ -27,6 +27,7 @@
 
 import logging
 import os
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -112,6 +113,10 @@ class ImageMediaItem(MediaManagerItem):
     def loadList(self, list, initialLoad=False):
         if not initialLoad:
             self.parent.formparent.displayProgressBar(len(list))
+        # Sort the themes by its filename considering language specific
+        # characters. lower() is needed for windows!
+        list.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for imageFile in list:
             if not initialLoad:
                 self.parent.formparent.incrementProgressBar()
