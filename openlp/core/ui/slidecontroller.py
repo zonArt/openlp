@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -184,6 +185,7 @@ class SlideController(QtGui.QWidget):
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
+            startLoop.setObjectName(u'startLoop')
             action_list = ActionList.get_instance()
             action_list.add_action(startLoop, UiStrings().LiveToolbar)
             stopLoop = self.toolbar.addToolbarButton(
@@ -191,6 +193,7 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
+            stopLoop.setObjectName(u'stopLoop')
             action_list.add_action(stopLoop, UiStrings().LiveToolbar)
             self.toogleLoop = shortcut_action(self, u'toogleLoop',
                 [QtGui.QKeySequence(u'L')], self.onToggleLoop,
@@ -1053,7 +1056,7 @@ class SlideController(QtGui.QWidget):
         """
         From the preview display request the Item to be added to service
         """
-        self.parent.ServiceManagerContents.addServiceItem(self.serviceItem)
+        self.parent.serviceManagerContents.addServiceItem(self.serviceItem)
 
     def onGoLiveClick(self):
         """

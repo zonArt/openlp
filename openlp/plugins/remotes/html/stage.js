@@ -5,7 +5,8 @@
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
  * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
  * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
+ * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
+ * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -29,7 +30,7 @@ window.OpenLP = {
         $("#notes").html("");
         for (idx in data.results.items) {
           idx = parseInt(idx, 10);
-          if ((data.results.items[idx]["selected"]) && 
+          if ((data.results.items[idx]["selected"]) &&
             (data.results.items.length > idx + 1)) {
             $("#notes").html(data.results.items[idx]["notes"]);
             OpenLP.nextSong = data.results.items[idx + 1]["title"];
@@ -59,14 +60,14 @@ window.OpenLP = {
             // If the tag has changed, add new one to the list
             lastChange = idx;
             tags = tags + 1;
-            div.append("&nbsp;<span>");       
+            div.append("&nbsp;<span>");
             $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
           }
           else {
             if ((slide["text"] == data.results.slides[lastChange]["text"]) &&
               (data.results.slides.length > idx + (idx - lastChange))) {
               // If the tag hasn't changed, check to see if the same verse
-              // has been repeated consecutively. Note the verse may have been 
+              // has been repeated consecutively. Note the verse may have been
               // split over several slides, so search through. If so, repeat the tag.
               var match = true;
               for (var idx2 = 0; idx2 < idx - lastChange; idx2++) {
@@ -78,13 +79,13 @@ window.OpenLP = {
               if (match) {
                 lastChange = idx;
                 tags = tags + 1;
-                div.append("&nbsp;<span>");       
+                div.append("&nbsp;<span>");
                 $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
               }
             }
           }
           OpenLP.currentTags[idx] = tags;
-          if (slide["selected"]) 
+          if (slide["selected"])
             OpenLP.currentSlide = idx;
         })
         OpenLP.loadService();
@@ -122,9 +123,9 @@ window.OpenLP = {
   },
   updateClock: function() {
     var div = $("#clock");
-    var t = new Date(); 
+    var t = new Date();
     var h = t.getHours();
-    if (h > 12) 
+    if (h > 12)
       h = h - 12;
     var m = t.getMinutes();
     if (m < 10)
@@ -139,7 +140,7 @@ window.OpenLP = {
         if (OpenLP.currentItem != data.results.item) {
           OpenLP.currentItem = data.results.item;
           OpenLP.loadSlides();
-        } 
+        }
         else if (OpenLP.currentSlide != data.results.slide) {
           OpenLP.currentSlide = parseInt(data.results.slide, 10);
           OpenLP.updateSlide();
