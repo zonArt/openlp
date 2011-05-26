@@ -51,8 +51,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
-        QtCore.QObject.connect(self.defaultPushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
         QtCore.QObject.connect(self.savePushButton,
@@ -140,13 +138,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
-
-    def onDefaultPushed(self):
-        """
-        Remove all Custom Tags and reset to base set only.
-        """
-        DisplayTags.reset_html_tags()
-        self._resetTable()
 
     def onDeletePushed(self):
         """

@@ -69,9 +69,6 @@ class Ui_DisplayTagDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.defaultPushButton = QtGui.QPushButton(self.widget)
-        self.defaultPushButton.setObjectName(u'defaultPushButton')
-        self.horizontalLayout.addWidget(self.defaultPushButton)
         self.deletePushButton = QtGui.QPushButton(self.widget)
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.horizontalLayout.addWidget(self.deletePushButton)
@@ -141,8 +138,6 @@ class Ui_DisplayTagDialog(object):
         self.endTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings().Delete)
-        self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Default'))
         self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
