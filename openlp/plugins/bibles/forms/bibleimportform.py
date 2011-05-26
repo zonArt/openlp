@@ -31,6 +31,7 @@ import csv
 import logging
 import os
 import os.path
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -532,7 +533,7 @@ class BibleImportForm(OpenLPWizard):
         """
         self.webTranslationComboBox.clear()
         bibles = self.web_bible_list[index].keys()
-        bibles.sort()
+        bibles.sort(cmp=locale.strcoll)
         self.webTranslationComboBox.addItems(bibles)
 
     def onOsisBrowseButtonClicked(self):
@@ -767,4 +768,3 @@ class BibleImportForm(OpenLPWizard):
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
             delete_database(self.plugin.settingsSection, importer.file)
-
