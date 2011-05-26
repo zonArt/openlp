@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,7 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.utils import get_uno_command, get_uno_instance
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -64,7 +66,8 @@ class OooImport(SongImport):
         except NoConnectException as exc:
             self.log_error(
                 self.import_source[0],
-                u'Unable to connect to OpenOffice.org or LibreOffice')
+                translate('SongsPlugin.SongImport',
+                    u'Unable to open OpenOffice.org or LibreOffice'))
             log.error(exc)
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
@@ -77,6 +80,10 @@ class OooImport(SongImport):
                 if self.document:
                     self.process_ooo_document()
                     self.close_ooo_file()
+                else:
+                    self.log_error(self.filepath)
+            else:
+                self.log_error(self.filepath)
         self.close_ooo()
 
     def process_ooo_document(self):
@@ -157,8 +164,8 @@ class OooImport(SongImport):
             else:
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
-        except:
-            log.exception("open_ooo_file failed")
+        except AttributeError:
+            log.exception("open_ooo_file failed: %s", url)
         return
 
     def close_ooo_file(self):
