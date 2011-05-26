@@ -480,7 +480,7 @@ class BibleDB(QtCore.QObject, Manager):
         language = None
         language_form = LanguageForm(self.wizard)
         if language_form.exec_(bible_name):
-            language = unicode(language_form.requestComboBox.currentText())
+            language = unicode(language_form.languageComboBox.currentText())
         if not language:
             return False
         language = BiblesResourcesDB.get_language(language)
