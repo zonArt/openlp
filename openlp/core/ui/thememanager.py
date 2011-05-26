@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,7 @@ import os
 import zipfile
 import shutil
 import logging
+import locale
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
@@ -56,7 +58,7 @@ class ThemeManager(QtGui.QWidget):
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
         self.serviceComboBox = \
-            self.mainwindow.ServiceManagerContents.themeComboBox
+            self.mainwindow.serviceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -461,7 +463,10 @@ class ThemeManager(QtGui.QWidget):
                     QtCore.QVariant(theme.theme_name))
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
-        files.sort()
+        # Sort the themes by its name considering language specific characters.
+        # lower() is needed for windows!
+        files.sort(key=lambda filename: unicode(filename).lower(),
+           cmp=locale.strcoll)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory
@@ -659,6 +664,18 @@ class ThemeManager(QtGui.QWidget):
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
+
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        self.mainwindow.displayProgressBar(len(self.themelist))
+        for theme in self.themelist:
+            self.mainwindow.incrementProgressBar()
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        self.mainwindow.finishedProgressBar()
+        self.loadThemes()
 
     def generateImage(self, themeData, forcePage=False):
         """

@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,7 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
+import cgi
 import datetime
 import logging
 import os
@@ -174,17 +176,18 @@ class ServiceItem(object):
                 formatted = self.renderer \
                     .format_slide(slide[u'raw_slide'], line_break, self)
                 for page in formatted:
+                    page = page.replace(u'<br>', u'{br}')
                     self._display_frames.append({
                         u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
-                        u'html': expand_tags(page.rstrip()),
+                        u'html': expand_tags(cgi.escape(page.rstrip())),
                         u'verseTag': slide[u'verseTag']
                     })
         elif self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command:
             pass
         else:
-            log.error(u'Invalid value renderer :%s' % self.service_item_type)
+            log.error(u'Invalid value renderer: %s' % self.service_item_type)
         self.title = clean_tags(self.title)
         # The footer should never be None, but to be compatible with a few
         # nightly builds between 1.9.4 and 1.9.5, we have to correct this to

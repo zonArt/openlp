@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -402,7 +403,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.name==book)\
+            .filter(Book.name == book)\
             .distinct().count()
         if not count:
             return 0
@@ -421,8 +422,8 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
-            .filter(Book.name==book)\
-            .filter(Verse.chapter==chapter)\
+            .filter(Book.name == book)\
+            .filter(Verse.chapter == chapter)\
             .count()
         if not count:
             return 0

@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -65,6 +66,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.slideListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onEditButtonPressed)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
@@ -111,6 +115,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
+            Receiver.send_message(u'custom_set_autoselect_item',
+                self.customSlide.title)
             Receiver.send_message(u'custom_load_list')
             QtGui.QDialog.accept(self)
 

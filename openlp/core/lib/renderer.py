@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -300,7 +301,7 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         self.page_shell = u'<html><head><style>' \
             u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
@@ -335,7 +336,7 @@ class Renderer(object):
             styled_text += styled_line
             html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 if force_page and line_count > 0:
                     Receiver.send_message(u'theme_line_count', line_count)
@@ -366,7 +367,7 @@ class Renderer(object):
 
         """
         log.debug(u'_paginate_slide_words - Start')
-        line_end = u''
+        line_end = u' '
         if line_break:
             line_end = u'<br>'
         formatted = []
@@ -374,10 +375,11 @@ class Renderer(object):
         previous_raw = u''
         lines = text.split(u'\n')
         for line in lines:
+            line = line.strip()
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
@@ -401,24 +403,56 @@ class Renderer(object):
                             previous_html = styled_line + line_end
                             previous_raw = line + line_end
                             continue
-                words = self._words_split(line)
-                for word in words:
-                    styled_word = expand_tags(word)
-                    html = self.page_shell + previous_html + styled_word + \
-                        HTML_END
+                # Figure out how many words of the line will fit on screen by
+                # using the algorithm known as "binary chop".
+                raw_words = self._words_split(line)
+                html_words = [expand_tags(word) for word in raw_words]
+                smallest_index = 0
+                highest_index = len(html_words) - 1
+                index = int(highest_index / 2)
+                while True:
+                    html = self.page_shell + previous_html + \
+                        u''.join(html_words[:index + 1]).strip() + HTML_END
                     self.web.setHtml(html)
-                    # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        while previous_raw.endswith(u'<br>'):
-                            previous_raw = previous_raw[:-4]
-                        formatted.append(previous_raw)
+                        # We know that it does not fit, so change/calculate the
+                        # new index and highest_index accordingly.
+                        highest_index = index
+                        index = int(index - (index - smallest_index) / 2)
+                    else:
+                        smallest_index = index
+                        index = int(index + (highest_index - index) / 2)
+                    # We found the number of words which will fit.
+                    if smallest_index == index or highest_index == index:
+                        index = smallest_index
+                        formatted.append(previous_raw.rstrip(u'<br>') +
+                            u''.join(raw_words[:index + 1]))
                         previous_html = u''
                         previous_raw = u''
-                    previous_html += styled_word
-                    previous_raw += word
-                previous_html += line_end
-                previous_raw += line_end
+                    else:
+                        continue
+                    # Check if the rest of the line fits on the slide. If it
+                    # does we do not have to do the much more intensive "word by
+                    # word" checking.
+                    html = self.page_shell + \
+                        u''.join(html_words[index + 1:]).strip() + HTML_END
+                    self.web.setHtml(html)
+                    if self.web_frame.contentsSize().height() <= \
+                        self.page_height:
+                        previous_html = \
+                            u''.join(html_words[index + 1:]).strip() + line_end
+                        previous_raw = \
+                            u''.join(raw_words[index + 1:]).strip() + line_end
+                        break
+                    else:
+                        # The other words do not fit, thus reset the indexes,
+                        # create a new list and continue with "word by word".
+                        raw_words = raw_words[index + 1:]
+                        html_words = html_words[index + 1:]
+                        smallest_index = 0
+                        highest_index = len(html_words) - 1
+                        index = int(highest_index / 2)
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
