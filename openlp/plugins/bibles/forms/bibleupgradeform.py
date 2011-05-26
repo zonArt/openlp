@@ -324,7 +324,6 @@ class BibleUpgradeForm(OpenLPWizard):
                 oldbible = OldBibleDB(self.mediaItem, path=self.path, 
                     file=filename)
                 oldname = oldbible.get_name()
-                oldbible.close_cursor()
                 if not version_name:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',

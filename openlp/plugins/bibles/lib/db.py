@@ -499,6 +499,12 @@ class BibleDB(QtCore.QObject, Manager):
             return True
         return False
 
+    def close_database(self):
+        """
+        Close database connection.
+        """
+        self.session.close()
+
     def dump_bible(self):
         """
         Utility debugging method to dump the contents of a bible.
