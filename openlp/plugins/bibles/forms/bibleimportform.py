@@ -706,7 +706,7 @@ class BibleImportForm(OpenLPWizard):
                 name=license_version,
                 filename=unicode(self.field(u'openlp1_location').toString())
             )
-        if importer.do_import():
+        if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version,
                 license_copyright, license_permissions)
             self.manager.reload_bibles()

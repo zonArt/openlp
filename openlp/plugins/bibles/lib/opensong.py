@@ -46,7 +46,7 @@ class OpenSongBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
@@ -62,7 +62,7 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
-            language_id = self.get_language()
+            language_id = self.get_language(bible_name)
             if not language_id:
                 log.exception(u'Importing books from "%s" '\
                     'failed' % self.filename)

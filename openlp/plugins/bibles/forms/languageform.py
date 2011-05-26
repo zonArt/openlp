@@ -55,11 +55,7 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
     def exec_(self, bible_name):
         self.languageComboBox.addItem(u'')
         if bible_name:
-            self.infoLabel.setText(unicode(translate(
-                'BiblesPlugin.LanguageDialog', 
-                'OpenLP is unable to determine the language of this translation'
-                ' of the Bible. Please select the language for "%s" from the '
-                'list below.')) % bible_name)
+            self.bibleLabel.setText(unicode(bible_name))
         items = BiblesResourcesDB.get_languages()
         for item in items:
             self.languageComboBox.addItem(item[u'name'])

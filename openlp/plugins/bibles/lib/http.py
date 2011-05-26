@@ -375,7 +375,7 @@ class HTTPBible(BibleDB):
         if u'proxy_password' in kwargs:
             self.proxy_password = kwargs[u'proxy_password']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
@@ -414,7 +414,7 @@ class HTTPBible(BibleDB):
             language_id = bible[u'language_id']
             self.create_meta(u'language_id', language_id)
         else:
-            language_id = self.get_language()
+            language_id = self.get_language(bible_name)
         if not language_id:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)

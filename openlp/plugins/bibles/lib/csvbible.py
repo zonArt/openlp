@@ -92,7 +92,7 @@ class CSVBible(BibleDB):
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Import the bible books and verses.
         """
@@ -100,10 +100,9 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
-        language_id = self.get_language()
+        language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from "%s" '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         books_file = None
         book_list = {}

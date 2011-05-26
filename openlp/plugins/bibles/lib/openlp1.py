@@ -46,7 +46,7 @@ class OpenLP1Bible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Imports an openlp.org v1 bible.
         """
@@ -58,10 +58,9 @@ class OpenLP1Bible(BibleDB):
         except:
             return False
         #Create the bible language
-        language_id = self.get_language()
+        language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from "%s " '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')

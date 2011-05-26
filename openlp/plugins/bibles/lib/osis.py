@@ -86,7 +86,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
@@ -109,10 +109,9 @@ class OSISBible(BibleDB):
             if detect_file:
                 detect_file.close()
         # Set meta language_id
-        language_id = self.get_language()
+        language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from "%s" '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])

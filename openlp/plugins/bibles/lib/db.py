@@ -999,6 +999,13 @@ class OldBibleDB(QtCore.QObject, Manager):
             self.cursor = conn.cursor()
         return self.cursor
 
+    def close_cursor(self):
+        """
+        Close the cursor
+        """
+        if self.cursor:
+            self.cursor.close()
+
     def run_sql(self, query, parameters=()):
         """
         Run an SQL query on the database, returning the results.
