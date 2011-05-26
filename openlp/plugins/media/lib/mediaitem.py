@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@
 from datetime import datetime
 import logging
 import os
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -201,6 +203,10 @@ class MediaMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
+        # Sort the themes by its filename considering language specific
+        # characters. lower() is needed for windows!
+        list.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in list:
             filename = os.path.split(unicode(file))[1]
             item_name = QtGui.QListWidgetItem(filename)

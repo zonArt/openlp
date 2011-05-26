@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -67,7 +68,7 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.serviceManager.mainwindow.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)

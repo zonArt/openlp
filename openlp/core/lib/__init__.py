@@ -8,7 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -83,6 +84,9 @@ base_html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
 base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
     u'start html': u'<span style="text-decoration: underline;">',
     u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Break', u'start tag': u'{br}',
+    u'start html': u'<br>', u'end tag': u'', u'end html': u'',
+    u'protected': True})
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -244,6 +248,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
+    text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')

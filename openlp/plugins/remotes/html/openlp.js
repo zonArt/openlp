@@ -5,7 +5,8 @@
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
  * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
  * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
+ * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
+ * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -216,7 +217,7 @@ window.OpenLP = {
         if (data.results.items.length == 0) {
           var li = $("<li data-icon=\"false\">").text('No results');
           ul.append(li);
-        } 
+        }
         else {
             $.each(data.results.items, function (idx, value) {
               var item = $("<li>").text(value[1]);
