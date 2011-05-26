@@ -111,6 +111,8 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         log.debug(u'Wizard cancelled by user')
         self.stop_import_flag = True
+        if not self.currentPage() == self.progressPage:
+            self.done(QtGui.QDialog.Rejected)
 
     def onCurrentIdChanged(self, pageId):
         """
@@ -413,7 +415,7 @@ class BibleUpgradeForm(OpenLPWizard):
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate(
             'BiblesPlugin.UpgradeWizardForm',
-            'Starting upgrading bible(s)...'))
+            'Starting upgrading Bible(s)...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):
@@ -450,7 +452,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
-                    (number+1, self.maxBibles, name), 
+                    (number + 1, self.maxBibles, name), 
                     self.progressBar.maximum() - self.progressBar.value())
                 number += 1
                 continue
@@ -503,8 +505,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\nFailed')) % 
-                        (number+1, self.maxBibles, name), 
-                        self.progressBar.maximum()-self.progressBar.value())
+                        (number + 1, self.maxBibles, name), 
+                        self.progressBar.maximum() - self.progressBar.value())
                     number += 1
                     continue
                 bible = BiblesResourcesDB.get_webbible(
@@ -517,16 +519,15 @@ class BibleUpgradeForm(OpenLPWizard):
                 else:
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
-                    log.exception(u'Upgrading from "%s" '\
-                        'failed' % filename)
+                    log.exception(u'Upgrading from "%s" failed' % filename)
                     delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\nFailed')) % 
-                        (number+1, self.maxBibles, name),
-                        self.progressBar.maximum()-self.progressBar.value())
+                        (number + 1, self.maxBibles, name),
+                        self.progressBar.maximum() - self.progressBar.value())
                     number += 1
                     continue
                 self.progressBar.setMaximum(len(books))
@@ -538,7 +539,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\n'
                         'Upgrading %s ...')) % 
-                        (number+1, self.maxBibles, name, book))
+                        (number + 1, self.maxBibles, name, book))
                     book_ref_id = self.newbibles[number].\
                         get_book_ref_id_by_name(book, len(books), language_id)
                     if not book_ref_id:
@@ -560,16 +561,15 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
-                    log.exception(u'Upgrading books from "%s" '\
-                        'failed' % name)
+                    log.exception(u'Upgrading books from "%s" failed' % name)
                     delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\nFailed')) % 
-                        (number+1, self.maxBibles, name), 
-                        self.progressBar.maximum()-self.progressBar.value())
+                        (number + 1, self.maxBibles, name), 
+                        self.progressBar.maximum() - self.progressBar.value())
                     number += 1
                     continue
                 books = oldbible.get_books()
@@ -582,7 +582,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'BiblesPlugin.UpgradeWizardForm', 
                         'Upgrading Bible %s of %s: "%s"\n'
                         'Upgrading %s ...')) % 
-                        (number+1, self.maxBibles, name, book[u'name']))
+                        (number + 1, self.maxBibles, name, book[u'name']))
                     book_ref_id = self.newbibles[number].\
                         get_book_ref_id_by_name(book[u'name'], len(books), 
                         language_id)
@@ -614,14 +614,14 @@ class BibleUpgradeForm(OpenLPWizard):
                     'BiblesPlugin.UpgradeWizardForm', 
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Done')) % 
-                    (number+1, self.maxBibles, name))
+                    (number + 1, self.maxBibles, name))
                 self.success[biblenumber] = True
             else:
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
-                    (number+1, self.maxBibles, name), 
-                    self.progressBar.maximum()-self.progressBar.value())
+                    (number + 1, self.maxBibles, name), 
+                    self.progressBar.maximum() - self.progressBar.value())
                 delete_database(self.path, 
                     clean_filename(self.newbibles[number].get_name()))
             number += 1

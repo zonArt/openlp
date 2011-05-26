@@ -84,7 +84,7 @@ class BiblePlugin(Plugin):
             if QtGui.QMessageBox.information(self.formparent, 
                 translate('OpenLP', 'Information'), translate('OpenLP',
                 'Bible format has changed.\nYou have to upgrade your '
-                'existing bibles.\nShould OpenLP upgrade now?'), 
+                'existing Bibles.\nShould OpenLP upgrade now?'), 
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
                 QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()

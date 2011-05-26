@@ -58,10 +58,10 @@ class BGExtract(object):
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
-        Access and decode bibles via the BibleGateway website.
+        Access and decode Bibles via the BibleGateway website.
 
         ``version``
-            The version of the bible like 31 for New International version.
+            The version of the Bible like 31 for New International version.
 
         ``bookname``
             Name of the Book.
@@ -133,10 +133,10 @@ class BGExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a bible contaions from BibleGateway website.
+        Load a list of all books a Bible contaions from BibleGateway website.
 
         ``version``
-            The version of the bible like NIV for New International Version
+            The version of the Bible like NIV for New International Version
         """
         log.debug(u'BGExtract.get_books_from_http("%s")', version)
         url_params = urllib.urlencode(
@@ -157,7 +157,7 @@ class BGExtract(object):
         try:
             soup = BeautifulSoup(soup)
         except HTMLParseError:
-            log.exception(u'BeautifulSoup could not parse the bible page.')
+            log.exception(u'BeautifulSoup could not parse the Bible page.')
         if not soup:
             send_error_message(u'parse')
             return None
@@ -224,11 +224,11 @@ class BSExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a bible contains from Bibleserver mobile 
+        Load a list of all books a Bible contains from Bibleserver mobile 
         website.
 
         ``version``
-            The version of the bible like NIV for New International Version
+            The version of the Bible like NIV for New International Version
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
         chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
@@ -261,7 +261,7 @@ class CWExtract(object):
         Access and decode bibles via the Crosswalk website
 
         ``version``
-            The version of the bible like niv for New International Version
+            The version of the Bible like niv for New International Version
 
         ``bookname``
             Text name of in english e.g. 'gen' for Genesis
@@ -320,7 +320,7 @@ class CWExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books  a bible contain from the Crosswalk website.
+        Load a list of all books a Bible contain from the Crosswalk website.
 
         ``version``
             The version of the bible like NIV for New International Version
@@ -383,7 +383,7 @@ class HTTPBible(BibleDB):
         self.wizard.progressBar.setMaximum(68)
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible', 
-            'Registering bible and loading books...')))
+            'Registering Bible and loading books...')))
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
         if self.proxy_server:
