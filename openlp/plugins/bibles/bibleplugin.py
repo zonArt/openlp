@@ -117,7 +117,7 @@ class BiblePlugin(Plugin):
         self.toolsUpgradeItem = QtGui.QAction(tools_menu)
         self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
         self.toolsUpgradeItem.setText(
-            translate('BiblePlugin', '&Upgrade Bible databases'))
+            translate('BiblePlugin', '&Upgrade older Bibles'))
         self.toolsUpgradeItem.setStatusTip(
             translate('BiblePlugin', 'Upgrade the Bible databases to the '
             'latest format'))
