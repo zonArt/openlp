@@ -26,6 +26,7 @@
 ###############################################################################
 
 import logging
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -272,6 +273,12 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'currentChanged(int)'),
             self.onSearchTabBarCurrentChanged)
 
+    def onFocus(self):
+        if self.quickTab.isVisible():
+            self.quickSearchEdit.setFocus()
+        else:
+            self.advancedBookComboBox.setFocus()
+
     def configUpdated(self):
         log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/second bibles',
@@ -359,7 +366,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
         bibles = self.parent.manager.get_bibles().keys()
-        bibles.sort()
+        bibles.sort(cmp=locale.strcoll)
         # Load the bibles into the combo boxes.
         for bible in bibles:
             if bible:
@@ -443,7 +450,7 @@ class BibleMediaItem(MediaManagerItem):
             if bible:
                 book_data = bibles[bible].get_books()
                 books = [book.name + u' ' for book in book_data]
-                books.sort()
+                books.sort(cmp=locale.strcoll)
         add_widget_completer(books, self.quickSearchEdit)
 
     def onImportClick(self):
@@ -462,6 +469,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
+            self.advancedBookComboBox.setFocus()
 
     def onLockButtonToggled(self, checked):
         if checked:

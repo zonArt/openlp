@@ -431,6 +431,13 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
+    def onFocus(self):
+        """
+        Run when a tab in the media manager gains focus. This gives the media
+        item a chance to focus any elements it wants to.
+        """
+        pass
+
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
