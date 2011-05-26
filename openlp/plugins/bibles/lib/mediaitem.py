@@ -273,6 +273,12 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'currentChanged(int)'),
             self.onSearchTabBarCurrentChanged)
 
+    def onFocus(self):
+        if self.quickTab.isVisible():
+            self.quickSearchEdit.setFocus()
+        else:
+            self.advancedBookComboBox.setFocus()
+
     def configUpdated(self):
         log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/second bibles',
@@ -463,6 +469,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
+            self.advancedBookComboBox.setFocus()
 
     def onLockButtonToggled(self, checked):
         if checked:

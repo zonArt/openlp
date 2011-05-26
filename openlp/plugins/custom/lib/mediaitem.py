@@ -199,6 +199,9 @@ class CustomMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
 
+    def onFocus(self):
+        self.searchTextEdit.setFocus()
+
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         raw_slides = []
         raw_footer = []

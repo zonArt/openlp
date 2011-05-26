@@ -125,6 +125,9 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
 
+    def onFocus(self):
+        self.searchTextEdit.setFocus()
+
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
             self.settingsSection + u'/search as type',

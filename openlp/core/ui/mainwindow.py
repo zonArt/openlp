@@ -537,6 +537,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+        # Media Manager
+        QtCore.QObject.connect(self.mediaToolBox,
+            QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         Receiver.send_message(u'cursor_busy')
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -601,6 +604,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.languageGroup.setDisabled(value)
         LanguageManager.auto_language = value
         LanguageManager.set_language(self.languageGroup.checkedAction())
+
+    def onMediaToolBoxChanged(self, index):
+        widget = self.mediaToolBox.widget(index)
+        if widget:
+            widget.onFocus()
 
     def versionNotice(self, version):
         """
