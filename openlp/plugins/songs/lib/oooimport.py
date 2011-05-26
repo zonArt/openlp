@@ -67,14 +67,10 @@ class OooImport(SongImport):
             self.log_error(
                 self.import_source[0],
                 translate('SongsPlugin.SongImport',
-                    u'Unable to open OpenOffice.org or LibreOffice'))
+                    'Unable to open OpenOffice.org or LibreOffice'))
             log.error(exc)
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        error_msg = lambda: self.log_error(
-                                self.filepath,
-                                translate('SongsPlugin.SongImport',
-                                    u'Unable to open file'))
         for filename in self.import_source:
             if self.stop_import_flag:
                 break
@@ -85,9 +81,13 @@ class OooImport(SongImport):
                     self.process_ooo_document()
                     self.close_ooo_file()
                 else:
-                    error_msg()
+                    self.log_error(self.filepath,
+                                   translate('SongsPlugin.SongImport',
+                                        'Unable to open file'))
             else:
-                error_msg()
+                self.log_error(self.filepath,
+                               translate('SongsPlugin.SongImport',
+                                    'File not found'))
         self.close_ooo()
 
     def process_ooo_document(self):
