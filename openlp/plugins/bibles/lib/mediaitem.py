@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -273,6 +273,12 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'currentChanged(int)'),
             self.onSearchTabBarCurrentChanged)
 
+    def onFocus(self):
+        if self.quickTab.isVisible():
+            self.quickSearchEdit.setFocus()
+        else:
+            self.advancedBookComboBox.setFocus()
+
     def configUpdated(self):
         log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/second bibles',
@@ -463,6 +469,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
+            self.advancedBookComboBox.setFocus()
 
     def onLockButtonToggled(self, checked):
         if checked:
