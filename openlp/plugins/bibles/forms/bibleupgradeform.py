@@ -623,7 +623,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     (number + 1, self.maxBibles, name), 
                     self.progressBar.maximum() - self.progressBar.value())
                 delete_database(self.path, 
-                    clean_filename(self.newbibles[number].get_name()))
+                    clean_filename(name))
             number += 1
         self.mediaItem.reloadBibles()
         successful_import = 0

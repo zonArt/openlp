@@ -343,7 +343,8 @@ class BibleDB(QtCore.QObject, Manager):
             book_ref = None
             book_name = BookNameForm(self.wizard)
             if book_name.exec_(book, self.get_books(), maxbooks):
-                book_ref = unicode(book_name.requestComboBox.currentText())
+                book_ref = unicode(
+                    book_name.correspondingComboBox.currentText())
             if not book_ref:
                 return None
             else:
