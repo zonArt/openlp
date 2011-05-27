@@ -245,7 +245,7 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
-            if song.title == self.autoSelectItem :
+            if song.id == self.autoSelectItem :
                 self.listView.setCurrentItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
