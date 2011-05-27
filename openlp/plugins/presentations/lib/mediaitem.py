@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 
 import logging
 import os
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -161,6 +162,10 @@ class PresentationMediaItem(MediaManagerItem):
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
             self.parent.formparent.displayProgressBar(len(files))
+        # Sort the themes by its filename considering language specific
+        # characters. lower() is needed for windows!
+        files.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in files:
             if not initialLoad:
                 self.parent.formparent.incrementProgressBar()

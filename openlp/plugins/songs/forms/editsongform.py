@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -696,9 +696,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
-            Receiver.send_message(u'songs_set_autoselect_item',
-                unicode(self.titleEdit.text()))
+            Receiver.send_message(u'songs_set_autoselect_item',self.song.id)
             Receiver.send_message(u'songs_load_list')
+            self.song = None
             QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
@@ -756,8 +756,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        if not preview:
-            self.song = None
 
     def _processLyrics(self):
         """

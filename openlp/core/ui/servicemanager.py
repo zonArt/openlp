@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -676,8 +676,18 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.AllowsVariableStartTime):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
-        if serviceItem[u'service_item'].is_text():
+        # Set up the theme menu.
+        if serviceItem[u'service_item'].is_text() and \
+            self.mainwindow.renderer.theme_level == ThemeLevel.Song:
             self.themeMenu.menuAction().setVisible(True)
+            # The service item does not have a theme, check the "Default".
+            if serviceItem[u'service_item'].theme is None:
+                themeAction = self.themeMenu.defaultAction()
+            else:
+                themeAction = self.themeMenu.findChild(
+                    QtGui.QAction, serviceItem[u'service_item'].theme)
+            if themeAction is not None:
+                themeAction.setChecked(True)
         action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
@@ -1109,6 +1119,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Send the current item to the Preview slide controller
         """
+        Receiver.send_message(u'cursor_busy')
         item, child = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.previewController.addServiceManagerItem(
@@ -1118,6 +1129,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
+        Receiver.send_message(u'cursor_normal')
 
     def getServiceItem(self):
         """
@@ -1150,6 +1162,7 @@ class ServiceManager(QtGui.QWidget):
             return
         if row != -1:
             child = row
+        Receiver.send_message(u'cursor_busy')
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
@@ -1169,6 +1182,7 @@ class ServiceManager(QtGui.QWidget):
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
                 'or inactive'))
+        Receiver.send_message(u'cursor_normal')
 
     def remoteEdit(self):
         """
@@ -1276,16 +1290,33 @@ class ServiceManager(QtGui.QWidget):
         self.themeComboBox.clear()
         self.themeMenu.clear()
         self.themeComboBox.addItem(u'')
+        themeGroup = QtGui.QActionGroup(self.themeMenu)
+        themeGroup.setExclusive(True)
+        themeGroup.setObjectName(u'themeGroup')
+        # Create a "Default" theme, which allows the user to reset the item's
+        # theme to the service theme or global theme.
+        defaultTheme = context_menu_action(self.themeMenu, None,
+            UiStrings().Default, self.onThemeChangeAction)
+        defaultTheme.setCheckable(True)
+        self.themeMenu.setDefaultAction(defaultTheme)
+        themeGroup.addAction(defaultTheme)
+        context_menu_separator(self.themeMenu)
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
-            context_menu_action(self.themeMenu, None, theme,
+            themeAction = context_menu_action(self.themeMenu, None, theme,
                 self.onThemeChangeAction)
+            themeAction.setObjectName(theme)
+            themeAction.setCheckable(True)
+            themeGroup.addAction(themeAction)
         find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
-        theme = unicode(self.sender().text())
+        theme = unicode(self.sender().objectName())
+        # No object name means that the "Default" theme is supposed to be used.
+        if not theme:
+            theme = None
         item = self.findServiceItem()[0]
         self.serviceItems[item][u'service_item'].theme = theme
         self.regenerateServiceItems()
