@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -132,6 +133,8 @@ class Ui_PrintServiceDialog(object):
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
+        self.pageBreakAfterText = QtGui.QCheckBox()
+        self.groupLayout.addWidget(self.pageBreakAfterText)
         self.notesCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.notesCheckBox)
         self.metaDataCheckBox = QtGui.QCheckBox()
@@ -146,9 +149,11 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(UiStrings.PrintServiceOrder)
+        printServiceDialog.setWindowTitle(UiStrings().PrintServiceOrder)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
+        self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
+            'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
@@ -161,3 +166,4 @@ class Ui_PrintServiceDialog(object):
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+

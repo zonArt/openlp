@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,11 +41,11 @@ class BiblesTab(SettingsTab):
     """
     log.info(u'Bible Tab loaded')
 
-    def __init__(self, title, visible_title):
+    def __init__(self, parent, title, visible_title, icon_path):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        SettingsTab.__init__(self, title, visible_title)
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
@@ -118,17 +119,16 @@ class BiblesTab(SettingsTab):
         self.newChaptersCheckBox.setText(
             translate('BiblesPlugin.BiblesTab',
             'Only show new chapter numbers'))
-        self.layoutStyleLabel.setText(
-            translate('BiblesPlugin.BiblesTab', 'Layout style:'))
-        self.displayStyleLabel.setText(UiStrings.DisplayStyle)
+        self.layoutStyleLabel.setText(UiStrings().LayoutStyle)
+        self.displayStyleLabel.setText(UiStrings().DisplayStyle)
         self.bibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
         self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerSlide,
-            UiStrings.VersePerSlide)
+            UiStrings().VersePerSlide)
         self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerLine,
-            UiStrings.VersePerLine)
+            UiStrings().VersePerLine)
         self.layoutStyleComboBox.setItemText(LayoutStyle.Continuous,
-            UiStrings.Continuous)
+            UiStrings().Continuous)
         self.displayStyleComboBox.setItemText(DisplayStyle.NoBrackets,
             translate('BiblesPlugin.BiblesTab', 'No Brackets'))
         self.displayStyleComboBox.setItemText(DisplayStyle.Round,

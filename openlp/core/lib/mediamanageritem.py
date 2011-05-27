@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,13 +29,14 @@ Provides the generic functions for interfacing plugins with the Media Manager.
 """
 import logging
 import os
+import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver, ListWidgetWithDnD
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
+    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.ui import UiStrings, context_menu_action, \
+    context_menu_separator, critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -90,6 +92,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
         #TODO: plugin should not be the parent in future
         self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
@@ -102,12 +105,14 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.singleServiceItem = True
         self.quickPreviewAllowed = False
+        self.hasSearch = False
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
         self.pageLayout.setMargin(0)
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
@@ -244,7 +249,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add the List widget
         self.listView = ListWidgetWithDnD(self, self.plugin.name)
-        self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
@@ -254,51 +258,49 @@ class MediaManagerItem(QtGui.QWidget):
         # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
         # define and add the context menu
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.hasEditIcon:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_edit.png',
-                    self.plugin.getString(StringContent.Edit)[u'title'],
-                    self.onEditClick))
-            self.listView.addAction(context_menu_separator(self.listView))
+            context_menu_action(
+                self.listView, u':/general/general_edit.png',
+                self.plugin.getString(StringContent.Edit)[u'title'],
+                self.onEditClick)
+            context_menu_separator(self.listView)
         if self.hasDeleteIcon:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_delete.png',
-                    self.plugin.getString(StringContent.Delete)[u'title'],
-                    self.onDeleteClick, [QtCore.Qt.Key_Delete]))
-            self.listView.addAction(context_menu_separator(self.listView))
-        self.listView.addAction(
             context_menu_action(
-                self.listView, u':/general/general_preview.png',
-                self.plugin.getString(StringContent.Preview)[u'title'],
-                self.onPreviewClick, [QtCore.Qt.Key_Enter]))
-        self.listView.addAction(
-            context_menu_action(
-                self.listView, u':/general/general_live.png',
-                self.plugin.getString(StringContent.Live)[u'title'],
-                self.onLiveClick, [QtCore.Qt.ShiftModifier + \
-                QtCore.Qt.Key_Enter, QtCore.Qt.ShiftModifier + \
-                QtCore.Qt.Key_Return]))
-        self.listView.addAction(
+                self.listView, u':/general/general_delete.png',
+                self.plugin.getString(StringContent.Delete)[u'title'],
+                self.onDeleteClick, [QtCore.Qt.Key_Delete])
+            context_menu_separator(self.listView)
+        context_menu_action(
+            self.listView, u':/general/general_preview.png',
+            self.plugin.getString(StringContent.Preview)[u'title'],
+            self.onPreviewClick, [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return])
+        context_menu_action(
+            self.listView, u':/general/general_live.png',
+            self.plugin.getString(StringContent.Live)[u'title'],
+            self.onLiveClick, [QtCore.Qt.ShiftModifier + QtCore.Qt.Key_Enter,
+            QtCore.Qt.ShiftModifier + QtCore.Qt.Key_Return])
+        context_menu_action(
+            self.listView, u':/general/general_add.png',
+            self.plugin.getString(StringContent.Service)[u'title'],
+            self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal])
+        if self.addToServiceItem:
             context_menu_action(
                 self.listView, u':/general/general_add.png',
-                self.plugin.getString(StringContent.Service)[u'title'],
-                self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal]))
-        if self.addToServiceItem:
-            self.listView.addAction(
-                context_menu_action(
-                    self.listView, u':/general/general_add.png',
-                    translate('OpenLP.MediaManagerItem',
-                    '&Add to selected Service Item'),
-                    self.onAddEditClick))
+                translate('OpenLP.MediaManagerItem',
+                '&Add to selected Service Item'), self.onAddEditClick)
+        # Create the context menu and add all actions from the listView.
+        self.menu = QtGui.QMenu()
+        self.menu.addActions(self.listView.actions())
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onClickPressed)
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onSelectionChange)
+        QtCore.QObject.connect(self.listView,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
 
     def initialise(self):
         """
@@ -330,12 +332,35 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
-            self.loadList(files)
+            names = []
+            for count in range(0, self.listView.count()):
+                names.append(self.listView.item(count).text())
+            newFiles = []
+            for file in files:
+                filename = os.path.split(unicode(file))[1]
+                if filename in names:
+                    critical_error_message_box(
+                        UiStrings().Duplicate,
+                        unicode(translate('OpenLP.MediaManagerItem',
+                        'Duplicate file name %s.\nFilename already exists in '
+                        'list')) % filename)
+                else:
+                    newFiles.append(file)
+            self.loadList(newFiles)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
         Receiver.send_message(u'cursor_normal')
+
+    def contextMenu(self, point):
+        item = self.listView.itemAt(point)
+        # Decide if we have to show the context menu or not.
+        if item is None:
+            return
+        if not item.flags() & QtCore.Qt.ItemIsSelectable:
+            return
+        self.menu.exec_(self.listView.mapToGlobal(point))
 
     def getFileList(self):
         """
@@ -403,6 +428,13 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
+    def onFocus(self):
+        """
+        Run when a tab in the media manager gains focus. This gives the media
+        item a chance to focus any elements it wants to.
+        """
+        pass
+
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
@@ -432,7 +464,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the preview slide controller.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                 'You must select one or more items to preview.'))
         else:
@@ -450,55 +482,67 @@ class MediaManagerItem(QtGui.QWidget):
         item to the live slide controller.
         """
         if not self.listView.selectedIndexes():
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(u'%s Live requested', self.plugin.name)
-            serviceItem = self.buildServiceItem()
-            if serviceItem:
+            self.goLive()
+
+    def goLive(self, item_id=None):
+        log.debug(u'%s Live requested', self.plugin.name)
+        item = None
+        if item_id:
+            item = self.createItemFromId(item_id)
+        serviceItem = self.buildServiceItem(item)
+        if serviceItem:
+            if not item_id:
                 serviceItem.from_plugin = True
-                self.parent.liveController.addServiceItem(serviceItem)
+            self.parent.liveController.addServiceItem(serviceItem)
+
+    def createItemFromId(self, item_id):
+        item = QtGui.QListWidgetItem()
+        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
+        return item
 
     def onAddClick(self):
         """
         Add a selected item to the current service
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items.'))
+                    'You must select one or more items to add.'))
         else:
             # Is it posssible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
-                serviceItem = self.buildServiceItem(None, True)
-                if serviceItem:
-                    serviceItem.from_plugin = False
-                    self.parent.serviceManager.addServiceItem(serviceItem,
-                        replace=self.remoteTriggered)
+                self.addToService(replace=self.remoteTriggered)
             else:
                 items = self.listView.selectedIndexes()
                 for item in items:
-                    serviceItem = self.buildServiceItem(item, True)
-                    if serviceItem:
-                        serviceItem.from_plugin = False
-                        self.parent.serviceManager.addServiceItem(serviceItem)
+                    self.addToService(item)
+
+    def addToService(self, item=None, replace=None):
+        serviceItem = self.buildServiceItem(item, True)
+        if serviceItem:
+            serviceItem.from_plugin = False
+            self.parent.serviceManager.addServiceItem(serviceItem,
+                replace=replace)
 
     def onAddEditClick(self):
         """
         Add a selected item to an existing item in the current service.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self, UiStrings.NISp,
+            QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
-                QtGui.QMessageBox.information(self, UiStrings.NISs,
+                QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():
@@ -531,6 +575,20 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
+    def check_search_result(self):
+        """
+        Checks if the listView is empty and adds a "No Search Results" item.
+        """
+        if self.listView.count():
+            return
+        message = translate('OpenLP.MediaManagerItem', 'No Search Results')
+        item = QtGui.QListWidgetItem(message)
+        item.setFlags(QtCore.Qt.NoItemFlags)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        item.setFont(font)
+        self.listView.addItem(item)
+
     def _getIdOfItemToGenerate(self, item, remoteItem):
         """
         Utility method to check items being submitted for slide generation.
@@ -552,3 +610,20 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def save_auto_select_id(self):
+        """
+        Sorts out, what item to select after loading a list.
+        """
+        # The item to select has not been set.
+        if self.auto_select_id == -1:
+            item = self.listView.currentItem()
+            if item:
+                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+
+    def search(self, string):
+        """
+        Performs a plugin specific search for items containing ``string``
+        """
+        raise NotImplementedError(
+            u'Plugin.search needs to be defined by the plugin')

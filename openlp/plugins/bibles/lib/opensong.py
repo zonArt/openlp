@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,7 +46,7 @@ class OpenSongBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
@@ -61,18 +62,18 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
-            language_id = self.get_language()
+            language_id = self.get_language(bible_name)
             if not language_id:
-                log.exception(u'Importing books from %s   " '\
+                log.exception(u'Importing books from "%s" '\
                     'failed' % self.filename)
                 return False
             for book in bible.b:
                 if self.stop_import_flag:
                     break
                 book_ref_id = self.get_book_ref_id_by_name(
-                    unicode(book.attrib[u'n']), language_id)
+                    unicode(book.attrib[u'n']), len(bible.b), language_id)
                 if not book_ref_id:
-                    log.exception(u'Importing books from %s " '\
+                    log.exception(u'Importing books from "%s" '\
                         'failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)

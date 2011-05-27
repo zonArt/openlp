@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +32,7 @@ class SettingsTab(QtGui.QWidget):
     SettingsTab is a helper widget for plugins to define Tabs for the settings
     dialog.
     """
-    def __init__(self, title, visible_title=None):
+    def __init__(self, parent, title, visible_title=None, icon_path=None):
         """
         Constructor to create the Settings tab item.
 
@@ -41,14 +42,15 @@ class SettingsTab(QtGui.QWidget):
         ``visible_title``
             The title of the tab, which is usually displayed on the tab.
         """
-        QtGui.QWidget.__init__(self)
+        QtGui.QWidget.__init__(self, parent)
         self.tabTitle = title
         self.tabTitleVisible = visible_title
         self.settingsSection = self.tabTitle.lower()
+        if icon_path:
+            self.icon_path = icon_path
         self.setupUi()
         self.retranslateUi()
         self.initialise()
-        self.preLoad()
         self.load()
 
     def setupUi(self):
@@ -84,12 +86,6 @@ class SettingsTab(QtGui.QWidget):
         left_width = max(left_width, self.leftColumn.minimumSizeHint().width())
         self.leftColumn.setFixedWidth(left_width)
 
-    def preLoad(self):
-        """
-        Setup the tab's interface.
-        """
-        pass
-
     def retranslateUi(self):
         """
         Setup the interface translation strings.
@@ -116,9 +112,9 @@ class SettingsTab(QtGui.QWidget):
 
     def cancel(self):
         """
-        Reset any settings
+        Reset any settings if cancel pressed
         """
-        pass
+        self.load()
 
     def postSetUp(self, postUpdate=False):
         """

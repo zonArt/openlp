@@ -27,68 +27,58 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_LanguageDialog(object):
     def setupUi(self, languageDialog):
-        languageDialog.setObjectName(u'LanugageDialog')
-        languageDialog.resize(400, 175)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, 
-            QtGui.QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(languageDialog.sizePolicy()
-            .hasHeightForWidth())
-        languageDialog.setSizePolicy(sizePolicy)
-        self.widget = QtGui.QWidget(languageDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 15, 381, 151))
-        self.widget.setObjectName(u'widget')
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.headlineLabel = QtGui.QLabel(self.widget)
-        font = QtGui.QFont()
-        font.setFamily(u'Arial')
-        font.setPointSize(11)
-        font.setWeight(75)
-        font.setBold(True)
-        self.headlineLabel.setFont(font)
-        self.headlineLabel.setObjectName(u'HeadlineLabel')
-        self.verticalLayout.addWidget(self.headlineLabel)
-        self.infoLabel = QtGui.QLabel(self.widget)
-        self.infoLabel.setObjectName(u'InfoLabel')
-        self.verticalLayout.addWidget(self.infoLabel)
-        self.formLayout = QtGui.QFormLayout()
-        self.formLayout.setObjectName(u'formLayout')
-        self.requestLabel = QtGui.QLabel(self.widget)
-        self.requestLabel.setObjectName(u'RequestLabel')
-        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, 
-            self.requestLabel)
-        self.requestComboBox = QtGui.QComboBox(self.widget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, 
+        languageDialog.setObjectName(u'languageDialog')
+        languageDialog.resize(400, 165)
+        self.languageLayout = QtGui.QVBoxLayout(languageDialog)
+        self.languageLayout.setSpacing(8)
+        self.languageLayout.setMargin(8)
+        self.languageLayout.setObjectName(u'languageLayout')
+        self.bibleLabel = QtGui.QLabel(languageDialog)
+        self.bibleLabel.setObjectName(u'bibleLabel')
+        self.languageLayout.addWidget(self.bibleLabel)
+        self.infoLabel = QtGui.QLabel(languageDialog)
+        self.infoLabel.setWordWrap(True)
+        self.infoLabel.setObjectName(u'infoLabel')
+        self.languageLayout.addWidget(self.infoLabel)
+        self.languageHBoxLayout = QtGui.QHBoxLayout()
+        self.languageHBoxLayout.setSpacing(8)
+        self.languageHBoxLayout.setObjectName(u'languageHBoxLayout')
+        self.languageLabel = QtGui.QLabel(languageDialog)
+        self.languageLabel.setObjectName(u'languageLabel')
+        self.languageHBoxLayout.addWidget(self.languageLabel)
+        self.languageComboBox = QtGui.QComboBox(languageDialog)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
             QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.requestComboBox.sizePolicy()
-            .hasHeightForWidth())
-        self.requestComboBox.setSizePolicy(sizePolicy)
-        self.requestComboBox.setObjectName(u'RequestComboBox')
-        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, 
-            self.requestComboBox)
-        self.verticalLayout.addLayout(self.formLayout)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, 
-            QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
-        self.formLayout.addWidget(
-            create_accept_reject_button_box(languageDialog))
+        sizePolicy.setHeightForWidth(
+            self.languageComboBox.sizePolicy().hasHeightForWidth())
+        self.languageComboBox.setSizePolicy(sizePolicy)
+        self.languageComboBox.setObjectName(u'languageComboBox')
+        self.languageHBoxLayout.addWidget(self.languageComboBox)
+        self.languageLayout.addLayout(self.languageHBoxLayout)
+        self.buttonBox = QtGui.QDialogButtonBox(languageDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|
+            QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.languageLayout.addWidget(self.buttonBox)
+
         self.retranslateUi(languageDialog)
-        QtCore.QMetaObject.connectSlotsByName(languageDialog)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'), 
+            languageDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), 
+            languageDialog.reject)
 
     def retranslateUi(self, languageDialog):
         languageDialog.setWindowTitle(
-            translate('BiblesPlugin.LanguageDialog', 'Choose Language'))
-        self.headlineLabel.setText(
-            translate('BiblesPlugin.LanguageDialog', 'Choose Language:'))
+            translate('BiblesPlugin.LanguageDialog', 'Select Language'))
+        self.bibleLabel.setText(translate('BiblesPlugin.LanguageDialog', ''))
         self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
-            'Please choose the language the bible is.'))
-        self.requestLabel.setText(translate('BiblesPlugin.languageDialog', 
+            'OpenLP is unable to determine the language of this translation '
+            'of the Bible. Please select the language from the list below.'))
+        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog', 
             'Language:'))

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -130,9 +131,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                     file.close()
                     file = open(filename, u'wb')
                     file.write(report.encode(u'utf-8'))
-                file.close()
+                finally:
+                    file.close()
             except IOError:
                 log.exception(u'Failed to write crash report')
+            finally:
+                file.close()
 
     def onSendReportButtonPressed(self):
         """
@@ -178,7 +182,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             self,translate('ImagePlugin.ExceptionDialog',
             'Select Attachment'),
             SettingsManager.get_last_dir(u'exceptions'),
-            u'%s (*.*) (*)' % UiStrings.AllFiles)
+            u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)
@@ -186,3 +190,4 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     def __buttonState(self, state):
         self.saveReportButton.setEnabled(state)
         self.sendReportButton.setEnabled(state)
+

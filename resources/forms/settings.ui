@@ -14,565 +14,75 @@
    <string>Settings</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../images/openlp-2.qrc">
+   <iconset>
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
-  <layout class="QVBoxLayout" name="SettingsLayout">
-   <property name="spacing">
-    <number>8</number>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>691</width>
+     <height>441</height>
+    </rect>
    </property>
-   <property name="margin">
-    <number>8</number>
-   </property>
-   <item>
-    <widget class="QTabWidget" name="SettingsTabWidget">
-     <property name="currentIndex">
-      <number>2</number>
-     </property>
-     <widget class="QWidget" name="GeneralTab">
-      <attribute name="title">
-       <string>General</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="GeneralLayout">
-       <property name="spacing">
-        <number>8</number>
-       </property>
-       <property name="margin">
-        <number>8</number>
-       </property>
-       <item>
-        <widget class="QWidget" name="GeneralLeftWidget" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QGroupBox" name="MonitorGroupBox">
-            <property name="title">
-             <string>Monitors</string>
-            </property>
-            <layout class="QVBoxLayout" name="MonitorLayout">
-             <property name="spacing">
-              <number>8</number>
-             </property>
-             <property name="margin">
-              <number>8</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="MonitorLabel">
-               <property name="text">
-                <string>Select monitor for output display:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="MonitorComboBox">
-               <item>
-                <property name="text">
-                 <string>Monitor 1 on X11 Windowing System</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Monitor 2 on X11 Windowing System</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="BlankScreenGroupBox">
-            <property name="title">
-             <string>Blank Screen</string>
-            </property>
-            <layout class="QVBoxLayout" name="BlankScreenLayout">
-             <property name="spacing">
-              <number>8</number>
-             </property>
-             <property name="margin">
-              <number>8</number>
-             </property>
-             <item>
-              <widget class="QCheckBox" name="WarningCheckBox">
-               <property name="text">
-                <string>Show warning on startup</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="AutoOpenGroupBox">
-            <property name="title">
-             <string>Auto Open Last Service</string>
-            </property>
-            <layout class="QVBoxLayout" name="AutoOpenLayout">
-             <item>
-              <widget class="QCheckBox" name="AutoOpenCheckBox">
-               <property name="text">
-                <string>Automatically open the last service at startup</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="GeneralLeftSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="GeneralRightWidget" native="true">
-         <layout class="QVBoxLayout" name="GeneralRightLayout">
-          <property name="spacing">
-           <number>8</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="CCLIGroupBox">
-            <property name="title">
-             <string>CCLI Details</string>
-            </property>
-            <layout class="QGridLayout" name="CCLILayout">
-             <property name="margin">
-              <number>8</number>
-             </property>
-             <property name="spacing">
-              <number>8</number>
-             </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="NumberLabel">
-               <property name="text">
-                <string>CCLI Number:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="NumberEdit"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="UsernameLabel">
-               <property name="text">
-                <string>SongSelect Username:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="UsernameEdit"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="PasswordLabel">
-               <property name="text">
-                <string>SongSelect Password:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="PasswordEdit">
-               <property name="echoMode">
-                <enum>QLineEdit::Password</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="GeneralRightSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QStackedWidget" name="tagStackedWidget">
+      <property name="minimumSize">
+       <size>
+        <width>500</width>
+        <height>0</height>
+       </size>
+      </property>
+      <widget class="QWidget" name="page">
+       <widget class="QListWidget" name="settingListWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>211</width>
+          <height>409</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_2"/>
      </widget>
-     <widget class="QWidget" name="ThemesTab">
-      <attribute name="title">
-       <string>Themes</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="ThemesTabLayout">
-       <property name="spacing">
-        <number>8</number>
-       </property>
-       <property name="margin">
-        <number>8</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="GlobalGroupBox">
-         <property name="title">
-          <string>Global theme</string>
-         </property>
-         <layout class="QVBoxLayout" name="GlobalGroupBoxLayout">
-          <property name="spacing">
-           <number>8</number>
-          </property>
-          <property name="margin">
-           <number>8</number>
-          </property>
-          <item>
-           <widget class="QComboBox" name="DefaultComboBox">
-            <item>
-             <property name="text">
-              <string>African Sunset</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Snowy Mountains</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Wilderness</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListView" name="DefaultListView"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="LevelGroupBox">
-         <property name="title">
-          <string>Theme level</string>
-         </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-          </property>
-          <property name="horizontalSpacing">
-           <number>8</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>8</number>
-          </property>
-          <property name="margin">
-           <number>8</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="SongLevelRadioButton">
-            <property name="text">
-             <string>Song level</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="SongLevelLabel">
-            <property name="text">
-             <string>Use the theme from each song in the database. If a song doesn't have a theme associated with it, then use the service's theme. If the service doesn't have a theme, then use the global theme.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="ServiceLevelRadioButton">
-            <property name="text">
-             <string>Service level</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="ServiceLevelLabel">
-            <property name="text">
-             <string>Use the theme from the service, overriding any of the individual songs' themes. If the service doesn't have a theme, then use the global theme.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QRadioButton" name="GlobalLevelRadioButton">
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Global level</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="GlobalLevelLabel">
-            <property name="text">
-             <string>Use the global theme, overriding any themes associated with either the service or the songs.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QDialogButtonBox" name="ButtonsBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
      </widget>
-     <widget class="QWidget" name="AlertsTab">
-      <attribute name="title">
-       <string>Alerts</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="AlertsLayout">
-       <property name="spacing">
-        <number>8</number>
-       </property>
-       <property name="margin">
-        <number>8</number>
-       </property>
-       <item>
-        <widget class="QWidget" name="AlertLeftColumn" native="true">
-         <layout class="QVBoxLayout" name="SlideLeftLayout">
-          <property name="spacing">
-           <number>8</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="FontGroupBox">
-            <property name="title">
-             <string>Font</string>
-            </property>
-            <layout class="QVBoxLayout" name="FontLayout">
-             <property name="spacing">
-              <number>8</number>
-             </property>
-             <property name="margin">
-              <number>8</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="FontLabel">
-               <property name="text">
-                <string>Font Name:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFontComboBox" name="FontComboBox"/>
-             </item>
-             <item>
-              <widget class="QWidget" name="ColorWidget" native="true">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <item>
-                 <widget class="QLabel" name="FontColorLabel">
-                  <property name="text">
-                   <string>Font Color:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="FontColourButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="ColorSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="BackgroundColorLabel">
-                  <property name="text">
-                   <string>Background Color:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="BackgroundColourButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" name="LengthWidget" native="true">
-               <layout class="QHBoxLayout" name="LengthLayout">
-                <property name="spacing">
-                 <number>8</number>
-                </property>
-                <property name="margin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QLabel" name="LengthLabel">
-                  <property name="text">
-                   <string>Display length:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QSpinBox" name="LengthSpinBox">
-                  <property name="value">
-                   <number>5</number>
-                  </property>
-                  <property name="suffix">
-                   <string>s</string>
-                  </property>
-                  <property name="maximum">
-                   <number>180</number>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="LengthSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>147</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="SlideLeftSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>94</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="SlideRightColumn" native="true">
-         <layout class="QVBoxLayout" name="SlideRightLayout">
-          <property name="spacing">
-           <number>8</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="PreviewGroupBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="title">
-             <string>Preview</string>
-            </property>
-            <layout class="QVBoxLayout" name="PreviewLayout">
-             <property name="spacing">
-              <number>8</number>
-             </property>
-             <property name="margin">
-              <number>8</number>
-             </property>
-             <item>
-              <widget class="QGraphicsView" name="FontPreview">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>64</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="SlideRightSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="ButtonsBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-  </layout>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources>
   <include location="../images/openlp-2.qrc"/>

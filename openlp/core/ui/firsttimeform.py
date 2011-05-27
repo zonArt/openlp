@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -140,6 +141,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 return FirstTimePage.Songs
         elif self.currentId() == FirstTimePage.Progress:
             return -1
+        elif self.currentId() == FirstTimePage.NoInternet:
+            return FirstTimePage.Progress
         else:
             return self.currentId() + 1
 
@@ -147,11 +150,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Detects Page changes and updates as approprate.
         """
-        if pageId == FirstTimePage.NoInternet:
-            self.finishButton.setVisible(True)
-            self.finishButton.setEnabled(True)
-            self.nextButton.setVisible(False)
-        elif pageId == FirstTimePage.Defaults:
+        if pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
             for iter in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(iter)

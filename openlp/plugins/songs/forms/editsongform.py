@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -89,14 +90,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.renderManager.theme_manager.onAddTheme)
+            self.parent.parent.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(UiStrings.SaveAndPreview)
+        self.previewButton.setText(UiStrings().SaveAndPreview)
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -355,7 +356,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -414,7 +415,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
@@ -576,11 +577,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     if verse_index is not None:
                         order.append(VerseType.Tags[verse_index] + u'1')
                     else:
-                        order.append(u'') # it matches no verses anyway
+                        # it matches no verses anyway
+                        order.append(u'')
                 else:
                     verse_index = VerseType.from_translated_tag(item[0])
                     if verse_index is None:
-                        order.append(u'') # same as above
+                        # it matches no verses anyway
+                        order.append(u'')
                     else:
                         verse_tag = VerseType.Tags[verse_index]
                         verse_num = item[1:].lower()
@@ -694,6 +697,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self._validate_song():
             self.saveSong()
             Receiver.send_message(u'songs_load_list')
+            self.song = None
             QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
@@ -751,8 +755,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        if not preview:
-            self.song = None
+        self.parent.auto_select_id = self.song.id
 
     def _processLyrics(self):
         """

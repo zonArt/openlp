@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -257,7 +258,7 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
-    song.title = song.title.strip() if song.title else u''
+    song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
@@ -278,24 +279,32 @@ def clean_song(manager, song):
     # List for later comparison.
     compare_order = []
     for verse in verses:
-        type = VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])]
+        verse_type = VerseType.Tags[VerseType.from_loose_input(
+            verse[0][u'type'])]
         sxml.add_verse_to_lyrics(
-            type,
+            verse_type,
             verse[0][u'label'],
             verse[1],
             verse[0][u'lang'] if verse[0].has_key(u'lang') else None
         )
-        compare_order.append((u'%s%s' % (type, verse[0][u'label'])).upper())
+        compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
+            ).upper())
+        if verse[0][u'label'] == u'1':
+            compare_order.append(verse_type.upper())
     song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
     # Rebuild the verse order, to convert translated verse tags, which might
     # have been added prior to 1.9.5.
-    order = song.verse_order.strip().split()
+    if song.verse_order:
+        order = song.verse_order.strip().split()
+    else:
+        order = []
     new_order = []
     for verse_def in order:
-        new_order.append((u'%s%s' % (
-            VerseType.Tags[VerseType.from_loose_input(verse_def[0])],
-            verse_def[1:])).upper()
-        )
+        verse_type = VerseType.Tags[VerseType.from_loose_input(verse_def[0])]
+        if len(verse_def) > 1:
+            new_order.append((u'%s%s' % (verse_type, verse_def[1:])).upper())
+        else:
+            new_order.append(verse_type.upper())
     song.verse_order = u' '.join(new_order)
     # Check if the verse order contains tags for verses which do not exist.
     for order in new_order:

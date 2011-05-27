@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -95,6 +96,10 @@ class OpenLPWizard(QtGui.QWizard):
         self.customSignals()
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
+        QtCore.QObject.connect(self.errorCopyToButton,
+            QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
+        QtCore.QObject.connect(self.errorSaveToButton,
+            QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
 
     def setupUi(self, image):
         """
@@ -129,10 +134,36 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLayout.setObjectName(u'progressLayout')
         self.progressLabel = QtGui.QLabel(self.progressPage)
         self.progressLabel.setObjectName(u'progressLabel')
+        self.progressLabel.setWordWrap(True)
         self.progressLayout.addWidget(self.progressLabel)
         self.progressBar = QtGui.QProgressBar(self.progressPage)
         self.progressBar.setObjectName(u'progressBar')
         self.progressLayout.addWidget(self.progressBar)
+        # Add a QTextEdit and a copy to file and copy to clipboard button to be
+        # able to provide feedback to the user. Hidden by default.
+        self.errorReportTextEdit = QtGui.QTextEdit(self.progressPage)
+        self.errorReportTextEdit.setObjectName(u'progresserrorReportTextEdit')
+        self.errorReportTextEdit.setHidden(True)
+        self.errorReportTextEdit.setReadOnly(True)
+        self.progressLayout.addWidget(self.errorReportTextEdit)
+        self.errorButtonLayout = QtGui.QHBoxLayout()
+        self.errorButtonLayout.setObjectName(u'errorButtonLayout')
+        spacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.errorButtonLayout.addItem(spacer)
+        self.errorCopyToButton = QtGui.QPushButton(self.progressPage)
+        self.errorCopyToButton.setObjectName(u'errorCopyToButton')
+        self.errorCopyToButton.setHidden(True)
+        self.errorCopyToButton.setIcon(
+            build_icon(u':/system/system_edit_copy.png'))
+        self.errorButtonLayout.addWidget(self.errorCopyToButton)
+        self.errorSaveToButton = QtGui.QPushButton(self.progressPage)
+        self.errorSaveToButton.setObjectName(u'errorSaveToButton')
+        self.errorSaveToButton.setHidden(True)
+        self.errorSaveToButton.setIcon(
+            build_icon(u':/general/general_save.png'))
+        self.errorButtonLayout.addWidget(self.errorSaveToButton)
+        self.progressLayout.addLayout(self.errorButtonLayout)
         self.addPage(self.progressPage)
 
     def exec_(self):
@@ -159,6 +190,18 @@ class OpenLPWizard(QtGui.QWizard):
             self.preWizard()
             self.performWizard()
             self.postWizard()
+
+    def onErrorCopyToButtonClicked(self):
+        """
+        Called when the ``onErrorCopyToButtonClicked`` has been clicked.
+        """
+        pass
+
+    def onErrorSaveToButtonClicked(self):
+        """
+        Called when the ``onErrorSaveToButtonClicked`` has been clicked.
+        """
+        pass
 
     def incrementProgressBar(self, status_text, increment=1):
         """
@@ -212,7 +255,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
+        filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
             self.plugin.settingsSection, 1)), filters)
@@ -220,3 +263,4 @@ class OpenLPWizard(QtGui.QWizard):
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
                 filename, 1)
+

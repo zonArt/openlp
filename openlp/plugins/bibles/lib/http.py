@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,7 +43,7 @@ from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
-    Book, BibleMeta
+    Book
 
 log = logging.getLogger(__name__)
 
@@ -57,10 +58,10 @@ class BGExtract(object):
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
-        Access and decode bibles via the BibleGateway website.
+        Access and decode Bibles via the BibleGateway website.
 
         ``version``
-            The version of the bible like 31 for New International version.
+            The version of the Bible like 31 for New International version.
 
         ``bookname``
             Name of the Book.
@@ -132,10 +133,10 @@ class BGExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a bible contaions from BibleGateway website.
+        Load a list of all books a Bible contaions from BibleGateway website.
 
         ``version``
-            The version of the bible like NIV for New International Version
+            The version of the Bible like NIV for New International Version
         """
         log.debug(u'BGExtract.get_books_from_http("%s")', version)
         url_params = urllib.urlencode(
@@ -147,8 +148,8 @@ class BGExtract(object):
             return None
         page_source = page.read()
         page_source = unicode(page_source, 'utf8')
-        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>',  \
-            page_source,  re.DOTALL)
+        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>', \
+            page_source, re.DOTALL)
         if page_source_temp:
             soup = page_source_temp.group(0)
         else:
@@ -156,7 +157,7 @@ class BGExtract(object):
         try:
             soup = BeautifulSoup(soup)
         except HTMLParseError:
-            log.exception(u'BeautifulSoup could not parse the bible page.')
+            log.exception(u'BeautifulSoup could not parse the Bible page.')
         if not soup:
             send_error_message(u'parse')
             return None
@@ -223,11 +224,11 @@ class BSExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a bible contains from Bibleserver mobile 
+        Load a list of all books a Bible contains from Bibleserver mobile 
         website.
 
         ``version``
-            The version of the bible like NIV for New International Version
+            The version of the Bible like NIV for New International Version
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
         chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
@@ -241,10 +242,9 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.findAll(u'li')
-        books = []
-        for book in content:
-            books.append(book.contents[0].contents[0])
-        return books
+        return [
+            book.contents[0].contents[0] for book in content
+        ]
 
 
 class CWExtract(object):
@@ -261,7 +261,7 @@ class CWExtract(object):
         Access and decode bibles via the Crosswalk website
 
         ``version``
-            The version of the bible like niv for New International Version
+            The version of the Bible like niv for New International Version
 
         ``bookname``
             Text name of in english e.g. 'gen' for Genesis
@@ -320,7 +320,7 @@ class CWExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books  a bible contain from the Crosswalk website.
+        Load a list of all books a Bible contain from the Crosswalk website.
 
         ``version``
             The version of the bible like NIV for New International Version
@@ -375,7 +375,7 @@ class HTTPBible(BibleDB):
         if u'proxy_password' in kwargs:
             self.proxy_password = kwargs[u'proxy_password']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
@@ -383,7 +383,7 @@ class HTTPBible(BibleDB):
         self.wizard.progressBar.setMaximum(68)
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible', 
-            'Registering bible and loading books...')))
+            'Registering Bible and loading books...')))
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
         if self.proxy_server:
@@ -414,16 +414,19 @@ class HTTPBible(BibleDB):
             language_id = bible[u'language_id']
             self.create_meta(u'language_id', language_id)
         else:
-            language_id = self.get_language()
+            language_id = self.get_language(bible_name)
         if not language_id:
             log.exception(u'Importing books from %s   " '\
                 'failed' % self.filename)
             return False
         for book in books:
+            if self.stop_import_flag:
+                break
             self.wizard.incrementProgressBar(unicode(translate(
-                            'BiblesPlugin.HTTPBible', 'Importing %s...',
-                            'Importing <book name>...')) % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, language_id)
+                'BiblesPlugin.HTTPBible', 'Importing %s...',
+                'Importing <book name>...')) % book)
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books), 
+                language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source,  self.download_name))
@@ -432,9 +435,12 @@ class HTTPBible(BibleDB):
             log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
                 book, book_ref_id, book_details[u'testament_id'])
             self.create_book(book, book_ref_id, book_details[u'testament_id'])
-        return True
+        if self.stop_import_flag:
+            return False
+        else:
+            return True
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list, show_error=True):
         """
         A reimplementation of the ``BibleDB.get_verses`` method, this one is
         specifically for web Bibles. It first checks to see if the particular
@@ -460,11 +466,12 @@ class HTTPBible(BibleDB):
             book_id = reference[0]
             db_book = self.get_book_by_book_ref_id(book_id)
             if not db_book:
-                critical_error_message_box(
-                    translate('BiblesPlugin', 'No Book Found'),
-                    translate('BiblesPlugin', 'No matching '
-                    'book could be found in this Bible. Check that you '
-                    'have spelled the name of the book correctly.'))
+                if show_error:
+                    critical_error_message_box(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching '
+                        'book could be found in this Bible. Check that you '
+                        'have spelled the name of the book correctly.'))
                 return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
@@ -484,7 +491,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
-        return BibleDB.get_verses(self, reference_list)
+        return BibleDB.get_verses(self, reference_list, show_error)
 
     def get_chapter(self, book, chapter):
         """
@@ -507,12 +514,15 @@ class HTTPBible(BibleDB):
         log.debug(u'HTTPBible.get_books("%s")', Book.name)
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
-    def get_chapter_count(self, book_id):
+    def get_chapter_count(self, book):
         """
         Return the number of chapters in a particular book.
+        
+        ``book``
+        The book object to get the chapter count for.
         """
-        log.debug(u'HTTPBible.get_chapter_count("%s")', book_id)
-        return BiblesResourcesDB.get_chapter_count(book_id)
+        log.debug(u'HTTPBible.get_chapter_count("%s")', book.name)
+        return BiblesResourcesDB.get_chapter_count(book.book_reference_id)
 
     def get_verse_count(self, book_id, chapter):
         """

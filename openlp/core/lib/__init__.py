@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,56 +36,9 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-base_html_expands = []
-
-base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
-    u'start html': u'<span style="-webkit-text-fill-color:red">',
-    u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Black', u'start tag': u'{b}',
-    u'start html': u'<span style="-webkit-text-fill-color:black">',
-    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Blue', u'start tag': u'{bl}',
-    u'start html': u'<span style="-webkit-text-fill-color:blue">',
-    u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Yellow', u'start tag': u'{y}',
-    u'start html': u'<span style="-webkit-text-fill-color:yellow">',
-    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
-    u'start html': u'<span style="-webkit-text-fill-color:green">',
-    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
-    u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
-    u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
-    u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
-    u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
-    u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
-    u'start html': u'<span style="-webkit-text-fill-color:white">',
-    u'end tag': u'{/w}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
-    u'start html': u'<sup>', u'end tag': u'{/su}', u'end html': u'</sup>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
-    u'start html': u'<sub>', u'end tag': u'{/sb}', u'end html': u'</sub>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Paragraph', u'start tag': u'{p}',
-    u'start html': u'<p>', u'end tag': u'{/p}', u'end html': u'</p>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Bold', u'start tag': u'{st}',
-    u'start html': u'<strong>', u'end tag': u'{/st}', u'end html': u'</strong>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
-    u'start html': u'<em>', u'end tag': u'{/it}', u'end html': u'</em>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
-    u'start html': u'<span style="text-decoration: underline;">',
-    u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
-
 def translate(context, text, comment=None,
-    encoding=QtCore.QCoreApplication.CodecForTr, n=-1):
+    encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+    translate=QtCore.QCoreApplication.translate):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -101,8 +55,7 @@ def translate(context, text, comment=None,
         An identifying string for when the same text is used in different roles
         within the same context.
     """
-    return QtCore.QCoreApplication.translate(
-        context, text, comment, encoding, n)
+    return translate(context, text, comment, encoding, n)
 
 def get_text_file_string(text_file):
     """
@@ -165,58 +118,6 @@ def build_icon(icon):
         button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
-
-def context_menu_action(base, icon, text, slot, shortcuts=None):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
-
-    ``text``
-        The text to display for this action
-
-    ``slot``
-        The code to run when this action is triggered
-    """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
-    if shortcuts:
-        action.setShortcuts(shortcuts)
-    return action
-
-def context_menu(base, icon, text):
-    """
-    Utility method to help build context menus for plugins
-
-    ``base``
-        The parent object to add this menu to
-
-    ``icon``
-        An icon for this menu
-
-    ``text``
-        The text to display for this menu
-    """
-    action = QtGui.QMenu(text, base)
-    action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    return action
 
 def image_to_byte(image):
     """
@@ -295,6 +196,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
+    text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
@@ -326,9 +228,8 @@ def check_directory_exists(dir):
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
-from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
-from imagemanager import ImageManager
+from spelltextedit import SpellTextEdit
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
@@ -340,6 +241,7 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
+from imagemanager import ImageManager
 from renderer import Renderer
-from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
+from openlp.core.utils.actions import ActionList

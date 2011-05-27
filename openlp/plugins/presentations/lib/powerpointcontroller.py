@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -251,14 +252,14 @@ class PowerpointDocument(PresentationDocument):
                         win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            self.presentation.SlideShowSettings.Run()
-            self.presentation.SlideShowWindow.View.GotoSlide(1)
-            rendermanager = self.controller.plugin.renderManager
-            rect = rendermanager.screens.current[u'size']
-            self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
-            self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
-            self.presentation.SlideShowWindow.Left = rect.x() * 72 / dpi
-            self.presentation.SlideShowWindow.Width = rect.width() * 72 / dpi
+            renderer = self.controller.plugin.renderer
+            rect = renderer.screens.current[u'size']
+            ppt_window = self.presentation.SlideShowSettings.Run()
+            ppt_window.Top = rect.y() * 72 / dpi
+            ppt_window.Height = rect.height() * 72 / dpi
+            ppt_window.Left = rect.x() * 72 / dpi
+            ppt_window.Width = rect.width() * 72 / dpi
+
 
     def get_slide_number(self):
         """

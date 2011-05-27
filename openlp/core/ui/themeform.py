@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -56,6 +57,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True
+        self.temp_background_filename = u''
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onBackgroundComboBoxCurrentIndexChanged)
@@ -279,6 +281,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Run the wizard.
         """
         log.debug(u'Editing theme %s' % self.theme.theme_name)
+        self.temp_background_filename = u''
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
@@ -290,7 +293,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(UiStrings.NewTheme)
+            self.setWindowTitle(UiStrings().NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -432,6 +435,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # do not allow updates when screen is building for the first time.
         if self.updateThemeAllowed:
             self.theme.background_type = BackgroundType.to_string(index)
+            if self.theme.background_type != \
+                BackgroundType.to_string(BackgroundType.Image) and \
+                self.temp_background_filename == u'':
+                self.temp_background_filename = self.theme.background_filename
+                self.theme.background_filename = u''
+            if self.theme.background_type == \
+                BackgroundType.to_string(BackgroundType.Image) and \
+                self.temp_background_filename != u'':
+                self.theme.background_filename = self.temp_background_filename
+                self.temp_background_filename = u''
             self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
@@ -473,7 +486,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         images_filter = get_images_filter()
         images_filter = u'%s;;%s (*.*) (*)' % (
-            images_filter, UiStrings.AllFiles)
+            images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,6 @@
 
 import logging
 import locale
-import re
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -72,8 +72,8 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
         self.quickPreviewAllowed = True
+        self.hasSearch = True
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -125,6 +125,9 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
 
+    def onFocus(self):
+        self.searchTextEdit.setFocus()
+
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
             self.settingsSection + u'/search as type',
@@ -137,11 +140,11 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
-        self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
-        self.searchTextButton.setText(UiStrings.Search)
+        self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
+        self.searchTextButton.setText(UiStrings().Search)
         self.maintenanceAction.setText(SongStrings.SongMaintenance)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
-            'Maintain the lists of authors, topics and books'))
+            'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
@@ -153,21 +156,25 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
                 SongStrings.Authors),
-            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings.Themes)
+            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
         ])
+        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+            u'%s/last search type' % self.settingsSection,
+            QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
+        # Save the current search type to the configuration.
+        QtCore.QSettings().setValue(u'%s/last search type' %
+            self.settingsSection,
+            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+        # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
-            search_results = self.parent.manager.get_all_objects(Song,
-                or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'),
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.comments.like(u'%' + search_keywords.lower() + u'%')))
+            search_results = self.searchEntire(search_keywords)
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
@@ -189,8 +196,17 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords)
+                Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords) + u'%'))
             self.displayResultsSong(search_results)
+        self.check_search_result()
+
+    def searchEntire(self, search_keywords):
+        return self.parent.manager.get_all_objects(Song,
+            or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+            search_keywords.lower()) + u'%'),
+            Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+            Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
     def onSongListLoad(self):
         """
@@ -216,8 +232,12 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
+        self.save_auto_select_id()
         self.listView.clear()
-        searchresults.sort(cmp=self.collateSongTitles)
+        # Sort the songs by its title considering language specific characters.
+        # lower() is needed for windows!
+        searchresults.sort(
+            cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
@@ -225,6 +245,10 @@ class SongMediaItem(MediaManagerItem):
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
+            # Auto-select the item if name has been set
+            if song.id == self.auto_select_id:
+                self.listView.setCurrentItem(song_name)
+        self.auto_select_id = -1
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -304,7 +328,7 @@ class SongMediaItem(MediaManagerItem):
         Edit a song
         """
         log.debug(u'onEditClick')
-        if check_item_selected(self.listView, UiStrings.SelectEdit):
+        if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
@@ -315,7 +339,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.listView, UiStrings.SelectDelete):
+        if check_item_selected(self.listView, UiStrings().SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
@@ -339,6 +363,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.OnLoadUpdate)
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
+        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
         song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
@@ -459,9 +484,9 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'service_item_update',
                 u'%s:%s' % (editId, item._uuid))
 
-    def collateSongTitles(self, song_1, song_2):
+    def search(self, string):
         """
-        Locale aware collation of song titles
+        Search for some songs
         """
-        return locale.strcoll(unicode(song_1.title.lower()),
-             unicode(song_2.title.lower()))
+        search_results = self.searchEntire(string)
+        return [[song.id, song.title] for song in search_results]

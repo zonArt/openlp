@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -149,15 +150,15 @@ class Ui_SongMaintenanceDialog(object):
         self.listItemAuthors.setText(SongStrings.Authors)
         self.listItemTopics.setText(SongStrings.Topics)
         self.listItemBooks.setText(SongStrings.SongBooks)
-        self.authorsAddButton.setText(UiStrings.Add)
-        self.authorsEditButton.setText(UiStrings.Edit)
-        self.authorsDeleteButton.setText(UiStrings.Delete)
-        self.topicsAddButton.setText(UiStrings.Add)
-        self.topicsEditButton.setText(UiStrings.Edit)
-        self.topicsDeleteButton.setText(UiStrings.Delete)
-        self.booksAddButton.setText(UiStrings.Add)
-        self.booksEditButton.setText(UiStrings.Edit)
-        self.booksDeleteButton.setText(UiStrings.Delete)
+        self.authorsAddButton.setText(UiStrings().Add)
+        self.authorsEditButton.setText(UiStrings().Edit)
+        self.authorsDeleteButton.setText(UiStrings().Delete)
+        self.topicsAddButton.setText(UiStrings().Add)
+        self.topicsEditButton.setText(UiStrings().Edit)
+        self.topicsDeleteButton.setText(UiStrings().Delete)
+        self.booksAddButton.setText(UiStrings().Add)
+        self.booksEditButton.setText(UiStrings().Edit)
+        self.booksDeleteButton.setText(UiStrings().Delete)
         typeListWidth = max(self.fontMetrics().width(SongStrings.Authors),
             self.fontMetrics().width(SongStrings.Topics),
             self.fontMetrics().width(SongStrings.SongBooks))

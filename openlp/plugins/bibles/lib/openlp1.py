@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,7 +46,7 @@ class OpenLP1Bible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Imports an openlp.org v1 bible.
         """
@@ -57,10 +58,9 @@ class OpenLP1Bible(BibleDB):
         except:
             return False
         #Create the bible language
-        language_id = self.get_language()
+        language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from %s   " '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
@@ -74,9 +74,10 @@ class OpenLP1Bible(BibleDB):
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
-            book_ref_id = self.get_book_ref_id_by_name(name, language_id)
+            book_ref_id = self.get_book_ref_id_by_name(name, len(books), 
+                language_id)
             if not book_ref_id:
-                log.exception(u'Importing books from %s " '\
+                log.exception(u'Importing books from "%s" '\
                     'failed' % self.filename)
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)

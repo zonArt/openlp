@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -60,6 +61,12 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
         QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+
+    def exec_(self):
+        self.displayButton.setEnabled(False)
+        self.displayCloseButton.setEnabled(False)
+        self.alertTextEdit.setText(u'')
+        return QtGui.QDialog.exec_(self)
 
     def loadList(self):
         """
@@ -125,6 +132,12 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # Only enable the button, if we are editing an item.
         if self.item_id:
             self.saveButton.setEnabled(True)
+        if self.alertTextEdit.text():
+            self.displayButton.setEnabled(True)
+            self.displayCloseButton.setEnabled(True)
+        else:
+            self.displayButton.setEnabled(False)
+            self.displayCloseButton.setEnabled(False)
 
     def onDoubleClick(self):
         """

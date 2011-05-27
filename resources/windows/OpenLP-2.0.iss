@@ -16,7 +16,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{AA7699FA-B2D2-43F4-8A70-D497D03C9485}
+AppID={{AA7699FA-B2D2-43F4-8A70-D497D03C9485}
 AppName={#AppName}
 AppVerName={#AppVerName}
 AppPublisher={#AppPublisher}
@@ -29,11 +29,12 @@ AllowNoIcons=true
 LicenseFile=LICENSE.txt
 OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
-Compression=lzma
+Compression=lzma/Max
 SolidCompression=true
 SetupIconFile=OpenLP.ico
 WizardImageFile=WizImageBig.bmp
 WizardSmallImageFile=WizImageSmall.bmp
+ChangesAssociations=true
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -60,16 +61,17 @@ Name: spanish; MessagesFile: compiler:Languages\Spanish.isl
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
-Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}
+Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; OnlyBelowVersion: 0, 6.1
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: psvince.dll; Flags: dontcopy
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
 Name: {group}\{#AppName} (Debug); Filename: {app}\{#AppExeName}; Parameters: -l debug
-Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm
+Name: {group}\{#AppName} Help; Filename: {app}\{#AppName}.chm; Check: FileExists(ExpandConstant('{app}\{#AppName}.chm'))
 Name: {group}\{cm:ProgramOnTheWeb,{#AppName}}; Filename: {#AppURL}
 Name: {group}\{cm:UninstallProgram,{#AppName}}; Filename: {uninstallexe}
 Name: {commondesktop}\{#AppName}; Filename: {app}\{#AppExeName}; Tasks: desktopicon
@@ -79,8 +81,15 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
+Root: HKCR; Subkey: ".osz"; ValueType: string; ValueName: ""; ValueData: "OpenLP"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "OpenLP"; ValueType: string; ValueName: ""; ValueData: "OpenLP Service"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\OpenLP.exe,0"
+Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
 
 [Code]
+function IsModuleLoaded(modulename: String ):  Boolean;
+external 'IsModuleLoaded@files:psvince.dll stdcall';
+
 function GetUninstallString(): String;
 var
   sUnInstPath: String;
@@ -119,6 +128,19 @@ begin
   end
   else
     Result := 1;
+end;
+
+function InitializeSetup(): Boolean;
+begin
+  Result := true;
+  while IsModuleLoaded( 'OpenLP.exe' ) and Result do
+  begin
+    if MsgBox( 'Openlp is currently running, please close it to continue the install.',
+      mbError, MB_OKCANCEL ) =  IDCANCEL then
+	begin
+	  Result := false;
+	end;
+  end;
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);

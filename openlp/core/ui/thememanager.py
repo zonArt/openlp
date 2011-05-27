@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,7 @@ import os
 import zipfile
 import shutil
 import logging
+import locale
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
@@ -55,15 +57,13 @@ class ThemeManager(QtGui.QWidget):
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
-        self.serviceComboBox = \
-            self.mainwindow.ServiceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarButton(UiStrings.NewTheme,
+        self.toolbar.addToolbarButton(UiStrings().NewTheme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
@@ -127,8 +127,8 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
-        QtCore.QObject.connect(self.themeListWidget,
-            QtCore.SIGNAL(u'itemClicked(QListWidgetItem *)'),
+        QtCore.QObject.connect(self.themeListWidget, QtCore.SIGNAL(
+            u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'),
             self.checkListState)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
@@ -170,6 +170,8 @@ class ThemeManager(QtGui.QWidget):
         """
         If Default theme selected remove delete button.
         """
+        if item is None:
+            return
         realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         themeName = unicode(item.text())
         # If default theme restrict actions
@@ -280,6 +282,8 @@ class ThemeManager(QtGui.QWidget):
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             if self.fileRenameForm.exec_():
                 newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
+                if oldThemeName == newThemeName:
+                    return
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
@@ -333,6 +337,7 @@ class ThemeManager(QtGui.QWidget):
                 self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
+            self.oldBackgroundImage = None
 
     def onDeleteTheme(self):
         """
@@ -449,14 +454,17 @@ class ThemeManager(QtGui.QWidget):
             # No themes have been found so create one
             if len(files) == 0:
                 theme = ThemeXML()
-                theme.theme_name = UiStrings.Default
+                theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(theme.theme_name))
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
-        files.sort()
+        # Sort the themes by its name considering language specific characters.
+        # lower() is needed for windows!
+        files.sort(key=lambda filename: unicode(filename).lower(),
+           cmp=locale.strcoll)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory
@@ -655,9 +663,21 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
+    def updatePreviewImages(self):
+        """
+        Called to update the themes' preview images.
+        """
+        self.mainwindow.displayProgressBar(len(self.themelist))
+        for theme in self.themelist:
+            self.mainwindow.incrementProgressBar()
+            self.generateAndSaveImage(
+                self.path, theme, self.getThemeData(theme))
+        self.mainwindow.finishedProgressBar()
+        self.loadThemes()
+
     def generateImage(self, themeData, forcePage=False):
         """
-        Call the RenderManager to build a Sample Image
+        Call the renderer to build a Sample Image
 
         ``themeData``
             The theme to generated a preview for.
@@ -666,7 +686,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(
+        return self.mainwindow.renderer.generate_preview(
             themeData, forcePage)
 
     def getPreviewImage(self, theme):
@@ -745,7 +765,8 @@ class ThemeManager(QtGui.QWidget):
                             'Theme %s is used in the %s plugin.')) % \
                             (theme, plugin.name))
                         return False
-        return True
+            return True
+        return False
 
     def _migrateVersion122(self, xml_data):
         """
@@ -804,3 +825,4 @@ class ThemeManager(QtGui.QWidget):
         newtheme.display_horizontal_align = theme.HorizontalAlign
         newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()
+

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,6 +38,9 @@ from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+def replacement(match):
+    return match.group(2).upper()
+
 class OSISBible(BibleDB):
     """
     `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
@@ -60,6 +64,7 @@ class OSISBible(BibleDB):
         self.lg_regex = re.compile(r'<lg(.*?)>')
         self.l_regex = re.compile(r'<l (.*?)>')
         self.w_regex = re.compile(r'<w (.*?)>')
+        self.q_regex = re.compile(r'<q(.*?)>')
         self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
         self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
@@ -81,7 +86,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
         """
@@ -91,8 +96,6 @@ class OSISBible(BibleDB):
         osis = None
         success = True
         last_chapter = 0
-        #TODO: Delete unused code
-        #testament = 1
         match_count = 0
         self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport',
             'Detecting encoding (this may take a few minutes)...'))
@@ -106,13 +109,13 @@ class OSISBible(BibleDB):
             if detect_file:
                 detect_file.close()
         # Set meta language_id
-        language_id = self.get_language()
+        language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from %s   " '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
+            repl = replacement
             for file_record in osis:
                 if self.stop_import_flag:
                     break
@@ -125,13 +128,10 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
                         log.debug(u'New book: "%s"' % self.books[book][0])
-                        #TODO: Delete unused code
-                        #if book == u'Matt' or book == u'Jdt':
-                        #    testament += 1
-                        book_ref_id = self.get_book_ref_id_by_name(
-                            unicode(self.books[book][0]), language_id)
+                        book_ref_id = self.get_book_ref_id_by_name(unicode(
+                            self.books[book][0]), 67, language_id)
                         if not book_ref_id:
-                            log.exception(u'Importing books from %s " '\
+                            log.exception(u'Importing books from "%s" '\
                                 'failed' % self.filename)
                             return False
                         book_details = BiblesResourcesDB.get_book_by_id(
@@ -164,12 +164,13 @@ class OSISBible(BibleDB):
                     verse_text = self.rf_regex.sub(u'', verse_text)
                     verse_text = self.lb_regex.sub(u' ', verse_text)
                     verse_text = self.lg_regex.sub(u'', verse_text)
-                    verse_text = self.l_regex.sub(u'', verse_text)
+                    verse_text = self.l_regex.sub(u' ', verse_text)
                     verse_text = self.w_regex.sub(u'', verse_text)
                     verse_text = self.q1_regex.sub(u'"', verse_text)
                     verse_text = self.q2_regex.sub(u'\'', verse_text)
+                    verse_text = self.q_regex.sub(u'', verse_text)
+                    verse_text = self.divine_name_regex.sub(repl, verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
-                    verse_text = self.divine_name_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
