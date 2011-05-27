@@ -439,7 +439,10 @@ class BibleUpgradeForm(OpenLPWizard):
             if not self.checkBox[biblenumber].checkState() == QtCore.Qt.Checked:
                 continue
             self.progressBar.reset()
-            if filename[1] is None:
+            oldbible = OldBibleDB(self.mediaItem, path=self.path, 
+                file=filename[0])
+            name = filename[1]
+            if name is None:
                 delete_file(os.path.join(self.path, filename[0]))
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 
@@ -596,6 +599,9 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.newbibles[number].delete_book(db_book)
                         continue
                     for verse in verses:
+                        if self.stop_import_flag:
+                            bible_failed = True
+                            break
                         self.newbibles[number].create_verse(db_book.id, 
                             int(verse[u'chapter']), 
                             int(verse[u'verse']), unicode(verse[u'text']))

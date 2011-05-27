@@ -110,6 +110,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.apocryphaCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.reloadComboBox()
         self.currentLineEdit.setText(name)
+        self.correspondingComboBox.setFocus()
         return QDialog.exec_(self)
     
     def accept(self):
