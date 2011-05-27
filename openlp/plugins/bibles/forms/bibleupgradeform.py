@@ -606,7 +606,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             int(verse[u'chapter']), 
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
-                self.newbibles[number].session.commit()
+                    self.newbibles[number].session.commit()
             if not bible_failed:
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 

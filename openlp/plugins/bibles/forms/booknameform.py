@@ -109,7 +109,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         elif maxbooks <= 66:
             self.apocryphaCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.reloadComboBox()
-        self.currentLineEdit.setText(name)
+        self.currentBookLabel.setText(unicode(name))
         self.correspondingComboBox.setFocus()
         return QDialog.exec_(self)
     
