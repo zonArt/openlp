@@ -155,7 +155,7 @@ class BibleManager(object):
                 continue
             # Find old database versions
             if bible.is_old_database():
-                self.old_bible_databases.append(filename)
+                self.old_bible_databases.append([filename, name])
                 bible.session.close()
                 continue
             log.debug(u'Bible Name: "%s"', name)

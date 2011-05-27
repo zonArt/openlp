@@ -996,8 +996,8 @@ class OldBibleDB(QtCore.QObject, Manager):
         """
         if self.cursor is None:
             filepath = os.path.join(self.path, self.file)
-            conn = sqlite3.connect(filepath)
-            self.cursor = conn.cursor()
+            self.connection = sqlite3.connect(filepath)
+            self.cursor = self.connection.cursor()
         return self.cursor
 
     def run_sql(self, query, parameters=()):
