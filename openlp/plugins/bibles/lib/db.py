@@ -500,12 +500,6 @@ class BibleDB(QtCore.QObject, Manager):
             return True
         return False
 
-    def close_database(self):
-        """
-        Close database connection.
-        """
-        self.session.close()
-
     def dump_bible(self):
         """
         Utility debugging method to dump the contents of a bible.
@@ -1005,13 +999,6 @@ class OldBibleDB(QtCore.QObject, Manager):
             conn = sqlite3.connect(filepath)
             self.cursor = conn.cursor()
         return self.cursor
-
-    def close_cursor(self):
-        """
-        Close the cursor
-        """
-        if self.cursor:
-            self.cursor.close()
 
     def run_sql(self, query, parameters=()):
         """

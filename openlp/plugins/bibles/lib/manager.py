@@ -156,6 +156,7 @@ class BibleManager(object):
             # Find old database versions
             if bible.is_old_database():
                 self.old_bible_databases.append(filename)
+                bible.session.close()
                 continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
