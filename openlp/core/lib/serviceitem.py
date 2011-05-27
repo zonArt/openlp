@@ -177,10 +177,11 @@ class ServiceItem(object):
                     .format_slide(slide[u'raw_slide'], line_break, self)
                 for page in formatted:
                     page = page.replace(u'<br>', u'{br}')
+                    html = expand_tags(cgi.escape(page.rstrip()))
                     self._display_frames.append({
                         u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
-                        u'html': expand_tags(cgi.escape(page.rstrip())),
+                        u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
                         u'verseTag': slide[u'verseTag']
                     })
         elif self.service_item_type == ServiceItemType.Image or \

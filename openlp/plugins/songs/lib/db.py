@@ -197,7 +197,7 @@ def init_schema(url):
         Column(u'song_number', types.Unicode(64)),
         Column(u'theme_name', types.Unicode(128)),
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, index=True, nullable=False)
+        Column(u'search_lyrics', types.UnicodeText, nullable=False)
     )
 
     # Definition of the "topics" table
