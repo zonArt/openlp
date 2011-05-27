@@ -696,7 +696,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
-            Receiver.send_message(u'songs_set_autoselect_item',self.song.id)
             Receiver.send_message(u'songs_load_list')
             self.song = None
             QtGui.QDialog.accept(self)
@@ -756,6 +755,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
+        self.parent.auto_select_id = self.song.id
 
     def _processLyrics(self):
         """
