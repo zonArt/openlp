@@ -140,14 +140,14 @@ class SlideController(QtGui.QWidget):
         self.previousItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Previous Slide'),
             u':/slides/slide_previous.png',
-            translate('OpenLP.SlideController', 'Move to previous'),
+            translate('OpenLP.SlideController', 'Move to previous.'),
             self.onSlideSelectedPrevious,
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
-            translate('OpenLP.SlideController', 'Move to next'),
+            translate('OpenLP.SlideController', 'Move to next.'),
             self.onSlideSelectedNext,
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
@@ -183,7 +183,7 @@ class SlideController(QtGui.QWidget):
             startLoop = self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Start Loop', u':/media/media_time.png',
-                translate('OpenLP.SlideController', 'Start continuous loop'),
+                translate('OpenLP.SlideController', 'Enable timed slides.'),
                 self.onStartLoop)
             startLoop.setObjectName(u'startLoop')
             action_list = ActionList.get_instance()
@@ -191,7 +191,7 @@ class SlideController(QtGui.QWidget):
             stopLoop = self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Stop Loop', u':/media/media_stop.png',
-                translate('OpenLP.SlideController', 'Stop continuous loop'),
+                translate('OpenLP.SlideController', 'Stop timed slides.'),
                 self.onStopLoop)
             stopLoop.setObjectName(u'stopLoop')
             action_list.add_action(stopLoop, UiStrings().LiveToolbar)
@@ -206,39 +206,39 @@ class SlideController(QtGui.QWidget):
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
-                'Delay between slides in seconds'))
+                'Delay between slides in seconds.'))
         else:
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Go Live', u':/general/general_live.png',
-                translate('OpenLP.SlideController', 'Move to live'),
+                translate('OpenLP.SlideController', 'Move to live.'),
                 self.onGoLive)
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Add to Service', u':/general/general_add.png',
-                translate('OpenLP.SlideController', 'Add to Service'),
+                translate('OpenLP.SlideController', 'Add to Service.'),
                 self.onPreviewAddToService)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Edit Song', u':/general/general_edit.png',
                 translate('OpenLP.SlideController',
-                'Edit and reload song preview'),
+                'Edit and reload song preview.'),
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build a Media ToolBar
         self.mediabar = OpenLPToolbar(self)
         self.mediabar.addToolbarButton(
             u'Media Start', u':/slides/media_playback_start.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaPlay)
         self.mediabar.addToolbarButton(
             u'Media Pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaPause)
         self.mediabar.addToolbarButton(
             u'Media Stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaStop)
         if self.isLive:
             # Build the Song Toolbar
