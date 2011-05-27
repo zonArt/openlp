@@ -112,13 +112,10 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        self.autoSelectItem = None
+        self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
-            self.setAutoSelectItem)
 
     def requiredIcons(self):
         """
@@ -479,9 +476,6 @@ class MediaManagerItem(QtGui.QWidget):
                 if keepFocus:
                     self.listView.setFocus()
 
-    def setAutoSelectItem(self, itemToSelect=None):
-        self.autoSelectItem = itemToSelect
-
     def onLiveClick(self):
         """
         Send an item live by building a service item then adding that service
@@ -616,6 +610,16 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def save_auto_select_id(self):
+        """
+        Sorts out, what item to select after loading a list.
+        """
+        # The item to select has not been set.
+        if self.auto_select_id == -1:
+            item = self.listView.currentItem()
+            if item:
+                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
 
     def search(self, string):
         """
