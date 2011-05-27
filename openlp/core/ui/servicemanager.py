@@ -677,19 +677,18 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.AllowsVariableStartTime):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
+        # Set up the theme menu.
         if serviceItem[u'service_item'].is_text() and \
             len(self.themeMenu.actions()) > 1:
             self.themeMenu.menuAction().setVisible(True)
+            # The service item does not have a theme, check the "Default".
             if serviceItem[u'service_item'].theme is None:
-                themeAction = self.themeMenu.findChild(QtGui.QAction, u'Sunrise')
+                themeAction = self.themeMenu.defaultAction()
             else:
-                themeAction = self.themeMenu.findChild(QtGui.QAction, u'Sunrise')
+                themeAction = self.themeMenu.findChild(
+                    QtGui.QAction, serviceItem[u'service_item'].theme)
             if themeAction is not None:
                 themeAction.setChecked(True)
-            print self.mainwindow.renderer.global_theme
-            for themeAction in self.themeMenu.actions():
-                themeAction.setChecked(
-                    themeAction.text() == serviceItem[u'service_item'].theme)
         action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
@@ -1295,6 +1294,14 @@ class ServiceManager(QtGui.QWidget):
         themeGroup = QtGui.QActionGroup(self.themeMenu)
         themeGroup.setExclusive(True)
         themeGroup.setObjectName(u'themeGroup')
+        # Create a "Default" theme, which allows the user to reset the item's
+        # theme to the service theme or global theme.
+        defaultTheme = context_menu_action(self.themeMenu, None,
+            UiStrings().Default, self.onThemeChangeAction)
+        defaultTheme.setCheckable(True)
+        self.themeMenu.setDefaultAction(defaultTheme)
+        themeGroup.addAction(defaultTheme)
+        context_menu_separator(self.themeMenu)
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
             themeAction = context_menu_action(self.themeMenu, None, theme,
@@ -1307,7 +1314,10 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
-        theme = unicode(self.sender().text())
+        theme = unicode(self.sender().objectName())
+        # No object name means that the "Default" theme is supposed to be used.
+        if not theme:
+            theme = None
         item = self.findServiceItem()[0]
         self.serviceItems[item][u'service_item'].theme = theme
         self.regenerateServiceItems()
