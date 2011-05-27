@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -51,8 +51,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
-        QtCore.QObject.connect(self.defaultPushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
         QtCore.QObject.connect(self.savePushButton,
@@ -87,8 +85,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         if user_expands_string:
             user_tags = cPickle.loads(user_expands_string)
             # If we have some user ones added them as well
-            for t in user_tags:
-                DisplayTags.add_html_tag(t)
+            DisplayTags.add_html_tags(user_tags)
 
     def onRowSelected(self):
         """
@@ -128,21 +125,19 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
                     'Tag "n" already defined.'))
                 return
         # Add new tag to list
-        tag = {u'desc': u'New Item', u'start tag': u'{n}',
-            u'start html': u'<Html_here>', u'end tag': u'{/n}',
-            u'end html': u'</and here>', u'protected': False}
-        DisplayTags.add_html_tag(tag)
+        tag = {
+            u'desc': translate('OpenLP.DisplayTagTab', 'New Tag'),
+            u'start tag': u'{n}',
+            u'start html': translate('OpenLP.DisplayTagTab', '<Html_here>'),
+            u'end tag': u'{/n}',
+            u'end html': translate('OpenLP.DisplayTagTab', '</and here>'),
+            u'protected': False
+        }
+        DisplayTags.add_html_tags([tag])
         self._resetTable()
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
-
-    def onDefaultPushed(self):
-        """
-        Remove all Custom Tags and reset to base set only.
-        """
-        DisplayTags.reset_html_tags()
-        self._resetTable()
 
     def onDeletePushed(self):
         """
