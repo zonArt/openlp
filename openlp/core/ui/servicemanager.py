@@ -678,8 +678,7 @@ class ServiceManager(QtGui.QWidget):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
-        if serviceItem[u'service_item'].is_text() and \
-            len(self.themeMenu.actions()) > 1:
+        if serviceItem[u'service_item'].is_text():
             self.themeMenu.menuAction().setVisible(True)
             # The service item does not have a theme, check the "Default".
             if serviceItem[u'service_item'].theme is None:
