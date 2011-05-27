@@ -116,7 +116,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         log.debug(u'accept')
         if self.saveCustom():
             Receiver.send_message(u'custom_set_autoselect_item',
-                self.customSlide.title)
+                self.customSlide.id)
             Receiver.send_message(u'custom_load_list')
             QtGui.QDialog.accept(self)
 

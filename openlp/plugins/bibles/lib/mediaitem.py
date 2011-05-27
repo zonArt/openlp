@@ -775,6 +775,7 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
+            bible_text = bible_text.strip(u' ')
             if not old_item:
                 start_item = bitem
             elif self.checkTitle(bitem, old_item):
