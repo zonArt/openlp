@@ -627,7 +627,6 @@ class BibleUpgradeForm(OpenLPWizard):
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
-        #for number, success in self.success.iteritems():
             if number in self.success and self.success[number] == True:
                 successful_import += 1
             elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
