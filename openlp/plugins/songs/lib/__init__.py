@@ -277,7 +277,11 @@ def clean_song(manager, song):
             compare_order.append(verse[0][u'type'].upper())
     # Check if the verse order contains tags for verses which do not exist.
     # (This is relevant for people upgrading from 1.9.4 and older).
-    for order in song.verse_order.split():
+    if song.verse_order:
+        order = song.verse_order.strip().split()
+    else:
+        order = []
+    for order in order:
         # The verse order contains invalid tags, so reset the order.
         if order not in compare_order:
             song.verse_order = u''
