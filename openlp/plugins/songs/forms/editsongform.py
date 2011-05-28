@@ -52,7 +52,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
         self.song = None
         # can this be automated?
         self.width = 400
@@ -90,7 +89,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.renderer.theme_manager.onAddTheme)
+            self.parent().plugin.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),

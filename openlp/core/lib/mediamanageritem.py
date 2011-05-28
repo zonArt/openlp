@@ -93,8 +93,7 @@ class MediaManagerItem(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.parent = parent
         self.whitespace = re.compile(r'\W+', re.UNICODE)
-        #TODO: plugin should not be the parent in future
-        self.plugin = parent # plugin
+        self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
@@ -114,10 +113,10 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         self.autoSelectItem = None
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
+            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name.lower()),
             self.serviceLoad)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
+            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.plugin.name.lower()),
             self.setAutoSelectItem)
 
     def requiredIcons(self):
@@ -475,7 +474,7 @@ class MediaManagerItem(QtGui.QWidget):
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
-                self.parent.previewController.addServiceItem(serviceItem)
+                self.plugin.previewController.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
 
@@ -503,7 +502,7 @@ class MediaManagerItem(QtGui.QWidget):
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
-            self.parent.liveController.addServiceItem(serviceItem)
+            self.plugin.liveController.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
@@ -533,7 +532,7 @@ class MediaManagerItem(QtGui.QWidget):
         serviceItem = self.buildServiceItem(item, True)
         if serviceItem:
             serviceItem.from_plugin = False
-            self.parent.serviceManager.addServiceItem(serviceItem,
+            self.plugin.serviceManager.addServiceItem(serviceItem,
                 replace=replace)
 
     def onAddEditClick(self):
@@ -546,14 +545,14 @@ class MediaManagerItem(QtGui.QWidget):
                     'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
-            serviceItem = self.parent.serviceManager.getServiceItem()
+            serviceItem = self.plugin.serviceManager.getServiceItem()
             if not serviceItem:
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
-                self.parent.serviceManager.addServiceItem(serviceItem,
+                self.plugin.serviceManager.addServiceItem(serviceItem,
                     replace=True)
             else:
                 # Turn off the remote edit update message indicator
@@ -567,8 +566,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Common method for generating a service item
         """
-        serviceItem = ServiceItem(self.parent)
-        serviceItem.add_icon(self.parent.icon_path)
+        serviceItem = ServiceItem(self.plugin)
+        serviceItem.add_icon(self.plugin.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:

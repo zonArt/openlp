@@ -43,13 +43,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, parent):
+    def __init__(self, plugin):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self)
-        self.parent = parent
-        self.manager = self.parent.manager
+        self.plugin = plugin
+        QtGui.QDialog.__init__(self, self.plugin.formparent)
+        self.manager = self.plugin.manager
         self.setupUi(self)
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)

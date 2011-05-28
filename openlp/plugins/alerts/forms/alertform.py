@@ -41,7 +41,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Initialise the alert form
         """
         self.manager = plugin.manager
-        self.parent = plugin
+        self.plugin = plugin
+        self.parent = plugin.formparent
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
@@ -195,7 +196,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.parameterEdit.setFocus()
             return False
         text = text.replace(u'<>', unicode(self.parameterEdit.text()))
-        self.parent.alertsmanager.displayAlert(text)
+        self.plugin.alertsmanager.displayAlert(text)
         return True
 
     def onCurrentRowChanged(self, row):

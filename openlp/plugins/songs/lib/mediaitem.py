@@ -62,12 +62,12 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        MediaManagerItem.__init__(self, parent, self, icon)
-        self.edit_song_form = EditSongForm(self, self.parent.manager)
-        self.openLyrics = OpenLyrics(self.parent.manager)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
+        self.edit_song_form = EditSongForm(self, self.plugin.manager)
+        self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
         self.song_maintenance_form = SongMaintenanceForm(
-            self.parent.manager, self)
+            self.plugin.manager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
         self.remoteSong = -1
@@ -178,31 +178,31 @@ class SongMediaItem(MediaManagerItem):
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects(Song,
+            search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.manager.get_all_objects(Song,
+            search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
-            search_results = self.parent.manager.get_all_objects(Author,
+            search_results = self.plugin.manager.get_all_objects(Author,
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
-            search_results = self.parent.manager.get_all_objects(Song,
+            search_results = self.plugin.manager.get_all_objects(Song,
                 Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'))
             self.displayResultsSong(search_results)
         self.check_search_result()
 
     def searchEntire(self, search_keywords):
-        return self.parent.manager.get_all_objects(Song,
+        return self.plugin.manager.get_all_objects(Song,
             or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
             search_keywords.lower()) + u'%'),
             Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
@@ -225,7 +225,7 @@ class SongMediaItem(MediaManagerItem):
         if self.editItem and self.updateServiceOnEdit and \
             not self.remoteTriggered:
             item = self.buildServiceItem(self.editItem)
-            self.parent.serviceManager.replaceServiceItem(item)
+            self.plugin.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
         log.debug(u'onSongListLoad - finished')
@@ -284,12 +284,12 @@ class SongMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = SongImportForm(self, self.parent)
+            self.import_wizard = SongImportForm(self, self.plugin)
         if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
-        export_wizard = SongExportForm(self, self.parent)
+        export_wizard = SongExportForm(self, self.plugin)
         export_wizard.exec_()
 
     def onNewClick(self):
@@ -314,7 +314,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onRemoteEdit %s' % message)
         remote_type, song_id = message.split(u':')
         song_id = int(song_id)
-        valid = self.parent.manager.get_object(Song, song_id)
+        valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
             self.remoteSong = song_id
             self.remoteTriggered = remote_type
@@ -350,7 +350,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.manager.delete_object(Song, item_id)
+                self.plugin.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
@@ -362,7 +362,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.OnLoadUpdate)
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
         service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
-        song = self.parent.manager.get_object(Song, item_id)
+        song = self.plugin.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
@@ -446,12 +446,12 @@ class SongMediaItem(MediaManagerItem):
             # that the search title (data_string[u'title']) is probably wrong.
             # We add "@" to search title and hope that we do not add any
             # duplicate. This should work for songs without alternate title.
-            search_results = self.parent.manager.get_all_objects(Song,
+            search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(u' ',
                 item.data_string[u'title'].strip()) + u'@').strip().lower(),
                 Song.search_title.asc())
         else:
-            search_results = self.parent.manager.get_all_objects(Song,
+            search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == item.data_string[u'title'],
                 Song.search_title.asc())
         author_list = item.data_string[u'authors'].split(u', ')

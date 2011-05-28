@@ -56,14 +56,14 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
-        self.manager = parent.manager
+        self.manager = plugin.manager
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -151,8 +151,8 @@ class CustomMediaItem(MediaManagerItem):
                 self.listView.setCurrentItem(custom_name)
 
     def onNewClick(self):
-        self.parent.edit_custom_form.loadCustom(0)
-        self.parent.edit_custom_form.exec_()
+        self.plugin.edit_custom_form.loadCustom(0)
+        self.plugin.edit_custom_form.exec_()
         self.initialise()
 
     def onRemoteEditClear(self):
@@ -170,9 +170,9 @@ class CustomMediaItem(MediaManagerItem):
         if valid:
             self.remoteCustom = fields[1]
             self.remoteTriggered = fields[0]
-            self.parent.edit_custom_form.loadCustom(fields[1],
+            self.plugin.edit_custom_form.loadCustom(fields[1],
                 (fields[0] == u'P'))
-            self.parent.edit_custom_form.exec_()
+            self.plugin.edit_custom_form.exec_()
 
     def onEditClick(self):
         """
@@ -181,8 +181,8 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.edit_custom_form.loadCustom(item_id, False)
-            self.parent.edit_custom_form.exec_()
+            self.plugin.edit_custom_form.loadCustom(item_id, False)
+            self.plugin.edit_custom_form.exec_()
             self.initialise()
 
     def onDeleteClick(self):
@@ -195,7 +195,7 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.manager.delete_object(CustomSlide, id)
+                self.plugin.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
@@ -212,7 +212,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
-        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
+        customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.edit_id = item_id
@@ -245,13 +245,13 @@ class CustomMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
