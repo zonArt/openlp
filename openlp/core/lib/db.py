@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from openlp.core.utils import AppLocation, delete_file

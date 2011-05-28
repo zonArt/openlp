@@ -232,6 +232,7 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
+        self.save_auto_select_id()
         self.listView.clear()
         # Sort the songs by its title considering language specific characters.
         # lower() is needed for windows!
@@ -245,8 +246,9 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
-            if song.title == self.autoSelectItem :
+            if song.id == self.auto_select_id:
                 self.listView.setCurrentItem(song_name)
+        self.auto_select_id = -1
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -487,7 +489,4 @@ class SongMediaItem(MediaManagerItem):
         Search for some songs
         """
         search_results = self.searchEntire(string)
-        results = []
-        for song in search_results:
-            results.append([song.id, song.title])
-        return results
+        return [[song.id, song.title] for song in search_results]

@@ -223,9 +223,9 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
         self.enableLoopCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Enable slide loop'))
+            'Enable slide wrap-around'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
-            'Slide loop delay:'))
+            'Timed slide interval:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
