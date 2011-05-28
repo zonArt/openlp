@@ -43,12 +43,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, parent, manager):
+    def __init__(self, mediaitem, parent, manager):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
         self.manager = manager
+        self.mediaitem = mediaitem
         self.setupUi(self)
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)
@@ -136,7 +137,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         success = self.manager.save_object(self.customSlide)
-        self.parent().auto_select_id = self.customSlide.id
+        self.mediaitem().auto_select_id = self.customSlide.id
         return success
 
     def onUpButtonClicked(self):
