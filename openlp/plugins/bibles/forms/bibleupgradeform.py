@@ -147,6 +147,13 @@ class BibleUpgradeForm(OpenLPWizard):
             SettingsManager.set_last_dir(self.plugin.settingsSection, 
                 filename, 1)
 
+    def onNoBackupCheckBoxToggled(self, checked):
+        """
+        Enable or disable the backup directory widgets.
+        """
+        self.backupDirectoryEdit.setEnabled(not checked)
+        self.backupBrowseButton.setEnabled(not checked)
+
     def backupOldBibles(self, backupdirectory):
         """
         Backup old bible databases in a given folder.
@@ -173,7 +180,9 @@ class BibleUpgradeForm(OpenLPWizard):
         QtCore.QObject.connect(self.finishButton,
             QtCore.SIGNAL(u'clicked()'), self.onFinishButton)
         QtCore.QObject.connect(self.backupBrowseButton,
-            QtCore.SIGNAL(u'clicked()'), self.onBackupBrowseButtonClicked)              
+            QtCore.SIGNAL(u'clicked()'), self.onBackupBrowseButtonClicked)
+        QtCore.QObject.connect(self.noBackupCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onNoBackupCheckBoxToggled)
 
     def addCustomPages(self):
         """
@@ -185,9 +194,14 @@ class BibleUpgradeForm(OpenLPWizard):
         self.backupLayout = QtGui.QVBoxLayout(self.backupPage)
         self.backupLayout.setObjectName(u'BackupLayout')
         self.backupInfoLabel = QtGui.QLabel(self.backupPage)
-        self.backupInfoLabel.setObjectName(u'backupInfoLabel')
+        self.backupInfoLabel.setOpenExternalLinks(True)
+        self.backupInfoLabel.setTextFormat(QtCore.Qt.RichText)
         self.backupInfoLabel.setWordWrap(True)
+        self.backupInfoLabel.setObjectName(u'backupInfoLabel')
         self.backupLayout.addWidget(self.backupInfoLabel)
+        self.selectLabel = QtGui.QLabel(self.backupPage)
+        self.selectLabel.setObjectName(u'selectLabel')
+        self.backupLayout.addWidget(self.selectLabel)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setMargin(0)
         self.formLayout.setObjectName(u'FormLayout')
@@ -205,11 +219,6 @@ class BibleUpgradeForm(OpenLPWizard):
         self.formLayout.addRow(self.backupDirectoryLabel, 
             self.backupDirectoryLayout)
         self.backupLayout.addLayout(self.formLayout)
-        self.backupAdditionalInfoLabel = QtGui.QLabel(self.backupPage)
-        self.backupAdditionalInfoLabel.setObjectName(
-            u'BackupAdditionalInfoLabel')
-        self.backupAdditionalInfoLabel.setWordWrap(True)
-        self.backupLayout.addWidget(self.backupAdditionalInfoLabel)
         self.noBackupCheckBox = QtGui.QCheckBox(self.backupPage)
         self.noBackupCheckBox.setObjectName('NoBackupCheckBox')
         self.backupLayout.addWidget(self.noBackupCheckBox)
@@ -356,25 +365,24 @@ class BibleUpgradeForm(OpenLPWizard):
             translate('BiblesPlugin.UpgradeWizardForm',
             'This wizard will help you to upgrade your existing Bibles from a '
             'prior version of OpenLP 2. Click the next button below to start '
-            'the process by selecting the Bibles to upgrade.'))
+            'the upgrade process.'))
         self.backupPage.setTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
             'Select Backup Directory'))
         self.backupPage.setSubTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
-            'Please select a Directory for Backup your old Bibles'))
+            'Please select a backup directory for your Bibles'))
         self.backupInfoLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
-            'The Bible upgrade procedure will prevent you running older '
-            'versions of OpenLP. \nPlease select a backup location for your '
-            'existing Bibles.'))
+            'Previous releases of OpenLP 2.0 are unable to use upgraded Bibles.'
+            ' This will create a backup of your current Bibles so that you can '
+            'simply copy the files back to your OpenLP data directory if you '
+            'need to revert to a previous release of OpenLP. Instructions on '
+            'how to restore the files can be found in our <a href="'
+            'http://wiki.openlp.org/faq">Frequently Asked Questions</a>.'))
+        self.selectLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
+            'Please select a backup location for your Bibles.'))
         self.backupDirectoryLabel.setText(
             translate('BiblesPlugin.UpgradeWizardForm', 'Backup Directory:'))
-        self.backupAdditionalInfoLabel.setText(
-            translate('BiblesPlugin.UpgradeWizardForm',
-            'These Bibles can copied back to your OpenLP data folder should '
-            'you need to revert to a previous version. Instructions on how '
-            'to restore the files can be found on our FAQ '
-            'at http://wiki.openlp.org/faq'))
         self.noBackupCheckBox.setText(
             translate('BiblesPlugin.UpgradeWizardForm', 
             'There is no need to backup my Bibles'))
@@ -749,21 +757,21 @@ class BibleUpgradeForm(OpenLPWizard):
         if failed_import > 0:
             failed_import_text = unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm', 
-                ' - %s upgrade fail')) % failed_import
+                ', %s failed')) % failed_import
         else:
             failed_import_text = u''
         if successful_import > 0:
             if include_webbible:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'Bible(s) successful%s.\nPlease note, that verses from '
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
+                    'Bible(s): %s successful%s\nPlease note, that verses from '
                     'Web Bibles will be downloaded\non demand and so an '
                     'Internet connection is required.')) % 
                     (successful_import, failed_import_text))
             else:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'Bible(s) successful.%s')) % (successful_import, 
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
+                    'Bible(s): %s successful%s')) % (successful_import, 
                     failed_import_text))
         else:
             self.progressLabel.setText(
