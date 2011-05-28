@@ -269,6 +269,19 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
     song.search_lyrics = lyrics.lower()
+    compare_order = []
+    for verse in verses:
+        compare_order.append(
+            (u'%s%s' % (verse[0][u'type'], verse[0][u'label'])).upper())
+        if verse[0][u'label'] == u'1':
+            compare_order.append(verse[0][u'type'].upper())
+    # Check if the verse order contains tags for verses which do not exist.
+    # (This is relevant for people upgrading from 1.9.4 and older).
+    for order in song.verse_order.split():
+        # The verse order contains invalid tags, so reset the order.
+        if order not in compare_order:
+            song.verse_order = u''
+            break
     # The song does not have any author, add one.
     if not song.authors:
         name = SongStrings.AuthorUnknown
