@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +26,7 @@
 ###############################################################################
 
 import logging
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -271,6 +273,12 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'currentChanged(int)'),
             self.onSearchTabBarCurrentChanged)
 
+    def onFocus(self):
+        if self.quickTab.isVisible():
+            self.quickSearchEdit.setFocus()
+        else:
+            self.advancedBookComboBox.setFocus()
+
     def configUpdated(self):
         log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/second bibles',
@@ -358,7 +366,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
         bibles = self.parent.manager.get_bibles().keys()
-        bibles.sort()
+        bibles.sort(cmp=locale.strcoll)
         # Load the bibles into the combo boxes.
         for bible in bibles:
             if bible:
@@ -442,7 +450,7 @@ class BibleMediaItem(MediaManagerItem):
             if bible:
                 book_data = bibles[bible].get_books()
                 books = [book.name + u' ' for book in book_data]
-                books.sort()
+                books.sort(cmp=locale.strcoll)
         add_widget_completer(books, self.quickSearchEdit)
 
     def onImportClick(self):
@@ -461,6 +469,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.quickTab.setVisible(False)
             self.advancedTab.setVisible(True)
+            self.advancedBookComboBox.setFocus()
 
     def onLockButtonToggled(self, checked):
         if checked:
@@ -766,6 +775,7 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
+            bible_text = bible_text.strip(u' ')
             if not old_item:
                 start_item = bitem
             elif self.checkTitle(bitem, old_item):

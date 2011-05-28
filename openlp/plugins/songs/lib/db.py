@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -196,7 +197,7 @@ def init_schema(url):
         Column(u'song_number', types.Unicode(64)),
         Column(u'theme_name', types.Unicode(128)),
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, index=True, nullable=False)
+        Column(u'search_lyrics', types.UnicodeText, nullable=False)
     )
 
     # Definition of the "topics" table

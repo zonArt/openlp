@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -111,14 +112,11 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        self.autoSelectItem = None
+        self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
             self.serviceLoad)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
-            self.setAutoSelectItem)
- 
+
     def requiredIcons(self):
         """
         This method is called to define the icons for the plugin.
@@ -430,6 +428,13 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
+    def onFocus(self):
+        """
+        Run when a tab in the media manager gains focus. This gives the media
+        item a chance to focus any elements it wants to.
+        """
+        pass
+
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
@@ -470,9 +475,6 @@ class MediaManagerItem(QtGui.QWidget):
                 self.parent.previewController.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
-
-    def setAutoSelectItem(self, itemToSelect=None):
-        self.autoSelectItem = itemToSelect
 
     def onLiveClick(self):
         """
@@ -608,6 +610,16 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def save_auto_select_id(self):
+        """
+        Sorts out, what item to select after loading a list.
+        """
+        # The item to select has not been set.
+        if self.auto_select_id == -1:
+            item = self.listView.currentItem()
+            if item:
+                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
 
     def search(self, string):
         """
