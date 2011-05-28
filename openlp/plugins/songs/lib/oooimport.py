@@ -82,12 +82,11 @@ class OooImport(SongImport):
                     self.close_ooo_file()
                 else:
                     self.log_error(self.filepath,
-                                   translate('SongsPlugin.SongImport',
-                                        'Unable to open file'))
+                        translate('SongsPlugin.SongImport',
+                        'Unable to open file'))
             else:
                 self.log_error(self.filepath,
-                               translate('SongsPlugin.SongImport',
-                                    'File not found'))
+                    translate('SongsPlugin.SongImport', 'File not found'))
         self.close_ooo()
 
     def process_ooo_document(self):
