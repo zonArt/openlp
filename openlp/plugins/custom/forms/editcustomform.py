@@ -43,13 +43,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, plugin):
+    def __init__(self, plugin, manager):
         """
         Constructor
         """
         self.plugin = plugin
         QtGui.QDialog.__init__(self, self.plugin.formparent)
-        self.manager = self.plugin.manager
+        self.manager = manager
         self.setupUi(self)
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)
@@ -115,8 +115,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
-            Receiver.send_message(u'custom_set_autoselect_item',
-                self.customSlide.id)
             Receiver.send_message(u'custom_load_list')
             QtGui.QDialog.accept(self)
 
@@ -138,7 +136,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
-        return self.manager.save_object(self.customSlide)
+        success = self.manager.save_object(self.customSlide)
+        self.parent.auto_select_id = self.customSlide.id
+        return success
 
     def onUpButtonClicked(self):
         selectedRow = self.slideListView.currentRow()

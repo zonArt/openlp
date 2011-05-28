@@ -841,6 +841,11 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+        else:
+            if hide_mode:
+                Receiver.send_message(u'maindisplay_hide', hide_mode)
+            else:
+                Receiver.send_message(u'maindisplay_show')
 
     def hidePlugin(self, hide):
         """
@@ -859,6 +864,11 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+        else:
+            if hide:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            else:
+                Receiver.send_message(u'maindisplay_show')
 
     def onSlideSelected(self, start=False):
         """
@@ -1044,7 +1054,8 @@ class SlideController(QtGui.QWidget):
         """
         From the preview display request the Item to be added to service
         """
-        self.parent.serviceManagerContents.addServiceItem(self.serviceItem)
+        if self.serviceItem:
+            self.parent.serviceManagerContents.addServiceItem(self.serviceItem)
 
     def onGoLiveClick(self):
         """
