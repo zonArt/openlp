@@ -157,7 +157,6 @@ class BibleUpgradeForm(OpenLPWizard):
                     backupdirectory)
             except:
                 return False
-                break
         return True
 
     def customInit(self):
