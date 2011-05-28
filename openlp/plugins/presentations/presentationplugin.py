@@ -99,7 +99,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         return PresentationMediaItem(
-            self.mediadock, self, self.icon, self.controllers)
+            self.mediadock.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """

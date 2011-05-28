@@ -46,7 +46,6 @@ class SlideList(QtGui.QTableWidget):
     """
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
-        self.parent = parent
 
 
 class SlideController(QtGui.QWidget):
@@ -60,11 +59,10 @@ class SlideController(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
-        self.parent = parent
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.image_manager = self.parent.image_manager
+        self.image_manager = self.parent().image_manager
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -461,7 +459,7 @@ class SlideController(QtGui.QWidget):
                 self.previewListWidget.resizeRowsToContents()
             else:
                 # Sort out image heights.
-                width = self.parent.controlSplitter.sizes()[self.split]
+                width = self.parent().controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.serviceItem.get_frames())):
                     self.previewListWidget.setRowHeight(
                         framenumber, width / self.ratio)
@@ -502,7 +500,7 @@ class SlideController(QtGui.QWidget):
         self.toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
-                self.parent.songsSettingsSection + u'/display songbar',
+                self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -591,7 +589,7 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
             [serviceItem, self.isLive, self.hideMode(), slideno])
         self.slideList = {}
-        width = self.parent.controlSplitter.sizes()[self.split]
+        width = self.parent().controlSplitter.sizes()[self.split]
         self.previewListWidget.clear()
         self.previewListWidget.setRowCount(0)
         self.previewListWidget.setColumnWidth(0, width)
@@ -625,8 +623,8 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     image = resize_image(frame[u'image'],
-                        self.parent.renderer.width,
-                        self.parent.renderer.height)
+                        self.parent().renderer.width,
+                        self.parent().renderer.height)
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:
@@ -635,7 +633,7 @@ class SlideController(QtGui.QWidget):
                     image = self.image_manager.get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent.renderer.screen_ratio
+                slideHeight = width * self.parent().renderer.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
@@ -736,7 +734,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
         display_type = QtCore.QSettings().value(
-            self.parent.generalSettingsSection + u'/screen blank',
+            self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
         if not self.display.primary:
             # Order done to handle initial conversion
@@ -772,11 +770,11 @@ class SlideController(QtGui.QWidget):
         self.desktopScreen.setChecked(False)
         if checked:
             QtCore.QSettings().setValue(
-                self.parent.generalSettingsSection + u'/screen blank',
+                self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'blanked'))
         else:
             QtCore.QSettings().remove(
-                self.parent.generalSettingsSection + u'/screen blank')
+                self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
 
@@ -793,11 +791,11 @@ class SlideController(QtGui.QWidget):
         self.desktopScreen.setChecked(False)
         if checked:
             QtCore.QSettings().setValue(
-                self.parent.generalSettingsSection + u'/screen blank',
+                self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'themed'))
         else:
             QtCore.QSettings().remove(
-                self.parent.generalSettingsSection + u'/screen blank')
+                self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
 
@@ -814,11 +812,11 @@ class SlideController(QtGui.QWidget):
         self.desktopScreen.setChecked(checked)
         if checked:
             QtCore.QSettings().setValue(
-                self.parent.generalSettingsSection + u'/screen blank',
+                self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'hidden'))
         else:
             QtCore.QSettings().remove(
-                self.parent.generalSettingsSection + u'/screen blank')
+                self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
 
@@ -956,8 +954,8 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if QtCore.QSettings().value(self.parent.generalSettingsSection +
-                    u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                if QtCore.QSettings().value(self.parent().generalSettingsSection
+                    + u'/enable slide loop', QtCore.QVariant(True)).toBool():
                     row = 0
                 else:
                     row = self.previewListWidget.rowCount() - 1
@@ -977,8 +975,8 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if QtCore.QSettings().value(self.parent.generalSettingsSection +
-                    u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                if QtCore.QSettings().value(self.parent().generalSettingsSection
+                    + u'/enable slide loop', QtCore.QVariant(True)).toBool():
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     row = 0
@@ -1055,7 +1053,8 @@ class SlideController(QtGui.QWidget):
         From the preview display request the Item to be added to service
         """
         if self.serviceItem:
-            self.parent.serviceManagerContents.addServiceItem(self.serviceItem)
+            self.parent().serviceManagerContents.addServiceItem(
+                self.serviceItem)
 
     def onGoLiveClick(self):
         """
@@ -1083,7 +1082,7 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message('servicemanager_preview_live',
                     u'%s:%s' % (self.serviceItem._uuid, row))
             else:
-                self.parent.liveController.addServiceManagerItem(
+                self.parent().liveController.addServiceManagerItem(
                     self.serviceItem, row)
 
     def onMediaStart(self, item):

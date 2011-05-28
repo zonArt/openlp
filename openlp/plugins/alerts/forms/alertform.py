@@ -42,7 +42,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         self.manager = plugin.manager
         self.plugin = plugin
-        self.parent = plugin.formparent
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)

@@ -648,7 +648,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if item == 0 and text:
             temp_song_book = text
-        self.parent.song_maintenance_form.exec_()
+        self.parent().song_maintenance_form.exec_()
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()
@@ -754,7 +754,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        self.parent.auto_select_id = self.song.id
+        self.parent().auto_select_id = self.song.id
 
     def _processLyrics(self):
         """

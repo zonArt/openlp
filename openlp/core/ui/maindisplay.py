@@ -50,7 +50,8 @@ class MainDisplay(QtGui.QGraphicsView):
     """
     def __init__(self, parent, image_manager, live):
         QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
+        if parent:
+            self.setParent(parent)
         self.isLive = live
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
