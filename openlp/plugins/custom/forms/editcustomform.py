@@ -137,8 +137,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         success = self.manager.save_object(self.customSlide)
-        if self.parent.new:
-            self.parent.auto_select_id = self.customSlide.id
         return success
 
     def onUpButtonClicked(self):

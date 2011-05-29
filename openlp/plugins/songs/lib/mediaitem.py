@@ -74,7 +74,6 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        self.new = False
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -297,10 +296,8 @@ class SongMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         log.debug(u'onNewClick')
-        self.new = True
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
-        self.new = False
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
