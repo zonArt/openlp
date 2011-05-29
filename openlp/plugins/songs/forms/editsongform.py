@@ -757,7 +757,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.manager.save_object(self.song)
         if self.parent.new:
             self.parent.auto_select_id = self.song.id
-        
+
     def _processLyrics(self):
         """
         Process the lyric data entered by the user into the OpenLP XML format.
