@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import translate
+
+class Ui_LanguageDialog(object):
+    def setupUi(self, languageDialog):
+        languageDialog.setObjectName(u'languageDialog')
+        languageDialog.resize(400, 165)
+        self.languageLayout = QtGui.QVBoxLayout(languageDialog)
+        self.languageLayout.setSpacing(8)
+        self.languageLayout.setMargin(8)
+        self.languageLayout.setObjectName(u'languageLayout')
+        self.bibleLabel = QtGui.QLabel(languageDialog)
+        self.bibleLabel.setObjectName(u'bibleLabel')
+        self.languageLayout.addWidget(self.bibleLabel)
+        self.infoLabel = QtGui.QLabel(languageDialog)
+        self.infoLabel.setWordWrap(True)
+        self.infoLabel.setObjectName(u'infoLabel')
+        self.languageLayout.addWidget(self.infoLabel)
+        self.languageHBoxLayout = QtGui.QHBoxLayout()
+        self.languageHBoxLayout.setSpacing(8)
+        self.languageHBoxLayout.setObjectName(u'languageHBoxLayout')
+        self.languageLabel = QtGui.QLabel(languageDialog)
+        self.languageLabel.setObjectName(u'languageLabel')
+        self.languageHBoxLayout.addWidget(self.languageLabel)
+        self.languageComboBox = QtGui.QComboBox(languageDialog)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
+            QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.languageComboBox.sizePolicy().hasHeightForWidth())
+        self.languageComboBox.setSizePolicy(sizePolicy)
+        self.languageComboBox.setObjectName(u'languageComboBox')
+        self.languageHBoxLayout.addWidget(self.languageComboBox)
+        self.languageLayout.addLayout(self.languageHBoxLayout)
+        self.buttonBox = QtGui.QDialogButtonBox(languageDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|
+            QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.languageLayout.addWidget(self.buttonBox)
+
+        self.retranslateUi(languageDialog)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'), 
+            languageDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), 
+            languageDialog.reject)
+
+    def retranslateUi(self, languageDialog):
+        languageDialog.setWindowTitle(
+            translate('BiblesPlugin.LanguageDialog', 'Select Language'))
+        self.bibleLabel.setText(translate('BiblesPlugin.LanguageDialog', ''))
+        self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+            'OpenLP is unable to determine the language of this translation '
+            'of the Bible. Please select the language from the list below.'))
+        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+            'Language:'))

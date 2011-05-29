@@ -133,6 +133,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
+        self.mainWindow.appStartup()
         DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
