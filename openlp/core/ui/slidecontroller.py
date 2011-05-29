@@ -64,7 +64,7 @@ class SlideController(QtGui.QWidget):
             float(self.screens.current[u'size'].height())
         self.image_manager = self.parent().image_manager
         self.loopList = [
-            u'Start Loop',
+            u'Play Slides Menu',
             u'Loop Separator',
             u'Image SpinBox'
         ]
@@ -151,6 +151,7 @@ class SlideController(QtGui.QWidget):
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
+            # Hide Menu
             self.hideMenu = QtGui.QToolButton(self.toolbar)
             self.hideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.hideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
@@ -178,27 +179,34 @@ class SlideController(QtGui.QWidget):
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
-            startLoop = self.toolbar.addToolbarButton(
-                # Does not need translating - control string.
-                u'Start Loop', u':/media/media_time.png',
-                translate('OpenLP.SlideController', 'Enable timed slides.'),
-                self.onStartLoop)
-            startLoop.setObjectName(u'startLoop')
-            action_list = ActionList.get_instance()
-            action_list.add_action(startLoop, UiStrings().LiveToolbar)
-            stopLoop = self.toolbar.addToolbarButton(
-                # Does not need translating - control string.
-                u'Stop Loop', u':/media/media_stop.png',
-                translate('OpenLP.SlideController', 'Stop timed slides.'),
-                self.onStopLoop)
-            stopLoop.setObjectName(u'stopLoop')
-            action_list.add_action(stopLoop, UiStrings().LiveToolbar)
-            self.toogleLoop = shortcut_action(self, u'toogleLoop',
-                [QtGui.QKeySequence(u'L')], self.onToggleLoop,
-                category=UiStrings().LiveToolbar)
-            self.toogleLoop.setText(translate('OpenLP.SlideController',
-                'Start/Stop continuous loop'))
-            self.addAction(self.toogleLoop)
+            # Play Slides Menu
+            self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
+            self.playSlidesMenu.setText(translate('OpenLP.SlideController',
+                'Play Slides'))
+            self.playSlidesMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+            self.toolbar.addToolbarWidget(u'Play Slides Menu',
+                self.playSlidesMenu)
+            self.playSlidesMenu.setMenu(QtGui.QMenu(
+                translate('OpenLP.SlideController', 'Play Slides'),
+                self.toolbar))
+            self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
+                u'playSlidesLoop', [], self.onPlaySlidesLoop,
+                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+            self.playSlidesLoop.setText(
+                translate('OpenLP.SlideController', 'Play Slides in Loop'))
+            self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
+                u'playSlidesOnce', [], self.onPlaySlidesOnce,
+                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+            self.playSlidesOnce.setText(
+                translate('OpenLP.SlideController', 'Play Slides to End'))
+            if QtCore.QSettings().value(self.parent.generalSettingsSection +
+                u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+            else:
+                self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+            self.playSlidesMenu.menu().addAction(self.playSlidesLoop)
+            self.playSlidesMenu.menu().addAction(self.playSlidesOnce)
+            # Loop Delay Spinbox
             self.delaySpinBox = QtGui.QSpinBox()
             self.delaySpinBox.setRange(1, 180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
@@ -319,7 +327,6 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
             self.toolbar.makeWidgetsInvisible(self.loopList)
-            self.toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -494,10 +501,6 @@ class SlideController(QtGui.QWidget):
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
-        self.toogleLoop.setEnabled(False)
-        self.toolbar.actions[u'Start Loop'].setEnabled(False)
-        self.toolbar.actions[u'Stop Loop'].setEnabled(False)
-        self.toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
@@ -506,9 +509,6 @@ class SlideController(QtGui.QWidget):
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
-            self.toogleLoop.setEnabled(True)
-            self.toolbar.actions[u'Start Loop'].setEnabled(True)
-            self.toolbar.actions[u'Stop Loop'].setEnabled(True)
         if item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
@@ -941,7 +941,7 @@ class SlideController(QtGui.QWidget):
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNext(self):
+    def onSlideSelectedNext(self, wrap=None):
         """
         Go to the next slide.
         """
@@ -954,8 +954,11 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if QtCore.QSettings().value(self.parent().generalSettingsSection
-                    + u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                if wrap is None:
+                    wrap = QtCore.QSettings().value(
+                        self.parent().generalSettingsSection +
+                        u'/enable slide loop', QtCore.QVariant(True)).toBool()
+                if wrap:
                     row = 0
                 else:
                     row = self.previewListWidget.rowCount() - 1
@@ -1004,11 +1007,11 @@ class SlideController(QtGui.QWidget):
                         self.previewListWidget.rowCount() - 1)
             self.slideSelected()
 
-    def onToggleLoop(self, toggled):
+    def onToggleLoop(self):
         """
         Toggles the loop state.
         """
-        if self.toolbar.actions[u'Start Loop'].isVisible():
+        if self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked():
             self.onStartLoop()
         else:
             self.onStopLoop()
@@ -1020,8 +1023,6 @@ class SlideController(QtGui.QWidget):
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
                 int(self.delaySpinBox.value()) * 1000)
-            self.toolbar.actions[u'Stop Loop'].setVisible(True)
-            self.toolbar.actions[u'Start Loop'].setVisible(False)
 
     def onStopLoop(self):
         """
@@ -1030,15 +1031,39 @@ class SlideController(QtGui.QWidget):
         if self.timer_id != 0:
             self.killTimer(self.timer_id)
             self.timer_id = 0
-            self.toolbar.actions[u'Start Loop'].setVisible(True)
-            self.toolbar.actions[u'Stop Loop'].setVisible(False)
+
+    def onPlaySlidesLoop(self, checked=None):
+        """
+        Start or stop 'Play Slides in Loop'
+        """
+        if checked is None:
+            checked = self.playSlidesLoop.isChecked()
+        else:
+            self.playSlidesLoop.setChecked(checked)
+        log.debug(u'onPlaySlidesLoop %s' % checked)
+        self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+        self.playSlidesOnce.setChecked(False)
+        self.onToggleLoop()
+
+    def onPlaySlidesOnce(self, checked=None):
+        """
+        Start or stop 'Play Slides to End'
+        """
+        if checked is None:
+            checked = self.playSlidesOnce.isChecked()
+        else:
+            self.playSlidesOnce.setChecked(checked)
+        log.debug(u'onPlaySlidesOnce %s' % checked)
+        self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+        self.playSlidesLoop.setChecked(False)
+        self.onToggleLoop()
 
     def timerEvent(self, event):
         """
         If the timer event is for this window select next slide
         """
         if event.timerId() == self.timer_id:
-            self.onSlideSelectedNext()
+            self.onSlideSelectedNext(self.playSlidesLoop.isChecked())
 
     def onEditSong(self):
         """
