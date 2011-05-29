@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -44,6 +45,8 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
+        QtCore.QObject.connect(self.insertButton,
+            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonPressed)
         QtCore.QObject.connect(self.splitButton,
             QtCore.SIGNAL(u'clicked()'), self.onSplitButtonPressed)
 
@@ -65,11 +68,20 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
 
-    def onSplitButtonPressed(self):
+    def onInsertButtonPressed(self):
         """
         Adds a slide split at the cursor.
         """
         if self.slideTextEdit.textCursor().columnNumber() != 0:
             self.slideTextEdit.insertPlainText(u'\n')
         self.slideTextEdit.insertPlainText(u'[===]\n')
+        self.slideTextEdit.setFocus()
+
+    def onSplitButtonPressed(self):
+        """
+        Adds a virtual split at cursor.
+        """
+        if self.slideTextEdit.textCursor().columnNumber() != 0:
+            self.slideTextEdit.insertPlainText(u'\n')
+        self.slideTextEdit.insertPlainText(u'[---]')
         self.slideTextEdit.setFocus()

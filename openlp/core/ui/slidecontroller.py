@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -65,7 +66,7 @@ class SlideController(QtGui.QWidget):
             float(self.screens.current[u'size'].height())
         self.image_manager = self.parent.image_manager
         self.loopList = [
-            u'Start Loop',
+            u'Play Slides Menu',
             u'Loop Separator',
             u'Image SpinBox'
         ]
@@ -139,19 +140,20 @@ class SlideController(QtGui.QWidget):
         self.previousItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Previous Slide'),
             u':/slides/slide_previous.png',
-            translate('OpenLP.SlideController', 'Move to previous'),
+            translate('OpenLP.SlideController', 'Move to previous.'),
             self.onSlideSelectedPrevious,
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
-            translate('OpenLP.SlideController', 'Move to next'),
+            translate('OpenLP.SlideController', 'Move to next.'),
             self.onSlideSelectedNext,
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
+            # Hide Menu
             self.hideMenu = QtGui.QToolButton(self.toolbar)
             self.hideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.hideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
@@ -179,58 +181,72 @@ class SlideController(QtGui.QWidget):
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
-            startLoop = self.toolbar.addToolbarButton(
-                # Does not need translating - control string.
-                u'Start Loop', u':/media/media_time.png',
-                translate('OpenLP.SlideController', 'Start continuous loop'),
-                self.onStartLoop)
-            action_list = ActionList.get_instance()
-            action_list.add_action(startLoop, UiStrings().LiveToolbar)
-            stopLoop = self.toolbar.addToolbarButton(
-                # Does not need translating - control string.
-                u'Stop Loop', u':/media/media_stop.png',
-                translate('OpenLP.SlideController', 'Stop continuous loop'),
-                self.onStopLoop)
-            action_list.add_action(stopLoop, UiStrings().LiveToolbar)
-            self.toogleLoop = shortcut_action(self, u'toogleLoop',
-                [QtGui.QKeySequence(u'L')], self.onToggleLoop,
-                category=UiStrings().LiveToolbar)
-            self.toogleLoop.setText(translate('OpenLP.SlideController',
-                'Start/Stop continuous loop'))
-            self.addAction(self.toogleLoop)
+            # Play Slides Menu
+            self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
+            self.playSlidesMenu.setText(translate('OpenLP.SlideController',
+                'Play Slides'))
+            self.playSlidesMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+            self.toolbar.addToolbarWidget(u'Play Slides Menu',
+                self.playSlidesMenu)
+            self.playSlidesMenu.setMenu(QtGui.QMenu(
+                translate('OpenLP.SlideController', 'Play Slides'),
+                self.toolbar))
+            self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
+                u'playSlidesLoop', [], self.onPlaySlidesLoop,
+                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+            self.playSlidesLoop.setText(
+                translate('OpenLP.SlideController', 'Play Slides in Loop'))
+            self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
+                u'playSlidesOnce', [], self.onPlaySlidesOnce,
+                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+            self.playSlidesOnce.setText(
+                translate('OpenLP.SlideController', 'Play Slides to End'))
+            if QtCore.QSettings().value(self.parent.generalSettingsSection +
+                u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+            else:
+                self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+            self.playSlidesMenu.menu().addAction(self.playSlidesLoop)
+            self.playSlidesMenu.menu().addAction(self.playSlidesOnce)
+            # Loop Delay Spinbox
             self.delaySpinBox = QtGui.QSpinBox()
             self.delaySpinBox.setRange(1, 180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
-                'Delay between slides in seconds'))
+                'Delay between slides in seconds.'))
         else:
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Go Live', u':/general/general_live.png',
-                translate('OpenLP.SlideController', 'Move to live'),
+                translate('OpenLP.SlideController', 'Move to live.'),
                 self.onGoLive)
+            self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
+                u'Add to Service', u':/general/general_add.png',
+                translate('OpenLP.SlideController', 'Add to Service.'),
+                self.onPreviewAddToService)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Edit Song', u':/general/general_edit.png',
                 translate('OpenLP.SlideController',
-                'Edit and reload song preview'),
+                'Edit and reload song preview.'),
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build a Media ToolBar
         self.mediabar = OpenLPToolbar(self)
         self.mediabar.addToolbarButton(
             u'Media Start', u':/slides/media_playback_start.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaPlay)
         self.mediabar.addToolbarButton(
             u'Media Pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaPause)
         self.mediabar.addToolbarButton(
             u'Media Stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             self.onMediaStop)
         if self.isLive:
             # Build the Song Toolbar
@@ -313,7 +329,6 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
             self.toolbar.makeWidgetsInvisible(self.loopList)
-            self.toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -340,13 +355,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.typePrefix),
             self.onSlideSelectedPrevious)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next_noloop' % self.typePrefix),
-            self.onSlideSelectedNextNoloop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous_noloop' %
-            self.typePrefix),
-            self.onSlideSelectedPreviousNoloop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_last' % self.typePrefix),
             self.onSlideSelectedLast)
@@ -495,10 +503,6 @@ class SlideController(QtGui.QWidget):
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
-        self.toogleLoop.setEnabled(False)
-        self.toolbar.actions[u'Start Loop'].setEnabled(False)
-        self.toolbar.actions[u'Stop Loop'].setEnabled(False)
-        self.toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent.songsSettingsSection + u'/display songbar',
@@ -507,9 +511,6 @@ class SlideController(QtGui.QWidget):
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
-            self.toogleLoop.setEnabled(True)
-            self.toolbar.actions[u'Start Loop'].setEnabled(True)
-            self.toolbar.actions[u'Stop Loop'].setEnabled(True)
         if item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
@@ -840,6 +841,11 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+        else:
+            if hide_mode:
+                Receiver.send_message(u'maindisplay_hide', hide_mode)
+            else:
+                Receiver.send_message(u'maindisplay_show')
 
     def hidePlugin(self, hide):
         """
@@ -858,6 +864,11 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+        else:
+            if hide:
+                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            else:
+                Receiver.send_message(u'maindisplay_show')
 
     def onSlideSelected(self, start=False):
         """
@@ -932,10 +943,7 @@ class SlideController(QtGui.QWidget):
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNextNoloop(self):
-        self.onSlideSelectedNext(False)
-
-    def onSlideSelectedNext(self, loop=True):
+    def onSlideSelectedNext(self, wrap=None):
         """
         Go to the next slide.
         """
@@ -948,18 +956,18 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if loop:
+                if wrap is None:
+                    wrap = QtCore.QSettings().value(
+                        self.parent.generalSettingsSection +
+                        u'/enable slide loop', QtCore.QVariant(True)).toBool()
+                if wrap:
                     row = 0
                 else:
-                    Receiver.send_message('servicemanager_next_item')
-                    return
+                    row = self.previewListWidget.rowCount() - 1
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
 
-    def onSlideSelectedPreviousNoloop(self):
-        self.onSlideSelectedPrevious(False)
-
-    def onSlideSelectedPrevious(self, loop=True):
+    def onSlideSelectedPrevious(self):
         """
         Go to the previous slide.
         """
@@ -972,7 +980,8 @@ class SlideController(QtGui.QWidget):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if loop:
+                if QtCore.QSettings().value(self.parent.generalSettingsSection +
+                    u'/enable slide loop', QtCore.QVariant(True)).toBool():
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     row = 0
@@ -1000,11 +1009,11 @@ class SlideController(QtGui.QWidget):
                         self.previewListWidget.rowCount() - 1)
             self.slideSelected()
 
-    def onToggleLoop(self, toggled):
+    def onToggleLoop(self):
         """
         Toggles the loop state.
         """
-        if self.toolbar.actions[u'Start Loop'].isVisible():
+        if self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked():
             self.onStartLoop()
         else:
             self.onStopLoop()
@@ -1016,8 +1025,6 @@ class SlideController(QtGui.QWidget):
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
                 int(self.delaySpinBox.value()) * 1000)
-            self.toolbar.actions[u'Stop Loop'].setVisible(True)
-            self.toolbar.actions[u'Start Loop'].setVisible(False)
 
     def onStopLoop(self):
         """
@@ -1026,15 +1033,39 @@ class SlideController(QtGui.QWidget):
         if self.timer_id != 0:
             self.killTimer(self.timer_id)
             self.timer_id = 0
-            self.toolbar.actions[u'Start Loop'].setVisible(True)
-            self.toolbar.actions[u'Stop Loop'].setVisible(False)
+
+    def onPlaySlidesLoop(self, checked=None):
+        """
+        Start or stop 'Play Slides in Loop'
+        """
+        if checked is None:
+            checked = self.playSlidesLoop.isChecked()
+        else:
+            self.playSlidesLoop.setChecked(checked)
+        log.debug(u'onPlaySlidesLoop %s' % checked)
+        self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+        self.playSlidesOnce.setChecked(False)
+        self.onToggleLoop()
+
+    def onPlaySlidesOnce(self, checked=None):
+        """
+        Start or stop 'Play Slides to End'
+        """
+        if checked is None:
+            checked = self.playSlidesOnce.isChecked()
+        else:
+            self.playSlidesOnce.setChecked(checked)
+        log.debug(u'onPlaySlidesOnce %s' % checked)
+        self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+        self.playSlidesLoop.setChecked(False)
+        self.onToggleLoop()
 
     def timerEvent(self, event):
         """
         If the timer event is for this window select next slide
         """
         if event.timerId() == self.timer_id:
-            self.onSlideSelectedNext()
+            self.onSlideSelectedNext(self.playSlidesLoop.isChecked())
 
     def onEditSong(self):
         """
@@ -1044,12 +1075,27 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.edit_id)
 
+    def onPreviewAddToService(self):
+        """
+        From the preview display request the Item to be added to service
+        """
+        if self.serviceItem:
+            self.parent.serviceManagerContents.addServiceItem(self.serviceItem)
+
     def onGoLiveClick(self):
         """
         triggered by clicking the Preview slide items
         """
         if QtCore.QSettings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
+            # Live and Preview have issues if we have video or presentations
+            # playing in both at the same time.
+            if self.serviceItem.is_command():
+                Receiver.send_message(u'%s_stop' %
+                    self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive])
+            if self.serviceItem.is_media():
+                self.onMediaClose()
             self.onGoLive()
 
     def onGoLive(self):

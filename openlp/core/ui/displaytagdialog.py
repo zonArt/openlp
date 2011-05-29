@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -68,9 +69,6 @@ class Ui_DisplayTagDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.defaultPushButton = QtGui.QPushButton(self.widget)
-        self.defaultPushButton.setObjectName(u'defaultPushButton')
-        self.horizontalLayout.addWidget(self.defaultPushButton)
         self.deletePushButton = QtGui.QPushButton(self.widget)
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.horizontalLayout.addWidget(self.deletePushButton)
@@ -140,8 +138,6 @@ class Ui_DisplayTagDialog(object):
         self.endTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings().Delete)
-        self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Default'))
         self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
