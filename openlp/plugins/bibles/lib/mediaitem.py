@@ -239,8 +239,14 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedToVerse, 4, 2)
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
+        QtCore.QObject.connect(self.quickVersionComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onQuickVersionComboBox)
+        QtCore.QObject.connect(self.quickSecondComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onQuickSecondComboBox)
         QtCore.QObject.connect(self.advancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
+        QtCore.QObject.connect(self.advancedSecondComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.onAdvancedSecondComboBox)
         QtCore.QObject.connect(self.advancedBookComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedBookComboBox)
         QtCore.QObject.connect(self.advancedFromChapter,
@@ -401,6 +407,16 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'initialiseAdvancedBible %s', bible)
         book_data = self.parent.manager.get_books(bible)
+        secondbible = unicode(self.advancedSecondComboBox.currentText())
+        if secondbible != u'':
+            secondbook_data = self.parent.manager.get_books(secondbible)
+            book_data_temp = []
+            for book in book_data:
+                for secondbook in secondbook_data:
+                    if book['book_reference_id'] == \
+                        secondbook['book_reference_id']:
+                        book_data_temp.append(book)
+            book_data = book_data_temp
         self.advancedBookComboBox.clear()
         first = True
         for book in book_data:
@@ -449,9 +465,25 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
                 book_data = bibles[bible].get_books()
+                secondbible = unicode(self.quickSecondComboBox.currentText())
+                if secondbible != u'':
+                    secondbook_data = bibles[secondbible].get_books()
+                    book_data_temp = []
+                    for book in book_data:
+                        for secondbook in secondbook_data:
+                            if book.book_reference_id == \
+                                secondbook.book_reference_id:
+                                book_data_temp.append(book)
+                    book_data = book_data_temp
                 books = [book.name + u' ' for book in book_data]
                 books.sort(cmp=locale.strcoll)
         add_widget_completer(books, self.quickSearchEdit)
+
+    def onQuickVersionComboBox(self):
+        self.updateAutoCompleter()
+
+    def onQuickSecondComboBox(self):
+        self.updateAutoCompleter()
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -496,6 +528,12 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.QVariant(self.settings.layout_style))
 
     def onAdvancedVersionComboBox(self):
+        QtCore.QSettings().setValue(self.settingsSection + u'/advanced bible',
+            QtCore.QVariant(self.advancedVersionComboBox.currentText()))
+        self.initialiseAdvancedBible(
+            unicode(self.advancedVersionComboBox.currentText()))
+
+    def onAdvancedSecondComboBox(self):
         QtCore.QSettings().setValue(self.settingsSection + u'/advanced bible',
             QtCore.QVariant(self.advancedVersionComboBox.currentText()))
         self.initialiseAdvancedBible(

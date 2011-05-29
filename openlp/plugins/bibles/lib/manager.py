@@ -220,8 +220,8 @@ class BibleManager(object):
         return [
             {
             u'name': book.name,
-            u'chapters': self.db_cache[bible].get_chapter_count(
-                book)
+            u'book_reference_id': book.book_reference_id, 
+            u'chapters': self.db_cache[bible].get_chapter_count(book)
             }
             for book in self.db_cache[bible].get_books()
         ]
