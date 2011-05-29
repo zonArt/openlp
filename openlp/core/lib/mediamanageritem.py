@@ -455,7 +455,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if QtCore.QSettings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
-            and self.listView.selectedIndexes():
+            and self.listView.selectedIndexes() \
+            and self.auto_select_id == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):

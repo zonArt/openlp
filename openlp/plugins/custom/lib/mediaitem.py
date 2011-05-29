@@ -66,6 +66,7 @@ class CustomMediaItem(MediaManagerItem):
         # which Custom is required.
         self.remoteCustom = -1
         self.manager = parent.manager
+        self.new = False
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -156,9 +157,11 @@ class CustomMediaItem(MediaManagerItem):
         self.auto_select_id = -1
 
     def onNewClick(self):
+        self.new = True
         self.edit_custom_form.loadCustom(0)
         self.edit_custom_form.exec_()
         self.initialise()
+        self.new = False
 
     def onRemoteEditClear(self):
         self.remoteTriggered = None
