@@ -199,7 +199,7 @@ class SlideController(QtGui.QWidget):
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
             self.playSlidesOnce.setText(
                 translate('OpenLP.SlideController', 'Play Slides to End'))
-            if QtCore.QSettings().value(self.parent.generalSettingsSection +
+            if QtCore.QSettings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
             else:
