@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.serviceManagerContents.printServiceOrder,
             category=UiStrings().File)
-        self.fileExitItem = shortcut_action(mainWindow, u'FileExitItem',
+        self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings().File)
         action_list.add_category(UiStrings().Import, CategoryOrder.standardMenu)
