@@ -62,44 +62,44 @@ class SongUsagePlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsMenu = tools_menu
-        self.SongUsageMenu = QtGui.QMenu(tools_menu)
-        self.SongUsageMenu.setObjectName(u'SongUsageMenu')
-        self.SongUsageMenu.setTitle(translate(
+        self.songUsageMenu = QtGui.QMenu(tools_menu)
+        self.songUsageMenu.setObjectName(u'songUsageMenu')
+        self.songUsageMenu.setTitle(translate(
             'SongUsagePlugin', '&Song Usage Tracking'))
         # SongUsage Delete
-        self.SongUsageDelete = base_action(tools_menu, u'SongUsageDelete')
-        self.SongUsageDelete.setText(translate('SongUsagePlugin',
+        self.songUsageDelete = base_action(tools_menu, u'songUsageDelete')
+        self.songUsageDelete.setText(translate('SongUsagePlugin',
             '&Delete Tracking Data'))
-        self.SongUsageDelete.setStatusTip(translate('SongUsagePlugin',
+        self.songUsageDelete.setStatusTip(translate('SongUsagePlugin',
             'Delete song usage data up to a specified date.'))
         # SongUsage Report
-        self.SongUsageReport = base_action(tools_menu, u'SongUsageReport')
-        self.SongUsageReport.setText(
+        self.songUsageReport = base_action(tools_menu, u'songUsageReport')
+        self.songUsageReport.setText(
             translate('SongUsagePlugin', '&Extract Tracking Data'))
-        self.SongUsageReport.setStatusTip(
+        self.songUsageReport.setStatusTip(
             translate('SongUsagePlugin', 'Generate a report on song usage.'))
         # SongUsage activation
-        self.SongUsageStatus = shortcut_action(tools_menu, u'SongUsageStatus',
+        self.songUsageStatus = shortcut_action(tools_menu, u'songUsageStatus',
             [QtCore.Qt.Key_F4], self.toggleSongUsageState, checked=False)
-        self.SongUsageStatus.setText(translate(
+        self.songUsageStatus.setText(translate(
             'SongUsagePlugin', 'Toggle Tracking'))
-        self.SongUsageStatus.setStatusTip(translate('SongUsagePlugin',
+        self.songUsageStatus.setStatusTip(translate('SongUsagePlugin',
                 'Toggle the tracking of song usage.'))
         #Add Menus together
-        self.toolsMenu.addAction(self.SongUsageMenu.menuAction())
-        self.SongUsageMenu.addAction(self.SongUsageStatus)
-        self.SongUsageMenu.addSeparator()
-        self.SongUsageMenu.addAction(self.SongUsageDelete)
-        self.SongUsageMenu.addAction(self.SongUsageReport)
+        self.toolsMenu.addAction(self.songUsageMenu.menuAction())
+        self.songUsageMenu.addAction(self.songUsageStatus)
+        self.songUsageMenu.addSeparator()
+        self.songUsageMenu.addAction(self.songUsageDelete)
+        self.songUsageMenu.addAction(self.songUsageReport)
         # Signals and slots
-        QtCore.QObject.connect(self.SongUsageStatus,
+        QtCore.QObject.connect(self.songUsageStatus,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.SongUsageStatus.setChecked)
-        QtCore.QObject.connect(self.SongUsageDelete,
+            self.songUsageStatus.setChecked)
+        QtCore.QObject.connect(self.songUsageDelete,
             QtCore.SIGNAL(u'triggered()'), self.onSongUsageDelete)
-        QtCore.QObject.connect(self.SongUsageReport,
+        QtCore.QObject.connect(self.songUsageReport,
             QtCore.SIGNAL(u'triggered()'), self.onSongUsageReport)
-        self.SongUsageMenu.menuAction().setVisible(False)
+        self.songUsageMenu.menuAction().setVisible(False)
 
     def initialise(self):
         log.info(u'SongUsage Initialising')
@@ -110,20 +110,20 @@ class SongUsagePlugin(Plugin):
         self.SongUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
-        self.SongUsageStatus.setChecked(self.SongUsageActive)
+        self.songUsageStatus.setChecked(self.SongUsageActive)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.SongUsageDelete,
+        action_list.add_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
-        action_list.add_action(self.SongUsageReport,
+        action_list.add_action(self.songUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        action_list.add_action(self.SongUsageStatus,
+        action_list.add_action(self.songUsageStatus,
             translate('SongUsagePlugin', 'Song Usage'))
         if self.manager is None:
             self.manager = Manager(u'songusage', init_schema)
-        self.SongUsagedeleteform = SongUsageDeleteForm(self.manager,
+        self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formparent)
-        self.SongUsagedetailform = SongUsageDetailForm(self, self.formparent)
-        self.SongUsageMenu.menuAction().setVisible(True)
+        self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
+        self.songUsageMenu.menuAction().setVisible(True)
 
     def finalise(self):
         """
@@ -132,13 +132,13 @@ class SongUsagePlugin(Plugin):
         log.info(u'Plugin Finalise')
         self.manager.finalise()
         Plugin.finalise(self)
-        self.SongUsageMenu.menuAction().setVisible(False)
+        self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.SongUsageDelete,
+        action_list.remove_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
-        action_list.remove_action(self.SongUsageReport,
+        action_list.remove_action(self.songUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        action_list.remove_action(self.SongUsageStatus,
+        action_list.remove_action(self.songUsageStatus,
             translate('SongUsagePlugin', 'Song Usage'))
         #stop any events being processed
         self.SongUsageActive = False
@@ -160,17 +160,15 @@ class SongUsagePlugin(Plugin):
             song_usage_item.title = audit[0]
             song_usage_item.copyright = audit[2]
             song_usage_item.ccl_number = audit[3]
-            song_usage_item.authors = u''
-            for author in audit[1]:
-                song_usage_item.authors += author + u' '
+            song_usage_item.authors = u' '.join(audit[1])
             self.manager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
-        self.SongUsagedeleteform.exec_()
+        self.songUsageDeleteForm.exec_()
 
     def onSongUsageReport(self):
-        self.SongUsagedetailform.initialise()
-        self.SongUsagedetailform.exec_()
+        self.songUsageDetailForm.initialise()
+        self.songUsageDetailForm.exec_()
 
     def about(self):
         about_text = translate('SongUsagePlugin', '<strong>SongUsage Plugin'

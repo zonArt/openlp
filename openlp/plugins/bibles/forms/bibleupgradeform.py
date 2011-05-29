@@ -29,6 +29,7 @@ The bible import functions for OpenLP
 import logging
 import os.path
 import re
+import shutil
 
 from PyQt4 import QtCore, QtGui
 
@@ -133,6 +134,38 @@ class BibleUpgradeForm(OpenLPWizard):
             if number in self.success and self.success[number] == True:
                 delete_file(os.path.join(self.path, filename[0]))
 
+    def onBackupBrowseButtonClicked(self):
+        """
+        Show the file open dialog for the OSIS file.
+        """
+        filename = QtGui.QFileDialog.getExistingDirectory(self, translate(
+            'BiblesPlugin.UpgradeWizardForm', 'Select a Backup Directory'),
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)))
+        if filename:
+            self.backupDirectoryEdit.setText(filename)
+            SettingsManager.set_last_dir(self.plugin.settingsSection, 
+                filename, 1)
+
+    def onNoBackupCheckBoxToggled(self, checked):
+        """
+        Enable or disable the backup directory widgets.
+        """
+        self.backupDirectoryEdit.setEnabled(not checked)
+        self.backupBrowseButton.setEnabled(not checked)
+
+    def backupOldBibles(self, backupdirectory):
+        """
+        Backup old bible databases in a given folder.
+        """
+        for filename in self.files:
+            try:
+                shutil.copy(os.path.join(self.path, filename[0]), 
+                    backupdirectory)
+            except:
+                return False
+        return True
+
     def customInit(self):
         """
         Perform any custom initialisation for bible upgrading.
@@ -146,11 +179,54 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         QtCore.QObject.connect(self.finishButton,
             QtCore.SIGNAL(u'clicked()'), self.onFinishButton)
+        QtCore.QObject.connect(self.backupBrowseButton,
+            QtCore.SIGNAL(u'clicked()'), self.onBackupBrowseButtonClicked)
+        QtCore.QObject.connect(self.noBackupCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onNoBackupCheckBoxToggled)
 
     def addCustomPages(self):
         """
         Add the bible import specific wizard pages.
         """
+        # Backup Page
+        self.backupPage = QtGui.QWizardPage()
+        self.backupPage.setObjectName(u'BackupPage')
+        self.backupLayout = QtGui.QVBoxLayout(self.backupPage)
+        self.backupLayout.setObjectName(u'BackupLayout')
+        self.backupInfoLabel = QtGui.QLabel(self.backupPage)
+        self.backupInfoLabel.setOpenExternalLinks(True)
+        self.backupInfoLabel.setTextFormat(QtCore.Qt.RichText)
+        self.backupInfoLabel.setWordWrap(True)
+        self.backupInfoLabel.setObjectName(u'backupInfoLabel')
+        self.backupLayout.addWidget(self.backupInfoLabel)
+        self.selectLabel = QtGui.QLabel(self.backupPage)
+        self.selectLabel.setObjectName(u'selectLabel')
+        self.backupLayout.addWidget(self.selectLabel)
+        self.formLayout = QtGui.QFormLayout()
+        self.formLayout.setMargin(0)
+        self.formLayout.setObjectName(u'FormLayout')
+        self.backupDirectoryLabel = QtGui.QLabel(self.backupPage)
+        self.backupDirectoryLabel.setObjectName(u'backupDirectoryLabel')
+        self.backupDirectoryLayout = QtGui.QHBoxLayout()
+        self.backupDirectoryLayout.setObjectName(u'BackupDirectoryLayout')
+        self.backupDirectoryEdit = QtGui.QLineEdit(self.backupPage)
+        self.backupDirectoryEdit.setObjectName(u'BackupFolderEdit')
+        self.backupDirectoryLayout.addWidget(self.backupDirectoryEdit)
+        self.backupBrowseButton = QtGui.QToolButton(self.backupPage)
+        self.backupBrowseButton.setIcon(self.openIcon)
+        self.backupBrowseButton.setObjectName(u'BackupBrowseButton')
+        self.backupDirectoryLayout.addWidget(self.backupBrowseButton)
+        self.formLayout.addRow(self.backupDirectoryLabel, 
+            self.backupDirectoryLayout)
+        self.backupLayout.addLayout(self.formLayout)
+        self.noBackupCheckBox = QtGui.QCheckBox(self.backupPage)
+        self.noBackupCheckBox.setObjectName('NoBackupCheckBox')
+        self.backupLayout.addWidget(self.noBackupCheckBox)
+        self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.backupLayout.addItem(self.spacer)
+        self.addPage(self.backupPage)
+        # Select Page
         self.selectPage = QtGui.QWizardPage()
         self.selectPage.setObjectName(u'SelectPage')
         self.pageLayout = QtGui.QVBoxLayout(self.selectPage)
@@ -289,7 +365,27 @@ class BibleUpgradeForm(OpenLPWizard):
             translate('BiblesPlugin.UpgradeWizardForm',
             'This wizard will help you to upgrade your existing Bibles from a '
             'prior version of OpenLP 2. Click the next button below to start '
-            'the process by selecting the Bibles to upgrade.'))
+            'the upgrade process.'))
+        self.backupPage.setTitle(
+            translate('BiblesPlugin.UpgradeWizardForm',
+            'Select Backup Directory'))
+        self.backupPage.setSubTitle(
+            translate('BiblesPlugin.UpgradeWizardForm',
+            'Please select a backup directory for your Bibles'))
+        self.backupInfoLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
+            'Previous releases of OpenLP 2.0 are unable to use upgraded Bibles.'
+            ' This will create a backup of your current Bibles so that you can '
+            'simply copy the files back to your OpenLP data directory if you '
+            'need to revert to a previous release of OpenLP. Instructions on '
+            'how to restore the files can be found in our <a href="'
+            'http://wiki.openlp.org/faq">Frequently Asked Questions</a>.'))
+        self.selectLabel.setText(translate('BiblesPlugin.UpgradeWizardForm',
+            'Please select a backup location for your Bibles.'))
+        self.backupDirectoryLabel.setText(
+            translate('BiblesPlugin.UpgradeWizardForm', 'Backup Directory:'))
+        self.noBackupCheckBox.setText(
+            translate('BiblesPlugin.UpgradeWizardForm', 
+            'There is no need to backup my Bibles'))
         self.selectPage.setTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
             'Select Bibles'))
@@ -315,6 +411,33 @@ class BibleUpgradeForm(OpenLPWizard):
         Validate the current page before moving on to the next page.
         """
         if self.currentPage() == self.welcomePage:
+            return True
+        elif self.currentPage() == self.backupPage:
+            if not self.noBackupCheckBox.checkState() == QtCore.Qt.Checked:
+                if not unicode(self.backupDirectoryEdit.text()):
+                    critical_error_message_box(UiStrings().EmptyField,
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'You need to specify a Backup Directory for your '
+                        'Bibles.'))
+                    self.backupDirectoryEdit.setFocus()
+                    return False
+                elif not os.path.exists(unicode(
+                    self.backupDirectoryEdit.text())):
+                    critical_error_message_box(UiStrings().Error,
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'The given path is not an existing directory.'))
+                    self.backupDirectoryEdit.setFocus()
+                    return False
+                else:
+                    if not self.backupOldBibles(unicode(
+                        self.backupDirectoryEdit.text())):
+                        critical_error_message_box(UiStrings().Error,
+                        translate('BiblesPlugin.UpgradeWizardForm',
+                        'The backup was not successfull.\nTo backup your '
+                        'Bibles you need the permission to write in the given '
+                        'directory. If you have a permissions to write and '
+                        'this error still occurs, please report a bug.'))
+                        return False
             return True
         elif self.currentPage() == self.selectPage:
             for number, filename in enumerate(self.files):
@@ -627,7 +750,6 @@ class BibleUpgradeForm(OpenLPWizard):
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
-        #for number, success in self.success.iteritems():
             if number in self.success and self.success[number] == True:
                 successful_import += 1
             elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
@@ -635,21 +757,21 @@ class BibleUpgradeForm(OpenLPWizard):
         if failed_import > 0:
             failed_import_text = unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm', 
-                ' - %s upgrade fail')) % failed_import
+                ', %s failed')) % failed_import
         else:
             failed_import_text = u''
         if successful_import > 0:
             if include_webbible:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'Bible(s) successful%s.\nPlease note, that verses from '
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
+                    'Bible(s): %s successful%s\nPlease note, that verses from '
                     'Web Bibles will be downloaded\non demand and so an '
                     'Internet connection is required.')) % 
                     (successful_import, failed_import_text))
             else:
                 self.progressLabel.setText(unicode(
-                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade %s '
-                    'Bible(s) successful.%s')) % (successful_import, 
+                    translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
+                    'Bible(s): %s successful%s')) % (successful_import, 
                     failed_import_text))
         else:
             self.progressLabel.setText(

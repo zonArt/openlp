@@ -80,7 +80,6 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         Reload the Combobox items
         '''
         self.correspondingComboBox.clear()
-        self.correspondingComboBox.addItem(u'')
         items = BiblesResourcesDB.get_books()
         for item in items:
             addBook = True
