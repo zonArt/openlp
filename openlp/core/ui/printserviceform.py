@@ -56,7 +56,9 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
    font-size:large;
 }
 
-.itemText {}
+.itemText {
+   margin-top:10px;
+}
 
 .itemFooter {
    font-size:8px;
@@ -85,7 +87,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 .imageList {}
 
 .customNotes {
-   margin-top: 10px;
+   margin-top:10px;
 }
 
 .customNotesTitle {
@@ -212,11 +214,11 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 verse_def = None
                 for slide in item.get_frames():
                     if not verse_def or verse_def != slide[u'verseTag']:
-                        p = self._addElement(u'div', parent=div,
+                        text_div = self._addElement(u'div', parent=div,
                             classId=u'itemText')
                     else:
-                        self._addElement(u'br', parent=p)
-                    self._addElement(u'p', slide[u'html'], p)
+                        self._addElement(u'br', parent=text_div)
+                    self._addElement(u'span', slide[u'html'], text_div)
                     verse_def = slide[u'verseTag']
                 # Break the page before the div element.
                 if index != 0 and self.pageBreakAfterText.isChecked():
