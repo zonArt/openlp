@@ -36,7 +36,7 @@ import os
 import re
 
 from oooimport import OooImport
-from com.sun.star.uno import RuntimeException
+
 
 log = logging.getLogger(__name__)
 
@@ -44,12 +44,14 @@ if os.name == u'nt':
     BOLD = 150.0
     ITALIC = 2
     from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    RuntimeException = Exception
 else:
     try:
         from com.sun.star.awt.FontWeight import BOLD
         from com.sun.star.awt.FontSlant import ITALIC
         from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
             PAGE_BOTH
+        from com.sun.star.uno import RuntimeException
     except ImportError:
         pass
 

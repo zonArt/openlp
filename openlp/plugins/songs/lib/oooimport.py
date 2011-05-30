@@ -40,6 +40,7 @@ if os.name == u'nt':
     PAGE_BEFORE = 4
     PAGE_AFTER = 5
     PAGE_BOTH = 6
+    NoConnectException = Exception
 else:
     import uno
     from com.sun.star.connection import NoConnectException
