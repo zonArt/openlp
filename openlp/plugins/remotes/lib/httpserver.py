@@ -154,12 +154,12 @@ class HttpServer(object):
     e.g. http://localhost:4316/send/slidecontroller_live_next
           http://localhost:4316/send/alerts_text?q=your%20alert%20text
     """
-    def __init__(self, parent):
+    def __init__(self, plugin):
         """
         Initialise the httpserver, and start the server
         """
         log.debug(u'Initialise httpserver')
-        self.parent = parent
+        self.plugin = plugin
         self.html_dir = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'remotes', u'html')
@@ -176,10 +176,10 @@ class HttpServer(object):
         """
         log.debug(u'Start TCP server')
         port = QtCore.QSettings().value(
-            self.parent.settingsSection + u'/port',
+            self.plugin.settingsSection + u'/port',
             QtCore.QVariant(4316)).toInt()[0]
         address = QtCore.QSettings().value(
-            self.parent.settingsSection + u'/ip address',
+            self.plugin.settingsSection + u'/ip address',
             QtCore.QVariant(u'0.0.0.0')).toString()
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
@@ -264,7 +264,7 @@ class HttpConnection(object):
 
     def _get_service_items(self):
         service_items = []
-        service_manager = self.parent.parent.serviceManager
+        service_manager = self.parent.plugin.serviceManager
         if self.parent.current_item:
             cur_uuid = self.parent.current_item._uuid
         else:
@@ -457,7 +457,7 @@ class HttpConnection(object):
         """
         if action == u'search':
             searches = []
-            for plugin in self.parent.parent.pluginManager.plugins:
+            for plugin in self.parent.plugin.pluginManager.plugins:
                 if plugin.status == PluginStatus.Active and \
                     plugin.mediaItem and plugin.mediaItem.hasSearch:
                     searches.append(plugin.name)
@@ -473,7 +473,7 @@ class HttpConnection(object):
         The plugin name to search in.
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
             results =plugin.mediaItem.search(text)
@@ -488,7 +488,7 @@ class HttpConnection(object):
         Go live on an item of type ``type``.
         """
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
-        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id)
 
@@ -497,7 +497,7 @@ class HttpConnection(object):
         Add item of type ``type`` to the end of the service
         """
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
-        plugin = self.parent.parent.pluginManager.get_plugin_by_name(type)
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
             plugin.mediaItem.addToService(item_id)
