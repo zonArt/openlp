@@ -57,15 +57,16 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, self, icon)
-        self.edit_custom_form = EditCustomForm(self, self.parent.manager)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formparent,
+            self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
-        self.manager = parent.manager
+        self.manager = plugin.manager
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -200,7 +201,7 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.manager.delete_object(CustomSlide, id)
+                self.plugin.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
@@ -216,7 +217,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
-        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
+        customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.edit_id = item_id
@@ -248,13 +249,13 @@ class CustomMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)

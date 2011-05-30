@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.serviceManagerContents.printServiceOrder,
             category=UiStrings().File)
-        self.fileExitItem = shortcut_action(mainWindow, u'FileExitItem',
+        self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings().File)
         action_list.add_category(UiStrings().Import, CategoryOrder.standardMenu)
@@ -650,6 +650,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         elif view_mode == u'live':
             self.setViewMode(False, True, False, False, True)
             self.modeLiveItem.setChecked(True)
+
+    def appStartup(self):
+        # Give all the plugins a chance to perform some tasks at startup
+        Receiver.send_message(u'openlp_process_events')
+        for plugin in self.pluginManager.plugins:
+            if hasattr(plugin, u'appStartup'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.appStartup()
+        Receiver.send_message(u'openlp_process_events')
 
     def firstTime(self):
         # Import themes if first time

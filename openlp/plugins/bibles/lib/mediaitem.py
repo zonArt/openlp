@@ -61,7 +61,7 @@ class BibleMediaItem(MediaManagerItem):
         self.unlockIcon = QtGui.QIcon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
-        self.settings = self.parent.settings_tab
+        self.settings = self.plugin.settings_tab
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.search_results = {}
@@ -338,7 +338,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def initialise(self):
         log.debug(u'bible manager initialise')
-        self.parent.manager.media = self
+        self.plugin.manager.media = self
         self.loadBibles()
         bible = QtCore.QSettings().value(
             self.settingsSection + u'/quick bible', QtCore.QVariant(
@@ -365,7 +365,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSecondComboBox.addItem(u'')
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
-        bibles = self.parent.manager.get_bibles().keys()
+        bibles = self.plugin.manager.get_bibles().keys()
         bibles.sort(cmp=locale.strcoll)
         # Load the bibles into the combo boxes.
         for bible in bibles:
@@ -386,7 +386,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def reloadBibles(self):
         log.debug(u'Reloading Bibles')
-        self.parent.manager.reload_bibles()
+        self.plugin.manager.reload_bibles()
         self.loadBibles()
 
     def initialiseAdvancedBible(self, bible):
@@ -400,7 +400,7 @@ class BibleMediaItem(MediaManagerItem):
             The bible to initialise (unicode).
         """
         log.debug(u'initialiseAdvancedBible %s', bible)
-        book_data = self.parent.manager.get_books(bible)
+        book_data = self.plugin.manager.get_books(bible)
         self.advancedBookComboBox.clear()
         first = True
         for book in book_data:
@@ -416,7 +416,7 @@ class BibleMediaItem(MediaManagerItem):
     def initialiseChapterVerse(self, bible, book, chapter_count):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
         self.chapter_count = chapter_count
-        verse_count = self.parent.manager.get_verse_count(bible, book, 1)
+        verse_count = self.plugin.manager.get_verse_count(bible, book, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
@@ -445,7 +445,7 @@ class BibleMediaItem(MediaManagerItem):
         books = []
         # We have to do a 'Reference Search'.
         if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
-            bibles = self.parent.manager.get_bibles()
+            bibles = self.plugin.manager.get_bibles()
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
                 book_data = bibles[bible].get_books()
@@ -455,8 +455,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = BibleImportForm(self, self.parent.manager,
-                self.parent)
+            self.import_wizard = BibleImportForm(self, self.plugin.manager,
+                self.plugin)
         # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
             self.reloadBibles()
@@ -515,7 +515,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.advancedVersionComboBox.currentText())
             book = unicode(self.advancedBookComboBox.currentText())
             verse_from = int(self.advancedFromVerse.currentText())
-            verse_count = self.parent.manager.get_verse_count(bible, book,
+            verse_count = self.plugin.manager.get_verse_count(bible, book,
                 chapter_to)
             self.adjustComboBox(verse_from, verse_count,
                 self.advancedToVerse, True)
@@ -527,7 +527,7 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.advancedToChapter.currentText())
         verse_from = int(self.advancedFromVerse.currentText())
         verse_to = int(self.advancedToVerse.currentText())
-        verse_count = self.parent.manager.get_verse_count(bible, book,
+        verse_count = self.plugin.manager.get_verse_count(bible, book,
             chapter_to)
         if chapter_from == chapter_to and verse_from > verse_to:
             self.adjustComboBox(verse_from, verse_count, self.advancedToVerse)
@@ -539,7 +539,7 @@ class BibleMediaItem(MediaManagerItem):
         book = unicode(self.advancedBookComboBox.currentText())
         chapter_from = int(self.advancedFromChapter.currentText())
         chapter_to = int(self.advancedToChapter.currentText())
-        verse_count = self.parent.manager.get_verse_count(bible, book,
+        verse_count = self.plugin.manager.get_verse_count(bible, book,
             chapter_from)
         self.adjustComboBox(1, verse_count, self.advancedFromVerse)
         if chapter_from > chapter_to:
@@ -599,10 +599,10 @@ class BibleMediaItem(MediaManagerItem):
             range_separator + chapter_to + verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
         Receiver.send_message(u'cursor_busy')
-        self.search_results = self.parent.manager.get_verses(bible, versetext)
+        self.search_results = self.plugin.manager.get_verses(bible, versetext)
         if second_bible:
-            self.second_search_results = self.parent.manager.get_verses(
-                second_bible, versetext)
+            self.second_search_results = self.plugin.manager.get_verses(
+                second_bible, versetext, bible)
         if not self.advancedLockButton.isChecked():
             self.listView.clear()
         if self.listView.count() != 0:
@@ -627,15 +627,15 @@ class BibleMediaItem(MediaManagerItem):
         text = unicode(self.quickSearchEdit.text())
         if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
-            self.search_results = self.parent.manager.get_verses(bible, text)
+            self.search_results = self.plugin.manager.get_verses(bible, text)
             if second_bible and self.search_results:
-                self.second_search_results = self.parent.manager.get_verses(
-                    second_bible, text)
+                self.second_search_results = self.plugin.manager.get_verses(
+                    second_bible, text, bible)
         else:
             # We are doing a 'Text Search'.
             Receiver.send_message(u'cursor_busy')
-            bibles = self.parent.manager.get_bibles()
-            self.search_results = self.parent.manager.verse_search(bible,
+            bibles = self.plugin.manager.get_bibles()
+            self.search_results = self.plugin.manager.verse_search(bible,
                 second_bible, text)
             if second_bible and self.search_results:
                 text = []
@@ -674,19 +674,19 @@ class BibleMediaItem(MediaManagerItem):
         further action is saved for/in each row.
         """
         verse_separator = get_reference_match(u'sep_v_display')
-        version = self.parent.manager.get_meta_data(bible, u'Version').value
-        copyright = self.parent.manager.get_meta_data(bible, u'Copyright').value
+        version = self.plugin.manager.get_meta_data(bible, u'Version').value
+        copyright = self.plugin.manager.get_meta_data(bible, u'Copyright').value
         permissions = \
-            self.parent.manager.get_meta_data(bible, u'Permissions').value
+            self.plugin.manager.get_meta_data(bible, u'Permissions').value
         second_version = u''
         second_copyright = u''
         second_permissions = u''
         if second_bible:
-            second_version = self.parent.manager.get_meta_data(
+            second_version = self.plugin.manager.get_meta_data(
                 second_bible, u'Version').value
-            second_copyright = self.parent.manager.get_meta_data(
+            second_copyright = self.plugin.manager.get_meta_data(
                 second_bible, u'Copyright').value
-            second_permissions = self.parent.manager.get_meta_data(
+            second_permissions = self.plugin.manager.get_meta_data(
                 second_bible, u'Permissions').value
         items = []
         for count, verse in enumerate(search_results):
@@ -879,7 +879,7 @@ class BibleMediaItem(MediaManagerItem):
             # We are still in the same chapter, but a verse has been skipped.
             return True
         elif old_chapter + 1 == chapter and (verse != 1 or
-            old_verse != self.parent.manager.get_verse_count(
+            old_verse != self.plugin.manager.get_verse_count(
             old_bible, old_book, old_chapter)):
             # We are in the following chapter, but the last verse was not the
             # last verse of the chapter or the current verse is not the
@@ -923,7 +923,7 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.parent.manager.get_verses(bible, string, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False)
         results = []
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
@@ -933,6 +933,6 @@ class BibleMediaItem(MediaManagerItem):
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.parent.manager.get_verses(bible, item_id, False)
+        search_results = self.plugin.manager.get_verses(bible, item_id, False)
         items = self.buildDisplayResults(bible, u'', search_results)
         return items
