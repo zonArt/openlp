@@ -72,9 +72,8 @@ class BGExtract(object):
         log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, 
             bookname, chapter)
         urlbookname = urllib.quote(bookname.encode("utf-8"))
-        url_params = urllib.urlencode(
-            {u'search': u'%s %s' % (urlbookname, chapter),
-            u'version': u'%s' % version})
+        url_params = u'search=%s+%s&version=%s' % (urlbookname, chapter, 
+            version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
@@ -97,7 +96,7 @@ class BGExtract(object):
         verse_list = {}
         # Cater for inconsistent mark up in the first verse of a chapter.
         first_verse = verses.find(u'versenum')
-        if first_verse:
+        if first_verse and 0 in first_verse.contents:
             verse_list[1] = unicode(first_verse.contents[0])
         for verse in verses(u'sup', u'versenum'):
             raw_verse_num =  verse.next
