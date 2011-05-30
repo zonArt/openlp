@@ -534,8 +534,6 @@ class BibleMediaItem(MediaManagerItem):
             unicode(self.advancedVersionComboBox.currentText()))
 
     def onAdvancedSecondComboBox(self):
-        QtCore.QSettings().setValue(self.settingsSection + u'/advanced bible',
-            QtCore.QVariant(self.advancedVersionComboBox.currentText()))
         self.initialiseAdvancedBible(
             unicode(self.advancedVersionComboBox.currentText()))
 
