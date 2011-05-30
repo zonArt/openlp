@@ -42,44 +42,44 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 */
 
 .serviceTitle {
-   font-weight:600;
-   font-size:x-large;
-   color:black;
+   font-weight: 600;
+   font-size: x-large;
+   color: black;
 }
 
 .item {
-   color:black;
+   color: black;
 }
 
 .itemTitle {
-   font-weight:600;
-   font-size:large;
+   font-weight: 600;
+   font-size: large;
 }
 
 .itemText {
-   margin-top:10px;
+   margin-top: 10px;
 }
 
 .itemFooter {
-   font-size:8px;
+   font-size: 8px;
 }
 
 .itemNotes {}
 
 .itemNotesTitle {
-   font-weight:bold;
-   font-size:12px;
+   font-weight: bold;
+   font-size: 12px;
 }
 
 .itemNotesText {
-   font-size:11px;
+   font-size: 11px;
 }
 
 .media {}
 
 .mediaTitle {
-    font-weight:bold;
-    font-size:11px;
+    font-weight: bold;
+    font-size: 11px;
 }
 
 .mediaText {}
@@ -87,20 +87,20 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 .imageList {}
 
 .customNotes {
-   margin-top:10px;
+   margin-top: 10px;
 }
 
 .customNotesTitle {
-   font-weight:bold;
-   font-size:11px;
+   font-weight: bold;
+   font-size: 11px;
 }
 
 .customNotesText {
-   font-size:11px;
+   font-size: 11px;
 }
 
 .newPage {
-    page-break-before:always;
+    page-break-before: always;
 }
 """
 
