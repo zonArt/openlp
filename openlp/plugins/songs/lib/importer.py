@@ -27,6 +27,7 @@
 """
 The :mod:`importer` modules provides the general song import functionality.
 """
+import logging
 from opensongimport import OpenSongImport
 from easislidesimport import EasiSlidesImport
 from olpimport import OpenLPSongImport
@@ -38,20 +39,24 @@ from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
 from foilpresenterimport import FoilPresenterImport
 # Imports that might fail
+log = logging.getLogger(__name__)
 try:
     from olp1import import OpenLP1SongImport
     HAS_OPENLP1 = True
 except ImportError:
+    log.exception('Error importing %s', 'OpenLP1SongImport')
     HAS_OPENLP1 = False
 try:
     from sofimport import SofImport
     HAS_SOF = True
 except ImportError:
+    log.exception('Error importing %s', 'SofImport')
     HAS_SOF = False
 try:
     from oooimport import OooImport
     HAS_OOO = True
 except ImportError:
+    log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
 
 class SongFormat(object):
