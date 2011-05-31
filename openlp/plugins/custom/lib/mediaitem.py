@@ -131,7 +131,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
-        # active trigger it and clean up so it will not update again.
+        # active trigger it and clean up so it will not update again.        
         if self.remoteTriggered == u'L':
             self.onAddClick()
         if self.remoteTriggered == u'P':
@@ -160,6 +160,7 @@ class CustomMediaItem(MediaManagerItem):
         self.edit_custom_form.loadCustom(0)
         self.edit_custom_form.exec_()
         self.initialise()
+        self.onSelectionChange()
 
     def onRemoteEditClear(self):
         self.remoteTriggered = None
@@ -179,6 +180,8 @@ class CustomMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
+            self.auto_select_id = -1
+            self.initialise()
 
     def onEditClick(self):
         """
@@ -189,6 +192,7 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
+            self.auto_select_id = -1
             self.initialise()
 
     def onDeleteClick(self):

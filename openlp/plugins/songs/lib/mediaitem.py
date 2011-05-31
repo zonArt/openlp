@@ -214,6 +214,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
+        print "reload list"
         log.debug(u'onSongListLoad - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
@@ -248,6 +249,7 @@ class SongMediaItem(MediaManagerItem):
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
             if song.id == self.auto_select_id:
+                print "have match" , song.id
                 self.listView.setCurrentItem(song_name)
         self.auto_select_id = -1
 
@@ -297,8 +299,12 @@ class SongMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         log.debug(u'onNewClick')
+        print "New"
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
+        print "back from edit"
+        self.onSongListLoad()
+        self.onSelectionChange()
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
@@ -323,6 +329,8 @@ class SongMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
 
     def onEditClick(self):
         """
@@ -334,6 +342,8 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
         self.editItem = None
 
     def onDeleteClick(self):
