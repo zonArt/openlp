@@ -33,11 +33,16 @@
   <script type="text/javascript" src="/files/jquery.js"></script>
   <script type="text/javascript" src="/files/openlp.js"></script>
   <script type="text/javascript" src="/files/jquery.mobile.js"></script>
+  <script type="text/javascript">
+  translationStrings = {
+    "go_live": "${go_live}",
+    "add_to_service": "${add_to_service}",
+    "no_results": "${no_results}",
+    "back": "${back}"
+  }
+  </script>
 </head>
 <body>
-<input type="hidden" id="go-live" value="${go_live}" />
-<input type="hidden" id="add-to-service" value="${add_to_service}" />
-<input type="hidden" id="no-results" value="${no_results}" />
 <div data-role="page" id="home">
   <div data-role="header">
     <h1>${app_title}</h1>
@@ -114,6 +119,16 @@
     </div>
     <a href="#" id="search-submit" data-role="button">${search}</a>
     <ul data-role="listview" data-inset="true">
+  </div>
+</div>
+<div data-role="page" id="options">
+  <div data-role="header" data-position="inline" data-theme="b">
+    <h1>${options}</h1>
+  </div>
+  <div data-role="content">
+    <input type="hidden" id="selected-item" value="" />
+    <a href="#" id="go-live" data-role="button">${go_live}</a>       
+    <a href="#" id="add-to-service" data-role="button">${add_to_service}</a>    
   </div>
 </div>
 </body>
