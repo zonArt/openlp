@@ -301,7 +301,8 @@ class HttpConnection(object):
             'text': translate('RemotePlugin.Mobile', 'Text'),
             'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
-            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service')
+            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service'),
+            'no_results': translate('RemotePlugin.Mobile', 'No Results')
         }
 
     def ready_read(self):
@@ -506,7 +507,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results =plugin.mediaItem.search(text)
+            results = plugin.mediaItem.search(text)
         else:
             results = []
         return HttpResponse(

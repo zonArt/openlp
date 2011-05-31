@@ -215,7 +215,7 @@ window.OpenLP = {
         var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         if (data.results.items.length == 0) {
-          var li = $("<li data-icon=\"false\">").text('No results');
+          var li = $("<li data-icon=\"false\">").text($("#no-results").val());
           ul.append(li);
         }
         else {
