@@ -219,9 +219,9 @@ class BibleManager(object):
         log.debug(u'BibleManager.get_books("%s")', bible)
         return [
             {
-            u'name': book.name,
-            u'chapters': self.db_cache[bible].get_chapter_count(
-                book)
+                u'name': book.name,
+                u'book_reference_id': book.book_reference_id, 
+                u'chapters': self.db_cache[bible].get_chapter_count(book)
             }
             for book in self.db_cache[bible].get_books()
         ]
