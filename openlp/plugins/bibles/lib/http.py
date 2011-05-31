@@ -99,7 +99,7 @@ class BGExtract(object):
         if first_verse and len(first_verse.contents):
             verse_list[1] = unicode(first_verse.contents[0])
         for verse in verses(u'sup', u'versenum'):
-            raw_verse_num =  verse.next
+            raw_verse_num = verse.next
             clean_verse_num = 0
             # Not all verses exist in all translations and may or may not be
             # represented by a verse number. If they are not fine, if they are
