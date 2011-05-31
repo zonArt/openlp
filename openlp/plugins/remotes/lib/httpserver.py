@@ -299,7 +299,9 @@ class HttpConnection(object):
             'prev': translate('RemotePlugin.Mobile', 'Prev'),
             'next': translate('RemotePlugin.Mobile', 'Next'),
             'text': translate('RemotePlugin.Mobile', 'Text'),
-            'show_alert': translate('RemotePlugin.Mobile', 'Show Alert')
+            'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
+            'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
+            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service')
         }
 
     def ready_read(self):

@@ -221,8 +221,8 @@ window.OpenLP = {
         else {
             $.each(data.results.items, function (idx, value) {
               var item = $("<li>").text(value[1]);
-              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
-              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
+              var golive = $("<a href=\"#\">").attr("value", value[0]).click(OpenLP.goLive).text($("#go-live").val());
+              var additem = $("<a href=\"#\">").attr("value", value[0]).click(OpenLP.addToService).text($("#add-to-service").val());
               item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
               ul.append(item);
             });
