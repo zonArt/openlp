@@ -115,7 +115,6 @@ import logging
 import os
 import urlparse
 import re
-from pprint import pformat
 
 try:
     import json
@@ -123,10 +122,11 @@ except ImportError:
     import simplejson as json
 
 from PyQt4 import QtCore, QtNetwork
+from mako.template import Template
 
-from openlp.core.lib import Receiver, PluginStatus
+from openlp.core.lib import Receiver, PluginStatus, StringContent
 from openlp.core.ui import HideMode
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
 
@@ -261,6 +261,7 @@ class HttpConnection(object):
             self.ready_read)
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'),
             self.disconnected)
+        self.translate()
 
     def _get_service_items(self):
         service_items = []
@@ -279,6 +280,31 @@ class HttpConnection(object):
                 u'selected': (service_item._uuid == cur_uuid)
             })
         return service_items
+
+    def translate(self):
+        """
+        Translate various strings in the mobile app.
+        """
+        self.template_vars = {
+            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Remote'),
+            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Stage View'),
+            'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
+            'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
+            'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
+            'search': translate('RemotePlugin.Mobile', 'Search'),
+            'back': translate('RemotePlugin.Mobile', 'Back'),
+            'refresh': translate('RemotePlugin.Mobile', 'Refresh'),
+            'blank': translate('RemotePlugin.Mobile', 'Blank'),
+            'show': translate('RemotePlugin.Mobile', 'Show'),
+            'prev': translate('RemotePlugin.Mobile', 'Prev'),
+            'next': translate('RemotePlugin.Mobile', 'Next'),
+            'text': translate('RemotePlugin.Mobile', 'Text'),
+            'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
+            'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
+            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service'),
+            'no_results': translate('RemotePlugin.Mobile', 'No Results'),
+            'options': translate('RemotePlugin.Mobile', 'Options')
+        }
 
     def ready_read(self):
         """
@@ -327,8 +353,11 @@ class HttpConnection(object):
         if not path.startswith(self.parent.html_dir):
             return HttpResponse(code=u'404 Not Found')
         ext = os.path.splitext(filename)[1]
+        html = None
         if ext == u'.html':
             mimetype = u'text/html'
+            variables = self.template_vars
+            html = Template(filename=path, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
         elif ext == u'.css':
             mimetype = u'text/css'
         elif ext == u'.js':
@@ -343,9 +372,12 @@ class HttpConnection(object):
             mimetype = u'text/plain'
         file_handle = None
         try:
-            file_handle = open(path, u'rb')
-            log.debug(u'Opened %s' % path)
-            content = file_handle.read()
+            if html:
+                content = html
+            else:
+                file_handle = open(path, u'rb')
+                log.debug(u'Opened %s' % path)
+                content = file_handle.read()
         except IOError:
             log.exception(u'Failed to open %s' % path)
             return HttpResponse(code=u'404 Not Found')
@@ -460,7 +492,8 @@ class HttpConnection(object):
             for plugin in self.parent.plugin.pluginManager.plugins:
                 if plugin.status == PluginStatus.Active and \
                     plugin.mediaItem and plugin.mediaItem.hasSearch:
-                    searches.append(plugin.name)
+                    searches.append([plugin.name, unicode(
+                        plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
                 {u'Content-Type': u'application/json'})
@@ -476,7 +509,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results =plugin.mediaItem.search(text)
+            results = plugin.mediaItem.search(text)
         else:
             results = []
         return HttpResponse(
