@@ -47,7 +47,7 @@ window.OpenLP = {
         var select = $("#search-plugin");
         select.html("");
         $.each(data.results.items, function (idx, value) {
-          select.append("<option value='" + value + "'>" + value + "</option>");
+          select.append("<option value='" + value[0] + "'>" + value[1] + "</option>");
         });
         select.selectmenu("refresh");
       }

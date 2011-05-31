@@ -124,7 +124,7 @@ except ImportError:
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
-from openlp.core.lib import Receiver, PluginStatus
+from openlp.core.lib import Receiver, PluginStatus, StringContent
 from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation, translate
 
@@ -491,7 +491,8 @@ class HttpConnection(object):
             for plugin in self.parent.plugin.pluginManager.plugins:
                 if plugin.status == PluginStatus.Active and \
                     plugin.mediaItem and plugin.mediaItem.hasSearch:
-                    searches.append(plugin.name)
+                    searches.append([plugin.name, unicode(
+                        plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
                 {u'Content-Type': u'application/json'})
