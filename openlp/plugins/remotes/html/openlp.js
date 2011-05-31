@@ -220,7 +220,10 @@ window.OpenLP = {
         }
         else {
             $.each(data.results.items, function (idx, value) {
-              ul.append($("<li>").append($("<a>").attr("href", "#options").attr("data-rel", "dialog").attr("data-transition", "pop").attr("value", value[0]).click(OpenLP.showOptions).text(value[1])));
+              ul.append($("<li>").append($("<a>").attr("href", "#options")
+                  .attr("data-rel", "dialog").attr("data-transition", "pop")
+                  .attr("value", value[0]).click(OpenLP.showOptions)
+                  .text(value[1])));
             });
         }
         ul.listview("refresh");
@@ -245,7 +248,7 @@ window.OpenLP = {
   },
   addToService: function (event) {
     var id = $("#selected-item").val();
-    var text = JSON.stringify({"request": {"id": parseInt(id, 10)}});
+    var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text},
