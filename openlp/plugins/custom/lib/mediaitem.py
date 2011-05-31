@@ -131,7 +131,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
-        # active trigger it and clean up so it will not update again.        
+        # active trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
         if self.remoteTriggered == u'P':

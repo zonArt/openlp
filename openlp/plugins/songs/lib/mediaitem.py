@@ -215,7 +215,6 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        print "reload list"
         log.debug(u'onSongListLoad - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
@@ -250,7 +249,6 @@ class SongMediaItem(MediaManagerItem):
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
             if song.id == self.auto_select_id:
-                print "have match" , song.id
                 self.listView.setCurrentItem(song_name)
         self.auto_select_id = -1
 
@@ -300,10 +298,8 @@ class SongMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         log.debug(u'onNewClick')
-        print "New"
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
-        print "back from edit"
         self.onSongListLoad()
         self.onSelectionChange()
 
