@@ -128,7 +128,7 @@ class OooImport(SongImport):
                     self.desktop = manager.createInstanceWithContext(
                         "com.sun.star.frame.Desktop", uno_instance)
                     return
-                raise
+            raise
 
     def start_ooo_process(self):
         try:
