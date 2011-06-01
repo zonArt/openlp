@@ -109,7 +109,7 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
@@ -129,14 +129,6 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
-        # Called to redisplay the custom list screen edith from a search
-        # or from the exit of the Custom edit dialog. If remote editing is
-        # active trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
-        self.onRemoteEditClear()
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
@@ -155,11 +147,19 @@ class CustomMediaItem(MediaManagerItem):
             if custom_slide.id == self.auto_select_id:
                 self.listView.setCurrentItem(custom_name)
         self.auto_select_id = -1
+        # Called to redisplay the custom list screen edith from a search
+        # or from the exit of the Custom edit dialog. If remote editing is
+        # active trigger it and clean up so it will not update again.
+        if self.remoteTriggered == u'L':
+            self.onAddClick()
+        if self.remoteTriggered == u'P':
+            self.onPreviewClick()
+        self.onRemoteEditClear()
 
     def onNewClick(self):
         self.edit_custom_form.loadCustom(0)
         self.edit_custom_form.exec_()
-        self.initialise()
+        self.onClearTextButtonClick()
         self.onSelectionChange()
 
     def onRemoteEditClear(self):
@@ -181,7 +181,7 @@ class CustomMediaItem(MediaManagerItem):
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
             self.auto_select_id = -1
-            self.initialise()
+            self.onSearchTextButtonClick()
 
     def onEditClick(self):
         """
@@ -193,7 +193,7 @@ class CustomMediaItem(MediaManagerItem):
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.auto_select_id = -1
-            self.initialise()
+            self.onSearchTextButtonClick()
 
     def onDeleteClick(self):
         """
