@@ -68,7 +68,7 @@ class OooImport(SongImport):
             self.log_error(
                 self.import_source[0],
                 translate('SongsPlugin.SongImport',
-                    'Unable to open OpenOffice.org or LibreOffice'))
+                    'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
