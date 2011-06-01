@@ -32,6 +32,8 @@ from openlp.core.lib import translate
 from db import Author
 from ui import SongStrings
 
+WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
+
 class VerseType(object):
     """
     VerseType provides an enumeration for the tags that may be associated
@@ -246,6 +248,12 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
+def clean_string(string):
+    """
+    Strips punctuation from the passed string to assist searching
+    """
+    return WHITESPACE.sub(u' ', string.replace(u'\'', u'')).lower()
+
 def clean_song(manager, song):
     """
     Cleans the search title, rebuilds the search lyrics, adds a default author
@@ -262,9 +270,8 @@ def clean_song(manager, song):
     if song.alternate_title is None:
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
-    whitespace = re.compile(r'\W+', re.UNICODE)
-    song.search_title = (whitespace.sub(u' ', song.title).strip() + u'@' +
-        whitespace.sub(u' ', song.alternate_title).strip()).strip().lower()
+    song.search_title = clean_string(song.title) + u'@' + \
+        clean_string(song.alternate_title)
     # Only do this, if we the song is a 1.9.4 song (or older).
     if song.lyrics.find(u'<lyrics language="en">') != -1:
         # Remove the old "language" attribute from lyrics tag (prior to 1.9.5).
@@ -273,8 +280,8 @@ def clean_song(manager, song):
         song.lyrics = song.lyrics.replace(
             u'<lyrics language="en">', u'<lyrics>')
         verses = SongXML().get_verses(song.lyrics)
-        lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
-        song.search_lyrics = lyrics.lower()
+        song.search_lyrics = u' '.join([clean_string(verse[1])
+            for verse in verses])
         # We need a new and clean SongXML instance.
         sxml = SongXML()
         # Rebuild the song's verses, to remove any wrong verse names (for
@@ -316,6 +323,11 @@ def clean_song(manager, song):
             if order not in compare_order:
                 song.verse_order = u''
                 break
+    else:
+        verses = SongXML().get_verses(song.lyrics)
+        song.search_lyrics = u' '.join([clean_string(verse[1])
+            for verse in verses])
+
     # The song does not have any author, add one.
     if not song.authors:
         name = SongStrings.AuthorUnknown

@@ -91,7 +91,7 @@ class MediaManagerItem(QtGui.QWidget):
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
