@@ -430,10 +430,9 @@ class BibleUpgradeForm(OpenLPWizard):
                         critical_error_message_box(UiStrings().Error,
                             translate('BiblesPlugin.UpgradeWizardForm',
                             'The backup was not successful.\nTo backup your '
-                            'Bibles you need the permission to write in the '
-                            'given directory. If you have a permissions to '
-                            'write and this error still occurs, please report '
-                            'a bug.'))
+                            'Bibles you need permission to write to the given '
+                            'directory. If you have write permissions and this '
+                            'error still occurs, please report a bug.'))
                         return False
             return True
         elif self.currentPage() == self.selectPage:
