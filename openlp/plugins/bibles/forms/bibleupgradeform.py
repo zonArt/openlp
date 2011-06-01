@@ -33,7 +33,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, SettingsManager, translate, \
+    check_directory_exists
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -94,7 +95,7 @@ class BibleUpgradeForm(OpenLPWizard):
 
     def onCheckBoxIndexChanged(self, index):
         """
-        Show/ Hide warnings if CheckBox state has changed
+        Show/Hide warnings if CheckBox state has changed
         """
         for number, filename in enumerate(self.files):
             if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
@@ -154,17 +155,19 @@ class BibleUpgradeForm(OpenLPWizard):
         self.backupDirectoryEdit.setEnabled(not checked)
         self.backupBrowseButton.setEnabled(not checked)
 
-    def backupOldBibles(self, backupdirectory):
+    def backupOldBibles(self, backup_directory):
         """
         Backup old bible databases in a given folder.
         """
+        check_directory_exists(backup_directory)
+        success = True
         for filename in self.files:
             try:
-                shutil.copy(os.path.join(self.path, filename[0]), 
-                    backupdirectory)
+                shutil.copy(os.path.join(self.path, filename[0]),
+                    backup_directory)
             except:
-                return False
-        return True
+                success = False
+        return success
 
     def customInit(self):
         """
@@ -318,7 +321,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 QtGui.QFormLayout.FieldRole, self.versionNameEdit[number])
             self.versionNameEdit[number].setText(bible.get_name())
             self.formLayout.addWidget(self.formWidget[number])
-            #Set up the Signal for the checkbox
+            # Set up the Signal for the checkbox.
             QtCore.QObject.connect(self.checkBox[number],
                 QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onCheckBoxIndexChanged)
@@ -414,29 +417,23 @@ class BibleUpgradeForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.backupPage:
             if not self.noBackupCheckBox.checkState() == QtCore.Qt.Checked:
-                if not unicode(self.backupDirectoryEdit.text()):
+                backup_path = unicode(self.backupDirectoryEdit.text())
+                if not backup_path:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',
                         'You need to specify a Backup Directory for your '
                         'Bibles.'))
                     self.backupDirectoryEdit.setFocus()
                     return False
-                elif not os.path.exists(unicode(
-                    self.backupDirectoryEdit.text())):
-                    critical_error_message_box(UiStrings().Error,
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'The given path is not an existing directory.'))
-                    self.backupDirectoryEdit.setFocus()
-                    return False
                 else:
-                    if not self.backupOldBibles(unicode(
-                        self.backupDirectoryEdit.text())):
+                    if not self.backupOldBibles(backup_path):
                         critical_error_message_box(UiStrings().Error,
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'The backup was not successfull.\nTo backup your '
-                        'Bibles you need the permission to write in the given '
-                        'directory. If you have a permissions to write and '
-                        'this error still occurs, please report a bug.'))
+                            translate('BiblesPlugin.UpgradeWizardForm',
+                            'The backup was not successfull.\nTo backup your '
+                            'Bibles you need the permission to write in the '
+                            'given directory. If you have a permissions to '
+                            'write and this error still occurs, please report '
+                            'a bug.'))
                         return False
             return True
         elif self.currentPage() == self.selectPage:
