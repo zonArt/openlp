@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +40,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
     """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)
@@ -65,7 +64,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self._clearDetails()
         self.programaticChange = True
         pluginListWidth = 0
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -117,7 +116,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         plugin_name_singular = \
             self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             if plugin.nameStrings[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
