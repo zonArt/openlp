@@ -67,7 +67,7 @@ class Renderer(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
         """
-        log.debug(u'Initilisation started')
+        log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
