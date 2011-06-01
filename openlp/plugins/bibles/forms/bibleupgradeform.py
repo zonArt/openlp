@@ -429,7 +429,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not self.backupOldBibles(backup_path):
                         critical_error_message_box(UiStrings().Error,
                             translate('BiblesPlugin.UpgradeWizardForm',
-                            'The backup was not successfull.\nTo backup your '
+                            'The backup was not successful.\nTo backup your '
                             'Bibles you need the permission to write in the '
                             'given directory. If you have a permissions to '
                             'write and this error still occurs, please report '
