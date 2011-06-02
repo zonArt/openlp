@@ -695,9 +695,10 @@ class BibleMediaItem(MediaManagerItem):
                     QtGui.QMessageBox.information(self, 
                         translate('BiblePlugin.MediaItem', 'Information'), 
                         unicode(translate('BiblePlugin.MediaItem',
-                        'The Second Bible not contains as much books as the '
-                        'First Bible. Only search results which are found in '
-                        'both Bibles are shown.\n%d results dropped.')) % count,
+                        'The second Bibles does not contain all the verses '
+                        'that are in the main Bible. Only verses found in both '
+                        'Bibles will be shown. %d verses have not been '
+                        'included in the results.')) % count,
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.search_results = new_search_results
                 self.second_search_results = \
