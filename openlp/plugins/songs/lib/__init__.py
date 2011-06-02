@@ -33,6 +33,7 @@ from db import Author
 from ui import SongStrings
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
+APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
 
 class VerseType(object):
     """
@@ -252,7 +253,7 @@ def clean_string(string):
     """
     Strips punctuation from the passed string to assist searching
     """
-    return WHITESPACE.sub(u' ', string.replace(u'\'', u'')).lower()
+    return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
 
 def clean_song(manager, song):
     """
