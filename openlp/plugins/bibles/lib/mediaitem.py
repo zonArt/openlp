@@ -845,7 +845,8 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = None
         else:
             service_item.theme = self.settings.bible_theme
-        [service_item.add_from_text(slide[:30], slide) for slide in raw_slides]
+        for slide in raw_slides:
+            service_item.add_from_text(slide[:30], slide)
         return True
 
     def formatTitle(self, start_bitem, old_bitem):
