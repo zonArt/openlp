@@ -148,7 +148,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
-                self.show()
                 self.primary = False
             else:
                 self.primary = True

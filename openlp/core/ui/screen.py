@@ -241,6 +241,7 @@ class ScreenList(object):
         height = settings.value(u'height',
             QtCore.QVariant(self.current[u'size'].height())).toInt()[0]
         self.override[u'size'] = QtCore.QRect(x, y, width, height)
+        self.override[u'primary'] = False
         settings.endGroup()
         if override_display:
             self.set_override_display()
