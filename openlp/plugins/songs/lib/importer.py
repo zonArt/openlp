@@ -28,6 +28,7 @@
 The :mod:`importer` modules provides the general song import functionality.
 """
 import logging
+
 from opensongimport import OpenSongImport
 from easislidesimport import EasiSlidesImport
 from olpimport import OpenLPSongImport

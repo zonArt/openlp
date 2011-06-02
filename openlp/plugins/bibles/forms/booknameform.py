@@ -70,15 +70,15 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.onCheckBoxIndexChanged)
 
     def onCheckBoxIndexChanged(self, index):
-        '''
+        """
         Reload Combobox if CheckBox state has changed
-        '''
+        """
         self.reloadComboBox()
 
     def reloadComboBox(self):
-        '''
+        """
         Reload the Combobox items
-        '''
+        """
         self.correspondingComboBox.clear()
         items = BiblesResourcesDB.get_books()
         for item in items:
