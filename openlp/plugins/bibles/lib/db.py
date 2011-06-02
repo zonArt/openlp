@@ -381,6 +381,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_verses("%s")', reference_list)
         verse_list = []
+        book_error = False
         for book_id, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book_by_book_ref_id(book_id)
             if db_book:
@@ -398,12 +399,13 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book with id "%s"', book_id)
-                if show_error:
-                    critical_error_message_box(
-                        translate('BiblesPlugin', 'No Book Found'),
-                        translate('BiblesPlugin', 'No matching book '
-                        'could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.'))
+                book_error = True
+        if book_error and show_error:
+            critical_error_message_box(
+                translate('BiblesPlugin', 'No Book Found'),
+                translate('BiblesPlugin', 'No matching book '
+                'could be found in this Bible. Check that you '
+                'have spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):
