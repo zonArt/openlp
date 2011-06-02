@@ -671,8 +671,25 @@ class BibleUpgradeForm(OpenLPWizard):
                         bible_failed = True
                         break
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                    self.newbibles[number].create_book(book, book_ref_id, 
-                        book_details[u'testament_id'])
+                    db_book = self.newbibles[number].create_book(book, 
+                        book_ref_id, book_details[u'testament_id'])
+                    # Try to import still downloaded verses
+                    oldbook = oldbible.get_book(book)
+                    if oldbook:
+                        verses = oldbible.get_verses(oldbook[u'id'])
+                        if not verses:
+                            log.exception(u'No verses found to import for book '
+                                u'"%s"', book)
+                            continue
+                        for verse in verses:
+                            if self.stop_import_flag:
+                                bible_failed = True
+                                break
+                            self.newbibles[number].create_verse(db_book.id, 
+                                int(verse[u'chapter']), 
+                                int(verse[u'verse']), unicode(verse[u'text']))
+                            Receiver.send_message(u'openlp_process_events')
+                        self.newbibles[number].session.commit()
             else:
                 language_id = self.newbibles[number].get_object(BibleMeta,
                     u'language_id')

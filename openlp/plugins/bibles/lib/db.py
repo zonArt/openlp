@@ -1043,6 +1043,28 @@ class OldBibleDB(QtCore.QObject, Manager):
         else:
             return None
 
+    def get_book(self, name):
+        """
+        Return a book by name or abbreviation.
+
+        ``name``
+            The name or abbreviation of the book.
+        """
+        if not isinstance(name, unicode):
+            name = unicode(name)
+        books = self.run_sql(u'SELECT id, testament_id, name, '
+                u'abbreviation FROM book WHERE LOWER(name) = ? OR '
+                u'LOWER(abbreviation) = ?', (name.lower(), name.lower()))
+        if books:
+            return {
+                u'id': books[0][0],
+                u'testament_id': books[0][1],
+                u'name': unicode(books[0][2]),
+                u'abbreviation': unicode(books[0][3])
+            }
+        else:
+            return None
+
     def get_books(self):
         """
         Returns the books of the Bible.
