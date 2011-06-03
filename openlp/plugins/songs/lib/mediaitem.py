@@ -300,6 +300,9 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onNewClick')
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
+        self.onClearTextButtonClick()
+        self.onSelectionChange()
+        self.auto_select_id = -1
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
@@ -324,6 +327,8 @@ class SongMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
 
     def onEditClick(self):
         """
@@ -335,6 +340,8 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
         self.editItem = None
 
     def onDeleteClick(self):
