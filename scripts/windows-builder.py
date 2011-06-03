@@ -194,7 +194,8 @@ def write_version_file():
     code = bzr.wait()
     if code != 0:
         raise Exception(u'Error running bzr log')
-    latest = output.split(u':')[0]
+    outputAscii = unicode(output, errors='ignore')
+    latest = outputAscii.split(u':')[0]
     versionstring = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
     f = open(os.path.join(dist_path, u'.version'), u'w')
     f.write(versionstring)
