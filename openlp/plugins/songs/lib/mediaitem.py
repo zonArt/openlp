@@ -300,8 +300,9 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onNewClick')
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
-        self.onSongListLoad()
+        self.onClearTextButtonClick()
         self.onSelectionChange()
+        self.auto_select_id = -1
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
