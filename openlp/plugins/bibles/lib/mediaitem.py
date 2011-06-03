@@ -675,9 +675,32 @@ class BibleMediaItem(MediaManagerItem):
                 second_bible, text)
             if second_bible and self.search_results:
                 text = []
+                new_search_results = []
+                count = 0
+                passage_not_found = False
                 for verse in self.search_results:
-                    text.append((verse.book.name, verse.chapter, verse.verse,
-                        verse.verse))
+                    db_book = bibles[second_bible].get_book_by_book_ref_id(
+                        verse.book.book_reference_id)
+                    if not db_book:
+                        log.debug(u'Passage "%s %d:%d" not found in Second '
+                            u'Bible' % (verse.book.name, verse.chapter, 
+                            verse.verse))
+                        passage_not_found = True
+                        count += 1
+                        continue
+                    new_search_results.append(verse)
+                    text.append((verse.book.book_reference_id, verse.chapter, 
+                        verse.verse, verse.verse))
+                if passage_not_found:
+                    QtGui.QMessageBox.information(self, 
+                        translate('BiblePlugin.MediaItem', 'Information'), 
+                        unicode(translate('BiblePlugin.MediaItem',
+                        'The second Bibles does not contain all the verses '
+                        'that are in the main Bible. Only verses found in both '
+                        'Bibles will be shown. %d verses have not been '
+                        'included in the results.')) % count,
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.search_results = new_search_results
                 self.second_search_results = \
                     bibles[second_bible].get_verses(text)
         if not self.quickLockButton.isChecked():
