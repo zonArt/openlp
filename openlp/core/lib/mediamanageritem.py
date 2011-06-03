@@ -391,21 +391,23 @@ class MediaManagerItem(QtGui.QWidget):
             self.iconFromFile(image, thumb)
         return True
 
-    def iconFromFile(self, image, thumb):
+    def iconFromFile(self, image_path, thumb_path):
         """
         Create a thumbnail icon from a given image.
 
-        ``image``
+        ``image_path``
             The image file to create the icon from.
 
-        ``thumb``
-            The filename to save the thumbnail to
+        ``thumb_path``
+            The filename to save the thumbnail to.
         """
-        icon = build_icon(unicode(image))
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        ext = os.path.splitext(thumb)[1].lower()
-        pixmap.save(thumb, ext[1:])
-        return icon
+        ext = os.path.splitext(thumb_path)[1].lower()
+        reader = QtGui.QImageReader(image_path)
+        reader.setScaledSize(QtCore.QSize(
+            reader.size().width() / reader.size().height() * 88, 88))
+        thumb = reader.read()
+        thumb.save(thumb_path, ext[1:])
+        return build_icon(unicode(thumb_path))
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
