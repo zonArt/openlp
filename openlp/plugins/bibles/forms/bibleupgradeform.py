@@ -637,7 +637,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 else:
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
-                    log.error(u'Upgrading from "%s" failed' % filename[0])
+                    log.warn(u'Upgrading from "%s" failed' % filename[0])
                     delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
@@ -661,7 +661,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     book_ref_id = self.newbibles[number].\
                         get_book_ref_id_by_name(book, len(books), language_id)
                     if not book_ref_id:
-                        log.error(u'Upgrading books from %s - download '\
+                        log.warn(u'Upgrading books from %s - download '\
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'], 
                             meta_data[u'download name']))
@@ -696,7 +696,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
-                    log.error(u'Upgrading books from "%s" failed' % name)
+                    log.warn(u'Upgrading books from "%s" failed' % name)
                     delete_database(self.path, 
                         clean_filename(self.newbibles[number].get_name()))
                     del self.newbibles[number]
@@ -722,7 +722,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         get_book_ref_id_by_name(book[u'name'], len(books), 
                         language_id)
                     if not book_ref_id:
-                        log.error(u'Upgrading books from %s " '\
+                        log.warn(u'Upgrading books from %s " '\
                             'failed - aborted by user' % name)
                         delete_database(self.path, 
                             clean_filename(self.newbibles[number].get_name()))
@@ -734,7 +734,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         book_ref_id, book_details[u'testament_id'])
                     verses = oldbible.get_verses(book[u'id'])
                     if not verses:
-                        log.error(u'No verses found to import for book '
+                        log.warn(u'No verses found to import for book '
                             u'"%s"', book[u'name'])
                         self.newbibles[number].delete_book(db_book)
                         continue
