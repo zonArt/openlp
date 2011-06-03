@@ -102,6 +102,13 @@ psvince.dll
     the install will fail.  The dll can be obtained from here:
     http://www.vincenzo.net/isxkb/index.php?title=PSVince)
 
+Mako    
+    Mako Templates for Python.  This package is required for building the
+    remote plugin.  It can be installed by going to your
+    python_directory\scripts\.. and running "easy_install Mako".  If you do not
+    have easy_install, the Mako package can be obtained here:
+    http://www.makotemplates.org/download.html
+
 """
 
 import os
