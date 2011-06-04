@@ -77,7 +77,7 @@ class PresentationPlugin(Plugin):
                 try:
                     self.controllers[controller].start_process()
                 except:
-                    log.exception(u'Failed to start controller process')
+                    log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
 
@@ -99,7 +99,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         return PresentationMediaItem(
-            self, self.icon, self.name, self.controllers)
+            self.mediadock.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """
@@ -128,7 +128,7 @@ class PresentationPlugin(Plugin):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError:
-                        log.exception(u'Failed to import %s on path %s',
+                        log.warn(u'Failed to import %s on path %s',
                             modulename, path)
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:

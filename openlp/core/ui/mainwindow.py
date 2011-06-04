@@ -179,7 +179,7 @@ class Ui_MainWindow(object):
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.serviceManagerContents.printServiceOrder,
             category=UiStrings().File)
-        self.fileExitItem = shortcut_action(mainWindow, u'FileExitItem',
+        self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings().File)
         action_list.add_category(UiStrings().Import, CategoryOrder.standardMenu)
@@ -651,6 +651,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.setViewMode(False, True, False, False, True)
             self.modeLiveItem.setChecked(True)
 
+    def appStartup(self):
+        # Give all the plugins a chance to perform some tasks at startup
+        Receiver.send_message(u'openlp_process_events')
+        for plugin in self.pluginManager.plugins:
+            if plugin.isActive() and hasattr(plugin, u'appStartup'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.appStartup()
+        Receiver.send_message(u'openlp_process_events')
+
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
@@ -669,13 +678,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def blankCheck(self):
         """
         Check and display message if screen blank on setup.
-        Triggered by delay thread.
         """
         settings = QtCore.QSettings()
+        self.liveController.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
             QtCore.QVariant(False)).toBool():
-            self.liveController.mainDisplaySetBackground()
-            if settings.value(u'blank warning',
+            if settings.value(u'%s/blank warning' % self.generalSettingsSection,
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow',

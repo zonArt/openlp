@@ -147,6 +147,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             DisplayTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
+        self._saveTable()
 
     def onSavedPushed(self):
         """
@@ -171,14 +172,19 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end tag'] = u'{/%s}' % tag
             self.selected = -1
         self._resetTable()
-        temp = []
+        self._saveTable()
+
+    def _saveTable(self):
+        """
+        Saves all display tags except protected ones.
+        """
+        tags = []
         for tag in DisplayTags.get_html_tags():
             if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
+                tags.append(tag)
+        if tags:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
+                QtCore.QVariant(cPickle.dumps(tags)))
         else:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
                 QtCore.QVariant(u''))
