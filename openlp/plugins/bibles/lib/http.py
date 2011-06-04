@@ -199,9 +199,10 @@ class BSExtract(object):
         """
         log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version, 
             bookname, chapter)
+        urlversion = urllib.quote(version.encode("utf-8"))
         urlbookname = urllib.quote(bookname.encode("utf-8"))
-        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
-            (version, urlbookname, chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % \
+            (urlversion, urlbookname, chapter)
         header = (u'Accept-Language', u'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -230,8 +231,9 @@ class BSExtract(object):
             The version of the Bible like NIV for New International Version
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
+        urlversion = urllib.quote(version.encode("utf-8"))
         chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
-            'translation=%s' % (version)
+            'translation=%s' % (urlversion)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
