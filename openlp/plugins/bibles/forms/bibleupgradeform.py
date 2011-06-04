@@ -68,6 +68,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         self.manager = manager
         self.mediaItem = bibleplugin.mediaItem
+        self.plugin = bibleplugin
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
         self.path = AppLocation.get_section_data_path(
@@ -578,12 +579,14 @@ class BibleUpgradeForm(OpenLPWizard):
                 name = unicode(self.versionNameEdit[biblenumber].text())
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name)
+            self.newbibles[number].register(self.plugin.upgrade_wizard)
             metadata = oldbible.get_metadata()
             webbible = False
             meta_data = {}
             for meta in metadata:
                 meta_data[meta[u'key']] = meta[u'value']
-                if not meta[u'key'] == u'Version':
+                if not meta[u'key'] == u'Version' and not meta[u'key'] == \
+                    u'dbversion':
                     self.newbibles[number].create_meta(meta[u'key'],
                         meta[u'value'])
                 if meta[u'key'] == u'download source':
@@ -605,7 +608,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         meta_data[u'download source'], 
                         meta_data[u'download name']))
                     delete_database(self.path, 
-                        clean_filename(self.newbibles[number].get_name())) 
+                        clean_filename(name)) 
                     del self.newbibles[number]
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm', 
@@ -633,7 +636,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not language_id:
                     log.warn(u'Upgrading from "%s" failed' % filename[0])
                     delete_database(self.path, 
-                        clean_filename(self.newbibles[number].get_name()))
+                        clean_filename(name))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
@@ -659,8 +662,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'], 
                             meta_data[u'download name']))
-                        delete_database(self.path, 
-                            clean_filename(self.newbibles[number].get_name()))
+                        delete_database(self.path, clean_filename(name))
                         del self.newbibles[number]
                         bible_failed = True
                         break
@@ -691,8 +693,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
                     log.warn(u'Upgrading books from "%s" failed' % name)
-                    delete_database(self.path, 
-                        clean_filename(self.newbibles[number].get_name()))
+                    delete_database(self.path, clean_filename(name))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm', 
@@ -718,8 +719,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.warn(u'Upgrading books from %s " '\
                             'failed - aborted by user' % name)
-                        delete_database(self.path, 
-                            clean_filename(self.newbibles[number].get_name()))
+                        delete_database(self.path, clean_filename(name))
                         del self.newbibles[number]
                         bible_failed = True
                         break
@@ -755,8 +755,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\nFailed')) % 
                     (number + 1, self.maxBibles, name), 
                     self.progressBar.maximum() - self.progressBar.value())
-                delete_database(self.path, 
-                    clean_filename(name))
+                delete_database(self.path, clean_filename(name))
             number += 1
         self.mediaItem.reloadBibles()
         successful_import = 0
