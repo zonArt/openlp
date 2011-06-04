@@ -652,7 +652,7 @@ class ServiceManager(QtGui.QWidget):
             self.loadFile(fileName)
 
     def contextMenu(self, point):
-        item = self.serviceManagerList.currentItem()
+        item = self.serviceManagerList.itemAt(point)
         if item is None:
             return
         if item.parent() is None:
