@@ -959,6 +959,7 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
+            treewidgetitem.setSelected(item[u'selected'])
             # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
                 child = QtGui.QTreeWidgetItem(treewidgetitem)
@@ -1030,16 +1031,34 @@ class ServiceManager(QtGui.QWidget):
         # force reset of renderer as theme data has changed
         self.mainwindow.renderer.themedata = None
         if self.serviceItems:
+            for item in self.serviceItems:
+                item[u'selected'] = False
+            serviceIterator = QtGui.QTreeWidgetItemIterator(
+                self.serviceManagerList)
+            while serviceIterator.value():
+                if serviceIterator.value().isSelected():
+                    selectedItem = serviceIterator.value()
+                serviceIterator += 1
+            if selectedItem is not None:
+                if selectedItem.parent() is None:
+                    pos = selectedItem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                else:
+                    pos = selectedItem.parent().data(0, QtCore.Qt.UserRole). \
+                        toInt()[0]
+                self.serviceItems[pos - 1][u'selected'] = True
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
             self.serviceItems = []
             self.isNew = True
             for item in tempServiceItems:
                 self.addServiceItem(
-                    item[u'service_item'], False, expand=item[u'expanded'])
+                    item[u'service_item'], False, expand=item[u'expanded'],
+                    repaint=False, selected=item[u'selected'])
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
             self.setModified()
+            # Repaint it once only at the end
+            self.repaintServiceList(-1, -1)
         Receiver.send_message(u'cursor_normal')
 
     def serviceItemUpdate(self, message):
@@ -1069,7 +1088,7 @@ class ServiceManager(QtGui.QWidget):
         self.setModified()
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False,
-        repaint=True):
+        repaint=True, selected=False):
         """
         Add a Service item to the list
 
@@ -1097,17 +1116,17 @@ class ServiceManager(QtGui.QWidget):
                     for inditem in item:
                         self.serviceItems.append({u'service_item': inditem,
                             u'order': len(self.serviceItems) + 1,
-                            u'expanded': expand})
+                            u'expanded': expand, u'selected': selected})
                 else:
                     self.serviceItems.append({u'service_item': item,
                         u'order': len(self.serviceItems) + 1,
-                        u'expanded': expand})
+                        u'expanded': expand, u'selected': selected})
                 if repaint:
                     self.repaintServiceList(len(self.serviceItems) - 1, -1)
             else:
                 self.serviceItems.insert(self.dropPosition,
                     {u'service_item': item, u'order': self.dropPosition,
-                    u'expanded': expand})
+                    u'expanded': expand, u'selected': selected})
                 self.repaintServiceList(self.dropPosition, -1)
             # if rebuilding list make sure live is fixed.
             if rebuild:
