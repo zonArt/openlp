@@ -403,8 +403,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         ext = os.path.splitext(thumb_path)[1].lower()
         reader = QtGui.QImageReader(image_path)
-        reader.setScaledSize(QtCore.QSize(
-            reader.size().width() / reader.size().height() * 88, 88))
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
         thumb = reader.read()
         thumb.save(thumb_path, ext[1:])
         return build_icon(unicode(thumb_path))
