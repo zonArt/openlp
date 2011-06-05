@@ -53,6 +53,9 @@ class MediaPlugin(Plugin):
             '<br />The media plugin provides playback of audio and video.')
         return about_text
 
+    def addControllerItems(self, controller, control_panel):
+        self.mediaManager.addControllerItems(controller, control_panel)
+
     def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin

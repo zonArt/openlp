@@ -33,18 +33,18 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.plugins.media.lib import MediaController, MediaState
+from openlp.plugins.media.lib import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
-class PhononController(MediaController):
+class PhononAPI(MediaAPI):
     """
-    Specialiced MediaController class
-    to reflect Features of the Phonon backend
+    Specialiced MediaAPI class
+    to reflect Features of the Phonon API
     """
 
     def __init__(self, parent):
-        MediaController.__init__(self, parent)
+        MediaAPI.__init__(self, parent)
         self.parent = parent
         self.additional_extensions = {
             u'audio/ac3': [u'.ac3'],
@@ -59,6 +59,7 @@ class PhononController(MediaController):
             u'video/x-flv': [u'.flv'],
             u'video/x-matroska': [u'.mpv', u'.mkv'],
             u'video/x-wmv': [u'.wmv'],
+            u'video/x-mpg': [u'.mpg'],
             u'video/x-ms-wmv': [u'.wmv']}
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
@@ -90,7 +91,10 @@ class PhononController(MediaController):
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
 
-    def setup(self, display, hasAudio):
+    def setup_controls(self, controller, control_panel):
+        pass
+
+    def setup(self, display):
         display.phononWidget = Phonon.VideoWidget(display)
         display.phononWidget.setVisible(False)
         display.phononWidget.resize(display.size())
@@ -126,13 +130,18 @@ class PhononController(MediaController):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
 
-    def load(self, display, path, volume, isBackground):
+    def load(self, display):
         log.debug(u'load vid in Phonon Controller')
+        controller = display.parent
+        volume = controller.media_info.volume
+        path = controller.media_info.file_info.absoluteFilePath()
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
         if not self.mediaStateWait(display, Phonon.StoppedState):
             return False
         vol = float(volume) / float(10)
         display.audio.setVolume(vol)
+        #self.info.start_time = 10000
+        #self.info.end_time = 20000
         return True
 
     def mediaStateWait(self, display, mediaState):
@@ -149,12 +158,13 @@ class PhononController(MediaController):
                 return False
         return True
 
-    def resize(self, display, controller):
+    def resize(self, display):
         display.phononWidget.resize(display.size())
 
     def play(self, display):
-        self.set_visible(display, True)
-        vol = float(display.parent.volume) / float(10)
+        #self.set_visible(display, True)
+        controller = display.parent
+        vol = float(controller.media_info.volume) / float(10)
         display.audio.setVolume(vol)
         display.mediaObject.play()
         self.state = MediaState.Playing
@@ -168,6 +178,8 @@ class PhononController(MediaController):
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
+        # 1.0 is the highest value
+        vol = float(vol) / float(100)
         display.audio.setVolume(vol)
 
     def seek(self, display, seekVal):
@@ -183,16 +195,20 @@ class PhononController(MediaController):
         if self.hasOwnWidget:
             display.phononWidget.setVisible(status)
 
-    def update_ui(self, controller, display):
-        controller.seekSlider.setMaximum(display.mediaObject.totalTime())
-        if display.serviceItem.end_time > 0:
-            if display.mediaObject.currentTime() > \
-                display.serviceItem.end_time:
-                self.stop(display)
-        if display.serviceItem.start_time > 0:
+    def update_ui(self, display):
+        controller = display.parent
+        controller.media_info.length = display.mediaObject.totalTime()
+        controller.seekSlider.setMaximum(controller.media_info.length)
+        if controller.media_info.start_time > 0:
             if display.mediaObject.currentTime() < \
-                display.serviceItem.start_time:
-                self.seek(display, self.serviceItem.start_time * 1000)
+                controller.media_info.start_time:
+                self.seek(display, controller.media_info.start_time)
+        self.set_visible(display, True)
+        if controller.media_info.end_time > 0:
+            if display.mediaObject.currentTime() > \
+                controller.media_info.end_time:
+                self.stop(display)
+                self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition( \
                 display.mediaObject.currentTime())

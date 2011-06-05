@@ -244,6 +244,12 @@ class Plugin(QtCore.QObject):
         """
         pass
 
+    def addControllerItems(self, controller, control_panel):
+        """
+        Create items for all controller Panes
+        """
+        pass
+
     def getSettingsTab(self, parent):
         """
         Create a tab for the settings window to display the configurable

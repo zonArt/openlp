@@ -38,52 +38,52 @@ class MediaTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.mediaBackendsGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.mediaBackendsGroupBox.setObjectName(u'mediaBackendsGroupBox')
-        self.mediaBackendLayout = QtGui.QVBoxLayout(self.mediaBackendsGroupBox)
-        self.mediaBackendLayout.setObjectName(u'mediaBackendLayout')
-        self.usePhononCheckBox = QtGui.QCheckBox(self.mediaBackendsGroupBox)
+        self.mediaAPIsGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.mediaAPIsGroupBox.setObjectName(u'mediaAPIsGroupBox')
+        self.mediaApiLayout = QtGui.QVBoxLayout(self.mediaAPIsGroupBox)
+        self.mediaApiLayout.setObjectName(u'mediaApiLayout')
+        self.usePhononCheckBox = QtGui.QCheckBox(self.mediaAPIsGroupBox)
         self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaBackendLayout.addWidget(self.usePhononCheckBox)
-        self.useVlcCheckBox = QtGui.QCheckBox(self.mediaBackendsGroupBox)
+        self.mediaApiLayout.addWidget(self.usePhononCheckBox)
+        self.useVlcCheckBox = QtGui.QCheckBox(self.mediaAPIsGroupBox)
         self.useVlcCheckBox.setObjectName(u'useVlcCheckBox')
-        self.mediaBackendLayout.addWidget(self.useVlcCheckBox)
-        self.leftLayout.addWidget(self.mediaBackendsGroupBox)
+        self.mediaApiLayout.addWidget(self.useVlcCheckBox)
+        self.leftLayout.addWidget(self.mediaAPIsGroupBox)
 
-        self.backendOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.backendOrderGroupBox.setObjectName(u'backendOrderGroupBox')
-        self.backendOrderLayout = QtGui.QVBoxLayout(self.backendOrderGroupBox)
-        self.backendOrderLayout.setObjectName(u'backendOrderLayout')
-        self.backendOrderlistWidget = QtGui.QListWidget( \
-            self.backendOrderGroupBox)
+        self.apiOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.apiOrderGroupBox.setObjectName(u'apiOrderGroupBox')
+        self.apiOrderLayout = QtGui.QVBoxLayout(self.apiOrderGroupBox)
+        self.apiOrderLayout.setObjectName(u'apiOrderLayout')
+        self.apiOrderlistWidget = QtGui.QListWidget( \
+            self.apiOrderGroupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.backendOrderlistWidget. \
+        sizePolicy.setHeightForWidth(self.apiOrderlistWidget. \
             sizePolicy().hasHeightForWidth())
-        self.backendOrderlistWidget.setSizePolicy(sizePolicy)
+        self.apiOrderlistWidget.setSizePolicy(sizePolicy)
 
-        self.backendOrderlistWidget.setVerticalScrollBarPolicy( \
+        self.apiOrderlistWidget.setVerticalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAsNeeded)
-        self.backendOrderlistWidget.setHorizontalScrollBarPolicy( \
+        self.apiOrderlistWidget.setHorizontalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.backendOrderlistWidget.setEditTriggers( \
+        self.apiOrderlistWidget.setEditTriggers( \
             QtGui.QAbstractItemView.NoEditTriggers)
-        self.backendOrderlistWidget.setObjectName(u'backendOrderlistWidget')
-        self.backendOrderLayout.addWidget(self.backendOrderlistWidget)
-        self.orderingButtonsWidget = QtGui.QWidget(self.backendOrderGroupBox)
+        self.apiOrderlistWidget.setObjectName(u'apiOrderlistWidget')
+        self.apiOrderLayout.addWidget(self.apiOrderlistWidget)
+        self.orderingButtonsWidget = QtGui.QWidget(self.apiOrderGroupBox)
         self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
         self.orderingButtonLayout = QtGui.QHBoxLayout(self.orderingButtonsWidget)
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
         self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
         self.orderingDownButton.setObjectName(u'orderingDownButton')
         self.orderingButtonLayout.addWidget(self.orderingDownButton)
-        self.orderingUpButton = QtGui.QPushButton(self.backendOrderGroupBox)
+        self.orderingUpButton = QtGui.QPushButton(self.apiOrderGroupBox)
         self.orderingUpButton.setObjectName(u'orderingUpButton')
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
-        self.backendOrderLayout.addWidget(self.orderingButtonsWidget)
-        self.leftLayout.addWidget(self.backendOrderGroupBox)
+        self.apiOrderLayout.addWidget(self.orderingButtonsWidget)
+        self.leftLayout.addWidget(self.apiOrderGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.usePhononCheckBox,
@@ -98,14 +98,14 @@ class MediaTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
-        self.mediaBackendsGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'Media Backends'))
+        self.mediaAPIsGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Media APIs'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'use Phonon'))
         self.useVlcCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'use Vlc'))
-        self.backendOrderGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'Backends Order'))
+        self.apiOrderGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'API Order'))
         self.orderingDownButton.setText(
             translate('MediaPlugin.MediaTab', 'Down'))
         self.orderingUpButton.setText(
@@ -114,61 +114,61 @@ class MediaTab(SettingsTab):
     def onUsePhononCheckBoxChanged(self, check_state):
         if check_state == QtCore.Qt.Checked:
             self.usePhonon = True
-            if u'Phonon' not in self.usedBackends:
-                self.usedBackends.append(u'Phonon')
+            if u'Phonon' not in self.usedAPIs:
+                self.usedAPIs.append(u'Phonon')
         else:
             self.usePhonon = False
-            self.usedBackends.takeAt(self.usedBackends.indexOf(u'Phonon'))
-        self.updateBackendList()
+            self.usedAPIs.takeAt(self.usedAPIs.indexOf(u'Phonon'))
+        self.updateApiList()
 
     def onUseVlcCheckBoxChanged(self, check_state):
         if check_state == QtCore.Qt.Checked:
             self.useVlc = True
-            if u'Vlc' not in self.usedBackends:
-                self.usedBackends.append(u'Vlc')
+            if u'Vlc' not in self.usedAPIs:
+                self.usedAPIs.append(u'Vlc')
         else:
             self.useVlc = False
-            self.usedBackends.takeAt(self.usedBackends.indexOf(u'Vlc'))
-        self.updateBackendList()
+            self.usedAPIs.takeAt(self.usedAPIs.indexOf(u'Vlc'))
+        self.updateApiList()
 
-    def updateBackendList(self):
-        self.backendOrderlistWidget.clear()
-        for backend in self.usedBackends:
-            self.backendOrderlistWidget.addItem(backend)
+    def updateApiList(self):
+        self.apiOrderlistWidget.clear()
+        for api in self.usedAPIs:
+            self.apiOrderlistWidget.addItem(api)
 
     def onOrderingUpButtonPressed(self):
-        currentRow = self.backendOrderlistWidget.currentRow()
+        currentRow = self.apiOrderlistWidget.currentRow()
         if currentRow > 0:
-            item = self.backendOrderlistWidget.takeItem(currentRow)
-            self.backendOrderlistWidget.insertItem(currentRow-1, item)
-            self.backendOrderlistWidget.setCurrentRow(currentRow-1)
-            self.usedBackends.move(currentRow, currentRow-1)
+            item = self.apiOrderlistWidget.takeItem(currentRow)
+            self.apiOrderlistWidget.insertItem(currentRow-1, item)
+            self.apiOrderlistWidget.setCurrentRow(currentRow-1)
+            self.usedAPIs.move(currentRow, currentRow-1)
 
     def onOrderingDownButtonPressed(self):
-        currentRow = self.backendOrderlistWidget.currentRow()
-        if currentRow < self.backendOrderlistWidget.count()-1:
-            item = self.backendOrderlistWidget.takeItem(currentRow)
-            self.backendOrderlistWidget.insertItem(currentRow+1, item)
-            self.backendOrderlistWidget.setCurrentRow(currentRow+1)
-            self.usedBackends.move(currentRow, currentRow+1)
+        currentRow = self.apiOrderlistWidget.currentRow()
+        if currentRow < self.apiOrderlistWidget.count()-1:
+            item = self.apiOrderlistWidget.takeItem(currentRow)
+            self.apiOrderlistWidget.insertItem(currentRow+1, item)
+            self.apiOrderlistWidget.setCurrentRow(currentRow+1)
+            self.usedAPIs.move(currentRow, currentRow+1)
 
     def load(self):
-        self.usedBackends = QtCore.QSettings().value(
-            self.settingsSection + u'/backends',
+        self.usedAPIs = QtCore.QSettings().value(
+            self.settingsSection + u'/apis',
             QtCore.QVariant(u'Webkit')).toString().split(u',')
-        self.useWebkit = u'Webkit' in self.usedBackends
-        self.usePhonon = u'Phonon' in self.usedBackends
-        self.useVlc = u'Vlc' in self.usedBackends
+        self.useWebkit = u'Webkit' in self.usedAPIs
+        self.usePhonon = u'Phonon' in self.usedAPIs
+        self.useVlc = u'Vlc' in self.usedAPIs
         self.usePhononCheckBox.setChecked(self.usePhonon)
         self.useVlcCheckBox.setChecked(self.useVlc)
-        self.updateBackendList()
+        self.updateApiList()
 
     def save(self):
-        oldBackendString = QtCore.QSettings().value(
-            self.settingsSection + u'/backends',
+        oldApiString = QtCore.QSettings().value(
+            self.settingsSection + u'/apis',
             QtCore.QVariant(u'Webkit')).toString()
-        newBackendString = self.usedBackends.join(u',')
-        if oldBackendString != newBackendString:
-            QtCore.QSettings().setValue(self.settingsSection + u'/backends',
-                QtCore.QVariant(newBackendString))
+        newApiString = self.usedAPIs.join(u',')
+        if oldApiString != newApiString:
+            QtCore.QSettings().setValue(self.settingsSection + u'/apis',
+                QtCore.QVariant(newApiString))
             Receiver.send_message(u'config_screen_changed')

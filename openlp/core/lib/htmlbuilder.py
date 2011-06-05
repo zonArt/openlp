@@ -183,7 +183,8 @@ sup {
             case 'currentTime':
                 return vid.currentTime;
             case 'seek':
-                vid.currentTime = seekVal;
+                // doesnt work curently
+                //vid.currentTime = seekVal;
                 break;
        }
     }
@@ -327,20 +328,22 @@ sup {
         }
     }
 
-    function show_flash(state, path){
+// http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
+    function show_flash(state, path, volume, seekVal){
         var text = document.getElementById('flash');
         var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
         var src = "src = 'file:///" + path + "'";
         var view_parm = " wmode='opaque'" +
             " width='" + window.innerWidth + "'" +
             " height='" + window.innerHeight + "'";
-        var swf_parm = " autostart='false' loop='false' play='false'" +
-            " hidden='false' swliveconnect='true'" +
-            " name='OpenLPFlashMovie'>";
+        var swf_parm = " name='OpenLPFlashMovie'" +
+            " autostart='true' loop='false' play='true'" +
+            " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
+            " volume='" + volume + "'";
 
         switch(state){
             case 'load':
-                text.innerHTML = "<embed " + src + view_parm + swf_parm + ">";
+                text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
                 flashMovie = getFlashMovieObject("OpenLPFlashMovie");
                 text.style.visibility = 'visible';
                 flashMovie.Play();
@@ -349,28 +352,29 @@ sup {
                 text.style.visibility = 'visible';
                 flashMovie.Play();
                 break;
-            case 'rewind':
-                ret = 'rewind';
-                alert(' Wert: ' + flashMovie.TGetProperty("/", 4));
-// flashMovie.TotalFrames()
-// PercentLoaded()
-// GotoFrame()
-                break;
             case 'pause':
                 flashMovie.StopPlay();
                 text.style.visibility = 'hidden';
                 break;
             case 'stop':
                 flashMovie.StopPlay();
-//                flashMovie.GotoFrame(0);
                 text.style.visibility = 'hidden';
+                tempHtml = text.innerHTML;
+                text.innerHTML = '';
+                text.innerHTML = tempHtml;
                 break;
             case 'close':
                 flashMovie.StopPlay();
                 text.style.visibility = 'hidden';
-                break;
                 text.innerHTML = '';
-            break;
+                break;
+            case 'length':
+                return flashMovie.TotalFrames();
+            case 'currentTime':
+                return flashMovie.CurrentFrame();
+            case 'seek':
+//                flashMovie.GotoFrame(seekVal);
+                break;
         }
     }
 

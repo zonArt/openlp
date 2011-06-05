@@ -26,7 +26,7 @@
 ###############################################################################
 
 import logging
-import sys
+import sys, os
 from datetime import datetime
 try:
     import vlc
@@ -34,17 +34,17 @@ except:
     pass
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
-from openlp.plugins.media.lib import MediaController, MediaState
+from openlp.plugins.media.lib import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
-class VlcController(MediaController):
+class VlcAPI(MediaAPI):
     """
-    Specialiced MediaController class
-    to reflect Features of the Vlc backend
+    Specialiced MediaAPI class
+    to reflect Features of the Vlc API
     """
     def __init__(self, parent):
-        MediaController.__init__(self, parent)
+        MediaAPI.__init__(self, parent)
         self.parent = parent
         self.video_extensions_list = [
             u'*.3gp'
@@ -70,10 +70,13 @@ class VlcController(MediaController):
             , u'*.iso'
             ]
 
-    def setup(self, display, hasAudio):
+    def setup_controls(self, controller, control_panel):
+        pass
+
+    def setup(self, display):
         display.vlcWidget = QtGui.QFrame(display)
         # creating a basic vlc instance
-        if hasAudio:
+        if display.hasAudio:
             display.vlcInstance = vlc.Instance()
         else:
             display.vlcInstance = vlc.Instance('--no-audio')
@@ -121,26 +124,28 @@ class VlcController(MediaController):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}
 
-    def load(self, display, path, volume, isBackground):
+    def load(self, display):
         log.debug(u'load vid in Vlc Controller')
-        vol = float(volume) / float(10)
+        controller = display.parent
+        volume = controller.media_info.volume
+        file_path = str(
+            controller.media_info.file_info.absoluteFilePath().toUtf8())
+        path = os.path.normcase(file_path)
         # create the media
-        display.vlcMedia = display.vlcInstance.media_new_path(unicode(path))
+        display.vlcMedia = display.vlcInstance.media_new_path(path)
         # put the media in the media player
         display.vlcMediaPlayer.set_media(display.vlcMedia)
         # parse the metadata of the file
         display.vlcMedia.parse()
-        if not self.mediaStateWait(display):
-            return False
         return True
 
-    def mediaStateWait(self, display):
+    def mediaStateWait(self, display, mediaState):
         """
         Wait for the video to change its state
         Wait no longer than 5 seconds.
         """
         start = datetime.now()
-        while not display.vlcMedia.is_parsed():
+        while not mediaState == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
             Receiver.send_message(u'openlp_process_events')
@@ -148,24 +153,26 @@ class VlcController(MediaController):
                 return False
         return True
 
-    def resize(self, display, controller):
+    def resize(self, display):
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
         self.set_visible(display, True)
         display.vlcMediaPlayer.play()
-        self.state = MediaState.Playing
+        if self.mediaStateWait(display, vlc.State.Playing):
+            self.state = MediaState.Playing
 
     def pause(self, display):
         display.vlcMediaPlayer.pause()
-        self.state = MediaState.Paused
+        if self.mediaStateWait(display, vlc.State.Paused):
+            self.state = MediaState.Paused
 
     def stop(self, display):
         display.vlcMediaPlayer.stop()
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
-        pass
+        display.vlcMediaPlayer.audio_set_volume(vol)
 
     def seek(self, display, seekVal):
         if display.vlcMediaPlayer.is_seekable():
@@ -180,7 +187,8 @@ class VlcController(MediaController):
         if self.hasOwnWidget:
             display.vlcWidget.setVisible(status)
 
-    def update_ui(self, controller, display):
+    def update_ui(self, display):
+        controller = display.parent
         controller.seekSlider.setMaximum(1000)
         if not controller.seekSlider.isSliderDown():
             currentPos = display.vlcMediaPlayer.get_position() * 1000

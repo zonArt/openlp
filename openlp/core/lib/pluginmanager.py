@@ -187,6 +187,11 @@ class PluginManager(object):
             if plugin.status is not PluginStatus.Disabled:
                 plugin.addToolsMenuItem(tools_menu)
 
+    def hook_controller_items(self, controller, control_panel):
+        for plugin in self.plugins:
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.addControllerItems(controller, control_panel)
+
     def initialise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to

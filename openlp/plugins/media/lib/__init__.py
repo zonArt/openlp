@@ -24,9 +24,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class MediaBackends(object):
+class MediaAPIs(object):
     """
-    An enumeration for possible Backends.
+    An enumeration for possible APIs.
     """
     Webkit = 0
     Phonon = 1
@@ -43,10 +43,32 @@ class MediaState(object):
     Paused = 4
     Off = 6
 
-class MediaController(object):
+class MediaType(object):
     """
-    Specialiced MediaController class
-    to reflect Features of the related backend
+    """
+    Audio = 0
+    Video = 1
+    Cd = 3
+    Dvd = 4
+
+class MediaInfo(object):
+    """
+    This class hold the media related infos
+    """
+    file_info = None
+    volume = 100
+    isFlash = False
+    is_background = False
+    length = 0
+    start_time = 0
+    end_time = 0
+    media_type = MediaType()
+
+
+class MediaAPI(object):
+    """
+    Specialiced Media API class
+    to reflect Features of the related API
     """
     def __init__(self, parent):
         self.parent = parent
@@ -57,19 +79,19 @@ class MediaController(object):
         self.audio_extensions_list = []
         self.video_extensions_list = []
 
-    def setup(self, display, hasAudio):
+    def setup(self, display):
         """
         Create the related widgets for the current display
         """
         pass
 
-    def load(self, display, path, volume, isBackground):
+    def load(self, display):
         """
         Load a new media file and check if it is valid
         """
         return True
 
-    def resize(self, display, controller):
+    def resize(self, display):
         """
         If the main display size or position is changed,
         the media widgets should also resized
@@ -118,7 +140,7 @@ class MediaController(object):
         """
         pass
 
-    def update_ui(self, controller, display):
+    def update_ui(self, display):
         """
         Do some ui related stuff
         (e.g. update the seek slider)
@@ -128,7 +150,7 @@ class MediaController(object):
     @staticmethod
     def is_available():
         """
-        Check availability of the related backend
+        Check availability of the related API
         """
         return False
 
@@ -143,6 +165,6 @@ class MediaController(object):
 
 from mediaitem import MediaMediaItem
 from mediatab import MediaTab
-from mediacontroller import MediaManager
+from mediamanager import MediaManager
 
 __all__ = ['MediaMediaItem']

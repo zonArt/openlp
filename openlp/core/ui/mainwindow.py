@@ -580,6 +580,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.hook_export_menu(self.FileExportMenu)
         # Call the hook method to pull in tools menus.
         self.pluginManager.hook_tools_menu(self.ToolsMenu)
+        # Call the hook method to pull in plugin Controller items
+        self.pluginManager.hook_controller_items(
+            self.previewController, self.previewController.getControlPanel())
+        self.pluginManager.hook_controller_items(
+            self.liveController, self.liveController.getControlPanel())
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
