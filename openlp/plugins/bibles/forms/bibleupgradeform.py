@@ -130,12 +130,6 @@ class BibleUpgradeForm(OpenLPWizard):
         elif self.page(pageId) == self.selectPage and self.maxBibles == 0:
             self.next()
 
-    def onFinishButton(self):
-        """
-        Some cleanup while finishing
-        """
-        self.mediaItem.reloadBibles()
-
     def onBackupBrowseButtonClicked(self):
         """
         Show the file open dialog for the OSIS file.
@@ -181,8 +175,6 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        QtCore.QObject.connect(self.finishButton,
-            QtCore.SIGNAL(u'clicked()'), self.onFinishButton)
         QtCore.QObject.connect(self.backupBrowseButton,
             QtCore.SIGNAL(u'clicked()'), self.onBackupBrowseButtonClicked)
         QtCore.QObject.connect(self.noBackupCheckBox,
