@@ -132,6 +132,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
             Receiver.send_message(u'cursor_normal')
+            if hasattr(self.activePlugin, u'appStartup'):
+                Receiver.send_message(u'openlp_process_events')
+                self.activePlugin.appStartup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(
