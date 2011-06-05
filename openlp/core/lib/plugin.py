@@ -300,6 +300,12 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
 
+    def appStartup(self):
+        """
+        Perform tasks on application starup
+        """
+        pass
+
     def usesTheme(self, theme):
         """
         Called to find out if a plugin is currently using a theme.
