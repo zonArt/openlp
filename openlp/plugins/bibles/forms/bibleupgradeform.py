@@ -68,7 +68,6 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         self.manager = manager
         self.mediaItem = bibleplugin.mediaItem
-        self.plugin = bibleplugin
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
         self.path = AppLocation.get_section_data_path(
