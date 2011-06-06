@@ -409,8 +409,7 @@ class MediaManagerItem(QtGui.QWidget):
         thumb.save(thumb_path, ext[1:])
         if os.path.exists(thumb_path):
             return build_icon(unicode(thumb_path))
-        # When the thumbnail creation was not successful then create the icon
-        # from the original file.
+        # Fallback for files with animation support.
         return build_icon(unicode(image_path))
 
     def loadList(self, list):
