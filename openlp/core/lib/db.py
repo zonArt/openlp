@@ -32,8 +32,9 @@ import os
 
 from PyQt4 import QtCore
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import NullPool
 
 from openlp.core.utils import AppLocation, delete_file
 
@@ -52,7 +53,7 @@ def init_db(url, auto_flush=True, auto_commit=False):
     ``auto_commit``
         Sets the commit behaviour of the session
     """
-    engine = create_engine(url)
+    engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
     session = scoped_session(sessionmaker(autoflush=auto_flush,
         autocommit=auto_commit, bind=engine))

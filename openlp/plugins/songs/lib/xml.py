@@ -514,7 +514,7 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        song.song_book_id = 0
+        song.song_book_id = None
         song.song_number = u''
         if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:

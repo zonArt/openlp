@@ -77,6 +77,8 @@ class LanguageManager(object):
             AppLocation.LanguageDir))
         file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
+        # Remove qm files from the list which start with "qt_".
+        file_names = file_names.filter(QtCore.QRegExp("^(?!qt_)"))
         for name in file_names:
             file_names.replaceInStrings(name, trans_dir.filePath(name))
         return file_names

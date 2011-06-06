@@ -49,8 +49,7 @@ class MainDisplay(QtGui.QGraphicsView):
     This is the display screen.
     """
     def __init__(self, parent, image_manager, live):
-        QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
+        QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
@@ -149,7 +148,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
-                self.show()
                 self.primary = False
             else:
                 self.primary = True

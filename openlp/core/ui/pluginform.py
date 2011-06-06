@@ -40,7 +40,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
     """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)
@@ -65,7 +64,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self._clearDetails()
         self.programaticChange = True
         pluginListWidth = 0
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -117,7 +116,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         plugin_name_singular = \
             self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             if plugin.nameStrings[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
@@ -133,6 +132,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
             Receiver.send_message(u'cursor_normal')
+            self.activePlugin.appStartup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(

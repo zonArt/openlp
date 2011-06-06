@@ -57,8 +57,6 @@ class ThemeManager(QtGui.QWidget):
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
-        self.serviceComboBox = \
-            self.mainwindow.serviceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)

@@ -50,7 +50,7 @@ class MediaMediaItem(MediaManagerItem):
         self.background = False
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
@@ -65,8 +65,8 @@ class MediaMediaItem(MediaManagerItem):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (
-            u' '.join(self.parent.video_extensions_list),
-            u' '.join(self.parent.audio_extensions_list), UiStrings().AllFiles)
+            u' '.join(self.plugin.video_extensions_list),
+            u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -95,7 +95,7 @@ class MediaMediaItem(MediaManagerItem):
         Called to reset the Live backgound with the media selected,
         """
         self.resetAction.setVisible(False)
-        self.parent.liveController.display.resetVideo()
+        self.plugin.liveController.display.resetVideo()
 
     def videobackgroundReplaced(self):
         """
@@ -114,7 +114,7 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.parent.liveController.display.video(filename, 0, True)
+                self.plugin.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
