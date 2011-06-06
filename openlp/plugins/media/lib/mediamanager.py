@@ -35,7 +35,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.media.lib import MediaAPI, MediaState, MediaInfo
 from webkitapi import WebkitAPI
 from phononapi import PhononAPI
-from vlcapi import VlcAPI
+#from vlcapi import VlcAPI
 
 log = logging.getLogger(__name__)
 
@@ -68,8 +68,8 @@ class MediaManager(object):
             self.APIs[u'Webkit'] = WebkitAPI(self)
         if PhononAPI.is_available():
             self.APIs[u'Phonon'] = PhononAPI(self)
-        if VlcAPI.is_available():
-            self.APIs[u'Vlc'] = VlcAPI(self)
+#        if VlcAPI.is_available():
+#            self.APIs[u'Vlc'] = VlcAPI(self)
         #Timer for video state
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
