@@ -92,7 +92,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         self.hide()
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])

@@ -109,7 +109,7 @@ class BGExtract(object):
             try:
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
-                log.exception(u'Illegal verse number in %s %s %s:%s',
+                log.warn(u'Illegal verse number in %s %s %s:%s',
                     version, bookname, chapter, unicode(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next
@@ -139,16 +139,17 @@ class BGExtract(object):
         """
         log.debug(u'BGExtract.get_books_from_http("%s")', version)
         url_params = urllib.urlencode(
-            {u'search': 'Bible-List', u'version': u'%s' % version})
-        reference_url = u'http://www.biblegateway.com/passage/?%s' % url_params
+            {u'action': 'getVersionInfo', u'vid': u'%s' % version})
+        reference_url = u'http://www.biblegateway.com/versions/?%s#books' % \
+            url_params
         page = get_web_page(reference_url)
         if not page:
             send_error_message(u'download')
             return None
         page_source = page.read()
         page_source = unicode(page_source, 'utf8')
-        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>', \
-            page_source, re.DOTALL)
+        page_source_temp = re.search(u'<table .*?class="infotable".*?>.*?'\
+            u'</table>', page_source, re.DOTALL)
         if page_source_temp:
             soup = page_source_temp.group(0)
         else:
@@ -156,15 +157,17 @@ class BGExtract(object):
         try:
             soup = BeautifulSoup(soup)
         except HTMLParseError:
-            log.exception(u'BeautifulSoup could not parse the Bible page.')
+            log.error(u'BeautifulSoup could not parse the Bible page.')
+            send_error_message(u'parse')
+            return None
         if not soup:
             send_error_message(u'parse')
             return None
         Receiver.send_message(u'openlp_process_events')
-        content = soup.find(u'table', {u'id': u'booklist'})
+        content = soup.find(u'table', {u'class': u'infotable'})
         content = content.findAll(u'tr')
         if not content:
-            log.exception(u'No books found in the Biblegateway response.')
+            log.error(u'No books found in the Biblegateway response.')
             send_error_message(u'parse')
             return None
         books = []
@@ -199,9 +202,10 @@ class BSExtract(object):
         """
         log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version, 
             bookname, chapter)
+        urlversion = urllib.quote(version.encode("utf-8"))
         urlbookname = urllib.quote(bookname.encode("utf-8"))
-        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
-            (version, urlbookname, chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % \
+            (urlversion, urlbookname, chapter)
         header = (u'Accept-Language', u'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -209,7 +213,7 @@ class BSExtract(object):
         Receiver.send_message(u'openlp_process_events')
         content = soup.find(u'div', u'content')
         if not content:
-            log.exception(u'No verses found in the Bibleserver response.')
+            log.error(u'No verses found in the Bibleserver response.')
             send_error_message(u'parse')
             return None
         content = content.find(u'div').findAll(u'div')
@@ -230,14 +234,15 @@ class BSExtract(object):
             The version of the Bible like NIV for New International Version
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
+        urlversion = urllib.quote(version.encode("utf-8"))
         chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
-            'translation=%s' % (version)
+            'translation=%s' % (urlversion)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
         content = soup.find(u'ul')
         if not content:
-            log.exception(u'No books found in the Bibleserver response.')
+            log.error(u'No books found in the Bibleserver response.')
             send_error_message(u'parse')
             return None
         content = content.findAll(u'li')
@@ -281,7 +286,7 @@ class CWExtract(object):
         Receiver.send_message(u'openlp_process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
         if not htmlverses:
-            log.debug(u'No verses found in the CrossWalk response.')
+            log.error(u'No verses found in the CrossWalk response.')
             send_error_message(u'parse')
             return None
         verses = {}
@@ -333,7 +338,7 @@ class CWExtract(object):
         content = soup.find(u'div', {u'class': u'Body'})
         content = content.find(u'ul', {u'class': u'parent'})
         if not content:
-            log.exception(u'No books found in the Crosswalk response.')
+            log.error(u'No books found in the Crosswalk response.')
             send_error_message(u'parse')
             return None
         content = content.findAll(u'li')
