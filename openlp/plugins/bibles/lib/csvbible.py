@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -70,7 +71,7 @@ import chardet
 import csv
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.bibles.lib.db import BibleDB, Testament
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -78,6 +79,8 @@ class CSVBible(BibleDB):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
+    log.info(u'CSVBible loaded')
+
     def __init__(self, parent, **kwargs):
         """
         Loads a Bible from a set of CVS files.
@@ -86,48 +89,10 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        try:
-            self.testamentsfile = kwargs[u'testamentsfile']
-        except KeyError:
-            self.testamentsfile = None
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
 
-    def setup_testaments(self):
-        """
-        Overrides parent method so we can handle importing a testament file.
-        """
-        if self.testamentsfile:
-            self.wizard.progressBar.setMinimum(0)
-            self.wizard.progressBar.setMaximum(2)
-            self.wizard.progressBar.setValue(0)
-            testaments_file = None
-            try:
-                details = get_file_encoding(self.testamentsfile)
-                testaments_file = open(self.testamentsfile, 'rb')
-                testaments_reader = csv.reader(testaments_file, delimiter=',',
-                    quotechar='"')
-                for line in testaments_reader:
-                    if self.stop_import_flag:
-                        break
-                    self.wizard.incrementProgressBar(unicode(
-                        translate('BibleDB.Wizard',
-                        'Importing testaments... %s')) %
-                        unicode(line[1], details['encoding']), 0)
-                    self.save_object(Testament.populate(
-                        name=unicode(line[1], details['encoding'])))
-                Receiver.send_message(u'openlp_process_events')
-            except (IOError, IndexError):
-                log.exception(u'Loading testaments from file failed')
-            finally:
-                if testaments_file:
-                    testaments_file.close()
-            self.wizard.incrementProgressBar(unicode(translate(
-                'BibleDB.Wizard', 'Importing testaments... done.')), 2)
-        else:
-            BibleDB.setup_testaments(self)
-
-    def do_import(self):
+    def do_import(self, bible_name=None):
         """
         Import the bible books and verses.
         """
@@ -135,6 +100,10 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
+        language_id = self.get_language(bible_name)
+        if not language_id:
+            log.exception(u'Importing books from "%s" failed' % self.filename)
+            return False
         books_file = None
         book_list = {}
         # Populate the Tables
@@ -148,8 +117,15 @@ class CSVBible(BibleDB):
                 self.wizard.incrementProgressBar(unicode(
                     translate('BibleDB.Wizard', 'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
+                book_ref_id = self.get_book_ref_id_by_name(
+                    unicode(line[2], details['encoding']), 67, language_id)
+                if not book_ref_id:
+                    log.exception(u'Importing books from "%s" '\
+                        'failed' % self.booksfile)
+                    return False
+                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(unicode(line[2], details['encoding']),
-                    unicode(line[3], details['encoding']), int(line[1]))
+                    book_ref_id, book_details[u'testament_id'])
                 book_list[int(line[0])] = unicode(line[2], details['encoding'])
             Receiver.send_message(u'openlp_process_events')
         except (IOError, IndexError):

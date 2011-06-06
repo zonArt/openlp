@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -43,13 +44,13 @@ log = logging.getLogger(__name__)
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 #http://html5demos.com/two-videos
 
-class Display(QtGui.QFrame):
+class Display(QtGui.QGraphicsView):
     """
     This is the display screen for preview Widgets.
     """
-    def __init__(self, parent):
-        QtGui.QFrame.__init__(self, parent)
-        self.parent = parent
+    def __init__(self, parent, controller):
+        QtGui.QGraphicsView.__init__(self, parent)
+        self.controller = controller
 
     def setup(self):
         """
@@ -57,7 +58,7 @@ class Display(QtGui.QFrame):
         """
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
-            self.parent.width(), self.parent.height())
+            self.parent().width(), self.parent().height())
         self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -72,9 +73,9 @@ class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
-    def __init__(self, parent, image_manager, live):
-        QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
+    def __init__(self, parent, controller, image_manager, live):
+        QtGui.QGraphicsView.__init__(self, parent)
+        self.controller = controller
         self.isLive = live
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
@@ -83,7 +84,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.videoHide = False
         self.override = {}
         self.retranslateUi()
-        self.mediaObject = None
+        #self.mediaObject = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
@@ -161,7 +162,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
-                self.show()
                 self.primary = False
             else:
                 self.primary = True

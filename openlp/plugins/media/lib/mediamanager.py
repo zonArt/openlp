@@ -185,14 +185,14 @@ class MediaManager(object):
 #        for api in self.APIs.values():
 #            api.setup_controls(controller, control_panel)
 
-    def resize(self, display, api):
+    def resize(self, controller, display, api):
         """
         After Mainwindow changes or Splitter moved all related media
         widgets have to be resized
         """
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
-            display.resize(display.parent.slidePreview.size())
+            display.resize(controller.slidePreview.size())
         api.resize(display)
 
     def video(self, msg):
@@ -211,12 +211,12 @@ class MediaManager(object):
         if controller.isLive:
             if self.withLivePreview:
                 display = controller.previewDisplay
-                isValid = self.check_file_type(display)
+                isValid = self.check_file_type(controller, display)
             display = controller.display
-            isValid = self.check_file_type(display)
+            isValid = self.check_file_type(controller, display)
         else:
             display = controller.previewDisplay
-            isValid = self.check_file_type(display)
+            isValid = self.check_file_type(controller, display)
         if not isValid:
             #Media could not be loaded correctly
             critical_error_message_box(
@@ -226,17 +226,16 @@ class MediaManager(object):
             return
         #now start playing
         self.video_play([controller])
-#        self.video_pause([controller])
-  #      self.video_seek([controller, 0])
-   #     self.video_play([controller])
+        self.video_pause([controller])
+        self.video_seek([controller, 0])
+        self.video_play([controller])
         self.set_controls_visible(controller, True)
 
-    def check_file_type(self, display):
+    def check_file_type(self, controller, display):
         """
         Used to choose the right media API type
         from the prioritized API list
         """
-        controller = display.parent
         apiSettings = str(QtCore.QSettings().value(u'media/apis',
             QtCore.QVariant(u'Webkit')).toString())
         usedAPIs = apiSettings.split(u',')
@@ -247,9 +246,8 @@ class MediaManager(object):
                 if suffix in api.video_extensions_list:
                     if not controller.media_info.is_background or \
                         controller.media_info.is_background and api.canBackground:
-                            self.resize(display, api)
+                            self.resize(controller, display, api)
                             if api.load(display):
-                                print api
                                 self.curDisplayMediaAPI[display] = api
                                 return True
         # no valid api found
@@ -262,7 +260,7 @@ class MediaManager(object):
         log.debug(u'video_play')
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].play(display)
         # Start Timer for ui updates
         if not self.Timer.isActive():
@@ -275,7 +273,7 @@ class MediaManager(object):
         log.debug(u'videoPause')
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].pause(display)
 
     def video_stop(self, msg):
@@ -285,7 +283,7 @@ class MediaManager(object):
         log.debug(u'video_stop')
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].stop(display)
                 self.curDisplayMediaAPI[display].set_visible(display, False)
 
@@ -297,7 +295,7 @@ class MediaManager(object):
         vol = msg[1]
         log.debug(u'video_volume %d' % vol)
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].volume(display, vol)
 
     def video_seek(self, msg):
@@ -308,7 +306,7 @@ class MediaManager(object):
         controller = msg[0]
         seekVal = msg[1]
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].seek(display, seekVal)
 
     def video_reset(self, controller):
@@ -317,7 +315,7 @@ class MediaManager(object):
         """
         log.debug(u'video_reset')
         for display in self.curDisplayMediaAPI.keys():
-            if display.parent == controller:
+            if display.controller == controller:
                 self.curDisplayMediaAPI[display].reset(display)
                 del self.curDisplayMediaAPI[display]
         self.set_controls_visible(controller, False)
@@ -330,7 +328,7 @@ class MediaManager(object):
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaAPI.keys():
-                if display.parent == controller:
+                if display.controller == controller:
                     if self.curDisplayMediaAPI[display] \
                         .state == MediaState.Playing:
                         self.curDisplayMediaAPI[display].pause(display)
@@ -345,7 +343,7 @@ class MediaManager(object):
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaAPI.keys():
-                if display.parent == controller:
+                if display.controller == controller:
                     if self.curDisplayMediaAPI[display] \
                         .state == MediaState.Playing:
                         self.curDisplayMediaAPI[display].pause(display)
@@ -361,7 +359,7 @@ class MediaManager(object):
         if isLive:
             controller = self.parent.liveController
             for display in self.curDisplayMediaAPI.keys():
-                if display.parent == controller:
+                if display.controller == controller:
                     if self.curDisplayMediaAPI[display] \
                         .state == MediaState.Paused:
                         self.curDisplayMediaAPI[display].play(display)

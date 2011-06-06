@@ -86,7 +86,7 @@ class WebkitAPI(MediaAPI):
 
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
-        controller = display.parent
+        controller = display.controller
         volume = controller.media_info.volume
         vol = float(volume) / float(100)
         path = controller.media_info.file_info.absoluteFilePath()
@@ -106,12 +106,13 @@ class WebkitAPI(MediaAPI):
         return True
 
     def resize(self, display):
-        controller = display.parent
-        if display == controller.previewDisplay:
-            display.webView.resize(display.size())
+        controller = display.controller
+#        if display == controller.previewDisplay:
+#            display.webView.resize(display.size())
+        display.webView.resize(display.size())
 
     def play(self, display):
-        controller = display.parent
+        controller = display.controller
         #display.override[u'theme'] = u''
         #display.override[u'video'] = True
         display.webLoaded = True
@@ -123,7 +124,7 @@ class WebkitAPI(MediaAPI):
         self.state = MediaState.Playing
 
     def pause(self, display):
-        controller = display.parent
+        controller = display.controller
         if controller.media_info.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("pause");')
         else:
@@ -131,7 +132,7 @@ class WebkitAPI(MediaAPI):
         self.state = MediaState.Paused
 
     def stop(self, display):
-        controller = display.parent
+        controller = display.controller
         if controller.media_info.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("stop");')
         else:
@@ -139,7 +140,7 @@ class WebkitAPI(MediaAPI):
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
-        controller = display.parent
+        controller = display.controller
         # 1.0 is the highest value
         vol = float(vol) / float(100)
         if not controller.media_info.isFlash:
@@ -147,7 +148,7 @@ class WebkitAPI(MediaAPI):
                 str(vol))
 
     def seek(self, display, seekVal):
-        controller = display.parent
+        controller = display.controller
         if controller.media_info.isFlash:
             seek = seekVal
             display.frame.evaluateJavaScript( \
@@ -158,7 +159,7 @@ class WebkitAPI(MediaAPI):
                 u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
-        controller = display.parent
+        controller = display.controller
         if controller.media_info.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("close");')
         else:
@@ -170,7 +171,7 @@ class WebkitAPI(MediaAPI):
             display.webView.setVisible(status)
 
     def update_ui(self, display):
-        controller = display.parent
+        controller = display.controller
         if controller.media_info.isFlash:
             currentTime = display.frame.evaluateJavaScript( \
                 u'show_flash("currentTime");').toInt()[0]
@@ -179,11 +180,13 @@ class WebkitAPI(MediaAPI):
         else:
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()
-            if ok:
+            # check if conversion was ok and value is not 'NaN'
+            if ok and currentTime == currentTime:
                 currentTime = int(currentTime*1000)
             (length, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("length");').toFloat()
-            if ok:
+            # check if conversion was ok and value is not 'NaN'
+            if ok and length == length:
                 length = int(length*1000)
         if currentTime > 0:
             controller.seekSlider.setMaximum(length)

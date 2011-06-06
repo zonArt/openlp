@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,7 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.utils import get_uno_command, get_uno_instance
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -38,8 +40,10 @@ if os.name == u'nt':
     PAGE_BEFORE = 4
     PAGE_AFTER = 5
     PAGE_BOTH = 6
+    NoConnectException = Exception
 else:
     import uno
+    from com.sun.star.connection import NoConnectException
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 
 class OooImport(SongImport):
@@ -56,7 +60,17 @@ class OooImport(SongImport):
         self.process_started = False
 
     def do_import(self):
-        self.start_ooo()
+        if not isinstance(self.import_source, list):
+            return
+        try:
+            self.start_ooo()
+        except NoConnectException as exc:
+            self.log_error(
+                self.import_source[0],
+                translate('SongsPlugin.SongImport',
+                    'Unable to open OpenOffice.org or LibreOffice'))
+            log.error(exc)
+            return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
@@ -67,6 +81,13 @@ class OooImport(SongImport):
                 if self.document:
                     self.process_ooo_document()
                     self.close_ooo_file()
+                else:
+                    self.log_error(self.filepath,
+                        translate('SongsPlugin.SongImport',
+                        'Unable to open file'))
+            else:
+                self.log_error(self.filepath,
+                    translate('SongsPlugin.SongImport', 'File not found'))
         self.close_ooo()
 
     def process_ooo_document(self):
@@ -98,13 +119,16 @@ class OooImport(SongImport):
             while uno_instance is None and loop < 5:
                 try:
                     uno_instance = get_uno_instance(resolver)
-                except:
+                except NoConnectException:
                     log.exception("Failed to resolve uno connection")
                     self.start_ooo_process()
                     loop += 1
-            manager = uno_instance.ServiceManager
-            self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", uno_instance)
+                else:
+                    manager = uno_instance.ServiceManager
+                    self.desktop = manager.createInstanceWithContext(
+                        "com.sun.star.frame.Desktop", uno_instance)
+                    return
+            raise
 
     def start_ooo_process(self):
         try:
@@ -144,8 +168,8 @@ class OooImport(SongImport):
             else:
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
-        except:
-            log.exception("open_ooo_file failed")
+        except AttributeError:
+            log.exception("open_ooo_file failed: %s", url)
         return
 
     def close_ooo_file(self):

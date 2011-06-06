@@ -132,7 +132,7 @@ class PhononAPI(MediaAPI):
 
     def load(self, display):
         log.debug(u'load vid in Phonon Controller')
-        controller = display.parent
+        controller = display.controller
         volume = controller.media_info.volume
         path = controller.media_info.file_info.absoluteFilePath()
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
@@ -162,8 +162,8 @@ class PhononAPI(MediaAPI):
         display.phononWidget.resize(display.size())
 
     def play(self, display):
-        #self.set_visible(display, True)
-        controller = display.parent
+        self.set_visible(display, True)
+        controller = display.controller
         vol = float(controller.media_info.volume) / float(10)
         display.audio.setVolume(vol)
         display.mediaObject.play()
@@ -175,6 +175,7 @@ class PhononAPI(MediaAPI):
 
     def stop(self, display):
         display.mediaObject.stop()
+        self.set_visible(display, False)
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
@@ -192,18 +193,18 @@ class PhononAPI(MediaAPI):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
+        print display, status
         if self.hasOwnWidget:
             display.phononWidget.setVisible(status)
 
     def update_ui(self, display):
-        controller = display.parent
+        controller = display.controller
         controller.media_info.length = display.mediaObject.totalTime()
         controller.seekSlider.setMaximum(controller.media_info.length)
         if controller.media_info.start_time > 0:
             if display.mediaObject.currentTime() < \
                 controller.media_info.start_time:
                 self.seek(display, controller.media_info.start_time)
-        self.set_visible(display, True)
         if controller.media_info.end_time > 0:
             if display.mediaObject.currentTime() > \
                 controller.media_info.end_time:

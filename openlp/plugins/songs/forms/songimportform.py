@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -771,9 +772,9 @@ class SongImportForm(OpenLPWizard):
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
         if not filename:
             return
-        file = codecs.open(filename, u'w', u'utf-8')
-        file.write(self.errorReportTextEdit.toPlainText())
-        file.close()
+        report_file = codecs.open(filename, u'w', u'utf-8')
+        report_file.write(self.errorReportTextEdit.toPlainText())
+        report_file.close()
 
     def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
         single_select=False):

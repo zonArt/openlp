@@ -24,6 +24,7 @@
   <qresource prefix="bibles">
     <file>bibles_search_text.png</file>
     <file>bibles_search_reference.png</file>
+    <file>bibles_upgrade_alert.png</file>
     <file>bibles_search_unlock.png</file>
     <file>bibles_search_lock.png</file>
   </qresource>
@@ -113,6 +114,7 @@
     <file>clear_shortcut.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
+    <file>system_online_help.png</file>
     <file>system_mediamanager.png</file>
     <file>system_contribute.png</file>
     <file>system_servicemanager.png</file>

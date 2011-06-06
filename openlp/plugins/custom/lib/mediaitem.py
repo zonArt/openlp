@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,6 +35,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_item_selected, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
+from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
@@ -55,14 +57,16 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formparent,
+            self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
-        self.manager = parent.manager
+        self.manager = plugin.manager
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -105,7 +109,7 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
@@ -125,16 +129,10 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
-        # Called to redisplay the custom list screen edith from a search
-        # or from the exit of the Custom edit dialog. If remote editing is
-        # active trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
-        self.onRemoteEditClear()
 
     def loadList(self, custom_slides):
+        # Sort out what custom we want to select after loading the list.
+        self.save_auto_select_id()
         self.listView.clear()
         # Sort the customs by its title considering language specific
         # characters. lower() is needed for windows!
@@ -145,33 +143,45 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(
                 QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
             self.listView.addItem(custom_name)
-            # Auto-select the item if name has been set
-            if custom_slide.title == self.autoSelectItem:
+            # Auto-select the custom.
+            if custom_slide.id == self.auto_select_id:
                 self.listView.setCurrentItem(custom_name)
+        self.auto_select_id = -1
+        # Called to redisplay the custom list screen edith from a search
+        # or from the exit of the Custom edit dialog. If remote editing is
+        # active trigger it and clean up so it will not update again.
+        if self.remoteTriggered == u'L':
+            self.onAddClick()
+        if self.remoteTriggered == u'P':
+            self.onPreviewClick()
+        self.onRemoteEditClear()
 
     def onNewClick(self):
-        self.parent.edit_custom_form.loadCustom(0)
-        self.parent.edit_custom_form.exec_()
-        self.initialise()
+        self.edit_custom_form.loadCustom(0)
+        self.edit_custom_form.exec_()
+        self.onClearTextButtonClick()
+        self.onSelectionChange()
 
     def onRemoteEditClear(self):
         self.remoteTriggered = None
         self.remoteCustom = -1
 
-    def onRemoteEdit(self, customid):
+    def onRemoteEdit(self, message):
         """
         Called by ServiceManager or SlideController by event passing
-        the Song Id in the payload along with an indicator to say which
+        the custom Id in the payload along with an indicator to say which
         type of display is required.
         """
-        fields = customid.split(u':')
-        valid = self.manager.get_object(CustomSlide, fields[1])
+        remote_type, custom_id = message.split(u':')
+        custom_id = int(custom_id)
+        valid = self.manager.get_object(CustomSlide, custom_id)
         if valid:
-            self.remoteCustom = fields[1]
-            self.remoteTriggered = fields[0]
-            self.parent.edit_custom_form.loadCustom(fields[1],
-                (fields[0] == u'P'))
-            self.parent.edit_custom_form.exec_()
+            self.remoteCustom = custom_id
+            self.remoteTriggered = remote_type
+            self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
+            self.edit_custom_form.exec_()
+            self.auto_select_id = -1
+            self.onSearchTextButtonClick()
 
     def onEditClick(self):
         """
@@ -180,9 +190,10 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.edit_custom_form.loadCustom(item_id, False)
-            self.parent.edit_custom_form.exec_()
-            self.initialise()
+            self.edit_custom_form.loadCustom(item_id, False)
+            self.edit_custom_form.exec_()
+            self.auto_select_id = -1
+            self.onSearchTextButtonClick()
 
     def onDeleteClick(self):
         """
@@ -194,12 +205,14 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.manager.delete_object(CustomSlide, id)
+                self.plugin.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
+    def onFocus(self):
+        self.searchTextEdit.setFocus()
+
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
-        raw_slides = []
         raw_footer = []
         slide = None
         theme = None
@@ -208,7 +221,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
-        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
+        customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.edit_id = item_id
@@ -217,8 +230,7 @@ class CustomMediaItem(MediaManagerItem):
             service_item.theme = theme
         customXML = CustomXMLParser(customSlide.text)
         verseList = customXML.get_verses()
-        for verse in verseList:
-            raw_slides.append(verse[1])
+        raw_slides = [verse[1] for verse in verseList]
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
@@ -241,13 +253,13 @@ class CustomMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
@@ -256,7 +268,7 @@ class CustomMediaItem(MediaManagerItem):
     def onSearchTextEditChanged(self, text):
         """
         If search as type enabled invoke the search on each key press.
-        If the Title is being searched do not start till 2 characters
+        If the Title is being searched do not start until 2 characters
         have been entered.
         """
         search_length = 2
@@ -279,8 +291,5 @@ class CustomMediaItem(MediaManagerItem):
             func.lower(CustomSlide.text).like(u'%' +
             string.lower() + u'%')),
             order_by_ref=CustomSlide.title)
-        results = []
-        for custom in search_results:
-            results.append([custom.id, custom.title])
-        return results
+        return [[custom.id, custom.title] for custom in search_results]
 
