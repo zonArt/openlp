@@ -407,7 +407,11 @@ class MediaManagerItem(QtGui.QWidget):
         reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
         thumb = reader.read()
         thumb.save(thumb_path, ext[1:])
-        return build_icon(unicode(thumb_path))
+        if os.path.exists(thumb_path):
+            return build_icon(unicode(thumb_path))
+        # When the thumbnail creation was not successful then create the icon
+        # from the original file.
+        return build_icon(unicode(image_path))
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
