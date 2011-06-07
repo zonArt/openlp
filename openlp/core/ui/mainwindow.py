@@ -655,7 +655,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Give all the plugins a chance to perform some tasks at startup
         Receiver.send_message(u'openlp_process_events')
         for plugin in self.pluginManager.plugins:
-            if plugin.isActive() and hasattr(plugin, u'appStartup'):
+            if plugin.isActive():
                 Receiver.send_message(u'openlp_process_events')
                 plugin.appStartup()
         Receiver.send_message(u'openlp_process_events')

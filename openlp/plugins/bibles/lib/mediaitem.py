@@ -772,7 +772,7 @@ class BibleMediaItem(MediaManagerItem):
                     log.exception(u'The second_search_results does not have as '
                     'many verses as the search_results.')
                     break
-                bible_text = u' %s %d%s%d (%s, %s)' % (verse.book.name,
+                bible_text = u'%s %d%s%d (%s, %s)' % (verse.book.name,
                     verse.chapter, verse_separator, verse.verse, version,
                     second_version)
             else:
@@ -830,7 +830,7 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.settings.layout_style == LayoutStyle.VersePerLine:
-                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s%s&nbsp;%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)

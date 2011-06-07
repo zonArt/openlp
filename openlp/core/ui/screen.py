@@ -106,7 +106,7 @@ class ScreenList(object):
         """
         # Do not log at start up.
         if changed_screen != -1:
-            log.info(u'screen_count_changed %d' % number)
+            log.info(u'screen_count_changed %d' % self.desktop.numScreens())
         # Remove unplugged screens.
         for screen in copy.deepcopy(self.screen_list):
             if screen[u'number'] == self.desktop.numScreens():
