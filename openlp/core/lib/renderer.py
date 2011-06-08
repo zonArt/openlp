@@ -86,6 +86,8 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
+        if self.display:
+            self.display.close()
         self.display = MainDisplay(None, self.image_manager, False)
         self.display.setup()
         self.bg_frame = None
