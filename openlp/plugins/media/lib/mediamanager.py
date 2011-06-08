@@ -247,7 +247,7 @@ class MediaManager(object):
         #now start playing
         self.video_play([controller])
         self.video_pause([controller])
-        self.video_seek([controller, 0])
+        self.video_seek([controller, [0]])
         self.video_play([controller])
         self.set_controls_visible(controller, True)
 
@@ -312,7 +312,7 @@ class MediaManager(object):
         Changes the volume of a running video
         """
         controller = msg[0]
-        vol = msg[1]
+        vol = msg[1][0]
         log.debug(u'video_volume %d' % vol)
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
@@ -324,7 +324,7 @@ class MediaManager(object):
         """
         log.debug(u'video_seek')
         controller = msg[0]
-        seekVal = msg[1]
+        seekVal = msg[1][0]
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
                 self.curDisplayMediaAPI[display].seek(display, seekVal)

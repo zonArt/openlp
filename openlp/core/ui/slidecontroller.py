@@ -333,7 +333,7 @@ class SlideController(QtGui.QWidget):
     def getControlPanel(self):
         return self.controllerLayout
 
-    def sendToPlugins(self, **kwargs):
+    def sendToPlugins(self, *args):
         """
         This is the generic function to send signal for control widgets,
         created from within other plugins
@@ -341,7 +341,7 @@ class SlideController(QtGui.QWidget):
         """
         sender = self.sender().objectName() or self.sender().text()
         controller = self
-        Receiver.send_message('%s' % sender, [controller, kwargs])
+        Receiver.send_message('%s' % sender, [controller, args])
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
