@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class MediaAPIs(object):
+class MediaAPI(object):
     """
     An enumeration for possible APIs.
     """
@@ -71,14 +71,23 @@ class MediaAPI(object):
     Specialiced Media API class
     to reflect Features of the related API
     """
-    def __init__(self, parent):
+    def __init__(self, parent, name=u'MediaApi'):
         self.parent = parent
+        self.name = name
+        self.available = self.check_available()
         self.isActive = False
         self.canBackground = False
         self.state = MediaState.Off
         self.hasOwnWidget = False
         self.audio_extensions_list = []
         self.video_extensions_list = []
+
+    def check_available(self):
+        """
+        API is available on this machine
+        """
+        return False
+
 
     def setup(self, display):
         """
@@ -163,6 +172,26 @@ class MediaAPI(object):
         Locations
         """
         pass
+
+    def display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        return u''
+
+
+    def display_javascript(self):
+        """
+        Add javascript functions to htmlbuilder
+        """
+        return u''
+
+
+    def display_html(self):
+        """
+        Add html code to htmlbuilder
+        """
+        return u''
 
 from mediaitem import MediaMediaItem
 from mediatab import MediaTab

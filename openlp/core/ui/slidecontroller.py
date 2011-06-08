@@ -62,7 +62,6 @@ class SlideController(QtGui.QWidget):
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        #self.display = None#MainDisplay(self, self, self.screens, isLive)
         self.image_manager = self.parent().image_manager
         self.loopList = [
             u'Play Slides Menu',
@@ -334,7 +333,7 @@ class SlideController(QtGui.QWidget):
     def getControlPanel(self):
         return self.controllerLayout
 
-    def sendToPlugins(self, v1=None, v2=None, v3=None, v4=None, v5=None):
+    def sendToPlugins(self, **kwargs):
         """
         This is the generic function to send signal for control widgets,
         created from within other plugins
@@ -342,7 +341,7 @@ class SlideController(QtGui.QWidget):
         """
         sender = self.sender().objectName() or self.sender().text()
         controller = self
-        Receiver.send_message('%s' % sender, [controller, v1, v2, v3, v4, v5])
+        Receiver.send_message('%s' % sender, [controller, kwargs])
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')

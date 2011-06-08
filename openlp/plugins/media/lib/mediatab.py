@@ -33,23 +33,26 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, parent, title, visible_title, icon_path):
+    def __init__(self, parent, title, visible_title, apis, icon_path):
+        self.apis = apis
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.mediaAPIsGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.mediaAPIsGroupBox.setObjectName(u'mediaAPIsGroupBox')
-        self.mediaApiLayout = QtGui.QVBoxLayout(self.mediaAPIsGroupBox)
+        self.mediaAPIGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.mediaAPIGroupBox.setObjectName(u'mediaAPIGroupBox')
+        self.mediaApiLayout = QtGui.QVBoxLayout(self.mediaAPIGroupBox)
         self.mediaApiLayout.setObjectName(u'mediaApiLayout')
-        self.usePhononCheckBox = QtGui.QCheckBox(self.mediaAPIsGroupBox)
-        self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaApiLayout.addWidget(self.usePhononCheckBox)
-        self.useVlcCheckBox = QtGui.QCheckBox(self.mediaAPIsGroupBox)
-        self.useVlcCheckBox.setObjectName(u'useVlcCheckBox')
-        self.mediaApiLayout.addWidget(self.useVlcCheckBox)
-        self.leftLayout.addWidget(self.mediaAPIsGroupBox)
+        self.ApiCheckBoxes = {}
+        for key in self.apis:
+            api = self.apis[key]
+            checkbox = QtGui.QCheckBox(self.mediaAPIGroupBox)
+            checkbox.setEnabled(api.available)
+            checkbox.setObjectName(api.name + u'CheckBox')
+            self.ApiCheckBoxes[api.name] = checkbox
+            self.mediaApiLayout.addWidget(checkbox)
+        self.leftLayout.addWidget(self.mediaAPIGroupBox)
 
         self.apiOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.apiOrderGroupBox.setObjectName(u'apiOrderGroupBox')
@@ -87,24 +90,30 @@ class MediaTab(SettingsTab):
         self.leftLayout.addWidget(self.apiOrderGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.usePhononCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onUsePhononCheckBoxChanged)
-        QtCore.QObject.connect(self.useVlcCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onUseVlcCheckBoxChanged)
+        for key in self.apis:
+            api = self.apis[key]
+            checkbox = self.ApiCheckBoxes[api.name]
+            QtCore.QObject.connect(checkbox,
+                QtCore.SIGNAL(u'stateChanged(int)'),
+                self.onApiCheckBoxChanged)
+
         QtCore.QObject.connect(self.orderingUpButton,
             QtCore.SIGNAL(u'pressed()'), self.onOrderingUpButtonPressed)
         QtCore.QObject.connect(self.orderingDownButton,
             QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
-        self.mediaAPIsGroupBox.setTitle(
+        self.mediaAPIGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'Media APIs'))
-        self.usePhononCheckBox.setText(
-            translate('MediaPlugin.MediaTab', 'use Phonon'))
-        self.useVlcCheckBox.setText(
-            translate('MediaPlugin.MediaTab', 'use Vlc'))
+        for key in self.apis:
+            api = self.apis[key]
+            checkbox = self.ApiCheckBoxes[api.name]
+            if api.available:
+                checkbox.setText(api.name)
+            else:
+                checkbox.setText(
+                    unicode(translate('MediaPlugin.MediaTab',
+                    '%s (unavailable)')) % api.name)
         self.apiOrderGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'API Order'))
         self.orderingDownButton.setText(
@@ -112,24 +121,13 @@ class MediaTab(SettingsTab):
         self.orderingUpButton.setText(
             translate('MediaPlugin.MediaTab', 'Up'))
 
-    def onUsePhononCheckBoxChanged(self, check_state):
+    def onApiCheckBoxChanged(self, check_state):
+        api = self.sender().text()
         if check_state == QtCore.Qt.Checked:
-            self.usePhonon = True
-            if u'Phonon' not in self.usedAPIs:
-                self.usedAPIs.append(u'Phonon')
+            if api not in self.usedAPIs:
+                self.usedAPIs.append(api)
         else:
-            self.usePhonon = False
-            self.usedAPIs.takeAt(self.usedAPIs.indexOf(u'Phonon'))
-        self.updateApiList()
-
-    def onUseVlcCheckBoxChanged(self, check_state):
-        if check_state == QtCore.Qt.Checked:
-            self.useVlc = True
-            if u'Vlc' not in self.usedAPIs:
-                self.usedAPIs.append(u'Vlc')
-        else:
-            self.useVlc = False
-            self.usedAPIs.takeAt(self.usedAPIs.indexOf(u'Vlc'))
+            self.usedAPIs.takeAt(self.usedAPIs.indexOf(api))
         self.updateApiList()
 
     def updateApiList(self):
@@ -157,11 +155,11 @@ class MediaTab(SettingsTab):
         self.usedAPIs = QtCore.QSettings().value(
             self.settingsSection + u'/apis',
             QtCore.QVariant(u'Webkit')).toString().split(u',')
-        self.useWebkit = u'Webkit' in self.usedAPIs
-        self.usePhonon = u'Phonon' in self.usedAPIs
-        self.useVlc = u'Vlc' in self.usedAPIs
-        self.usePhononCheckBox.setChecked(self.usePhonon)
-        self.useVlcCheckBox.setChecked(self.useVlc)
+        for key in self.apis:
+            api = self.apis[key]
+            checkbox = self.ApiCheckBoxes[api.name]
+            if api.available and api.name in self.usedAPIs:
+                checkbox.setChecked(True)
         self.updateApiList()
 
     def save(self):

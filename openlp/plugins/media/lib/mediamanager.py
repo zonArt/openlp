@@ -35,7 +35,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.media.lib import MediaAPI, MediaState, MediaInfo
 from webkitapi import WebkitAPI
 from phononapi import PhononAPI
-#from vlcapi import VlcAPI
+from vlcapi import VlcAPI
 
 log = logging.getLogger(__name__)
 
@@ -63,13 +63,6 @@ class MediaManager(object):
         self.APIs = {}
         self.controller = []
         self.curDisplayMediaAPI = {}
-        #Create API Controllers
-        if WebkitAPI.is_available():
-            self.APIs[u'Webkit'] = WebkitAPI(self)
-        if PhononAPI.is_available():
-            self.APIs[u'Phonon'] = PhononAPI(self)
-#        if VlcAPI.is_available():
-#            self.APIs[u'Vlc'] = VlcAPI(self)
         #Timer for video state
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
@@ -117,6 +110,33 @@ class MediaManager(object):
         if not isAnyonePlaying:
             self.Timer.stop()
 
+    def display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        css = u'';
+        for api in self.APIs.values():
+            css+= api.display_css()
+        return css
+
+    def display_javascript(self):
+        """
+        Add javascript functions to htmlbuilder
+        """
+        js = u''
+        for api in self.APIs.values():
+            js+= api.display_javascript()
+        return js
+
+    def display_html(self):
+        """
+        Add html code to htmlbuilder
+        """
+        html = u''
+        for api in self.APIs.values():
+            html+= api.display_html()
+        return html
+
     def addControllerItems(self, controller, control_panel):
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
@@ -133,11 +153,11 @@ class MediaManager(object):
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
             u'Media Pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Pause playing media'),
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
             u'Media Stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Stop playing media'),
             controller.sendToPlugins)
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)

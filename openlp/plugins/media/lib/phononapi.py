@@ -44,7 +44,7 @@ class PhononAPI(MediaAPI):
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent)
+        MediaAPI.__init__(self, parent, u'Phonon')
         self.parent = parent
         self.additional_extensions = {
             u'audio/ac3': [u'.ac3'],
@@ -76,7 +76,7 @@ class PhononAPI(MediaAPI):
             ext = u'*%s' % extension
             if ext not in list:
                 list.append(ext)
-                self.parent.parent.serviceManager.supportedSuffixes(extension[1:])
+                self.parent.serviceManager.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
@@ -87,7 +87,7 @@ class PhononAPI(MediaAPI):
                 ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
-                    self.parent.parent.serviceManager.supportedSuffixes(extension[1:])
+                    self.parent.serviceManager.supportedSuffixes(extension[1:])
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
 
@@ -107,10 +107,7 @@ class PhononAPI(MediaAPI):
         display.phononWidget.hide()
         self.hasOwnWidget = True
 
-    @staticmethod
-    def is_available():
-#        usePhonon = QtCore.QSettings().value(
-#            u'media/use phonon', QtCore.QVariant(True)).toBool()
+    def check_available(self):
         return True
 
     def get_supported_file_types(self):
