@@ -92,7 +92,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.resetAction.setVisible(False)
         Receiver.send_message(u'media_reset',
-            self.parent.liveController)
+            self.plugin.liveController)
 
     def videobackgroundReplaced(self):
         """
@@ -112,7 +112,7 @@ class MediaMediaItem(MediaManagerItem):
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 Receiver.send_message(u'media_video',
-                    [self.parent.liveController, filename, 0, True])
+                    [self.plugin.liveController, filename, 0, True])
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
@@ -139,7 +139,7 @@ class MediaMediaItem(MediaManagerItem):
                 ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
-        #Receiver.send_message(u'media_video', [self.parent.liveController, filename, False])
+        #Receiver.send_message(u'media_video', [self.plugin.liveController, filename, False])
         # force a non-existent theme
         service_item.theme = -1
         frame = u':/media/image_clapperboard.png'

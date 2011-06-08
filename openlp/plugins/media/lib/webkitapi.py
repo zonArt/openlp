@@ -41,7 +41,7 @@ class WebkitAPI(MediaAPI):
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent)
+        MediaAPI.__init__(self, parent, u'Webkit')
         self.parent = parent
         self.canBackground = True
         self.video_extensions_list = [
@@ -73,12 +73,194 @@ class WebkitAPI(MediaAPI):
         # no special controls
         pass
 
+    def display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        css = u'''
+        '''
+        return css
+
+
+    def display_javascript(self):
+        """
+        Add javascript functions to htmlbuilder
+        """
+        js = u'''
+        var video_timer = null;
+        var current_video = '1';
+
+            function show_video(state, path, volume, loop, seekVal){
+                // Note, the preferred method for looping would be to use the
+                // video tag loop attribute.
+                // But QtWebKit doesn't support this. Neither does it support the
+                // onended event, hence the setInterval()
+                // In addition, setting the currentTime attribute to zero to restart
+                // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
+                // To complicate it further, sometimes vid.currentTime stops
+                // slightly short of vid.duration and vid.ended is intermittent!
+                //
+                // Note, currently the background may go black between loops. Not
+                // desirable. Need to investigate using two <video>'s, and hiding/
+                // preloading one, and toggle between the two when looping.
+
+                if(current_video=='1'){
+                    var vid = document.getElementById('video1');
+                    var vid2 = document.getElementById('video2');
+                } else {
+                    var vid = document.getElementById('video2');
+                    var vid2 = document.getElementById('video1');
+                }
+                if(volume != null){
+                    vid.volume = volume;
+                    vid2.volume = volume;
+                }
+                switch(state){
+                    case 'init':
+                        vid.src = path;
+                        vid2.src = path;
+                        if(loop == null) loop = false;
+                        vid.looping = loop;
+                        vid2.looping = loop;
+                        vid.load();
+                        break;
+                    case 'load':
+                        vid2.style.visibility = 'hidden';
+                        vid2.load();
+                        break;
+                    case 'play':
+                        vid.play();
+                        vid.style.visibility = 'visible';
+                        if(vid.looping){
+                            video_timer = setInterval(
+                                function() {
+                                    show_video('poll');
+                                }, 200);
+                        }
+                        break;
+                    case 'pause':
+                        if(video_timer!=null){
+                            clearInterval(video_timer);
+                            video_timer = null;
+                        }
+                        vid.pause();
+                        break;
+                    case 'stop':
+                        show_video('pause');
+                        vid.style.visibility = 'hidden';
+                        break;
+                    case 'poll':
+                        if(vid.ended||vid.currentTime+0.2>vid.duration)
+                            show_video('swap');
+                        break;
+                    case 'swap':
+                        show_video('pause');
+                        if(current_video=='1')
+                            current_video = '2';
+                        else
+                            current_video = '1';
+                        show_video('play');
+                        show_video('load');
+                        break;
+                    case 'close':
+                        show_video('stop');
+                        vid.src = '';
+                        vid2.src = '';
+                        break;
+                     case 'length':
+                        return vid.duration;
+                    case 'currentTime':
+                        return vid.currentTime;
+                    case 'seek':
+                        // doesnt work curently
+                        //vid.currentTime = seekVal;
+                        break;
+               }
+            }
+
+            function getFlashMovieObject(movieName)
+            {
+                if (window.document[movieName])
+                {
+                    return window.document[movieName];
+                }
+                if (document.embeds && document.embeds[movieName])
+                    return document.embeds[movieName];
+            }
+
+        // http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
+            function show_flash(state, path, volume, seekVal){
+                var text = document.getElementById('flash');
+                var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                var src = "src = 'file:///" + path + "'";
+                var view_parm = " wmode='opaque'" +
+                    " width='" + window.innerWidth + "'" +
+                    " height='" + window.innerHeight + "'";
+                var swf_parm = " name='OpenLPFlashMovie'" +
+                    " autostart='true' loop='false' play='true'" +
+                    " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
+                    " volume='" + volume + "'";
+
+                switch(state){
+                    case 'load':
+                        text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
+                        flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                        text.style.visibility = 'visible';
+                        flashMovie.Play();
+                        break;
+                    case 'play':
+                        text.style.visibility = 'visible';
+                        flashMovie.Play();
+                        break;
+                    case 'pause':
+                        flashMovie.StopPlay();
+                        text.style.visibility = 'hidden';
+                        break;
+                    case 'stop':
+                        flashMovie.StopPlay();
+                        text.style.visibility = 'hidden';
+                        tempHtml = text.innerHTML;
+                        text.innerHTML = '';
+                        text.innerHTML = tempHtml;
+                        break;
+                    case 'close':
+                        flashMovie.StopPlay();
+                        text.style.visibility = 'hidden';
+                        text.innerHTML = '';
+                        break;
+                    case 'length':
+                        return flashMovie.TotalFrames();
+                    case 'currentTime':
+                        return flashMovie.CurrentFrame();
+                    case 'seek':
+        //                flashMovie.GotoFrame(seekVal);
+                        break;
+                }
+            }
+        '''
+        return js
+
+
+    def display_html(self):
+        """
+        Add html code to htmlbuilder
+        """
+        html = u'''
+        <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
+        </video>
+        <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
+        </video>
+        <div id="flash" class="size" style="visibility:hidden"></div>
+        '''
+        return html
+
     def setup(self, display):
+        display.webView.resize(display.size())
         display.webView.raise_()
         self.hasOwnWidget = False
+        display.webView.hide()
 
-    @staticmethod
-    def is_available():
+    def check_available(self):
         return True
 
     def get_supported_file_types(self):

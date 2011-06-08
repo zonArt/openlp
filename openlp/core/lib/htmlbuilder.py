@@ -66,6 +66,7 @@ body {
 #image {
     z-index:2;
 }
+%s
 #video1 {
     z-index:3;
 }
@@ -98,97 +99,8 @@ sup {
 </style>
 <script language="javascript">
     var timer = null;
-    var video_timer = null;
-    var current_video = '1';
     var transition = %s;
-
-    function show_video(state, path, volume, loop, seekVal){
-        // Note, the preferred method for looping would be to use the
-        // video tag loop attribute.
-        // But QtWebKit doesn't support this. Neither does it support the
-        // onended event, hence the setInterval()
-        // In addition, setting the currentTime attribute to zero to restart
-        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops
-        // slightly short of vid.duration and vid.ended is intermittent!
-        //
-        // Note, currently the background may go black between loops. Not
-        // desirable. Need to investigate using two <video>'s, and hiding/
-        // preloading one, and toggle between the two when looping.
-
-        if(current_video=='1'){
-            var vid = document.getElementById('video1');
-            var vid2 = document.getElementById('video2');
-        } else {
-            var vid = document.getElementById('video2');
-            var vid2 = document.getElementById('video1');
-        }
-        if(volume != null){
-            vid.volume = volume;
-            vid2.volume = volume;
-        }
-        switch(state){
-            case 'init':
-                vid.src = path;
-                vid2.src = path;
-                if(loop == null) loop = false;
-                vid.looping = loop;
-                vid2.looping = loop;
-                vid.load();
-                break;
-            case 'load':
-                vid2.style.visibility = 'hidden';
-                vid2.load();
-                break;
-            case 'play':
-                vid.play();
-                vid.style.visibility = 'visible';
-                if(vid.looping){
-                    video_timer = setInterval(
-                        function() {
-                            show_video('poll');
-                        }, 200);
-                }
-                break;
-            case 'pause':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                break;
-            case 'stop':
-                show_video('pause');
-                vid.style.visibility = 'hidden';
-                break;
-            case 'poll':
-                if(vid.ended||vid.currentTime+0.2>vid.duration)
-                    show_video('swap');
-                break;
-            case 'swap':
-                show_video('pause');
-                if(current_video=='1')
-                    current_video = '2';
-                else
-                    current_video = '1';
-                show_video('play');
-                show_video('load');
-                break;
-            case 'close':
-                show_video('stop');
-                vid.src = '';
-                vid2.src = '';
-                break;
-             case 'length':
-                return vid.duration;
-            case 'currentTime':
-                return vid.currentTime;
-            case 'seek':
-                // doesnt work curently
-                //vid.currentTime = seekVal;
-                break;
-       }
-    }
+    %s
 
     function show_image(src){
         var img = document.getElementById('image');
@@ -316,79 +228,12 @@ sup {
         return (text_opacity()==1);
     }
 
-    function getFlashMovieObject(movieName)
-    {
-        if (window.document[movieName])
-        {
-            return window.document[movieName];
-        }
-        if (navigator.appName.indexOf("Microsoft Internet")==-1)
-        {
-            if (document.embeds && document.embeds[movieName])
-            return document.embeds[movieName];
-        }
-    }
-
-// http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
-    function show_flash(state, path, volume, seekVal){
-        var text = document.getElementById('flash');
-        var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-        var src = "src = 'file:///" + path + "'";
-        var view_parm = " wmode='opaque'" +
-            " width='" + window.innerWidth + "'" +
-            " height='" + window.innerHeight + "'";
-        var swf_parm = " name='OpenLPFlashMovie'" +
-            " autostart='true' loop='false' play='true'" +
-            " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
-            " volume='" + volume + "'";
-
-        switch(state){
-            case 'load':
-                text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
-                flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-                text.style.visibility = 'visible';
-                flashMovie.Play();
-                break;
-            case 'play':
-                text.style.visibility = 'visible';
-                flashMovie.Play();
-                break;
-            case 'pause':
-                flashMovie.StopPlay();
-                text.style.visibility = 'hidden';
-                break;
-            case 'stop':
-                flashMovie.StopPlay();
-                text.style.visibility = 'hidden';
-                tempHtml = text.innerHTML;
-                text.innerHTML = '';
-                text.innerHTML = tempHtml;
-                break;
-            case 'close':
-                flashMovie.StopPlay();
-                text.style.visibility = 'hidden';
-                text.innerHTML = '';
-                break;
-            case 'length':
-                return flashMovie.TotalFrames();
-            case 'currentTime':
-                return flashMovie.CurrentFrame();
-            case 'seek':
-//                flashMovie.GotoFrame(seekVal);
-                break;
-        }
-    }
-
 </script>
 </head>
 <body>
 <img id="bgimage" class="size" %s />
 <img id="image" class="size" %s />
-<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-</video>
-<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-</video>
-<div id="flash" class="size" style="visibility:hidden"></div>
+%s
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
@@ -397,7 +242,7 @@ sup {
 </html>
     """
 
-def build_html(item, screen, alert, islive, background, image=None):
+def build_html(item, screen, alert, islive, background, plugins=None, image=None):
     """
     Build the full web paged structure for display
 
@@ -415,6 +260,9 @@ def build_html(item, screen, alert, islive, background, image=None):
 
     ``background``
         Theme background image - bytes
+
+    ``plugins``
+        access to the plugins
 
     ``image``
         Image media item - bytes
@@ -434,14 +282,25 @@ def build_html(item, screen, alert, islive, background, image=None):
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
         image_src = u'style="display:none;"'
+    plugin_css = u''
+    plugin_js = u''
+    plugin_html = u''
+    if plugins:
+        for plugin in plugins:
+            plugin_css += plugin.display_css()
+            plugin_js += plugin.display_javascript()
+            plugin_html += plugin.display_html()
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
+        plugin_css,
         build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
+        plugin_js,
         bgimage_src, image_src,
+        plugin_html,
         build_lyrics_html(item, webkitvers))
     return html
 

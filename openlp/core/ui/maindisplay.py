@@ -56,18 +56,22 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the preview screen
         """
+#        self.setGeometry(0, 0,
+#            self.parent().width(), self.parent().height())
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.parent().width(), self.parent().height())
-        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
+        self.webView.settings().setAttribute(
+            QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         screen = {}
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()
         self.webView.setHtml(build_html(serviceItem, screen,
-            None, None, None))
+            None, None, None, self.controller.parent().pluginManager.plugins))
         self.webView.hide()
+        #self.hide()
 
 class MainDisplay(QtGui.QGraphicsView):
     """
@@ -158,7 +162,8 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None))
+                self.alertTab, self.isLive, None,
+                self.controller.parent().pluginManager.plugins))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -350,7 +355,7 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, image_bytes)
+            self.isLive, background, self.controller.parent().pluginManager.plugins, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

@@ -374,3 +374,21 @@ class Plugin(QtCore.QObject):
         after this has been set.
         """
         self.textStrings[name] = {u'title': title, u'tooltip': tooltip}
+
+    def display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        return u''
+
+    def display_javascript(self):
+        """
+        Add javascript functions to htmlbuilder
+        """
+        return u''
+
+    def display_html(self):
+        """
+        Add html code to htmlbuilder
+        """
+        return u''

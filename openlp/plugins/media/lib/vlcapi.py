@@ -30,8 +30,10 @@ import sys, os
 from datetime import datetime
 try:
     import vlc
-except:
-    pass
+    vlc_available = True
+except ImportError:
+    vlc_available = False
+
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
 from openlp.plugins.media.lib import MediaAPI, MediaState
@@ -44,7 +46,7 @@ class VlcAPI(MediaAPI):
     to reflect Features of the Vlc API
     """
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent)
+        MediaAPI.__init__(self, parent, u'Vlc')
         self.parent = parent
         self.video_extensions_list = [
             u'*.3gp'
@@ -99,13 +101,8 @@ class VlcAPI(MediaAPI):
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
         self.hasOwnWidget = True
 
-    @staticmethod
-    def is_available():
-        try:
-            import vlc
-            return True
-        except:
-            return False
+    def check_available(self):
+        return vlc_available
 
     def get_supported_file_types(self):
         self.supported_file_types = ['avi']
