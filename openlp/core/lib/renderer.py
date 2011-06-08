@@ -67,7 +67,7 @@ class Renderer(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
         """
-        log.debug(u'Initilisation started')
+        log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
@@ -241,7 +241,7 @@ class Renderer(object):
         ``screen``
             The QSize of the screen.
         """
-        log.debug(u'calculate default %s', screen)
+        log.debug(u'_calculate default %s', screen)
         self.width = screen.width()
         self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
@@ -286,7 +286,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        log.debug(u'_set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -339,7 +339,7 @@ class Renderer(object):
             # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 if force_page and line_count > 0:
-                    Receiver.send_message(u'theme_line_count', line_count)
+                    Receiver.send_message(u'theme_line_count', line_count - 1)
                 line_count = -1
                 while html_text.endswith(u'<br>'):
                     html_text = html_text[:-4]

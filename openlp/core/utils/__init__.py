@@ -69,7 +69,6 @@ class VersionThread(QtCore.QThread):
         Run the thread.
         """
         time.sleep(1)
-        Receiver.send_message(u'maindisplay_blank_check')
         app_version = get_application_version()
         version = check_latest_version(app_version)
         remote_version = {}

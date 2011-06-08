@@ -381,6 +381,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         log.debug(u'BibleDB.get_verses("%s")', reference_list)
         verse_list = []
+        book_error = False
         for book_id, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book_by_book_ref_id(book_id)
             if db_book:
@@ -398,12 +399,13 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book with id "%s"', book_id)
-                if show_error:
-                    critical_error_message_box(
-                        translate('BiblesPlugin', 'No Book Found'),
-                        translate('BiblesPlugin', 'No matching book '
-                        'could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.'))
+                book_error = True
+        if book_error and show_error:
+            critical_error_message_box(
+                translate('BiblesPlugin', 'No Book Found'),
+                translate('BiblesPlugin', 'No matching book '
+                'could be found in this Bible. Check that you '
+                'have spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):
@@ -1040,6 +1042,28 @@ class OldBibleDB(QtCore.QObject, Manager):
                 }
                 for meta in metadata
             ]
+        else:
+            return None
+
+    def get_book(self, name):
+        """
+        Return a book by name or abbreviation.
+
+        ``name``
+            The name or abbreviation of the book.
+        """
+        if not isinstance(name, unicode):
+            name = unicode(name)
+        books = self.run_sql(u'SELECT id, testament_id, name, '
+                u'abbreviation FROM book WHERE LOWER(name) = ? OR '
+                u'LOWER(abbreviation) = ?', (name.lower(), name.lower()))
+        if books:
+            return {
+                u'id': books[0][0],
+                u'testament_id': books[0][1],
+                u'name': unicode(books[0][2]),
+                u'abbreviation': unicode(books[0][3])
+            }
         else:
             return None
 
