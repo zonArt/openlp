@@ -202,7 +202,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Updates the lines on a page on the wizard
         """
         self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm',
-            '(%d lines per slide)')) % int(lines))
+            '(approximately %d lines per slide)')) % int(lines))
 
     def resizeEvent(self, event=None):
         """
