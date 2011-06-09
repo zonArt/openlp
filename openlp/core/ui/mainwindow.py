@@ -356,9 +356,9 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Save Service As'))
         self.fileSaveAsItem.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
-        self.printServiceOrderItem.setText(UiStrings().PrintServiceOrder)
+        self.printServiceOrderItem.setText(UiStrings().PrintService)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Print the current Service Order.'))
+            'Print the current service.'))
         self.fileExitItem.setText(
             translate('OpenLP.MainWindow', 'E&xit'))
         self.fileExitItem.setStatusTip(
