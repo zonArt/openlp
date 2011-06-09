@@ -655,7 +655,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Give all the plugins a chance to perform some tasks at startup
         Receiver.send_message(u'openlp_process_events')
         for plugin in self.pluginManager.plugins:
-            if hasattr(plugin, u'appStartup'):
+            if plugin.isActive():
                 Receiver.send_message(u'openlp_process_events')
                 plugin.appStartup()
         Receiver.send_message(u'openlp_process_events')
@@ -678,13 +678,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def blankCheck(self):
         """
         Check and display message if screen blank on setup.
-        Triggered by delay thread.
         """
         settings = QtCore.QSettings()
+        self.liveController.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
             QtCore.QVariant(False)).toBool():
-            self.liveController.mainDisplaySetBackground()
-            if settings.value(u'blank warning',
+            if settings.value(u'%s/blank warning' % self.generalSettingsSection,
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow',

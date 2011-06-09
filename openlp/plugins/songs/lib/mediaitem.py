@@ -38,7 +38,8 @@ from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
-from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType
+from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
+    clean_string
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.plugins.songs.lib.ui import SongStrings
 
@@ -181,13 +182,14 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.plugin.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'))
+                Song.search_title.like(u'%' + clean_string(search_keywords) +
+                    u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
             search_results = self.plugin.manager.get_all_objects(Song,
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'))
+                Song.search_lyrics.like(u'%' + clean_string(search_keywords) +
+                    u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
@@ -198,16 +200,16 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(Song,
-                Song.theme_name.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords) + u'%'))
+                Song.theme_name.like(u'%' + search_keywords + u'%'))
             self.displayResultsSong(search_results)
         self.check_search_result()
 
     def searchEntire(self, search_keywords):
         return self.plugin.manager.get_all_objects(Song,
-            or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-            search_keywords.lower()) + u'%'),
-            Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+            or_(Song.search_title.like(u'%' + clean_string(search_keywords)
+                + u'%'),
+            Song.search_lyrics.like(u'%' + clean_string(search_keywords)
+                + u'%'),
             Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
     def onSongListLoad(self):
@@ -300,6 +302,9 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onNewClick')
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
+        self.onClearTextButtonClick()
+        self.onSelectionChange()
+        self.auto_select_id = -1
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
@@ -324,6 +329,8 @@ class SongMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
 
     def onEditClick(self):
         """
@@ -335,6 +342,8 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+            self.auto_select_id = -1
+            self.onSongListLoad()
         self.editItem = None
 
     def onDeleteClick(self):
