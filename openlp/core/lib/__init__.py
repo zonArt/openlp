@@ -154,10 +154,7 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
     """
     log.debug(u'resize_image - start')
-    if isinstance(image_path, QtGui.QImage):
-        print u'wrong instance!'
-    else:
-        reader = QtGui.QImageReader(image_path)
+    reader = QtGui.QImageReader(image_path)
     # The image's ratio.
     image_ratio = float(reader.size().width()) / float(reader.size().height())
     resize_ratio = float(width) / float(height)
