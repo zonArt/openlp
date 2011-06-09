@@ -6,10 +6,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,7 @@ from traceback import format_exception
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -45,7 +47,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version
+    get_application_version, DelayStartThread
 
 log = logging.getLogger()
 
@@ -77,10 +79,20 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
-    def run(self):
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+
+    def run(self, args):
         """
         Run the OpenLP application.
         """
+        # On Windows, the args passed into the constructor are
+        # ignored. Not very handy, so set the ones we want to use.
+        self.args = args
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -107,11 +119,12 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.clipboard())
+        self.mainWindow = MainWindow(self.clipboard(), self.args)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
+            log.debug(u'Splashscreen closed')
         self.mainWindow.repaint()
         self.processEvents()
         if not has_run_wizard:
@@ -120,7 +133,28 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
+        Receiver.send_message(u'maindisplay_blank_check')
+        self.mainWindow.appStartup()
+        DelayStartThread(self.mainWindow).start()
         return self.exec_()
+
+    def isAlreadyRunning(self):
+        """
+        Look to see if OpenLP is already running and ask if a 2nd copy
+        is to be started.
+        """
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            status = QtGui.QMessageBox.critical(None,
+                UiStrings().Error, UiStrings().OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
+        else:
+            self.sharedMemory.create(1)
+            return False
 
     def hookException(self, exctype, value, traceback):
         if not hasattr(self, u'mainWindow'):
@@ -194,6 +228,9 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    # Instance check
+    if app.isAlreadyRunning():
+        sys.exit()
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     app.setApplicationName(u'OpenLP')
@@ -209,11 +246,17 @@ def main():
             + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
-    appTranslator = LanguageManager.get_translator(language)
-    app.installTranslator(appTranslator)
+    app_translator, default_translator = \
+        LanguageManager.get_translator(language)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit(app.run())
+    sys.exit(app.run(qt_args))
 
 if __name__ == u'__main__':
     """

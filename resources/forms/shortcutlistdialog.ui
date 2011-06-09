@@ -41,35 +41,35 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="shortcutLayout">
+    <layout class="QGridLayout" name="detailsLayout">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <property name="spacing">
       <number>8</number>
      </property>
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <item>
+     <item row="0" column="0">
       <widget class="QRadioButton" name="defaultRadioButton">
        <property name="text">
-        <string>Default: None</string>
+        <string>Default:</string>
        </property>
        <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="customShortcutLayout">
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="customRadioButton">
+       <property name="text">
+        <string>Custom:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="shortcutLayout">
        <property name="spacing">
         <number>8</number>
        </property>
-       <item>
-        <widget class="QRadioButton" name="customRadioButton">
-         <property name="text">
-          <string>Custom:</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="shortcutPushButton">
          <property name="minimumSize">
@@ -83,7 +83,7 @@
          </property>
          <property name="icon">
           <iconset resource="../images/openlp-2.qrc">
-           <normaloff>:/system/system_settings.png</normaloff>:/system/system_settings.png</iconset>
+           <normaloff>:/system/system_configure_shortcuts.png</normaloff>:/system/system_configure_shortcuts.png</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -110,20 +110,50 @@
          </property>
         </widget>
        </item>
+      </layout>
+     </item>
+     <item row="1" column="2">
+      <layout class="QHBoxLayout" name="alternateLayout">
+       <property name="spacing">
+        <number>8</number>
+       </property>
        <item>
-        <spacer name="customShortcutSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <widget class="QPushButton" name="alternatePushButton">
+         <property name="text">
+          <string>None</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
+         <property name="icon">
+          <iconset resource="../images/openlp-2.qrc">
+           <normaloff>:/system/system_configure_shortcuts.png</normaloff>:/system/system_configure_shortcuts.png</iconset>
          </property>
-        </spacer>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="clearAlternateButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/openlp-2.qrc">
+           <normaloff>:/system/clear_shortcut.png</normaloff>:/system/clear_shortcut.png</iconset>
+         </property>
+        </widget>
        </item>
       </layout>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="shortcutLabel">
+       <property name="text">
+        <string>Ctrl+V</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="alternateLabel">
+       <property name="text">
+        <string>Shift+Ins</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

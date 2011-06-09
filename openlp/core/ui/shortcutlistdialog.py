@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,44 +29,91 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
 
+class CaptureShortcutButton(QtGui.QPushButton):
+    """
+    A class to encapsulate a ``QPushButton``.
+    """
+    def __init__(self, *args):
+        QtGui.QPushButton.__init__(self, *args)
+        self.setCheckable(True)
+
+    def keyPressEvent(self, event):
+        """
+        Block the ``Key_Space`` key, so that the button will not change the
+        checked state.
+        """
+        if event.key() == QtCore.Qt.Key_Space and self.isChecked():
+            # Ignore the event, so that the parent can take care of this.
+            event.ignore()
+
+
 class Ui_ShortcutListDialog(object):
     def setupUi(self, shortcutListDialog):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
-        self.dialogLayout = QtGui.QVBoxLayout(shortcutListDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        shortcutListDialog.resize(500, 438)
+        self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
+        self.shortcutListLayout.setObjectName(u'shortcutListLayout')
+        self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
+        self.descriptionLabel.setObjectName(u'descriptionLabel')
+        self.descriptionLabel.setWordWrap(True)
+        self.shortcutListLayout.addWidget(self.descriptionLabel)
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
-        self.treeWidget.setAlternatingRowColors(True)
         self.treeWidget.setObjectName(u'treeWidget')
+        self.treeWidget.setAlternatingRowColors(True)
         self.treeWidget.setColumnCount(3)
-        self.dialogLayout.addWidget(self.treeWidget)
-        self.defaultButton = QtGui.QRadioButton(shortcutListDialog)
-        self.defaultButton.setChecked(True)
-        self.defaultButton.setObjectName(u'defaultButton')
-        self.dialogLayout.addWidget(self.defaultButton)
-        self.customLayout = QtGui.QHBoxLayout()
-        self.customLayout.setObjectName(u'customLayout')
-        self.customButton = QtGui.QRadioButton(shortcutListDialog)
-        self.customButton.setObjectName(u'customButton')
-        self.customLayout.addWidget(self.customButton)
-        self.shortcutButton = QtGui.QPushButton(shortcutListDialog)
-        self.shortcutButton.setIcon(
+        self.treeWidget.setColumnWidth(0, 250)
+        self.shortcutListLayout.addWidget(self.treeWidget)
+        self.detailsLayout = QtGui.QGridLayout()
+        self.detailsLayout.setObjectName(u'detailsLayout')
+        self.detailsLayout.setContentsMargins(-1, 0, -1, -1)
+        self.defaultRadioButton = QtGui.QRadioButton(shortcutListDialog)
+        self.defaultRadioButton.setObjectName(u'defaultRadioButton')
+        self.defaultRadioButton.setChecked(True)
+        self.detailsLayout.addWidget(self.defaultRadioButton, 0, 0, 1, 1)
+        self.customRadioButton = QtGui.QRadioButton(shortcutListDialog)
+        self.customRadioButton.setObjectName(u'customRadioButton')
+        self.detailsLayout.addWidget(self.customRadioButton, 1, 0, 1, 1)
+        self.primaryLayout = QtGui.QHBoxLayout()
+        self.primaryLayout.setObjectName(u'primaryLayout')
+        self.primaryPushButton = CaptureShortcutButton(shortcutListDialog)
+        self.primaryPushButton.setObjectName(u'primaryPushButton')
+        self.primaryPushButton.setMinimumSize(QtCore.QSize(84, 0))
+        self.primaryPushButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
-        self.shortcutButton.setCheckable(True)
-        self.shortcutButton.setObjectName(u'shortcutButton')
-        self.customLayout.addWidget(self.shortcutButton)
-        self.clearShortcutButton = QtGui.QToolButton(shortcutListDialog)
-        self.clearShortcutButton.setIcon(
+        self.primaryLayout.addWidget(self.primaryPushButton)
+        self.clearPrimaryButton = QtGui.QToolButton(shortcutListDialog)
+        self.clearPrimaryButton.setObjectName(u'clearPrimaryButton')
+        self.clearPrimaryButton.setMinimumSize(QtCore.QSize(0, 16))
+        self.clearPrimaryButton.setIcon(
             build_icon(u':/system/clear_shortcut.png'))
-        self.clearShortcutButton.setAutoRaise(True)
-        self.clearShortcutButton.setObjectName(u'clearShortcutButton')
-        self.customLayout.addWidget(self.clearShortcutButton)
-        self.customLayout.addStretch()
-        self.dialogLayout.addLayout(self.customLayout)
+        self.primaryLayout.addWidget(self.clearPrimaryButton)
+        self.detailsLayout.addLayout(self.primaryLayout, 1, 1, 1, 1)
+        self.alternateLayout = QtGui.QHBoxLayout()
+        self.alternateLayout.setObjectName(u'alternateLayout')
+        self.alternatePushButton = CaptureShortcutButton(shortcutListDialog)
+        self.alternatePushButton.setObjectName(u'alternatePushButton')
+        self.alternatePushButton.setIcon(
+            build_icon(u':/system/system_configure_shortcuts.png'))
+        self.alternateLayout.addWidget(self.alternatePushButton)
+        self.clearAlternateButton = QtGui.QToolButton(shortcutListDialog)
+        self.clearAlternateButton.setObjectName(u'clearAlternateButton')
+        self.clearAlternateButton.setIcon(
+            build_icon(u':/system/clear_shortcut.png'))
+        self.alternateLayout.addWidget(self.clearAlternateButton)
+        self.detailsLayout.addLayout(self.alternateLayout, 1, 2, 1, 1)
+        self.primaryLabel = QtGui.QLabel(shortcutListDialog)
+        self.primaryLabel.setObjectName(u'primaryLabel')
+        self.detailsLayout.addWidget(self.primaryLabel, 0, 1, 1, 1)
+        self.alternateLabel = QtGui.QLabel(shortcutListDialog)
+        self.alternateLabel.setObjectName(u'alternateLabel')
+        self.detailsLayout.addWidget(self.alternateLabel, 0, 2, 1, 1)
+        self.shortcutListLayout.addLayout(self.detailsLayout)
         self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Reset)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults)
+        self.shortcutListLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
             shortcutListDialog.accept)
@@ -76,13 +124,24 @@ class Ui_ShortcutListDialog(object):
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
+        self.descriptionLabel.setText(translate('OpenLP.ShortcutListDialog',
+            'Select an action and click one of the buttons below to start '
+            'capturing a new primary or alternate shortcut, respectively.'))
         self.treeWidget.setHeaderLabels([
             translate('OpenLP.ShortcutListDialog', 'Action'),
             translate('OpenLP.ShortcutListDialog', 'Shortcut'),
             translate('OpenLP.ShortcutListDialog', 'Alternate')])
-        self.defaultButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'Default: %s'))
-        self.customButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'Custom:'))
-        self.shortcutButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'None'))
+        self.defaultRadioButton.setText(
+            translate('OpenLP.ShortcutListDialog', 'Default'))
+        self.customRadioButton.setText(
+            translate('OpenLP.ShortcutListDialog', 'Custom'))
+        self.primaryPushButton.setToolTip(
+            translate('OpenLP.ShortcutListDialog', 'Capture shortcut.'))
+        self.alternatePushButton.setToolTip(
+            translate('OpenLP.ShortcutListDialog', 'Capture shortcut.'))
+        self.clearPrimaryButton.setToolTip(
+            translate('OpenLP.ShortcutListDialog',
+            'Restore the default shortcut of this action.'))
+        self.clearAlternateButton.setToolTip(
+            translate('OpenLP.ShortcutListDialog',
+            'Restore the default shortcut of this action.'))

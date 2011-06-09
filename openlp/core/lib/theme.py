@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -192,7 +193,7 @@ class VerticalType(object):
     Bottom = 2
 
     Names = [u'top', u'middle', u'bottom']
-    TranslatedNames = [UiStrings.Top, UiStrings.Middle, UiStrings.Bottom]
+    TranslatedNames = [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
@@ -207,6 +208,8 @@ class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
+    FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
+    SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
     def __init__(self):
         """
         Initialise the theme object.
@@ -581,8 +584,8 @@ class ThemeXML(object):
         """
         Change Camel Case string to python string
         """
-        sub_name = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', sub_name).lower()
+        sub_name = ThemeXML.FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
+        return ThemeXML.SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """

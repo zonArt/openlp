@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +36,7 @@ from lxml import etree
 
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
@@ -59,14 +61,15 @@ class OpenLyricsImport(SongImport):
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
-                return False
+                return
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
-                parsed_file = etree.parse(file_path, parser)
+                # Pass a file object, because lxml does not cope with some
+                # special characters in the path (see lp:757673 and lp:744337).
+                parsed_file = etree.parse(open(file_path, u'r'), parser)
                 xml = unicode(etree.tostring(parsed_file))
-                if self.openLyrics.xml_to_song(xml) is None:
-                    log.debug(u'File could not be imported: %s' % file_path)
+                self.openLyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
-        return True
+                self.log_error(file_path, SongStrings.XMLSyntaxError)

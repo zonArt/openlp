@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,9 +39,16 @@ log = logging.getLogger(__name__)
 
 class ScreenList(object):
     """
-    Wrapper to handle the parameters of the display screen
+    Wrapper to handle the parameters of the display screen.
+
+    To get access to the screen list call ``ScreenList.get_instance()``.
     """
     log.info(u'Screen loaded')
+    instance = None
+
+    @staticmethod
+    def get_instance():
+        return ScreenList.instance
 
     def __init__(self, desktop):
         """
@@ -49,17 +57,15 @@ class ScreenList(object):
         ``desktop``
             A ``QDesktopWidget`` object.
         """
+        ScreenList.instance = self
         self.desktop = desktop
         self.preview = None
         self.current = None
         self.override = None
         self.screen_list = []
         self.display_count = 0
-        # actual display number
-        self.current_display = 0
-        # save config display number
-        self.monitor_number = 0
         self.screen_count_changed()
+        self._load_screen_settings()
         QtCore.QObject.connect(desktop,
             QtCore.SIGNAL(u'resized(int)'), self.screen_resolution_changed)
         QtCore.QObject.connect(desktop,
@@ -73,7 +79,7 @@ class ScreenList(object):
         ``number``
             The number of the screen, which size has changed.
         """
-        log.info(u'screenResolutionChanged %d' % number)
+        log.info(u'screen_resolution_changed %d' % number)
         for screen in self.screen_list:
             if number == screen[u'number']:
                 newScreen = {
@@ -98,6 +104,9 @@ class ScreenList(object):
         ``changed_screen``
             The screen's number which has been (un)plugged.
         """
+        # Do not log at start up.
+        if changed_screen != -1:
+            log.info(u'screen_count_changed %d' % self.desktop.numScreens())
         # Remove unplugged screens.
         for screen in copy.deepcopy(self.screen_list):
             if screen[u'number'] == self.desktop.numScreens():
@@ -110,8 +119,7 @@ class ScreenList(object):
                     u'size': self.desktop.screenGeometry(number),
                     u'primary': (self.desktop.primaryScreen() == number)
                 })
-        # We do not want to send this message, when the method is called the
-        # first time.
+        # We do not want to send this message at start up.
         if changed_screen != -1:
             # Reload setting tabs to apply possible changes.
             Receiver.send_message(u'config_screen_changed')
@@ -150,6 +158,7 @@ class ScreenList(object):
             screen[u'number'], screen[u'size'])
         if screen[u'primary']:
             self.current = screen
+            self.override = copy.deepcopy(self.current)
         self.screen_list.append(screen)
         self.display_count += 1
 
@@ -189,13 +198,10 @@ class ScreenList(object):
         log.debug(u'set_current_display %s', number)
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
-            self.override = copy.deepcopy(self.current)
-            self.current_display = 0
         else:
             self.current = self.screen_list[number]
-            self.override = copy.deepcopy(self.current)
             self.preview = copy.deepcopy(self.current)
-            self.current_display = number
+        self.override = copy.deepcopy(self.current)
         if self.display_count == 1:
             self.preview = self.screen_list[0]
 
@@ -214,4 +220,32 @@ class ScreenList(object):
         use the correct screen attributes.
         """
         log.debug(u'reset_current_display')
-        self.set_current_display(self.current_display)
+        self.set_current_display(self.current[u'number'])
+
+    def _load_screen_settings(self):
+        """
+        Loads the screen size and the monitor number from the settings.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'general')
+        self.set_current_display(settings.value(u'monitor',
+            QtCore.QVariant(self.display_count - 1)).toInt()[0])
+        self.display = settings.value(
+            u'display on monitor', QtCore.QVariant(True)).toBool()
+        override_display = settings.value(
+            u'override position', QtCore.QVariant(False)).toBool()
+        x = settings.value(u'x position',
+            QtCore.QVariant(self.current[u'size'].x())).toInt()[0]
+        y = settings.value(u'y position',
+            QtCore.QVariant(self.current[u'size'].y())).toInt()[0]
+        width = settings.value(u'width',
+            QtCore.QVariant(self.current[u'size'].width())).toInt()[0]
+        height = settings.value(u'height',
+            QtCore.QVariant(self.current[u'size'].height())).toInt()[0]
+        self.override[u'size'] = QtCore.QRect(x, y, width, height)
+        self.override[u'primary'] = False
+        settings.endGroup()
+        if override_display:
+            self.set_override_display()
+        else:
+            self.reset_current_display()

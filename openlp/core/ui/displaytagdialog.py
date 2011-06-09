@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -68,9 +69,6 @@ class Ui_DisplayTagDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.defaultPushButton = QtGui.QPushButton(self.widget)
-        self.defaultPushButton.setObjectName(u'defaultPushButton')
-        self.horizontalLayout.addWidget(self.defaultPushButton)
         self.deletePushButton = QtGui.QPushButton(self.widget)
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.horizontalLayout.addWidget(self.deletePushButton)
@@ -112,11 +110,14 @@ class Ui_DisplayTagDialog(object):
         self.endTagLineEdit = QtGui.QLineEdit(self.editGroupBox)
         self.endTagLineEdit.setObjectName(u'endTagLineEdit')
         self.dataGridLayout.addWidget(self.endTagLineEdit, 4, 1, 1, 1)
-        self.updatePushButton = QtGui.QPushButton(self.editGroupBox)
-        self.updatePushButton.setObjectName(u'updatePushButton')
-        self.dataGridLayout.addWidget(self.updatePushButton, 4, 2, 1, 1)
+        self.savePushButton = QtGui.QPushButton(self.editGroupBox)
+        self.savePushButton.setObjectName(u'savePushButton')
+        self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_accept_reject_button_box(displayTagDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(displayTagDialog)
+        closeButton = QtGui.QDialogButtonBox.Close
+        self.buttonBox.setObjectName('displayTagDialogButtonBox')
+        self.buttonBox.setStandardButtons(closeButton)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(displayTagDialog)
@@ -127,8 +128,8 @@ class Ui_DisplayTagDialog(object):
             'Configure Display Tags'))
         self.editGroupBox.setTitle(
             translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
-        self.updatePushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Update'))
+        self.savePushButton.setText(
+            translate('OpenLP.DisplayTagDialog', 'Save'))
         self.descriptionLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
@@ -136,10 +137,8 @@ class Ui_DisplayTagDialog(object):
             translate('OpenLP.DisplayTagDialog', 'Start tag'))
         self.endTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'End tag'))
-        self.deletePushButton.setText(UiStrings.Delete)
-        self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Default'))
-        self.newPushButton.setText(UiStrings.New)
+        self.deletePushButton.setText(UiStrings().Delete)
+        self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
