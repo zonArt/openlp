@@ -59,6 +59,7 @@ class SlideController(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
+        self.display = None
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -422,6 +423,8 @@ class SlideController(QtGui.QWidget):
         screen previews.
         """
         # rebuild display as screen size changed
+        if self.display:
+            self.display.close()
         self.display = MainDisplay(self, self.image_manager, self.isLive)
         self.display.alertTab = self.alertTab
         self.display.setup()
