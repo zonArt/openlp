@@ -81,7 +81,7 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
                 title=translate('OpenLP.StartTimeForm',
                 'Time Validation Error'),
                 message=translate('OpenLP.StartTimeForm',
-                'Start time is after the End Time of the media item'))
+                'Start time is after the End time of the media item'))
             return
         self.item[u'service_item'].start_time = start
         self.item[u'service_item'].end_time = end
