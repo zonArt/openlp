@@ -102,6 +102,13 @@ psvince.dll
     the install will fail.  The dll can be obtained from here:
     http://www.vincenzo.net/isxkb/index.php?title=PSVince)
 
+Mako    
+    Mako Templates for Python.  This package is required for building the
+    remote plugin.  It can be installed by going to your
+    python_directory\scripts\.. and running "easy_install Mako".  If you do not
+    have easy_install, the Mako package can be obtained here:
+    http://www.makotemplates.org/download.html
+
 """
 
 import os
@@ -194,7 +201,8 @@ def write_version_file():
     code = bzr.wait()
     if code != 0:
         raise Exception(u'Error running bzr log')
-    latest = output.split(u':')[0]
+    outputAscii = unicode(output, errors='ignore')
+    latest = outputAscii.split(u':')[0]
     versionstring = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
     f = open(os.path.join(dist_path, u'.version'), u'w')
     f.write(versionstring)

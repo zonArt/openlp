@@ -696,7 +696,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
-            Receiver.send_message(u'songs_load_list')
             self.song = None
             QtGui.QDialog.accept(self)
 

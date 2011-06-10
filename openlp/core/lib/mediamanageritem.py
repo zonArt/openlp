@@ -91,7 +91,8 @@ class MediaManagerItem(QtGui.QWidget):
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
+        self.hide()
+        self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
@@ -390,21 +391,26 @@ class MediaManagerItem(QtGui.QWidget):
             self.iconFromFile(image, thumb)
         return True
 
-    def iconFromFile(self, image, thumb):
+    def iconFromFile(self, image_path, thumb_path):
         """
         Create a thumbnail icon from a given image.
 
-        ``image``
+        ``image_path``
             The image file to create the icon from.
 
-        ``thumb``
-            The filename to save the thumbnail to
+        ``thumb_path``
+            The filename to save the thumbnail to.
         """
-        icon = build_icon(unicode(image))
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        ext = os.path.splitext(thumb)[1].lower()
-        pixmap.save(thumb, ext[1:])
-        return icon
+        ext = os.path.splitext(thumb_path)[1].lower()
+        reader = QtGui.QImageReader(image_path)
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+        thumb = reader.read()
+        thumb.save(thumb_path, ext[1:])
+        if os.path.exists(thumb_path):
+            return build_icon(unicode(thumb_path))
+        # Fallback for files with animation support.
+        return build_icon(unicode(image_path))
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
@@ -453,7 +459,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if QtCore.QSettings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
-            and self.listView.selectedIndexes():
+            and self.listView.selectedIndexes() \
+            and self.auto_select_id == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):
