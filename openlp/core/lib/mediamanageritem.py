@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -90,11 +90,10 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Constructor to create the media manager item.
         """
-        QtGui.QWidget.__init__(self)
-        self.parent = parent
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
-        #TODO: plugin should not be the parent in future
-        self.plugin = parent # plugin
+        QtGui.QWidget.__init__(self, parent)
+        self.hide()
+        self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
+        self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
@@ -112,13 +111,10 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        self.autoSelectItem = None
+        self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
+            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name.lower()),
             self.serviceLoad)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_set_autoselect_item' % self.parent.name.lower()),
-            self.setAutoSelectItem)
 
     def requiredIcons(self):
         """
@@ -395,21 +391,26 @@ class MediaManagerItem(QtGui.QWidget):
             self.iconFromFile(image, thumb)
         return True
 
-    def iconFromFile(self, image, thumb):
+    def iconFromFile(self, image_path, thumb_path):
         """
         Create a thumbnail icon from a given image.
 
-        ``image``
+        ``image_path``
             The image file to create the icon from.
 
-        ``thumb``
-            The filename to save the thumbnail to
+        ``thumb_path``
+            The filename to save the thumbnail to.
         """
-        icon = build_icon(unicode(image))
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        ext = os.path.splitext(thumb)[1].lower()
-        pixmap.save(thumb, ext[1:])
-        return icon
+        ext = os.path.splitext(thumb_path)[1].lower()
+        reader = QtGui.QImageReader(image_path)
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+        thumb = reader.read()
+        thumb.save(thumb_path, ext[1:])
+        if os.path.exists(thumb_path):
+            return build_icon(unicode(thumb_path))
+        # Fallback for files with animation support.
+        return build_icon(unicode(image_path))
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
@@ -431,6 +432,13 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
+    def onFocus(self):
+        """
+        Run when a tab in the media manager gains focus. This gives the media
+        item a chance to focus any elements it wants to.
+        """
+        pass
+
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
@@ -451,7 +459,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if QtCore.QSettings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
-            and self.listView.selectedIndexes():
+            and self.listView.selectedIndexes() \
+            and self.auto_select_id == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):
@@ -468,12 +477,9 @@ class MediaManagerItem(QtGui.QWidget):
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
-                self.parent.previewController.addServiceItem(serviceItem)
+                self.plugin.previewController.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
-
-    def setAutoSelectItem(self, itemToSelect=None):
-        self.autoSelectItem = itemToSelect
 
     def onLiveClick(self):
         """
@@ -496,7 +502,7 @@ class MediaManagerItem(QtGui.QWidget):
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
-            self.parent.liveController.addServiceItem(serviceItem)
+            self.plugin.liveController.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
@@ -526,7 +532,7 @@ class MediaManagerItem(QtGui.QWidget):
         serviceItem = self.buildServiceItem(item, True)
         if serviceItem:
             serviceItem.from_plugin = False
-            self.parent.serviceManager.addServiceItem(serviceItem,
+            self.plugin.serviceManager.addServiceItem(serviceItem,
                 replace=replace)
 
     def onAddEditClick(self):
@@ -539,14 +545,14 @@ class MediaManagerItem(QtGui.QWidget):
                     'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
-            serviceItem = self.parent.serviceManager.getServiceItem()
+            serviceItem = self.plugin.serviceManager.getServiceItem()
             if not serviceItem:
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
-                self.parent.serviceManager.addServiceItem(serviceItem,
+                self.plugin.serviceManager.addServiceItem(serviceItem,
                     replace=True)
             else:
                 # Turn off the remote edit update message indicator
@@ -560,8 +566,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Common method for generating a service item
         """
-        serviceItem = ServiceItem(self.parent)
-        serviceItem.add_icon(self.parent.icon_path)
+        serviceItem = ServiceItem(self.plugin)
+        serviceItem.add_icon(self.plugin.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
@@ -609,6 +615,16 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
+
+    def save_auto_select_id(self):
+        """
+        Sorts out, what item to select after loading a list.
+        """
+        # The item to select has not been set.
+        if self.auto_select_id == -1:
+            item = self.listView.currentItem()
+            if item:
+                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
 
     def search(self, string):
         """

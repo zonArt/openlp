@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -67,7 +67,7 @@ class Renderer(object):
     ``theme_manager``
         The ThemeManager instance, used to get the current theme details.
         """
-        log.debug(u'Initilisation started')
+        log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
@@ -77,7 +77,7 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(self, self.image_manager, False)
+        self.display = MainDisplay(None, self.image_manager, False)
         self.display.setup()
 
     def update_display(self):
@@ -86,7 +86,9 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
-        self.display = MainDisplay(self, self.image_manager, False)
+        if self.display:
+            self.display.close()
+        self.display = MainDisplay(None, self.image_manager, False)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
@@ -241,7 +243,7 @@ class Renderer(object):
         ``screen``
             The QSize of the screen.
         """
-        log.debug(u'calculate default %s', screen)
+        log.debug(u'_calculate default %s', screen)
         self.width = screen.width()
         self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
@@ -286,7 +288,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        log.debug(u'_set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -339,7 +341,7 @@ class Renderer(object):
             # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 if force_page and line_count > 0:
-                    Receiver.send_message(u'theme_line_count', line_count)
+                    Receiver.send_message(u'theme_line_count', line_count - 1)
                 line_count = -1
                 while html_text.endswith(u'<br>'):
                     html_text = html_text[:-4]

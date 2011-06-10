@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -61,8 +61,8 @@ class EasiSlidesImport(SongImport):
         """
         log.info(u'Importing EasiSlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
-        file = etree.parse(self.import_source, parser)
-        xml = unicode(etree.tostring(file))
+        parsed_file = etree.parse(self.import_source, parser)
+        xml = unicode(etree.tostring(parsed_file))
         song_xml = objectify.fromstring(xml)
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:

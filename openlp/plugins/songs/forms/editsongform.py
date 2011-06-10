@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,12 +47,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     log.info(u'%s EditSongForm loaded', __name__)
 
-    def __init__(self, parent, manager):
+    def __init__(self, mediaitem, parent, manager):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
+        self.mediaitem = mediaitem
         self.song = None
         # can this be automated?
         self.width = 400
@@ -90,7 +90,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.renderer.theme_manager.onAddTheme)
+            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -649,7 +649,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if item == 0 and text:
             temp_song_book = text
-        self.parent.song_maintenance_form.exec_()
+        self.mediaitem.song_maintenance_form.exec_()
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()
@@ -696,9 +696,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
-            Receiver.send_message(u'songs_set_autoselect_item',
-                unicode(self.titleEdit.text()))
-            Receiver.send_message(u'songs_load_list')
+            self.song = None
             QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
@@ -756,8 +754,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        if not preview:
-            self.song = None
+        self.mediaitem.auto_select_id = self.song.id
 
     def _processLyrics(self):
         """

@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -215,7 +215,8 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into openlp.org.
         """
         if self.media_item_class:
-            return self.media_item_class(self, self, self.icon)
+            return self.media_item_class(self.mediadock.media_dock, self,
+                self.icon)
         return None
 
     def addImportMenuItem(self, importMenu):
@@ -298,6 +299,12 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
+
+    def appStartup(self):
+        """
+        Perform tasks on application starup
+        """
+        pass
 
     def usesTheme(self, theme):
         """

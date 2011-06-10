@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,7 +85,6 @@ class UiStrings(object):
         self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
-        self.LivePanel = translate('OpenLP.Ui', 'Live Panel')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
         self.Load = translate('OpenLP.Ui', 'Load')
         self.Minutes = translate('OpenLP.Ui', 'm',
@@ -102,14 +101,13 @@ class UiStrings(object):
         self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
-        self.OpenService = translate('OpenLP.Ui', 'Open Service')
+        self.OpenService = translate('OpenLP.Ui', 'Open service.')
         self.Preview = translate('OpenLP.Ui', 'Preview')
-        self.PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
-        self.PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
+        self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
-        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
         self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
-        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
         self.Seconds = translate('OpenLP.Ui', 's',
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
