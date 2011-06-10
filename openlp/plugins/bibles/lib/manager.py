@@ -147,34 +147,33 @@ class BibleManager(object):
         self.db_cache = {}
         self.old_bible_databases = []
         for filename in files:
-            if not filename.startswith(u'old_database_'):
-                bible = BibleDB(self.parent, path=self.path, file=filename)
-                name = bible.get_name()
-                # Remove corrupted files.
-                if name is None:
-                    delete_file(os.path.join(self.path, filename))
-                    continue
-                # Find old database versions
-                if bible.is_old_database():
-                    self.old_bible_databases.append([filename, name])
-                    bible.session.close()
-                    continue
-                log.debug(u'Bible Name: "%s"', name)
-                self.db_cache[name] = bible
-                # Look to see if lazy load bible exists and get create getter.
-                source = self.db_cache[name].get_object(BibleMeta,
-                    u'download source')
-                if source:
-                    download_name = self.db_cache[name].get_object(BibleMeta,
-                        u'download name').value
-                    meta_proxy = self.db_cache[name].get_object(BibleMeta,
-                        u'proxy url')
-                    web_bible = HTTPBible(self.parent, path=self.path,
-                        file=filename, download_source=source.value,
-                        download_name=download_name)
-                    if meta_proxy:
-                        web_bible.proxy_server = meta_proxy.value
-                    self.db_cache[name] = web_bible
+            bible = BibleDB(self.parent, path=self.path, file=filename)
+            name = bible.get_name()
+            # Remove corrupted files.
+            if name is None:
+                delete_file(os.path.join(self.path, filename))
+                continue
+            # Find old database versions
+            if bible.is_old_database():
+                self.old_bible_databases.append([filename, name])
+                bible.session.close()
+                continue
+            log.debug(u'Bible Name: "%s"', name)
+            self.db_cache[name] = bible
+            # Look to see if lazy load bible exists and get create getter.
+            source = self.db_cache[name].get_object(BibleMeta,
+                u'download source')
+            if source:
+                download_name = self.db_cache[name].get_object(BibleMeta,
+                    u'download name').value
+                meta_proxy = self.db_cache[name].get_object(BibleMeta,
+                    u'proxy url')
+                web_bible = HTTPBible(self.parent, path=self.path,
+                    file=filename, download_source=source.value,
+                    download_name=download_name)
+                if meta_proxy:
+                    web_bible.proxy_server = meta_proxy.value
+                self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
     def set_process_dialog(self, wizard):
