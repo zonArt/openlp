@@ -1035,6 +1035,7 @@ class ServiceManager(QtGui.QWidget):
                 item[u'selected'] = False
             serviceIterator = QtGui.QTreeWidgetItemIterator(
                 self.serviceManagerList)
+            selectedItem = None
             while serviceIterator.value():
                 if serviceIterator.value().isSelected():
                     selectedItem = serviceIterator.value()

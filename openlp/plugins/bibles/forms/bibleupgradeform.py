@@ -732,6 +732,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.newbibles[number].session.commit()
             if not bible_failed:
                 self.newbibles[number].create_meta(u'Version', name)
+                oldbible.close_connection()
                 delete_file(os.path.join(self.path, filename[0]))
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm', 

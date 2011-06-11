@@ -254,10 +254,6 @@ class Ui_FirstTimeWizard(object):
             'Default Settings'))
         self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Set up default settings to be used by OpenLP.'))
-        self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Setting Up And Importing'))
-        self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Please wait while OpenLP is set up and your data is imported.'))
         self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Default output display:'))
         self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',

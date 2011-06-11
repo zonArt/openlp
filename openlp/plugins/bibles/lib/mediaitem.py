@@ -983,7 +983,7 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False, False)
         results = []
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])

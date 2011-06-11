@@ -149,7 +149,7 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(UiStrings().PrintServiceOrder)
+        printServiceDialog.setWindowTitle(UiStrings().PrintService)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
@@ -159,7 +159,7 @@ class Ui_PrintServiceDialog(object):
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include play length of media items'))
         self.titleLineEdit.setText(translate('OpenLP.PrintServiceForm',
-            'Service Order Sheet'))
+            'Service Sheet'))
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Page])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Width])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.OneHundred])
