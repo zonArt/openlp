@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit, build_icon
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -54,11 +54,8 @@ class Ui_CustomSlideEditDialog(object):
         QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
-        self.splitButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Split Slide'))
-        self.splitButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
-            'only if it does not fit on the screen as one slide.'))
+        self.splitButton.setText(UiStrings().Split)
+        self.splitButton.setToolTip(UiStrings().SplitToolTip)
         self.insertButton.setText(
             translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
         self.insertButton.setToolTip(
