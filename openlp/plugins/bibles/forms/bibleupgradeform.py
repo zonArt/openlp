@@ -423,8 +423,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             translate('BiblesPlugin.UpgradeWizardForm',
                             'The backup was not successful.\nTo backup your '
                             'Bibles you need permission to write to the given '
-                            'directory. If you have write permissions and this '
-                            'error still occurs, please report a bug.'))
+                            'directory.'))
                         return False
             return True
         elif self.currentPage() == self.selectPage:
@@ -605,8 +604,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Download Error'),
                         translate('BiblesPlugin.UpgradeWizardForm',
                         'To upgrade your Web Bibles an Internet connection is '
-                        'required. If you have a working Internet connection '
-                        'and this error still occurs, please report a bug.'))
+                        'required.'))
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
                         'Upgrading Bible %s of %s: "%s"\nFailed')) %
@@ -737,7 +735,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
-                    'Done')) %
+                    'Complete')) %
                     (number + 1, self.maxBibles, name))
                 self.success[biblenumber] = True
             else:
@@ -770,8 +768,8 @@ class BibleUpgradeForm(OpenLPWizard):
             if self.include_webbible:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
-                    'Bible(s): %s successful%s\nPlease note, that verses from '
-                    'Web Bibles will be downloaded\non demand and so an '
+                    'Bible(s): %s successful%s\nPlease note that verses from '
+                    'Web Bibles will be downloaded on demand and so an '
                     'Internet connection is required.')) %
                     (successful_import, failed_import_text))
             else:
