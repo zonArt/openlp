@@ -137,13 +137,12 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image, width, height, background=QtCore.Qt.black):
+def resize_image(image_path, width, height, background=QtCore.Qt.black):
     """
     Resize an image to fit on the current screen.
 
-    ``image``
-        The image to resize. It has to be either a ``QImage`` instance or the
-        path to the image.
+    ``image_path``
+        The path to the image to resize.
 
     ``width``
         The new image width.
@@ -155,16 +154,24 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
     """
     log.debug(u'resize_image - start')
-    if isinstance(image, QtGui.QImage):
-        preview = image
+    reader = QtGui.QImageReader(image_path)
+    # The image's ratio.
+    image_ratio = float(reader.size().width()) / float(reader.size().height())
+    resize_ratio = float(width) / float(height)
+    # Figure out the size we want to resize the image to (keep aspect ratio).
+    if image_ratio == resize_ratio:
+        size = QtCore.QSize(width, height)
+    elif image_ratio < resize_ratio:
+        # Use the image's height as reference for the new size.
+        size = QtCore.QSize(image_ratio * height, height)
     else:
-        preview = QtGui.QImage(image)
-    if not preview.isNull():
-        # Only resize if different size
-        if preview.width() == width and preview.height == height:
-            return preview
-        preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
+        # Use the image's width as reference for the new size.
+        size = QtCore.QSize(width, 1 / (image_ratio / width))
+    reader.setScaledSize(size)
+    preview = reader.read()
+    if image_ratio == resize_ratio:
+        # We neither need to centre the image nor add "bars" to the image.
+        return preview
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space

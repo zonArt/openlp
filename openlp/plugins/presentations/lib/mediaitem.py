@@ -46,14 +46,14 @@ class PresentationMediaItem(MediaManagerItem):
     """
     log.info(u'Presentations Media Item loaded')
 
-    def __init__(self, parent, icon, title, controllers):
+    def __init__(self, parent, plugin, icon, controllers):
         """
         Constructor. Setup defaults
         """
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -82,7 +82,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
-                        self.parent.serviceManager.supportedSuffixes(type)
+                        self.plugin.serviceManager.supportedSuffixes(type)
         self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
@@ -161,14 +161,14 @@ class PresentationMediaItem(MediaManagerItem):
         titles = [os.path.split(file)[1] for file in currlist]
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
-            self.parent.formparent.displayProgressBar(len(files))
+            self.plugin.formparent.displayProgressBar(len(files))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         files.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in files:
             if not initialLoad:
-                self.parent.formparent.incrementProgressBar()
+                self.plugin.formparent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -208,7 +208,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
-            self.parent.formparent.finishedProgressBar()
+            self.plugin.formparent.finishedProgressBar()
 
     def onDeleteClick(self):
         """

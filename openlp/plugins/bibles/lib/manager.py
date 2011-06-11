@@ -31,9 +31,10 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -140,14 +141,22 @@ class BibleManager(object):
         """
         log.debug(u'Reload bibles')
         files = SettingsManager.get_files(self.settingsSection, self.suffix)
+        if u'alternative_book_names.sqlite' in files:
+            files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
         self.db_cache = {}
+        self.old_bible_databases = []
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
             # Remove corrupted files.
             if name is None:
                 delete_file(os.path.join(self.path, filename))
+                continue
+            # Find old database versions
+            if bible.is_old_database():
+                self.old_bible_databases.append([filename, name])
+                bible.session.close()
                 continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
@@ -211,7 +220,8 @@ class BibleManager(object):
         return [
             {
                 u'name': book.name,
-                u'chapters': self.db_cache[bible].get_chapter_count(book.name)
+                u'book_reference_id': book.book_reference_id, 
+                u'chapters': self.db_cache[bible].get_chapter_count(book)
             }
             for book in self.db_cache[bible].get_books()
         ]
@@ -219,8 +229,15 @@ class BibleManager(object):
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.
+        
+        ``bible``
+            Unicode. The Bible to get the list of books from.
+        
+        ``book``
+            The book object to get the chapter count for.
         """
-        log.debug(u'get_book_chapter_count %s', book)
+        log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible,
+            book.name)
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
@@ -230,9 +247,11 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
-        return self.db_cache[bible].get_verse_count(book, chapter)
+        db_book = self.db_cache[bible].get_book(book)
+        book_ref_id = db_book.book_reference_id
+        return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_verses(self, bible, versetext, show_error=True):
+    def get_verses(self, bible, versetext, firstbible=False, show_error=True):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
@@ -264,6 +283,28 @@ class BibleManager(object):
             return None
         reflist = parse_reference(versetext)
         if reflist:
+            new_reflist = []
+            for item in reflist:
+                if item:
+                    if firstbible:
+                        db_book = self.db_cache[firstbible].get_book(item[0])
+                        db_book = self.db_cache[bible].get_book_by_book_ref_id(
+                            db_book.book_reference_id)
+                    else:
+                        db_book = self.db_cache[bible].get_book(item[0])
+                    if db_book:
+                        book_id = db_book.book_reference_id
+                        log.debug(u'Book name corrected to "%s"', db_book.name)
+                        new_reflist.append((book_id, item[1], item[2], 
+                            item[3]))
+                    else:
+                        log.debug(u'OpenLP failed to find book %s', item[0])
+                        critical_error_message_box(
+                            translate('BiblesPlugin', 'No Book Found'),
+                            translate('BiblesPlugin', 'No matching book '
+                            'could be found in this Bible. Check that you have '
+                            'spelled the name of the book correctly.'))
+            reflist = new_reflist
             return self.db_cache[bible].get_verses(reflist, show_error)
         else:
             if show_error:

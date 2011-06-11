@@ -47,7 +47,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.quickPreviewAllowed = True
         self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -112,14 +112,14 @@ class ImageMediaItem(MediaManagerItem):
 
     def loadList(self, list, initialLoad=False):
         if not initialLoad:
-            self.parent.formparent.displayProgressBar(len(list))
+            self.plugin.formparent.displayProgressBar(len(list))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         list.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for imageFile in list:
             if not initialLoad:
-                self.parent.formparent.incrementProgressBar()
+                self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
@@ -134,7 +134,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
         if not initialLoad:
-            self.parent.formparent.finishedProgressBar()
+            self.plugin.formparent.finishedProgressBar()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item:
@@ -188,7 +188,7 @@ class ImageMediaItem(MediaManagerItem):
         Called to reset the Live backgound with the image selected,
         """
         self.resetAction.setVisible(False)
-        self.parent.liveController.display.resetImage()
+        self.plugin.liveController.display.resetImage()
 
     def liveThemeChanged(self):
         """
@@ -208,7 +208,7 @@ class ImageMediaItem(MediaManagerItem):
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.parent.liveController.display.directImage(name, filename)
+                self.plugin.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
