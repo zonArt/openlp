@@ -90,7 +90,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Constructor to create the media manager item.
         """
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QWidget.__init__(self)
         self.hide()
         self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
@@ -341,8 +341,8 @@ class MediaManagerItem(QtGui.QWidget):
                     critical_error_message_box(
                         UiStrings().Duplicate,
                         unicode(translate('OpenLP.MediaManagerItem',
-                        'Duplicate file name %s.\nFilename already exists in '
-                        'list')) % filename)
+                        'Duplicate filename %s.\nThis filename is already in '
+                        'the list')) % filename)
                 else:
                     newFiles.append(file)
             self.loadList(newFiles)
