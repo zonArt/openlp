@@ -695,7 +695,7 @@ class BibleMediaItem(MediaManagerItem):
                     QtGui.QMessageBox.information(self,
                         translate('BiblePlugin.MediaItem', 'Information'),
                         unicode(translate('BiblePlugin.MediaItem',
-                        'The second Bibles does not contain all the verses '
+                        'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '
                         'included in the results.')) % count,

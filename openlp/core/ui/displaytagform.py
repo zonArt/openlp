@@ -128,7 +128,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         tag = {
             u'desc': translate('OpenLP.DisplayTagTab', 'New Tag'),
             u'start tag': u'{n}',
-            u'start html': translate('OpenLP.DisplayTagTab', '<Html_here>'),
+            u'start html': translate('OpenLP.DisplayTagTab', '<HTML here>'),
             u'end tag': u'{/n}',
             u'end html': translate('OpenLP.DisplayTagTab', '</and here>'),
             u'protected': False
