@@ -47,9 +47,6 @@ class CustomTab(SettingsTab):
         self.displayFooterCheckBox.setObjectName(u'displayFooterCheckBox')
         self.customModeLayout.addRow(self.displayFooterCheckBox)
         self.leftLayout.addWidget(self.customModeGroupBox)
-        QtCore.QObject.connect(self.displayFooterCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onDisplayFooterCheckBoxChanged)
         self.customUIGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.customUIGroupBox.setObjectName(u'customUIGroupBox')
         self.customUILayout = QtGui.QFormLayout(self.customUIGroupBox)
@@ -58,12 +55,15 @@ class CustomTab(SettingsTab):
         self.confirmDeleteCheckBox.setObjectName(u'confirmDeleteCheckBox')
         self.customUILayout.addRow(self.confirmDeleteCheckBox)
         self.leftLayout.addWidget(self.customUIGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
+        QtCore.QObject.connect(self.displayFooterCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onDisplayFooterCheckBoxChanged)
         QtCore.QObject.connect(self.confirmDeleteCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onConfirmDeleteCheckBoxChanged)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
-        
+
     def retranslateUi(self):
         self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
             'Custom Display'))
