@@ -1086,7 +1086,7 @@ class ServiceManager(QtGui.QWidget):
                 self.repaintServiceList(itemcount + 1, 0)
                 self.mainwindow.liveController.replaceServiceManagerItem(
                     newItem)
-        self.setModified()
+                self.setModified()
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False,
         repaint=True, selected=False):
