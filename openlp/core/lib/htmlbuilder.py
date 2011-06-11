@@ -261,7 +261,7 @@ sup {
             clearTimeout(timer);
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext);
+        text_fade('lyricsshadow', newtext.replace(/-webkit-text-fill-color:[^;\"]+/gi, ""));
         if(text_opacity()==1) return;
         timer = setTimeout(function(){
             show_text(newtext);
