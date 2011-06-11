@@ -1077,10 +1077,10 @@ class ServiceManager(QtGui.QWidget):
         Using the service item passed replace the one with the same edit id
         if found.
         """
-        newItem.render()
         for itemcount, item in enumerate(self.serviceItems):
             if item[u'service_item'].edit_id == newItem.edit_id and \
                 item[u'service_item'].name == newItem.name:
+                newItem.render()
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
