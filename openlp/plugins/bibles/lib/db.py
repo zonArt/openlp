@@ -1101,3 +1101,7 @@ class OldBibleDB(QtCore.QObject, Manager):
             ]
         else:
             return None
+
+    def close_connection(self):
+        self.cursor.close()
+        self.connection.close()

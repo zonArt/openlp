@@ -93,6 +93,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setText(u'')
             self.creditEdit.setText(u'')
             self.themeComboBox.setCurrentIndex(0)
+            self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         else:
             self.customSlide = self.manager.get_object(CustomSlide, id)
             self.titleEdit.setText(self.customSlide.title)

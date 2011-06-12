@@ -297,7 +297,7 @@ class SongImportForm(OpenLPWizard):
         self.songsOfFellowshipDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The Songs of '
             'Fellowship importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.genericAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.genericRemoveButton.setText(
@@ -305,7 +305,7 @@ class SongImportForm(OpenLPWizard):
         self.genericDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.easiSlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.easiSlidesBrowseButton.setText(UiStrings().Browse)
