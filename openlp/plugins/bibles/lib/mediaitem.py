@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -695,7 +695,7 @@ class BibleMediaItem(MediaManagerItem):
                     QtGui.QMessageBox.information(self,
                         translate('BiblePlugin.MediaItem', 'Information'),
                         unicode(translate('BiblePlugin.MediaItem',
-                        'The second Bibles does not contain all the verses '
+                        'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '
                         'included in the results.')) % count,
@@ -984,7 +984,6 @@ class BibleMediaItem(MediaManagerItem):
         """
         bible = unicode(self.quickVersionComboBox.currentText())
         search_results = self.plugin.manager.get_verses(bible, string, False, False)
-        results = []
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]
