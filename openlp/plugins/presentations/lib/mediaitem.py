@@ -228,7 +228,7 @@ class PresentationMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'presentations', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         """
@@ -313,7 +313,7 @@ class PresentationMediaItem(MediaManagerItem):
 
     def search(self, string):
         files = SettingsManager.load_list(
-            self.settingsSection, self.settingsSection)
+            self.settingsSection, u'presentations')
         results = []
         string = string.lower()
         for file in files:

@@ -80,7 +80,7 @@ class ImageMediaItem(MediaManagerItem):
             u'thumbnails')
         check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.settingsSection, self.settingsSection), True)
+            self.settingsSection, u'images'), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -108,7 +108,7 @@ class ImageMediaItem(MediaManagerItem):
                         unicode(text.text())))
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'images', self.getFileList())
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
@@ -217,8 +217,7 @@ class ImageMediaItem(MediaManagerItem):
                     'the image file "%s" no longer exists.')) % filename)
 
     def search(self, string):
-        files = SettingsManager.load_list(self.settingsSection,
-            self.settingsSection)
+        files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()
         for file in files:

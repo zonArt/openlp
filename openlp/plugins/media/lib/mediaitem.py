@@ -182,8 +182,7 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.loadList(SettingsManager.load_list(self.settingsSection,
-            self.settingsSection))
+        self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
 
     def onDeleteClick(self):
         """
@@ -196,7 +195,7 @@ class MediaMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'media', self.getFileList())
 
     def loadList(self, files):
         # Sort the themes by its filename considering language specific
@@ -217,8 +216,7 @@ class MediaMediaItem(MediaManagerItem):
             self.mediaObject = Phonon.MediaObject(self)
 
     def search(self, string):
-        files = SettingsManager.load_list(self.settingsSection,
-            self.settingsSection)
+        files = SettingsManager.load_list(self.settingsSection, u'media')
         results = []
         string = string.lower()
         for file in files:
