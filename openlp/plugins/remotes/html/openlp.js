@@ -5,7 +5,8 @@
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
  * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
  * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
+ * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
+ * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -46,7 +47,7 @@ window.OpenLP = {
         var select = $("#search-plugin");
         select.html("");
         $.each(data.results.items, function (idx, value) {
-          select.append("<option value='" + value + "'>" + value + "</option>");
+          select.append("<option value='" + value[0] + "'>" + value[1] + "</option>");
         });
         select.selectmenu("refresh");
       }
@@ -214,15 +215,15 @@ window.OpenLP = {
         var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         if (data.results.items.length == 0) {
-          var li = $("<li data-icon=\"false\">").text('No results');
+          var li = $("<li data-icon=\"false\">").text(translationStrings["no_results"]);
           ul.append(li);
-        } 
+        }
         else {
             $.each(data.results.items, function (idx, value) {
-              var li = $("<li data-icon=\"false\">").append(
-                $("<a href=\"#\">").attr("value", value[0]).text(value[1]));
-              li.children("a").click(OpenLP.goLive);
-              ul.append(li);
+              ul.append($("<li>").append($("<a>").attr("href", "#options")
+                  .attr("data-rel", "dialog").attr("data-transition", "pop")
+                  .attr("value", value[0]).click(OpenLP.showOptions)
+                  .text(value[1])));
             });
         }
         ul.listview("refresh");
@@ -230,17 +231,34 @@ window.OpenLP = {
     );
     return false;
   },
+  showOptions: function (event) {
+    var element = OpenLP.getElement(event);
+    console.log(element);
+    $("#selected-item").val(element.attr("value"));
+  },
   goLive: function (event) {
-    var slide = OpenLP.getElement(event);
-    var id = slide.attr("value");
+    var id = $("#selected-item").val();
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
-      {"data": text})
-    $.mobile.changePage("slide-controller");
+      {"data": text}
+    );
+    $.mobile.changePage("#slide-controller");
+    return false;
+  },
+  addToService: function (event) {
+    var id = $("#selected-item").val();
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
+    $("#options").dialog("close");
     return false;
   }
-
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
@@ -260,6 +278,8 @@ $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
+$("#go-live").live("click", OpenLP.goLive);
+$("#add-to-service").live("click", OpenLP.addToService);
 // Poll the server twice a second to get any updates.
 OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
+# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,13 +43,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, parent):
+    def __init__(self, mediaitem, parent, manager):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self)
-        self.parent = parent
-        self.manager = self.parent.manager
+        QtGui.QDialog.__init__(self, parent)
+        self.manager = manager
+        self.mediaitem = mediaitem
         self.setupUi(self)
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)
@@ -65,6 +66,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.slideListView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onEditButtonPressed)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
@@ -89,6 +93,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setText(u'')
             self.creditEdit.setText(u'')
             self.themeComboBox.setCurrentIndex(0)
+            self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         else:
             self.customSlide = self.manager.get_object(CustomSlide, id)
             self.titleEdit.setText(self.customSlide.title)
@@ -111,7 +116,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
-            Receiver.send_message(u'custom_load_list')
             QtGui.QDialog.accept(self)
 
     def saveCustom(self):
@@ -132,7 +136,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
-        return self.manager.save_object(self.customSlide)
+        success = self.manager.save_object(self.customSlide)
+        self.mediaitem.auto_select_id = self.customSlide.id
+        return success
 
     def onUpButtonClicked(self):
         selectedRow = self.slideListView.currentRow()
