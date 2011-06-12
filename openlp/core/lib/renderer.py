@@ -324,34 +324,28 @@ class Renderer(object):
 
         """
         log.debug(u'_paginate_slide - Start')
-        line_end = u''
+        line_end = u' '
         if line_break:
             line_end = u'<br>'
         formatted = []
+        raw_text = u''
         html_text = u''
-        styled_text = u''
-        line_count = 0
-        for line in lines:
-            if line_count != -1:
-                line_count += 1
-            styled_line = expand_tags(line) + line_end
-            styled_text += styled_line
-            html = self.page_shell + styled_text + HTML_END
-            self.web.setHtml(html)
-            # Text too long so go to next page.
-            if self.web_frame.contentsSize().height() > self.page_height:
-                if force_page and line_count > 0:
-                    Receiver.send_message(u'theme_line_count', line_count - 1)
-                line_count = -1
-                while html_text.endswith(u'<br>'):
-                    html_text = html_text[:-4]
-                formatted.append(html_text)
-                html_text = u''
-                styled_text = styled_line
-            html_text += line + line_end
-        while html_text.endswith(u'<br>'):
-            html_text = html_text[:-4]
-        formatted.append(html_text)
+        html_words = map(expand_tags, lines)
+        html = self.page_shell + u''.join(html_words) + HTML_END
+        self.web.setHtml(html)
+        # Text too long so go to next page.
+        if self.web_frame.contentsSize().height() > self.page_height:
+            lines = [u'%s<br>' % line for line in lines]
+            html_text, raw_text, index = self._binary_chop(
+                formatted, html_text, raw_text, lines, line_end)
+            if force_page:
+                Receiver.send_message(u'theme_line_count', index + 1)
+        else:
+            formatted.append(line_end.join(html_words))
+        while raw_text.endswith(u'<br>'):
+            raw_text = raw_text[:-4]
+        if raw_text:
+            formatted.append(raw_text)
         log.debug(u'_paginate_slide - End')
         return formatted
 
@@ -408,53 +402,8 @@ class Renderer(object):
                 # Figure out how many words of the line will fit on screen by
                 # using the algorithm known as "binary chop".
                 raw_words = self._words_split(line)
-                html_words = [expand_tags(word) for word in raw_words]
-                smallest_index = 0
-                highest_index = len(html_words) - 1
-                index = int(highest_index / 2)
-                while True:
-                    html = self.page_shell + previous_html + \
-                        u''.join(html_words[:index + 1]).strip() + HTML_END
-                    self.web.setHtml(html)
-                    if self.web_frame.contentsSize().height() > \
-                        self.page_height:
-                        # We know that it does not fit, so change/calculate the
-                        # new index and highest_index accordingly.
-                        highest_index = index
-                        index = int(index - (index - smallest_index) / 2)
-                    else:
-                        smallest_index = index
-                        index = int(index + (highest_index - index) / 2)
-                    # We found the number of words which will fit.
-                    if smallest_index == index or highest_index == index:
-                        index = smallest_index
-                        formatted.append(previous_raw.rstrip(u'<br>') +
-                            u''.join(raw_words[:index + 1]))
-                        previous_html = u''
-                        previous_raw = u''
-                    else:
-                        continue
-                    # Check if the rest of the line fits on the slide. If it
-                    # does we do not have to do the much more intensive "word by
-                    # word" checking.
-                    html = self.page_shell + \
-                        u''.join(html_words[index + 1:]).strip() + HTML_END
-                    self.web.setHtml(html)
-                    if self.web_frame.contentsSize().height() <= \
-                        self.page_height:
-                        previous_html = \
-                            u''.join(html_words[index + 1:]).strip() + line_end
-                        previous_raw = \
-                            u''.join(raw_words[index + 1:]).strip() + line_end
-                        break
-                    else:
-                        # The other words do not fit, thus reset the indexes,
-                        # create a new list and continue with "word by word".
-                        raw_words = raw_words[index + 1:]
-                        html_words = html_words[index + 1:]
-                        smallest_index = 0
-                        highest_index = len(html_words) - 1
-                        index = int(highest_index / 2)
+                previous_html, previous_raw, index = self._binary_chop(
+                    formatted, previous_html, previous_raw, raw_words, line_end, u'<br>')
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end
@@ -463,6 +412,77 @@ class Renderer(object):
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
+
+    def _binary_chop(self, formatted, previous_html, previous_raw, raw_text,
+        line_end):
+        """
+        This implements the binary chop algorithm for faster rendering. However,
+        it is assumed that this method is **only** called, when the text to be
+        rendered does not fit as a whole.
+
+        ``formatted``
+            The list of slides.
+
+        ``previous_html``
+            The html text which is know to fit on a slide, but is not yet added
+            to the list of slides.
+
+        ``previous_raw``
+            The raw text (with display tags) which is know to fit on a slide,
+            but is not yet added to the list of slides.
+
+        ``raw_text``
+            The text which does not fit on a slide and needs to be processed
+            using the binary chop. The text can contain display tags.
+
+        ``line_end``
+            The
+        """
+        html_words = map(expand_tags, raw_text)
+        smallest_index = 0
+        highest_index = len(html_words) - 1
+        index = int(highest_index / 2)
+        while True:
+            html = self.page_shell + previous_html + \
+                separator.join(html_words[:index + 1]).strip() + HTML_END
+            self.web.setHtml(html)
+            if self.web_frame.contentsSize().height() > self.page_height:
+                # We know that it does not fit, so change/calculate the
+                # new index and highest_index accordingly.
+                highest_index = index
+                index = int(index - (index - smallest_index) / 2)
+            else:
+                smallest_index = index
+                index = int(index + (highest_index - index) / 2)
+            # We found the number of words which will fit.
+            if smallest_index == index or highest_index == index:
+                index = smallest_index
+                formatted.append(previous_raw.rstrip(u'<br>') +
+                    u''.join(raw_text[:index + 1]))
+                previous_html = u''
+                previous_raw = u''
+            else:
+                continue
+            # Check if the rest of the line fits on the slide. If it
+            # does we do not have to do the much more intensive "word by
+            # word" checking.
+            html = self.page_shell + \
+                u''.join(html_words[index + 1:]).strip() + HTML_END
+            self.web.setHtml(html)
+            if self.web_frame.contentsSize().height() <= self.page_height:
+                previous_html = \
+                    u''.join(html_words[index + 1:]).strip() + line_end
+                previous_raw = u''.join(raw_text[index + 1:]).strip() + line_end
+                break
+            else:
+                # The other words do not fit, thus reset the indexes,
+                # create a new list and continue with "word by word".
+                raw_text = raw_text[index + 1:]
+                html_words = html_words[index + 1:]
+                smallest_index = 0
+                highest_index = len(html_words) - 1
+                index = int(highest_index / 2)
+        return previous_html, previous_raw, index
 
     def _words_split(self, line):
         """
