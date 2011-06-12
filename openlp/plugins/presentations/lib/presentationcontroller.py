@@ -31,7 +31,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, resize_image
+from openlp.core.lib import Receiver, create_thumb, resize_image, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -149,11 +149,15 @@ class PresentationDocument(object):
         recent than the powerpoint
         """
         lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
+        a = validate_thumb(self.filepath, lastimage)
         if not (lastimage and os.path.isfile(lastimage)):
             return False
         imgdate = os.stat(lastimage).st_mtime
         pptdate = os.stat(self.filepath).st_mtime
-        return imgdate >= pptdate
+        #return imgdate >= pptdate
+        d = imgdate >= pptdate
+        print a, d
+        return a
 
     def close_presentation(self):
         """
@@ -245,9 +249,15 @@ class PresentationDocument(object):
         """
         if self.check_thumbnails():
             return
+        import time
+        import datetime
+        start = time.time()
         if os.path.isfile(file):
-            img = resize_image(file, 320, 240)
-            img.save(self.get_thumbnail_path(idx, False))
+            size = QtCore.QSize(320, 240)
+            create_thumb(file, self.get_thumbnail_path(idx, False), False, size)
+#            img = resize_image(file, 320, 240)
+#            img.save(self.get_thumbnail_path(idx, False))
+        print unicode(datetime.timedelta(seconds=time.time() - start))
 
     def get_thumbnail_path(self, slide_no, check_exists):
         """
