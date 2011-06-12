@@ -112,9 +112,9 @@ class MediaPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('MediaPlugin', 'Load a new media.'),
+            u'load': translate('MediaPlugin', 'Load new media.'),
             u'import': u'',
-            u'new': translate('MediaPlugin', 'Add a new media.'),
+            u'new': translate('MediaPlugin', 'Add new media.'),
             u'edit': translate('MediaPlugin', 'Edit the selected media.'),
             u'delete': translate('MediaPlugin', 'Delete the selected media.'),
             u'preview': translate('MediaPlugin', 'Preview the selected media.'),
