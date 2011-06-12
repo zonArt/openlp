@@ -36,7 +36,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     Receiver, SettingsManager, translate, check_item_selected, \
-    check_directory_exists
+    check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
@@ -364,7 +364,7 @@ class ThemeManager(QtGui.QWidget):
             The theme to delete.
         """
         self.themelist.remove(theme)
-        thumb = theme + u'.png'
+        thumb = u'%s.png' % theme
         delete_file(os.path.join(self.path, thumb))
         delete_file(os.path.join(self.thumbPath, thumb))
         try:
@@ -478,15 +478,12 @@ class ThemeManager(QtGui.QWidget):
                     name = textName
                 thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
                 item_name = QtGui.QListWidgetItem(name)
-                if os.path.exists(thumb):
+                if validate_thumb(theme, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = build_icon(theme)
-                    pixmap = icon.pixmap(QtCore.QSize(88, 50))
-                    pixmap.save(thumb, u'png')
+                    icon = create_thumb(theme, thumb)
                 item_name.setIcon(icon)
-                item_name.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(textName))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
                 self.themeListWidget.addItem(item_name)
                 self.themelist.append(textName)
         self._pushThemes()
@@ -658,9 +655,7 @@ class ThemeManager(QtGui.QWidget):
             os.unlink(samplepathname)
         frame.save(samplepathname, u'png')
         thumb = os.path.join(self.thumbPath, u'%s.png' % name)
-        icon = build_icon(frame)
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        pixmap.save(thumb, u'png')
+        create_thumb(samplepathname, thumb, False)
         log.debug(u'Theme image written to %s', samplepathname)
 
     def updatePreviewImages(self):

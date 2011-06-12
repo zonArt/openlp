@@ -137,6 +137,52 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
+def create_thumb(image_path, thumb_path, return_icon=True):
+    """
+    Create a thumbnail from the given image path and depending on
+    ``return_icon`` it returns an icon from this thumb.
+
+    ``image_path``
+        The image file to create the icon from.
+
+    ``thumb_path``
+        The filename to save the thumbnail to.
+
+    ``return_icon``
+        States if an icon should be build and returned from the thumb. Defaults
+        to ``True``.
+    """
+    ext = os.path.splitext(thumb_path)[1].lower()
+    reader = QtGui.QImageReader(image_path)
+    ratio = float(reader.size().width()) / float(reader.size().height())
+    reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+    thumb = reader.read()
+    thumb.save(thumb_path, ext[1:])
+    if not return_icon:
+        return
+    if os.path.exists(thumb_path):
+        return build_icon(unicode(thumb_path))
+    # Fallback for files with animation support.
+    return build_icon(unicode(image_path))
+
+def validate_thumb(image_path, thumb_path):
+    """
+    Validates whether an image's thumb still exists and if is up to date.
+    **Note**, you must **not** call this function, before checking the
+    existence of the image.
+
+    ``image_path``
+        The path to the image.
+
+    ``thumb_path``
+        The path to the thumb.
+    """
+    if not os.path.exists(unicode(thumb_path)):
+        return False
+    image_date = os.stat(unicode(image_path)).st_mtime
+    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    return image_date <= thumb_date
+
 def resize_image(image_path, width, height, background=QtCore.Qt.black):
     """
     Resize an image to fit on the current screen.
@@ -151,7 +197,7 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
         The new image height.
 
     ``background``
-        The background colour defaults to black.
+        The background colour. Defaults to ``QtCore.Qt.black``.
     """
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
