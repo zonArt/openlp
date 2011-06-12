@@ -202,12 +202,12 @@ class MediaMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
-    def loadList(self, list):
+    def loadList(self, files):
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        list.sort(cmp=locale.strcoll,
+        files.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             item_name = QtGui.QListWidgetItem(filename)
             img = QtGui.QPixmap(u':/media/media_video.png').toImage()
@@ -221,11 +221,11 @@ class MediaMediaItem(MediaManagerItem):
             self.mediaObject = Phonon.MediaObject(self)
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection,
+        files = SettingsManager.load_list(self.settingsSection,
             self.settingsSection)
         results = []
         string = string.lower()
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename.lower().find(string) > -1:
                 results.append([file, filename])

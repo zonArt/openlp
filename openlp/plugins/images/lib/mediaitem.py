@@ -110,14 +110,14 @@ class ImageMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
-    def loadList(self, list, initialLoad=False):
+    def loadList(self, images, initialLoad=False):
         if not initialLoad:
-            self.plugin.formparent.displayProgressBar(len(list))
+            self.plugin.formparent.displayProgressBar(len(images))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        list.sort(cmp=locale.strcoll,
+        images.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
-        for imageFile in list:
+        for imageFile in images:
             if not initialLoad:
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
@@ -155,7 +155,7 @@ class ImageMediaItem(MediaManagerItem):
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if not os.path.exists(filename):
-                missing_items.append(item)
+                missing_items.append(bitem)
                 missing_items_filenames.append(filename)
         for item in missing_items:
             items.remove(item)
@@ -217,11 +217,11 @@ class ImageMediaItem(MediaManagerItem):
                     'the image file "%s" no longer exists.')) % filename)
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection,
+        files = SettingsManager.load_list(self.settingsSection,
             self.settingsSection)
         results = []
         string = string.lower()
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename.lower().find(string) > -1:
                 results.append([file, filename])

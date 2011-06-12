@@ -119,9 +119,9 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        list = SettingsManager.load_list(
+        files = SettingsManager.load_list(
             self.settingsSection, u'presentations')
-        self.loadList(list, True)
+        self.loadList(files, True)
         self.populateDisplayTypes()
 
     def rebuild(self):
@@ -312,10 +312,12 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection, u'presentations')
+        files = SettingsManager.load_list(
+            self.settingsSection, self.settingsSection)
         results = []
         string = string.lower()
-        for file in list:
-            if file.lower().find(string) > -1:
-                results.append([file, file])
+        for file in files:
+            filename = os.path.split(unicode(file))[1]
+            if filename.lower().find(string) > -1:
+                results.append([file, filename])
         return results
