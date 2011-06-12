@@ -114,7 +114,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
             return
         plugin_name_singular = \
-            self.pluginListWidget.currentItem().text().split(u' ')[0]
+            self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
         self.activePlugin = None
         for plugin in self.parent().pluginManager.plugins:
             if plugin.nameStrings[u'singular'] == plugin_name_singular:

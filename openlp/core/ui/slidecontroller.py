@@ -63,7 +63,7 @@ class SlideController(QtGui.QWidget):
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.image_manager = self.parent().image_manager
+        self.imageManager = self.parent().imageManager
         self.loopList = [
             u'Play Slides Menu',
             u'Loop Separator',
@@ -425,7 +425,7 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.image_manager, self.isLive)
+        self.display = MainDisplay(self, self.imageManager, self.isLive)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -632,8 +632,8 @@ class SlideController(QtGui.QWidget):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.image_manager.get_image_bytes(frame[u'title'])
-                    image = self.image_manager.get_image(frame[u'title'])
+                            self.imageManager.get_image_bytes(frame[u'title'])
+                    image = self.imageManager.get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio
