@@ -8,7 +8,7 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Sam Scudder, Jeffrey Smith,      #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -231,7 +231,7 @@ class Ui_AboutDialog(object):
             u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
             u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
             u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
-            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder , '
+            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder, '
             u'Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, '
             u'Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
