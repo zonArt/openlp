@@ -257,12 +257,12 @@ sup {
     }
 
     function show_text(newtext){
+        var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        cleantext = newtext.replace(/-webkit-text-fill-color:[^;\"]+/gi, "");
-        text_fade('lyricsshadow', cleantext);
+        text_fade('lyricsshadow', newtext.replace(match, ""));
         if(text_opacity()==1) return;
         timer = setTimeout(function(){
             show_text(newtext);
