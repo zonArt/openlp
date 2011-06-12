@@ -984,7 +984,6 @@ class BibleMediaItem(MediaManagerItem):
         """
         bible = unicode(self.quickVersionComboBox.currentText())
         search_results = self.plugin.manager.get_verses(bible, string, False, False)
-        results = []
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]

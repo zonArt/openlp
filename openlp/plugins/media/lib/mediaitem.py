@@ -139,8 +139,6 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject.clearQueue()
         self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
         if not self.mediaStateWait(Phonon.StoppedState):
-            # Due to string freeze, borrow a message from presentations
-            # This will be corrected in 1.9.6
             critical_error_message_box(UiStrings().UnsupportedFile,
                     UiStrings().UnsupportedFile)
             return False
@@ -150,8 +148,6 @@ class MediaMediaItem(MediaManagerItem):
             if not self.mediaStateWait(Phonon.PlayingState) \
                 or self.mediaObject.currentSource().type() \
                 == Phonon.MediaSource.Invalid:
-                # Due to string freeze, borrow a message from presentations
-                # This will be corrected in 1.9.6
                 self.mediaObject.stop()
                 critical_error_message_box(UiStrings().UnsupportedFile,
                         UiStrings().UnsupportedFile)
