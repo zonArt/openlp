@@ -73,8 +73,6 @@ class Renderer(object):
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
-        self._binary_chop(
-        )
         self.override_background = None
         self.theme_data = None
         self.bg_frame = None
