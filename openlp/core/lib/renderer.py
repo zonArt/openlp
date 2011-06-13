@@ -214,7 +214,7 @@ class Renderer(object):
             The words to go on the slides.
 
         ``item``
-            The service item object.
+            The :class:`~openlp.core.lib.serviceitem` item object.
         """
         log.debug(u'format slide')
         # Add line endings after each line of text used for bibles.
@@ -232,12 +232,16 @@ class Renderer(object):
                 pages = []
                 for slide in slides:
                     lines = slide.strip(u'\n').split(u'\n')
-                    new_pages = self._paginate_slide(lines, line_end)
-                    pages.extend(new_pages)
+                    pages.extend(self._paginate_slide(lines, line_end))
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
                 pages = self._paginate_slide_words(text, line_end)
-        return pages
+        new_pages = []
+        for page in pages:
+            while page.endswith(u'<br>'):
+                page = page[:-4]
+            new_pages.append(page)
+        return new_pages
 
     def _calculate_default(self, screen):
         """
@@ -320,10 +324,9 @@ class Renderer(object):
             The text to be fitted on the slide split into lines.
 
         ``line_end``
-            Add line endings after each line of text (used for bibles).
+            The text added after each line. Either ``u' '`` or ``u'<br>``.
         """
         log.debug(u'_paginate_slide - Start')
-        #print line_end
         formatted = []
         previous_html = u''
         previous_raw = u''
@@ -337,8 +340,6 @@ class Renderer(object):
                 previous_html, previous_raw, html_lines, lines, line_end)
         else:
             previous_raw = u''.join(lines)
-        while previous_raw.endswith(u'<br>'):
-            previous_raw = previous_raw[:-4]
         if previous_raw:
             formatted.append(previous_raw)
         log.debug(u'_paginate_slide - End')
@@ -354,8 +355,8 @@ class Renderer(object):
             The words to be fitted on the slide split into lines.
 
         ``line_end``
-            Add line endings after each line of text used for bibles.
-
+            The text added after each line. Either ``u' '`` or ``u'<br>``. This
+            is needed for bibles.
         """
         log.debug(u'_paginate_slide_words - Start')
         formatted = []
@@ -364,8 +365,8 @@ class Renderer(object):
         lines = text.split(u'\n')
         for line in lines:
             line = line.strip()
-            styled_line = expand_tags(line)
-            html = self.page_shell + previous_html + styled_line + HTML_END
+            html_line = expand_tags(line)
+            html = self.page_shell + previous_html + html_line + HTML_END
             self.web.setHtml(html)
             # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
@@ -376,33 +377,29 @@ class Renderer(object):
                     self.web.setHtml(html)
                     if self.web_frame.contentsSize().height() <= \
                         self.page_height:
-                        while previous_raw.endswith(u'<br>'):
-                            previous_raw = previous_raw[:-4]
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
-                        html = self.page_shell + styled_line + HTML_END
+                        html = self.page_shell + html_line + HTML_END
                         self.web.setHtml(html)
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
                         if self.web_frame.contentsSize().height() <= \
                             self.page_height:
-                            previous_html = styled_line + line_end
+                            previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
-                # Figure out how many words of the line will fit on screen by
-                # using the algorithm known as "binary chop".
+                # Figure out how many words of the line will fit on screen as
+                # the line will not fit as a whole.
                 raw_words = self._words_split(line)
                 html_words = map(expand_tags, raw_text)
                 previous_html, previous_raw = self._binary_chop(
                     formatted, previous_html, previous_raw, html_words,
                     raw_words, line_end)
             else:
-                previous_html += styled_line + line_end
+                previous_html += html_line + line_end
                 previous_raw += line + line_end
-        while previous_raw.endswith(u'<br>'):
-            previous_raw = previous_raw[:-4]
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
