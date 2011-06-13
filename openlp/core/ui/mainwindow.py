@@ -599,7 +599,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load Themes')
         self.themeManagerContents.loadThemes(True)
         # Hide/show the theme combobox on the service manager
-        Receiver.send_message(u'theme_update_global')
+        self.serviceManagerContents.themeChange()
         # Reset the cursor
         Receiver.send_message(u'cursor_normal')
 
