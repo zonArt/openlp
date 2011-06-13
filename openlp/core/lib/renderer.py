@@ -331,16 +331,16 @@ class Renderer(object):
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = [u'%s<br>' % line for line in lines]
+        separator = u'<br>'
         html_lines = map(expand_tags, lines)
-        html = self.page_shell + u''.join(html_lines) + HTML_END
+        html = self.page_shell + separator.join(html_lines) + HTML_END
         self.web.setHtml(html)
         # Text too long so go to next page.
         if self.web_frame.contentsSize().height() > self.page_height:
             html_text, previous_raw = self._binary_chop(formatted,
-                previous_html, previous_raw, html_lines, lines, line_end)
+                previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
-            previous_raw = u''.join(lines)
+            previous_raw = separator.join(lines)
         if previous_raw:
             formatted.append(previous_raw)
         log.debug(u'_paginate_slide - End')
@@ -394,10 +394,10 @@ class Renderer(object):
                 # Figure out how many words of the line will fit on screen as
                 # the line will not fit as a whole.
                 raw_words = self._words_split(line)
-                html_words = map(expand_tags, raw_text)
+                html_words = map(expand_tags, raw_words)
                 previous_html, previous_raw = self._binary_chop(
                     formatted, previous_html, previous_raw, html_words,
-                    raw_words, line_end)
+                    raw_words, u' ', line_end)
             else:
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
@@ -406,7 +406,7 @@ class Renderer(object):
         return formatted
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
-        raw_list, line_end):
+        raw_list, separator, line_end):
         """
         This implements the binary chop algorithm for faster rendering. However,
         it is assumed that this method is **only** called, when the text to be
@@ -431,16 +431,20 @@ class Renderer(object):
             The text which does not fit on a slide and needs to be processed
             using the binary chop. The text can contain display tags.
 
+        ``separator``
+            The separator for the elements. For lines this is `u'<br>'`` and for
+            words this is u' '.
+
         ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br>``. This
-            is needed for bibles.
+            The text added after each "element line". Either ``u' '`` or
+            ``u'<br>``. This is needed for bibles.
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
             html = self.page_shell + previous_html + \
-                u''.join(html_list[:index + 1]).strip() + HTML_END
+                separator.join(html_list[:index + 1]).strip() + HTML_END
             self.web.setHtml(html)
             if self.web_frame.contentsSize().height() > self.page_height:
                 # We know that it does not fit, so change/calculate the
@@ -454,7 +458,7 @@ class Renderer(object):
             if smallest_index == index or highest_index == index:
                 index = smallest_index
                 formatted.append(previous_raw.rstrip(u'<br>') +
-                    u''.join(raw_list[:index + 1]))
+                    separator.join(raw_list[:index + 1]))
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
@@ -467,12 +471,13 @@ class Renderer(object):
             # does we do not have to do the much more intensive "word by
             # word" checking.
             html = self.page_shell + \
-                u''.join(html_list[index + 1:]).strip() + HTML_END
+                separator.join(html_list[index + 1:]).strip() + HTML_END
             self.web.setHtml(html)
             if self.web_frame.contentsSize().height() <= self.page_height:
-                previous_html = \
-                    u''.join(html_list[index + 1:]).strip() + line_end
-                previous_raw = u''.join(raw_list[index + 1:]).strip() + line_end
+                previous_html = separator.join(
+                    html_list[index + 1:]).strip() + line_end
+                previous_raw = separator.join(
+                    raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The other words do not fit, thus reset the indexes,
@@ -490,8 +495,7 @@ class Renderer(object):
         """
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
-        words = line.split(u' ')
-        return [word + u' ' for word in words]
+        return line.split(u' ')
 
     def _lines_split(self, text):
         """
