@@ -171,9 +171,6 @@ class ServiceItem(object):
         self.themedata = self.renderer.theme_data
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            import time
-            import datetime
-            start = time.time()
             for slide in self._raw_frames:
                 pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                 for page in pages:
@@ -185,7 +182,6 @@ class ServiceItem(object):
                         u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
                         u'verseTag': slide[u'verseTag']
                     })
-            print unicode(datetime.timedelta(seconds=time.time() - start))
         elif self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command:
             pass
