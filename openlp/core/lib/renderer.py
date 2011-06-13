@@ -229,7 +229,6 @@ class Renderer(object):
             # Clean up line endings.
             lines = self._lines_split(text)
             pages = self._paginate_slide(lines, line_end)
-            #TODO: Maybe move the detection to _paginate_slide.
             if len(pages) > 1:
                 # Songs and Custom
                 if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
@@ -410,12 +409,13 @@ class Renderer(object):
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
         raw_list, separator, line_end):
         """
-        This implements the binary chop algorithm for faster rendering. However,
-        it is assumed that this method is **only** called, when the text to be
-        rendered does not fit as a whole.
+        This implements the binary chop algorithm for faster rendering. This
+        algorithm works line based (line by line) and word based (word by word).
+        It is assumed that this method is **only** called, when the lines/words to be
+        rendered do not fit as a whole.
 
         ``formatted``
-            The list of slides.
+            The list to append any slides.
 
         ``previous_html``
             The html text which is know to fit on a slide, but is not yet added
@@ -426,12 +426,12 @@ class Renderer(object):
             but is not yet added to the list of slides. (unicode string)
 
         ``html_list``
-            The text which does not fit on a slide and needs to be processed
+            The elements which do not fit on a slide and needs to be processed
             using the binary chop. The text contains html.
 
         ``raw_list``
-            The text which does not fit on a slide and needs to be processed
-            using the binary chop. The text can contain display tags.
+            The elements which do not fit on a slide and needs to be processed
+            using the binary chop. The elements can contain display tags.
 
         ``separator``
             The separator for the elements. For lines this is `u'<br>'`` and for
@@ -469,9 +469,7 @@ class Renderer(object):
                     break
             else:
                 continue
-            # Check if the rest of the line fits on the slide. If it
-            # does we do not have to do the much more intensive "word by
-            # word" checking.
+            # Check if the remaining elements fit on the slide.
             html = self.page_shell + \
                 separator.join(html_list[index + 1:]).strip() + HTML_END
             self.web.setHtml(html)
@@ -482,8 +480,8 @@ class Renderer(object):
                     raw_list[index + 1:]).strip() + line_end
                 break
             else:
-                # The other words do not fit, thus reset the indexes,
-                # create a new list and continue with "word by word".
+                # The remaining elements do not fit, thus reset the indexes,
+                # create a new list and continue.
                 raw_list = raw_list[index + 1:]
                 html_list = html_list[index + 1:]
                 smallest_index = 0
