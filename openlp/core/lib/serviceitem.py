@@ -165,7 +165,6 @@ class ServiceItem(object):
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        line_break = not self.is_capable(ItemCapabilities.NoLineBreaks)
         theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.renderer.set_override_theme(theme, use_override)
@@ -176,9 +175,8 @@ class ServiceItem(object):
             import datetime
             start = time.time()
             for slide in self._raw_frames:
-                formatted = self.renderer \
-                    .format_slide(slide[u'raw_slide'], line_break, self)
-                for page in formatted:
+                pages = self.renderer.format_slide(slide[u'raw_slide'], self)
+                for page in pages:
                     page = page.replace(u'<br>', u'{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
                     self._display_frames.append({

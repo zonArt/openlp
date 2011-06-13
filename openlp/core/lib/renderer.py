@@ -206,20 +206,24 @@ class Renderer(object):
             self._calculate_default(self.screens.current[u'size'])
             return preview
 
-    def format_slide(self, text, line_break, item):
+    def format_slide(self, text, item):
         """
         Calculate how much text can fit on a slide.
 
         ``text``
             The words to go on the slides.
 
-        ``line_break``
-            Add line endings after each line of text used for bibles.
+        ``item``
+            The service item object.
         """
         log.debug(u'format slide')
+        # Add line endings after each line of text used for bibles.
+        line_end = u'<br>'
+        if item.is_capable(ItemCapabilities.NoLineBreaks):
+            line_end = u' '
         # clean up line endings
         lines = self._lines_split(text)
-        pages = self._paginate_slide(lines, line_break, self.force_page)
+        pages = self._paginate_slide(lines, line_end)
         if len(pages) > 1:
             # Songs and Custom
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
@@ -228,12 +232,11 @@ class Renderer(object):
                 pages = []
                 for slide in slides:
                     lines = slide.strip(u'\n').split(u'\n')
-                    new_pages = self._paginate_slide(lines, line_break,
-                        self.force_page)
+                    new_pages = self._paginate_slide(lines, line_end)
                     pages.extend(new_pages)
             # Bibles
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-                pages = self._paginate_slide_words(text, line_break)
+                pages = self._paginate_slide_words(text, line_end)
         return pages
 
     def _calculate_default(self, screen):
@@ -241,7 +244,7 @@ class Renderer(object):
         Calculate the default dimentions of the screen.
 
         ``screen``
-            The QSize of the screen.
+            The screen to calculate the default of.
         """
         log.debug(u'_calculate default %s', screen)
         self.width = screen.width()
@@ -308,25 +311,19 @@ class Renderer(object):
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
 
-    def _paginate_slide(self, lines, line_break, force_page=False):
+    def _paginate_slide(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
         ``lines``
-            The words to be fitted on the slide split into lines.
+            The text to be fitted on the slide split into lines.
 
-        ``line_break``
+        ``line_end``
             Add line endings after each line of text (used for bibles).
-
-        ``force_page``
-            Flag to tell message lines in page.
-
         """
         log.debug(u'_paginate_slide - Start')
-        line_end = u''
-        if line_break:
-            line_end = u'<br>'
+        #print line_end
         formatted = []
         previous_html = u''
         previous_raw = u''
@@ -336,11 +333,8 @@ class Renderer(object):
         self.web.setHtml(html)
         # Text too long so go to next page.
         if self.web_frame.contentsSize().height() > self.page_height:
-            html_text, previous_raw, index = self._binary_chop(
-                formatted, previous_html, previous_raw, html_lines, lines,
-                line_end)
-            if force_page:
-                Receiver.send_message(u'theme_line_count', index + 1)
+            html_text, previous_raw = self._binary_chop(formatted,
+                previous_html, previous_raw, html_lines, lines, line_end)
         else:
             previous_raw = u''.join(lines)
         while previous_raw.endswith(u'<br>'):
@@ -350,7 +344,7 @@ class Renderer(object):
         log.debug(u'_paginate_slide - End')
         return formatted
 
-    def _paginate_slide_words(self, text, line_break):
+    def _paginate_slide_words(self, text, line_end):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings. This version is to handle text which needs to be split
@@ -359,14 +353,11 @@ class Renderer(object):
         ``text``
             The words to be fitted on the slide split into lines.
 
-        ``line_break``
+        ``line_end``
             Add line endings after each line of text used for bibles.
 
         """
         log.debug(u'_paginate_slide_words - Start')
-        line_end = u' '
-        if line_break:
-            line_end = u'<br>'
         formatted = []
         previous_html = u''
         previous_raw = u''
@@ -404,7 +395,7 @@ class Renderer(object):
                 # using the algorithm known as "binary chop".
                 raw_words = self._words_split(line)
                 html_words = map(expand_tags, raw_text)
-                previous_html, previous_raw, index = self._binary_chop(
+                previous_html, previous_raw = self._binary_chop(
                     formatted, previous_html, previous_raw, html_words,
                     raw_words, line_end)
             else:
@@ -466,6 +457,10 @@ class Renderer(object):
                     u''.join(raw_list[:index + 1]))
                 previous_html = u''
                 previous_raw = u''
+                # Stop here as the theme line count was requested.
+                if self.force_page:
+                    Receiver.send_message(u'theme_line_count', index + 1)
+                    break
             else:
                 continue
             # Check if the rest of the line fits on the slide. If it
@@ -487,7 +482,7 @@ class Renderer(object):
                 smallest_index = 0
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)
-        return previous_html, previous_raw, index
+        return previous_html, previous_raw
 
     def _words_split(self, line):
         """
