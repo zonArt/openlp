@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -356,9 +356,9 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Save Service As'))
         self.fileSaveAsItem.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
-        self.printServiceOrderItem.setText(UiStrings().PrintServiceOrder)
+        self.printServiceOrderItem.setText(UiStrings().PrintService)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Print the current Service Order.'))
+            'Print the current service.'))
         self.fileExitItem.setText(
             translate('OpenLP.MainWindow', 'E&xit'))
         self.fileExitItem.setStatusTip(
@@ -483,7 +483,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
-        self.image_manager = ImageManager()
+        self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -552,7 +552,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.image_manager, self.themeManagerContents)
+        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
@@ -603,6 +603,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.themeManagerContents.loadThemes(True)
+        # Hide/show the theme combobox on the service manager
+        self.serviceManagerContents.themeChange()
+        # Reset the cursor
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
@@ -657,13 +660,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.modeLiveItem.setChecked(True)
 
     def appStartup(self):
-        # Give all the plugins a chance to perform some tasks at startup
+        """
+        Give all the plugins a chance to perform some tasks at startup
+        """
         Receiver.send_message(u'openlp_process_events')
         for plugin in self.pluginManager.plugins:
             if plugin.isActive():
-                Receiver.send_message(u'openlp_process_events')
                 plugin.appStartup()
-        Receiver.send_message(u'openlp_process_events')
+                Receiver.send_message(u'openlp_process_events')
 
     def firstTime(self):
         # Import themes if first time
@@ -814,7 +818,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'screenChanged')
         Receiver.send_message(u'cursor_busy')
-        self.image_manager.update_display()
+        self.imageManager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()

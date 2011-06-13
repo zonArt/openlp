@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -297,7 +297,7 @@ class SongImportForm(OpenLPWizard):
         self.songsOfFellowshipDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The Songs of '
             'Fellowship importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.genericAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.genericRemoveButton.setText(
@@ -305,7 +305,7 @@ class SongImportForm(OpenLPWizard):
         self.genericDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.easiSlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.easiSlidesBrowseButton.setText(UiStrings().Browse)
