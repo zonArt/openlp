@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -70,14 +70,14 @@ class ImagePlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('ImagePlugin', 'Load a new Image.'),
+            u'load': translate('ImagePlugin', 'Load a new image.'),
             u'import': u'',
-            u'new': translate('ImagePlugin', 'Add a new Image.'),
-            u'edit': translate('ImagePlugin', 'Edit the selected Image.'),
-            u'delete': translate('ImagePlugin', 'Delete the selected Image.'),
-            u'preview': translate('ImagePlugin', 'Preview the selected Image.'),
-            u'live': translate('ImagePlugin', 'Send the selected Image live.'),
+            u'new': translate('ImagePlugin', 'Add a new image.'),
+            u'edit': translate('ImagePlugin', 'Edit the selected image.'),
+            u'delete': translate('ImagePlugin', 'Delete the selected image.'),
+            u'preview': translate('ImagePlugin', 'Preview the selected image.'),
+            u'live': translate('ImagePlugin', 'Send the selected image live.'),
             u'service': translate('ImagePlugin',
-                'Add the selected Image to the service.')
+                'Add the selected image to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
