@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -683,19 +683,19 @@ class BibleMediaItem(MediaManagerItem):
                         verse.book.book_reference_id)
                     if not db_book:
                         log.debug(u'Passage "%s %d:%d" not found in Second '
-                            u'Bible' % (verse.book.name, verse.chapter, 
+                            u'Bible' % (verse.book.name, verse.chapter,
                             verse.verse))
                         passage_not_found = True
                         count += 1
                         continue
                     new_search_results.append(verse)
-                    text.append((verse.book.book_reference_id, verse.chapter, 
+                    text.append((verse.book.book_reference_id, verse.chapter,
                         verse.verse, verse.verse))
                 if passage_not_found:
-                    QtGui.QMessageBox.information(self, 
-                        translate('BiblePlugin.MediaItem', 'Information'), 
+                    QtGui.QMessageBox.information(self,
+                        translate('BiblePlugin.MediaItem', 'Information'),
                         unicode(translate('BiblePlugin.MediaItem',
-                        'The second Bibles does not contain all the verses '
+                        'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '
                         'included in the results.')) % count,
@@ -983,8 +983,7 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False)
-        results = []
+        search_results = self.plugin.manager.get_verses(bible, string, False, False)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]

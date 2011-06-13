@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -80,7 +80,7 @@ class ImageMediaItem(MediaManagerItem):
             u'thumbnails')
         check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
-            self.settingsSection, self.settingsSection), True)
+            self.settingsSection, u'images'), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -108,16 +108,16 @@ class ImageMediaItem(MediaManagerItem):
                         unicode(text.text())))
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'images', self.getFileList())
 
-    def loadList(self, list, initialLoad=False):
+    def loadList(self, images, initialLoad=False):
         if not initialLoad:
-            self.plugin.formparent.displayProgressBar(len(list))
+            self.plugin.formparent.displayProgressBar(len(images))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        list.sort(cmp=locale.strcoll,
+        images.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
-        for imageFile in list:
+        for imageFile in images:
             if not initialLoad:
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
@@ -155,7 +155,7 @@ class ImageMediaItem(MediaManagerItem):
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if not os.path.exists(filename):
-                missing_items.append(item)
+                missing_items.append(bitem)
                 missing_items_filenames.append(filename)
         for item in missing_items:
             items.remove(item)
@@ -217,11 +217,10 @@ class ImageMediaItem(MediaManagerItem):
                     'the image file "%s" no longer exists.')) % filename)
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection,
-            self.settingsSection)
+        files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename.lower().find(string) > -1:
                 results.append([file, filename])

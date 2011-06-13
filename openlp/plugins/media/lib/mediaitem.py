@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -150,8 +150,7 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.loadList(SettingsManager.load_list(self.settingsSection,
-            self.settingsSection))
+        self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
 
     def onDeleteClick(self):
         """
@@ -164,14 +163,14 @@ class MediaMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'media', self.getFileList())
 
-    def loadList(self, list):
+    def loadList(self, files):
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        list.sort(cmp=locale.strcoll,
+        files.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             item_name = QtGui.QListWidgetItem(filename)
             img = QtGui.QPixmap(u':/media/media_video.png').toImage()
@@ -180,11 +179,10 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection,
-            self.settingsSection)
+        files = SettingsManager.load_list(self.settingsSection, u'media')
         results = []
         string = string.lower()
-        for file in list:
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename.lower().find(string) > -1:
                 results.append([file, filename])

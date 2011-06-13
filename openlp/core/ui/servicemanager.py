@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -629,7 +629,7 @@ class ServiceManager(QtGui.QWidget):
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.ServiceManager', 'Corrupt File'),
                     translate('OpenLP.ServiceManager', 'This file is either '
-                    'corrupt or not an OpenLP 2.0 service file.'))
+                    'corrupt or it is not an OpenLP 2.0 service file.'))
             return
         finally:
             if fileTo:
@@ -1035,6 +1035,7 @@ class ServiceManager(QtGui.QWidget):
                 item[u'selected'] = False
             serviceIterator = QtGui.QTreeWidgetItemIterator(
                 self.serviceManagerList)
+            selectedItem = None
             while serviceIterator.value():
                 if serviceIterator.value().isSelected():
                     selectedItem = serviceIterator.value()
@@ -1076,16 +1077,16 @@ class ServiceManager(QtGui.QWidget):
         Using the service item passed replace the one with the same edit id
         if found.
         """
-        newItem.render()
         for itemcount, item in enumerate(self.serviceItems):
             if item[u'service_item'].edit_id == newItem.edit_id and \
                 item[u'service_item'].name == newItem.name:
+                newItem.render()
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
                 self.mainwindow.liveController.replaceServiceManagerItem(
                     newItem)
-        self.setModified()
+                self.setModified()
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False,
         repaint=True, selected=False):

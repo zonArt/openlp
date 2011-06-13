@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -89,11 +89,8 @@ class Ui_EditVerseDialog(object):
             VerseType.TranslatedNames[VerseType.Ending])
         self.verseTypeComboBox.setItemText(VerseType.Other,
             VerseType.TranslatedNames[VerseType.Other])
-        self.splitButton.setText(
-            translate('SongsPlugin.EditVerseForm', '&Split'))
-        self.splitButton.setToolTip(
-            translate('SongsPlugin.EditVerseForm', 'Split a slide into two '
-            'only if it does not fit on the screen as one slide.'))
+        self.splitButton.setText(UiStrings().Split)
+        self.splitButton.setToolTip(UiStrings().SplitToolTip)
         self.insertButton.setText(
             translate('SongsPlugin.EditVerseForm', '&Insert'))
         self.insertButton.setToolTip(
