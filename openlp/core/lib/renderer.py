@@ -222,21 +222,23 @@ class Renderer(object):
         line_end = u'<br>'
         if item.is_capable(ItemCapabilities.NoLineBreaks):
             line_end = u' '
-        # clean up line endings
-        lines = self._lines_split(text)
-        pages = self._paginate_slide(lines, line_end)
-        if len(pages) > 1:
-            # Songs and Custom
-            if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-                # Do not forget the line breaks !
-                slides = text.split(u'[---]')
-                pages = []
-                for slide in slides:
-                    lines = slide.strip(u'\n').split(u'\n')
-                    pages.extend(self._paginate_slide(lines, line_end))
-            # Bibles
-            elif item.is_capable(ItemCapabilities.AllowsWordSplit):
-                pages = self._paginate_slide_words(text, line_end)
+        # Bibles
+        if item.is_capable(ItemCapabilities.AllowsWordSplit):
+            pages = self._paginate_slide_words(text, line_end)
+        else:
+            # Clean up line endings.
+            lines = self._lines_split(text)
+            pages = self._paginate_slide(lines, line_end)
+            #TODO: Maybe move the detection to _paginate_slide.
+            if len(pages) > 1:
+                # Songs and Custom
+                if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+                    # Do not forget the line breaks!
+                    slides = text.split(u'[---]')
+                    pages = []
+                    for slide in slides:
+                        lines = slide.strip(u'\n').split(u'\n')
+                        pages.extend(self._paginate_slide(lines, line_end))
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
