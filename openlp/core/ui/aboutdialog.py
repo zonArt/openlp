@@ -118,8 +118,8 @@ class Ui_AboutDialog(object):
             u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
             u'Stevan "StevanP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
-            u'Simon "samscudder" Scudder, Jeffrey "whydoubt" Smith',
-            u'Maikel Stuivenberg Frode "frodus" Woldsund']
+            u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
+            u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
