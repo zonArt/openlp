@@ -101,7 +101,7 @@ class Renderer(object):
             The global-level theme to be set.
 
         ``theme_level``
-            Defaults to *``ThemeLevel.Global``*. The theme level, can be
+            Defaults to ``ThemeLevel.Global``. The theme level, can be
             ``ThemeLevel.Global``, ``ThemeLevel.Service`` or
             ``ThemeLevel.Song``.
         """
@@ -205,6 +205,7 @@ class Renderer(object):
             # Reset the real screen size for subsequent render requests
             self._calculate_default(self.screens.current[u'size'])
             return preview
+        self.force_page = False
 
     def format_slide(self, text, item):
         """
@@ -214,7 +215,7 @@ class Renderer(object):
             The words to go on the slides.
 
         ``item``
-            The :class:`~openlp.core.lib.serviceitem` item object.
+            The :class:`~openlp.core.lib.serviceitem.ServiceItem` item object.
         """
         log.debug(u'format slide')
         # Add line endings after each line of text used for bibles.
@@ -423,14 +424,16 @@ class Renderer(object):
             but is not yet added to the list of slides. (unicode string)
 
         ``html_list``
-
+            The text which does not fit on a slide and needs to be processed
+            using the binary chop. The text contains html.
 
         ``raw_list``
             The text which does not fit on a slide and needs to be processed
             using the binary chop. The text can contain display tags.
 
         ``line_end``
-            The
+            The text added after each line. Either ``u' '`` or ``u'<br>``. This
+            is needed for bibles.
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
