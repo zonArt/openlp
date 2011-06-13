@@ -73,6 +73,8 @@ class Renderer(object):
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
+        self._binary_chop(
+        )
         self.override_background = None
         self.theme_data = None
         self.bg_frame = None
@@ -411,8 +413,8 @@ class Renderer(object):
         """
         This implements the binary chop algorithm for faster rendering. This
         algorithm works line based (line by line) and word based (word by word).
-        It is assumed that this method is **only** called, when the lines/words to be
-        rendered do not fit as a whole.
+        It is assumed that this method is **only** called, when the lines/words
+        to be rendered do not fit as a whole.
 
         ``formatted``
             The list to append any slides.
