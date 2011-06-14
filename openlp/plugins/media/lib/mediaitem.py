@@ -139,6 +139,7 @@ class MediaMediaItem(MediaManagerItem):
                 ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
+        # TODO
         #Receiver.send_message(u'media_video', [self.plugin.liveController, filename, False])
         # force a non-existent theme
         service_item.theme = -1

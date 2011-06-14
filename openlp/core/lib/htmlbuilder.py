@@ -67,15 +67,6 @@ body {
     z-index:2;
 }
 %s
-#video1 {
-    z-index:3;
-}
-#video2 {
-    z-index:3;
-}
-#flash {
-    z-index:4;
-}
 #alert {
     position: absolute;
     left: 0px;
@@ -288,9 +279,9 @@ def build_html(item, screen, alert, islive, background, plugins=None, image=None
     plugin_html = u''
     if plugins:
         for plugin in plugins:
-            plugin_css += plugin.display_css()
-            plugin_js += plugin.display_javascript()
-            plugin_html += plugin.display_html()
+            plugin_css += plugin.getDisplayCss()
+            plugin_js += plugin.getDisplayJavascript()
+            plugin_html += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         plugin_css,

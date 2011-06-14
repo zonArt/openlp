@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -6,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -104,23 +104,6 @@ class VlcAPI(MediaAPI):
     def check_available(self):
         return vlc_available
 
-    def get_supported_file_types(self):
-        self.supported_file_types = ['avi']
-        self.additional_extensions = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-ms-wmv': [u'.wmv']}
-
     def load(self, display):
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
@@ -134,6 +117,7 @@ class VlcAPI(MediaAPI):
         display.vlcMediaPlayer.set_media(display.vlcMedia)
         # parse the metadata of the file
         display.vlcMedia.parse()
+        self.volume(display, volume)
         return True
 
     def mediaStateWait(self, display, mediaState):
@@ -169,7 +153,8 @@ class VlcAPI(MediaAPI):
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
-        display.vlcMediaPlayer.audio_set_volume(vol)
+        if display.hasAudio:
+            display.vlcMediaPlayer.audio_set_volume(vol)
 
     def seek(self, display, seekVal):
         if display.vlcMediaPlayer.is_seekable():
@@ -190,6 +175,3 @@ class VlcAPI(MediaAPI):
         if not controller.seekSlider.isSliderDown():
             currentPos = display.vlcMediaPlayer.get_position() * 1000
             controller.seekSlider.setSliderPosition(currentPos)
-
-    def get_supported_file_types(self):
-        pass

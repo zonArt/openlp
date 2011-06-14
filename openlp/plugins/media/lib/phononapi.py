@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -6,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -135,10 +135,7 @@ class PhononAPI(MediaAPI):
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
         if not self.mediaStateWait(display, Phonon.StoppedState):
             return False
-        vol = float(volume) / float(10)
-        display.audio.setVolume(vol)
-        #self.info.start_time = 10000
-        #self.info.end_time = 20000
+        self.volume(display, volume)
         return True
 
     def mediaStateWait(self, display, mediaState):
@@ -177,8 +174,9 @@ class PhononAPI(MediaAPI):
 
     def volume(self, display, vol):
         # 1.0 is the highest value
-        vol = float(vol) / float(100)
-        display.audio.setVolume(vol)
+        if display.hasAudio:
+            vol = float(vol) / float(100)
+            display.audio.setVolume(vol)
 
     def seek(self, display, seekVal):
         display.mediaObject.seek(seekVal)
@@ -190,7 +188,6 @@ class PhononAPI(MediaAPI):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
-        print display, status
         if self.hasOwnWidget:
             display.phononWidget.setVisible(status)
 
@@ -210,6 +207,3 @@ class PhononAPI(MediaAPI):
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition( \
                 display.mediaObject.currentTime())
-
-    def get_supported_file_types(self):
-        pass

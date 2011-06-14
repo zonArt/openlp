@@ -396,7 +396,7 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self, self.image_manager, self.isLive)
+        self.display = MainDisplay(self, self, self.imageManager, self.isLive)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -488,7 +488,6 @@ class SlideController(QtGui.QWidget):
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
-            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
 
     def enablePreviewToolBar(self, item):

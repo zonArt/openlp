@@ -110,7 +110,6 @@ class MediaPlugin(Plugin):
         store for later use
         """
         self.mediaManager.APIs[controller.name] = controller
-        #self.controllers[controller.name] = controller
 
     def checkPreConditions(self):
         """
@@ -143,20 +142,20 @@ class MediaPlugin(Plugin):
         else:
             return False
 
-    def display_css(self):
+    def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
-        return self.mediaManager.display_css()
+        return self.mediaManager.getDisplayCss()
 
-    def display_javascript(self):
+    def getDisplayJavascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return self.mediaManager.display_javascript()
+        return self.mediaManager.getDisplayJavascript()
 
-    def display_html(self):
+    def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
-        return self.mediaManager.display_html()
+        return self.mediaManager.getDisplayHtml()
