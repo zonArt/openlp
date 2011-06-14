@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -6,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -73,16 +73,25 @@ class WebkitAPI(MediaAPI):
         # no special controls
         pass
 
-    def display_css(self):
+    def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
         css = u'''
+        #video1 {
+            z-index:3;
+        }
+        #video2 {
+            z-index:3;
+        }
+        #flash {
+            z-index:4;
+        }
         '''
         return css
 
 
-    def display_javascript(self):
+    def getDisplayJavascript(self):
         """
         Add javascript functions to htmlbuilder
         """
@@ -241,7 +250,7 @@ class WebkitAPI(MediaAPI):
         return js
 
 
-    def display_html(self):
+    def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
@@ -262,9 +271,6 @@ class WebkitAPI(MediaAPI):
 
     def check_available(self):
         return True
-
-    def get_supported_file_types(self):
-        pass
 
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
@@ -289,14 +295,10 @@ class WebkitAPI(MediaAPI):
 
     def resize(self, display):
         controller = display.controller
-#        if display == controller.previewDisplay:
-#            display.webView.resize(display.size())
         display.webView.resize(display.size())
 
     def play(self, display):
         controller = display.controller
-        #display.override[u'theme'] = u''
-        #display.override[u'video'] = True
         display.webLoaded = True
         self.set_visible(display, True)
         if controller.media_info.isFlash:
@@ -324,10 +326,11 @@ class WebkitAPI(MediaAPI):
     def volume(self, display, vol):
         controller = display.controller
         # 1.0 is the highest value
-        vol = float(vol) / float(100)
-        if not controller.media_info.isFlash:
-            display.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
-                str(vol))
+        if display.hasVolume:
+            vol = float(vol) / float(100)
+            if not controller.media_info.isFlash:
+                display.frame.evaluateJavaScript(
+                    u'show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seekVal):
         controller = display.controller
@@ -374,6 +377,3 @@ class WebkitAPI(MediaAPI):
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.setSliderPosition(currentTime)
-
-    def get_supported_file_types(self):
-        pass

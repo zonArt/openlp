@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -6,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -33,9 +33,6 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.media.lib import MediaAPI, MediaState, MediaInfo
-from webkitapi import WebkitAPI
-from phononapi import PhononAPI
-from vlcapi import VlcAPI
 
 log = logging.getLogger(__name__)
 
@@ -110,31 +107,31 @@ class MediaManager(object):
         if not isAnyonePlaying:
             self.Timer.stop()
 
-    def display_css(self):
+    def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
         css = u'';
         for api in self.APIs.values():
-            css+= api.display_css()
+            css += api.getDisplayCss()
         return css
 
-    def display_javascript(self):
+    def getDisplayJavascript(self):
         """
         Add javascript functions to htmlbuilder
         """
         js = u''
         for api in self.APIs.values():
-            js+= api.display_javascript()
+            js += api.getDisplayJavascript()
         return js
 
-    def display_html(self):
+    def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
         html = u''
         for api in self.APIs.values():
-            html+= api.display_html()
+            html += api.getDisplayHtml()
         return html
 
     def addControllerItems(self, controller, control_panel):
@@ -194,6 +191,7 @@ class MediaManager(object):
             return
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
+            display.resize(display.controller.slidePreview.size())
             display.hasAudio = False
         for api in self.APIs.values():
             api.setup(display)
@@ -202,6 +200,7 @@ class MediaManager(object):
         # Generic controls
         controller.mediabar.setVisible(value)
         # Special controls
+        # TODO
 #        for api in self.APIs.values():
 #            api.setup_controls(controller, control_panel)
 
@@ -250,6 +249,8 @@ class MediaManager(object):
         self.video_seek([controller, [0]])
         self.video_play([controller])
         self.set_controls_visible(controller, True)
+        log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
+        print u'use %s controller' % self.curDisplayMediaAPI[display].name
 
     def check_file_type(self, controller, display):
         """

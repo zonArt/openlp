@@ -78,7 +78,8 @@ class MediaTab(SettingsTab):
         self.apiOrderLayout.addWidget(self.apiOrderlistWidget)
         self.orderingButtonsWidget = QtGui.QWidget(self.apiOrderGroupBox)
         self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
-        self.orderingButtonLayout = QtGui.QHBoxLayout(self.orderingButtonsWidget)
+        self.orderingButtonLayout = QtGui.QHBoxLayout( \
+            self.orderingButtonsWidget)
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
         self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
         self.orderingDownButton.setObjectName(u'orderingDownButton')
@@ -96,7 +97,6 @@ class MediaTab(SettingsTab):
             QtCore.QObject.connect(checkbox,
                 QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onApiCheckBoxChanged)
-
         QtCore.QObject.connect(self.orderingUpButton,
             QtCore.SIGNAL(u'pressed()'), self.onOrderingUpButtonPressed)
         QtCore.QObject.connect(self.orderingDownButton,
@@ -133,23 +133,24 @@ class MediaTab(SettingsTab):
     def updateApiList(self):
         self.apiOrderlistWidget.clear()
         for api in self.usedAPIs:
-            self.apiOrderlistWidget.addItem(api)
+            if api in self.ApiCheckBoxes.keys():
+                self.apiOrderlistWidget.addItem(api)
 
     def onOrderingUpButtonPressed(self):
         currentRow = self.apiOrderlistWidget.currentRow()
         if currentRow > 0:
             item = self.apiOrderlistWidget.takeItem(currentRow)
-            self.apiOrderlistWidget.insertItem(currentRow-1, item)
-            self.apiOrderlistWidget.setCurrentRow(currentRow-1)
-            self.usedAPIs.move(currentRow, currentRow-1)
+            self.apiOrderlistWidget.insertItem(currentRow - 1, item)
+            self.apiOrderlistWidget.setCurrentRow(currentRow - 1)
+            self.usedAPIs.move(currentRow, currentRow - 1)
 
     def onOrderingDownButtonPressed(self):
         currentRow = self.apiOrderlistWidget.currentRow()
-        if currentRow < self.apiOrderlistWidget.count()-1:
+        if currentRow < self.apiOrderlistWidget.count() - 1:
             item = self.apiOrderlistWidget.takeItem(currentRow)
-            self.apiOrderlistWidget.insertItem(currentRow+1, item)
-            self.apiOrderlistWidget.setCurrentRow(currentRow+1)
-            self.usedAPIs.move(currentRow, currentRow+1)
+            self.apiOrderlistWidget.insertItem(currentRow + 1, item)
+            self.apiOrderlistWidget.setCurrentRow(currentRow + 1)
+            self.usedAPIs.move(currentRow, currentRow + 1)
 
     def load(self):
         self.usedAPIs = QtCore.QSettings().value(

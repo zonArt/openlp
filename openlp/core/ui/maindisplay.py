@@ -56,8 +56,6 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the preview screen
         """
-#        self.setGeometry(0, 0,
-#            self.parent().width(), self.parent().height())
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.parent().width(), self.parent().height())
@@ -71,7 +69,6 @@ class Display(QtGui.QGraphicsView):
         self.webView.setHtml(build_html(serviceItem, screen,
             None, None, None, self.controller.parent().pluginManager.plugins))
         self.webView.hide()
-        #self.hide()
 
 class MainDisplay(QtGui.QGraphicsView):
     """
@@ -88,7 +85,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.videoHide = False
         self.override = {}
         self.retranslateUi()
-        #self.mediaObject = None
+        self.mediaObject = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
@@ -118,7 +115,8 @@ class MainDisplay(QtGui.QGraphicsView):
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
+        self.webView.settings().setAttribute( \
+            QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -356,7 +354,8 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, self.controller.parent().pluginManager.plugins, image_bytes)
+            self.isLive, background,
+            self.controller.parent().pluginManager.plugins, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
