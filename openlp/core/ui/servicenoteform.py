@@ -42,6 +42,10 @@ class ServiceNoteForm(QtGui.QDialog):
         self.setupUi()
         self.retranslateUi()
 
+    def exec_(self):
+        self.textEdit.setFocus()
+        return QtGui.QDialog.exec_(self)
+
     def setupUi(self):
         self.setObjectName(u'serviceNoteEdit')
         self.dialogLayout = QtGui.QVBoxLayout(self)
