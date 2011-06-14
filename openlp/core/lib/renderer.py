@@ -503,5 +503,5 @@ class Renderer(object):
         """
         # this parse we do not want to use this so remove it
         text = text.replace(u'\n[---]', u'')
-        lines = text.split(u'\n')
-        return [line.replace(u'[---]', u'') for line in lines]
+        text = text.replace(u'[---]', u'')
+        return text.split(u'\n')
