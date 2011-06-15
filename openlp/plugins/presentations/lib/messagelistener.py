@@ -95,6 +95,8 @@ class Controller(object):
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
+                if self.doc.slidenumber > self.doc.get_slide_count():
+                    self.doc.slidenumber = self.doc.get_slide_count()
                 self.doc.goto_slide(self.doc.slidenumber)
 
     def slide(self, slide):
@@ -149,6 +151,11 @@ class Controller(object):
         if self.doc.is_blank():
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
+            return
+        # The "End of slideshow" screen is after the last slide
+        # Note, we can't just stop on the last slide, since it may
+        # contain animations that need to be stepped through.
+        if self.doc.slidenumber > self.doc.get_slide_count():
             return
         self.activate()
         self.doc.next_step()
