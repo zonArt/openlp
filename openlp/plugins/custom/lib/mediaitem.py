@@ -105,7 +105,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom slide_edit'), self.onRemoteEdit)
+            QtCore.SIGNAL(u'custom_slide_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
