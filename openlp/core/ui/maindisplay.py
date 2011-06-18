@@ -62,7 +62,8 @@ class MainDisplay(QtGui.QGraphicsView):
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint)
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.X11BypassWindowManagerHint)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
