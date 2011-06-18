@@ -490,7 +490,7 @@ def build_lyrics_css(item, webkitvers):
         # with the fill, or normal text. letter-spacing=1 is workaround
         # https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Before 534.3 the text-shadow didn't get displayed when
+        # Up to 534.3 the text-shadow didn't get displayed when
         # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkitvers >= 533.3:
@@ -498,7 +498,7 @@ def build_lyrics_css(item, webkitvers):
         else:
             outline = build_lyrics_outline_css(theme)
         if theme.font_main_shadow:
-            if theme.font_main_outline and webkitvers < 534.3:
+            if theme.font_main_outline and webkitvers <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) +
                     (int(theme.font_main_outline_size) * 2),
@@ -588,7 +588,7 @@ def build_lyrics_html(item, webkitvers):
     # display:table/display:table-cell are required for each lyric block.
     lyrics = u''
     theme = item.themedata
-    if webkitvers < 534.3 and theme and theme.font_main_outline:
+    if webkitvers <= 534.3 and theme and theme.font_main_outline:
         lyrics += u'<div class="lyricstable">' \
             u'<div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
