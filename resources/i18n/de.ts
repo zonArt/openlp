@@ -5210,7 +5210,7 @@ Einstellung korrekt.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/editverseform.py" line="197"/>
         <source>You need to type some text in to the verse.</source>
-        <translation>Das Lied benötigt mindestens einen Vers.</translation>
+        <translation>Die Strophe benötigt etwas Text.</translation>
     </message>
 </context>
 <context>
