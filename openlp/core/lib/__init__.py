@@ -137,7 +137,7 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def create_thumb(image_path, thumb_path, return_icon=True):
+def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
     Create a thumbnail from the given image path and depending on
     ``return_icon`` it returns an icon from this thumb.
@@ -151,11 +151,17 @@ def create_thumb(image_path, thumb_path, return_icon=True):
     ``return_icon``
         States if an icon should be build and returned from the thumb. Defaults
         to ``True``.
+
+    ``size``
+        Defaults to ``None``.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
-    ratio = float(reader.size().width()) / float(reader.size().height())
-    reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+    if size is None:
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+    else:
+        reader.setScaledSize(size)
     thumb = reader.read()
     thumb.save(thumb_path, ext[1:])
     if not return_icon:
@@ -165,21 +171,21 @@ def create_thumb(image_path, thumb_path, return_icon=True):
     # Fallback for files with animation support.
     return build_icon(unicode(image_path))
 
-def validate_thumb(image_path, thumb_path):
+def validate_thumb(file_path, thumb_path):
     """
-    Validates whether an image's thumb still exists and if is up to date.
+    Validates whether an file's thumb still exists and if is up to date.
     **Note**, you must **not** call this function, before checking the
-    existence of the image.
+    existence of the file.
 
-    ``image_path``
-        The path to the image.
+    ``file_path``
+        The path to the file. The file **must** exist!
 
     ``thumb_path``
         The path to the thumb.
     """
     if not os.path.exists(unicode(thumb_path)):
         return False
-    image_date = os.stat(unicode(image_path)).st_mtime
+    image_date = os.stat(unicode(file_path)).st_mtime
     thumb_date = os.stat(unicode(thumb_path)).st_mtime
     return image_date <= thumb_date
 
