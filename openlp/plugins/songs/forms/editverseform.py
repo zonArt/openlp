@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -185,7 +185,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if self.hasSingleVerse:
             value = unicode(self.getVerse()[0])
         else:
-            value = self.getVerse()[0].split(u'\n')[1]
+            log.debug(unicode(self.getVerse()[0]).split(u'\n'))
+            value = unicode(self.getVerse()[0]).split(u'\n')[1]
+            if len(value) == 0:
+                lines = unicode(self.getVerse()[0]).split(u'\n')
+                index = 2
+                while index < len(lines) and len(value) == 0:
+                    value = lines[index]
+                    index += 1
         if len(value) == 0:
             critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',

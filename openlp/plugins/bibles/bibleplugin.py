@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -81,11 +81,11 @@ class BiblePlugin(Plugin):
         Perform tasks on application starup
         """
         if len(self.manager.old_bible_databases):
-            if QtGui.QMessageBox.information(self.formparent, 
+            if QtGui.QMessageBox.information(self.formparent,
                 translate('OpenLP', 'Information'), translate('OpenLP',
                 'Bible format has changed.\nYou have to upgrade your '
-                'existing Bibles.\nShould OpenLP upgrade now?'), 
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                'existing Bibles.\nShould OpenLP upgrade now?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
 
@@ -120,7 +120,7 @@ class BiblePlugin(Plugin):
             translate('BiblePlugin', '&Upgrade older Bibles'))
         self.toolsUpgradeItem.setStatusTip(
             translate('BiblePlugin', 'Upgrade the Bible databases to the '
-            'latest format'))
+            'latest format.'))
         tools_menu.addAction(self.toolsUpgradeItem)
         QtCore.QObject.connect(self.toolsUpgradeItem,
             QtCore.SIGNAL(u'triggered()'), self.onToolsUpgradeItemTriggered)
@@ -131,7 +131,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formparent, 
+            self.upgrade_wizard = BibleUpgradeForm(self.formparent,
                 self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
