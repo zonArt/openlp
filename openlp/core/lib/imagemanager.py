@@ -104,7 +104,6 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
-        self._thread_running = False
         self._cache_dirty = False
         self._image_thread = ImageThread(self)
         self._clean_queue = Queue.PriorityQueue()
@@ -127,7 +126,7 @@ class ImageManager(QtCore.QObject):
             self._clean_queue.put_nowait((image.priority, image))
         self._cache_dirty = True
         # only one thread please
-        if not self._thread_running:
+        if not self._image_thread.isRunning():
             self._image_thread.start()
 
     def get_image(self, name):
@@ -182,7 +181,7 @@ class ImageManager(QtCore.QObject):
             log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
         # only one thread please
-        if not self._thread_running:
+        if not self._image_thread.isRunning():
             self._image_thread.start()
 
     def _process(self):
@@ -190,13 +189,11 @@ class ImageManager(QtCore.QObject):
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        self._thread_running = True
         self._clean_cache()
         # data loaded since we started?
         while self._cache_dirty:
             log.debug(u'_process - recycle')
             self._clean_cache()
-        self._thread_running = False
         log.debug(u'_process - ended')
 
     def _clean_cache(self):
