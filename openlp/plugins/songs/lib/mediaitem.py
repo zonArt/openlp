@@ -467,23 +467,20 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == item.data_string[u'title'],
                 Song.search_title.asc())
-        author_list = item.data_string[u'authors'].split(u', ')
         editId = 0
         add_song = True
         if search_results:
             for song in search_results:
+                author_list = item.data_string[u'authors']
                 same_authors = True
-                # If the author counts are different, we do not have to do any
-                # further checking.
-                if len(song.authors) == len(author_list):
-                    for author in song.authors:
-                        if author.display_name not in author_list:
-                            same_authors = False
-                else:
-                    same_authors = False
-                # All authors are the same, so we can stop here and the song
-                # does not have to be saved.
-                if same_authors:
+                for author in song.authors:
+                    if author.display_name in author_list:
+                        author_list = author_list.replace(author.display_name,
+                            u'', 1)
+                    else:
+                        same_authors = False
+                        break
+                if same_authors and author_list.strip(u', ') == u'':
                     add_song = False
                     editId = song.id
                     break
