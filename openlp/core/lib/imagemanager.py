@@ -219,7 +219,7 @@ class ImageManager(QtCore.QObject):
                 else:
                     image.priority = ProcessingPriority.Low
                 self._clean_queue.put_nowait((image.priority, image))
-                return
+            return
         if image.priority not in [ProcessingPriority.Urgent,
             ProcessingPriority.Low]:
             self._clean_queue.task_done()
