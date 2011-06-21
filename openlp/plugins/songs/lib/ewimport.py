@@ -31,6 +31,7 @@ EasyWorship song databases into the current installation database.
 
 import os
 import struct
+import re
 
 from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
@@ -260,8 +261,39 @@ class EasyWorshipSongImport(SongImport):
                     # Format the lyrics
                     words = strip_rtf(words, self.encoding)
                     for verse in words.split(u'\n\n'):
+                        # TODO: recognize note-part as well and put into comments-section
+                        # ew tags: verse, chorus, pre-chorus, bridge, tag, intro, ending, slide
+                        verse_split = verse.strip().split(u'\n',  1)
+                        verse_type = VerseType.Tags[VerseType.Verse]
+                        first_line_is_tag = False
+                        for type in VerseType.Names+['tag',  'slide']: # doesnt cover tag, slide
+                            type = type.lower()
+                            ew_tag = verse_split[0].strip().lower()
+                            if ew_tag.startswith(type):
+                                #print ew_tag
+                                verse_type = type[0]
+                                if type == 'tag' or type == 'slide':
+                                    verse_type = VerseType.Tags[VerseType.Other]
+                                first_line_is_tag = True
+                                if len(ew_tag) > len(type): # tag is followed by number and/or note
+                                    p = re.compile(r'[0-9]+')
+                                    m = re.search(p,  ew_tag)
+                                    if m:
+                                        number = m.group()
+                                        verse_type +=number
+                                        
+                                    p = re.compile(r'\(.*\)')
+                                    m = re.search(p,  ew_tag)
+                                    if m:
+                                        self.comments += ew_tag+'\n'
+                                break
+                                
                         self.add_verse(
-                            verse.strip(), VerseType.Tags[VerseType.Verse])
+                            verse_split[-1].strip() if first_line_is_tag else verse.strip(), # TODO: hacky: -1
+                            verse_type)
+                if len(self.comments) > 5:
+                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
+                            '\n[above are Song Tags with notes imported from EasyWorship]'))
                 if self.stop_import_flag:
                     break
                 if not self.finish():
