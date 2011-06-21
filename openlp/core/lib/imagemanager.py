@@ -53,15 +53,17 @@ class ImageThread(QtCore.QThread):
         """
         Run the thread.
         """
-        self.imageManager.process()
+        self.imageManager._process()
 
 
 class Image(object):
-    name = ''
-    path = ''
-    dirty = True
-    image = None
-    image_bytes = None
+    def __init__(self, name='', path=''):
+        self.name = name
+        self.path = path
+        self.dirty = True
+        self.image = None
+        self.image_bytes = None
+        self.priority = False
 
 
 class ImageManager(QtCore.QObject):
@@ -92,7 +94,6 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            image.image = resize_image(image.path, self.width, self.height)
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
@@ -103,6 +104,10 @@ class ImageManager(QtCore.QObject):
         Return the Qimage from the cache
         """
         log.debug(u'get_image %s' % name)
+        if not self._cache[name].image_bytes:
+            while self._cache[name].dirty:
+                log.debug(u'get_image - waiting')
+                time.sleep(0.1)
         return self._cache[name].image
 
     def get_image_bytes(self, name):
@@ -131,10 +136,7 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
-            image = Image()
-            image.name = name
-            image.path = path
-            image.image = resize_image(path, self.width, self.height)
+            image = Image(name, path)
             self._cache[name] = image
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
@@ -143,29 +145,30 @@ class ImageManager(QtCore.QObject):
         if not self._thread_running:
             self.image_thread.start()
 
-    def process(self):
+    def _process(self):
         """
-        Controls the processing called from a QThread
+        Controls the processing called from a ``QtCore.QThread``.
         """
-        log.debug(u'process - started')
+        log.debug(u'_process - started')
         self._thread_running = True
-        self.clean_cache()
+        self._clean_cache()
         # data loaded since we started ?
         while self._cache_dirty:
-            log.debug(u'process - recycle')
-            self.clean_cache()
+            log.debug(u'_process - recycle')
+            self._clean_cache()
         self._thread_running = False
-        log.debug(u'process - ended')
+        log.debug(u'_process - ended')
 
-    def clean_cache(self):
+    def _clean_cache(self):
         """
         Actually does the work.
         """
-        log.debug(u'clean_cache')
+        log.debug(u'_clean_cache')
         # we will clean the cache now
         self._cache_dirty = False
         for key in self._cache.keys():
             image = self._cache[key]
             if image.dirty:
+                image.image = resize_image(image.path, self.width, self.height)
                 image.image_bytes = image_to_byte(image.image)
                 image.dirty = False
