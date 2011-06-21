@@ -634,9 +634,7 @@ class SlideController(QtGui.QWidget):
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
                             self.imageManager.get_image_bytes(frame[u'title'])
-                    print u'  start', frame[u'title']
                     image = self.imageManager.get_image(frame[u'title'])
-                    print u'  end', frame[u'title']
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio

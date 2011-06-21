@@ -32,6 +32,7 @@ to wait for the conversion to happen.
 """
 import logging
 import time
+import Queue
 
 from PyQt4 import QtCore
 
@@ -55,15 +56,39 @@ class ImageThread(QtCore.QThread):
         """
         self.imageManager._process()
 
+class ProcessingPriority(object):
+    """
+    Enumeration class.
+
+    ``Low``
+        Only the image's byte stream has to be generated. Neither the QImage nor
+        the byte stream has been requested yet.
+
+    ``Normal``
+        The image's byte stream as well as the image has to be generated.
+        Neither the QImage nor the byte stream has been requested yet.
+
+    ``High``
+        The image's byte stream as well as the image has to be generated. The
+        QImage for this image has been requested.
+
+    ``Urgent``
+        The image's byte stream as well as the image has to be generated. The
+        byte stream for this image has been requested.
+    """
+    Low = 3
+    Normal = 2
+    High = 1
+    Urgent = 0
+
 
 class Image(object):
     def __init__(self, name='', path=''):
         self.name = name
         self.path = path
-        self.dirty = True
         self.image = None
         self.image_bytes = None
-        self.priority = False
+        self.priority = ProcessingPriority.Normal
 
 
 class ImageManager(QtCore.QObject):
@@ -80,7 +105,8 @@ class ImageManager(QtCore.QObject):
         self._cache = {}
         self._thread_running = False
         self._cache_dirty = False
-        self.image_thread = ImageThread(self)
+        self._image_thread = ImageThread(self)
+        self._clean_queue = Queue.PriorityQueue()
 
     def update_display(self):
         """
@@ -91,33 +117,45 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         # mark the images as dirty for a rebuild
+        self._clean_queue = Queue.PriorityQueue()
         for key in self._cache.keys():
             image = self._cache[key]
-            image.dirty = True
+            image.priority = ProcessingPriority.Normal
+            image.image = None
+            image.image_bytes = None
+            self._clean_queue.put_nowait((image.priority, image))
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
-            self.image_thread.start()
+            self._image_thread.start()
 
     def get_image(self, name):
         """
         Return the Qimage from the cache
         """
+        print u'get_image:', name
         log.debug(u'get_image %s' % name)
-        if not self._cache[name].image_bytes:
-            while self._cache[name].dirty:
+        image = self._cache[name]
+        if image.image_bytes is None:
+            image.priority = ProcessingPriority.High
+            self._clean_queue.put_nowait((image.priority, image))
+            while image.image_bytes is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
-        return self._cache[name].image
+        return image.image
 
     def get_image_bytes(self, name):
         """
         Returns the byte string for an image
         If not present wait for the background thread to process it.
         """
+        print u'get_image_bytes:', name
         log.debug(u'get_image_bytes %s' % name)
-        if not self._cache[name].image_bytes:
-            while self._cache[name].dirty:
+        image = self._cache[name]
+        if image.image_bytes is None:
+            image.priority = ProcessingPriority.Urgent
+            self._clean_queue.put_nowait((image.priority, image))
+            while self._cache[name].image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
         return self._cache[name].image_bytes
@@ -138,12 +176,13 @@ class ImageManager(QtCore.QObject):
         if not name in self._cache:
             image = Image(name, path)
             self._cache[name] = image
+            self._clean_queue.put_nowait((image.priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
-            self.image_thread.start()
+            self._image_thread.start()
 
     def _process(self):
         """
@@ -152,7 +191,7 @@ class ImageManager(QtCore.QObject):
         log.debug(u'_process - started')
         self._thread_running = True
         self._clean_cache()
-        # data loaded since we started ?
+        # data loaded since we started?
         while self._cache_dirty:
             log.debug(u'_process - recycle')
             self._clean_cache()
@@ -164,11 +203,24 @@ class ImageManager(QtCore.QObject):
         Actually does the work.
         """
         log.debug(u'_clean_cache')
-        # we will clean the cache now
-        self._cache_dirty = False
-        for key in self._cache.keys():
-            image = self._cache[key]
-            if image.dirty:
-                image.image = resize_image(image.path, self.width, self.height)
-                image.image_bytes = image_to_byte(image.image)
-                image.dirty = False
+        if self._clean_queue.empty():
+            print u'empty'
+            self._cache_dirty = False
+            return
+        image = self._clean_queue.get_nowait()[1]
+        if image.image is None:
+            print u'processing (image):', image.name, image.priority
+            image.image = resize_image(image.path, self.width, self.height)
+            if image.priority == ProcessingPriority.Urgent:
+                image.priority = ProcessingPriority.High
+            elif image.priority == ProcessingPriority.High:
+                image.priority = ProcessingPriority.Normal
+            else:
+                image.priority = ProcessingPriority.Low
+            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.task_done()
+            return
+        if image.image_bytes is None:
+            print u'processing (bytes):', image.name, image.priority
+            image.image_bytes = image_to_byte(image.image)
+        self._clean_queue.task_done()
