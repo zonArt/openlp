@@ -137,10 +137,10 @@ class ImageManager(QtCore.QObject):
         print u'get_image:', name
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
-        if image.image_bytes is None:
+        if image.image is None:
             image.priority = ProcessingPriority.High
             self._clean_queue.put_nowait((image.priority, image))
-            while image.image_bytes is None:
+            while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
         return image.image
@@ -156,10 +156,10 @@ class ImageManager(QtCore.QObject):
         if image.image_bytes is None:
             image.priority = ProcessingPriority.Urgent
             self._clean_queue.put_nowait((image.priority, image))
-            while self._cache[name].image_bytes is None:
+            while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
-        return self._cache[name].image_bytes
+        return image.image_bytes
 
     def del_image(self, name):
         """
@@ -212,13 +212,16 @@ class ImageManager(QtCore.QObject):
         if image.image is None:
             print u'processing (image):', image.name, image.priority
             image.image = resize_image(image.path, self.width, self.height)
-            if image.priority == ProcessingPriority.Urgent:
-                image.priority = ProcessingPriority.High
-            elif image.priority == ProcessingPriority.High:
-                image.priority = ProcessingPriority.Normal
-            else:
-                image.priority = ProcessingPriority.Low
-            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.task_done()
+            if image.priority != ProcessingPriority.Urgent:
+                if image.priority == ProcessingPriority.High:
+                    image.priority = ProcessingPriority.Normal
+                else:
+                    image.priority = ProcessingPriority.Low
+                self._clean_queue.put_nowait((image.priority, image))
+                return
+        if image.priority not in [ProcessingPriority.Urgent,
+            ProcessingPriority.Low]:
             self._clean_queue.task_done()
             return
         if image.image_bytes is None:
