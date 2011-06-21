@@ -191,7 +191,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.load_presentation()
                     preview = doc.get_thumbnail_path(1, True)
                 doc.close_presentation()
-                if not os.path.exists(preview):
+                if not (preview and os.path.exists(preview)):
                     icon = build_icon(u':/general/general_delete.png')
                 else:
                     if validate_thumb(preview, thumb):

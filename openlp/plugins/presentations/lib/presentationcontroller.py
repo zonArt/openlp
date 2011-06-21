@@ -149,7 +149,7 @@ class PresentationDocument(object):
         the powerpoint file.
         """
         lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
-        if not os.path.isfile(lastimage):
+        if not (lastimage and os.path.isfile(lastimage)):
             return False
         return validate_thumb(self.filepath, lastimage)
 

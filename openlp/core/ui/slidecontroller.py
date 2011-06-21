@@ -625,14 +625,14 @@ class SlideController(QtGui.QWidget):
                 label.setMargin(4)
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
-                    image = QtGui.QImage(frame[u'image'])
+                    label.setPixmap(QtGui.QPixmap(frame[u'image']))
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
                             self.imageManager.get_image_bytes(frame[u'title'])
                     image = self.imageManager.get_image(frame[u'title'])
-                label.setPixmap(QtGui.QPixmap.fromImage(image))
+                    label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio
                 row += 1
