@@ -56,6 +56,7 @@ class ImageThread(QtCore.QThread):
         """
         self.imageManager._process()
 
+
 class ProcessingPriority(object):
     """
     Enumeration class.
