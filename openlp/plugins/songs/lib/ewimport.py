@@ -287,7 +287,6 @@ class EasyWorshipSongImport(SongImport):
                                     if m:
                                         self.comments += ew_tag+'\n'
                                 break
-                                
                         self.add_verse(
                             verse_split[-1].strip() if first_line_is_tag else verse.strip(), # TODO: hacky: -1
                             verse_type)
