@@ -92,6 +92,18 @@ class Image(object):
         self.priority = ProcessingPriority.Normal
 
 
+class PriorityQueue(Queue.PriorityQueue):
+    """
+    Customised ``Queue.PriorityQueue``.
+    """
+#    def put(self, image):
+#        self._put((image.priority, image))
+
+    def remove(self, item):
+        if item in self.queue:
+            self.queue.remove(item)
+
+
 class ImageManager(QtCore.QObject):
     """
     Image Manager handles the conversion and sizing of images.
@@ -106,7 +118,7 @@ class ImageManager(QtCore.QObject):
         self._cache = {}
         self._cache_dirty = False
         self._image_thread = ImageThread(self)
-        self._clean_queue = Queue.PriorityQueue()
+        self._clean_queue = PriorityQueue()
 
     def update_display(self):
         """
@@ -123,7 +135,7 @@ class ImageManager(QtCore.QObject):
             image.priority = ProcessingPriority.Normal
             image.image = None
             image.image_bytes = None
-            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.put((image.priority, image))
         self._cache_dirty = True
         # only one thread please
         if not self._image_thread.isRunning():
@@ -137,8 +149,9 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
         if image.image is None:
+            self._clean_queue.remove((image.priority, image))
             image.priority = ProcessingPriority.High
-            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.put((image.priority, image))
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
@@ -153,8 +166,9 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image_bytes %s' % name)
         image = self._cache[name]
         if image.image_bytes is None:
+            self._clean_queue.remove((image.priority, image))
             image.priority = ProcessingPriority.Urgent
-            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.put((image.priority, image))
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
@@ -176,7 +190,7 @@ class ImageManager(QtCore.QObject):
         if not name in self._cache:
             image = Image(name, path)
             self._cache[name] = image
-            self._clean_queue.put_nowait((image.priority, image))
+            self._clean_queue.put((image.priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
@@ -205,23 +219,22 @@ class ImageManager(QtCore.QObject):
             print u'empty'
             self._cache_dirty = False
             return
-        image = self._clean_queue.get_nowait()[1]
+        image = self._clean_queue.get()[1]
         if image.image is None:
             print u'processing (image):', image.name, image.priority
             image.image = resize_image(image.path, self.width, self.height)
-            self._clean_queue.task_done()
+            #self._clean_queue.task_done()
             if image.priority != ProcessingPriority.Urgent:
-                if image.priority == ProcessingPriority.High:
-                    image.priority = ProcessingPriority.Normal
-                else:
-                    image.priority = ProcessingPriority.Low
-                self._clean_queue.put_nowait((image.priority, image))
-            return
+                self._clean_queue.task_done()
+                image.priority = ProcessingPriority.Low
+                self._clean_queue.put((image.priority, image))
+                return
         if image.priority not in [ProcessingPriority.Urgent,
             ProcessingPriority.Low]:
-            self._clean_queue.task_done()
+            print u'return!', image.name, image.priority
+            #self._clean_queue.task_done()
             return
         if image.image_bytes is None:
             print u'processing (bytes):', image.name, image.priority
             image.image_bytes = image_to_byte(image.image)
-        self._clean_queue.task_done()
+            self._clean_queue.task_done()
