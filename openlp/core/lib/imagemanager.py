@@ -57,9 +57,9 @@ class ImageThread(QtCore.QThread):
         self.imageManager._process()
 
 
-class ProcessingPriority(object):
+class Priority(object):
     """
-    Enumeration class.
+    Enumeration class for different priorities.
 
     ``Low``
         Only the image's byte stream has to be generated. Neither the QImage nor
@@ -89,17 +89,22 @@ class Image(object):
         self.path = path
         self.image = None
         self.image_bytes = None
-        self.priority = ProcessingPriority.Normal
+        self.priority = Priority.Normal
 
 
 class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
     """
-#    def put(self, image):
-#        self._put((image.priority, image))
-
     def remove(self, item):
+        """
+        Removes the given ``item`` from the queue.remove
+
+        ``item``
+            The item to remove. This should be a tuple::
+
+                ``(Priority, Image)``
+        """
         if item in self.queue:
             self.queue.remove(item)
 
@@ -132,7 +137,7 @@ class ImageManager(QtCore.QObject):
         self._clean_queue = Queue.PriorityQueue()
         for key in self._cache.keys():
             image = self._cache[key]
-            image.priority = ProcessingPriority.Normal
+            image.priority = Priority.Normal
             image.image = None
             image.image_bytes = None
             self._clean_queue.put((image.priority, image))
@@ -150,7 +155,7 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image is None:
             self._clean_queue.remove((image.priority, image))
-            image.priority = ProcessingPriority.High
+            image.priority = Priority.High
             self._clean_queue.put((image.priority, image))
             while image.image is None:
                 log.debug(u'get_image - waiting')
@@ -167,7 +172,7 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image_bytes is None:
             self._clean_queue.remove((image.priority, image))
-            image.priority = ProcessingPriority.Urgent
+            image.priority = Priority.Urgent
             self._clean_queue.put((image.priority, image))
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
@@ -224,13 +229,12 @@ class ImageManager(QtCore.QObject):
             print u'processing (image):', image.name, image.priority
             image.image = resize_image(image.path, self.width, self.height)
             #self._clean_queue.task_done()
-            if image.priority != ProcessingPriority.Urgent:
+            if image.priority != Priority.Urgent:
                 self._clean_queue.task_done()
-                image.priority = ProcessingPriority.Low
+                image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
                 return
-        if image.priority not in [ProcessingPriority.Urgent,
-            ProcessingPriority.Low]:
+        if image.priority not in [Priority.Urgent, Priority.Low]:
             print u'return!', image.name, image.priority
             #self._clean_queue.task_done()
             return
