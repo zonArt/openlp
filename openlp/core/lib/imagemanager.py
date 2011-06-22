@@ -206,8 +206,8 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'_process - started')
         while not self._clean_queue.empty():
-            log.debug(u'_process - recycle')
             self._clean_cache()
+        print u'empty'
         log.debug(u'_process - ended')
 
     def _clean_cache(self):
@@ -221,6 +221,7 @@ class ImageManager(QtCore.QObject):
             image.image = resize_image(image.path, self.width, self.height)
             if image.priority != Priority.Urgent:
                 self._clean_queue.task_done()
+                self._clean_queue.remove((image.priority, image))
                 image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
                 return
