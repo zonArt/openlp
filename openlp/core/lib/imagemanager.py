@@ -121,7 +121,6 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
-        self._cache_dirty = False
         self._image_thread = ImageThread(self)
         self._clean_queue = PriorityQueue()
 
@@ -141,7 +140,6 @@ class ImageManager(QtCore.QObject):
             image.image = None
             image.image_bytes = None
             self._clean_queue.put((image.priority, image))
-        self._cache_dirty = True
         # We want only one thread.
         if not self._image_thread.isRunning():
             self._image_thread.start()
@@ -198,7 +196,6 @@ class ImageManager(QtCore.QObject):
             self._clean_queue.put((image.priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
-        self._cache_dirty = True
         # We want only one thread.
         if not self._image_thread.isRunning():
             self._image_thread.start()
@@ -208,7 +205,7 @@ class ImageManager(QtCore.QObject):
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        while self._cache_dirty:
+        while not self._clean_queue.empty():
             log.debug(u'_process - recycle')
             self._clean_cache()
         log.debug(u'_process - ended')
@@ -218,10 +215,6 @@ class ImageManager(QtCore.QObject):
         Actually does the work.
         """
         log.debug(u'_clean_cache')
-        if self._clean_queue.empty():
-            print u'empty'
-            self._cache_dirty = False
-            return
         image = self._clean_queue.get()[1]
         if image.image is None:
             print u'processing (image):', image.name, image.priority
