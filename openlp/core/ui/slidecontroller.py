@@ -625,9 +625,7 @@ class SlideController(QtGui.QWidget):
                 label.setMargin(4)
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
-                    image = resize_image(frame[u'image'],
-                        self.parent().renderer.width,
-                        self.parent().renderer.height)
+                    image = QtGui.QImage(frame[u'image'])
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:

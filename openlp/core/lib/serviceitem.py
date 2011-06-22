@@ -352,6 +352,7 @@ class ServiceItem(object):
         replace an original version.
         """
         self._uuid = other._uuid
+        self.notes = other.notes
 
     def __eq__(self, other):
         """

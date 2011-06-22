@@ -27,6 +27,7 @@
 
 import logging
 import os
+import sys
 from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
@@ -291,10 +292,18 @@ class Ui_MainWindow(object):
         # i18n add Language Actions
         add_actions(self.settingsLanguageMenu, (self.autoLanguageItem, None))
         add_actions(self.settingsLanguageMenu, self.languageGroup.actions())
-        add_actions(self.settingsMenu, (self.settingsPluginListItem,
-            self.settingsLanguageMenu.menuAction(), None,
-            self.displayTagItem, self.settingsShortcutsItem,
-            self.settingsConfigureItem))
+        # Order things differently in OS X so that Preferences menu item in the
+        # app menu is correct (this gets picked up automatically by Qt).
+        if sys.platform == u'darwin':
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.settingsConfigureItem, self.settingsShortcutsItem,
+                self.displayTagItem))
+        else:
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.displayTagItem, self.settingsShortcutsItem,
+                self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
@@ -599,7 +608,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load Themes')
         self.themeManagerContents.loadThemes(True)
         # Hide/show the theme combobox on the service manager
-        Receiver.send_message(u'theme_update_global')
+        self.serviceManagerContents.themeChange()
         # Reset the cursor
         Receiver.send_message(u'cursor_normal')
 

@@ -527,8 +527,7 @@ class OpenLyrics(object):
                         book = Book.populate(name=bookname, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
-                    if hasattr(songbook, u'entry'):
-                        song.song_number = self._get(songbook, u'entry')
+                    song.song_number = self._get(songbook, u'entry')
                     # We only support one song book, so take the first one.
                     break
 

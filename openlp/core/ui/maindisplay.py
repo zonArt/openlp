@@ -49,7 +49,10 @@ class MainDisplay(QtGui.QGraphicsView):
     This is the display screen.
     """
     def __init__(self, parent, image_manager, live):
-        QtGui.QGraphicsView.__init__(self, parent)
+        if live:
+            QtGui.QGraphicsView.__init__(self)
+        else:
+            QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
@@ -62,7 +65,8 @@ class MainDisplay(QtGui.QGraphicsView):
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint)
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.X11BypassWindowManagerHint)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
