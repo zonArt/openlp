@@ -98,7 +98,7 @@ class PriorityQueue(Queue.PriorityQueue):
     """
     def remove(self, item):
         """
-        Removes the given ``item`` from the queue.remove
+        Removes the given ``item`` from the queue.
 
         ``item``
             The item to remove. This should be a tuple::
@@ -127,14 +127,14 @@ class ImageManager(QtCore.QObject):
 
     def update_display(self):
         """
-        Screen has changed size so rebuild the cache to new size
+        Screen has changed size so rebuild the cache to new size.
         """
         log.debug(u'update_display')
         current_screen = ScreenList.get_instance().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
-        # mark the images as dirty for a rebuild
-        self._clean_queue = Queue.PriorityQueue()
+        # Mark the images as dirty for a rebuild.
+        self._clean_queue = PriorityQueue()
         for key in self._cache.keys():
             image = self._cache[key]
             image.priority = Priority.Normal
@@ -142,13 +142,13 @@ class ImageManager(QtCore.QObject):
             image.image_bytes = None
             self._clean_queue.put((image.priority, image))
         self._cache_dirty = True
-        # only one thread please
+        # We want only one thread.
         if not self._image_thread.isRunning():
             self._image_thread.start()
 
     def get_image(self, name):
         """
-        Return the Qimage from the cache
+        Return the Qimage from the cache.
         """
         print u'get_image:', name
         log.debug(u'get_image %s' % name)
@@ -164,8 +164,8 @@ class ImageManager(QtCore.QObject):
 
     def get_image_bytes(self, name):
         """
-        Returns the byte string for an image
-        If not present wait for the background thread to process it.
+        Returns the byte string for an image. If not present wait for the
+        background thread to process it.
         """
         print u'get_image_bytes:', name
         log.debug(u'get_image_bytes %s' % name)
