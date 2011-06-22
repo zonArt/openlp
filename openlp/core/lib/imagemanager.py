@@ -199,7 +199,7 @@ class ImageManager(QtCore.QObject):
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
-        # only one thread please
+        # We want only one thread.
         if not self._image_thread.isRunning():
             self._image_thread.start()
 
@@ -208,8 +208,6 @@ class ImageManager(QtCore.QObject):
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        self._clean_cache()
-        # data loaded since we started?
         while self._cache_dirty:
             log.debug(u'_process - recycle')
             self._clean_cache()
@@ -228,16 +226,11 @@ class ImageManager(QtCore.QObject):
         if image.image is None:
             print u'processing (image):', image.name, image.priority
             image.image = resize_image(image.path, self.width, self.height)
-            #self._clean_queue.task_done()
             if image.priority != Priority.Urgent:
                 self._clean_queue.task_done()
                 image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
                 return
-        if image.priority not in [Priority.Urgent, Priority.Low]:
-            print u'return!', image.name, image.priority
-            #self._clean_queue.task_done()
-            return
         if image.image_bytes is None:
             print u'processing (bytes):', image.name, image.priority
             image.image_bytes = image_to_byte(image.image)
