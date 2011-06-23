@@ -57,7 +57,7 @@ except ImportError:
 try:
     from com.sun.star.awt.FontSlant import ITALIC
 except ImportError:
-   ITALIC = 2
+    ITALIC = 2
 
 class SofImport(OooImport):
     """
