@@ -233,7 +233,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
-        #self.verseListWidget.setColumnWidth(0, self.width)
         # This is just because occasionally the lyrics come back as a "buffer"
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)
