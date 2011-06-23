@@ -208,7 +208,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.add_image(title, path)
+        self.renderer.imageManager.add_image(title, path)
         self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):

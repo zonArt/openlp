@@ -56,11 +56,11 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, image_manager, theme_manager):
+    def __init__(self, imageManager, theme_manager):
         """
         Initialise the render manager.
 
-    ``image_manager``
+    ``imageManager``
         A ImageManager instance which takes care of e. g. caching and resizing
         images.
 
@@ -69,7 +69,7 @@ class Renderer(object):
         """
         log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
-        self.image_manager = image_manager
+        self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
@@ -77,7 +77,7 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, self.image_manager, False)
+        self.display = MainDisplay(None, self.imageManager, False)
         self.display.setup()
 
     def update_display(self):
@@ -88,7 +88,7 @@ class Renderer(object):
         self._calculate_default(self.screens.current[u'size'])
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.image_manager, False)
+        self.display = MainDisplay(None, self.imageManager, False)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
@@ -167,7 +167,7 @@ class Renderer(object):
         self._build_text_rectangle(self.theme_data)
         # if No file do not update cache
         if self.theme_data.background_filename:
-            self.image_manager.add_image(self.theme_data.theme_name,
+            self.imageManager.add_image(self.theme_data.theme_name,
                 self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
@@ -193,7 +193,7 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
-            self.image_manager.del_image(theme_data.theme_name)
+            self.imageManager.del_image(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
