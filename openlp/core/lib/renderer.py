@@ -412,7 +412,7 @@ class Renderer(object):
         This implements the binary chop algorithm for faster rendering. This
         algorithm works line based (line by line) and word based (word by word).
         It is assumed that this method is **only** called, when the lines/words
-        to be rendered do not fit as a whole.
+        to be rendered do **not** fit as a whole.
 
         ``formatted``
             The list to append any slides.
@@ -434,8 +434,8 @@ class Renderer(object):
             using the binary chop. The elements can contain display tags.
 
         ``separator``
-            The separator for the elements. For lines this is `u'<br>'`` and for
-            words this is u' '.
+            The separator for the elements. For lines this is ``u'<br>'`` and
+            for words this is ``u' '``.
 
         ``line_end``
             The text added after each "element line". Either ``u' '`` or
