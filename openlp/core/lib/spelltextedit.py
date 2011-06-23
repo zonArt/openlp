@@ -29,6 +29,7 @@ import re
 try:
     import enchant
     from enchant import DictNotFoundError
+    from enchant.errors import Error
     ENCHANT_AVAILABLE = True
 except ImportError:
     ENCHANT_AVAILABLE = False
@@ -56,7 +57,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 self.dictionary = enchant.Dict()
                 self.highlighter = Highlighter(self.document())
                 self.highlighter.spellingDictionary = self.dictionary
-            except DictNotFoundError:
+            except Error, DictNotFoundError:
                 ENCHANT_AVAILABLE = False
                 log.debug(u'Could not load default dictionary')
 
