@@ -148,7 +148,6 @@ class ImageManager(QtCore.QObject):
         """
         Return the Qimage from the cache.
         """
-        print u'get_image:', name
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
         if image.image is None:
@@ -165,7 +164,6 @@ class ImageManager(QtCore.QObject):
         Returns the byte string for an image. If not present wait for the
         background thread to process it.
         """
-        print u'get_image_bytes:', name
         log.debug(u'get_image_bytes %s' % name)
         image = self._cache[name]
         if image.image_bytes is None:
@@ -207,7 +205,6 @@ class ImageManager(QtCore.QObject):
         log.debug(u'_process - started')
         while not self._clean_queue.empty():
             self._clean_cache()
-        print u'empty'
         log.debug(u'_process - ended')
 
     def _clean_cache(self):
@@ -217,15 +214,11 @@ class ImageManager(QtCore.QObject):
         log.debug(u'_clean_cache')
         image = self._clean_queue.get()[1]
         if image.image is None:
-            print u'processing (image):', image.name, image.priority
             image.image = resize_image(image.path, self.width, self.height)
             if image.priority != Priority.Urgent:
-                self._clean_queue.task_done()
                 self._clean_queue.remove((image.priority, image))
                 image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
                 return
         if image.image_bytes is None:
-            print u'processing (bytes):', image.name, image.priority
             image.image_bytes = image_to_byte(image.image)
-            self._clean_queue.task_done()
