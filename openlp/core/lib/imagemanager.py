@@ -43,8 +43,8 @@ log = logging.getLogger(__name__)
 
 class ImageThread(QtCore.QThread):
     """
-    A special Qt thread class to speed up the display of text based frames.
-    This is threaded so it loads the frames in background
+    A special Qt thread class to speed up the display of images. This is
+    threaded so it loads the frames and generates byte stream in background.
     """
     def __init__(self, manager):
         QtCore.QThread.__init__(self, None)
@@ -61,22 +61,33 @@ class Priority(object):
     """
     Enumeration class for different priorities.
 
+    ``Lowest``
+        Only the image's byte stream has to be generated. But neither the
+        ``QImage`` nor the byte stream has been requested yet.
+
     ``Low``
-        Only the image's byte stream has to be generated. Neither the QImage nor
-        the byte stream has been requested yet.
+        Only the image's byte stream has to be generated. Because the image's
+        ``QImage`` has been requested previously it is reasonable to assume that
+        the byte stream will be needed before the byte stream of other images
+        which ``QImage`` were not generated due to a request.
 
     ``Normal``
         The image's byte stream as well as the image has to be generated.
-        Neither the QImage nor the byte stream has been requested yet.
+        Neither the ``QImage`` nor the byte stream has been requested yet.
 
     ``High``
         The image's byte stream as well as the image has to be generated. The
-        QImage for this image has been requested.
+        ``QImage`` for this image has been requested.
+        **Note**, this priority is only set when the ``QImage`` has not been
+        generated yet.
 
     ``Urgent``
         The image's byte stream as well as the image has to be generated. The
         byte stream for this image has been requested.
+        **Note**, this priority is only set when the byte stream has not been
+        generated yet.
     """
+    Lowest = 4
     Low = 3
     Normal = 2
     High = 1
@@ -84,6 +95,11 @@ class Priority(object):
 
 
 class Image(object):
+    """
+    This class represents an image. To mark an image as *dirty* set the instance
+    variables ``image`` and ``image_bytes`` to ``None`` and add the image object
+    to the queue of images to process.
+    """
     def __init__(self, name='', path=''):
         self.name = name
         self.path = path
@@ -217,9 +233,18 @@ class ImageManager(QtCore.QObject):
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height)
-            # If the priority is not urgent, then set the priority to low and
-            # do not start to generate the byte stream.
-            if image.priority != Priority.Urgent:
+            # Set the priority to Lowest and stop here as we need to process
+            # more important images first.
+            if image.priority == Priority.Normal:
+                self._clean_queue.remove((image.priority, image))
+                image.priority = Priority.Lowest
+                self._clean_queue.put((image.priority, image))
+                return
+            # For image with high priority we set the priority to Low, as the
+            # byte stream might be needed earlier the byte stream of image with
+            # Normal priority. We stop here as we need to process more important
+            # images first.
+            elif image.priority == Priority.High:
                 self._clean_queue.remove((image.priority, image))
                 image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
