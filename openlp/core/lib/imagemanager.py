@@ -69,7 +69,7 @@ class Priority(object):
         Only the image's byte stream has to be generated. Because the image's
         ``QImage`` has been requested previously it is reasonable to assume that
         the byte stream will be needed before the byte stream of other images
-        which ``QImage`` were not generated due to a request.
+        whose ``QImage`` were not generated due to a request.
 
     ``Normal``
         The image's byte stream as well as the image has to be generated.
