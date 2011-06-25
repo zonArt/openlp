@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -95,6 +95,8 @@ class Controller(object):
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
+                if self.doc.slidenumber > self.doc.get_slide_count():
+                    self.doc.slidenumber = self.doc.get_slide_count()
                 self.doc.goto_slide(self.doc.slidenumber)
 
     def slide(self, slide):
@@ -149,6 +151,11 @@ class Controller(object):
         if self.doc.is_blank():
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
+            return
+        # The "End of slideshow" screen is after the last slide
+        # Note, we can't just stop on the last slide, since it may
+        # contain animations that need to be stepped through.
+        if self.doc.slidenumber > self.doc.get_slide_count():
             return
         self.activate()
         self.doc.next_step()

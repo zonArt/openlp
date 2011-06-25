@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -73,15 +73,21 @@ class EasiSlidesImport(SongImport):
     def _parse_song(self, song):
         self._success = True
         self._add_unicode_attribute(u'title', song.Title1, True)
-        self._add_unicode_attribute(u'alternate_title', song.Title2)
-        self._add_unicode_attribute(u'song_number', song.SongNumber)
+        if hasattr(song, u'Title2'):
+            self._add_unicode_attribute(u'alternate_title', song.Title2)
+        if hasattr(song, u'SongNumber'):
+            self._add_unicode_attribute(u'song_number', song.SongNumber)
         if self.song_number == u'0':
             self.song_number = u''
         self._add_authors(song)
-        self._add_copyright(song.Copyright)
-        self._add_copyright(song.LicenceAdmin1)
-        self._add_copyright(song.LicenceAdmin2)
-        self._add_unicode_attribute(u'song_book_name', song.BookReference)
+        if hasattr(song, u'Copyright'):
+            self._add_copyright(song.Copyright)
+        if hasattr(song, u'LicenceAdmin1'):
+            self._add_copyright(song.LicenceAdmin1)
+        if hasattr(song, u'LicenceAdmin2'):
+            self._add_copyright(song.LicenceAdmin2)
+        if hasattr(song, u'BookReference'):
+            self._add_unicode_attribute(u'song_book_name', song.BookReference)
         self._parse_and_add_lyrics(song)
         if self._success:
             if not self.finish():

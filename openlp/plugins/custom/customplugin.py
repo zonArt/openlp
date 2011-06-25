@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -54,11 +54,11 @@ class CustomPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def about(self):
-        about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
-            '<br />The custom plugin provides the ability to set up custom '
-            'text slides that can be displayed on the screen the same way '
-            'songs are. This plugin provides greater freedom over the songs '
-            'plugin.')
+        about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin'
+            '</strong><br />The custom slide plugin provides the ability to '
+            'set up custom text slides that can be displayed on the screen '
+            'the same way songs are. This plugin provides greater freedom '
+            'over the songs plugin.')
         return about_text
 
     def usesTheme(self, theme):
@@ -95,27 +95,31 @@ class CustomPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('CustomsPlugin', 'Custom', 'name singular'),
-            u'plural': translate('CustomsPlugin', 'Customs', 'name plural')
+            u'singular': translate('CustomPlugin', 'Custom Slide',
+                                   'name singular'),
+            u'plural': translate('CustomPlugin', 'Custom Slides',
+                                 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('CustomsPlugin', 'Custom', 'container title')
+            u'title': translate('CustomPlugin', 'Custom Slides',
+                'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('CustomsPlugin', 'Load a new Custom.'),
-            u'import': translate('CustomsPlugin', 'Import a Custom.'),
-            u'new': translate('CustomsPlugin', 'Add a new Custom.'),
-            u'edit': translate('CustomsPlugin', 'Edit the selected Custom.'),
-            u'delete': translate('CustomsPlugin',
-                'Delete the selected Custom.'),
-            u'preview': translate('CustomsPlugin',
-                'Preview the selected Custom.'),
-            u'live': translate('CustomsPlugin',
-                'Send the selected Custom live.'),
-            u'service': translate('CustomsPlugin',
-                'Add the selected Custom to the service.')
+            u'load': translate('CustomPlugin', 'Load a new custom slide.'),
+            u'import': translate('CustomPlugin', 'Import a custom slide.'),
+            u'new': translate('CustomPlugin', 'Add a new custom slide.'),
+            u'edit': translate('CustomPlugin',
+                'Edit the selected custom slide.'),
+            u'delete': translate('CustomPlugin',
+                'Delete the selected custom slide.'),
+            u'preview': translate('CustomPlugin',
+                'Preview the selected custom slide.'),
+            u'live': translate('CustomPlugin',
+                'Send the selected custom slide live.'),
+            u'service': translate('CustomPlugin',
+                'Add the selected custom slide to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
