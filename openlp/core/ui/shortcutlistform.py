@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -97,6 +98,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & QtCore.Qt.ShiftModifier == \
             QtCore.Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
+        if event.modifiers() & QtCore.Qt.MetaModifier == \
+            QtCore.Qt.MetaModifier:
+            key_string = u'Meta+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
@@ -199,7 +203,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if not self.primaryPushButton.text():
             # When we do not have a primary shortcut, the just entered alternate
             # shortcut will automatically become the primary shortcut. That is
-            # why we have to adjust the primary button's text. 
+            # why we have to adjust the primary button's text.
             self.primaryPushButton.setText(self.alternatePushButton.text())
             self.alternatePushButton.setText(u'')
         self.refreshShortcutList()

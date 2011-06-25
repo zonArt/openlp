@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -34,55 +35,6 @@ import types
 from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
-
-base_html_expands = []
-
-# Hex Color tags from http://www.w3schools.com/html/html_colornames.asp
-base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
-    u'start html': u'<span style="-webkit-text-fill-color:red">',
-    u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Black', u'start tag': u'{b}',
-    u'start html': u'<span style="-webkit-text-fill-color:black">',
-    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Blue', u'start tag': u'{bl}',
-    u'start html': u'<span style="-webkit-text-fill-color:blue">',
-    u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Yellow', u'start tag': u'{y}',
-    u'start html': u'<span style="-webkit-text-fill-color:yellow">',
-    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
-    u'start html': u'<span style="-webkit-text-fill-color:green">',
-    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
-    u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
-    u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
-    u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
-    u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
-    u'start html': u'<span style="-webkit-text-fill-color:#800080">',
-    u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
-    u'start html': u'<span style="-webkit-text-fill-color:white">',
-    u'end tag': u'{/w}', u'end html': u'</span>', u'protected': True})
-base_html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
-    u'start html': u'<sup>', u'end tag': u'{/su}', u'end html': u'</sup>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
-    u'start html': u'<sub>', u'end tag': u'{/sb}', u'end html': u'</sub>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Paragraph', u'start tag': u'{p}',
-    u'start html': u'<p>', u'end tag': u'{/p}', u'end html': u'</p>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Bold', u'start tag': u'{st}',
-    u'start html': u'<strong>', u'end tag': u'{/st}', u'end html': u'</strong>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
-    u'start html': u'<em>', u'end tag': u'{/it}', u'end html': u'</em>',
-    u'protected': True})
-base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
-    u'start html': u'<span style="text-decoration: underline;">',
-    u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -185,13 +137,12 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image, width, height, background=QtCore.Qt.black):
+def resize_image(image_path, width, height, background=QtCore.Qt.black):
     """
     Resize an image to fit on the current screen.
 
-    ``image``
-        The image to resize. It has to be either a ``QImage`` instance or the
-        path to the image.
+    ``image_path``
+        The path to the image to resize.
 
     ``width``
         The new image width.
@@ -203,16 +154,24 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
     """
     log.debug(u'resize_image - start')
-    if isinstance(image, QtGui.QImage):
-        preview = image
+    reader = QtGui.QImageReader(image_path)
+    # The image's ratio.
+    image_ratio = float(reader.size().width()) / float(reader.size().height())
+    resize_ratio = float(width) / float(height)
+    # Figure out the size we want to resize the image to (keep aspect ratio).
+    if image_ratio == resize_ratio:
+        size = QtCore.QSize(width, height)
+    elif image_ratio < resize_ratio:
+        # Use the image's height as reference for the new size.
+        size = QtCore.QSize(image_ratio * height, height)
     else:
-        preview = QtGui.QImage(image)
-    if not preview.isNull():
-        # Only resize if different size
-        if preview.width() == width and preview.height == height:
-            return preview
-        preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
-            QtCore.Qt.SmoothTransformation)
+        # Use the image's width as reference for the new size.
+        size = QtCore.QSize(width, 1 / (image_ratio / width))
+    reader.setScaledSize(size)
+    preview = reader.read()
+    if image_ratio == resize_ratio:
+        # We neither need to centre the image nor add "bars" to the image.
+        return preview
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
@@ -222,28 +181,6 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     painter.fillRect(new_image.rect(), background)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
-
-def check_search_result(treeWidget, search_results):
-    """
-    Checks if the given ``search_results`` is empty and adds a
-    "No Search Results" item to the given ``treeWidget``.
-
-    ``treeWidget``
-        The ``QTreeWidget`` where the "No Search Results" item should be added
-        to, if the ``search_results`` is empty.
-
-    ``search_results``
-        This can either be a list or a dict.
-    """
-    if search_results or treeWidget.count():
-        return
-    message = translate('OpenLP.MediaManagerItem', 'No Search Results')
-    item = QtGui.QListWidgetItem(message)
-    item.setFlags(QtCore.Qt.NoItemFlags)
-    font = QtGui.QFont()
-    font.setItalic(True)
-    item.setFont(font)
-    treeWidget.addItem(item)
 
 def check_item_selected(list_widget, message):
     """
@@ -266,6 +203,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
+    text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
@@ -299,7 +237,6 @@ from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
 from eventreceiver import Receiver
 from spelltextedit import SpellTextEdit
-from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
@@ -311,6 +248,7 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
+from imagemanager import ImageManager
 from renderer import Renderer
 from mediamanageritem import MediaManagerItem
 from openlp.core.utils.actions import ActionList

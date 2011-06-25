@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -201,8 +202,7 @@ class Ui_FirstTimeWizard(object):
             'Welcome to the First Time Wizard'))
         self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
             'This wizard will help you to configure OpenLP for initial use.'
-            ' Click the next button below to start the process of selection '
-            'your initial options. '))
+            ' Click the next button below to start.'))
         self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Activate required Plugins'))
         self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
@@ -254,10 +254,6 @@ class Ui_FirstTimeWizard(object):
             'Default Settings'))
         self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Set up default settings to be used by OpenLP.'))
-        self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Setting Up And Importing'))
-        self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Please wait while OpenLP is set up and your data is imported.'))
         self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Default output display:'))
         self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',

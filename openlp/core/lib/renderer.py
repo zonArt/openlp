@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -28,11 +29,11 @@ import logging
 
 from PyQt4 import QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
+from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
     ItemCapabilities
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay
+from openlp.core.ui import MainDisplay, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -52,33 +53,32 @@ class Renderer(object):
     Class to pull all Renderer interactions into one place. The plugins will
     call helper methods to do the rendering but this class will provide
     display defense code.
-
-    ``theme_manager``
-        The ThemeManager instance, used to get the current theme details.
-
-    ``screens``
-        Contains information about the Screens.
-
-    ``screen_number``
-        Defaults to *0*. The index of the output/display screen.
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, theme_manager, screens):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the render manager.
+
+    ``image_manager``
+        A ImageManager instance which takes care of e. g. caching and resizing
+        images.
+
+    ``theme_manager``
+        The ThemeManager instance, used to get the current theme details.
         """
-        log.debug(u'Initilisation started')
-        self.screens = screens
-        self.image_manager = ImageManager()
-        self.display = MainDisplay(self, screens, False)
-        self.display.imageManager = self.image_manager
+        log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
+        self.image_manager = image_manager
+        self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
+        self.bg_frame = None
         self.force_page = False
+        self.display = MainDisplay(None, self.image_manager, False)
+        self.display.setup()
 
     def update_display(self):
         """
@@ -86,12 +86,12 @@ class Renderer(object):
         """
         log.debug(u'Update Display')
         self._calculate_default(self.screens.current[u'size'])
-        self.display = MainDisplay(self, self.screens, False)
-        self.display.imageManager = self.image_manager
+        if self.display:
+            self.display.close()
+        self.display = MainDisplay(None, self.image_manager, False)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
-        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -165,8 +165,10 @@ class Renderer(object):
             self.theme_data = self.theme_manager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
-        self.image_manager.add_image(self.theme_data.theme_name,
-            self.theme_data.background_filename)
+        # if No file do not update cache
+        if self.theme_data.background_filename:
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -189,10 +191,10 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
         else:
             self.image_manager.del_image(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE, FOOTER)
+            serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
@@ -241,7 +243,7 @@ class Renderer(object):
         ``screen``
             The QSize of the screen.
         """
-        log.debug(u'calculate default %s', screen)
+        log.debug(u'_calculate default %s', screen)
         self.width = screen.width()
         self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
@@ -286,7 +288,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        log.debug(u'_set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -301,7 +303,7 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         self.page_shell = u'<html><head><style>' \
             u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
@@ -336,10 +338,10 @@ class Renderer(object):
             styled_text += styled_line
             html = self.page_shell + styled_text + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 if force_page and line_count > 0:
-                    Receiver.send_message(u'theme_line_count', line_count)
+                    Receiver.send_message(u'theme_line_count', line_count - 1)
                 line_count = -1
                 while html_text.endswith(u'<br>'):
                     html_text = html_text[:-4]
@@ -367,7 +369,7 @@ class Renderer(object):
 
         """
         log.debug(u'_paginate_slide_words - Start')
-        line_end = u''
+        line_end = u' '
         if line_break:
             line_end = u'<br>'
         formatted = []
@@ -375,10 +377,11 @@ class Renderer(object):
         previous_raw = u''
         lines = text.split(u'\n')
         for line in lines:
+            line = line.strip()
             styled_line = expand_tags(line)
             html = self.page_shell + previous_html + styled_line + HTML_END
             self.web.setHtml(html)
-            # Text too long so go to next page
+            # Text too long so go to next page.
             if self.web_frame.contentsSize().height() > self.page_height:
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
@@ -402,24 +405,56 @@ class Renderer(object):
                             previous_html = styled_line + line_end
                             previous_raw = line + line_end
                             continue
-                words = self._words_split(line)
-                for word in words:
-                    styled_word = expand_tags(word)
-                    html = self.page_shell + previous_html + styled_word + \
-                        HTML_END
+                # Figure out how many words of the line will fit on screen by
+                # using the algorithm known as "binary chop".
+                raw_words = self._words_split(line)
+                html_words = [expand_tags(word) for word in raw_words]
+                smallest_index = 0
+                highest_index = len(html_words) - 1
+                index = int(highest_index / 2)
+                while True:
+                    html = self.page_shell + previous_html + \
+                        u''.join(html_words[:index + 1]).strip() + HTML_END
                     self.web.setHtml(html)
-                    # Text too long so go to next page
                     if self.web_frame.contentsSize().height() > \
                         self.page_height:
-                        while previous_raw.endswith(u'<br>'):
-                            previous_raw = previous_raw[:-4]
-                        formatted.append(previous_raw)
+                        # We know that it does not fit, so change/calculate the
+                        # new index and highest_index accordingly.
+                        highest_index = index
+                        index = int(index - (index - smallest_index) / 2)
+                    else:
+                        smallest_index = index
+                        index = int(index + (highest_index - index) / 2)
+                    # We found the number of words which will fit.
+                    if smallest_index == index or highest_index == index:
+                        index = smallest_index
+                        formatted.append(previous_raw.rstrip(u'<br>') +
+                            u''.join(raw_words[:index + 1]))
                         previous_html = u''
                         previous_raw = u''
-                    previous_html += styled_word
-                    previous_raw += word
-                previous_html += line_end
-                previous_raw += line_end
+                    else:
+                        continue
+                    # Check if the rest of the line fits on the slide. If it
+                    # does we do not have to do the much more intensive "word by
+                    # word" checking.
+                    html = self.page_shell + \
+                        u''.join(html_words[index + 1:]).strip() + HTML_END
+                    self.web.setHtml(html)
+                    if self.web_frame.contentsSize().height() <= \
+                        self.page_height:
+                        previous_html = \
+                            u''.join(html_words[index + 1:]).strip() + line_end
+                        previous_raw = \
+                            u''.join(raw_words[index + 1:]).strip() + line_end
+                        break
+                    else:
+                        # The other words do not fit, thus reset the indexes,
+                        # create a new list and continue with "word by word".
+                        raw_words = raw_words[index + 1:]
+                        html_words = html_words[index + 1:]
+                        smallest_index = 0
+                        highest_index = len(html_words) - 1
+                        index = int(highest_index / 2)
             else:
                 previous_html += styled_line + line_end
                 previous_raw += line + line_end

@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -164,8 +165,9 @@ class SongShowPlusImport(SongImport):
                 elif blockKey == VERSE_ORDER:
                     verseTag = self.toOpenLPVerseTag(data, True)
                     if verseTag:
-                        self.sspVerseOrderList.append(unicode(verseTag,
-                            u'cp1252'))
+                        if not isinstance(verseTag, unicode):
+                            verseTag = unicode(verseTag, u'cp1252')
+                        self.sspVerseOrderList.append(verseTag)
                 elif blockKey == SONG_BOOK:
                     self.song_book_name = unicode(data, u'cp1252')
                 elif blockKey == SONG_NUMBER:

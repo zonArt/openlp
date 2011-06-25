@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -45,6 +46,7 @@ else:
     try:
         import uno
         from com.sun.star.beans import PropertyValue
+        from com.sun.star.task import ErrorCodeIOException
         uno_available = True
     except ImportError:
         uno_available = False
@@ -123,7 +125,7 @@ class ImpressController(PresentationController):
             try:
                 uno_instance = get_uno_instance(resolver)
             except:
-                log.exception(u'Unable to find running instance ')
+                log.warn(u'Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
@@ -134,7 +136,7 @@ class ImpressController(PresentationController):
                 "com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
-            log.exception(u'Failed to get UNO desktop')
+            log.warn(u'Failed to get UNO desktop')
             return None
 
     def get_com_desktop(self):
@@ -149,7 +151,7 @@ class ImpressController(PresentationController):
         try:
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
         except AttributeError:
-            log.exception(u'Failure to find desktop - Impress may have closed')
+            log.warn(u'Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
     def get_com_servicemanager(self):
@@ -160,7 +162,7 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.exception(u'Failed to get COM service manager. '
+            log.warn(u'Failed to get COM service manager. '
                 u'Impress Controller has been disabled')
             return None
 
@@ -178,7 +180,7 @@ class ImpressController(PresentationController):
             else:
                 desktop = self.get_com_desktop()
         except:
-            log.exception(u'Failed to find an OpenOffice desktop to terminate')
+            log.warn(u'Failed to find an OpenOffice desktop to terminate')
         if not desktop:
             return
         docs = desktop.getComponents()
@@ -189,7 +191,7 @@ class ImpressController(PresentationController):
                 desktop.terminate()
                 log.debug(u'OpenOffice killed')
             except:
-                log.exception(u'Failed to terminate OpenOffice')
+                log.warn(u'Failed to terminate OpenOffice')
 
 
 class ImpressDocument(PresentationDocument):
@@ -242,7 +244,7 @@ class ImpressDocument(PresentationDocument):
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
         except:
-            log.exception(u'Failed to load presentation %s' % url)
+            log.warn(u'Failed to load presentation %s' % url)
             return False
         if os.name == u'nt':
             # As we can't start minimized the Impress window gets in the way.
@@ -252,7 +254,7 @@ class ImpressDocument(PresentationDocument):
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
-            self.controller.plugin.renderer.screens.current_display + 1
+            self.controller.plugin.renderer.screens.current[u'number'] + 1
         self.control = None
         self.create_thumbnails()
         return True
@@ -286,6 +288,9 @@ class ImpressDocument(PresentationDocument):
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
                 delete_file(path)
+            except ErrorCodeIOException, exception:
+                log.exception(u'ERROR! ErrorCodeIOException %d' %
+                    exception.ErrCode)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
@@ -318,7 +323,7 @@ class ImpressDocument(PresentationDocument):
                     self.presentation = None
                     self.document.dispose()
                 except:
-                    log.exception("Closing presentation failed")
+                    log.warn("Closing presentation failed")
             self.document = None
         self.controller.remove_doc(self)
 
@@ -336,7 +341,7 @@ class ImpressDocument(PresentationDocument):
                 log.debug("getPresentation failed to find a presentation")
                 return False
         except:
-            log.exception("getPresentation failed to find a presentation")
+            log.warn("getPresentation failed to find a presentation")
             return False
         return True
 

@@ -5,7 +5,8 @@
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
  * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
  * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
+ * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
+ * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -39,6 +40,19 @@ window.OpenLP = {
     }
     return $(targ);
   },
+  getSearchablePlugins: function (event) {
+    $.getJSON(
+      "/api/plugin/search",
+      function (data, status) {
+        var select = $("#search-plugin");
+        select.html("");
+        $.each(data.results.items, function (idx, value) {
+          select.append("<option value='" + value[0] + "'>" + value[1] + "</option>");
+        });
+        select.selectmenu("refresh");
+      }
+    );
+  },
   loadService: function (event) {
     $.getJSON(
       "/api/service/list",
@@ -63,8 +77,12 @@ window.OpenLP = {
         var ul = $("#slide-controller > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         for (idx in data.results.slides) {
+          var text = data.results.slides[idx]["tag"];
+          if (text != "") text = text + ": ";
+          text = text + data.results.slides[idx]["text"];
+          text = text.replace(/\n/g, '<br />');
           var li = $("<li data-icon=\"false\">").append(
-            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(data.results.slides[idx]["text"]));
+            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(text));
           if (data.results.slides[idx]["selected"]) {
             li.attr("data-theme", "e");
           }
@@ -187,6 +205,59 @@ window.OpenLP = {
       }
     );
     return false;
+  },
+  search: function (event) {
+    var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/search",
+      {"data": text},
+      function (data, status) {
+        var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
+        ul.html("");
+        if (data.results.items.length == 0) {
+          var li = $("<li data-icon=\"false\">").text(translationStrings["no_results"]);
+          ul.append(li);
+        }
+        else {
+            $.each(data.results.items, function (idx, value) {
+              ul.append($("<li>").append($("<a>").attr("href", "#options")
+                  .attr("data-rel", "dialog").attr("data-transition", "pop")
+                  .attr("value", value[0]).click(OpenLP.showOptions)
+                  .text(value[1])));
+            });
+        }
+        ul.listview("refresh");
+      }
+    );
+    return false;
+  },
+  showOptions: function (event) {
+    var element = OpenLP.getElement(event);
+    console.log(element);
+    $("#selected-item").val(element.attr("value"));
+  },
+  goLive: function (event) {
+    var id = $("#selected-item").val();
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/live",
+      {"data": text}
+    );
+    $.mobile.changePage("#slide-controller");
+    return false;
+  },
+  addToService: function (event) {
+    var id = $("#selected-item").val();
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        history.back();
+      }
+    );
+    $("#options").dialog("close");
+    return false;
   }
 }
 // Service Manager
@@ -205,7 +276,12 @@ $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
+// Search
+$("#search-submit").live("click", OpenLP.search);
+$("#go-live").live("click", OpenLP.goLive);
+$("#add-to-service").live("click", OpenLP.addToService);
 // Poll the server twice a second to get any updates.
+OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

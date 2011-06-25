@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -76,6 +77,8 @@ class LanguageManager(object):
             AppLocation.LanguageDir))
         file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
+        # Remove qm files from the list which start with "qt_".
+        file_names = file_names.filter(QtCore.QRegExp("^(?!qt_)"))
         for name in file_names:
             file_names.replaceInStrings(name, trans_dir.filePath(name))
         return file_names
@@ -122,7 +125,7 @@ class LanguageManager(object):
         language = u'en'
         if action:
             action_name = unicode(action.objectName())
-            if action_name == u'AutoLanguageItem':
+            if action_name == u'autoLanguageItem':
                 LanguageManager.auto_language = True
             else:
                 LanguageManager.auto_language = False

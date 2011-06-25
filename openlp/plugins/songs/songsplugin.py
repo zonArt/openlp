@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -214,13 +215,13 @@ class SongsPlugin(Plugin):
         tooltips = {
             u'load': u'',
             u'import': u'',
-            u'new': translate('SongsPlugin', 'Add a new Song.'),
-            u'edit': translate('SongsPlugin', 'Edit the selected Song.'),
-            u'delete': translate('SongsPlugin', 'Delete the selected Song.'),
-            u'preview': translate('SongsPlugin', 'Preview the selected Song.'),
-            u'live': translate('SongsPlugin', 'Send the selected Song live.'),
+            u'new': translate('SongsPlugin', 'Add a new song.'),
+            u'edit': translate('SongsPlugin', 'Edit the selected song.'),
+            u'delete': translate('SongsPlugin', 'Delete the selected song.'),
+            u'preview': translate('SongsPlugin', 'Preview the selected song.'),
+            u'live': translate('SongsPlugin', 'Send the selected song live.'),
             u'service': translate('SongsPlugin',
-                'Add the selected Song to the service.')
+                'Add the selected song to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
@@ -268,4 +269,3 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.songExportItem, UiStrings().Export)
         action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)
-

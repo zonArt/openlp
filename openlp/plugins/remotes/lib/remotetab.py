@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -93,24 +94,23 @@ class RemoteTab(SettingsTab):
             'Stage view URL:'))
 
     def setUrls(self):
-        ipAddress = None
+        ipAddress = u'localhost'
         if self.addressEdit.text() == ZERO_URL:
-            for ip in QtNetwork.QNetworkInterface.allAddresses():
-                if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                    ipAddress = ip.toString()
-                    break
+            ifaces = QtNetwork.QNetworkInterface.allInterfaces()
+            for iface in ifaces:
+                if not iface.isValid():
+                    continue
+                if not (iface.flags() & (QtNetwork.QNetworkInterface.IsUp |
+                    QtNetwork.QNetworkInterface.IsRunning)):
+                    continue
+                for addr in iface.addressEntries():
+                    ip = addr.ip()
+                    if ip.protocol() == 0 and \
+                        ip != QtNetwork.QHostAddress.LocalHost:
+                        ipAddress = ip.toString()
+                        break
         else:
             ipAddress = self.addressEdit.text()
-        if not ipAddress:
-            self.remoteUrlLabel.setVisible(False)
-            self.remoteUrl.setVisible(False)
-            self.stageUrlLabel.setVisible(False)
-            self.stageUrl.setVisible(False)
-            return
-        self.remoteUrlLabel.setVisible(True)
-        self.remoteUrl.setVisible(True)
-        self.stageUrlLabel.setVisible(True)
-        self.stageUrl.setVisible(True)
         url = u'http://%s:%s/' % (ipAddress, self.portSpinBox.value())
         self.remoteUrl.setText(u'<a href="%s">%s</a>' % (url, url))
         url = url + u'stage'

@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -47,11 +48,9 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.preLoad()
+        self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
-        QtCore.QObject.connect(self.defaultPushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
         QtCore.QObject.connect(self.savePushButton,
@@ -66,12 +65,12 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
-        self.preLoad()
+        self._loadDisplayTags()
         self._resetTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
 
-    def preLoad(self):
+    def _loadDisplayTags(self):
         """
         Load the Tags from store so can be used in the system or used to
         update the display. If Cancel was selected this is needed to reset the
@@ -86,8 +85,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         if user_expands_string:
             user_tags = cPickle.loads(user_expands_string)
             # If we have some user ones added them as well
-            for t in user_tags:
-                DisplayTags.add_html_tag(t)
+            DisplayTags.add_html_tags(user_tags)
 
     def onRowSelected(self):
         """
@@ -127,21 +125,19 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
                     'Tag "n" already defined.'))
                 return
         # Add new tag to list
-        tag = {u'desc': u'New Item', u'start tag': u'{n}',
-            u'start html': u'<Html_here>', u'end tag': u'{/n}',
-            u'end html': u'</and here>', u'protected': False}
-        DisplayTags.add_html_tag(tag)
+        tag = {
+            u'desc': translate('OpenLP.DisplayTagTab', 'New Tag'),
+            u'start tag': u'{n}',
+            u'start html': translate('OpenLP.DisplayTagTab', '<HTML here>'),
+            u'end tag': u'{/n}',
+            u'end html': translate('OpenLP.DisplayTagTab', '</and here>'),
+            u'protected': False
+        }
+        DisplayTags.add_html_tags([tag])
         self._resetTable()
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
-
-    def onDefaultPushed(self):
-        """
-        Remove all Custom Tags and reset to base set only.
-        """
-        DisplayTags.reset_html_tags()
-        self._resetTable()
 
     def onDeletePushed(self):
         """
@@ -151,6 +147,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             DisplayTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
+        self._saveTable()
 
     def onSavedPushed(self):
         """
@@ -175,14 +172,19 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end tag'] = u'{/%s}' % tag
             self.selected = -1
         self._resetTable()
-        temp = []
+        self._saveTable()
+
+    def _saveTable(self):
+        """
+        Saves all display tags except protected ones.
+        """
+        tags = []
         for tag in DisplayTags.get_html_tags():
             if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
+                tags.append(tag)
+        if tags:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
+                QtCore.QVariant(cPickle.dumps(tags)))
         else:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
                 QtCore.QVariant(u''))

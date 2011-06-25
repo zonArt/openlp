@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -27,6 +28,7 @@
 from datetime import datetime
 import logging
 import os
+import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -48,8 +50,9 @@ class MediaMediaItem(MediaManagerItem):
         self.background = False
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
+        self.hasSearch = True
         self.mediaObject = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
@@ -62,8 +65,8 @@ class MediaMediaItem(MediaManagerItem):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (
-            u' '.join(self.parent.video_extensions_list),
-            u' '.join(self.parent.audio_extensions_list), UiStrings().AllFiles)
+            u' '.join(self.plugin.video_extensions_list),
+            u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -92,7 +95,7 @@ class MediaMediaItem(MediaManagerItem):
         Called to reset the Live backgound with the media selected,
         """
         self.resetAction.setVisible(False)
-        self.parent.liveController.display.resetVideo()
+        self.plugin.liveController.display.resetVideo()
 
     def videobackgroundReplaced(self):
         """
@@ -111,7 +114,7 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.parent.liveController.display.video(filename, 0, True)
+                self.plugin.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
@@ -136,8 +139,6 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject.clearQueue()
         self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
         if not self.mediaStateWait(Phonon.StoppedState):
-            # Due to string freeze, borrow a message from presentations
-            # This will be corrected in 1.9.6
             critical_error_message_box(UiStrings().UnsupportedFile,
                     UiStrings().UnsupportedFile)
             return False
@@ -147,8 +148,6 @@ class MediaMediaItem(MediaManagerItem):
             if not self.mediaStateWait(Phonon.PlayingState) \
                 or self.mediaObject.currentSource().type() \
                 == Phonon.MediaSource.Invalid:
-                # Due to string freeze, borrow a message from presentations
-                # This will be corrected in 1.9.6
                 self.mediaObject.stop()
                 critical_error_message_box(UiStrings().UnsupportedFile,
                         UiStrings().UnsupportedFile)
@@ -183,8 +182,7 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.loadList(SettingsManager.load_list(self.settingsSection,
-            self.settingsSection))
+        self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
 
     def onDeleteClick(self):
         """
@@ -197,10 +195,14 @@ class MediaMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'media', self.getFileList())
 
-    def loadList(self, list):
-        for file in list:
+    def loadList(self, files):
+        # Sort the themes by its filename considering language specific
+        # characters. lower() is needed for windows!
+        files.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        for file in files:
             filename = os.path.split(unicode(file))[1]
             item_name = QtGui.QListWidgetItem(filename)
             img = QtGui.QPixmap(u':/media/media_video.png').toImage()
@@ -212,3 +214,13 @@ class MediaMediaItem(MediaManagerItem):
         log.debug(u'CreatePhonon')
         if not self.mediaObject:
             self.mediaObject = Phonon.MediaObject(self)
+
+    def search(self, string):
+        files = SettingsManager.load_list(self.settingsSection, u'media')
+        results = []
+        string = string.lower()
+        for file in files:
+            filename = os.path.split(unicode(file))[1]
+            if filename.lower().find(string) > -1:
+                results.append([file, filename])
+        return results

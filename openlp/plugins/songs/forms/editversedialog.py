@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -27,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -42,6 +43,10 @@ class Ui_EditVerseDialog(object):
         self.dialogLayout.addWidget(self.verseTextEdit)
         self.verseTypeLayout = QtGui.QHBoxLayout()
         self.verseTypeLayout.setObjectName(u'verseTypeLayout')
+        self.splitButton = QtGui.QPushButton(editVerseDialog)
+        self.splitButton.setIcon(build_icon(u':/general/general_add.png'))
+        self.splitButton.setObjectName(u'splitButton')
+        self.verseTypeLayout.addWidget(self.splitButton)
         self.verseTypeLabel = QtGui.QLabel(editVerseDialog)
         self.verseTypeLabel.setObjectName(u'verseTypeLabel')
         self.verseTypeLayout.addWidget(self.verseTypeLabel)
@@ -84,5 +89,10 @@ class Ui_EditVerseDialog(object):
             VerseType.TranslatedNames[VerseType.Ending])
         self.verseTypeComboBox.setItemText(VerseType.Other,
             VerseType.TranslatedNames[VerseType.Other])
+        self.splitButton.setText(UiStrings().Split)
+        self.splitButton.setToolTip(UiStrings().SplitToolTip)
         self.insertButton.setText(
             translate('SongsPlugin.EditVerseForm', '&Insert'))
+        self.insertButton.setToolTip(
+            translate('SongsPlugin.EditVerseForm', 'Split a slide into two '
+            'by inserting a verse splitter.'))

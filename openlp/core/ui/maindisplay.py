@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -36,35 +37,25 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate
 
-from openlp.core.ui import HideMode
+from openlp.core.ui import HideMode, ScreenList
 
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 #http://html5demos.com/two-videos
 
-class DisplayWidget(QtGui.QGraphicsView):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    log.info(u'Display Widget loaded')
-
-    def __init__(self, live, parent=None):
-        QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
-        self.live = live
-
-
-class MainDisplay(DisplayWidget):
+class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
-    def __init__(self, parent, screens, live):
-        DisplayWidget.__init__(self, live, parent=None)
-        self.parent = parent
-        self.screens = screens
+    def __init__(self, parent, image_manager, live):
+        if live:
+            QtGui.QGraphicsView.__init__(self)
+        else:
+            QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
+        self.image_manager = image_manager
+        self.screens = ScreenList.get_instance()
         self.alertTab = None
         self.hideMode = None
         self.videoHide = False
@@ -74,7 +65,9 @@ class MainDisplay(DisplayWidget):
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint)
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.X11BypassWindowManagerHint)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
@@ -94,8 +87,7 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Start setup for monitor %s (live = %s)' %
-            (self.screens.monitor_number, self.isLive))
+        log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
@@ -106,11 +98,10 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
-        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
         if self.isLive:
             if not self.firstTime:
                 self.createMediaObject()
-        log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
+        log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -127,8 +118,8 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             # Build the initial frame.
             self.black = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
@@ -145,17 +136,16 @@ class MainDisplay(DisplayWidget):
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.initialFrame)
             painter_image.fillRect(self.initialFrame.rect(), background_color)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() -
-                splash_image.width()) / 2,
-                (self.screens.current[u'size'].height()
-                - splash_image.height()) / 2, splash_image)
+                (self.screen[u'size'].width() - splash_image.width()) / 2,
+                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
@@ -163,12 +153,10 @@ class MainDisplay(DisplayWidget):
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
-                self.show()
                 self.primary = False
             else:
                 self.primary = True
-        log.debug(
-            u'Finished setup for monitor %s' % self.screens.monitor_number)
+        log.debug(u'Finished MainDisplay setup')
 
     def createMediaObject(self):
         self.firstTime = False
@@ -212,8 +200,8 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible() or self.videoWidget.isVisible():
+        if self.height() != self.screen[u'size'].height() or not \
+            self.isVisible() or self.videoWidget.isVisible():
             shrink = True
         else:
             shrink = False
@@ -244,7 +232,7 @@ class MainDisplay(DisplayWidget):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        self.imageManager.add_image(name, path)
+        self.image_manager.add_image(name, path)
         self.image(name)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
@@ -259,7 +247,7 @@ class MainDisplay(DisplayWidget):
             The name of the image to be displayed
         """
         log.debug(u'image to display')
-        image = self.imageManager.get_image_bytes(name)
+        image = self.image_manager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         return self.preview()
@@ -451,7 +439,7 @@ class MainDisplay(DisplayWidget):
                 self.hideDisplay(self.hideMode)
             else:
                 # Single screen active
-                if self.screens.monitor_number == 0:
+                if self.screens.display_count == 1:
                     # Only make visible if setting enabled
                     if QtCore.QSettings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():
@@ -489,13 +477,13 @@ class MainDisplay(DisplayWidget):
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager. \
+                background = self.image_manager. \
                     get_image_bytes(self.override[u'image'])
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager. \
+            self.serviceItem.bg_image_bytes = self.image_manager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
         if image:
-            image_bytes = self.imageManager.get_image_bytes(image)
+            image_bytes = self.image_manager.get_image_bytes(image)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,

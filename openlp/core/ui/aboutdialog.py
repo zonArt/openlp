@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -95,7 +96,7 @@ class Ui_AboutDialog(object):
             'OpenLP is free church presentation software, or lyrics '
             'projection software, used to display slides of songs, Bible '
             'verses, videos, images, and even presentations (if '
-            'OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) '
+            'Impress, PowerPoint or PowerPoint Viewer is installed) '
             'for church worship using a computer and a data projector.\n'
             '\n'
             'Find out more about OpenLP: http://openlp.org/\n'
@@ -111,12 +112,14 @@ class Ui_AboutDialog(object):
             u'Michael "cocooncrash" Gorven',
             u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
             u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
-        contributors = [u'Scott "sguerrieri" Guerrieri',
+        contributors = [u'Gerald "jerryb" Britton',
+            u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Mattias "mahfiaz" P\xf5ldaru',
+            u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
+            u'Stevan "StevanP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
-            u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
-            u'Frode "frodus" Woldsund']
+            u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
+            u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
@@ -137,7 +140,8 @@ class Ui_AboutDialog(object):
             u'ja': [u'Kunio "Kunio" Nakamaru'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim'],
+            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim',
+                u'Simon "samscudder" Scudder'],
             u'ru': [u'Sergey "ratz" Ratz']
         }
         documentors = [u'Wesley "wrst" Stout',
@@ -221,13 +225,15 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        copyright = translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2011 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2011 '
-            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
-            'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
-            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
-            'Tinggaard, Frode Woldsund')
+        copyright = unicode(translate('OpenLP.AboutForm',
+            'Copyright \xa9 2004-2011 %s\n'
+            'Portions copyright \xa9 2004-2011 %s')) % (u'Raoul Snyman',
+            u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
+            u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
+            u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
+            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder, '
+            u'Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, '
+            u'Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -29,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -36,32 +38,14 @@ class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
     """
-    def __init__(self, parent, screens):
+    def __init__(self, parent):
         """
         Initialise the general settings tab
         """
-        self.screens = screens
-        self.monitorNumber = 0
-        # Set to True to allow PostSetup to work on application start up
-        self.overrideChanged = True
+        self.screens = ScreenList.get_instance()
         self.icon_path = u':/icon/openlp-logo-16x16.png'
         generalTranslated = translate('GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
-
-    def preLoad(self):
-        """
-        Set up the display screen and set correct screen values.
-        If not set before default to last screen.
-        """
-        settings = QtCore.QSettings()
-        settings.beginGroup(self.settingsSection)
-        self.monitorNumber = settings.value(u'monitor',
-            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
-        self.screens.set_current_display(self.monitorNumber)
-        self.screens.monitor_number = self.monitorNumber
-        self.screens.display = settings.value(
-            u'display on monitor', QtCore.QVariant(True)).toBool()
-        settings.endGroup()
 
     def setupUi(self):
         """
@@ -113,11 +97,15 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
         self.settingsLayout.addRow(self.autoPreviewCheckBox)
+        self.enableLoopCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
+        self.enableLoopCheckBox.setObjectName(u'enableLoopCheckBox')
+        self.settingsLayout.addRow(self.enableLoopCheckBox)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
         self.timeoutLabel.setObjectName(u'timeoutLabel')
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
+        self.timeoutSpinBox.setRange(1, 180)
         self.settingsLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
         self.leftLayout.addWidget(self.settingsGroupBox)
         self.leftLayout.addStretch()
@@ -158,14 +146,14 @@ class GeneralTab(SettingsTab):
         self.displayLayout.addWidget(self.customXLabel, 3, 0)
         self.customXValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customXValueEdit.setObjectName(u'customXValueEdit')
-        self.customXValueEdit.setMaximum(9999)
+        self.customXValueEdit.setRange(-9999, 9999)
         self.displayLayout.addWidget(self.customXValueEdit, 4, 0)
         self.customYLabel = QtGui.QLabel(self.displayGroupBox)
         self.customYLabel.setObjectName(u'customYLabel')
         self.displayLayout.addWidget(self.customYLabel, 3, 1)
         self.customYValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customYValueEdit.setObjectName(u'customYValueEdit')
-        self.customYValueEdit.setMaximum(9999)
+        self.customYValueEdit.setRange(-9999, 9999)
         self.displayLayout.addWidget(self.customYValueEdit, 4, 1)
         self.customWidthLabel = QtGui.QLabel(self.displayGroupBox)
         self.customWidthLabel.setObjectName(u'customWidthLabel')
@@ -187,13 +175,15 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
         QtCore.QObject.connect(self.customHeightValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.customWidthValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.customYValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.customXValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.monitorComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
@@ -202,7 +192,6 @@ class GeneralTab(SettingsTab):
         self.usernameEdit.setVisible(False)
         self.passwordLabel.setVisible(False)
         self.passwordEdit.setVisible(False)
-
 
     def retranslateUi(self):
         """
@@ -233,8 +222,10 @@ class GeneralTab(SettingsTab):
             'Unblank display when adding new live item'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
+        self.enableLoopCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Enable slide wrap-around'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
-            'Slide loop delay:'))
+            'Timed slide interval:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
@@ -261,6 +252,9 @@ class GeneralTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
         self.monitorComboBox.addItems(self.screens.get_screen_list())
+        monitorNumber = settings.value(u'monitor',
+            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
+        self.monitorComboBox.setCurrentIndex(monitorNumber)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
         self.usernameEdit.setText(unicode(settings.value(
@@ -271,7 +265,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank',
             QtCore.QVariant(False)).toBool())
-        self.monitorComboBox.setCurrentIndex(self.monitorNumber)
         self.displayOnMonitorCheck.setChecked(self.screens.display)
         self.warningCheckBox.setChecked(settings.value(u'blank warning',
             QtCore.QVariant(False)).toBool())
@@ -283,6 +276,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
+        self.enableLoopCheckBox.setChecked(settings.value(u'enable slide loop',
+            QtCore.QVariant(True)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
         self.overrideCheckBox.setChecked(settings.value(u'override position',
@@ -300,15 +295,16 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
+        self.display_changed = False
 
     def save(self):
         """
         Save the settings from the form
         """
-        self.monitorNumber = self.monitorComboBox.currentIndex()
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'monitor', QtCore.QVariant(self.monitorNumber))
+        settings.setValue(u'monitor',
+            QtCore.QVariant(self.monitorComboBox.currentIndex()))
         settings.setValue(u'display on monitor',
             QtCore.QVariant(self.displayOnMonitorCheck.isChecked()))
         settings.setValue(u'blank warning',
@@ -325,6 +321,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
+        settings.setValue(u'enable slide loop',
+            QtCore.QVariant(self.enableLoopCheckBox.isChecked()))
         settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
         settings.setValue(u'ccli number',
@@ -344,15 +342,8 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'override position',
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.endGroup()
-        self.screens.display = self.displayOnMonitorCheck.isChecked()
-        # Monitor Number has changed.
-        postUpdate = False
-        if self.screens.monitor_number != self.monitorNumber:
-            self.screens.monitor_number = self.monitorNumber
-            self.screens.set_current_display(self.monitorNumber)
-            postUpdate = True
         # On save update the screens as well
-        self.postSetUp(postUpdate)
+        self.postSetUp(True)
 
     def postSetUp(self, postUpdate=False):
         """
@@ -361,7 +352,11 @@ class GeneralTab(SettingsTab):
         """
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.timeoutSpinBox.value())
-        # Reset screens after initial definition
+        # Do not continue on start up.
+        if not postUpdate:
+            return
+        self.screens.set_current_display(self.monitorComboBox.currentIndex())
+        self.screens.display = self.displayOnMonitorCheck.isChecked()
         self.screens.override[u'size'] = QtCore.QRect(
             self.customXValueEdit.value(),
             self.customYValueEdit.value(),
@@ -371,10 +366,9 @@ class GeneralTab(SettingsTab):
             self.screens.set_override_display()
         else:
             self.screens.reset_current_display()
-        # Order is important so be careful if you change
-        if self.overrideChanged or postUpdate:
+        if self.display_changed:
             Receiver.send_message(u'config_screen_changed')
-        self.overrideChanged = False
+        self.display_changed = False
 
     def onOverrideCheckBoxToggled(self, checked):
         """
@@ -387,10 +381,10 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
-        self.overrideChanged = True
+        self.display_changed = True
 
-    def onDisplayPositionChanged(self):
+    def onDisplayChanged(self):
         """
         Called when the width, height, x position or y position has changed.
         """
-        self.overrideChanged = True
+        self.display_changed = True
