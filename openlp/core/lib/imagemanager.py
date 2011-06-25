@@ -32,7 +32,6 @@ to wait for the conversion to happen.
 """
 import logging
 import time
-import Queue
 
 from PyQt4 import QtCore
 
@@ -54,59 +53,15 @@ class ImageThread(QtCore.QThread):
         """
         Run the thread.
         """
-        self.imageManager._process()
-
-
-class Priority(object):
-    """
-    Enumeration class for different priorities.
-
-    ``Low``
-        Only the image's byte stream has to be generated. Neither the QImage nor
-        the byte stream has been requested yet.
-
-    ``Normal``
-        The image's byte stream as well as the image has to be generated.
-        Neither the QImage nor the byte stream has been requested yet.
-
-    ``High``
-        The image's byte stream as well as the image has to be generated. The
-        QImage for this image has been requested.
-
-    ``Urgent``
-        The image's byte stream as well as the image has to be generated. The
-        byte stream for this image has been requested.
-    """
-    Low = 3
-    Normal = 2
-    High = 1
-    Urgent = 0
+        self.imageManager.process()
 
 
 class Image(object):
-    def __init__(self, name='', path=''):
-        self.name = name
-        self.path = path
-        self.image = None
-        self.image_bytes = None
-        self.priority = Priority.Normal
-
-
-class PriorityQueue(Queue.PriorityQueue):
-    """
-    Customised ``Queue.PriorityQueue``.
-    """
-    def remove(self, item):
-        """
-        Removes the given ``item`` from the queue.
-
-        ``item``
-            The item to remove. This should be a tuple::
-
-                ``(Priority, Image)``
-        """
-        if item in self.queue:
-            self.queue.remove(item)
+    name = ''
+    path = ''
+    dirty = True
+    image = None
+    image_bytes = None
 
 
 class ImageManager(QtCore.QObject):
@@ -121,64 +76,50 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
-        self._imageThread = ImageThread(self)
-        self._clean_queue = PriorityQueue()
+        self._thread_running = False
+        self._cache_dirty = False
+        self.image_thread = ImageThread(self)
 
     def update_display(self):
         """
-        Screen has changed size so rebuild the cache to new size.
+        Screen has changed size so rebuild the cache to new size
         """
         log.debug(u'update_display')
         current_screen = ScreenList.get_instance().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
-        # Mark the images as dirty for a rebuild by setting the image and byte
-        # stream to None.
-        self._clean_queue = PriorityQueue()
-        for key, image in self._cache.iteritems():
-            image.priority = Priority.Normal
-            image.image = None
-            image.image_bytes = None
-            self._clean_queue.put((image.priority, image))
-        # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        # mark the images as dirty for a rebuild
+        for key in self._cache.keys():
+            image = self._cache[key]
+            image.dirty = True
+            image.image = resize_image(image.path, self.width, self.height)
+        self._cache_dirty = True
+        # only one thread please
+        if not self._thread_running:
+            self.image_thread.start()
 
     def get_image(self, name):
         """
-        Return the ``QImage`` from the cache. If not present wait for the
-        background thread to process it.
+        Return the Qimage from the cache
         """
         log.debug(u'get_image %s' % name)
-        image = self._cache[name]
-        if image.image is None:
-            self._clean_queue.remove((image.priority, image))
-            image.priority = Priority.High
-            self._clean_queue.put((image.priority, image))
-            while image.image is None:
-                log.debug(u'get_image - waiting')
-                time.sleep(0.1)
-        return image.image
+        return self._cache[name].image
 
     def get_image_bytes(self, name):
         """
-        Returns the byte string for an image. If not present wait for the
-        background thread to process it.
+        Returns the byte string for an image
+        If not present wait for the background thread to process it.
         """
         log.debug(u'get_image_bytes %s' % name)
-        image = self._cache[name]
-        if image.image_bytes is None:
-            self._clean_queue.remove((image.priority, image))
-            image.priority = Priority.Urgent
-            self._clean_queue.put((image.priority, image))
-            while image.image_bytes is None:
+        if not self._cache[name].image_bytes:
+            while self._cache[name].dirty:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
-        return image.image_bytes
+        return self._cache[name].image_bytes
 
     def del_image(self, name):
         """
-        Delete the Image from the cache.
+        Delete the Image from the Cache
         """
         log.debug(u'del_image %s' % name)
         if name in self._cache:
@@ -186,44 +127,45 @@ class ImageManager(QtCore.QObject):
 
     def add_image(self, name, path):
         """
-        Add image to cache if it is not already there.
+        Add image to cache if it is not already there
         """
         log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
-            image = Image(name, path)
+            image = Image()
+            image.name = name
+            image.path = path
+            image.image = resize_image(path, self.width, self.height)
             self._cache[name] = image
-            self._clean_queue.put((image.priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
-        # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        self._cache_dirty = True
+        # only one thread please
+        if not self._thread_running:
+            self.image_thread.start()
 
-    def _process(self):
+    def process(self):
         """
-        Controls the processing called from a ``QtCore.QThread``.
+        Controls the processing called from a QThread
         """
-        log.debug(u'_process - started')
-        while not self._clean_queue.empty():
-            self._clean_cache()
-        log.debug(u'_process - ended')
+        log.debug(u'process - started')
+        self._thread_running = True
+        self.clean_cache()
+        # data loaded since we started ?
+        while self._cache_dirty:
+            log.debug(u'process - recycle')
+            self.clean_cache()
+        self._thread_running = False
+        log.debug(u'process - ended')
 
-    def _clean_cache(self):
+    def clean_cache(self):
         """
         Actually does the work.
         """
-        log.debug(u'_clean_cache')
-        image = self._clean_queue.get()[1]
-        # Generate the QImage for the image.
-        if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height)
-            # If the priority is not urgent, then set the priority to low and
-            # do not start to generate the byte stream.
-            if image.priority != Priority.Urgent:
-                self._clean_queue.remove((image.priority, image))
-                image.priority = Priority.Low
-                self._clean_queue.put((image.priority, image))
-                return
-        # Generate the byte stream for the image.
-        if image.image_bytes is None:
-            image.image_bytes = image_to_byte(image.image)
+        log.debug(u'clean_cache')
+        # we will clean the cache now
+        self._cache_dirty = False
+        for key in self._cache.keys():
+            image = self._cache[key]
+            if image.dirty:
+                image.image_bytes = image_to_byte(image.image)
+                image.dirty = False
