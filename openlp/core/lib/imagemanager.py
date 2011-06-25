@@ -221,14 +221,14 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'_process - started')
         while not self._clean_queue.empty():
-            self._clean_cache()
+            self._process_cache()
         log.debug(u'_process - ended')
 
-    def _clean_cache(self):
+    def _process_cache(self):
         """
         Actually does the work.
         """
-        log.debug(u'_clean_cache')
+        log.debug(u'_process_cache')
         image = self._clean_queue.get()[1]
         # Generate the QImage for the image.
         if image.image is None:
