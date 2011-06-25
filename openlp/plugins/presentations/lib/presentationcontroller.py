@@ -31,7 +31,8 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, create_thumb, resize_image, validate_thumb
+from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
+    resize_image, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -97,8 +98,7 @@ class PresentationDocument(object):
         self.slidenumber = 0
         self.controller = controller
         self.filepath = name
-        if not os.path.isdir(self.get_thumbnail_folder()):
-            os.mkdir(self.get_thumbnail_folder())
+        check_directory_exists(self.get_thumbnail_folder())
 
     def load_presentation(self):
         """
@@ -385,10 +385,8 @@ class PresentationController(object):
             AppLocation.get_section_data_path(self.settings_section),
             u'thumbnails')
         self.thumbnail_prefix = u'slide'
-        if not os.path.isdir(self.thumbnail_folder):
-            os.makedirs(self.thumbnail_folder)
-        if not os.path.isdir(self.temp_folder):
-            os.makedirs(self.temp_folder)
+        check_directory_exists(self.thumbnail_folder)
+        check_directory_exists(self.temp_folder)
 
     def enabled(self):
         """
