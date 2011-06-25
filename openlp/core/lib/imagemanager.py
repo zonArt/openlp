@@ -121,7 +121,7 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
-        self._image_thread = ImageThread(self)
+        self._imageThread = ImageThread(self)
         self._clean_queue = PriorityQueue()
 
     def update_display(self):
@@ -132,21 +132,22 @@ class ImageManager(QtCore.QObject):
         current_screen = ScreenList.get_instance().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
-        # Mark the images as dirty for a rebuild.
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
         self._clean_queue = PriorityQueue()
-        for key in self._cache.keys():
-            image = self._cache[key]
+        for key, image in self._cache.iteritems():
             image.priority = Priority.Normal
             image.image = None
             image.image_bytes = None
             self._clean_queue.put((image.priority, image))
         # We want only one thread.
-        if not self._image_thread.isRunning():
-            self._image_thread.start()
+        if not self._imageThread.isRunning():
+            self._imageThread.start()
 
     def get_image(self, name):
         """
-        Return the Qimage from the cache.
+        Return the ``QImage`` from the cache. If not present wait for the
+        background thread to process it.
         """
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
@@ -177,7 +178,7 @@ class ImageManager(QtCore.QObject):
 
     def del_image(self, name):
         """
-        Delete the Image from the Cache
+        Delete the Image from the cache.
         """
         log.debug(u'del_image %s' % name)
         if name in self._cache:
@@ -185,7 +186,7 @@ class ImageManager(QtCore.QObject):
 
     def add_image(self, name, path):
         """
-        Add image to cache if it is not already there
+        Add image to cache if it is not already there.
         """
         log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
@@ -195,8 +196,8 @@ class ImageManager(QtCore.QObject):
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
-        if not self._image_thread.isRunning():
-            self._image_thread.start()
+        if not self._imageThread.isRunning():
+            self._imageThread.start()
 
     def _process(self):
         """
@@ -213,12 +214,16 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'_clean_cache')
         image = self._clean_queue.get()[1]
+        # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height)
+            # If the priority is not urgent, then set the priority to low and
+            # do not start to generate the byte stream.
             if image.priority != Priority.Urgent:
                 self._clean_queue.remove((image.priority, image))
                 image.priority = Priority.Low
                 self._clean_queue.put((image.priority, image))
                 return
+        # Generate the byte stream for the image.
         if image.image_bytes is None:
             image.image_bytes = image_to_byte(image.image)

@@ -582,9 +582,6 @@ class SlideController(QtGui.QWidget):
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
-        import time
-        import datetime
-        start = time.time()
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
@@ -671,7 +668,6 @@ class SlideController(QtGui.QWidget):
                 self.onMediaClose()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
-        print unicode(datetime.timedelta(seconds=time.time() - start))
 
     def __updatePreviewSelection(self, slideno):
         """
