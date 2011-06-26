@@ -36,7 +36,7 @@ class Ui_DisplayTagDialog(object):
         displayTagDialog.setObjectName(u'displayTagDialog')
         displayTagDialog.resize(725, 548)
         self.listdataGridLayout = QtGui.QGridLayout(displayTagDialog)
-        self.listdataGridLayout.setMargin(0)
+        self.listdataGridLayout.setMargin(8)
         self.listdataGridLayout.setObjectName(u'listdataGridLayout')
         self.tagTableWidget = QtGui.QTableWidget(displayTagDialog)
         self.tagTableWidget.setHorizontalScrollBarPolicy(
