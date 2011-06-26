@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,42 +42,44 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 */
 
 .serviceTitle {
-   font-weight:600;
-   font-size:x-large;
-   color:black;
+   font-weight: 600;
+   font-size: x-large;
+   color: black;
 }
 
 .item {
-   color:black;
+   color: black;
 }
 
 .itemTitle {
-   font-weight:600;
-   font-size:large;
+   font-weight: 600;
+   font-size: large;
 }
 
-.itemText {}
+.itemText {
+   margin-top: 10px;
+}
 
 .itemFooter {
-   font-size:8px;
+   font-size: 8px;
 }
 
 .itemNotes {}
 
 .itemNotesTitle {
-   font-weight:bold;
-   font-size:12px;
+   font-weight: bold;
+   font-size: 12px;
 }
 
 .itemNotesText {
-   font-size:11px;
+   font-size: 11px;
 }
 
 .media {}
 
 .mediaTitle {
-    font-weight:bold;
-    font-size:11px;
+    font-weight: bold;
+    font-size: 11px;
 }
 
 .mediaText {}
@@ -89,16 +91,16 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 }
 
 .customNotesTitle {
-   font-weight:bold;
-   font-size:11px;
+   font-weight: bold;
+   font-size: 11px;
 }
 
 .customNotesText {
-   font-size:11px;
+   font-size: 11px;
 }
 
 .newPage {
-    page-break-before:always;
+    page-break-before: always;
 }
 """
 
@@ -212,11 +214,11 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 verse_def = None
                 for slide in item.get_frames():
                     if not verse_def or verse_def != slide[u'verseTag']:
-                        p = self._addElement(u'div', parent=div,
+                        text_div = self._addElement(u'div', parent=div,
                             classId=u'itemText')
                     else:
-                        self._addElement(u'br', parent=p)
-                    self._addElement(u'p', slide[u'html'], p)
+                        self._addElement(u'br', parent=text_div)
+                    self._addElement(u'span', slide[u'html'], text_div)
                     verse_def = slide[u'verseTag']
                 # Break the page before the div element.
                 if index != 0 and self.pageBreakAfterText.isChecked():

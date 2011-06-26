@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -79,7 +79,7 @@ class ScreenList(object):
         ``number``
             The number of the screen, which size has changed.
         """
-        log.info(u'screenResolutionChanged %d' % number)
+        log.info(u'screen_resolution_changed %d' % number)
         for screen in self.screen_list:
             if number == screen[u'number']:
                 newScreen = {
@@ -104,6 +104,9 @@ class ScreenList(object):
         ``changed_screen``
             The screen's number which has been (un)plugged.
         """
+        # Do not log at start up.
+        if changed_screen != -1:
+            log.info(u'screen_count_changed %d' % self.desktop.numScreens())
         # Remove unplugged screens.
         for screen in copy.deepcopy(self.screen_list):
             if screen[u'number'] == self.desktop.numScreens():
@@ -116,8 +119,7 @@ class ScreenList(object):
                     u'size': self.desktop.screenGeometry(number),
                     u'primary': (self.desktop.primaryScreen() == number)
                 })
-        # We do not want to send this message, when the method is called the
-        # first time.
+        # We do not want to send this message at start up.
         if changed_screen != -1:
             # Reload setting tabs to apply possible changes.
             Receiver.send_message(u'config_screen_changed')
@@ -241,6 +243,7 @@ class ScreenList(object):
         height = settings.value(u'height',
             QtCore.QVariant(self.current[u'size'].height())).toInt()[0]
         self.override[u'size'] = QtCore.QRect(x, y, width, height)
+        self.override[u'primary'] = False
         settings.endGroup()
         if override_display:
             self.set_override_display()

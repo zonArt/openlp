@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -51,7 +51,10 @@ This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
 them separate from the functionality, so that it is easier to recreate the GUI
 from the .ui files later if necessary.
 """
-
+from booknameform import BookNameForm
+from languageform import LanguageForm
 from bibleimportform import BibleImportForm
+from bibleupgradeform import BibleUpgradeForm
 
-__all__ = ['BibleImportForm']
+__all__ = [u'BookNameForm', u'LanguageForm', u'BibleImportForm', 
+    u'BibleUpgradeForm']

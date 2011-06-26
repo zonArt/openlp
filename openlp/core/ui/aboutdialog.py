@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -118,8 +118,8 @@ class Ui_AboutDialog(object):
             u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
             u'Stevan "StevanP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
-            u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
-            u'Frode "frodus" Woldsund']
+            u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
+            u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
@@ -231,8 +231,9 @@ class Ui_AboutDialog(object):
             u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
             u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
             u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
-            u'P\xf5ldaru, Christian Richter, Philip Ridout, Jeffrey Smith, '
-            u'Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund')
+            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder, '
+            u'Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, '
+            u'Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

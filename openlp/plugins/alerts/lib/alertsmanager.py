@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,8 +40,7 @@ class AlertsManager(QtCore.QObject):
     log.info(u'Alert Manager loaded')
 
     def __init__(self, parent):
-        QtCore.QObject.__init__(self)
-        self.parent = parent
+        QtCore.QObject.__init__(self, parent)
         self.screen = None
         self.timer_id = 0
         self.alertList = []
@@ -85,8 +84,8 @@ class AlertsManager(QtCore.QObject):
         if len(self.alertList) == 0:
             return
         text = self.alertList.pop(0)
-        alertTab = self.parent.settings_tab
-        self.parent.liveController.display.alert(text)
+        alertTab = self.parent().settings_tab
+        self.parent().liveController.display.alert(text)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -101,7 +100,7 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            self.parent.liveController.display.alert(u'')
+            self.parent().liveController.display.alert(u'')
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()

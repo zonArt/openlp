@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 
 import logging
 import os
+import sys
 from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
@@ -179,7 +180,7 @@ class Ui_MainWindow(object):
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.serviceManagerContents.printServiceOrder,
             category=UiStrings().File)
-        self.fileExitItem = shortcut_action(mainWindow, u'FileExitItem',
+        self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings().File)
         action_list.add_category(UiStrings().Import, CategoryOrder.standardMenu)
@@ -291,10 +292,18 @@ class Ui_MainWindow(object):
         # i18n add Language Actions
         add_actions(self.settingsLanguageMenu, (self.autoLanguageItem, None))
         add_actions(self.settingsLanguageMenu, self.languageGroup.actions())
-        add_actions(self.settingsMenu, (self.settingsPluginListItem,
-            self.settingsLanguageMenu.menuAction(), None,
-            self.displayTagItem, self.settingsShortcutsItem,
-            self.settingsConfigureItem))
+        # Order things differently in OS X so that Preferences menu item in the
+        # app menu is correct (this gets picked up automatically by Qt).
+        if sys.platform == u'darwin':
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.settingsConfigureItem, self.settingsShortcutsItem,
+                self.displayTagItem))
+        else:
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.displayTagItem, self.settingsShortcutsItem,
+                self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
@@ -356,9 +365,9 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Save Service As'))
         self.fileSaveAsItem.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
-        self.printServiceOrderItem.setText(UiStrings().PrintServiceOrder)
+        self.printServiceOrderItem.setText(UiStrings().PrintService)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Print the current Service Order.'))
+            'Print the current service.'))
         self.fileExitItem.setText(
             translate('OpenLP.MainWindow', 'E&xit'))
         self.fileExitItem.setStatusTip(
@@ -483,7 +492,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
-        self.image_manager = ImageManager()
+        self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -552,7 +561,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.image_manager, self.themeManagerContents)
+        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
@@ -598,6 +607,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.themeManagerContents.loadThemes(True)
+        # Hide/show the theme combobox on the service manager
+        self.serviceManagerContents.themeChange()
+        # Reset the cursor
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
@@ -651,6 +663,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.setViewMode(False, True, False, False, True)
             self.modeLiveItem.setChecked(True)
 
+    def appStartup(self):
+        """
+        Give all the plugins a chance to perform some tasks at startup
+        """
+        Receiver.send_message(u'openlp_process_events')
+        for plugin in self.pluginManager.plugins:
+            if plugin.isActive():
+                plugin.appStartup()
+                Receiver.send_message(u'openlp_process_events')
+
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
@@ -669,13 +691,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def blankCheck(self):
         """
         Check and display message if screen blank on setup.
-        Triggered by delay thread.
         """
         settings = QtCore.QSettings()
+        self.liveController.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
             QtCore.QVariant(False)).toBool():
-            self.liveController.mainDisplaySetBackground()
-            if settings.value(u'blank warning',
+            if settings.value(u'%s/blank warning' % self.generalSettingsSection,
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow',
@@ -801,7 +822,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'screenChanged')
         Receiver.send_message(u'cursor_busy')
-        self.image_manager.update_display()
+        self.imageManager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()

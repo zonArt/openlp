@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -165,7 +165,7 @@ def init_schema(url):
         Column(u'id', types.Integer, primary_key=True),
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
-        Column(u'display_name', types.Unicode(255), nullable=False)
+        Column(u'display_name', types.Unicode(255), index=True, nullable=False)
     )
 
     # Definition of the "media_files" table
@@ -186,7 +186,7 @@ def init_schema(url):
     songs_table = Table(u'songs', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'song_book_id', types.Integer,
-            ForeignKey(u'song_books.id'), default=0),
+            ForeignKey(u'song_books.id'), default=None),
         Column(u'title', types.Unicode(255), nullable=False),
         Column(u'alternate_title', types.Unicode(255)),
         Column(u'lyrics', types.UnicodeText, nullable=False),
@@ -197,13 +197,13 @@ def init_schema(url):
         Column(u'song_number', types.Unicode(64)),
         Column(u'theme_name', types.Unicode(128)),
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, index=True, nullable=False)
+        Column(u'search_lyrics', types.UnicodeText, nullable=False)
     )
 
     # Definition of the "topics" table
     topics_table = Table(u'topics', metadata,
         Column(u'id', types.Integer, primary_key=True),
-        Column(u'name', types.Unicode(128), nullable=False)
+        Column(u'name', types.Unicode(128), index=True, nullable=False)
     )
 
     # Definition of the "authors_songs" table
@@ -229,27 +229,6 @@ def init_schema(url):
         Column(u'topic_id', types.Integer,
             ForeignKey(u'topics.id'), primary_key=True)
     )
-
-    # Define table indexes
-    Index(u'authors_id', authors_table.c.id)
-    Index(u'authors_display_name_id', authors_table.c.display_name,
-        authors_table.c.id)
-    Index(u'media_files_id', media_files_table.c.id)
-    Index(u'song_books_id', song_books_table.c.id)
-    Index(u'songs_id', songs_table.c.id)
-    Index(u'topics_id', topics_table.c.id)
-    Index(u'authors_songs_author', authors_songs_table.c.author_id,
-        authors_songs_table.c.song_id)
-    Index(u'authors_songs_song', authors_songs_table.c.song_id,
-        authors_songs_table.c.author_id)
-    Index(u'media_files_songs_file', media_files_songs_table.c.media_file_id,
-        media_files_songs_table.c.song_id)
-    Index(u'media_files_songs_song', media_files_songs_table.c.song_id,
-        media_files_songs_table.c.media_file_id)
-    Index(u'topics_song_topic', songs_topics_table.c.topic_id,
-        songs_topics_table.c.song_id)
-    Index(u'topics_song_song', songs_topics_table.c.song_id,
-        songs_topics_table.c.topic_id)
 
     mapper(Author, authors_table)
     mapper(Book, song_books_table)

@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,15 +57,16 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, self, icon)
-        self.edit_custom_form = EditCustomForm(self, self.parent.manager)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formparent,
+            self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
-        self.manager = parent.manager
+        self.manager = plugin.manager
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -108,7 +109,7 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_load_list'), self.initialise)
+            QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
@@ -128,14 +129,6 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
-        # Called to redisplay the custom list screen edith from a search
-        # or from the exit of the Custom edit dialog. If remote editing is
-        # active trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
-        self.onRemoteEditClear()
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
@@ -154,11 +147,20 @@ class CustomMediaItem(MediaManagerItem):
             if custom_slide.id == self.auto_select_id:
                 self.listView.setCurrentItem(custom_name)
         self.auto_select_id = -1
+        # Called to redisplay the custom list screen edith from a search
+        # or from the exit of the Custom edit dialog. If remote editing is
+        # active trigger it and clean up so it will not update again.
+        if self.remoteTriggered == u'L':
+            self.onAddClick()
+        if self.remoteTriggered == u'P':
+            self.onPreviewClick()
+        self.onRemoteEditClear()
 
     def onNewClick(self):
         self.edit_custom_form.loadCustom(0)
         self.edit_custom_form.exec_()
-        self.initialise()
+        self.onClearTextButtonClick()
+        self.onSelectionChange()
 
     def onRemoteEditClear(self):
         self.remoteTriggered = None
@@ -178,6 +180,8 @@ class CustomMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
+            self.auto_select_id = -1
+            self.onSearchTextButtonClick()
 
     def onEditClick(self):
         """
@@ -188,7 +192,8 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
-            self.initialise()
+            self.auto_select_id = -1
+            self.onSearchTextButtonClick()
 
     def onDeleteClick(self):
         """
@@ -200,7 +205,7 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.manager.delete_object(CustomSlide, id)
+                self.plugin.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
@@ -216,7 +221,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
-        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
+        customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.edit_id = item_id
@@ -248,13 +253,13 @@ class CustomMediaItem(MediaManagerItem):
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
-            search_results = self.parent.manager.get_all_objects(CustomSlide,
+            search_results = self.plugin.manager.get_all_objects(CustomSlide,
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)

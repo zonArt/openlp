@@ -100,24 +100,24 @@ window.OpenLP = {
     $("#tag" + OpenLP.currentTags[OpenLP.currentSlide]).addClass("currenttag");
     var slide = OpenLP.currentSlides[OpenLP.currentSlide];
     var text = slide["text"];
-    text = text.replace(/\n/g, '<br />');
+    text = text.replace(/\n/g, "<br />");
     $("#currentslide").html(text);
     text = "";
     if (OpenLP.currentSlide < OpenLP.currentSlides.length - 1) {
       for (var idx = OpenLP.currentSlide + 1; idx < OpenLP.currentSlides.length; idx++) {
         if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
-            text = text + '<p class="nextslide">';
+            text = text + "<p class=\"nextslide\">";
         text = text + OpenLP.currentSlides[idx]["text"];
         if (OpenLP.currentTags[idx] != OpenLP.currentTags[idx - 1])
-            text = text + '</p>';
+            text = text + "</p>";
         else
-            text = text + '<br />';
+            text = text + "<br />";
       }
-      text = text.replace(/\n/g, '<br />');
+      text = text.replace(/\n/g, "<br />");
       $("#nextslide").html(text);
     }
     else {
-      text = '<p class="nextslide">Next: ' + OpenLP.nextSong + '</p>';
+      text = "<p class=\"nextslide\">" + $("#next-text").val() + ": " + OpenLP.nextSong + "</p>";
       $("#nextslide").html(text);
     }
   },
