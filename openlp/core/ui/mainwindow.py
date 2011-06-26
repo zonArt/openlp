@@ -424,8 +424,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Toggle Live Panel'))
         self.lockPanel.setText(
             translate('OpenLP.MainWindow', 'L&ock Panels'))
-        self.lockPanel.setToolTip(
-            translate('OpenLP.MainWindow', 'Prevent Panels changing'))
+        self.lockPanel.setStatusTip(
+            translate('OpenLP.MainWindow', 'Prevent the Panels being moved.'))
         self.viewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the live panel.'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow',
@@ -971,7 +971,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def setLockPanel(self, lock):
         """
-        Sets the ability to stiop the toolbars being changed.
+        Sets the ability to stop the toolbars being changed.
         """
         if lock:
             self.themeManagerDock.setFeatures(
