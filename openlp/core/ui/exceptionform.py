@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -106,7 +106,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Saving exception log and system informations to a file.
         """
-        report = unicode(translate('OpenLP.ExceptionForm',
+        report_text = unicode(translate('OpenLP.ExceptionForm',
             '**OpenLP Bug Report**\n'
             'Version: %s\n\n'
             '--- Details of the Exception. ---\n\n%s\n\n '
@@ -122,21 +122,21 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             filename = unicode(QtCore.QDir.toNativeSeparators(filename))
             SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
                 filename))
-            report = report % self._createReport()
+            report_text = report_text % self._createReport()
             try:
-                file = open(filename, u'w')
+                report_file = open(filename, u'w')
                 try:
-                    file.write(report)
+                    report_file.write(report_text)
                 except UnicodeError:
-                    file.close()
-                    file = open(filename, u'wb')
-                    file.write(report.encode(u'utf-8'))
+                    report_file.close()
+                    report_file = open(filename, u'wb')
+                    report_file.write(report_text.encode(u'utf-8'))
                 finally:
-                    file.close()
+                    report_file.close()
             except IOError:
                 log.exception(u'Failed to write crash report')
             finally:
-                file.close()
+                report_file.close()
 
     def onSendReportButtonPressed(self):
         """

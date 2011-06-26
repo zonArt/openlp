@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -128,7 +128,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         tag = {
             u'desc': translate('OpenLP.DisplayTagTab', 'New Tag'),
             u'start tag': u'{n}',
-            u'start html': translate('OpenLP.DisplayTagTab', '<Html_here>'),
+            u'start html': translate('OpenLP.DisplayTagTab', '<HTML here>'),
             u'end tag': u'{/n}',
             u'end html': translate('OpenLP.DisplayTagTab', '</and here>'),
             u'protected': False
@@ -147,6 +147,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             DisplayTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
+        self._saveTable()
 
     def onSavedPushed(self):
         """
@@ -171,14 +172,19 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end tag'] = u'{/%s}' % tag
             self.selected = -1
         self._resetTable()
-        temp = []
+        self._saveTable()
+
+    def _saveTable(self):
+        """
+        Saves all display tags except protected ones.
+        """
+        tags = []
         for tag in DisplayTags.get_html_tags():
             if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
+                tags.append(tag)
+        if tags:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
+                QtCore.QVariant(cPickle.dumps(tags)))
         else:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
                 QtCore.QVariant(u''))

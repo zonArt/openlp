@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -257,11 +257,12 @@ sup {
     }
 
     function show_text(newtext){
+        var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext);
+        text_fade('lyricsshadow', newtext.replace(match, ""));
         if(text_opacity()==1) return;
         timer = setTimeout(function(){
             show_text(newtext);
@@ -485,11 +486,11 @@ def build_lyrics_css(item, webkitvers):
         # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
         # stroke (outline) color. So put stroke layer underneath the main text.
         #
-        # Before 534.4 the webkit-text-stroke was sometimes out of alignment
+        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment
         # with the fill, or normal text. letter-spacing=1 is workaround
         # https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Before 534.4 the text-shadow didn't get displayed when
+        # Up to 534.3 the text-shadow didn't get displayed when
         # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkitvers >= 533.3:
@@ -497,7 +498,7 @@ def build_lyrics_css(item, webkitvers):
         else:
             outline = build_lyrics_outline_css(theme)
         if theme.font_main_shadow:
-            if theme.font_main_outline and webkitvers < 534.3:
+            if theme.font_main_outline and webkitvers <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) +
                     (int(theme.font_main_outline_size) * 2),
@@ -563,7 +564,7 @@ def build_lyrics_format_css(theme, width, height):
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
-        if webkit_version() < 534.3:
+        if webkit_version() <= 534.3:
             lyrics += u' letter-spacing: 1px;'
     if theme.font_main_italics:
         lyrics += u' font-style:italic; '
@@ -587,7 +588,7 @@ def build_lyrics_html(item, webkitvers):
     # display:table/display:table-cell are required for each lyric block.
     lyrics = u''
     theme = item.themedata
-    if webkitvers < 534.4 and theme and theme.font_main_outline:
+    if webkitvers <= 534.3 and theme and theme.font_main_outline:
         lyrics += u'<div class="lyricstable">' \
             u'<div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'

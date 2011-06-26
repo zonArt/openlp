@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,24 +31,33 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
+import logging
 import os
 import re
 
 from oooimport import OooImport
 
+
+log = logging.getLogger(__name__)
+
 if os.name == u'nt':
-    BOLD = 150.0
-    ITALIC = 2
     from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    RuntimeException = Exception
 else:
     try:
-        from com.sun.star.awt.FontWeight import BOLD
-        from com.sun.star.awt.FontSlant import ITALIC
         from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
             PAGE_BOTH
+        from com.sun.star.uno import RuntimeException
     except ImportError:
         pass
-
+try:
+    from com.sun.star.awt.FontWeight import BOLD
+except ImportError:
+    BOLD = 150.0
+try:
+    from com.sun.star.awt.FontSlant import ITALIC
+except ImportError:
+    ITALIC = 2
 
 class SofImport(OooImport):
     """
@@ -86,16 +95,18 @@ class SofImport(OooImport):
         """
         self.blanklines = 0
         self.new_song()
-        paragraphs = self.document.getText().createEnumeration()
-        while paragraphs.hasMoreElements():
-            if self.stop_import_flag:
-                return
-            paragraph = paragraphs.nextElement()
-            if paragraph.supportsService("com.sun.star.text.Paragraph"):
-                self.process_paragraph(paragraph)
-        if self.song:
-            self.finish()
-            self.song = False
+        try:
+            paragraphs = self.document.getText().createEnumeration()
+            while paragraphs.hasMoreElements():
+                if self.stop_import_flag:
+                    return
+                paragraph = paragraphs.nextElement()
+                if paragraph.supportsService("com.sun.star.text.Paragraph"):
+                    self.process_paragraph(paragraph)
+        except RuntimeException as exc:
+            log.exception(u'Error processing file: %s', exc)
+        if not self.finish():
+            self.log_error(self.filepath)
 
     def process_paragraph(self, paragraph):
         """

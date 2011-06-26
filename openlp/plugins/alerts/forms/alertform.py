@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,7 +41,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Initialise the alert form
         """
         self.manager = plugin.manager
-        self.parent = plugin
+        self.plugin = plugin
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
@@ -195,7 +195,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.parameterEdit.setFocus()
             return False
         text = text.replace(u'<>', unicode(self.parameterEdit.text()))
-        self.parent.alertsmanager.displayAlert(text)
+        self.plugin.alertsmanager.displayAlert(text)
         return True
 
     def onCurrentRowChanged(self, row):

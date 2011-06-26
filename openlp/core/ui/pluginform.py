@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +40,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
     """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)
@@ -65,7 +64,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self._clearDetails()
         self.programaticChange = True
         pluginListWidth = 0
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -115,9 +114,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
             return
         plugin_name_singular = \
-            self.pluginListWidget.currentItem().text().split(u' ')[0]
+            self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
         self.activePlugin = None
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             if plugin.nameStrings[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
@@ -133,6 +132,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
             Receiver.send_message(u'cursor_normal')
+            self.activePlugin.appStartup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(
