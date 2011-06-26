@@ -68,6 +68,8 @@ class Ui_EditSongDialog(object):
             QtCore.Qt.AlignTop)
         self.verseListWidget = QtGui.QTableWidget(self.lyricsTab)
         self.verseListWidget.horizontalHeader().setVisible(False)
+        self.verseListWidget.horizontalHeader().setStretchLastSection(True)
+        self.verseListWidget.horizontalHeader().setMinimumSectionSize(16)
         self.verseListWidget.setAlternatingRowColors(True)
         self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(

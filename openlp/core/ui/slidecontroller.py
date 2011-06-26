@@ -500,7 +500,9 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
@@ -515,12 +517,18 @@ class SlideController(QtGui.QWidget):
         if item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
+        else:
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible(self.songEditList)
         if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
@@ -529,6 +537,10 @@ class SlideController(QtGui.QWidget):
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
+        if not item.is_media():
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
 
     def refreshServiceItem(self):
         """
@@ -625,9 +637,7 @@ class SlideController(QtGui.QWidget):
                 label.setMargin(4)
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
-                    image = resize_image(frame[u'image'],
-                        self.parent().renderer.width,
-                        self.parent().renderer.height)
+                    image = QtGui.QImage(frame[u'image'])
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:

@@ -98,6 +98,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & QtCore.Qt.ShiftModifier == \
             QtCore.Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
+        if event.modifiers() & QtCore.Qt.MetaModifier == \
+            QtCore.Qt.MetaModifier:
+            key_string = u'Meta+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
