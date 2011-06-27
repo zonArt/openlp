@@ -138,7 +138,7 @@ class ImageManager(QtCore.QObject):
         self.height = current_screen[u'size'].height()
         self._cache = {}
         self._imageThread = ImageThread(self)
-        self._clean_queue = PriorityQueue()
+        self._conversion_queue = PriorityQueue()
 
     def update_display(self):
         """
@@ -150,12 +150,12 @@ class ImageManager(QtCore.QObject):
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._clean_queue = PriorityQueue()
+        self._conversion_queue = PriorityQueue()
         for key, image in self._cache.iteritems():
             image.priority = Priority.Normal
             image.image = None
             image.image_bytes = None
-            self._clean_queue.put((image.priority, image))
+            self._conversion_queue.put((image.priority, image))
         # We want only one thread.
         if not self._imageThread.isRunning():
             self._imageThread.start()
@@ -168,9 +168,9 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
         if image.image is None:
-            self._clean_queue.remove((image.priority, image))
+            self._conversion_queue.remove((image.priority, image))
             image.priority = Priority.High
-            self._clean_queue.put((image.priority, image))
+            self._conversion_queue.put((image.priority, image))
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
@@ -184,9 +184,9 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image_bytes %s' % name)
         image = self._cache[name]
         if image.image_bytes is None:
-            self._clean_queue.remove((image.priority, image))
+            self._conversion_queue.remove((image.priority, image))
             image.priority = Priority.Urgent
-            self._clean_queue.put((image.priority, image))
+            self._conversion_queue.put((image.priority, image))
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
@@ -198,6 +198,8 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'del_image %s' % name)
         if name in self._cache:
+            self._conversion_queue.remove(
+                (self._cache[name].priority, self._cache[name]))
             del self._cache[name]
 
     def add_image(self, name, path):
@@ -208,7 +210,7 @@ class ImageManager(QtCore.QObject):
         if not name in self._cache:
             image = Image(name, path)
             self._cache[name] = image
-            self._clean_queue.put((image.priority, image))
+            self._conversion_queue.put((image.priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
@@ -220,7 +222,7 @@ class ImageManager(QtCore.QObject):
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        while not self._clean_queue.empty():
+        while not self._conversion_queue.empty():
             self._process_cache()
         log.debug(u'_process - ended')
 
@@ -229,25 +231,25 @@ class ImageManager(QtCore.QObject):
         Actually does the work.
         """
         log.debug(u'_process_cache')
-        image = self._clean_queue.get()[1]
+        image = self._conversion_queue.get()[1]
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:
-                self._clean_queue.remove((image.priority, image))
+                self._conversion_queue.remove((image.priority, image))
                 image.priority = Priority.Lowest
-                self._clean_queue.put((image.priority, image))
+                self._conversion_queue.put((image.priority, image))
                 return
             # For image with high priority we set the priority to Low, as the
             # byte stream might be needed earlier the byte stream of image with
             # Normal priority. We stop here as we need to process more important
             # images first.
             elif image.priority == Priority.High:
-                self._clean_queue.remove((image.priority, image))
+                self._conversion_queue.remove((image.priority, image))
                 image.priority = Priority.Low
-                self._clean_queue.put((image.priority, image))
+                self._conversion_queue.put((image.priority, image))
                 return
         # Generate the byte stream for the image.
         if image.image_bytes is None:
