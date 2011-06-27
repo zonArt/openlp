@@ -138,6 +138,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
+        self.tagTableWidget.scrollToBottom()
 
     def onDeletePushed(self):
         """

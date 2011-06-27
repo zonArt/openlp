@@ -178,10 +178,6 @@ class HorizontalType(object):
     Center = 2
 
     Names = [u'left', u'right', u'center']
-    TranslatedNames = [
-        translate('OpenLP.ThemeWizard', 'Left'),
-        translate('OpenLP.ThemeWizard', 'Right'),
-        translate('OpenLP.ThemeWizard', 'Center')]
 
 
 class VerticalType(object):
@@ -193,7 +189,6 @@ class VerticalType(object):
     Bottom = 2
 
     Names = [u'top', u'middle', u'bottom']
-    TranslatedNames = [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',

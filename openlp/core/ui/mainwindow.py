@@ -223,7 +223,7 @@ class Ui_MainWindow(object):
         self.modeDefaultItem = checkable_action(
             mainWindow, u'modeDefaultItem', category=UiStrings().ViewMode)
         self.modeSetupItem = checkable_action(
-            mainWindow, u'modeLiveItem', category=UiStrings().ViewMode)
+            mainWindow, u'modeSetupItem', category=UiStrings().ViewMode)
         self.modeLiveItem = checkable_action(
             mainWindow, u'modeLiveItem', True, UiStrings().ViewMode)
         self.modeGroup = QtGui.QActionGroup(mainWindow)
