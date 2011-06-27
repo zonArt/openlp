@@ -425,7 +425,7 @@ class Ui_MainWindow(object):
         self.lockPanel.setText(
             translate('OpenLP.MainWindow', 'L&ock Panels'))
         self.lockPanel.setStatusTip(
-            translate('OpenLP.MainWindow', 'Prevent the Panels being moved.'))
+            translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.viewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the live panel.'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow',
