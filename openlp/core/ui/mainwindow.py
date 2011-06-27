@@ -269,7 +269,20 @@ class Ui_MainWindow(object):
         self.helpAboutItem = shortcut_action(mainWindow, u'helpAboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
-        self.helpOnlineHelpItem = shortcut_action(
+        self.localHelpFile = os.path.join(
+            AppLocation.get_directory(AppLocation.AppDir), 'Openlp.chm')
+        self.haveHelpFile = os.path.isfile(self.localHelpFile)
+        if self.haveHelpFile:
+            self.helpLocalHelpItem = shortcut_action(
+                mainWindow, u'helpLocalHelpItem', [QtGui.QKeySequence(u'F1')],
+                self.onHelpLocalHelpClicked, u':/system/system_about.png',
+                category=UiStrings().Help)
+            self.helpOnlineHelpItem = shortcut_action(
+                mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'Alt+F1')],
+                self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
+                category=UiStrings().Help)
+        else:
+            self.helpOnlineHelpItem = shortcut_action(
             mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'F1')],
             self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
             category=UiStrings().Help)
@@ -307,9 +320,14 @@ class Ui_MainWindow(object):
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
-        add_actions(self.helpMenu, (self.helpDocumentationItem,
+        add_actions(self.helpMenu, (self.helpDocumentationItem, None))
+        if self.haveHelpFile:
+            add_actions(self.helpMenu, (self.helpLocalHelpItem,
             self.helpOnlineHelpItem, None, self.helpWebSiteItem,
             self.helpAboutItem))
+        else:
+            add_actions(self.helpMenu, (self.helpOnlineHelpItem, None,
+                self.helpWebSiteItem, self.helpAboutItem))
         add_actions(self.menuBar, (self.fileMenu.menuAction(),
             self.viewMenu.menuAction(), self.toolsMenu.menuAction(),
             self.settingsMenu.menuAction(), self.helpMenu.menuAction()))
@@ -425,6 +443,9 @@ class Ui_MainWindow(object):
         self.helpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.helpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
+        if self.haveHelpFile:
+            self.helpLocalHelpItem.setText(
+                translate('OpenLP.MainWindow', '&Help'))
         self.helpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         self.helpWebSiteItem.setText(
@@ -722,6 +743,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
+
+    def onHelpLocalHelpClicked(self):
+        """
+        Load the local OpenLP help file
+        """
+        os.startfile(self.localHelpFile)
 
     def onHelpOnlineHelpClicked(self):
         """
