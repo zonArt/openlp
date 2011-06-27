@@ -56,7 +56,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, imageManager, theme_manager):
+    def __init__(self, imageManager, themeManager):
         """
         Initialise the render manager.
 
@@ -64,11 +64,11 @@ class Renderer(object):
         A ImageManager instance which takes care of e. g. caching and resizing
         images.
 
-    ``theme_manager``
+    ``themeManager``
         The ThemeManager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
-        self.theme_manager = theme_manager
+        self.themeManager = themeManager
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
@@ -108,7 +108,7 @@ class Renderer(object):
         self.global_theme = global_theme
         self.theme_level = theme_level
         self.global_theme_data = \
-            self.theme_manager.getThemeData(self.global_theme)
+            self.themeManager.getThemeData(self.global_theme)
         self.theme_data = None
 
     def set_service_theme(self, service_theme):
@@ -162,7 +162,7 @@ class Renderer(object):
         if override_levels:
             self.theme_data = override_theme
         else:
-            self.theme_data = self.theme_manager.getThemeData(theme)
+            self.theme_data = self.themeManager.getThemeData(theme)
         self._calculate_default(self.screens.current[u'size'])
         self._build_text_rectangle(self.theme_data)
         # if No file do not update cache

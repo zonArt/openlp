@@ -90,7 +90,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
+            self.mediaitem.plugin.renderer.themeManager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
