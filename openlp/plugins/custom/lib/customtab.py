@@ -47,57 +47,30 @@ class CustomTab(SettingsTab):
         self.displayFooterCheckBox.setObjectName(u'displayFooterCheckBox')
         self.customModeLayout.addRow(self.displayFooterCheckBox)
         self.leftLayout.addWidget(self.customModeGroupBox)
-        self.customUIGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.customUIGroupBox.setObjectName(u'customUIGroupBox')
-        self.customUILayout = QtGui.QFormLayout(self.customUIGroupBox)
-        self.customUILayout.setObjectName(u'customUILayout')
-        self.confirmDeleteCheckBox = QtGui.QCheckBox(self.customUIGroupBox)
-        self.confirmDeleteCheckBox.setObjectName(u'confirmDeleteCheckBox')
-        self.customUILayout.addRow(self.confirmDeleteCheckBox)
-        self.leftLayout.addWidget(self.customUIGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.displayFooterCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)
-        QtCore.QObject.connect(self.confirmDeleteCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onConfirmDeleteCheckBoxChanged)
 
     def retranslateUi(self):
         self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
             'Custom Display'))
         self.displayFooterCheckBox.setText(
             translate('CustomPlugin.CustomTab', 'Display footer'))
-        self.customUIGroupBox.setTitle(translate('CustomPlugin.CustomTab',
-            'UI Settings'))
-        self.confirmDeleteCheckBox.setText(
-            translate('CustomPlugin.CustomTab', 'Confirm delete'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
-            self.displayFooter = True
-
-    def onConfirmDeleteCheckBoxChanged(self, check_state):
-        self.confirmDelete = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.confirmDelete = True            
+            self.displayFooter = True  
 
     def load(self):
         self.displayFooter = QtCore.QSettings().value(
             self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool()
         self.displayFooterCheckBox.setChecked(self.displayFooter)
-        self.confirmDelete = QtCore.QSettings().value(
-            self.settingsSection + u'/confirm delete',
-            QtCore.QVariant(True)).toBool()
-        self.confirmDeleteCheckBox.setChecked(self.confirmDelete)
 
     def save(self):
         QtCore.QSettings().setValue(self.settingsSection + u'/display footer',
             QtCore.QVariant(self.displayFooter))
-        QtCore.QSettings().setValue(self.settingsSection + u'/confirm delete',
-            QtCore.QVariant(self.confirmDelete))

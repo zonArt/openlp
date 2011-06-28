@@ -200,20 +200,16 @@ class CustomMediaItem(MediaManagerItem):
         Remove a custom item from the list and database
         """
         if check_item_selected(self.listView, UiStrings().SelectDelete):
-            self.confirmDelete = QtCore.QSettings().value(
-                self.settingsSection + u'/confirm delete',
-            QtCore.QVariant(u'False')).toBool()
             items = self.listView.selectedIndexes()
-            if self.confirmDelete:
-                if QtGui.QMessageBox.question(self,
-                    translate('CustomPlugin.MediaItem', 'Delete Custom(s)?'),
-                    translate('CustomPlugin.MediaItem',
-                    'Are you sure you want to delete the %n selected custom(s)?', '',
-                    QtCore.QCoreApplication.CodecForTr, len(items)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
-                    QtGui.QMessageBox.Cancel),
-                    QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
-                    return
+            if QtGui.QMessageBox.question(self,
+                translate('CustomPlugin.MediaItem', 'Delete Custom(s)?'),
+                translate('CustomPlugin.MediaItem',
+                'Are you sure you want to delete the %n selected custom(s)?', '',
+                QtCore.QCoreApplication.CodecForTr, len(items)),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
+                return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
