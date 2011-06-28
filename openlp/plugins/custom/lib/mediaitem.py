@@ -202,7 +202,7 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
-                translate('CustomPlugin.MediaItem', 'Confirm Delete'),
+                UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected custom'
                 ' slides(s)?', '',
