@@ -204,11 +204,12 @@ class CustomMediaItem(MediaManagerItem):
             if QtGui.QMessageBox.question(self,
                 translate('CustomPlugin.MediaItem', 'Delete Custom(s)?'),
                 translate('CustomPlugin.MediaItem',
-                'Are you sure you want to delete the %n selected custom(s)?', '',
+                'Are you sure you want to delete the %n selected custom' \
+                    ' slides(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
