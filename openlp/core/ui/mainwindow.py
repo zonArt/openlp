@@ -65,6 +65,12 @@ MEDIA_MANAGER_STYLE = """
   }
 """
 
+PROGRESSBAR = """
+    QProgressBar{
+       height: 10px;
+    }
+"""
+
 class Ui_MainWindow(object):
     def setupUi(self, mainWindow):
         """
@@ -130,6 +136,7 @@ class Ui_MainWindow(object):
         self.statusBar.addPermanentWidget(self.loadProgressBar)
         self.loadProgressBar.hide()
         self.loadProgressBar.setValue(0)
+        self.loadProgressBar.setStyleSheet(PROGRESSBAR)
         self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
