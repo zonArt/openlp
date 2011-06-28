@@ -323,8 +323,9 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    action.setShortcuts(shortcuts)
-    action.setShortcutContext(context)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
     action_list = ActionList.get_instance()
     action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
