@@ -63,7 +63,7 @@ class CustomTab(SettingsTab):
         self.displayFooter = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
-            self.displayFooter = True  
+            self.displayFooter = True
 
     def load(self):
         self.displayFooter = QtCore.QSettings().value(
