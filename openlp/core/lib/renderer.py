@@ -241,7 +241,7 @@ class Renderer(object):
         new_pages = []
         for page in pages:
             while page.endswith(u'<br />'):
-                page = page[:-4]
+                page = page[:-6]
             new_pages.append(page)
         return new_pages
 
@@ -357,8 +357,8 @@ class Renderer(object):
             The words to be fitted on the slide split into lines.
 
         ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br />``. This
-            is needed for bibles.
+            The text added after each line. Either ``u' '`` or ``u'<br />``.
+            This is needed for bibles.
         """
         log.debug(u'_paginate_slide_words - Start')
         formatted = []
