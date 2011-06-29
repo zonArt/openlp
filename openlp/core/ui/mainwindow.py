@@ -65,6 +65,12 @@ MEDIA_MANAGER_STYLE = """
   }
 """
 
+PROGRESSBAR_STYLE = """
+    QProgressBar{
+       height: 10px;
+    }
+"""
+
 class Ui_MainWindow(object):
     def setupUi(self, mainWindow):
         """
@@ -130,6 +136,7 @@ class Ui_MainWindow(object):
         self.statusBar.addPermanentWidget(self.loadProgressBar)
         self.loadProgressBar.hide()
         self.loadProgressBar.setValue(0)
+        self.loadProgressBar.setStyleSheet(PROGRESSBAR_STYLE)
         self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
@@ -1030,6 +1037,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreGeometry(
             settings.value(u'main window geometry').toByteArray())
         self.restoreState(settings.value(u'main window state').toByteArray())
+        self.liveController.splitter.restoreState(
+            settings.value(u'live splitter geometry').toByteArray())
+        self.previewController.splitter.restoreState(
+            settings.value(u'preview splitter geometry').toByteArray())
+        self.controlSplitter.restoreState(
+            settings.value(u'mainwindow splitter geometry').toByteArray())
+
         settings.endGroup()
 
     def saveSettings(self):
@@ -1050,6 +1064,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(self.saveState()))
         settings.setValue(u'main window geometry',
             QtCore.QVariant(self.saveGeometry()))
+        settings.setValue(u'live splitter geometry',
+            QtCore.QVariant(self.liveController.splitter.saveState()))
+        settings.setValue(u'preview splitter geometry',
+            QtCore.QVariant(self.previewController.splitter.saveState()))
+        settings.setValue(u'mainwindow splitter geometry',
+            QtCore.QVariant(self.controlSplitter.saveState()))
         settings.endGroup()
 
     def updateFileMenu(self):
