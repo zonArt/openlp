@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -353,13 +353,13 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
+                UiStrings().ConfirmDelete,
                 translate('SongsPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected song(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -467,23 +467,20 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == item.data_string[u'title'],
                 Song.search_title.asc())
-        author_list = item.data_string[u'authors'].split(u', ')
         editId = 0
         add_song = True
         if search_results:
             for song in search_results:
+                author_list = item.data_string[u'authors']
                 same_authors = True
-                # If the author counts are different, we do not have to do any
-                # further checking.
-                if len(song.authors) == len(author_list):
-                    for author in song.authors:
-                        if author.display_name not in author_list:
-                            same_authors = False
-                else:
-                    same_authors = False
-                # All authors are the same, so we can stop here and the song
-                # does not have to be saved.
-                if same_authors:
+                for author in song.authors:
+                    if author.display_name in author_list:
+                        author_list = author_list.replace(author.display_name,
+                            u'', 1)
+                    else:
+                        same_authors = False
+                        break
+                if same_authors and author_list.strip(u', ') == u'':
                     add_song = False
                     editId = song.id
                     break

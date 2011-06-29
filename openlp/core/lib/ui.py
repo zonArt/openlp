@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -64,6 +64,7 @@ class UiStrings(object):
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
         self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
+        self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
         self.Delete = translate('OpenLP.Ui', '&Delete')
@@ -85,7 +86,6 @@ class UiStrings(object):
         self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
-        self.LivePanel = translate('OpenLP.Ui', 'Live Panel')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
         self.Load = translate('OpenLP.Ui', 'Load')
         self.Minutes = translate('OpenLP.Ui', 'm',
@@ -102,14 +102,13 @@ class UiStrings(object):
         self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
-        self.OpenService = translate('OpenLP.Ui', 'Open Service')
+        self.OpenService = translate('OpenLP.Ui', 'Open service.')
         self.Preview = translate('OpenLP.Ui', 'Preview')
-        self.PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
-        self.PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
+        self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
-        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
         self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
-        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
         self.Seconds = translate('OpenLP.Ui', 's',
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
@@ -121,6 +120,9 @@ class UiStrings(object):
         self.Settings = translate('OpenLP.Ui', 'Settings')
         self.SaveService = translate('OpenLP.Ui', 'Save Service')
         self.Service = translate('OpenLP.Ui', 'Service')
+        self.Split = translate('OpenLP.Ui', '&Split')
+        self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
+            'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
@@ -322,8 +324,9 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    action.setShortcuts(shortcuts)
-    action.setShortcutContext(context)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
     action_list = ActionList.get_instance()
     action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)

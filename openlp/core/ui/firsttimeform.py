@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -200,15 +200,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Prepare the UI for the process.
         """
-        # We start on 2 for plugins status setting plus a "finished" point.
-        max_progress = 2
+        self.max_progress = 0
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
-                max_progress += size
+                self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while iterator.value():
@@ -216,7 +215,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
-                max_progress += size
+                self.max_progress += size
             iterator += 1
         # Loop through the themes list and increase for each selected item
         for i in xrange(self.themesListWidget.count()):
@@ -224,23 +223,40 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
-                max_progress += size
+                self.max_progress += size
         self.finishButton.setVisible(False)
-        self.progressBar.setValue(0)
-        self.progressBar.setMinimum(0)
-        self.progressBar.setMaximum(max_progress)
+        if self.max_progress:
+            # Add on 2 for plugins status setting plus a "finished" point.
+            self.max_progress = self.max_progress + 2
+            self.progressBar.setValue(0)
+            self.progressBar.setMinimum(0)
+            self.progressBar.setMaximum(self.max_progress)
+            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
+                'Setting Up And Downloading'))
+            self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+                'Please wait while OpenLP is set up '
+                'and your data is downloaded.'))
+        else:
+            self.progressBar.setVisible(False)
+            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
+                'Setting Up'))
+            self.progressPage.setSubTitle(u'Setup complete.')
 
     def _postWizard(self):
         """
         Clean up the UI after the process has finished.
         """
-        self.progressBar.setValue(self.progressBar.maximum())
+        if self.max_progress:
+            self.progressBar.setValue(self.progressBar.maximum())
+            self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                'Download complete. Click the finish button to start OpenLP.'))
+        else:
+            self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                'Click the finish button to start OpenLP.'))
         self.finishButton.setVisible(True)
         self.finishButton.setEnabled(True)
         self.cancelButton.setVisible(False)
         self.nextButton.setVisible(False)
-        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Download complete. Click the finish button to start OpenLP.'))
         Receiver.send_message(u'openlp_process_events')
 
     def _performWizard(self):

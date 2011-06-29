@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -137,8 +137,6 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Signals
         QtCore.QObject.connect(self.printButton,
             QtCore.SIGNAL(u'triggered()'), self.printServiceOrder)
-        QtCore.QObject.connect(self.closeButton,
-            QtCore.SIGNAL(u'triggered()'), self.accept)
         QtCore.QObject.connect(self.zoomOutButton,
             QtCore.SIGNAL(u'clicked()'), self.zoomOut)
         QtCore.QObject.connect(self.zoomInButton,
@@ -326,8 +324,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
-        self.mainWindow.clipboard.setText(
-            self.document.toPlainText())
+        self.mainWindow.clipboard.setText(self.document.toPlainText())
 
     def copyHtmlText(self):
         """

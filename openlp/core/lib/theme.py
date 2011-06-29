@@ -8,8 +8,8 @@
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -178,10 +178,6 @@ class HorizontalType(object):
     Center = 2
 
     Names = [u'left', u'right', u'center']
-    TranslatedNames = [
-        translate('OpenLP.ThemeWizard', 'Left'),
-        translate('OpenLP.ThemeWizard', 'Right'),
-        translate('OpenLP.ThemeWizard', 'Center')]
 
 
 class VerticalType(object):
@@ -193,7 +189,6 @@ class VerticalType(object):
     Bottom = 2
 
     Names = [u'top', u'middle', u'bottom']
-    TranslatedNames = [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
