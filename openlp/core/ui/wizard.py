@@ -190,6 +190,14 @@ class OpenLPWizard(QtGui.QWizard):
             self.preWizard()
             self.performWizard()
             self.postWizard()
+        else:
+            self.customPageChanged(pageId)
+
+    def customPageChanged(self, pageId):
+        """
+        Called when changing to a page other than the progress page
+        """
+        pass
 
     def onErrorCopyToButtonClicked(self):
         """

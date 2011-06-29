@@ -259,11 +259,15 @@ class EasyWorshipSongImport(SongImport):
                         self.add_author(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words = strip_rtf(words, self.encoding)
-                    for verse in words.split(u'\n\n'):
-                        # TODO: recognize note-part as well and put into comments-section
+                    words = strip_rtf(words, self.encoding) # TODO: convert rtf instead of stripping?
+                    p = re.compile(r'\n *?\n[\n ]*') # at least two newlines, with zero or more space characters between them
+                    for verse in p.split(words):
+                    #for verse in words.split(u'\n\n'):
                         # ew tags: verse, chorus, pre-chorus, bridge, tag, intro, ending, slide
-                        verse_split = verse.strip().split(u'\n',  1)
+                        verse = verse.strip()
+                        if len(verse) == 0:
+                            continue
+                        verse_split = verse.split(u'\n',  1)
                         verse_type = VerseType.Tags[VerseType.Verse]
                         first_line_is_tag = False
                         for type in VerseType.Names+['tag',  'slide']: # doesnt cover tag, slide
@@ -281,14 +285,14 @@ class EasyWorshipSongImport(SongImport):
                                     if m:
                                         number = m.group()
                                         verse_type +=number
-                                        
+
                                     p = re.compile(r'\(.*\)')
                                     m = re.search(p,  ew_tag)
                                     if m:
                                         self.comments += ew_tag+'\n'
                                 break
                         self.add_verse(
-                            verse_split[-1].strip() if first_line_is_tag else verse.strip(), # TODO: hacky: -1
+                            verse_split[-1].strip() if first_line_is_tag else verse, # TODO: hacky: -1
                             verse_type)
                 if len(self.comments) > 5:
                     self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',

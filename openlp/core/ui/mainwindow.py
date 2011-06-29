@@ -27,6 +27,7 @@
 
 import logging
 import os
+import sys
 from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
@@ -92,6 +93,8 @@ class Ui_MainWindow(object):
         self.previewController.panel.setVisible(previewVisible)
         liveVisible = QtCore.QSettings().value(u'user interface/live panel',
             QtCore.QVariant(True)).toBool()
+        panelLocked = QtCore.QSettings().value(u'user interface/lock panel',
+            QtCore.QVariant(False)).toBool()
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -212,11 +215,15 @@ class Ui_MainWindow(object):
         self.viewLivePanel = shortcut_action(mainWindow, u'viewLivePanel',
             [QtGui.QKeySequence(u'F12')], self.setLivePanelVisibility,
             checked=liveVisible, category=UiStrings().View)
-        action_list.add_category(UiStrings().ViewMode, CategoryOrder.standardMenu)
+        self.lockPanel = shortcut_action(mainWindow, u'lockPanel',
+            None, self.setLockPanel,
+            checked=panelLocked, category=None)
+        action_list.add_category(UiStrings().ViewMode,
+            CategoryOrder.standardMenu)
         self.modeDefaultItem = checkable_action(
             mainWindow, u'modeDefaultItem', category=UiStrings().ViewMode)
         self.modeSetupItem = checkable_action(
-            mainWindow, u'modeLiveItem', category=UiStrings().ViewMode)
+            mainWindow, u'modeSetupItem', category=UiStrings().ViewMode)
         self.modeLiveItem = checkable_action(
             mainWindow, u'modeLiveItem', True, UiStrings().ViewMode)
         self.modeGroup = QtGui.QActionGroup(mainWindow)
@@ -232,7 +239,8 @@ class Ui_MainWindow(object):
             category=UiStrings().Tools)
         self.updateThemeImages = base_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
-        action_list.add_category(UiStrings().Settings, CategoryOrder.standardMenu)
+        action_list.add_category(UiStrings().Settings,
+            CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
             self.onPluginItemClicked, u':/system/settings_plugin_list.png',
@@ -287,14 +295,22 @@ class Ui_MainWindow(object):
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
             None, self.viewMediaManagerItem, self.viewServiceManagerItem,
             self.viewThemeManagerItem, None, self.viewPreviewPanel,
-            self.viewLivePanel))
+            self.viewLivePanel, None, self.lockPanel))
         # i18n add Language Actions
         add_actions(self.settingsLanguageMenu, (self.autoLanguageItem, None))
         add_actions(self.settingsLanguageMenu, self.languageGroup.actions())
-        add_actions(self.settingsMenu, (self.settingsPluginListItem,
-            self.settingsLanguageMenu.menuAction(), None,
-            self.displayTagItem, self.settingsShortcutsItem,
-            self.settingsConfigureItem))
+        # Order things differently in OS X so that Preferences menu item in the
+        # app menu is correct (this gets picked up automatically by Qt).
+        if sys.platform == u'darwin':
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.settingsConfigureItem, self.settingsShortcutsItem,
+                self.displayTagItem))
+        else:
+            add_actions(self.settingsMenu, (self.settingsPluginListItem,
+                self.settingsLanguageMenu.menuAction(), None,
+                self.displayTagItem, self.settingsShortcutsItem,
+                self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
@@ -316,6 +332,7 @@ class Ui_MainWindow(object):
         self.importLanguageItem.setVisible(False)
         self.exportLanguageItem.setVisible(False)
         self.helpDocumentationItem.setVisible(False)
+        self.setLockPanel(panelLocked)
 
     def retranslateUi(self, mainWindow):
         """
@@ -405,6 +422,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Live Panel'))
         self.viewLivePanel.setToolTip(
             translate('OpenLP.MainWindow', 'Toggle Live Panel'))
+        self.lockPanel.setText(
+            translate('OpenLP.MainWindow', 'L&ock Panels'))
+        self.lockPanel.setStatusTip(
+            translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.viewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the live panel.'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow',
@@ -644,7 +665,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(False)).toBool():
             self.serviceManagerContents.loadLastFile()
         view_mode = QtCore.QSettings().value(u'%s/view mode' % \
-            self.generalSettingsSection, u'default')
+            self.generalSettingsSection, u'default').toString()
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -927,7 +948,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mediaManagerDock.setVisible(not self.mediaManagerDock.isVisible())
 
     def toggleServiceManager(self):
-        self.serviceManagerDock.setVisible(not self.serviceManagerDock.isVisible())
+        self.serviceManagerDock.setVisible(
+            not self.serviceManagerDock.isVisible())
 
     def toggleThemeManager(self):
         self.themeManagerDock.setVisible(not self.themeManagerDock.isVisible())
@@ -946,6 +968,37 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.viewPreviewPanel.setChecked(visible)
+
+    def setLockPanel(self, lock):
+        """
+        Sets the ability to stop the toolbars being changed.
+        """
+        if lock:
+            self.themeManagerDock.setFeatures(
+                QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.serviceManagerDock.setFeatures(
+                QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.mediaManagerDock.setFeatures(
+                QtGui.QDockWidget.NoDockWidgetFeatures)
+            self.viewMediaManagerItem.setEnabled(False)
+            self.viewServiceManagerItem.setEnabled(False)
+            self.viewThemeManagerItem.setEnabled(False)
+            self.viewPreviewPanel.setEnabled(False)
+            self.viewLivePanel.setEnabled(False)
+        else:
+            self.themeManagerDock.setFeatures(
+                QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.serviceManagerDock.setFeatures(
+                QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.mediaManagerDock.setFeatures(
+                QtGui.QDockWidget.AllDockWidgetFeatures)
+            self.viewMediaManagerItem.setEnabled(True)
+            self.viewServiceManagerItem.setEnabled(True)
+            self.viewThemeManagerItem.setEnabled(True)
+            self.viewPreviewPanel.setEnabled(True)
+            self.viewLivePanel.setEnabled(True)
+        QtCore.QSettings().setValue(u'user interface/lock panel',
+            QtCore.QVariant(lock))
 
     def setLivePanelVisibility(self, visible):
         """
