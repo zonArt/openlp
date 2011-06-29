@@ -1041,6 +1041,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             settings.value(u'live splitter geometry').toByteArray())
         self.previewController.splitter.restoreState(
             settings.value(u'preview splitter geometry').toByteArray())
+        self.controlSplitter.restoreState(
+            settings.value(u'mainwindow splitter geometry').toByteArray())
+
         settings.endGroup()
 
     def saveSettings(self):
@@ -1065,6 +1068,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(self.liveController.splitter.saveState()))
         settings.setValue(u'preview splitter geometry',
             QtCore.QVariant(self.previewController.splitter.saveState()))
+        settings.setValue(u'mainwindow splitter geometry',
+            QtCore.QVariant(self.controlSplitter.saveState()))
         settings.endGroup()
 
     def updateFileMenu(self):
