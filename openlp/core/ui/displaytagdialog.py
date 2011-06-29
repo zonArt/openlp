@@ -35,13 +35,10 @@ class Ui_DisplayTagDialog(object):
     def setupUi(self, displayTagDialog):
         displayTagDialog.setObjectName(u'displayTagDialog')
         displayTagDialog.resize(725, 548)
-        self.widget = QtGui.QWidget(displayTagDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 701, 521))
-        self.widget.setObjectName(u'widget')
-        self.listdataGridLayout = QtGui.QGridLayout(self.widget)
-        self.listdataGridLayout.setMargin(0)
+        self.listdataGridLayout = QtGui.QGridLayout(displayTagDialog)
+        self.listdataGridLayout.setMargin(8)
         self.listdataGridLayout.setObjectName(u'listdataGridLayout')
-        self.tagTableWidget = QtGui.QTableWidget(self.widget)
+        self.tagTableWidget = QtGui.QTableWidget(displayTagDialog)
         self.tagTableWidget.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.tagTableWidget.setEditTriggers(
@@ -55,6 +52,7 @@ class Ui_DisplayTagDialog(object):
         self.tagTableWidget.setObjectName(u'tagTableWidget')
         self.tagTableWidget.setColumnCount(4)
         self.tagTableWidget.setRowCount(0)
+        self.tagTableWidget.horizontalHeader().setStretchLastSection(True)
         item = QtGui.QTableWidgetItem()
         self.tagTableWidget.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -69,11 +67,11 @@ class Ui_DisplayTagDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.deletePushButton = QtGui.QPushButton(self.widget)
+        self.deletePushButton = QtGui.QPushButton(displayTagDialog)
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.horizontalLayout.addWidget(self.deletePushButton)
         self.listdataGridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
-        self.editGroupBox = QtGui.QGroupBox(self.widget)
+        self.editGroupBox = QtGui.QGroupBox(displayTagDialog)
         self.editGroupBox.setObjectName(u'editGroupBox')
         self.dataGridLayout = QtGui.QGridLayout(self.editGroupBox)
         self.dataGridLayout.setObjectName(u'dataGridLayout')
@@ -115,9 +113,8 @@ class Ui_DisplayTagDialog(object):
         self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(displayTagDialog)
-        closeButton = QtGui.QDialogButtonBox.Close
         self.buttonBox.setObjectName('displayTagDialogButtonBox')
-        self.buttonBox.setStandardButtons(closeButton)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(displayTagDialog)
@@ -148,6 +145,5 @@ class Ui_DisplayTagDialog(object):
         self.tagTableWidget.horizontalHeaderItem(3).setText(
             translate('OpenLP.DisplayTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
-        self.tagTableWidget.setColumnWidth(1, 40)
-        self.tagTableWidget.setColumnWidth(2, 240)
-        self.tagTableWidget.setColumnWidth(3, 240)
+        self.tagTableWidget.setColumnWidth(1, 80)
+        self.tagTableWidget.setColumnWidth(2, 330)
