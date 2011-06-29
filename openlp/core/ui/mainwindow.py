@@ -65,7 +65,7 @@ MEDIA_MANAGER_STYLE = """
   }
 """
 
-PROGRESSBAR = """
+PROGRESSBAR_STYLE = """
     QProgressBar{
        height: 10px;
     }
@@ -136,7 +136,7 @@ class Ui_MainWindow(object):
         self.statusBar.addPermanentWidget(self.loadProgressBar)
         self.loadProgressBar.hide()
         self.loadProgressBar.setValue(0)
-        self.loadProgressBar.setStyleSheet(PROGRESSBAR)
+        self.loadProgressBar.setStyleSheet(PROGRESSBAR_STYLE)
         self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
@@ -1064,7 +1064,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'live splitter geometry',
             QtCore.QVariant(self.liveController.splitter.saveState()))
         settings.setValue(u'preview splitter geometry',
-            QtCore.QVariant(self.liveController.splitter.saveState()))
+            QtCore.QVariant(self.previewController.splitter.saveState()))
         settings.endGroup()
 
     def updateFileMenu(self):
