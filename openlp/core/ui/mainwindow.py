@@ -269,10 +269,9 @@ class Ui_MainWindow(object):
         self.helpAboutItem = shortcut_action(mainWindow, u'helpAboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
-        self.localHelpFile = os.path.join(
-            AppLocation.get_directory(AppLocation.AppDir), 'Openlp.chm')
-        self.haveHelpFile = os.path.isfile(self.localHelpFile)
-        if self.haveHelpFile:
+        if sys.platform[:3] == u'win':
+            self.localHelpFile = os.path.join(
+                AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
             self.helpLocalHelpItem = shortcut_action(
                 mainWindow, u'helpLocalHelpItem', [QtGui.QKeySequence(u'F1')],
                 self.onHelpLocalHelpClicked, u':/system/system_about.png',
@@ -321,7 +320,7 @@ class Ui_MainWindow(object):
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
         add_actions(self.helpMenu, (self.helpDocumentationItem, None))
-        if self.haveHelpFile:
+        if sys.platform[:3] == u'win':
             add_actions(self.helpMenu, (self.helpLocalHelpItem,
             self.helpOnlineHelpItem, None, self.helpWebSiteItem,
             self.helpAboutItem))
@@ -443,7 +442,7 @@ class Ui_MainWindow(object):
         self.helpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.helpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        if self.haveHelpFile:
+        if sys.platform[:3] == u'win':
             self.helpLocalHelpItem.setText(
                 translate('OpenLP.MainWindow', '&Help'))
         self.helpOnlineHelpItem.setText(
