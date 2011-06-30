@@ -242,10 +242,10 @@ def copy_windows_files():
         os.path.join(dist_path, u'LICENSE.txt'))
     copy(os.path.join(winres_path, u'psvince.dll'),
         os.path.join(dist_path, u'psvince.dll'))
-    if os.path.isfile(os.path.join(helpfile_path, u'Openlp.chm')):
+    if os.path.isfile(os.path.join(helpfile_path, u'OpenLP.chm')):
         print u'        Windows help file found'
-        copy(os.path.join(helpfile_path, u'Openlp.chm'),
-            os.path.join(dist_path, u'Openlp.chm'))
+        copy(os.path.join(helpfile_path, u'OpenLP.chm'),
+            os.path.join(dist_path, u'OpenLP.chm'))
     else:
         print u'  WARNING ---- Windows help file not found ---- WARNING'
 
