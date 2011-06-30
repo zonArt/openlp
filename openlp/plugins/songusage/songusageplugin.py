@@ -51,7 +51,7 @@ class SongUsagePlugin(Plugin):
         self.activeIcon = QtGui.QIcon(u':/songusage/song_usage_active.png')
         self.inactiveIcon = QtGui.QIcon(u':/songusage/song_usage_inactive.png')
         self.manager = None
-        self.songusageActive = False
+        self.songUsageActive = False
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -85,15 +85,17 @@ class SongUsagePlugin(Plugin):
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
         self.songUsageMenu.addAction(self.songUsageDelete)
         self.songUsageMenu.addAction(self.songUsageReport)
-        self.songUsageStatus = QtGui.QToolButton(self.formparent.statusBar)
-        self.songUsageStatus.setCheckable(True)
-        self.songUsageStatus.setStatusTip(translate('SongUsagePlugin',
-                'Toggle the tracking of song usage.'))
-        self.songUsageStatus.setObjectName(u'songUsageStatus')
-        self.formparent.statusBar.insertPermanentWidget(1, self.songUsageStatus)
-        self.songUsageStatus.hide()
+        self.songUsageActiveButton = QtGui.QToolButton(
+            self.formparent.statusBar)
+        self.songUsageActiveButton.setCheckable(True)
+        self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin',
+            'Toggle the tracking of song usage.'))
+        self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
+        self.formparent.statusBar.insertPermanentWidget(1,
+            self.songUsageActiveButton)
+        self.songUsageActiveButton.hide()
         # Signals and slots
-        QtCore.QObject.connect(self.songUsageStatus,
+        QtCore.QObject.connect(self.songUsageActiveButton,
             QtCore.SIGNAL(u'toggled(bool)'),
             self.toggleSongUsageState)
         QtCore.QObject.connect(self.songUsageDelete,
@@ -108,10 +110,15 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_started'),
             self.onReceiveSongUsage)
-        self.SongUsageActive = QtCore.QSettings().value(
+        self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
-        self.songUsageStatus.setChecked(self.SongUsageActive)
+        # Set the correct state and icon turn of signals as the state
+        # will get messed up
+        self.songUsageActiveButton.blockSignals(True)
+        self.songUsageActiveButton.setChecked(self.songUsageActive)
+        self.setButtonState()
+        self.songUsageActiveButton.blockSignals(False)
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
@@ -123,8 +130,7 @@ class SongUsagePlugin(Plugin):
             self.formparent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
         self.songUsageMenu.menuAction().setVisible(True)
-        self.songUsageStatus.show()
-        self.songUsageStatus.setIcon(self.activeIcon)
+        self.songUsageActiveButton.show()
 
     def finalise(self):
         """
@@ -139,32 +145,32 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Song Usage'))
         action_list.remove_action(self.songUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        self.songUsageStatus.hide()
+        self.songUsageActiveButton.hide()
         # stop any events being processed
-        self.SongUsageActive = False
+        self.songUsageActive = False
 
     def toggleSongUsageState(self):
         """
         Manage the state of the audit collection and amend
         the UI when necessary,
         """
-        print "toggle state"
-        self.SongUsageActive = not self.SongUsageActive
+        self.songUsageActive = not self.songUsageActive
         QtCore.QSettings().setValue(self.settingsSection + u'/active',
-            QtCore.QVariant(self.SongUsageActive))
-        if self.SongUsageActive:
-            self.songUsageStatus.setIcon(self.activeIcon)
+            QtCore.QVariant(self.songUsageActive))
+        self.setButtonState()
+
+    def setButtonState(self):
+        if self.songUsageActive:
+            self.songUsageActiveButton.setIcon(self.activeIcon)
         else:
-            self.songUsageStatus.setIcon(self.inactiveIcon)
+            self.songUsageActiveButton.setIcon(self.inactiveIcon)
 
     def onReceiveSongUsage(self, item):
         """
         Song Usage for live song from SlideController
         """
         audit = item[0].audit
-        print audit
-        if self.SongUsageActive and audit:
-            print "here"
+        if self.songUsageActive and audit:
             song_usage_item = SongUsageItem()
             song_usage_item.usagedate = datetime.today()
             song_usage_item.usagetime = datetime.now().time()
