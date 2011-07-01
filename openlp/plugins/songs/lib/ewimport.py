@@ -261,6 +261,7 @@ class EasyWorshipSongImport(SongImport):
                     # Format the lyrics
                     words = strip_rtf(words, self.encoding) # TODO: convert rtf instead of stripping?
                     p = re.compile(r'\n *?\n[\n ]*') # at least two newlines, with zero or more space characters between them
+                    verse_type = VerseType.Tags[VerseType.Verse] # TODO!!!: use previous verse type....
                     for verse in p.split(words):
                     #for verse in words.split(u'\n\n'):
                         # ew tags: verse, chorus, pre-chorus, bridge, tag, intro, ending, slide
@@ -268,13 +269,11 @@ class EasyWorshipSongImport(SongImport):
                         if len(verse) == 0:
                             continue
                         verse_split = verse.split(u'\n',  1)
-                        verse_type = VerseType.Tags[VerseType.Verse]
                         first_line_is_tag = False
                         for type in VerseType.Names+['tag',  'slide']: # doesnt cover tag, slide
                             type = type.lower()
                             ew_tag = verse_split[0].strip().lower()
                             if ew_tag.startswith(type):
-                                #print ew_tag
                                 verse_type = type[0]
                                 if type == 'tag' or type == 'slide':
                                     verse_type = VerseType.Tags[VerseType.Other]
@@ -286,7 +285,7 @@ class EasyWorshipSongImport(SongImport):
                                         number = m.group()
                                         verse_type +=number
 
-                                    p = re.compile(r'\(.*\)')
+                                    p = re.compile(r'\(.*?\)')
                                     m = re.search(p,  ew_tag)
                                     if m:
                                         self.comments += ew_tag+'\n'
