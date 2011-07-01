@@ -129,7 +129,7 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
 
-    def addCutomContextActions(self):
+    def addCustomContextActions(self):
         context_menu_separator(self.listView)
         context_menu_action(
             self.listView, u':/general/general_add.png',

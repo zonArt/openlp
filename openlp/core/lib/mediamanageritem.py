@@ -288,7 +288,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.listView, u':/general/general_add.png',
                 translate('OpenLP.MediaManagerItem',
                 '&Add to selected Service Item'), self.onAddEditClick)
-        self.addCutomContextActions()
+        self.addCustomContextActions()
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()
         self.menu.addActions(self.listView.actions())
@@ -302,7 +302,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
 
-    def addCutomContextActions(self):
+    def addCustomContextActions(self):
         """
         Implement this method in your descendent media manager item to
         add any context menu items. This method is called automatically.
