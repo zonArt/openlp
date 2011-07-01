@@ -688,7 +688,7 @@ class ServiceManager(QtGui.QWidget):
                     QtGui.QAction, serviceItem[u'service_item'].theme)
             if themeAction is not None:
                 themeAction.setChecked(True)
-        action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
+        self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
         item = self.findServiceItem()[0]
