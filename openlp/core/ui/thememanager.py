@@ -299,7 +299,9 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(
+            unicode(translate('OpenLP.ThemeManager',
+            'Copy of %s','Copy of <theme name>')) % oldThemeName)
         if self.fileRenameForm.exec_(True):
             newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
             if self.checkIfThemeExists(newThemeName):
