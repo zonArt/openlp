@@ -27,6 +27,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -412,9 +413,11 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_previous_item')
 
     def serviceNext(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_next_item')
 
     def screenSizeChanged(self):
