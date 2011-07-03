@@ -48,8 +48,8 @@ class SongUsagePlugin(Plugin):
         Plugin.__init__(self, u'SongUsage', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
-        self.activeIcon = QtGui.QIcon(u':/songusage/song_usage_active.png')
-        self.inactiveIcon = QtGui.QIcon(u':/songusage/song_usage_inactive.png')
+        self.activeIcon = build_icon(u':/songusage/song_usage_active.png')
+        self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
         self.manager = None
         self.songUsageActive = False
 
