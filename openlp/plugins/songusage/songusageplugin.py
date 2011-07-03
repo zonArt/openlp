@@ -127,6 +127,8 @@ class SongUsagePlugin(Plugin):
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()
+        action_list.add_action(self.songUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport,
@@ -148,6 +150,8 @@ class SongUsagePlugin(Plugin):
         Plugin.finalise(self)
         self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
+        action_list.remove_action(self.songUsageStatus,
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.remove_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
         action_list.remove_action(self.songUsageReport,
