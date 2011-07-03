@@ -81,8 +81,16 @@ class SongUsagePlugin(Plugin):
         self.songUsageReport.setStatusTip(
             translate('SongUsagePlugin', 'Generate a report on song usage.'))
         # SongUsage activation
+        self.songUsageStatus = shortcut_action(tools_menu, u'songUsageStatus',
+            [QtCore.Qt.Key_F4], self.toggleSongUsageState, checked=False)
+        self.songUsageStatus.setText(translate(
+            'SongUsagePlugin', 'Toggle Tracking'))
+        self.songUsageStatus.setStatusTip(translate('SongUsagePlugin',
+            'Toggle the tracking of song usage.'))
         # Add Menus together
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
+        self.songUsageMenu.addAction(self.songUsageStatus)
+        self.songUsageMenu.addSeparator()
         self.songUsageMenu.addAction(self.songUsageDelete)
         self.songUsageMenu.addAction(self.songUsageReport)
         self.songUsageActiveButton = QtGui.QToolButton(
@@ -95,6 +103,9 @@ class SongUsagePlugin(Plugin):
             self.songUsageActiveButton)
         self.songUsageActiveButton.hide()
         # Signals and slots
+        QtCore.QObject.connect(self.songUsageStatus,
+            QtCore.SIGNAL(u'visibilityChanged(bool)'),
+            self.songUsageStatus.setChecked)
         QtCore.QObject.connect(self.songUsageActiveButton,
             QtCore.SIGNAL(u'toggled(bool)'),
             self.toggleSongUsageState)
@@ -113,12 +124,8 @@ class SongUsagePlugin(Plugin):
         self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
-        # Set the correct state and icon turn of signals as the state
-        # will get messed up
-        self.songUsageActiveButton.blockSignals(True)
-        self.songUsageActiveButton.setChecked(self.songUsageActive)
+        # Set the button and checkbox state
         self.setButtonState()
-        self.songUsageActiveButton.blockSignals(False)
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageDelete,
             translate('SongUsagePlugin', 'Song Usage'))
@@ -160,10 +167,23 @@ class SongUsagePlugin(Plugin):
         self.setButtonState()
 
     def setButtonState(self):
+        """
+        Keep buttons inline.  Turn of signals to stop dead loop but we need the
+        button and check box set correctly.
+        """
+        self.songUsageActiveButton.blockSignals(True)
+        self.songUsageStatus.blockSignals(True)
         if self.songUsageActive:
             self.songUsageActiveButton.setIcon(self.activeIcon)
+            self.songUsageStatus.setChecked(True)
+            self.songUsageActiveButton.setChecked(True)
         else:
             self.songUsageActiveButton.setIcon(self.inactiveIcon)
+            self.songUsageStatus.setChecked(False)
+            self.songUsageActiveButton.setChecked(False)
+        self.songUsageActiveButton.blockSignals(False)
+        self.songUsageStatus.blockSignals(False)
+
 
     def onReceiveSongUsage(self, item):
         """
