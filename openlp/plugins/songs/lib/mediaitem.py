@@ -132,9 +132,9 @@ class SongMediaItem(MediaManagerItem):
     def addCustomContextActions(self):
         context_menu_separator(self.listView)
         context_menu_action(
-            self.listView, u':/general/general_add.png',
+            self.listView, u':/general/general_clone.png',
             translate('OpenLP.MediaManagerItem',
-            '&Clone.'), self.onCloneClick)
+            '&Clone'), self.onCloneClick)
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
