@@ -32,8 +32,7 @@ Windows Build Script
 This script is used to build the Windows binary and the accompanying installer.
 For this script to work out of the box, it depends on a number of things:
 
-Python 2.6
-    This build script only works with Python 2.6.
+Python 2.6/2.7
 
 PyQt4
     You should already have this installed, OpenLP doesn't work without it. The
@@ -49,7 +48,7 @@ Inno Setup 5
 
 UPX
     This is used to compress DLLs and EXEs so that they take up less space, but
-    still function exactly the same. To install UPS, download it from
+    still function exactly the same. To install UPX, download it from
     http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
     add that directory to your PATH environment variable.
 
@@ -61,7 +60,7 @@ HTML Help Workshop
     This is used to create the help file
 
 PyInstaller
-    PyInstaller should be a checkout of revision 844 of trunk, and in a
+    PyInstaller should be a checkout of revision 1470 of trunk, and in a
     directory called, "pyinstaller" on the same level as OpenLP's Bazaar shared
     repository directory. The revision is very important as there is currently
     a major regression in HEAD.
@@ -73,13 +72,8 @@ PyInstaller
         http://svn.pyinstaller.org/trunk
 
     Then you need to copy the two hook-*.py files from the "pyinstaller"
-    subdirectory in OpenLP's "resources" directory into PyInstaller's "hooks"
-    directory.
-
-    Once you've done that, open a command prompt (DOS shell), navigate to the
-    PyInstaller directory and run::
-
-        C:\Projects\pyinstaller>python Configure.py
+    subdirectory in OpenLP's "resources" directory into PyInstaller's
+    "PyInstaller/hooks" directory.
 
 Bazaar
     You need the command line "bzr" client installed.
@@ -137,9 +131,11 @@ site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
 
 # Files and executables
 pyi_build = os.path.abspath(os.path.join(branch_path, u'..', u'..',
-    u'pyinstaller', u'Build.py'))
+    u'pyinstaller', u'pyinstaller.py'))
+openlp_main_script = os.path.abspath(os.path.join(branch_path, 'openlp.pyw'))
 lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
 i18n_utils = os.path.join(script_path, u'translation_utils.py')
+win32_icon = os.path.join(branch_path, u'resources', u'images', 'OpenLP.ico')
 
 # Paths
 source_path = os.path.join(branch_path, u'openlp')
@@ -148,9 +144,9 @@ manual_build_path = os.path.join(manual_path, u'build')
 helpfile_path = os.path.join(manual_build_path, u'htmlhelp')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
-build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
-dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
-enchant_path = os.path.join(site_packages, u'enchant')
+build_path = os.path.join(branch_path, u'build')
+dist_path = os.path.join(build_path, u'dist', u'OpenLP')
+#enchant_path = os.path.join(site_packages, u'enchant')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
 
@@ -174,8 +170,15 @@ def update_code():
 def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
-    pyinstaller = Popen((python_exe, pyi_build, u'-y', u'-o', build_path,
-        os.path.join(winres_path, u'OpenLP.spec')), stdout=PIPE)
+    pyinstaller = Popen((python_exe, pyi_build,
+            u'--noconfirm',
+            u'--windowed',
+            u'-o', build_path,
+            u'-i', win32_icon,
+            u'-p', branch_path,
+            u'-n', 'OpenLP',
+            openlp_main_script),
+            stdout=PIPE)
     output, error = pyinstaller.communicate()
     code = pyinstaller.wait()
     if code != 0:
@@ -208,18 +211,18 @@ def write_version_file():
     f.write(versionstring)
     f.close()
 
-def copy_enchant():
-    print u'Copying enchant/pyenchant...'
-    source = enchant_path
-    dest = os.path.join(dist_path, u'enchant')
-    for root, dirs, files in os.walk(source):
-        for filename in files:
-            if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
-                dest_path = os.path.join(dest, root[len(source) + 1:])
-                if not os.path.exists(dest_path):
-                    os.makedirs(dest_path)
-                copy(os.path.join(root, filename),
-                    os.path.join(dest_path, filename))
+#def copy_enchant():
+    #print u'Copying enchant/pyenchant...'
+    #source = enchant_path
+    #dest = os.path.join(dist_path, u'enchant')
+    #for root, dirs, files in os.walk(source):
+        #for filename in files:
+            #if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
+                #dest_path = os.path.join(dest, root[len(source) + 1:])
+                #if not os.path.exists(dest_path):
+                    #os.makedirs(dest_path)
+                #copy(os.path.join(root, filename),
+                    #os.path.join(dest_path, filename))
 
 def copy_plugins():
     print u'Copying plugins...'
@@ -353,7 +356,7 @@ def main():
     build_pptviewlib()
     run_pyinstaller()
     write_version_file()
-    copy_enchant()
+    #copy_enchant()
     copy_plugins()
     if os.path.exists(manual_path):
         run_sphinx()
