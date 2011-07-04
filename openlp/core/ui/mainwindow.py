@@ -65,6 +65,12 @@ MEDIA_MANAGER_STYLE = """
   }
 """
 
+PROGRESSBAR_STYLE = """
+    QProgressBar{
+       height: 10px;
+    }
+"""
+
 class Ui_MainWindow(object):
     def setupUi(self, mainWindow):
         """
@@ -130,6 +136,7 @@ class Ui_MainWindow(object):
         self.statusBar.addPermanentWidget(self.loadProgressBar)
         self.loadProgressBar.hide()
         self.loadProgressBar.setValue(0)
+        self.loadProgressBar.setStyleSheet(PROGRESSBAR_STYLE)
         self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
@@ -276,7 +283,19 @@ class Ui_MainWindow(object):
         self.helpAboutItem = shortcut_action(mainWindow, u'helpAboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
-        self.helpOnlineHelpItem = shortcut_action(
+        if os.name == u'nt':
+            self.localHelpFile = os.path.join(
+                AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
+            self.helpLocalHelpItem = shortcut_action(
+                mainWindow, u'helpLocalHelpItem', [QtGui.QKeySequence(u'F1')],
+                self.onHelpLocalHelpClicked, u':/system/system_about.png',
+                category=UiStrings().Help)
+            self.helpOnlineHelpItem = shortcut_action(
+                mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'Alt+F1')],
+                self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
+                category=UiStrings().Help)
+        else:
+            self.helpOnlineHelpItem = shortcut_action(
             mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'F1')],
             self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
             category=UiStrings().Help)
@@ -314,9 +333,14 @@ class Ui_MainWindow(object):
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
-        add_actions(self.helpMenu, (self.helpDocumentationItem,
+        add_actions(self.helpMenu, (self.helpDocumentationItem, None))
+        if os.name == u'nt':
+            add_actions(self.helpMenu, (self.helpLocalHelpItem,
             self.helpOnlineHelpItem, None, self.helpWebSiteItem,
             self.helpAboutItem))
+        else:
+            add_actions(self.helpMenu, (self.helpOnlineHelpItem, None,
+                self.helpWebSiteItem, self.helpAboutItem))
         add_actions(self.menuBar, (self.fileMenu.menuAction(),
             self.viewMenu.menuAction(), self.toolsMenu.menuAction(),
             self.settingsMenu.menuAction(), self.helpMenu.menuAction()))
@@ -437,6 +461,9 @@ class Ui_MainWindow(object):
         self.helpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.helpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
+        if os.name == u'nt':
+            self.helpLocalHelpItem.setText(
+                translate('OpenLP.MainWindow', '&Help'))
         self.helpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         self.helpWebSiteItem.setText(
@@ -735,6 +762,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
 
+    def onHelpLocalHelpClicked(self):
+        """
+        Load the local OpenLP help file
+        """
+        os.startfile(self.localHelpFile)
+
     def onHelpOnlineHelpClicked(self):
         """
         Load the online OpenLP manual
@@ -1030,6 +1063,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreGeometry(
             settings.value(u'main window geometry').toByteArray())
         self.restoreState(settings.value(u'main window state').toByteArray())
+        self.liveController.splitter.restoreState(
+            settings.value(u'live splitter geometry').toByteArray())
+        self.previewController.splitter.restoreState(
+            settings.value(u'preview splitter geometry').toByteArray())
+        self.controlSplitter.restoreState(
+            settings.value(u'mainwindow splitter geometry').toByteArray())
+
         settings.endGroup()
 
     def saveSettings(self):
@@ -1050,6 +1090,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(self.saveState()))
         settings.setValue(u'main window geometry',
             QtCore.QVariant(self.saveGeometry()))
+        settings.setValue(u'live splitter geometry',
+            QtCore.QVariant(self.liveController.splitter.saveState()))
+        settings.setValue(u'preview splitter geometry',
+            QtCore.QVariant(self.previewController.splitter.saveState()))
+        settings.setValue(u'mainwindow splitter geometry',
+            QtCore.QVariant(self.controlSplitter.saveState()))
         settings.endGroup()
 
     def updateFileMenu(self):

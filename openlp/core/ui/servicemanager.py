@@ -688,7 +688,7 @@ class ServiceManager(QtGui.QWidget):
                     QtGui.QAction, serviceItem[u'service_item'].theme)
             if themeAction is not None:
                 themeAction.setChecked(True)
-        action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
+        self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
         item = self.findServiceItem()[0]
@@ -832,7 +832,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for item in self.serviceItems:
             item[u'expanded'] = False
-        self.regenerateServiceItems()
+        self.serviceManagerList.collapseAll()
 
     def collapsed(self, item):
         """
@@ -848,7 +848,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for item in self.serviceItems:
             item[u'expanded'] = True
-        self.regenerateServiceItems()
+        self.serviceManagerList.expandAll()
 
     def expanded(self, item):
         """
@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        self.serviceItems[pos -1 ][u'expanded'] = True
+        self.serviceItems[pos - 1][u'expanded'] = True
 
     def onServiceTop(self):
         """
