@@ -146,7 +146,6 @@ i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build')
 dist_path = os.path.join(build_path, u'dist', u'OpenLP')
-#enchant_path = os.path.join(site_packages, u'enchant')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
 
@@ -171,14 +170,14 @@ def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
     pyinstaller = Popen((python_exe, pyi_build,
-            u'--noconfirm',
-            u'--windowed',
-            u'-o', build_path,
-            u'-i', win32_icon,
-            u'-p', branch_path,
-            u'-n', 'OpenLP',
-            openlp_main_script),
-            stdout=PIPE)
+        u'--noconfirm',
+        u'--windowed',
+        u'-o', build_path,
+        u'-i', win32_icon,
+        u'-p', branch_path,
+        u'-n', 'OpenLP',
+        openlp_main_script),
+        stdout=PIPE)
     output, error = pyinstaller.communicate()
     code = pyinstaller.wait()
     if code != 0:
@@ -210,19 +209,6 @@ def write_version_file():
     f = open(os.path.join(dist_path, u'.version'), u'w')
     f.write(versionstring)
     f.close()
-
-#def copy_enchant():
-    #print u'Copying enchant/pyenchant...'
-    #source = enchant_path
-    #dest = os.path.join(dist_path, u'enchant')
-    #for root, dirs, files in os.walk(source):
-        #for filename in files:
-            #if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
-                #dest_path = os.path.join(dest, root[len(source) + 1:])
-                #if not os.path.exists(dest_path):
-                    #os.makedirs(dest_path)
-                #copy(os.path.join(root, filename),
-                    #os.path.join(dest_path, filename))
 
 def copy_plugins():
     print u'Copying plugins...'
@@ -356,7 +342,6 @@ def main():
     build_pptviewlib()
     run_pyinstaller()
     write_version_file()
-    #copy_enchant()
     copy_plugins()
     if os.path.exists(manual_path):
         run_sphinx()
