@@ -44,6 +44,14 @@ def strip_rtf(blob, encoding):
     control = False
     clear_text = []
     control_word = []
+    
+    # workaround for \tx bug: remove one pair of curly braces if \tx is encountered
+    p = re.compile(r'\{\\tx[^}]*\}')
+    m = p.search(blob)
+    if m:
+        # start and end indices of match are curly braces - filter them out
+        blob = ''.join([blob[i] for i in xrange(len(blob)) if i != m.start() and i !=m.end()])
+    
     for c in blob:
         if control:
             # for delimiters, set control to False
