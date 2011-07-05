@@ -39,18 +39,25 @@ from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
+RTF_STRIPPING_REGEX = re.compile(r'\{\\tx[^}]*\}')
+# regex: at least two newlines, can have spaces between them
+SLIDE_BREAK_REGEX = re.compile(r'\n *?\n[\n ]*')
+NUMBER_REGEX = re.compile(r'[0-9]+')
+NOTE_REGEX = re.compile(r'\(.*?\)')
+
 def strip_rtf(blob, encoding):
     depth = 0
     control = False
     clear_text = []
     control_word = []
     
-    # workaround for \tx bug: remove one pair of curly braces if \tx is encountered
-    p = re.compile(r'\{\\tx[^}]*\}')
-    m = p.search(blob)
-    if m:
+    # workaround for \tx bug: remove one pair of curly braces 
+    # if \tx is encountered
+    match = RTF_STRIPPING_REGEX.search(blob)
+    if match:
         # start and end indices of match are curly braces - filter them out
-        blob = ''.join([blob[i] for i in xrange(len(blob)) if i != m.start() and i !=m.end()])
+        blob = ''.join([blob[i] for i in xrange(len(blob)) 
+            if i != match.start() and i !=match.end()])
     
     for c in blob:
         if control:
@@ -267,17 +274,16 @@ class EasyWorshipSongImport(SongImport):
                         self.add_author(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words = strip_rtf(words, self.encoding) # TODO: convert rtf to display tags?
-                    # regex: at least two newlines, with zero or more space characters between them
-                    p = re.compile(r'\n *?\n[\n ]*') 
+                    words = strip_rtf(words, self.encoding)
                     verse_type = VerseType.Tags[VerseType.Verse]
-                    for verse in p.split(words):
+                    for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
                         if len(verse) == 0:
                             continue
-                        verse_split = verse.split(u'\n',  1)
+                        verse_split = verse.split(u'\n', 1)
                         first_line_is_tag = False
-                        # ew tags: verse, chorus, pre-chorus, bridge, tag, intro, ending, slide
+                        # EW tags: verse, chorus, pre-chorus, bridge, tag, 
+                        # intro, ending, slide
                         for type in VerseType.Names+['tag',  'slide']: 
                             type = type.lower()
                             ew_tag = verse_split[0].strip().lower()
@@ -287,27 +293,27 @@ class EasyWorshipSongImport(SongImport):
                                     verse_type = VerseType.Tags[VerseType.Other]
                                 first_line_is_tag = True
                                 number_found = False
-                                if len(ew_tag) > len(type): # tag is followed by number and/or note
-                                    p = re.compile(r'[0-9]+')
-                                    m = re.search(p,  ew_tag)
-                                    if m:
-                                        number = m.group()
+                                # check if tag is followed by number and/or note
+                                if len(ew_tag) > len(type): 
+                                    match = NUMBER_REGEX.search(ew_tag)
+                                    if match:
+                                        number = match.group()
                                         verse_type +=number
                                         number_found = True
-
-                                    p = re.compile(r'\(.*?\)')
-                                    m = re.search(p,  ew_tag)
-                                    if m:
-                                        self.comments += ew_tag+'\n'
+                                    match = NOTE_REGEX.search(ew_tag)
+                                    if match:
+                                        self.comments += ew_tag + u'\n'
                                 if not number_found:
-                                    verse_type += '1'
+                                    verse_type += u'1'
                                 break
                         self.add_verse(
                             verse_split[-1].strip() if first_line_is_tag else verse, 
                             verse_type)
                 if len(self.comments) > 5:
-                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
-                            '\n[above are Song Tags with notes imported from EasyWorship]'))
+                    self.comments += unicode(
+                        translate('SongsPlugin.EasyWorshipSongImport',
+                        '\n[above are Song Tags with notes imported from \
+                        EasyWorship]'))
                 if self.stop_import_flag:
                     break
                 if not self.finish():
