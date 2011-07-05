@@ -96,7 +96,7 @@ psvince.dll
     the install will fail.  The dll can be obtained from here:
     http://www.vincenzo.net/isxkb/index.php?title=PSVince)
 
-Mako    
+Mako
     Mako Templates for Python.  This package is required for building the
     remote plugin.  It can be installed by going to your
     python_directory\scripts\.. and running "easy_install Mako".  If you do not
@@ -319,17 +319,19 @@ def main():
     import sys
     for arg in sys.argv:
         if arg == u'-v' or arg == u'--verbose':
-            print "Script path:", script_path
-            print "Branch path:", branch_path
-            print "Source path:", source_path
-            print "\"dist\" path:", dist_path
-            print "PyInstaller:", pyi_build
+            print "OpenLP main script: ......", openlp_main_script
+            print "Script path: .............", script_path
+            print "Branch path: .............", branch_path
+            print "Source path: .............", source_path
+            print "\"dist\" path: .............", dist_path
+            print "PyInstaller: .............", pyi_build
             print "Documentation branch path:", doc_branch_path
-            print "Help file build path;", helpfile_path
-            print "Inno Setup path:", innosetup_exe
-            print "Windows resources:", winres_path
-            print "VCBuild path:", vcbuild_exe
-            print "PPTVIEWLIB path:", pptviewlib_path
+            print "Help file build path: ....", helpfile_path
+            print "Inno Setup path: .........", innosetup_exe
+            print "Windows resources: .......", winres_path
+            print "VCBuild path: ............", vcbuild_exe
+            print "PPTVIEWLIB path: .........", pptviewlib_path
+            print ""
         elif arg == u'--skip-update':
             skip_update = True
         elif arg == u'/?' or arg == u'-h' or arg == u'--help':
