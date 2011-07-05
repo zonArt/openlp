@@ -278,18 +278,18 @@ class EasyWorshipSongImport(SongImport):
                     verse_type = VerseType.Tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
-                        if len(verse) == 0:
+                        if not verse:
                             continue
                         verse_split = verse.split(u'\n', 1)
                         first_line_is_tag = False
                         # EW tags: verse, chorus, pre-chorus, bridge, tag, 
                         # intro, ending, slide
-                        for type in VerseType.Names+['tag',  'slide']: 
+                        for type in VerseType.Names+[u'tag', u'slide']: 
                             type = type.lower()
                             ew_tag = verse_split[0].strip().lower()
                             if ew_tag.startswith(type):
                                 verse_type = type[0]
-                                if type == 'tag' or type == 'slide':
+                                if type == u'tag' or type == u'slide':
                                     verse_type = VerseType.Tags[VerseType.Other]
                                 first_line_is_tag = True
                                 number_found = False
@@ -298,7 +298,7 @@ class EasyWorshipSongImport(SongImport):
                                     match = NUMBER_REGEX.search(ew_tag)
                                     if match:
                                         number = match.group()
-                                        verse_type +=number
+                                        verse_type += number
                                         number_found = True
                                     match = NOTE_REGEX.search(ew_tag)
                                     if match:
