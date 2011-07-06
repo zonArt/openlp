@@ -133,7 +133,10 @@ site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
 pyi_build = os.path.abspath(os.path.join(branch_path, u'..', u'..',
     u'pyinstaller', u'pyinstaller.py'))
 openlp_main_script = os.path.abspath(os.path.join(branch_path, 'openlp.pyw'))
-lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
+if os.path.exists(os.path.join(site_packages, u'PyQt4', u'bin')):
+    lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
+else:
+    lrelease_exe = os.path.join(site_packages, u'PyQt4', u'lrelease.exe')
 i18n_utils = os.path.join(script_path, u'translation_utils.py')
 win32_icon = os.path.join(branch_path, u'resources', u'images', 'OpenLP.ico')
 
@@ -145,7 +148,7 @@ helpfile_path = os.path.join(manual_build_path, u'htmlhelp')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build')
-dist_path = os.path.join(build_path, u'dist', u'OpenLP')
+dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
 
@@ -172,7 +175,7 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
-        u'-o', build_path,
+        u'-o', branch_path, #build_path,
         u'-i', win32_icon,
         u'-p', branch_path,
         u'-n', 'OpenLP',
