@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import base_action, shortcut_action, UiStrings
+from openlp.core.lib.ui import base_action, shortcut_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
