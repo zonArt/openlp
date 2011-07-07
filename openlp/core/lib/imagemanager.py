@@ -184,6 +184,12 @@ class ImageManager(QtCore.QObject):
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
+        elif image.image_bytes is None:
+            # Set the priority to Low, because the image was requested but the
+            # byte stream was not generated yet. However, we only need to do
+            # this, when the image was generated before it was requested
+            # (otherwise this is already taken care of).
+            self._conversion_queue.modify_priority(image, Priority.Low)
         return image.image
 
     def get_image_bytes(self, name):
