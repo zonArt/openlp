@@ -120,7 +120,7 @@ class PriorityQueue(Queue.PriorityQueue):
             The image to remove. This should be an ``Image`` instance.
 
         ``new_priority``
-            The new priority for the image.
+            The image's new priority.
         """
         self.remove(image)
         image.priority = new_priority
