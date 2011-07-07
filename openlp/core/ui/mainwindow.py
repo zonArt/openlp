@@ -291,9 +291,9 @@ class Ui_MainWindow(object):
                 self.onHelpLocalHelpClicked, u':/system/system_about.png',
                 category=UiStrings().Help)
             self.helpOnlineHelpItem = shortcut_action(
-                mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'Alt+F1')],
-                self.onHelpOnlineHelpClicked, u':/system/system_online_help.png',
-                category=UiStrings().Help)
+                mainWindow, u'helpOnlineHelpItem',
+                [QtGui.QKeySequence(u'Alt+F1')], self.onHelpOnlineHelpClicked,
+                u':/system/system_online_help.png', category=UiStrings().Help)
         else:
             self.helpOnlineHelpItem = shortcut_action(
             mainWindow, u'helpOnlineHelpItem', [QtGui.QKeySequence(u'F1')],
