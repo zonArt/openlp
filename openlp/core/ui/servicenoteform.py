@@ -49,6 +49,8 @@ class ServiceNoteForm(QtGui.QDialog):
     def setupUi(self):
         self.setObjectName(u'serviceNoteEdit')
         self.dialogLayout = QtGui.QVBoxLayout(self)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
+        self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'verticalLayout')
         self.textEdit = QtGui.QTextEdit(self)
         self.textEdit.setObjectName(u'textEdit')
