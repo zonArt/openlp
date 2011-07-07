@@ -387,7 +387,8 @@ class SongMediaItem(MediaManagerItem):
             new_song_id = self.openLyrics.xml_to_song(song_xml)
             new_song = self.plugin.manager.get_object(Song, new_song_id)
             new_song.title = u'%s <%s>' % (new_song.title,
-                translate('SongsPlugin.MediaItem', 'copy'))
+                translate('SongsPlugin.MediaItem', 'copy',
+                'For song cloning'))
             self.plugin.manager.save_object(new_song)
         self.onSongListLoad()
 
