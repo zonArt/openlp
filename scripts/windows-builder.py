@@ -134,8 +134,12 @@ pyi_build = os.path.abspath(os.path.join(branch_path, u'..', u'..',
     u'pyinstaller', u'pyinstaller.py'))
 openlp_main_script = os.path.abspath(os.path.join(branch_path, 'openlp.pyw'))
 if os.path.exists(os.path.join(site_packages, u'PyQt4', u'bin')):
+    # Older versions of the PyQt4 Windows installer put their binaries in the
+    # "bin" directory
     lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
 else:
+    # Newer versions of the PyQt4 Windows installer put their binaries in the
+    # base directory of the installation
     lrelease_exe = os.path.join(site_packages, u'PyQt4', u'lrelease.exe')
 i18n_utils = os.path.join(script_path, u'translation_utils.py')
 win32_icon = os.path.join(branch_path, u'resources', u'images', 'OpenLP.ico')
@@ -175,7 +179,7 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
-        u'-o', branch_path, #build_path,
+        u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,
         u'-n', 'OpenLP',
