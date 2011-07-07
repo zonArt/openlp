@@ -34,7 +34,8 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
+    media_item_combo_box, critical_error_message_box, \
+    find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -57,8 +58,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.lockIcon = QtGui.QIcon(u':/bibles/bibles_search_lock.png')
-        self.unlockIcon = QtGui.QIcon(u':/bibles/bibles_search_unlock.png')
+        self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
+        self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
@@ -983,8 +984,8 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(
-            bible, string, False, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False,
+            False)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]
