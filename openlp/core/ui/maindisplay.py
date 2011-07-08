@@ -233,10 +233,12 @@ class MainDisplay(QtGui.QGraphicsView):
         API for replacement backgrounds so Images are added directly to cache
         """
         self.imageManager.add_image(name, path)
-        self.image(name)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
+            self.image(name)
+            return True
+        return False
 
     def image(self, name):
         """
@@ -349,6 +351,9 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         Loads and starts a video to run with the option of sound
         """
+        # We request a background video but have no service Item
+        if isBackground and not hasattr(self, u'serviceItem'):
+            return None
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
