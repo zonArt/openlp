@@ -181,10 +181,14 @@ class SongUsagePlugin(Plugin):
             self.songUsageActiveButton.setIcon(self.activeIcon)
             self.songUsageStatus.setChecked(True)
             self.songUsageActiveButton.setChecked(True)
+            self.songUsageActiveButton.setToolTip(translate('SongUsagePlugin',
+                'Song usage is active.'))
         else:
             self.songUsageActiveButton.setIcon(self.inactiveIcon)
             self.songUsageStatus.setChecked(False)
             self.songUsageActiveButton.setChecked(False)
+            self.songUsageActiveButton.setToolTip(translate('SongUsagePlugin',
+                'Song usage is inactive.'))
         self.songUsageActiveButton.blockSignals(False)
         self.songUsageStatus.blockSignals(False)
 
