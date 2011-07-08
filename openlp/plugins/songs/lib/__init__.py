@@ -267,6 +267,10 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
+    if not isinstance(song.title, basestring):
+        song.title = unicode(song.title)
+    if not isinstance(song.lyrics, basestring):
+        song.lyrics = unicode(song.lyrics)
     song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
