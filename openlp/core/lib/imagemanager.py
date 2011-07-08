@@ -112,17 +112,29 @@ class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
     """
-    def remove(self, item):
+    def modify_priority(self, image, new_priority):
         """
-        Removes the given ``item`` from the queue.
+        Modifies the priority of the given ``image``.
 
-        ``item``
-            The item to remove. This should be a tuple::
+        ``image``
+            The image to remove. This should be an ``Image`` instance.
 
-                ``(Priority, Image)``
+        ``new_priority``
+            The image's new priority.
         """
-        if item in self.queue:
-            self.queue.remove(item)
+        self.remove(image)
+        image.priority = new_priority
+        self.put((image.priority, image))
+
+    def remove(self, image):
+        """
+        Removes the given ``image`` from the queue.
+
+        ``image``
+            The image to remove. This should be an ``Image`` instance.
+        """
+        if (image.priority, image) in self.queue:
+            self.queue.remove((image.priority, image))
 
 
 class ImageManager(QtCore.QObject):
@@ -168,12 +180,16 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image %s' % name)
         image = self._cache[name]
         if image.image is None:
-            self._conversion_queue.remove((image.priority, image))
-            image.priority = Priority.High
-            self._conversion_queue.put((image.priority, image))
+            self._conversion_queue.modify_priority(image, Priority.High)
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
+        elif image.image_bytes is None:
+            # Set the priority to Low, because the image was requested but the
+            # byte stream was not generated yet. However, we only need to do
+            # this, when the image was generated before it was requested
+            # (otherwise this is already taken care of).
+            self._conversion_queue.modify_priority(image, Priority.Low)
         return image.image
 
     def get_image_bytes(self, name):
@@ -184,9 +200,7 @@ class ImageManager(QtCore.QObject):
         log.debug(u'get_image_bytes %s' % name)
         image = self._cache[name]
         if image.image_bytes is None:
-            self._conversion_queue.remove((image.priority, image))
-            image.priority = Priority.Urgent
-            self._conversion_queue.put((image.priority, image))
+            self._conversion_queue.modify_priority(image, Priority.Urgent)
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
@@ -198,8 +212,7 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'del_image %s' % name)
         if name in self._cache:
-            self._conversion_queue.remove(
-                (self._cache[name].priority, self._cache[name]))
+            self._conversion_queue.remove(self._cache[name])
             del self._cache[name]
 
     def add_image(self, name, path):
@@ -238,18 +251,14 @@ class ImageManager(QtCore.QObject):
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:
-                self._conversion_queue.remove((image.priority, image))
-                image.priority = Priority.Lowest
-                self._conversion_queue.put((image.priority, image))
+                self._conversion_queue.modify_priority(image, Priority.Lowest)
                 return
             # For image with high priority we set the priority to Low, as the
             # byte stream might be needed earlier the byte stream of image with
             # Normal priority. We stop here as we need to process more important
             # images first.
             elif image.priority == Priority.High:
-                self._conversion_queue.remove((image.priority, image))
-                image.priority = Priority.Low
-                self._conversion_queue.put((image.priority, image))
+                self._conversion_queue.modify_priority(image, Priority.Low)
                 return
         # Generate the byte stream for the image.
         if image.image_bytes is None:
