@@ -114,8 +114,12 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.plugin.liveController.display.video(filename, 0, True)
-                self.resetAction.setVisible(True)
+                if self.plugin.liveController.display.video(filename, 0, True):
+                    self.resetAction.setVisible(True)
+                else:
+                    critical_error_message_box(UiStrings().LiveBGError,
+                        translate('MediaPlugin.MediaItem',
+                        'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',

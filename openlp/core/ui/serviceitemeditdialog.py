@@ -35,6 +35,8 @@ class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
         self.dialogLayout = QtGui.QGridLayout(serviceItemEditDialog)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
+        self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.listWidget = QtGui.QListWidget(serviceItemEditDialog)
         self.listWidget.setAlternatingRowColors(True)
