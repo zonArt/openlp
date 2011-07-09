@@ -107,10 +107,10 @@ def verify_versions():
         'PyQt4')
     check_vers(QtCore.qVersion(), VERS['Qt4'],
         'Qt4')
-    check_vers(__import__('sqlalchemy').__version__, VERS['sqlalchemy'],
-        'sqlalchemy')
-    check_vers(__import__('enchant').__version__, VERS['enchant'],
-        'enchant')
+    import sqlalchemy
+    check_vers(sqlalchemy.__version__, VERS['sqlalchemy'], 'sqlalchemy')
+    import enchant
+    check_vers(enchant.__version__, VERS['enchant'], 'enchant')
 
 
 def check_module(mod, text='', indent='  '):
@@ -122,6 +122,27 @@ def check_module(mod, text='', indent='  '):
     except ImportError:
         w('FAIL')
     w(os.linesep)
+
+
+def verify_pyenchant():
+    print('Enchant...')
+    import enchant
+    backends = ', '.join([x.name for x in enchant.Broker().describe()])
+    print('  available backends: %s' % backends)
+    langs = ', '.join(enchant.list_languages())
+    print('  available languages: %s' % langs)
+
+
+def verify_pyqt():
+    print('Qt4 image formats...')
+    from PyQt4 import QtGui
+    read_f = ', '.join([unicode(format).lower() \
+       for format in QtGui.QImageReader.supportedImageFormats()])
+    write_f= ', '.join([unicode(format).lower() \
+        for format in QtGui.QImageWriter.supportedImageFormats()])
+    print('  read: %s' % read_f)
+    print('  write: %s' % write_f)
+    from PyQt4 import phonon
 
 
 def main():
@@ -142,6 +163,8 @@ def main():
             check_module(m)
 
     verify_versions()
+    verify_pyqt()
+    verify_pyenchant()
 
 
 if __name__ == u'__main__':
