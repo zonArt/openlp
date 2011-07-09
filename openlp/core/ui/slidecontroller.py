@@ -27,12 +27,13 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
-    ItemCapabilities, translate
+    ItemCapabilities, translate, build_icon
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -193,13 +194,11 @@ class SlideController(QtGui.QWidget):
             self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
                 u'playSlidesLoop', [], self.onPlaySlidesLoop,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesLoop.setText(
-                translate('OpenLP.SlideController', 'Play Slides in Loop'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
             self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
                 u'playSlidesOnce', [], self.onPlaySlidesOnce,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesOnce.setText(
-                translate('OpenLP.SlideController', 'Play Slides to End'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
             if QtCore.QSettings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
@@ -412,9 +411,11 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_previous_item')
 
     def serviceNext(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_next_item')
 
     def screenSizeChanged(self):
@@ -1056,6 +1057,14 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesLoop.setChecked(checked)
         log.debug(u'onPlaySlidesLoop %s' % checked)
+        if checked:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesLoop.setText(UiStrings().StopPlaySlidesInLoop)
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
+        else:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
         self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
         self.playSlidesOnce.setChecked(False)
         self.onToggleLoop()
@@ -1069,6 +1078,14 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesOnce.setChecked(checked)
         log.debug(u'onPlaySlidesOnce %s' % checked)
+        if checked:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesOnce.setText(UiStrings().StopPlaySlidesToEnd)
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
+        else:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
         self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
         self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
