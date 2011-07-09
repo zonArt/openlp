@@ -352,6 +352,9 @@ class ServiceItem(object):
         Updates the _uuid with the value from the original one
         The _uuid is unique for a given service item but this allows one to
         replace an original version.
+
+        ``other``
+            The service item to be merged with
         """
         self._uuid = other._uuid
         self.notes = other.notes
@@ -460,4 +463,15 @@ class ServiceItem(object):
             return end
         else:
             return u'%s : %s' % (start, end)
+
+    def update_theme(self, theme):
+        """
+        updates the theme in the service item
+
+        ``theme``
+            The new theme to be replaced in the service item
+        """
+        self.theme = theme
+        self._new_item()
+        self.render()
 

@@ -1348,7 +1348,7 @@ class ServiceManager(QtGui.QWidget):
         if not theme:
             theme = None
         item = self.findServiceItem()[0]
-        self.serviceItems[item][u'service_item'].theme = theme
+        self.serviceItems[item][u'service_item'].update_theme(theme)
         self.regenerateServiceItems()
 
     def _getParentItemData(self, item):

@@ -28,6 +28,7 @@
 import logging
 import os
 import time
+import copy
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -600,7 +601,8 @@ class SlideController(QtGui.QWidget):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
-        self.serviceItem = serviceItem
+        # take a copy not a link to the servicemeanager copy.
+        self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
             self._resetBlank()
