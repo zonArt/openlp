@@ -958,13 +958,16 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setText(0, serviceitem.get_display_title())
             tips = []
             if serviceitem.theme and serviceitem.theme != -1:
-                tips.append(u'<strong>%s :</strong> <em>%s</em>' %
+                tips.append(u'<strong>%s:</strong> <em>%s</em>' %
                     (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
                     serviceitem.theme))
             if serviceitem.notes:
-                tips.append(u'<strong>%s :</strong> %s' %
+                tips.append(u'<strong>%s </strong> %s' %
                     (unicode(translate('OpenLP.ServiceManager', 'Notes')),
                     unicode(serviceitem.notes)))
+            if item[u'service_item'] \
+                .is_capable(ItemCapabilities.AllowsVariableStartTime):
+                tips.append(item[u'service_item'].get_media_time())
             treewidgetitem.setToolTip(0, u'<br />'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
@@ -975,11 +978,6 @@ class ServiceManager(QtGui.QWidget):
                 text = frame[u'title'].replace(u'\n', u' ')
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
-                if item[u'service_item'] \
-                    .is_capable(ItemCapabilities.AllowsVariableStartTime):
-                    tip = item[u'service_item'].get_media_time()
-                    if tip:
-                        child.setToolTip(0, tip)
                 if serviceItem == itemcount:
                     if item[u'expanded'] and serviceItemChild == count:
                         self.serviceManagerList.setCurrentItem(child)
