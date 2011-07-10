@@ -957,15 +957,14 @@ class ServiceManager(QtGui.QWidget):
                     build_icon(u':/general/general_delete.png'))
             treewidgetitem.setText(0, serviceitem.get_display_title())
             tips = []
-            # <st> does not work with tooltips it needs <b>
             if serviceitem.theme and serviceitem.theme != -1:
-                tips.append(u'<b>%s :</b> <em>%s</em>' %
-                (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
-                serviceitem.theme))
+                tips.append(u'<strong>%s :</strong> <em>%s</em>' %
+                    (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
+                    serviceitem.theme))
             if serviceitem.notes:
-                tips.append(u'<b>%s :</b> %s' %
-                (unicode(translate('OpenLP.ServiceManager', 'Notes')),
-                unicode(serviceitem.notes)))
+                tips.append(u'<strong>%s :</strong> %s' %
+                    (unicode(translate('OpenLP.ServiceManager', 'Notes')),
+                    unicode(serviceitem.notes)))
             treewidgetitem.setToolTip(0, u'<br />'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
