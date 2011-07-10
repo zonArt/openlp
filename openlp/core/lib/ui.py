@@ -102,6 +102,8 @@ class UiStrings(object):
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
+        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
+        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
         self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
@@ -122,6 +124,11 @@ class UiStrings(object):
         self.Split = translate('OpenLP.Ui', '&Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
+        self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
+            'Stop Play Slides in Loop')
+        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
+            'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
