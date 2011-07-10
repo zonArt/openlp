@@ -962,7 +962,7 @@ class ServiceManager(QtGui.QWidget):
                     (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
                     serviceitem.theme))
             if serviceitem.notes:
-                tips.append(u'<strong>%s </strong> %s' %
+                tips.append(u'<strong>%s: </strong> %s' %
                     (unicode(translate('OpenLP.ServiceManager', 'Notes')),
                     unicode(serviceitem.notes)))
             if item[u'service_item'] \
