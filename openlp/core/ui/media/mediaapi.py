@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.plugins.media.lib import MediaState
+from openlp.core.ui.media import MediaState
 
 class MediaAPI(object):
     """

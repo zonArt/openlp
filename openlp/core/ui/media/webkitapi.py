@@ -30,7 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.plugins.media.lib import MediaAPI, MediaState
+from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
@@ -267,7 +267,7 @@ class WebkitAPI(MediaAPI):
         display.webView.resize(display.size())
         display.webView.raise_()
         self.hasOwnWidget = False
-        display.webView.hide()
+        #display.webView.hide()
 
     def check_available(self):
         return True

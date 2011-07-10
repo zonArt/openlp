@@ -31,7 +31,7 @@ and play multimedia within OpenLP.
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
@@ -87,6 +87,9 @@ class MainDisplay(QtGui.QGraphicsView):
         self.retranslateUi()
         self.mediaObject = None
         self.firstTime = True
+
+        self.setViewport(QtOpenGL.QGLWidget())
+
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
             QtCore.Qt.WindowStaysOnTopHint)

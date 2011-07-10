@@ -34,7 +34,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
 

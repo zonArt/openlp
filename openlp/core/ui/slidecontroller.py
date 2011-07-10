@@ -64,6 +64,7 @@ class SlideController(QtGui.QWidget):
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.imageManager = self.parent().imageManager
+        self.mediaManager = self.parent().mediaManager
         self.loopList = [
             u'Play Slides Menu',
             u'Loop Separator',
@@ -232,6 +233,8 @@ class SlideController(QtGui.QWidget):
                 'Edit and reload song preview.'),
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
+        # Build the Media Toolbar
+        self.mediaManager.addControllerItems(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)

@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.plugins.media.lib import MediaAPI, MediaState
+from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class PhononAPI(MediaAPI):
             ext = u'*%s' % extension
             if ext not in list:
                 list.append(ext)
-                self.parent.serviceManager.supportedSuffixes(extension[1:])
+                #self.parent.parent.serviceManagerContents.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
@@ -87,7 +87,7 @@ class PhononAPI(MediaAPI):
                 ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
-                    self.parent.serviceManager.supportedSuffixes(extension[1:])
+                    #self.parent.parent.serviceManagerContents.supportedSuffixes(extension[1:])
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
 
@@ -96,7 +96,6 @@ class PhononAPI(MediaAPI):
 
     def setup(self, display):
         display.phononWidget = Phonon.VideoWidget(display)
-        display.phononWidget.setVisible(False)
         display.phononWidget.resize(display.size())
         display.mediaObject = Phonon.MediaObject(display)
         display.audio = Phonon.AudioOutput( \
@@ -184,7 +183,8 @@ class PhononAPI(MediaAPI):
     def reset(self, display):
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
-        display.phononWidget.setVisible(False)
+        self.set_visible(display, False)
+        display.phononWidgetProxy.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):

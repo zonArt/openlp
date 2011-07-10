@@ -38,6 +38,7 @@ from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
+from openlp.core.ui.media import MediaManager
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -484,6 +485,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
+        self.mediaManager = MediaManager(self)
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -565,6 +567,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginHelpers[u'toolbox'] = self.mediaDockManager
         self.pluginHelpers[u'pluginmanager'] = self.pluginManager
         self.pluginHelpers[u'formparent'] = self
+        self.pluginHelpers[u'mediamanager'] = self.mediaManager
         self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -581,11 +584,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.hook_export_menu(self.fileExportMenu)
         # Call the hook method to pull in tools menus.
         self.pluginManager.hook_tools_menu(self.toolsMenu)
-        # Call the hook method to pull in plugin Controller items
-        self.pluginManager.hook_controller_items(
-            self.previewController, self.previewController.getControlPanel())
-        self.pluginManager.hook_controller_items(
-            self.liveController, self.liveController.getControlPanel())
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()

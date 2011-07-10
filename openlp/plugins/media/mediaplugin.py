@@ -29,9 +29,7 @@ import logging
 import os
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.utils import AppLocation
-from openlp.plugins.media.lib import MediaMediaItem, MediaTab, MediaManager, \
-    MediaAPI
+from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
@@ -46,7 +44,6 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.mediaManager = MediaManager(self)
         self.audio_extensions_list = \
             self.mediaManager.get_audio_extensions_list()
         self.video_extensions_list = \
@@ -64,9 +61,6 @@ class MediaPlugin(Plugin):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
             '<br />The media plugin provides playback of audio and video.')
         return about_text
-
-    def addControllerItems(self, controller, control_panel):
-        self.mediaManager.addControllerItems(controller, control_panel)
 
     def setPluginTextStrings(self):
         """
@@ -103,44 +97,6 @@ class MediaPlugin(Plugin):
         self.mediaManager.Timer.stop()
         self.mediaManager.video_reset(self.previewController)
         self.mediaManager.video_reset(self.liveController)
-
-    def registerControllers(self, controller):
-        """
-        Register each media API controller (Webkit, Phonon, etc) and
-        store for later use
-        """
-        self.mediaManager.APIs[controller.name] = controller
-
-    def checkPreConditions(self):
-        """
-        Check to see if we have any media API's available
-        If Not do not install the plugin.
-        """
-        log.debug(u'checkPreConditions')
-        controller_dir = os.path.join(
-            AppLocation.get_directory(AppLocation.PluginsDir),
-            u'media', u'lib')
-        for filename in os.listdir(controller_dir):
-            if filename.endswith(u'api.py') and \
-                not filename == 'mediaapi.py':
-                path = os.path.join(controller_dir, filename)
-                if os.path.isfile(path):
-                    modulename = u'openlp.plugins.media.lib.' + \
-                        os.path.splitext(filename)[0]
-                    log.debug(u'Importing controller %s', modulename)
-                    try:
-                        __import__(modulename, globals(), locals(), [])
-                    except ImportError:
-                        log.warn(u'Failed to import %s on path %s',
-                            modulename, path)
-        controller_classes = MediaAPI.__subclasses__()
-        for controller_class in controller_classes:
-            controller = controller_class(self)
-            self.registerControllers(controller)
-        if self.mediaManager.APIs:
-            return True
-        else:
-            return False
 
     def getDisplayCss(self):
         """

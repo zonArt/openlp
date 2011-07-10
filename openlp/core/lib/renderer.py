@@ -77,7 +77,7 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, None, self.image_manager, False)
+        self.display = MainDisplay(None, self, self.image_manager, False)
         self.display.setup()
 
     def update_display(self):
