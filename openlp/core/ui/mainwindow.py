@@ -276,8 +276,8 @@ class Ui_MainWindow(object):
             u'settingsConfigureItem', u':/system/system_settings.png',
             category=UiStrings().Settings)
         action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
-        self.helpAboutItem = shortcut_action(mainWindow, u'helpAboutItem',
-            [QtGui.QKeySequence(u'Ctrl+F1')], self.onHelpAboutItemClicked,
+        self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
+            [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)
         if os.name == u'nt':
             self.localHelpFile = os.path.join(
@@ -290,8 +290,8 @@ class Ui_MainWindow(object):
             mainWindow, u'onlineHelpItem',
             [QtGui.QKeySequence(u'Alt+F1')], self.onOnlineHelpClicked,
             u':/system/system_online_help.png', category=UiStrings().Help)
-        self.helpWebSiteItem = base_action(
-            mainWindow, u'helpWebSiteItem', category=UiStrings().Help)
+        self.webSiteItem = base_action(
+            mainWindow, u'webSiteItem', category=UiStrings().Help)
         add_actions(self.fileImportMenu,
             (self.importThemeItem, self.importLanguageItem))
         add_actions(self.fileExportMenu,
@@ -326,11 +326,11 @@ class Ui_MainWindow(object):
         add_actions(self.toolsMenu, [self.updateThemeImages])
         if os.name == u'nt':
             add_actions(self.helpMenu, (self.offlineHelpItem,
-            self.onlineHelpItem, None, self.helpWebSiteItem,
-            self.helpAboutItem))
+            self.onlineHelpItem, None, self.webSiteItem,
+            self.aboutItem))
         else:
             add_actions(self.helpMenu, (self.onlineHelpItem, None,
-                self.helpWebSiteItem, self.helpAboutItem))
+                self.webSiteItem, self.aboutItem))
         add_actions(self.menuBar, (self.fileMenu.menuAction(),
             self.viewMenu.menuAction(), self.toolsMenu.menuAction(),
             self.settingsMenu.menuAction(), self.helpMenu.menuAction()))
@@ -445,15 +445,15 @@ class Ui_MainWindow(object):
             '&Plugin List'))
         self.settingsPluginListItem.setStatusTip(
             translate('OpenLP.MainWindow', 'List the Plugins'))
-        self.helpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
-        self.helpAboutItem.setStatusTip(
+        self.aboutItem.setText(translate('OpenLP.MainWindow', '&About'))
+        self.aboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
         if os.name == u'nt':
             self.offlineHelpItem.setText(
                 translate('OpenLP.MainWindow', '&User Guide'))
         self.onlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
-        self.helpWebSiteItem.setText(
+        self.webSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.languageGroup.actions():
             item.setText(item.objectName())
@@ -542,7 +542,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.themeManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.viewThemeManagerItem.setChecked)
-        QtCore.QObject.connect(self.helpWebSiteItem,
+        QtCore.QObject.connect(self.webSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.toolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
@@ -762,7 +762,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import webbrowser
         webbrowser.open_new(u'http://manual.openlp.org/')
 
-    def onHelpAboutItemClicked(self):
+    def onAboutItemClicked(self):
         """
         Show the About form
         """
