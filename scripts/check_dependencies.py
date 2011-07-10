@@ -95,6 +95,10 @@ def check_vers(version, required, text):
         return False
 
 
+def print_vers_fail(required, text):
+    print('  %s >= %s ...    FAIL' % (text, required))
+
+
 def verify_python():
     if not check_vers(list(sys.version_info), VERS['Python'], text='Python'):
         exit(1)
@@ -102,15 +106,25 @@ def verify_python():
 
 def verify_versions():
     print('Verifying version of modules...')
-    from PyQt4 import QtCore
-    check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt4'],
-        'PyQt4')
-    check_vers(QtCore.qVersion(), VERS['Qt4'],
-        'Qt4')
-    import sqlalchemy
-    check_vers(sqlalchemy.__version__, VERS['sqlalchemy'], 'sqlalchemy')
-    import enchant
-    check_vers(enchant.__version__, VERS['enchant'], 'enchant')
+    try:
+        from PyQt4 import QtCore
+        check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt4'],
+            'PyQt4')
+        check_vers(QtCore.qVersion(), VERS['Qt4'],
+            'Qt4')
+    except ImportError:
+        print_vers_fail(VERS['PyQt4'], 'PyQt4')
+        print_vers_fail(VERS['Qt4'], 'Qt4')
+    try:
+        import sqlalchemy
+        check_vers(sqlalchemy.__version__, VERS['sqlalchemy'], 'sqlalchemy')
+    except ImportError:
+        print_vers_fail(VERS['sqlalchemy'], 'sqlalchemy')
+    try:
+        import enchant
+        check_vers(enchant.__version__, VERS['enchant'], 'enchant')
+    except ImportError:
+        print_vers_fail(VERS['enchant'], 'enchant')
 
 
 def check_module(mod, text='', indent='  '):
@@ -125,24 +139,31 @@ def check_module(mod, text='', indent='  '):
 
 
 def verify_pyenchant():
-    print('Enchant...')
-    import enchant
-    backends = ', '.join([x.name for x in enchant.Broker().describe()])
-    print('  available backends: %s' % backends)
-    langs = ', '.join(enchant.list_languages())
-    print('  available languages: %s' % langs)
+    w('Enchant (spell checker)... ')
+    try:
+        import enchant
+        w(os.linesep)
+        backends = ', '.join([x.name for x in enchant.Broker().describe()])
+        print('  available backends: %s' % backends)
+        langs = ', '.join(enchant.list_languages())
+        print('  available languages: %s' % langs)
+    except ImportError:
+        w('FAIL' + os.linesep)
 
 
 def verify_pyqt():
-    print('Qt4 image formats...')
-    from PyQt4 import QtGui
-    read_f = ', '.join([unicode(format).lower() \
-       for format in QtGui.QImageReader.supportedImageFormats()])
-    write_f= ', '.join([unicode(format).lower() \
-        for format in QtGui.QImageWriter.supportedImageFormats()])
-    print('  read: %s' % read_f)
-    print('  write: %s' % write_f)
-    from PyQt4 import phonon
+    w('Qt4 image formats... ')
+    try:
+        from PyQt4 import QtGui
+        read_f = ', '.join([unicode(format).lower() \
+           for format in QtGui.QImageReader.supportedImageFormats()])
+        write_f= ', '.join([unicode(format).lower() \
+            for format in QtGui.QImageWriter.supportedImageFormats()])
+        w(os.linesep)
+        print('  read: %s' % read_f)
+        print('  write: %s' % write_f)
+    except ImportError:
+        w('FAIL' + os.linesep)
 
 
 def main():
@@ -157,7 +178,7 @@ def main():
     for m in OPTIONAL_MODULES:
         check_module(m[0], text=m[1])
 
-    if sys.platform.startswith('win'):
+    if is_win:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
             check_module(m)
