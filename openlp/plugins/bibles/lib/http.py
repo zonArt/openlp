@@ -145,7 +145,10 @@ class BGExtract(object):
             send_error_message(u'download')
             return None
         page_source = page.read()
-        page_source = unicode(page_source, 'utf8')
+        try:
+            page_source = unicode(page_source, u'utf8')
+        except UnicodeDecodeError:
+            page_source = unicode(page_source, u'cp1251')
         page_source_temp = re.search(u'<table .*?class="infotable".*?>.*?'\
             u'</table>', page_source, re.DOTALL)
         if page_source_temp:
