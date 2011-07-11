@@ -87,7 +87,7 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
-            message=translate('BiblePlugin.MediaItem',
+            message=translate('BiblesPlugin.MediaItem',
             'You cannot combine single and dual Bible verse search results. '
             'Do you want to delete your search results and start a new '
             'search?'),
@@ -437,7 +437,7 @@ class BibleMediaItem(MediaManagerItem):
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
-                message=translate('BiblePlugin.MediaItem',
+                message=translate('BiblesPlugin.MediaItem',
                 'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
@@ -694,8 +694,8 @@ class BibleMediaItem(MediaManagerItem):
                         verse.verse, verse.verse))
                 if passage_not_found:
                     QtGui.QMessageBox.information(self,
-                        translate('BiblePlugin.MediaItem', 'Information'),
-                        unicode(translate('BiblePlugin.MediaItem',
+                        translate('BiblesPlugin.MediaItem', 'Information'),
+                        unicode(translate('BiblesPlugin.MediaItem',
                         'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '

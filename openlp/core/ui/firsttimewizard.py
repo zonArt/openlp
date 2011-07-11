@@ -209,7 +209,7 @@ class Ui_FirstTimeWizard(object):
             'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
         self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Custom Text'))
+            'Custom Slides'))
         self.bibleCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Images'))

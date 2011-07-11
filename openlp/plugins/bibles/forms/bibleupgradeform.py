@@ -413,7 +413,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not backup_path:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',
-                        'You need to specify a Backup Directory for your '
+                        'You need to specify a backup Directory for your '
                         'Bibles.'))
                     self.backupDirectoryEdit.setFocus()
                     return False
@@ -520,7 +520,7 @@ class BibleUpgradeForm(OpenLPWizard):
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate(
             'BiblesPlugin.UpgradeWizardForm',
-            'Starting Bible upgrade...'))
+            'Starting upgrade...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):
@@ -532,7 +532,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.maxBibles == 0:
             self.progressLabel.setText(
                 translate('BiblesPlugin.UpgradeWizardForm', 'There are no '
-                'Bibles available to upgrade.'))
+                'Bibles that need to be upgraded.'))
             self.progressBar.hide()
             return
         self.maxBibles = 0
