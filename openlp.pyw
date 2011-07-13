@@ -90,6 +90,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        self.eventQueue = []
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args = args
@@ -135,6 +136,9 @@ class OpenLP(QtGui.QApplication):
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'maindisplay_blank_check')
         self.mainWindow.appStartup()
+        # do a check for queued events
+        for e in self.eventQueue:
+            self.event(e)
         DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
@@ -179,6 +183,25 @@ class OpenLP(QtGui.QApplication):
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
+
+    def event(self, event):
+        """
+        Enables direct file opening on OS X
+        """
+        if event.type() == QtCore.QEvent.FileOpen:
+            file_name = event.file()
+            log.debug(u'Got open file event for %s!', file_name)
+            log.error(file_name)
+            try:
+                self.mainWindow.serviceManagerContents.loadFile(file_name)
+                return True
+            except AttributeError, NameError:
+                log.debug(u'The main window is not initialized yet,\
+                    will queue event!')
+                self.eventQueue.append(event)
+            return False
+        else:
+            return QtGui.QApplication.event(self, event)
 
 def main():
     """
