@@ -413,7 +413,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not backup_path:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',
-                        'You need to specify a backup Directory for your '
+                        'You need to specify a backup directory for your '
                         'Bibles.'))
                     self.backupDirectoryEdit.setFocus()
                     return False
