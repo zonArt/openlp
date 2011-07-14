@@ -27,8 +27,7 @@
 The bible import functions for OpenLP
 """
 import logging
-import os.path
-import re
+import os
 import shutil
 
 from PyQt4 import QtCore, QtGui
@@ -70,8 +69,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.mediaItem = bibleplugin.mediaItem
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
-        self.path = AppLocation.get_section_data_path(
-            self.settingsSection)
+        self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}

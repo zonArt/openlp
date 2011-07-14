@@ -74,44 +74,38 @@ OPTIONAL_MODULES = [
     ('sqlite', ' (SQLite 2 support)'),
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
-    ]
+]
 
 w = sys.stdout.write
-
 
 def check_vers(version, required, text):
     if type(version) is str:
         version = version.split('.')
-        version = [int(x) for x in version]
+        version = map(int, version)
     if type(required) is str:
         required = required.split('.')
-        required = [int(x) for x in required]
-    w('  %s >= %s ...    ' % (text, '.'.join([str(x) for x in required])))
+        required = map(int, required)
+    w('  %s >= %s ...    ' % (text, '.'.join(map(str, required))))
     if version >= required:
-        w('.'.join([str(x) for x in version]) + os.linesep)
+        w('.'.join(map(str, version)) + os.linesep)
         return True
     else:
         w('FAIL' + os.linesep)
         return False
 
-
 def print_vers_fail(required, text):
     print('  %s >= %s ...    FAIL' % (text, required))
-
 
 def verify_python():
     if not check_vers(list(sys.version_info), VERS['Python'], text='Python'):
         exit(1)
 
-
 def verify_versions():
     print('Verifying version of modules...')
     try:
         from PyQt4 import QtCore
-        check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt4'],
-            'PyQt4')
-        check_vers(QtCore.qVersion(), VERS['Qt4'],
-            'Qt4')
+        check_vers(QtCore.PYQT_VERSION_STR, VERS['PyQt4'], 'PyQt4')
+        check_vers(QtCore.qVersion(), VERS['Qt4'], 'Qt4')
     except ImportError:
         print_vers_fail(VERS['PyQt4'], 'PyQt4')
         print_vers_fail(VERS['Qt4'], 'Qt4')
@@ -126,7 +120,6 @@ def verify_versions():
     except ImportError:
         print_vers_fail(VERS['enchant'], 'enchant')
 
-
 def check_module(mod, text='', indent='  '):
     space = (30 - len(mod) - len(text)) * ' '
     w(indent + '%s%s...  ' % (mod, text) + space)
@@ -136,7 +129,6 @@ def check_module(mod, text='', indent='  '):
     except ImportError:
         w('FAIL')
     w(os.linesep)
-
 
 def verify_pyenchant():
     w('Enchant (spell checker)... ')
@@ -150,14 +142,13 @@ def verify_pyenchant():
     except ImportError:
         w('FAIL' + os.linesep)
 
-
 def verify_pyqt():
     w('Qt4 image formats... ')
     try:
         from PyQt4 import QtGui
-        read_f = ', '.join([unicode(format).lower() \
+        read_f = ', '.join([unicode(format).lower()
            for format in QtGui.QImageReader.supportedImageFormats()])
-        write_f= ', '.join([unicode(format).lower() \
+        write_f = ', '.join([unicode(format).lower()
             for format in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)
         print('  read: %s' % read_f)
@@ -165,9 +156,7 @@ def verify_pyqt():
     except ImportError:
         w('FAIL' + os.linesep)
 
-
 def main():
-
     verify_python()
 
     print('Checking for modules...')
@@ -186,7 +175,6 @@ def main():
     verify_versions()
     verify_pyqt()
     verify_pyenchant()
-
 
 if __name__ == u'__main__':
     main()
