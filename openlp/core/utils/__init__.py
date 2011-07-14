@@ -53,6 +53,7 @@ APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
     """
@@ -61,8 +62,6 @@ class VersionThread(QtCore.QThread):
     """
     def __init__(self, parent):
         QtCore.QThread.__init__(self, parent)
-        self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
     def run(self):
         """
@@ -73,7 +72,7 @@ class VersionThread(QtCore.QThread):
         version = check_latest_version(app_version)
         remote_version = {}
         local_version = {}
-        match = self.version_splitter.match(version)
+        match = VERSION_SPLITTER.match(version)
         if match:
             remote_version[u'major'] = int(match.group(1))
             remote_version[u'minor'] = int(match.group(2))
@@ -82,7 +81,7 @@ class VersionThread(QtCore.QThread):
                 remote_version[u'revision'] = int(match.group(4))
         else:
             return
-        match = self.version_splitter.match(app_version[u'full'])
+        match = VERSION_SPLITTER.match(app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
             local_version[u'minor'] = int(match.group(2))
