@@ -35,7 +35,7 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
 from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
@@ -350,6 +350,9 @@ class ServiceItem(object):
         Updates the _uuid with the value from the original one
         The _uuid is unique for a given service item but this allows one to
         replace an original version.
+
+        ``other``
+            The service item to be merged with
         """
         self._uuid = other._uuid
         self.notes = other.notes
@@ -445,10 +448,12 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = UiStrings().StartTimeCode % \
+            start = unicode(translate('OpenLP.ServiceItem',
+                '<strong>Start</strong>: %s')) % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = UiStrings().LengthTime % \
+            end = unicode(translate('OpenLP.ServiceItem',
+                '<strong>Length</strong>: %s')) % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return None
@@ -457,5 +462,16 @@ class ServiceItem(object):
         elif not start and end:
             return end
         else:
-            return u'%s : %s' % (start, end)
+            return u'%s <br />%s' % (start, end)
+
+    def update_theme(self, theme):
+        """
+        updates the theme in the service item
+
+        ``theme``
+            The new theme to be replaced in the service item
+        """
+        self.theme = theme
+        self._new_item()
+        self.render()
 
