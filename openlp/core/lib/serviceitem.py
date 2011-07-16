@@ -174,7 +174,7 @@ class ServiceItem(object):
             for slide in self._raw_frames:
                 pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                 for page in pages:
-                    page = page.replace(u'<br />', u'{br}')
+                    page = page.replace(u'<br>', u'{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
                     self._display_frames.append({
                         u'title': clean_tags(page),
@@ -194,7 +194,7 @@ class ServiceItem(object):
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = \
-            u'<br />'.join([footer for footer in self.raw_footer if footer])
+            u'<br>'.join([footer for footer in self.raw_footer if footer])
 
     def add_from_image(self, path, title):
         """
@@ -462,7 +462,7 @@ class ServiceItem(object):
         elif not start and end:
             return end
         else:
-            return u'%s <br />%s' % (start, end)
+            return u'%s <br>%s' % (start, end)
 
     def update_theme(self, theme):
         """

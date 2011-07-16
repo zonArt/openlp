@@ -202,7 +202,7 @@ def clean_tags(text):
     """
     Remove Tags from text for display
     """
-    text = text.replace(u'<br />', u'\n')
+    text = text.replace(u'<br>', u'\n')
     text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():

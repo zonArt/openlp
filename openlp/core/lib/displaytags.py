@@ -111,7 +111,7 @@ class DisplayTags(object):
             u'start html': u'<span style="text-decoration: underline;">',
             u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
         base_tags.append({u'desc': translate('OpenLP.DisplayTags', 'Break'),
-            u'start tag': u'{br}', u'start html': u'<br />', u'end tag': u'',
+            u'start tag': u'{br}', u'start html': u'<br>', u'end tag': u'',
             u'end html': u'', u'protected': True})
         DisplayTags.add_html_tags(base_tags)
 

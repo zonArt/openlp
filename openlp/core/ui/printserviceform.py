@@ -240,7 +240,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     translate('OpenLP.ServiceManager', 'Notes: '), p,
                     classId=u'itemNotesTitle')
                 notes = self._addElement(u'span',
-                    item.notes.replace(u'\n', u'<br />'), p,
+                    item.notes.replace(u'\n', u'<br>'), p,
                     classId=u'itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.metaDataCheckBox.isChecked():

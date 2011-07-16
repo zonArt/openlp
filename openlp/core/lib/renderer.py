@@ -46,6 +46,28 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
+HTML_START = u"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+        #main {
+            position: absolute;
+            top: 0px;
+            %s %s
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+"""
+
 HTML_END = u'</div></body></html>'
 
 class Renderer(object):
@@ -219,7 +241,7 @@ class Renderer(object):
         """
         log.debug(u'format slide')
         # Add line endings after each line of text used for bibles.
-        line_end = u'<br />'
+        line_end = u'<br>'
         if item.is_capable(ItemCapabilities.NoLineBreaks):
             line_end = u' '
         # Bibles
@@ -240,8 +262,8 @@ class Renderer(object):
                         pages.extend(self._paginate_slide(lines, line_end))
         new_pages = []
         for page in pages:
-            while page.endswith(u'<br />'):
-                page = page[:-6]
+            while page.endswith(u'<br>'):
+                page = page[:-4]
             new_pages.append(page)
         return new_pages
 
@@ -310,10 +332,7 @@ class Renderer(object):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css
-        self.page_shell = u'<html><head><style>' \
-            u'*{margin: 0; padding: 0; border: 0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
-            u'<div id="main">' % \
+        self.page_shell = HTML_START % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
 
@@ -326,13 +345,13 @@ class Renderer(object):
             The text to be fitted on the slide split into lines.
 
         ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br />``.
+            The text added after each line. Either ``u' '`` or ``u'<br>``.
         """
         log.debug(u'_paginate_slide - Start')
         formatted = []
         previous_html = u''
         previous_raw = u''
-        separator = u'<br />'
+        separator = u'<br>'
         html_lines = map(expand_tags, lines)
         html = self.page_shell + separator.join(html_lines) + HTML_END
         self.web.setHtml(html)
@@ -357,7 +376,7 @@ class Renderer(object):
             The words to be fitted on the slide split into lines.
 
         ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br />``.
+            The text added after each line. Either ``u' '`` or ``u'<br>``.
             This is needed for bibles.
         """
         log.debug(u'_paginate_slide_words - Start')
@@ -434,12 +453,12 @@ class Renderer(object):
             using the binary chop. The elements can contain display tags.
 
         ``separator``
-            The separator for the elements. For lines this is ``u'<br />'`` and
+            The separator for the elements. For lines this is ``u'<br>'`` and
             for words this is ``u' '``.
 
         ``line_end``
             The text added after each "element line". Either ``u' '`` or
-            ``u'<br />``. This is needed for bibles.
+            ``u'<br>``. This is needed for bibles.
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
@@ -459,7 +478,7 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                formatted.append(previous_raw.rstrip(u'<br />') +
+                formatted.append(previous_raw.rstrip(u'<br>') +
                     separator.join(raw_list[:index + 1]))
                 previous_html = u''
                 previous_raw = u''

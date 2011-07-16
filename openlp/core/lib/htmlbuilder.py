@@ -35,8 +35,10 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>OpenLP Display</title>
 <style>
 *{
@@ -93,7 +95,7 @@ sup {
     top:-0.3em;
 }
 </style>
-<script language="javascript">
+<script>
     var timer = null;
     var video_timer = null;
     var current_video = '1';
@@ -317,10 +319,10 @@ sup {
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
+<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
-    """
+"""
 
 def build_html(item, screen, alert, islive, background, image=None):
     """
