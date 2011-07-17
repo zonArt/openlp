@@ -26,7 +26,6 @@
 ###############################################################################
 
 import logging
-import os
 import re
 
 from lxml import objectify
