@@ -34,7 +34,7 @@ from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible

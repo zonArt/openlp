@@ -27,7 +27,6 @@
 """
 The bible import functions for OpenLP
 """
-import csv
 import logging
 import os
 import os.path
@@ -39,7 +38,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, string_is_unicode
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 
