@@ -46,28 +46,6 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-HTML_START = u"""
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <style>
-        *{
-            margin: 0;
-            padding: 0;
-            border: 0;
-        }
-        #main {
-            position: absolute;
-            top: 0px;
-            %s %s
-        }
-    </style>
-</head>
-<body>
-    <div id="main">
-"""
-
 HTML_END = u'</div></body></html>'
 
 class Renderer(object):
@@ -332,7 +310,10 @@ class Renderer(object):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css
-        self.page_shell = HTML_START % \
+        self.page_shell = u'<!DOCTYPE html><html><head><style>' \
+            u'*{margin: 0; padding: 0; border: 0;} '\
+            u'#main {position: absolute;top: 0px;%s %s}</style></head><body>' \
+            u'<div id="main">' % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
 
