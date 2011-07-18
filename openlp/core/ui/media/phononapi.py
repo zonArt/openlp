@@ -184,7 +184,7 @@ class PhononAPI(MediaAPI):
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
         self.set_visible(display, False)
-        display.phononWidgetProxy.setVisible(False)
+        display.phononWidget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):

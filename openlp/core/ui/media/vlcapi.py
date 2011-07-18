@@ -144,6 +144,8 @@ class VlcAPI(MediaAPI):
             self.state = MediaState.Playing
 
     def pause(self, display):
+        if display.vlcMedia.get_state() != vlc.State.Playing:
+            return
         display.vlcMediaPlayer.pause()
         if self.mediaStateWait(display, vlc.State.Paused):
             self.state = MediaState.Paused

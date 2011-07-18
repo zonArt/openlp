@@ -70,10 +70,6 @@ class MediaManager(object):
         QtCore.QObject.connect(self.Timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'setup_display'), self.setup_display)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_video'), self.video)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'Media Start'), self.video_play)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'Media Pause'), self.video_pause)
@@ -83,8 +79,6 @@ class MediaManager(object):
             QtCore.SIGNAL(u'seekSlider'), self.video_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'volumeSlider'), self.video_volume)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_reset'), self.video_reset)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_hide'), self.video_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -256,19 +250,21 @@ class MediaManager(object):
             display.resize(controller.slidePreview.size())
         api.resize(display)
 
-    def video(self, msg):
+    def video(self, controller, file, muted, isBackground):
         """
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
-        controller = msg[0]
         isValid = False
         # stop running videos
         self.video_reset(controller)
         controller.media_info = MediaInfo()
-        controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.file_info = QtCore.QFileInfo(msg[1])
-        controller.media_info.is_background = msg[2]
+        if muted:
+            controller.media_info.volume = 0
+        else:
+            controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.file_info = QtCore.QFileInfo(file)
+        controller.media_info.is_background = isBackground
         if controller.isLive:
             if self.withLivePreview:
                 display = controller.previewDisplay
@@ -284,7 +280,7 @@ class MediaManager(object):
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'Unsupported File')))
-            return
+            return False
         #now start playing
         self.video_play([controller])
         self.video_pause([controller])
@@ -292,7 +288,7 @@ class MediaManager(object):
         self.video_play([controller])
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
-        print u'use %s controller' % self.curDisplayMediaAPI[display].name
+        return True
 
     def check_file_type(self, controller, display):
         """

@@ -181,7 +181,7 @@ class WebkitAPI(MediaAPI):
                     case 'currentTime':
                         return vid.currentTime;
                     case 'seek':
-                        // doesnt work curently
+                        // doesnt work currently
                         //vid.currentTime = seekVal;
                         break;
                }

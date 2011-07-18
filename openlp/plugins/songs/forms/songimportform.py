@@ -343,6 +343,13 @@ class SongImportForm(OpenLPWizard):
         self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
 
+    def customPageChanged(self, pageId):
+        """
+        Called when changing to a page other than the progress page
+        """
+        if self.page(pageId) == self.sourcePage:
+            self.onCurrentIndexChanged(self.formatStack.currentIndex())
+
     def validateCurrentPage(self):
         """
         Validate the current page before moving on to the next page.

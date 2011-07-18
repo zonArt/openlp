@@ -27,12 +27,14 @@
 
 import logging
 import os
+import time
+import copy
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
-    ItemCapabilities, translate
+    ItemCapabilities, translate, build_icon
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -193,13 +195,11 @@ class SlideController(QtGui.QWidget):
             self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
                 u'playSlidesLoop', [], self.onPlaySlidesLoop,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesLoop.setText(
-                translate('OpenLP.SlideController', 'Play Slides in Loop'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
             self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
                 u'playSlidesOnce', [], self.onPlaySlidesOnce,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesOnce.setText(
-                translate('OpenLP.SlideController', 'Play Slides to End'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
             if QtCore.QSettings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
@@ -234,6 +234,7 @@ class SlideController(QtGui.QWidget):
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
+        #self.mediabar = OpenLPToolbar(self)
         self.mediaManager.addControllerItems(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
@@ -261,7 +262,7 @@ class SlideController(QtGui.QWidget):
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
         self.slideLayout.setObjectName(u'SlideLayout')
-        self.previewDisplay = Display(self, self)
+        self.previewDisplay = Display(self, self, self.parent().pluginManager.plugins)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.slideLayout.insertWidget(0, self.previewDisplay)
         # Actual preview screen
@@ -334,9 +335,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
 
-    def getControlPanel(self):
-        return self.controllerLayout
-
     def sendToPlugins(self, *args):
         """
         This is the generic function to send signal for control widgets,
@@ -386,9 +384,11 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message('media_stop', self)
 
     def servicePrevious(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_previous_item')
 
     def serviceNext(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_next_item')
 
     def screenSizeChanged(self):
@@ -399,7 +399,8 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self, self.imageManager, self.isLive)
+        self.display = MainDisplay(self, self.imageManager, self.isLive,
+            self, self.parent().pluginManager.plugins)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -408,10 +409,10 @@ class SlideController(QtGui.QWidget):
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.previewSizeChanged()
-        Receiver.send_message(u'setup_display', self.display)
+        self.mediaManager.setup_display(self.display)
         self.previewDisplay.resize(self.slidePreview.size())
         self.previewDisplay.setup()
-        Receiver.send_message(u'setup_display', self.previewDisplay)
+        self.mediaManager.setup_display(self.previewDisplay)
         if self.serviceItem:
             self.refreshServiceItem()
 
@@ -478,7 +479,9 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
@@ -492,15 +495,32 @@ class SlideController(QtGui.QWidget):
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.mediabar.setVisible(True)
+        else:
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
+        self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
+        self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible(self.songEditList)
         if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
+        elif item.is_media():
+            self.toolbar.setVisible(False)
+            self.mediabar.setVisible(True)
+            #self.volumeSlider.setAudioOutput(self.audio)
+        if not item.is_media():
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
+        self.toolbar.show()
 
     def refreshServiceItem(self):
         """
@@ -557,7 +577,8 @@ class SlideController(QtGui.QWidget):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
-        self.serviceItem = serviceItem
+        # take a copy not a link to the servicemeanager copy.
+        self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
             self._resetBlank()
@@ -597,9 +618,7 @@ class SlideController(QtGui.QWidget):
                 label.setMargin(4)
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
-                    image = resize_image(frame[u'image'],
-                        self.parent().renderer.width,
-                        self.parent().renderer.height)
+                    image = QtGui.QImage(frame[u'image'])
                 else:
                     # If current slide set background to image
                     if framenumber == slideno:
@@ -1018,6 +1037,14 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesLoop.setChecked(checked)
         log.debug(u'onPlaySlidesLoop %s' % checked)
+        if checked:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesLoop.setText(UiStrings().StopPlaySlidesInLoop)
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
+        else:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
         self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
         self.playSlidesOnce.setChecked(False)
         self.onToggleLoop()
@@ -1031,6 +1058,14 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesOnce.setChecked(checked)
         log.debug(u'onPlaySlidesOnce %s' % checked)
+        if checked:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesOnce.setText(UiStrings().StopPlaySlidesToEnd)
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
+        else:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
         self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
         self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
@@ -1093,7 +1128,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        Receiver.send_message(u'media_video', [self, file, False])
+        self.mediaManager.video(self, file, False, False)
         self.slidePreview.hide()
 
     def onMediaClose(self):
@@ -1101,7 +1136,7 @@ class SlideController(QtGui.QWidget):
         Respond to a request to close the Video
         """
         log.debug(u'SlideController onMediaClose')
-        Receiver.send_message(u'media_reset', self)
+        self.mediaManager.video_reset(self)
         self.slidePreview.show()
 
     def _resetBlank(self):
