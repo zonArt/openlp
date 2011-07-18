@@ -27,7 +27,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
