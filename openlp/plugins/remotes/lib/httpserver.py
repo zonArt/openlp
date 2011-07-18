@@ -357,7 +357,8 @@ class HttpConnection(object):
         if ext == u'.html':
             mimetype = u'text/html'
             variables = self.template_vars
-            html = Template(filename=path, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
+            html = Template(filename=path, input_encoding=u'utf-8',
+                output_encoding=u'utf-8').render(**variables)
         elif ext == u'.css':
             mimetype = u'text/css'
         elif ext == u'.js':

@@ -38,7 +38,7 @@ from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB,\
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
     BiblesResourcesDB, clean_filename
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 

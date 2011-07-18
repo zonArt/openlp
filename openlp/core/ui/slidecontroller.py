@@ -33,8 +33,8 @@ import copy
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
-    ItemCapabilities, translate, build_icon
+from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
+    translate, build_icon
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder

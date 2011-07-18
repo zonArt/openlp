@@ -29,9 +29,7 @@ The :mod:`http` module enables OpenLP to retrieve scripture from bible
 websites.
 """
 import logging
-import os
 import re
-import sqlite3
 import socket
 import urllib
 from HTMLParser import HTMLParseError
@@ -40,7 +38,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation, get_web_page
+from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
     Book

@@ -49,7 +49,7 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.resize(550, 386)
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages|
+        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
@@ -81,9 +81,9 @@ class Ui_FirstTimeWizard(object):
         self.pluginLayout.addWidget(self.imageCheckBox)
         self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
         if sys.platform == "darwin":
-             self.presentationCheckBox.setChecked(False)
+            self.presentationCheckBox.setChecked(False)
         else:
-             self.presentationCheckBox.setChecked(True)
+            self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
         self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
