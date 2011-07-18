@@ -495,7 +495,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.isLive, background, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
-        open(u'/tmp/branch.html', u'w').write(html)
         log.debug(u'buildHtml - post setHtml')
         if serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
