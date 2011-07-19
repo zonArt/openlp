@@ -209,9 +209,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.alternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
-            find_and_set_in_combo_box(self.songBookComboBox, unicode(book_name.name))
+            find_and_set_in_combo_box(
+                self.songBookComboBox, unicode(book_name.name))
         if self.song.theme_name:
-            find_and_set_in_combo_box(self.themeComboBox, unicode(self.song.theme_name))
+            find_and_set_in_combo_box(
+                self.themeComboBox, unicode(self.song.theme_name))
         if self.song.copyright:
             self.copyrightEdit.setText(self.song.copyright)
         else:
@@ -233,7 +235,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
-        self.verseListWidget.setColumnWidth(0, self.width)
         # This is just because occasionally the lyrics come back as a "buffer"
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)

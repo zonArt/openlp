@@ -31,7 +31,7 @@ and play multimedia within OpenLP.
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui, QtWebKit
+from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
@@ -48,9 +48,10 @@ class Display(QtGui.QGraphicsView):
     """
     This is the display screen for preview Widgets.
     """
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, plugins):
         QtGui.QGraphicsView.__init__(self, parent)
         self.controller = controller
+        self.plugins = plugins
 
     def setup(self):
         """
@@ -58,7 +59,7 @@ class Display(QtGui.QGraphicsView):
         """
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
-            self.parent().width(), self.parent().height())
+            self.width(), self.height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
@@ -67,17 +68,25 @@ class Display(QtGui.QGraphicsView):
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()
         self.webView.setHtml(build_html(serviceItem, screen,
-            None, None, None, self.controller.parent().pluginManager.plugins))
+            None, None, None, self.plugins))
         self.webView.hide()
+
+    def resizeEvent(self, ev):
+        self.webView.setGeometry(0, 0,
+            self.width(), self.height())
 
 class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
-    def __init__(self, parent, controller, image_manager, live):
-        QtGui.QGraphicsView.__init__(self, parent)
-        self.controller = controller
+    def __init__(self, parent, image_manager, live, controller, plugins):
+        if live:
+            QtGui.QGraphicsView.__init__(self)
+        else:
+            QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
+        self.controller = controller
+        self.plugins = plugins
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
         self.alertTab = None
@@ -87,9 +96,13 @@ class MainDisplay(QtGui.QGraphicsView):
         self.retranslateUi()
         self.mediaObject = None
         self.firstTime = True
+
+        self.setViewport(QtOpenGL.QGLWidget())
+
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint)
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.X11BypassWindowManagerHint)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -161,8 +174,7 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None,
-                self.controller.parent().pluginManager.plugins))
+                self.alertTab, self.isLive, None, self.plugins))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -225,10 +237,12 @@ class MainDisplay(QtGui.QGraphicsView):
         API for replacement backgrounds so Images are added directly to cache
         """
         self.image_manager.add_image(name, path)
-        self.image(name)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
+            self.image(name)
+            return True
+        return False
 
     def image(self, name):
         """
@@ -354,8 +368,7 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background,
-            self.controller.parent().pluginManager.plugins, image_bytes)
+            self.isLive, background, self.plugins, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

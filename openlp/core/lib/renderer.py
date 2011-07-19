@@ -56,7 +56,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, image_manager, theme_manager):
+    def __init__(self, image_manager, theme_manager, plugins):
         """
         Initialise the render manager.
 
@@ -70,6 +70,7 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.theme_manager = theme_manager
         self.image_manager = image_manager
+        self.plugins = plugins
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
@@ -77,7 +78,8 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, None, self.image_manager, False)
+        self.display = MainDisplay(None, self.image_manager, False, self,
+            self.plugins)
         self.display.setup()
 
     def update_display(self):
@@ -88,7 +90,8 @@ class Renderer(object):
         self._calculate_default(self.screens.current[u'size'])
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, None, self.image_manager, False)
+        self.display = MainDisplay(None, self.image_manager, False, self,
+            self.plugins)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None

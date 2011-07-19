@@ -168,6 +168,7 @@ class Plugin(QtCore.QObject):
         self.mediadock = plugin_helpers[u'toolbox']
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formparent = plugin_helpers[u'formparent']
+        self.mediaManager = plugin_helpers[u'mediamanager']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -243,12 +244,6 @@ class Plugin(QtCore.QObject):
 
         ``toolsMenu``
             The Tools menu
-        """
-        pass
-
-    def addControllerItems(self, controller, control_panel):
-        """
-        Create items for all controller Panes
         """
         pass
 

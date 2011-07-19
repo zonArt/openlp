@@ -37,14 +37,16 @@ log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     from win32com.client import Dispatch
-    PAGE_BEFORE = 4
-    PAGE_AFTER = 5
-    PAGE_BOTH = 6
     NoConnectException = Exception
 else:
     import uno
     from com.sun.star.connection import NoConnectException
+try:
     from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+except ImportError:
+    PAGE_BEFORE = 4
+    PAGE_AFTER = 5
+    PAGE_BOTH = 6
 
 class OooImport(SongImport):
     """

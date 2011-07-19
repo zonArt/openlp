@@ -56,6 +56,7 @@
     <file>general_save.png</file>
     <file>general_email.png</file>
     <file>general_revert.png</file>
+    <file>general_clone.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>
@@ -136,6 +137,10 @@
     <file>messagebox_critical.png</file>
     <file>messagebox_info.png</file>
     <file>messagebox_warning.png</file>
+  </qresource>
+  <qresource prefix="songusage">
+    <file>song_usage_active.png</file>
+    <file>song_usage_inactive.png</file>
   </qresource>
   <qresource prefix="tools">
     <file>tools_add.png</file>

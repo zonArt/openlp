@@ -137,8 +137,6 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Signals
         QtCore.QObject.connect(self.printButton,
             QtCore.SIGNAL(u'triggered()'), self.printServiceOrder)
-        QtCore.QObject.connect(self.closeButton,
-            QtCore.SIGNAL(u'triggered()'), self.accept)
         QtCore.QObject.connect(self.zoomOutButton,
             QtCore.SIGNAL(u'clicked()'), self.zoomOut)
         QtCore.QObject.connect(self.zoomInButton,
@@ -326,8 +324,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
-        self.mainWindow.clipboard.setText(
-            self.document.toPlainText())
+        self.mainWindow.clipboard.setText(self.document.toPlainText())
 
     def copyHtmlText(self):
         """

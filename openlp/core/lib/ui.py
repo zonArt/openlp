@@ -64,6 +64,7 @@ class UiStrings(object):
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
         self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
+        self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
         self.Delete = translate('OpenLP.Ui', '&Delete')
@@ -82,7 +83,6 @@ class UiStrings(object):
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-        self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
@@ -102,6 +102,8 @@ class UiStrings(object):
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
+        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
+        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
         self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
@@ -123,6 +125,10 @@ class UiStrings(object):
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
+            'Stop Play Slides in Loop')
+        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
+            'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
@@ -323,8 +329,9 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    action.setShortcuts(shortcuts)
-    action.setShortcutContext(context)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
     action_list = ActionList.get_instance()
     action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)

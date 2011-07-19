@@ -34,7 +34,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
 
@@ -90,9 +89,9 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live backgound with the media selected,
         """
-        self.resetAction.setVisible(False)
-        Receiver.send_message(u'media_reset',
+        self.plugin.liveController.mediaManager.video_reset( \
             self.plugin.liveController)
+        self.resetAction.setVisible(False)
 
     def videobackgroundReplaced(self):
         """
@@ -111,9 +110,13 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                Receiver.send_message(u'media_video',
-                    [self.plugin.liveController, filename, 0, True])
-                self.resetAction.setVisible(True)
+                if self.plugin.liveController.mediaManager.video( \
+                    self.plugin.liveController, filename, True, True):
+                    self.resetAction.setVisible(True)
+                else:
+                    critical_error_message_box(UiStrings().LiveBGError,
+                        translate('MediaPlugin.MediaItem',
+                        'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',
