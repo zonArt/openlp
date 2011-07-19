@@ -29,7 +29,7 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
-from sqlalchemy import Column, ForeignKey, Index, Table, types
+from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation
 
 from openlp.core.lib.db import BaseModel, init_db

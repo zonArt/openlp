@@ -73,6 +73,8 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+CHORD_REGEX = re.compile(u'<chord name=".*?"/>')
+
 class SongXML(object):
     """
     This class builds and parses the XML used to describe songs.
@@ -234,7 +236,6 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
-        self.chord_regex = re.compile(u'<chord name=".*?"/>')
 
     def song_to_xml(self, song):
         """
@@ -319,7 +320,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = self.chord_regex.sub(u'', xml)
+        xml = CHORD_REGEX.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties

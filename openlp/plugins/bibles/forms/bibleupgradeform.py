@@ -27,8 +27,7 @@
 The bible import functions for OpenLP
 """
 import logging
-import os.path
-import re
+import os
 import shutil
 
 from PyQt4 import QtCore, QtGui
@@ -39,7 +38,7 @@ from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB,\
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
     BiblesResourcesDB, clean_filename
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 
@@ -70,8 +69,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.mediaItem = bibleplugin.mediaItem
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
-        self.path = AppLocation.get_section_data_path(
-            self.settingsSection)
+        self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
@@ -413,7 +411,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not backup_path:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',
-                        'You need to specify a Backup Directory for your '
+                        'You need to specify a backup directory for your '
                         'Bibles.'))
                     self.backupDirectoryEdit.setFocus()
                     return False
@@ -520,7 +518,7 @@ class BibleUpgradeForm(OpenLPWizard):
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate(
             'BiblesPlugin.UpgradeWizardForm',
-            'Starting Bible upgrade...'))
+            'Starting upgrade...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):
@@ -532,7 +530,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.maxBibles == 0:
             self.progressLabel.setText(
                 translate('BiblesPlugin.UpgradeWizardForm', 'There are no '
-                'Bibles available to upgrade.'))
+                'Bibles that need to be upgraded.'))
             self.progressBar.hide()
             return
         self.maxBibles = 0

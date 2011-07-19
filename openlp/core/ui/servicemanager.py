@@ -802,7 +802,6 @@ class ServiceManager(QtGui.QWidget):
         # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
-        self.setModified()
 
     def onMoveSelectionDown(self):
         """
@@ -824,7 +823,6 @@ class ServiceManager(QtGui.QWidget):
             serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
-        self.setModified()
 
     def onCollapseAll(self):
         """
@@ -863,12 +861,12 @@ class ServiceManager(QtGui.QWidget):
         Move the current ServiceItem to the top of the list.
         """
         item, child = self.findServiceItem()
-        if item < len(self.serviceItems) and item is not -1:
+        if item < len(self.serviceItems) and item != -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList(0, child)
-        self.setModified()
+            self.setModified()
 
     def onServiceUp(self):
         """
@@ -880,31 +878,31 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item - 1, temp)
             self.repaintServiceList(item - 1, child)
-        self.setModified()
+            self.setModified()
 
     def onServiceDown(self):
         """
         Move the current ServiceItem one position down in the list.
         """
         item, child = self.findServiceItem()
-        if item < len(self.serviceItems) and item is not -1:
+        if item < len(self.serviceItems) and item != -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(item + 1, temp)
             self.repaintServiceList(item + 1, child)
-        self.setModified()
+            self.setModified()
 
     def onServiceEnd(self):
         """
         Move the current ServiceItem to the bottom of the list.
         """
         item, child = self.findServiceItem()
-        if item < len(self.serviceItems) and item is not -1:
+        if item < len(self.serviceItems) and item != -1:
             temp = self.serviceItems[item]
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(len(self.serviceItems), temp)
             self.repaintServiceList(len(self.serviceItems) - 1, child)
-        self.setModified()
+            self.setModified()
 
     def onDeleteFromService(self):
         """
@@ -914,7 +912,7 @@ class ServiceManager(QtGui.QWidget):
         if item != -1:
             self.serviceItems.remove(self.serviceItems[item])
             self.repaintServiceList(item - 1, -1)
-        self.setModified()
+            self.setModified()
 
     def repaintServiceList(self, serviceItem, serviceItemChild):
         """

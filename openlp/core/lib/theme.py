@@ -34,8 +34,7 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool, translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import str_to_bool
 
 log = logging.getLogger(__name__)
 
