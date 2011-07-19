@@ -27,7 +27,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
@@ -104,7 +104,7 @@ class AlertsPlugin(Plugin):
     def about(self):
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
             '<br />The alert plugin controls the displaying of nursery alerts '
-            'on the display screen')
+            'on the display screen.')
         return about_text
 
     def setPluginTextStrings(self):
