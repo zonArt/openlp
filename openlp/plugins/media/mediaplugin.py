@@ -94,9 +94,7 @@ class MediaPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Media Finalising')
-        self.mediaManager.Timer.stop()
-        self.mediaManager.video_reset(self.previewController)
-        self.mediaManager.video_reset(self.liveController)
+        self.mediaManager.finalise()
 
     def getDisplayCss(self):
         """

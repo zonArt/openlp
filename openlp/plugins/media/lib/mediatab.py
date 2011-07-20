@@ -169,6 +169,7 @@ class MediaTab(SettingsTab):
             QtCore.QVariant(u'Webkit')).toString()
         newApiString = self.usedAPIs.join(u',')
         if oldApiString != newApiString:
+            # clean old Media stuff
             QtCore.QSettings().setValue(self.settingsSection + u'/apis',
                 QtCore.QVariant(newApiString))
             Receiver.send_message(u'config_screen_changed')

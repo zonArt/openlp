@@ -138,12 +138,11 @@ class MediaMediaItem(MediaManagerItem):
             return False
         self.mediaLength = 0
         service_item.media_length = self.mediaLength
-        service_item.add_capability(
-                ItemCapabilities.AllowsVariableStartTime)
+        #TODO
+        #service_item.add_capability(
+        #        ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
-        # TODO
-        #Receiver.send_message(u'media_video', [self.plugin.liveController, filename, False])
         # force a non-existent theme
         service_item.theme = -1
         frame = u':/media/image_clapperboard.png'
