@@ -221,6 +221,8 @@ class MediaManager(object):
         After a new display is configured, all media related widget
         will be created too
         """
+        # clean up possible running old media files
+        self.finalise()
         display.hasAudio = True
         if not self.withLivePreview and \
             display == self.parent.liveController.previewDisplay:
@@ -271,6 +273,8 @@ class MediaManager(object):
                 isValid = self.check_file_type(controller, display)
             display = controller.display
             isValid = self.check_file_type(controller, display)
+            display.override[u'theme'] = u''
+            display.override[u'video'] = True
         else:
             display = controller.previewDisplay
             isValid = self.check_file_type(controller, display)
@@ -320,6 +324,10 @@ class MediaManager(object):
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
+                if controller.isLive:
+                    if controller.hideMenu.defaultAction().isChecked():
+                        controller.hideMenu.defaultAction().trigger()
+                    #Receiver.send_message(u'maindisplay_show')
                 self.curDisplayMediaAPI[display].play(display)
         # Start Timer for ui updates
         if not self.Timer.isActive():
@@ -375,6 +383,7 @@ class MediaManager(object):
         log.debug(u'video_reset')
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
+                display.override = {}
                 self.curDisplayMediaAPI[display].reset(display)
                 del self.curDisplayMediaAPI[display]
         self.set_controls_visible(controller, False)
@@ -440,3 +449,8 @@ class MediaManager(object):
                 if not item in video_list:
                     video_list.append(item)
         return video_list
+
+    def finalise(self):
+        self.Timer.stop()
+        for controller in self.controller:
+            self.video_reset(controller)
