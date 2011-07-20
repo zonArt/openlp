@@ -49,8 +49,29 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
 
+class Controller(QtGui.QWidget):
+    """
+    Controller is a general controller widget.
+    """
+    def __init__(self, parent, isLive=False):
+        """
+        Set up the general Controller.
+        """
+        QtGui.QWidget.__init__(self, parent)
+        self.isLive = isLive
+        self.display = None
 
-class SlideController(QtGui.QWidget):
+    def sendToPlugins(self, *args):
+        """
+        This is the generic function to send signal for control widgets,
+        created from within other plugins
+        This function is needed to catch the current controller
+        """
+        sender = self.sender().objectName() or self.sender().text()
+        controller = self
+        Receiver.send_message('%s' % sender, [controller, args])
+
+class SlideController(Controller):
     """
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
@@ -59,9 +80,7 @@ class SlideController(QtGui.QWidget):
         """
         Set up the Slide Controller.
         """
-        QtGui.QWidget.__init__(self, parent)
-        self.isLive = isLive
-        self.display = None
+        Controller.__init__(self, parent, isLive)
         self.screens = ScreenList.get_instance()
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -234,7 +253,6 @@ class SlideController(QtGui.QWidget):
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        #self.mediabar = OpenLPToolbar(self)
         self.mediaManager.addControllerItems(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
@@ -262,9 +280,10 @@ class SlideController(QtGui.QWidget):
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
         self.slideLayout.setObjectName(u'SlideLayout')
-        self.previewDisplay = Display(self, self, self.parent().pluginManager.plugins)
+        self.previewDisplay = Display(self, self.isLive, self, self.parent().pluginManager.plugins)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.slideLayout.insertWidget(0, self.previewDisplay)
+        self.previewDisplay.hide()
         # Actual preview screen
         self.slidePreview = QtGui.QLabel(self)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
@@ -335,16 +354,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
 
-    def sendToPlugins(self, *args):
-        """
-        This is the generic function to send signal for control widgets,
-        created from within other plugins
-        This function is needed to catch the current controller
-        """
-        sender = self.sender().objectName() or self.sender().text()
-        controller = self
-        Receiver.send_message('%s' % sender, [controller, args])
-
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
         self.nextItem.setObjectName(u'nextItemPreview')
@@ -381,7 +390,7 @@ class SlideController(QtGui.QWidget):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        Receiver.send_message('media_stop', self)
+        Receiver.send_message('Media Stop', [self])
 
     def servicePrevious(self):
         time.sleep(0.1)
@@ -515,7 +524,6 @@ class SlideController(QtGui.QWidget):
         elif item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
-            #self.volumeSlider.setAudioOutput(self.audio)
         if not item.is_media():
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
@@ -1129,7 +1137,9 @@ class SlideController(QtGui.QWidget):
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
         self.mediaManager.video(self, file, False, False)
-        self.slidePreview.hide()
+        if not self.isLive or self.mediaManager.withLivePreview:
+            self.previewDisplay.show()
+            self.slidePreview.hide()
 
     def onMediaClose(self):
         """
@@ -1137,6 +1147,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaClose')
         self.mediaManager.video_reset(self)
+        self.previewDisplay.hide()
         self.slidePreview.show()
 
     def _resetBlank(self):

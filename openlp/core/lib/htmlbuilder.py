@@ -234,7 +234,8 @@ sup {
 </html>
     """
 
-def build_html(item, screen, alert, islive, background, plugins=None, image=None):
+def build_html(item, screen, alert, islive, background, plugins=None, \
+    image=None):
     """
     Build the full web paged structure for display
 

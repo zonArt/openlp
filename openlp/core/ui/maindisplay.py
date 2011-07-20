@@ -46,12 +46,17 @@ log = logging.getLogger(__name__)
 
 class Display(QtGui.QGraphicsView):
     """
-    This is the display screen for preview Widgets.
+    This is a general display screen class.
     """
-    def __init__(self, parent, controller, plugins):
-        QtGui.QGraphicsView.__init__(self, parent)
+    def __init__(self, parent, live, controller, plugins):
+        if live:
+            QtGui.QGraphicsView.__init__(self)
+        else:
+            QtGui.QGraphicsView.__init__(self, parent)
+        self.isLive = live
         self.controller = controller
         self.plugins = plugins
+        self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -75,30 +80,20 @@ class Display(QtGui.QGraphicsView):
         self.webView.setGeometry(0, 0,
             self.width(), self.height())
 
-class MainDisplay(QtGui.QGraphicsView):
+class MainDisplay(Display):
     """
     This is the display screen.
     """
     def __init__(self, parent, image_manager, live, controller, plugins):
-        if live:
-            QtGui.QGraphicsView.__init__(self)
-        else:
-            QtGui.QGraphicsView.__init__(self, parent)
-        self.isLive = live
-        self.controller = controller
-        self.plugins = plugins
+        Display.__init__(self, parent, live, controller, plugins)
         self.image_manager = image_manager
         self.screens = ScreenList.get_instance()
         self.alertTab = None
         self.hideMode = None
-        self.videoHide = False
         self.override = {}
         self.retranslateUi()
         self.mediaObject = None
         self.firstTime = True
-
-        self.setViewport(QtOpenGL.QGLWidget())
-
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
             QtCore.Qt.WindowStaysOnTopHint |
@@ -381,10 +376,6 @@ class MainDisplay(QtGui.QGraphicsView):
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
                 self.hideDisplay(self.hideMode)
-        # display hidden for video end we have a new item so must be shown
-        if self.videoHide and self.isLive:
-            self.videoHide = False
-            self.showDisplay()
         self.__hideMouse()
 
     def footer(self, text):
