@@ -244,6 +244,9 @@ class Ui_MainWindow(object):
         self.toolsOpenDataFolder = icon_action(mainWindow,
             u'toolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.toolsFirstTimeWizard = icon_action(mainWindow,
+            u'toolsFirstTimeWizard', u':/general/general_revert.png',
+            category=UiStrings().Tools)
         self.updateThemeImages = base_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings,
@@ -323,6 +326,7 @@ class Ui_MainWindow(object):
                 self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
+        add_actions(self.toolsMenu, (self.toolsFirstTimeWizard, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
         if os.name == u'nt':
             add_actions(self.helpMenu, (self.offlineHelpItem,
@@ -469,6 +473,8 @@ class Ui_MainWindow(object):
             'Add an application to the list of tools.'))
         self.toolsOpenDataFolder.setText(
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
+        self.toolsFirstTimeWizard.setText(
+            translate('OpenLP.MainWindow', 'Run First Time Wizard'))
         self.toolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
         self.updateThemeImages.setText(
@@ -546,6 +552,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.toolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.toolsFirstTimeWizard,
+            QtCore.SIGNAL(u'triggered()'), self.onFirstTimeWizardClicked)
         QtCore.QObject.connect(self.updateThemeImages,
             QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.displayTagItem,
@@ -713,6 +721,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for filename in os.listdir(temp_dir):
             delete_file(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)
+
+    def onFirstTimeWizardClicked(self):
+        ret = QtGui.QMessageBox.information(self,
+            translate('OpenLP.MainWindow', 'Restart OpenLP'),
+            translate('OpenLP.MainWindow',
+            'OpenLP will now restart.  The First Time Wizard will run when ' +
+            'OpenLP is restarted'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+            QtGui.QMessageBox.Ok)
+        QtCore.QSettings().setValue(u'general/has run wizard',
+            QtCore.QVariant(False))
+        self.close()
+        OpenLP_exe = sys.executable
+        os.execl(OpenLP_exe, OpenLP_exe, * sys.argv)
 
     def blankCheck(self):
         """
