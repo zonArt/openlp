@@ -179,6 +179,7 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
+        u'--noupx', 
         u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,
