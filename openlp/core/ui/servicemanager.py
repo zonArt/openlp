@@ -48,18 +48,18 @@ class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
-    def __init__(self, mainwindow, parent=None, name=None):
+    def __init__(self, serviceManager, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self, parent)
-        self.mainwindow = mainwindow
+        self.serviceManager = serviceManager
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
             # here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
-                self.mainwindow.onMoveSelectionUp()
+                self.serviceManager.onMoveSelectionUp()
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
-                self.mainwindow.onMoveSelectionDown()
+                self.serviceManager.onMoveSelectionDown()
                 event.accept()
             event.ignore()
         else:
@@ -688,7 +688,7 @@ class ServiceManager(QtGui.QWidget):
                     QtGui.QAction, serviceItem[u'service_item'].theme)
             if themeAction is not None:
                 themeAction.setChecked(True)
-        action = self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
+        self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
         item = self.findServiceItem()[0]
@@ -832,7 +832,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for item in self.serviceItems:
             item[u'expanded'] = False
-        self.regenerateServiceItems()
+        self.serviceManagerList.collapseAll()
 
     def collapsed(self, item):
         """
@@ -848,7 +848,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for item in self.serviceItems:
             item[u'expanded'] = True
-        self.regenerateServiceItems()
+        self.serviceManagerList.expandAll()
 
     def expanded(self, item):
         """
@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        self.serviceItems[pos -1 ][u'expanded'] = True
+        self.serviceItems[pos - 1][u'expanded'] = True
 
     def onServiceTop(self):
         """
@@ -956,7 +956,19 @@ class ServiceManager(QtGui.QWidget):
                 treewidgetitem.setIcon(0,
                     build_icon(u':/general/general_delete.png'))
             treewidgetitem.setText(0, serviceitem.get_display_title())
-            treewidgetitem.setToolTip(0, serviceitem.notes)
+            tips = []
+            if serviceitem.theme and serviceitem.theme != -1:
+                tips.append(u'<strong>%s:</strong> <em>%s</em>' %
+                    (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
+                    serviceitem.theme))
+            if serviceitem.notes:
+                tips.append(u'<strong>%s: </strong> %s' %
+                    (unicode(translate('OpenLP.ServiceManager', 'Notes')),
+                    unicode(serviceitem.notes)))
+            if item[u'service_item'] \
+                .is_capable(ItemCapabilities.AllowsVariableStartTime):
+                tips.append(item[u'service_item'].get_media_time())
+            treewidgetitem.setToolTip(0, u'<br />'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setSelected(item[u'selected'])
@@ -966,11 +978,6 @@ class ServiceManager(QtGui.QWidget):
                 text = frame[u'title'].replace(u'\n', u' ')
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
-                if item[u'service_item'] \
-                    .is_capable(ItemCapabilities.AllowsVariableStartTime):
-                    tip = item[u'service_item'].get_media_time()
-                    if tip:
-                        child.setToolTip(0, tip)
                 if serviceItem == itemcount:
                     if item[u'expanded'] and serviceItemChild == count:
                         self.serviceManagerList.setCurrentItem(child)
@@ -1338,7 +1345,7 @@ class ServiceManager(QtGui.QWidget):
         if not theme:
             theme = None
         item = self.findServiceItem()[0]
-        self.serviceItems[item][u'service_item'].theme = theme
+        self.serviceItems[item][u'service_item'].update_theme(theme)
         self.regenerateServiceItems()
 
     def _getParentItemData(self, item):

@@ -208,8 +208,13 @@ class ImageMediaItem(MediaManagerItem):
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.plugin.liveController.display.directImage(name, filename)
-                self.resetAction.setVisible(True)
+                if self.plugin.liveController.display.directImage(name,
+                    filename):
+                    self.resetAction.setVisible(True)
+                else:
+                    critical_error_message_box(UiStrings().LiveBGError,
+                        translate('ImagePlugin.MediaItem',
+                        'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
