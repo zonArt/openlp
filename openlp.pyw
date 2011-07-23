@@ -92,7 +92,6 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        log.debug("run()")
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
