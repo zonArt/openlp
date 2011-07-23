@@ -725,20 +725,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         os.removedirs(temp_dir)
 
     def onFirstTimeWizardClicked(self):
-        Receiver.send_message(u'cursor_busy')
-        screens = ScreenList.get_instance()
-        FirstTimeForm(screens).exec_()
-        self.firstTime()
-        for plugin in self.pluginManager.plugins:
-            self.activePlugin = plugin
-            oldStatus = self.activePlugin.status
-            self.activePlugin.setStatus()
-            if oldStatus != self.activePlugin.status:
-                if self.activePlugin.status == PluginStatus.Active:
-                    self.activePlugin.toggleStatus(PluginStatus.Active)
-                    self.activePlugin.appStartup()
-                else:
-                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
+        ret = QtGui.QMessageBox.warning(self,
+            translate('OpenLP.MainWindow', 'Re-Run First Time Wizard?'),
+            translate('OpenLP.MainWindow',
+            'Are you sure you want to run the First Time Wizard?\n\n' + \
+            'Re-running this wizard will make changes to your current ' + \
+            'OpenLP configuration, possibly add songs to your ' + \
+            'existing Songs list and change your Default Theme'),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No),
+            QtGui.QMessageBox.Yes)
+        if ret == QtGui.QMessageBox.Yes:
+            Receiver.send_message(u'cursor_busy')
+            screens = ScreenList.get_instance()
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                self.firstTime()
+                for plugin in self.pluginManager.plugins:
+                    self.activePlugin = plugin
+                    oldStatus = self.activePlugin.status
+                    self.activePlugin.setStatus()
+                    if oldStatus != self.activePlugin.status:
+                        if self.activePlugin.status == PluginStatus.Active:
+                            self.activePlugin.toggleStatus(PluginStatus.Active)
+                            self.activePlugin.appStartup()
+                        else:
+                            self.activePlugin.toggleStatus(PluginStatus.Inactive)
+                self.themeManagerContents.configUpdated()
+                self.themeManagerContents.loadThemes(True)
+                Receiver.send_message(u'theme_update_global',
+                    self.themeManagerContents.global_theme)
 
     def blankCheck(self):
         """
