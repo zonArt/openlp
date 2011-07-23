@@ -79,6 +79,8 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
+    args = []
+
     def exec_(self):
         """
         Override exec method to allow the shared memory to be released on exit
@@ -90,10 +92,10 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        self.eventQueue = []
+        log.debug("run()")
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
-        self.args = args
+        self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -136,9 +138,6 @@ class OpenLP(QtGui.QApplication):
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'maindisplay_blank_check')
         self.mainWindow.appStartup()
-        # do a check for queued events
-        for e in self.eventQueue:
-            self.event(e)
         DelayStartThread(self.mainWindow).start()
         return self.exec_()
 
@@ -191,15 +190,8 @@ class OpenLP(QtGui.QApplication):
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
             log.debug(u'Got open file event for %s!', file_name)
-            log.error(file_name)
-            try:
-                self.mainWindow.serviceManagerContents.loadFile(file_name)
-                return True
-            except AttributeError, NameError:
-                log.debug(u'The main window is not initialized yet,\
-                    will queue event!')
-                self.eventQueue.append(event)
-            return False
+                self.args.insert(0, unicode(file_name))
+            return True
         else:
             return QtGui.QApplication.event(self, event)
 
