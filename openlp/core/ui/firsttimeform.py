@@ -129,6 +129,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     os.path.join(gettempdir(), u'openlp', screenshot)))
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+        Receiver.send_message(u'cursor_normal')
 
     def nextId(self):
         """

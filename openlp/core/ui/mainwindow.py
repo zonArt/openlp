@@ -33,7 +33,7 @@ from tempfile import gettempdir
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager
+    PluginManager, Receiver, translate, ImageManager,  PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -42,6 +42,8 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -723,18 +725,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         os.removedirs(temp_dir)
 
     def onFirstTimeWizardClicked(self):
-        ret = QtGui.QMessageBox.information(self,
-            translate('OpenLP.MainWindow', 'Restart OpenLP'),
-            translate('OpenLP.MainWindow',
-            'OpenLP will now restart.  The First Time Wizard will run when ' +
-            'OpenLP is restarted'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-            QtGui.QMessageBox.Ok)
-        QtCore.QSettings().setValue(u'general/has run wizard',
-            QtCore.QVariant(False))
-        self.close()
-        OpenLP_exe = sys.executable
-        os.execl(OpenLP_exe, OpenLP_exe, * sys.argv)
+        Receiver.send_message(u'cursor_busy')
+        screens = ScreenList.get_instance()
+        FirstTimeForm(screens).exec_()
+        self.firstTime()
+        for plugin in self.pluginManager.plugins:
+            self.activePlugin = plugin
+            oldStatus = self.activePlugin.status
+            self.activePlugin.setStatus()
+            if oldStatus != self.activePlugin.status:
+                if self.activePlugin.status == PluginStatus.Active:
+                    self.activePlugin.toggleStatus(PluginStatus.Active)
+                    self.activePlugin.appStartup()
+                else:
+                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
 
     def blankCheck(self):
         """
