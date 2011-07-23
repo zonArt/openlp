@@ -37,6 +37,8 @@ from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
+VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
+
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.
@@ -60,7 +62,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
@@ -105,7 +106,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_tag = match.group(1)
             try:
@@ -136,7 +137,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_type = match.group(1)
             verse_type_index = VerseType.from_loose_input(verse_type)

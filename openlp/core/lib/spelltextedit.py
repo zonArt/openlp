@@ -57,7 +57,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 self.dictionary = enchant.Dict()
                 self.highlighter = Highlighter(self.document())
                 self.highlighter.spellingDictionary = self.dictionary
-            except Error, DictNotFoundError:
+            except (Error, DictNotFoundError):
                 ENCHANT_AVAILABLE = False
                 log.debug(u'Could not load default dictionary')
 

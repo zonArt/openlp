@@ -36,7 +36,6 @@ import os
 import uuid
 
 from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
-from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
