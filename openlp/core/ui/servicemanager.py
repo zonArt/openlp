@@ -943,7 +943,7 @@ class ServiceManager(QtGui.QWidget):
             if item[u'service_item'] \
                 .is_capable(ItemCapabilities.AllowsVariableStartTime):
                 tips.append(item[u'service_item'].get_media_time())
-            treewidgetitem.setToolTip(0, u'<br />'.join(tips))
+            treewidgetitem.setToolTip(0, u'<br>'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setSelected(item[u'selected'])
