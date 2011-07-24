@@ -508,6 +508,11 @@ class SlideController(QtGui.QWidget):
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
+        # Reset the button
+        self.playSlidesOnce.setChecked(False)
+        self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
+        self.playSlidesLoop.setChecked(False)
+        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))       
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
