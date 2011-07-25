@@ -155,12 +155,22 @@ class PhononAPI(MediaAPI):
         display.phononWidget.resize(display.size())
 
     def play(self, display):
-        self.set_visible(display, True)
         controller = display.controller
+        start_time = 0
         vol = float(controller.media_info.volume) / float(10)
-        display.audio.setVolume(vol)
+        if display.mediaObject.state() != Phonon.PausedState and \
+            controller.media_info.start_time > 0:
+            start_time = controller.media_info.start_time
         display.mediaObject.play()
-        self.state = MediaState.Playing
+        if self.mediaStateWait(display, Phonon.PlayingState):
+            if start_time > 0:
+                self.seek(display, controller.media_info.start_time*1000)
+            display.audio.setVolume(vol)
+            controller.media_info.length = \
+                int(display.mediaObject.totalTime()/1000)
+            controller.seekSlider.setMaximum(controller.media_info.length*1000)
+            self.state = MediaState.Playing
+            self.set_visible(display, True)
 
     def pause(self, display):
         display.mediaObject.pause()
@@ -193,15 +203,9 @@ class PhononAPI(MediaAPI):
 
     def update_ui(self, display):
         controller = display.controller
-        controller.media_info.length = display.mediaObject.totalTime()
-        controller.seekSlider.setMaximum(controller.media_info.length)
-        if controller.media_info.start_time > 0:
-            if display.mediaObject.currentTime() < \
-                controller.media_info.start_time:
-                self.seek(display, controller.media_info.start_time)
         if controller.media_info.end_time > 0:
             if display.mediaObject.currentTime() > \
-                controller.media_info.end_time:
+                controller.media_info.end_time*1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():

@@ -34,6 +34,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 
 log = logging.getLogger(__name__)
 
+# FIXME: Add html5 doctype. However, do not break theme gradients.
 HTMLSRC = u"""
 <html>
 <head>
@@ -56,39 +57,39 @@ body {
     height: %spx;
 }
 #black {
-    z-index:8;
+    z-index: 8;
     background-color: black;
     display: none;
 }
 #bgimage {
-    z-index:1;
+    z-index: 1;
 }
 #image {
-    z-index:2;
+    z-index: 2;
 }
 %s
 #alert {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index:10;
+    z-index: 10;
     %s
 }
 #footer {
     position: absolute;
-    z-index:6;
+    z-index: 6;
     %s
 }
 /* lyric css */
 %s
 sup {
-    font-size:0.6em;
-    vertical-align:top;
-    position:relative;
-    top:-0.3em;
+    font-size: 0.6em;
+    vertical-align: top;
+    position: relative;
+    top: -0.3em;
 }
 </style>
-<script language="javascript">
+<script>
     var timer = null;
     var transition = %s;
     %s
@@ -229,10 +230,10 @@ sup {
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
+<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
-    """
+"""
 
 def build_html(item, screen, alert, islive, background, plugins=None, \
     image=None):
@@ -373,15 +374,15 @@ def build_lyrics_css(item, webkitvers):
         The version of qtwebkit we're using
 
     """
-    style = """
+    style = u"""
 .lyricstable {
-    z-index:5;
+    z-index: 5;
     position: absolute;
     display: table;
     %s
 }
 .lyricscell {
-    display:table-cell;
+    display: table-cell;
     word-wrap: break-word;
     %s
 }
@@ -485,8 +486,8 @@ def build_lyrics_format_css(theme, width, height):
         left_margin = 0
     lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
-        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
+        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
         (align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
@@ -535,7 +536,7 @@ def build_footer_css(item, height):
     ``item``
         Service Item to be processed.
     """
-    style = """
+    style = u"""
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -543,7 +544,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -561,7 +562,7 @@ def build_alert_css(alertTab, width):
     ``alertTab``
         Details from the Alert tab for fonts etc
     """
-    style = """
+    style = u"""
     width: %spx;
     vertical-align: %s;
     font-family: %s;

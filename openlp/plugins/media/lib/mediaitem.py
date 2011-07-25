@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.ui import Controller, Display
 
 log = logging.getLogger(__name__)
 
@@ -52,6 +53,15 @@ class MediaMediaItem(MediaManagerItem):
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
+        self.mediaController = Controller(parent)
+        self.mediaController.controllerLayout = QtGui.QVBoxLayout()
+        self.plugin.mediaManager.addControllerItems(self.mediaController, self.mediaController.controllerLayout)
+        self.plugin.mediaManager.set_controls_visible(self.mediaController, False)
+        self.mediaController.previewDisplay = Display(self.mediaController, False, self.mediaController, self.plugin.pluginManager.plugins)
+        self.mediaController.previewDisplay.setup()
+        self.plugin.mediaManager.setup_display(self.mediaController.previewDisplay)
+        self.mediaController.previewDisplay.hide()
+
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
@@ -137,10 +147,16 @@ class MediaMediaItem(MediaManagerItem):
                 'The file %s no longer exists.')) % filename)
             return False
         self.mediaLength = 0
+        if self.plugin.mediaManager.video( \
+                    self.mediaController, filename, False, False):
+            self.mediaLength = self.mediaController.media_info.length
+            service_item.media_length = self.mediaLength
+            self.plugin.mediaManager.video_reset(self.mediaController)
+            if self.mediaLength > 0:
+                service_item.add_capability(
+                    ItemCapabilities.AllowsVariableStartTime)
+        print self.mediaLength
         service_item.media_length = self.mediaLength
-        #TODO
-        #service_item.add_capability(
-        #        ItemCapabilities.AllowsVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme

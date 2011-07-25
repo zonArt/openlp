@@ -268,14 +268,16 @@ class MediaManager(object):
         controller.media_info.file_info = QtCore.QFileInfo(file)
         controller.media_info.is_background = isBackground
         if controller.isLive:
-            if self.withLivePreview:
+            if self.withLivePreview and controller.previewDisplay:
                 display = controller.previewDisplay
                 isValid = self.check_file_type(controller, display)
             display = controller.display
             isValid = self.check_file_type(controller, display)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
-        else:
+            controller.media_info.start_time = display.serviceItem.start_time
+            controller.media_info.end_time = display.serviceItem.end_time
+        elif controller.previewDisplay:
             display = controller.previewDisplay
             isValid = self.check_file_type(controller, display)
         if not isValid:
