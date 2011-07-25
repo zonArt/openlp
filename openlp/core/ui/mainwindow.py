@@ -476,7 +476,7 @@ class Ui_MainWindow(object):
         self.toolsOpenDataFolder.setText(
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.toolsFirstTimeWizard.setText(
-            translate('OpenLP.MainWindow', 'Run First Time Wizard'))
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.toolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
         self.updateThemeImages.setText(
@@ -725,36 +725,43 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         os.removedirs(temp_dir)
 
     def onFirstTimeWizardClicked(self):
-        ret = QtGui.QMessageBox.warning(self,
-            translate('OpenLP.MainWindow', 'Re-Run First Time Wizard?'),
+        """
+        Re-run the first time wizard.  Prompts the user for run confirmation
+        If wizard is run, songs, bibles and themes are imported.  The default
+        theme is changed (if necessary).  The plugins in pluginmanager are
+        set active/in-active to match the selection in the wizard.
+        """
+        answer = QtGui.QMessageBox.warning(self,
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
             translate('OpenLP.MainWindow',
-            'Are you sure you want to run the First Time Wizard?\n\n' + \
-            'Re-running this wizard will make changes to your current ' + \
-            'OpenLP configuration, possibly add songs to your ' + \
+            'Are you sure you want to re-run the First Time Wizard?\n\n' \
+            'Re-running this wizard may make changes to your current ' \
+            'OpenLP configuration and possibly add Songs to your ' \
             'existing Songs list and change your Default Theme'),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
-            QtGui.QMessageBox.Yes)
-        if ret == QtGui.QMessageBox.Yes:
-            Receiver.send_message(u'cursor_busy')
-            screens = ScreenList.get_instance()
-            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                self.firstTime()
-                for plugin in self.pluginManager.plugins:
-                    self.activePlugin = plugin
-                    oldStatus = self.activePlugin.status
-                    self.activePlugin.setStatus()
-                    if oldStatus != self.activePlugin.status:
-                        if self.activePlugin.status == PluginStatus.Active:
-                            self.activePlugin.toggleStatus(PluginStatus.Active)
-                            self.activePlugin.appStartup()
-                        else:
-                            self.activePlugin.toggleStatus(PluginStatus.Inactive)
-                self.themeManagerContents.configUpdated()
-                self.themeManagerContents.loadThemes(True)
-                Receiver.send_message(u'theme_update_global',
-                    self.themeManagerContents.global_theme)
+            QtGui.QMessageBox.No)
+        if answer == QtGui.QMessageBox.No:
+            return
+        Receiver.send_message(u'cursor_busy')
+        screens = ScreenList.get_instance()
+        if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+            self.firstTime()
+            for plugin in self.pluginManager.plugins:
+                self.activePlugin = plugin
+                oldStatus = self.activePlugin.status
+                self.activePlugin.setStatus()
+                if oldStatus != self.activePlugin.status:
+                    if self.activePlugin.status == PluginStatus.Active:
+                        self.activePlugin.toggleStatus(PluginStatus.Active)
+                        self.activePlugin.appStartup()
+                    else:
+                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
+            self.themeManagerContents.configUpdated()
+            self.themeManagerContents.loadThemes(True)
+            Receiver.send_message(u'theme_update_global',
+                self.themeManagerContents.global_theme)
 
     def blankCheck(self):
         """
