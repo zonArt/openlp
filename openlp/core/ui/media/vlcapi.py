@@ -138,10 +138,19 @@ class VlcAPI(MediaAPI):
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
-        self.set_visible(display, True)
+        controller = display.controller
+        start_time = 0
+        if controller.media_info.start_time > 0:
+            start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
         if self.mediaStateWait(display, vlc.State.Playing):
+            if start_time > 0:
+                self.seek(display, controller.media_info.start_time*1000)
+            controller.media_info.length = \
+                int(display.vlcMediaPlayer.get_media().get_duration()/1000)
+            controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
+            self.set_visible(display, True)
 
     def pause(self, display):
         if display.vlcMedia.get_state() != vlc.State.Playing:
@@ -160,7 +169,7 @@ class VlcAPI(MediaAPI):
 
     def seek(self, display, seekVal):
         if display.vlcMediaPlayer.is_seekable():
-            display.vlcMediaPlayer.set_position(seekVal/1000.0)
+            display.vlcMediaPlayer.set_time(seekVal)
 
     def reset(self, display):
         display.vlcMediaPlayer.stop()
@@ -173,7 +182,11 @@ class VlcAPI(MediaAPI):
 
     def update_ui(self, display):
         controller = display.controller
-        controller.seekSlider.setMaximum(1000)
+        if controller.media_info.end_time > 0:
+            if display.vlcMediaPlayer.get_time() > \
+                controller.media_info.end_time*1000:
+                self.stop(display)
+                self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
-            currentPos = display.vlcMediaPlayer.get_position() * 1000
-            controller.seekSlider.setSliderPosition(currentPos)
+            controller.seekSlider.setSliderPosition( \
+                display.vlcMediaPlayer.get_time())

@@ -300,11 +300,14 @@ class WebkitAPI(MediaAPI):
     def play(self, display):
         controller = display.controller
         display.webLoaded = True
+        length = 0
         self.set_visible(display, True)
         if controller.media_info.isFlash:
             display.frame.evaluateJavaScript(u'show_flash("play");')
         else:
             display.frame.evaluateJavaScript(u'show_video("play");')
+        #TODO add playing check and get the correct media length
+        controller.media_info.length = length
         self.state = MediaState.Playing
 
     def pause(self, display):
@@ -374,6 +377,7 @@ class WebkitAPI(MediaAPI):
             if ok and length == length:
                 length = int(length*1000)
         if currentTime > 0:
+            controller.media_info.length = length
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.setSliderPosition(currentTime)
