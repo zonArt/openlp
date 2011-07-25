@@ -46,7 +46,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', plugin_helpers,
+        Plugin.__init__(self, u'custom', plugin_helpers,
             CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)

@@ -152,7 +152,7 @@ class Plugin(QtCore.QObject):
             self.version = version
         else:
             self.version = get_application_version()[u'version']
-        self.settingsSection = self.name.lower()
+        self.settingsSection = self.name
         self.icon = None
         self.media_item_class = media_item_class
         self.settings_tab_class = settings_tab_class
