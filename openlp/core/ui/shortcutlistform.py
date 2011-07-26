@@ -247,7 +247,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     alternate_label_text = action.defaultShortcuts[1].toString()
             shortcuts = self._actionShortcuts(action)
             # We do not want to loose pending changes, that is why we have to
-            # keep the text when, this function has not been triggered by a signal.
+            # keep the text when, this function has not been triggered by a
+            # signal.
             if item is None:
                 primary_text = self.primaryPushButton.text()
                 alternate_text = self.alternatePushButton.text()
@@ -280,7 +281,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Restores all default shortcuts.
         """
-        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+        if self.buttonBox.buttonRole(button) != \
+            QtGui.QDialogButtonBox.ResetRole:
             return
         if QtGui.QMessageBox.question(self,
             translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),

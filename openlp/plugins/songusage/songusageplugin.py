@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import base_action, shortcut_action, UiStrings
+from openlp.core.lib.ui import base_action, shortcut_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -45,7 +45,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', plugin_helpers)
+        Plugin.__init__(self, u'songusage', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.activeIcon = build_icon(u':/songusage/song_usage_active.png')

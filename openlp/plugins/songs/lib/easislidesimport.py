@@ -26,13 +26,10 @@
 ###############################################################################
 
 import logging
-import os
 import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 

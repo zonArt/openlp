@@ -36,7 +36,6 @@ import os
 import uuid
 
 from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
-from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -165,7 +164,6 @@ class ServiceItem(object):
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        line_break = not self.is_capable(ItemCapabilities.NoLineBreaks)
         theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.renderer.set_override_theme(theme, use_override)
@@ -173,9 +171,8 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
-                formatted = self.renderer \
-                    .format_slide(slide[u'raw_slide'], line_break, self)
-                for page in formatted:
+                pages = self.renderer.format_slide(slide[u'raw_slide'], self)
+                for page in pages:
                     page = page.replace(u'<br>', u'{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
                     self._display_frames.append({
@@ -210,7 +207,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.add_image(title, path)
+        self.renderer.imageManager.add_image(title, path)
         self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):
@@ -464,7 +461,7 @@ class ServiceItem(object):
         elif not start and end:
             return end
         else:
-            return u'%s <br />%s' % (start, end)
+            return u'%s <br>%s' % (start, end)
 
     def update_theme(self, theme):
         """

@@ -26,9 +26,7 @@
 ###############################################################################
 
 import logging
-import os
 import re
-from zipfile import ZipFile
 
 from lxml import objectify
 from lxml.etree import Error, LxmlError
@@ -110,48 +108,13 @@ class OpenSongImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
-        """
-        Import either each of the files in self.import_source - each element of
-        which can be either a single opensong file, or a zipfile containing
-        multiple opensong files.
-        """
-        numfiles = 0
-        for filename in self.import_source:
-            ext = os.path.splitext(filename)[1]
-            if ext.lower() == u'.zip':
-                z = ZipFile(filename, u'r')
-                numfiles += len(z.infolist())
-                z.close()
-            else:
-                numfiles += 1
-        log.debug(u'Total number of files: %d', numfiles)
-        self.import_wizard.progressBar.setMaximum(numfiles)
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for filename in self.import_source:
             if self.stop_import_flag:
                 return
-            ext = os.path.splitext(filename)[1]
-            if ext.lower() == u'.zip':
-                log.debug(u'Zipfile found %s', filename)
-                z = ZipFile(filename, u'r')
-                for song in z.infolist():
-                    if self.stop_import_flag:
-                        z.close()
-                        return
-                    parts = os.path.split(song.filename)
-                    if parts[-1] == u'':
-                        # No final part => directory
-                        continue
-                    log.info(u'Zip importing %s', parts[-1])
-                    song_file = z.open(song)
-                    self.do_import_file(song_file)
-                    song_file.close()
-                z.close()
-            else:
-                # not a zipfile
-                log.info(u'Direct import %s', filename)
-                song_file = open(filename)
-                self.do_import_file(song_file)
-                song_file.close()
+            song_file = open(filename)
+            self.do_import_file(song_file)
+            song_file.close()
 
     def do_import_file(self, file):
         """

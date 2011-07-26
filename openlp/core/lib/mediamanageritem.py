@@ -96,7 +96,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
-        self.settingsSection = self.plugin.name.lower()
+        self.settingsSection = self.plugin.name
         self.icon = None
         if icon:
             self.icon = build_icon(icon)
@@ -113,7 +113,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name.lower()),
+            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name),
             self.serviceLoad)
 
     def requiredIcons(self):
@@ -558,7 +558,7 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.plugin.name.lower() == serviceItem.name.lower():
+            elif self.plugin.name == serviceItem.name:
                 self.generateSlideData(serviceItem)
                 self.plugin.serviceManager.addServiceItem(serviceItem,
                     replace=True)

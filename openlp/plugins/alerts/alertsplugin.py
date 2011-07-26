@@ -27,7 +27,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
@@ -43,7 +43,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', plugin_helpers,
+        Plugin.__init__(self, u'alerts', plugin_helpers,
             settings_tab_class=AlertsTab)
         self.weight = -3
         self.icon_path = u':/plugins/plugin_alerts.png'

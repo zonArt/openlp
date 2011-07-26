@@ -31,7 +31,6 @@ Worship songs into the OpenLP database.
 import os
 import logging
 
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 BLOCK_TYPES = (u'V', u'C', u'B')
