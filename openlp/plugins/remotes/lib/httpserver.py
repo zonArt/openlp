@@ -150,9 +150,7 @@ class HttpResponse(object):
 
 class HttpServer(object):
     """
-    Ability to control OpenLP via a webbrowser
-    e.g. http://localhost:4316/send/slidecontroller_live_next
-          http://localhost:4316/send/alerts_text?q=your%20alert%20text
+    Ability to control OpenLP via a webbrowser.
     """
     def __init__(self, plugin):
         """
@@ -230,6 +228,7 @@ class HttpServer(object):
         log.debug(u'close http server')
         self.server.close()
 
+
 class HttpConnection(object):
     """
     A single connection, this handles communication between the server
@@ -287,9 +286,12 @@ class HttpConnection(object):
         """
         self.template_vars = {
             'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Remote'),
-            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Stage View'),
-            'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
-            'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
+            'stage_title': translate('RemotePlugin.Mobile',
+                'OpenLP 2.0 Stage View'),
+            'service_manager': translate('RemotePlugin.Mobile',
+                'Service Manager'),
+            'slide_controller': translate('RemotePlugin.Mobile',
+                'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
             'search': translate('RemotePlugin.Mobile', 'Search'),
             'back': translate('RemotePlugin.Mobile', 'Back'),
@@ -301,7 +303,8 @@ class HttpConnection(object):
             'text': translate('RemotePlugin.Mobile', 'Text'),
             'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
-            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service'),
+            'add_to_service': translate('RemotePlugin.Mobile',
+                'Add To Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options')
         }
@@ -397,7 +400,7 @@ class HttpConnection(object):
                 if self.parent.current_item else u''
         }
         return HttpResponse(json.dumps({u'results': result}),
-             {u'Content-Type': u'application/json'})
+            {u'Content-Type': u'application/json'})
 
     def display(self, action):
         """
@@ -483,10 +486,11 @@ class HttpConnection(object):
 
     def pluginInfo(self, action):
         """
-        Return plugin related information, based on the action
+        Return plugin related information, based on the action.
 
-        ``action`` - The action to perform
-            if 'search' return a list of plugin names which support search
+        ``action``
+            The action to perform. If *search* return a list of plugin names
+            which support search.
         """
         if action == u'search':
             searches = []
@@ -501,10 +505,10 @@ class HttpConnection(object):
 
     def search(self, type):
         """
-        Return a list of items that match the search text
+        Return a list of items that match the search text.
 
         ``type``
-        The plugin name to search in.
+            The plugin name to search in.
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
@@ -528,7 +532,7 @@ class HttpConnection(object):
 
     def add_to_service(self, type):
         """
-        Add item of type ``type`` to the end of the service
+        Add item of type ``type`` to the end of the service.
         """
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
