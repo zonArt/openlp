@@ -475,10 +475,12 @@ class Ui_MainWindow(object):
             'Add an application to the list of tools.'))
         self.toolsOpenDataFolder.setText(
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
-        self.toolsFirstTimeWizard.setText(
-            translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.toolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.toolsFirstTimeWizard.setText(
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
+        self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
+            'Re-run the First Time Wizard importing Songs, Bibles and Themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(
@@ -734,9 +736,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         answer = QtGui.QMessageBox.warning(self,
             translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
             translate('OpenLP.MainWindow',
-            'Are you sure you want to re-run the First Time Wizard?\n\n' \
-            'Re-running this wizard may make changes to your current ' \
-            'OpenLP configuration and possibly add Songs to your ' \
+            'Are you sure you want to re-run the First Time Wizard?\n\n'
+            'Re-running this wizard may make changes to your current '
+            'OpenLP configuration and possibly add Songs to your '
             'existing Songs list and change your Default Theme'),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
