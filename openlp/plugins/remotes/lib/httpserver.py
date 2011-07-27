@@ -304,7 +304,7 @@ class HttpConnection(object):
             'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
             'add_to_service': translate('RemotePlugin.Mobile',
-                'Add To Service'),
+                'Add to Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options')
         }
