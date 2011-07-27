@@ -480,7 +480,7 @@ class Ui_MainWindow(object):
         self.toolsFirstTimeWizard.setText(
             translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
-            'Re-run the First Time Wizard importing Songs, Bibles and Themes.'))
+            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(
@@ -738,8 +738,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             translate('OpenLP.MainWindow',
             'Are you sure you want to re-run the First Time Wizard?\n\n'
             'Re-running this wizard may make changes to your current '
-            'OpenLP configuration and possibly add Songs to your '
-            'existing Songs list and change your Default Theme'),
+            'OpenLP configuration and possibly add songs to your '
+            'existing songs list and change your default theme'),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
