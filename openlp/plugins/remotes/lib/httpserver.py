@@ -150,11 +150,11 @@ class HttpResponse(object):
 
 class HttpServer(object):
     """
-    Ability to control OpenLP via a webbrowser.
+    Ability to control OpenLP via a web browser.
     """
     def __init__(self, plugin):
         """
-        Initialise the httpserver, and start the server
+        Initialise the httpserver, and start the server.
         """
         log.debug(u'Initialise httpserver')
         self.plugin = plugin
@@ -168,9 +168,9 @@ class HttpServer(object):
 
     def start_tcp(self):
         """
-        Start the http server, use the port in the settings default to 4316
+        Start the http server, use the port in the settings default to 4316.
         Listen out for slide and song changes so they can be broadcast to
-        clients. Listen out for socket connections
+        clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
         port = QtCore.QSettings().value(
@@ -193,20 +193,20 @@ class HttpServer(object):
 
     def slide_change(self, row):
         """
-        Slide change listener. Store the item and tell the clients
+        Slide change listener. Store the item and tell the clients.
         """
         self.current_slide = row
 
     def item_change(self, items):
         """
-        Item (song) change listener. Store the slide and tell the clients
+        Item (song) change listener. Store the slide and tell the clients.
         """
         self.current_item = items[0]
 
     def new_connection(self):
         """
         A new http connection has been made. Create a client object to handle
-        communication
+        communication.
         """
         log.debug(u'new http connection')
         socket = self.server.nextPendingConnection()
@@ -223,7 +223,7 @@ class HttpServer(object):
 
     def close(self):
         """
-        Close down the http server
+        Close down the http server.
         """
         log.debug(u'close http server')
         self.server.close()
@@ -232,7 +232,7 @@ class HttpServer(object):
 class HttpConnection(object):
     """
     A single connection, this handles communication between the server
-    and the client
+    and the client.
     """
     def __init__(self, parent, socket):
         """
