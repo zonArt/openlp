@@ -93,7 +93,7 @@ class OpenLP(QtGui.QApplication):
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args = args
-        # provide a listener for widgets to reqest a screen update.
+        # provide a listener for widgets to request a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -125,6 +125,8 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
             log.debug(u'Splashscreen closed')
+        # make sure Qt really display the splash screen
+        self.processEvents()
         self.mainWindow.repaint()
         self.processEvents()
         if not has_run_wizard:

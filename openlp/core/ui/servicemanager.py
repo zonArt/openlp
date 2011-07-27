@@ -1239,7 +1239,14 @@ class ServiceManager(QtGui.QWidget):
             Handle of the event pint passed
         """
         link = event.mimeData()
-        if link.hasText():
+        if event.mimeData().hasUrls():
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            for url in event.mimeData().urls():
+                filename = unicode(url.toLocalFile())
+                if filename.endswith(u'.osz'):
+                    self.loadFile(filename)
+        elif event.mimeData().hasText():
             plugin = unicode(event.mimeData().text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop

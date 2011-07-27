@@ -58,6 +58,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'presentations_dnd'), self.loadFile)
 
     def retranslateUi(self):
         """
@@ -205,6 +209,7 @@ class PresentationMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
+            item_name.setToolTip(file)
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:

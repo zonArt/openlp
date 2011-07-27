@@ -233,9 +233,9 @@ def check_directory_exists(dir):
     except IOError:
         pass
 
+from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
-from eventreceiver import Receiver
 from spelltextedit import SpellTextEdit
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin

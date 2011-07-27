@@ -27,7 +27,11 @@
 """
 Extend QListWidget to handle drag and drop functionality
 """
+import os.path
+
 from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import Receiver
 
 class ListWidgetWithDnD(QtGui.QListWidget):
     """
@@ -40,6 +44,13 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         QtGui.QListWidget.__init__(self, parent)
         self.mimeDataText = name
         assert(self.mimeDataText)
+
+    def activateDnD(self):
+        """
+        Activate DnD of widget
+        """
+        self.setAcceptDrops(True)
+        self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
 
     def mouseMoveEvent(self, event):
         """
@@ -58,3 +69,33 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         drag.setMimeData(mimeData)
         mimeData.setText(self.mimeDataText)
         drag.start(QtCore.Qt.CopyAction)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        """
+        Receive drop event check if it is a file and process it if it is.
+
+        ``event``
+            Handle of the event pint passed
+        """
+        if event.mimeData().hasUrls():
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            for url in event.mimeData().urls():
+                if os.path.isfile(url.toLocalFile()):
+                    Receiver.send_message(u'%s_dnd' % self.mimeDataText,
+                        url.toLocalFile())
+        else:
+            event.ignore()

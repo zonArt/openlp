@@ -52,6 +52,10 @@ class ImageMediaItem(MediaManagerItem):
         self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'images_dnd'), self.loadFile)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('ImagePlugin.MediaItem',
@@ -131,6 +135,7 @@ class ImageMediaItem(MediaManagerItem):
                 icon = self.iconFromFile(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
+            item_name.setToolTip(imageFile)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
         if not initialLoad:

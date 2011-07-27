@@ -252,7 +252,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setAlternatingRowColors(True)
-        self.listView.setDragEnabled(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
         # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
@@ -339,26 +338,56 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
-            names = []
-            for count in range(0, self.listView.count()):
-                names.append(self.listView.item(count).text())
-            newFiles = []
-            for file in files:
-                filename = os.path.split(unicode(file))[1]
-                if filename in names:
-                    critical_error_message_box(
-                        UiStrings().Duplicate,
-                        unicode(translate('OpenLP.MediaManagerItem',
-                        'Duplicate filename %s.\nThis filename is already in '
-                        'the list')) % filename)
-                else:
-                    newFiles.append(file)
-            self.loadList(newFiles)
-            lastDir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, lastDir)
-            SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+            self.validateAndLoad(files)
         Receiver.send_message(u'cursor_normal')
+
+    def loadFile(self, filename):
+        """
+        Turn file from Drag and Drop into a array so the Validate code
+        can runn it.
+
+         ``filename``
+         The file to be loaded
+        """
+        filename = unicode(filename)
+        type = filename.split(u'.')[-1]
+        if type.lower() not in self.onNewFileMasks:
+            critical_error_message_box(
+                translate('OpenLP.MediaManagerItem',
+                'Invalid File Type'),
+                unicode(translate('OpenLP.MediaManagerItem',
+                'Invalid File %s.\nSuffix not supported'))
+                % filename)
+        else:
+            self.validateAndLoad([filename])
+
+    def validateAndLoad(self, files):
+        """
+        Process a list for files either from the File Dialog or from Drag and
+        Drop
+
+         ``files``
+         The files to be loaded
+        """
+        names = []
+        for count in range(0, self.listView.count()):
+            names.append(self.listView.item(count).text())
+        newFiles = []
+        for file in files:
+            filename = os.path.split(unicode(file))[1]
+            if filename in names:
+                critical_error_message_box(
+                    UiStrings().Duplicate,
+                    unicode(translate('OpenLP.MediaManagerItem',
+                    'Duplicate filename %s.\nThis filename is already in '
+                    'the list')) % filename)
+            else:
+                newFiles.append(file)
+        self.loadList(newFiles)
+        lastDir = os.path.split(unicode(files[0]))[0]
+        SettingsManager.set_last_dir(self.settingsSection, lastDir)
+        SettingsManager.set_list(self.settingsSection,
+            self.settingsSection, self.getFileList())
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
