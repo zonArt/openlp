@@ -781,48 +781,25 @@ class ServiceManager(QtGui.QWidget):
 
     def onMoveSelectionUp(self):
         """
-        Moves the selection up the window. Called by the up arrow.
+        Moves the cursor selection up the window.
+        Called by the up arrow.
         """
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
-        tempItem = None
-        setLastItem = False
-        while serviceIterator.value():
-            if serviceIterator.value().isSelected() and tempItem is None:
-                setLastItem = True
-                serviceIterator.value().setSelected(False)
-            if serviceIterator.value().isSelected():
-                # We are on the first record
-                if tempItem:
-                    tempItem.setSelected(True)
-                    serviceIterator.value().setSelected(False)
-            else:
-                tempItem = serviceIterator.value()
-            lastItem = serviceIterator.value()
-            serviceIterator += 1
-        # Top Item was selected so set the last one
-        if setLastItem:
-            lastItem.setSelected(True)
+        item = self.serviceManagerList.currentItem()
+        itemBefore = self.serviceManagerList.itemAbove(item)
+        if itemBefore is None:
+            return
+        self.serviceManagerList.setCurrentItem(itemBefore)
 
     def onMoveSelectionDown(self):
         """
-        Moves the selection down the window. Called by the down arrow.
+        Moves the cursor selection down the window.
+        Called by the down arrow.
         """
-        serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
-        firstItem = None
-        setSelected = False
-        while serviceIterator.value():
-            if not firstItem:
-                firstItem = serviceIterator.value()
-            if setSelected:
-                setSelected = False
-                serviceIterator.value().setSelected(True)
-            elif serviceIterator.value() and \
-                serviceIterator.value().isSelected():
-                serviceIterator.value().setSelected(False)
-                setSelected = True
-            serviceIterator += 1
-        if setSelected:
-            firstItem.setSelected(True)
+        item = self.serviceManagerList.currentItem()
+        itemAfter = self.serviceManagerList.itemBelow(item)
+        if itemAfter is None:
+            return
+        self.serviceManagerList.setCurrentItem(itemAfter)
 
     def onCollapseAll(self):
         """
