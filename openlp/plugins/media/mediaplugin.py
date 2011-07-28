@@ -46,8 +46,12 @@ class MediaPlugin(Plugin):
         self.dnd_id = u'Media'
         self.audio_extensions_list = \
             self.mediaManager.get_audio_extensions_list()
+        for ext in self.audio_extensions_list:
+            self.serviceManager.supportedSuffixes(ext[2:])
         self.video_extensions_list = \
             self.mediaManager.get_video_extensions_list()
+        for ext in self.video_extensions_list:
+            self.serviceManager.supportedSuffixes(ext[2:])
 
     def getSettingsTab(self, parent):
         """
