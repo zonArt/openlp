@@ -155,7 +155,6 @@ class MediaMediaItem(MediaManagerItem):
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.AllowsVariableStartTime)
-        print self.mediaLength
         service_item.media_length = self.mediaLength
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)

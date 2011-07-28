@@ -125,7 +125,6 @@ class MediaManager(object):
         else:
             return False
 
-
     def video_state(self):
         """
         Check if there is an assigned media API and do some
