@@ -93,20 +93,24 @@ class FormattingTags(object):
             u'desc': translate('OpenLP.FormattingTags', 'Superscript'),
             u'start tag': u'{su}', u'start html': u'<sup>',
             u'end tag': u'{/su}', u'end html': u'</sup>', u'protected': True})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Subscript'),
+        base_tags.append({
+            u'desc': translate('OpenLP.FormattingTags', 'Subscript'),
             u'start tag': u'{sb}', u'start html': u'<sub>',
             u'end tag': u'{/sb}', u'end html': u'</sub>', u'protected': True})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Paragraph'),
+        base_tags.append({
+            u'desc': translate('OpenLP.FormattingTags', 'Paragraph'),
             u'start tag': u'{p}', u'start html': u'<p>', u'end tag': u'{/p}',
             u'end html': u'</p>', u'protected': True})
         base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Bold'),
             u'start tag': u'{st}', u'start html': u'<strong>',
             u'end tag': u'{/st}', u'end html': u'</strong>',
             u'protected': True})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Italics'),
+        base_tags.append({
+            u'desc': translate('OpenLP.FormattingTags', 'Italics'),
             u'start tag': u'{it}', u'start html': u'<em>', u'end tag': u'{/it}',
             u'end html': u'</em>', u'protected': True})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Underline'),
+        base_tags.append({
+            u'desc': translate('OpenLP.FormattingTags', 'Underline'),
             u'start tag': u'{u}',
             u'start html': u'<span style="text-decoration: underline;">',
             u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
