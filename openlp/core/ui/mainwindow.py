@@ -33,7 +33,7 @@ from tempfile import gettempdir
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager
+    PluginManager, Receiver, translate, ImageManager,  PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -42,6 +42,8 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -244,6 +246,9 @@ class Ui_MainWindow(object):
         self.toolsOpenDataFolder = icon_action(mainWindow,
             u'toolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.toolsFirstTimeWizard = icon_action(mainWindow,
+            u'toolsFirstTimeWizard', u':/general/general_revert.png',
+            category=UiStrings().Tools)
         self.updateThemeImages = base_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings,
@@ -323,6 +328,7 @@ class Ui_MainWindow(object):
                 self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
+        add_actions(self.toolsMenu, (self.toolsFirstTimeWizard, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
         if os.name == u'nt':
             add_actions(self.helpMenu, (self.offlineHelpItem,
@@ -471,6 +477,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.toolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.toolsFirstTimeWizard.setText(
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
+        self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
+            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(
@@ -546,6 +556,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.toolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.toolsFirstTimeWizard,
+            QtCore.SIGNAL(u'triggered()'), self.onFirstTimeWizardClicked)
         QtCore.QObject.connect(self.updateThemeImages,
             QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
         QtCore.QObject.connect(self.displayTagItem,
@@ -713,6 +725,45 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for filename in os.listdir(temp_dir):
             delete_file(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)
+
+    def onFirstTimeWizardClicked(self):
+        """
+        Re-run the first time wizard.  Prompts the user for run confirmation
+        If wizard is run, songs, bibles and themes are imported.  The default
+        theme is changed (if necessary).  The plugins in pluginmanager are
+        set active/in-active to match the selection in the wizard.
+        """
+        answer = QtGui.QMessageBox.warning(self,
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
+            translate('OpenLP.MainWindow',
+            'Are you sure you want to re-run the First Time Wizard?\n\n'
+            'Re-running this wizard may make changes to your current '
+            'OpenLP configuration and possibly add songs to your '
+            'existing songs list and change your default theme.'),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No),
+            QtGui.QMessageBox.No)
+        if answer == QtGui.QMessageBox.No:
+            return
+        Receiver.send_message(u'cursor_busy')
+        screens = ScreenList.get_instance()
+        if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+            self.firstTime()
+            for plugin in self.pluginManager.plugins:
+                self.activePlugin = plugin
+                oldStatus = self.activePlugin.status
+                self.activePlugin.setStatus()
+                if oldStatus != self.activePlugin.status:
+                    if self.activePlugin.status == PluginStatus.Active:
+                        self.activePlugin.toggleStatus(PluginStatus.Active)
+                        self.activePlugin.appStartup()
+                    else:
+                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
+            self.themeManagerContents.configUpdated()
+            self.themeManagerContents.loadThemes(True)
+            Receiver.send_message(u'theme_update_global',
+                self.themeManagerContents.global_theme)
 
     def blankCheck(self):
         """
