@@ -121,17 +121,17 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         for html in FormattingTags.get_html_tags():
             if self._strip(html[u'start tag']) == u'n':
                 critical_error_message_box(
-                    translate('OpenLP.DisplayTagTab', 'Update Error'),
-                    translate('OpenLP.DisplayTagTab',
+                    translate('OpenLP.FormattingTagForm', 'Update Error'),
+                    translate('OpenLP.FormattingTagForm',
                     'Tag "n" already defined.'))
                 return
         # Add new tag to list
         tag = {
-            u'desc': translate('OpenLP.DisplayTagTab', 'New Tag'),
+            u'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
             u'start tag': u'{n}',
-            u'start html': translate('OpenLP.DisplayTagTab', '<HTML here>'),
+            u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
             u'end tag': u'{/n}',
-            u'end html': translate('OpenLP.DisplayTagTab', '</and here>'),
+            u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
             u'protected': False
         }
         FormattingTags.add_html_tags([tag])
@@ -163,8 +163,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
                 if self._strip(html1[u'start tag']) == tag and \
                     linenumber != self.selected:
                     critical_error_message_box(
-                        translate('OpenLP.DisplayTagTab', 'Update Error'),
-                        unicode(translate('OpenLP.DisplayTagTab',
+                        translate('OpenLP.FormattingTagForm', 'Update Error'),
+                        unicode(translate('OpenLP.FormattingTagForm',
                         'Tag %s already defined.')) % tag)
                     return
             html[u'desc'] = unicode(self.descriptionLineEdit.text())
