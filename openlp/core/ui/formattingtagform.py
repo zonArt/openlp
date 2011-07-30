@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`DisplayTagTab` provides an Tag Edit facility. The Base set are
+The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are
 protected and included each time loaded. Custom tags can be defined and saved.
 The Custom Tag arrays are saved in a pickle so QSettings works on them. Base
 Tags cannot be changed.
@@ -78,7 +78,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         # Initial Load of the Tags
         FormattingTags.reset_html_tags()
-        # Formatting Tags where also known as display tags.
+        # Formatting Tags were also known as display tags.
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
         # cPickle only accepts str not unicode strings
@@ -184,7 +184,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         for tag in FormattingTags.get_html_tags():
             if not tag[u'protected']:
                 tags.append(tag)
-        # Formatting Tags where also known as display tags.
+        # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
             QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
 

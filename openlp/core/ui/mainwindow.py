@@ -269,7 +269,7 @@ class Ui_MainWindow(object):
             u'settingsShortcutsItem',
             u':/system/system_configure_shortcuts.png',
             category=UiStrings().Settings)
-        # Formatting Tags where also known as display tags.
+        # Formatting Tags were also known as display tags.
         self.formattingTagItem = icon_action(mainWindow,
             u'displayTagItem', u':/system/tag_editor.png',
             category=UiStrings().Settings)
