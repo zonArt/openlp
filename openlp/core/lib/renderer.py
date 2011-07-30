@@ -46,8 +46,6 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-HTML_END = u'</div></body></html>'
-
 class Renderer(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
@@ -310,12 +308,20 @@ class Renderer(object):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css
-        self.page_shell = u'<!DOCTYPE html><html><head><style>' \
-            u'*{margin:0; padding:0; border:0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
-            u'<div id="main">' % \
+        html = u"""<!DOCTYPE html><html><head><script>
+            function show_text(newtext) {
+                var main = document.getElementById('main');
+                main.innerHTML = newtext;
+                // We have to return something, otherwise the renderer does not
+                // work as expected.
+                return document.all.main.offsetHeight;
+            }
+            </script><style>*{margin:0; padding:0; border:0;}
+            #main {position:absolute; top:0px; %s %s}</style></head><body>
+            <div id="main"></div></body></html>""" % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
+        self.web.setHtml(html)
 
     def _paginate_slide(self, lines, line_end):
         """
@@ -334,10 +340,8 @@ class Renderer(object):
         previous_raw = u''
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
-        html = self.page_shell + separator.join(html_lines) + HTML_END
-        self.web.setHtml(html)
         # Text too long so go to next page.
-        if self.web_frame.contentsSize().height() > self.page_height:
+        if self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -368,27 +372,19 @@ class Renderer(object):
         for line in lines:
             line = line.strip()
             html_line = expand_tags(line)
-            html = self.page_shell + previous_html + html_line + HTML_END
-            self.web.setHtml(html)
             # Text too long so go to next page.
-            if self.web_frame.contentsSize().height() > self.page_height:
+            if self._text_fits_on_slide(previous_html + html_line):
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
                 if previous_html:
-                    html = self.page_shell + previous_html + HTML_END
-                    self.web.setHtml(html)
-                    if self.web_frame.contentsSize().height() <= \
-                        self.page_height:
+                    if not self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
-                        html = self.page_shell + html_line + HTML_END
-                        self.web.setHtml(html)
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
-                        if self.web_frame.contentsSize().height() <= \
-                            self.page_height:
+                        if not self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
@@ -445,10 +441,8 @@ class Renderer(object):
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            html = self.page_shell + previous_html + \
-                separator.join(html_list[:index + 1]).strip() + HTML_END
-            self.web.setHtml(html)
-            if self.web_frame.contentsSize().height() > self.page_height:
+            if self._text_fits_on_slide(
+                previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the
                 # new index and highest_index accordingly.
                 highest_index = index
@@ -470,10 +464,8 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            html = self.page_shell + \
-                separator.join(html_list[index + 1:]).strip() + HTML_END
-            self.web.setHtml(html)
-            if self.web_frame.contentsSize().height() <= self.page_height:
+            if not self._text_fits_on_slide(
+                separator.join(html_list[index + 1:]).strip()):
                 previous_html = separator.join(
                     html_list[index + 1:]).strip() + line_end
                 previous_raw = separator.join(
@@ -488,6 +480,18 @@ class Renderer(object):
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)
         return previous_html, previous_raw
+
+    def _text_fits_on_slide(self, text):
+        """
+        Checks if the given ``text`` fits on a slide. If it does, ``True`` is
+        returned, otherwise ``False``.
+
+        ``text``
+            The text to check. It can contain HTML tags.
+        """
+        self.web_frame.evaluateJavaScript(u'show_text("%s")' %
+            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        return self.web_frame.contentsSize().height() > self.page_height
 
     def _words_split(self, line):
         """
