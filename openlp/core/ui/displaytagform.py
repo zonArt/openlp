@@ -177,7 +177,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
 
     def _saveTable(self):
         """
-        Saves all display tags except protected ones.
+        Saves all formatting tags except protected ones.
         """
         tags = []
         for tag in DisplayTags.get_html_tags():

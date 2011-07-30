@@ -122,7 +122,7 @@ class Ui_DisplayTagDialog(object):
 
     def retranslateUi(self, displayTagDialog):
         displayTagDialog.setWindowTitle(translate('OpenLP.displayTagDialog',
-            'Configure Display Tags'))
+            'Configure Formatting Tags'))
         self.editGroupBox.setTitle(
             translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
         self.savePushButton.setText(

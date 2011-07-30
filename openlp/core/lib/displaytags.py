@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provide Html Tag management and Display Tag access class
+Provide HTML Tag management and Formatting Tag access class
 """
 
 from openlp.core.lib import translate
