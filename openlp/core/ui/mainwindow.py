@@ -404,7 +404,7 @@ class Ui_MainWindow(object):
         self.settingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.displayTagItem.setText(
-            translate('OpenLP.MainWindow', '&Configure Display Tags'))
+            translate('OpenLP.MainWindow', '&Configure Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.viewMediaManagerItem.setText(
