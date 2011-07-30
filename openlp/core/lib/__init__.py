@@ -205,7 +205,7 @@ def clean_tags(text):
     text = text.replace(u'<br>', u'\n')
     text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
     return text
@@ -214,7 +214,7 @@ def expand_tags(text):
     """
     Expand tags HTML for display
     """
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
@@ -234,7 +234,7 @@ def check_directory_exists(dir):
         pass
 
 from listwidgetwithdnd import ListWidgetWithDnD
-from displaytags import DisplayTags
+from formattingtags import FormattingTags
 from eventreceiver import Receiver
 from spelltextedit import SpellTextEdit
 from settingsmanager import SettingsManager
