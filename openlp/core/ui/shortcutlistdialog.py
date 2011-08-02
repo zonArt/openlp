@@ -123,7 +123,7 @@ class Ui_ShortcutListDialog(object):
 
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
-            translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
+            translate('OpenLP.ShortcutListDialog', 'Configure Shortcuts'))
         self.descriptionLabel.setText(translate('OpenLP.ShortcutListDialog',
             'Select an action and click one of the buttons below to start '
             'capturing a new primary or alternate shortcut, respectively.'))

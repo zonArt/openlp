@@ -422,7 +422,7 @@ class Renderer(object):
             to the list of slides. (unicode string)
 
         ``previous_raw``
-            The raw text (with display tags) which is know to fit on a slide,
+            The raw text (with formatting tags) which is know to fit on a slide,
             but is not yet added to the list of slides. (unicode string)
 
         ``html_list``
@@ -431,7 +431,7 @@ class Renderer(object):
 
         ``raw_list``
             The elements which do not fit on a slide and needs to be processed
-            using the binary chop. The elements can contain display tags.
+            using the binary chop. The elements can contain formatting tags.
 
         ``separator``
             The separator for the elements. For lines this is ``u'<br>'`` and

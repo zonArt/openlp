@@ -38,7 +38,7 @@ from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
-    ShortcutListForm, DisplayTagForm
+    ShortcutListForm, FormattingTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -274,7 +274,8 @@ class Ui_MainWindow(object):
             u'settingsShortcutsItem',
             u':/system/system_configure_shortcuts.png',
             category=UiStrings().Settings)
-        self.displayTagItem = icon_action(mainWindow,
+        # Formatting Tags were also known as display tags.
+        self.formattingTagItem = icon_action(mainWindow,
             u'displayTagItem', u':/system/tag_editor.png',
             category=UiStrings().Settings)
         self.settingsConfigureItem = icon_action(mainWindow,
@@ -320,11 +321,11 @@ class Ui_MainWindow(object):
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
                 self.settingsConfigureItem, self.settingsShortcutsItem,
-                self.displayTagItem))
+                self.formattingTagItem))
         else:
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
-                self.displayTagItem, self.settingsShortcutsItem,
+                self.formattingTagItem, self.settingsShortcutsItem,
                 self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
@@ -409,8 +410,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Language'))
         self.settingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
-        self.displayTagItem.setText(
-            translate('OpenLP.MainWindow', '&Configure Display Tags'))
+        self.formattingTagItem.setText(
+            translate('OpenLP.MainWindow', '&Configure Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.viewMediaManagerItem.setText(
@@ -521,7 +522,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self, self)
-        self.displayTagForm = DisplayTagForm(self)
+        self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
@@ -560,8 +561,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onFirstTimeWizardClicked)
         QtCore.QObject.connect(self.updateThemeImages,
             QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
-        QtCore.QObject.connect(self.displayTagItem,
-            QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
+        QtCore.QObject.connect(self.formattingTagItem,
+            QtCore.SIGNAL(u'triggered()'), self.onFormattingTagItemClicked)
         QtCore.QObject.connect(self.settingsConfigureItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsConfigureItemClicked)
         QtCore.QObject.connect(self.settingsShortcutsItem,
@@ -839,11 +840,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.themeManagerContents.updatePreviewImages()
 
-    def onDisplayTagItemClicked(self):
+    def onFormattingTagItemClicked(self):
         """
         Show the Settings dialog
         """
-        self.displayTagForm.exec_()
+        self.formattingTagForm.exec_()
 
     def onSettingsConfigureItemClicked(self):
         """
