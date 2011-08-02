@@ -157,10 +157,28 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(iter)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.themeComboBox.addItem(item.text())
+            #Check if this is a re-run of the wizard.  If so, add existing themes to list
+            self.has_run_wizard = QtCore.QSettings().value(
+                u'general/has run wizard', QtCore.QVariant(False)).toBool()
+            if self.has_run_wizard:
+                #If themes already exist, add them to the list
+                self.theme_list = self.parent().themeManagerContents.getThemes()
+                for theme in self.theme_list:
+                    index = self.themeComboBox.findText(theme)
+                    if index == -1:
+                        self.themeComboBox.addItem(theme)
+                default_theme = unicode(QtCore.QSettings().value(
+                    u'themes/global theme',
+                    QtCore.QVariant(u'')).toString())
+                #Pre-select the current default theme
+                index = self.themeComboBox.findText(default_theme)
+                self.themeComboBox.setCurrentIndex(index)
         elif pageId == FirstTimePage.Progress:
+            Receiver.send_message(u'cursor_busy')
             self._preWizard()
             self._performWizard()
             self._postWizard()
+            Receiver.send_message(u'cursor_normal')
 
     def updateScreenListCombo(self):
         """
@@ -249,11 +267,21 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         if self.max_progress:
             self.progressBar.setValue(self.progressBar.maximum())
-            self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-                'Download complete. Click the finish button to start OpenLP.'))
+            if self.has_run_wizard:
+                self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                    'Download complete.'
+                    ' Click the finish button to return to OpenLP.'))
+            else:
+                self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                    'Download complete.'
+                    ' Click the finish button to start OpenLP.'))
         else:
-            self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-                'Click the finish button to start OpenLP.'))
+            if self.has_run_wizard:
+                self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                    'Click the finish button to return to OpenLP.'))
+            else:
+                self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+                    'Click the finish button to start OpenLP.'))
         self.finishButton.setVisible(True)
         self.finishButton.setEnabled(True)
         self.cancelButton.setVisible(False)
