@@ -386,11 +386,12 @@ class MediaManagerItem(QtGui.QWidget):
                 duplicatesFound = True
             else:
                 newFiles.append(file)
-        self.loadList(newFiles)
-        lastDir = os.path.split(unicode(files[0]))[0]
-        SettingsManager.set_last_dir(self.settingsSection, lastDir)
-        SettingsManager.set_list(self.settingsSection,
-            self.settingsSection, self.getFileList())
+        if newFiles:
+            self.loadList(newFiles)
+            lastDir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, lastDir)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
         if duplicatesFound:
             critical_error_message_box(
                 UiStrings().Duplicate,
