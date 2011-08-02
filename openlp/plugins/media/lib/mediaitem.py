@@ -63,8 +63,6 @@ class MediaMediaItem(MediaManagerItem):
             self.createPhonon)
         # Allow DnD from the desktop
         self.listView.activateDnD()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_dnd'), self.loadFile)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')

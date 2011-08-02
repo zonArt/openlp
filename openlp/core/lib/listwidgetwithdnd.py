@@ -51,6 +51,9 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
+            self.parent().loadFile)
 
     def mouseMoveEvent(self, event):
         """
@@ -71,7 +74,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         drag.start(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls:
+        if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
@@ -93,9 +96,15 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
+            files = []
             for url in event.mimeData().urls():
-                if os.path.isfile(url.toLocalFile()):
-                    Receiver.send_message(u'%s_dnd' % self.mimeDataText,
-                        url.toLocalFile())
+                localFile = unicode(url.toLocalFile())
+                if os.path.isfile(localFile):
+                    files.append(localFile)
+                elif os.path.isdir(localFile):
+                    listing = os.listdir(localFile)
+                    for file in listing:
+                        files.append(os.path.join(localFile,file))
+            Receiver.send_message(u'%s_dnd' % self.mimeDataText,files)
         else:
             event.ignore()

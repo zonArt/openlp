@@ -54,8 +54,6 @@ class ImageMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'images_dnd'), self.loadFile)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('ImagePlugin.MediaItem',

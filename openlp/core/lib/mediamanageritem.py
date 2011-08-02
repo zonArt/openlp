@@ -341,25 +341,31 @@ class MediaManagerItem(QtGui.QWidget):
             self.validateAndLoad(files)
         Receiver.send_message(u'cursor_normal')
 
-    def loadFile(self, filename):
+    def loadFile(self, files):
         """
-        Turn file from Drag and Drop into a array so the Validate code
-        can runn it.
+        Turn file from Drag and Drop into an array so the Validate code
+        can run it.
 
-         ``filename``
-         The file to be loaded
+        ``files``
+        The list of files to be loaded
         """
-        filename = unicode(filename)
-        type = filename.split(u'.')[-1]
-        if type.lower() not in self.onNewFileMasks:
-            critical_error_message_box(
-                translate('OpenLP.MediaManagerItem',
-                'Invalid File Type'),
-                unicode(translate('OpenLP.MediaManagerItem',
-                'Invalid File %s.\nSuffix not supported'))
-                % filename)
-        else:
-            self.validateAndLoad([filename])
+        newFiles = []
+        errorShown = False
+        for file in files:
+            type = file.split(u'.')[-1]
+            if type.lower() not in self.onNewFileMasks:
+                if not errorShown:
+                    critical_error_message_box(
+                        translate('OpenLP.MediaManagerItem',
+                        'Invalid File Type'),
+                        unicode(translate('OpenLP.MediaManagerItem',
+                        'Invalid File %s.\nSuffix not supported'))
+                        % file)
+                    errorShown = True
+            else:
+                newFiles.append(file)
+        if file:
+            self.validateAndLoad(newFiles)
 
     def validateAndLoad(self, files):
         """
@@ -373,14 +379,11 @@ class MediaManagerItem(QtGui.QWidget):
         for count in range(0, self.listView.count()):
             names.append(self.listView.item(count).text())
         newFiles = []
+        duplicatesFound = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
-                critical_error_message_box(
-                    UiStrings().Duplicate,
-                    unicode(translate('OpenLP.MediaManagerItem',
-                    'Duplicate filename %s.\nThis filename is already in '
-                    'the list')) % filename)
+                duplicatesFound = True
             else:
                 newFiles.append(file)
         self.loadList(newFiles)
@@ -388,6 +391,11 @@ class MediaManagerItem(QtGui.QWidget):
         SettingsManager.set_last_dir(self.settingsSection, lastDir)
         SettingsManager.set_list(self.settingsSection,
             self.settingsSection, self.getFileList())
+        if duplicatesFound:
+            critical_error_message_box(
+                UiStrings().Duplicate,
+                unicode(translate('OpenLP.MediaManagerItem',
+                'Duplicate files found on import and ignored.')))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)

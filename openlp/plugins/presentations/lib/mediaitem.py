@@ -60,8 +60,6 @@ class PresentationMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
         # Allow DnD from the desktop
         self.listView.activateDnD()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_dnd'), self.loadFile)
 
     def retranslateUi(self):
         """
