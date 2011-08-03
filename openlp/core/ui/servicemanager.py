@@ -465,10 +465,13 @@ class ServiceManager(QtGui.QWidget):
         service = []
         write_list = []
         total_size = 0
+        abort_save = False
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
+            if abort_save:
+                continue
             self.mainwindow.incrementProgressBar()
             service.append({u'serviceitem':
                 item[u'service_item'].get_service_repr()})
@@ -482,25 +485,45 @@ class ServiceManager(QtGui.QWidget):
                 # Only write a file once
                 if path_from in write_list:
                     continue
-                file_size = os.path.getsize(path_from)
-                size_limit = 52428800 # 50MiB
-                #if file_size > size_limit:
-                #    # File exeeds size_limit bytes, ask user
-                #    message = unicode(translate('OpenLP.ServiceManager',
-                #        'Do you want to include \n%.1f MB file "%s"\n'
-                #        'into the service file?\nThis may take some time.\n\n'
-                #        'Please note that you need to\ntake care of that file'
-                #        ' yourself,\nif you leave it out.')) % \
-                #        (file_size/1048576, os.path.split(path_from)[1])
-                #    ans = QtGui.QMessageBox.question(self.mainwindow,
-                #        translate('OpenLP.ServiceManager', 'Including Large '
-                #        'File'), message, QtGui.QMessageBox.StandardButtons(
-                #        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
-                #        QtGui.QMessageBox.Ok)
-                #    if ans == QtGui.QMessageBox.Cancel:
-                #        continue
-                write_list.append(path_from)
-                total_size += file_size
+                if not os.path.isfile(path_from):
+                    Receiver.send_message(u'cursor_normal')
+                    title = unicode(translate('OpenLP.ServiceManager',
+                        'Service File Missing'))
+                    message = unicode(translate('OpenLP.ServiceManager',
+                        'File missing from service\n\n %s \n\n'
+                        'Continue saving?' % path_from ))
+                    ans = QtGui.QMessageBox.critical(self, title, message,
+                        QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) 
+                    if ans == QtGui.QMessageBox.No:
+                        abort_save = True
+                        continue
+                    Receiver.send_message(u'cursor_busy')
+                else:
+                    file_size = os.path.getsize(path_from)
+                    size_limit = 52428800 # 50MiB
+                    #if file_size > size_limit:
+                    #    # File exeeds size_limit bytes, ask user
+                    #    message = unicode(translate('OpenLP.ServiceManager',
+                    #        'Do you want to include \n%.1f MB file "%s"\n'
+                    #        'into the service file?\nThis may take some time.\n\n'
+                    #        'Please note that you need to\ntake care of that file'
+                    #        ' yourself,\nif you leave it out.')) % \
+                    #        (file_size/1048576, os.path.split(path_from)[1])
+                    #    ans = QtGui.QMessageBox.question(self.mainwindow,
+                    #        translate('OpenLP.ServiceManager', 'Including Large '
+                    #        'File'), message, QtGui.QMessageBox.StandardButtons(
+                    #        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
+                    #        QtGui.QMessageBox.Ok)
+                    #    if ans == QtGui.QMessageBox.Cancel:
+                    #        continue
+                    write_list.append(path_from)
+                    total_size += file_size
+        if abort_save:
+            self._fileName = u''
+            self.mainwindow.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
+            return False
         log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
             total_size)
         service_content = cPickle.dumps(service)
