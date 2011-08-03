@@ -157,20 +157,19 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(iter)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.themeComboBox.addItem(item.text())
-            # Check if this is a re-run of the wizard.  If so, add existing themes to list
+            # Check if this is a re-run of the wizard.
             self.has_run_wizard = QtCore.QSettings().value(
                 u'general/has run wizard', QtCore.QVariant(False)).toBool()
             if self.has_run_wizard:
-                # If themes already exist, add them to the list
-                self.theme_list = self.parent().themeManagerContents.getThemes()
-                for theme in self.theme_list:
+                # Add any existing themes to list.
+                for theme in self.parent().themeManagerContents.getThemes():
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
                 default_theme = unicode(QtCore.QSettings().value(
                     u'themes/global theme',
                     QtCore.QVariant(u'')).toString())
-                # Pre-select the current default theme
+                # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)
         elif pageId == FirstTimePage.Progress:
