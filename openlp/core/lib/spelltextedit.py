@@ -39,7 +39,7 @@ except ImportError:
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, DisplayTags
+from openlp.core.lib import translate, FormattingTags
 from openlp.core.lib.ui import checkable_action
 
 log = logging.getLogger(__name__)
@@ -114,7 +114,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
-        for html in DisplayTags.get_html_tags():
+        for html in FormattingTags.get_html_tags():
             action = SpellAction(html[u'desc'], tagMenu)
             action.correct.connect(self.htmlTag)
             tagMenu.addAction(action)
@@ -148,7 +148,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
-        for html in DisplayTags.get_html_tags():
+        for html in FormattingTags.get_html_tags():
             if tag == html[u'desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():
