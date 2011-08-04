@@ -485,7 +485,7 @@ class ServiceManager(QtGui.QWidget):
                 # Only write a file once
                 if path_from in write_list:
                     continue
-                if not os.path.isfile(path_from):
+                if not os.path.exists(path_from):
                     Receiver.send_message(u'cursor_normal')
                     title = unicode(translate('OpenLP.ServiceManager',
                         'Service File Missing'))
@@ -520,7 +520,6 @@ class ServiceManager(QtGui.QWidget):
                     write_list.append(path_from)
                     total_size += file_size
         if abort_save:
-            self._fileName = u''
             self.mainwindow.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             return False
