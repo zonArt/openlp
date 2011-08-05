@@ -222,7 +222,7 @@ class Renderer(object):
             line_end = u' '
         # Bibles
         if item.is_capable(ItemCapabilities.AllowsWordSplit):
-            pages = self._paginate_slide_words(text, line_end)
+            pages = self._paginate_slide_words(text.split(u'\n'), line_end)
         else:
             # Clean up line endings.
             lines = self._lines_split(text)
@@ -310,9 +310,10 @@ class Renderer(object):
             function show_text(newtext) {
                 var main = document.getElementById('main');
                 main.innerHTML = newtext;
-                // We have to return something, otherwise the renderer does not
-                // work as expected.
-                return document.all.main.offsetHeight;
+                // We need to be sure that the page is loaded, that is why we
+                // return the element's height (even though we do not use the
+                // returned value).
+                return main.offsetHeight;
             }
             </script><style>*{margin: 0; padding: 0; border: 0;}
             #main {position: absolute; top: 0px; %s %s}</style></head><body>
@@ -325,6 +326,8 @@ class Renderer(object):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one line.
+        If the line is too long it will be cut off when displayed.
 
         ``lines``
             The text to be fitted on the slide split into lines.
@@ -349,24 +352,25 @@ class Renderer(object):
         log.debug(u'_paginate_slide - End')
         return formatted
 
-    def _paginate_slide_words(self, text, line_end):
+    def _paginate_slide_words(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current
-        theme settings. This version is to handle text which needs to be split
-        into words to get it to fit.
+        theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one word.
+        If one line is too long it will be processed word by word. This is
+        sometimes need for **bible** verses.
 
-        ``text``
-            The words to be fitted on the slide split into lines.
+        ``lines``
+            The text to be fitted on the slide split into lines.
 
         ``line_end``
             The text added after each line. Either ``u' '`` or ``u'<br>``.
-            This is needed for bibles.
+            This is needed for **bibles**.
         """
         log.debug(u'_paginate_slide_words - Start')
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = text.split(u'\n')
         for line in lines:
             line = line.strip()
             html_line = expand_tags(line)
@@ -481,7 +485,7 @@ class Renderer(object):
 
     def _text_fits_on_slide(self, text):
         """
-        Checks if the given ``text`` fits on a slide. If it does, ``True`` is
+        Checks if the given ``text`` fits on a slide. If it does ``True`` is
         returned, otherwise ``False``.
 
         ``text``
