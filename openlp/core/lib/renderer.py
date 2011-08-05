@@ -247,11 +247,12 @@ class Renderer(object):
         """
         Calculate the default dimentions of the screen.
         """
-        size = self.screens.current[u'size']
-        self.width = size.width()
-        self.height = size.height()
+        screen_size = self.screens.current[u'size']
+        self.width = screen_size.width()
+        self.height = screen_size.height()
         self.screen_ratio = float(self.height) / float(self.width)
-        log.debug(u'_calculate default %s, %f' % (size, self.screen_ratio))
+        log.debug(u'_calculate default %s, %f' % (screen_size,
+            self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
