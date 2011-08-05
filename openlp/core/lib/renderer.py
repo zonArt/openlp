@@ -83,7 +83,7 @@ class Renderer(object):
         Updates the render manager's information about the current screen.
         """
         log.debug(u'Update Display')
-        self._calculate_default(self.screens.current[u'size'])
+        self._calculate_default()
         if self.display:
             self.display.close()
         self.display = MainDisplay(None, self.imageManager, False)
@@ -161,7 +161,7 @@ class Renderer(object):
             self.theme_data = override_theme
         else:
             self.theme_data = self.themeManager.getThemeData(theme)
-        self._calculate_default(self.screens.current[u'size'])
+        self._calculate_default()
         self._build_text_rectangle(self.theme_data)
         # if No file do not update cache
         if self.theme_data.background_filename:
@@ -183,7 +183,7 @@ class Renderer(object):
         # save value for use in format_slide
         self.force_page = force_page
         # set the default image size for previews
-        self._calculate_default(self.screens.preview[u'size'])
+        self._calculate_default()
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = theme_data
@@ -201,7 +201,7 @@ class Renderer(object):
             raw_html = serviceItem.get_rendered_frame(0)
             preview = self.display.text(raw_html)
             # Reset the real screen size for subsequent render requests
-            self._calculate_default(self.screens.current[u'size'])
+            self._calculate_default()
             return preview
         self.force_page = False
 
@@ -243,13 +243,11 @@ class Renderer(object):
             new_pages.append(page)
         return new_pages
 
-    def _calculate_default(self, size):
+    def _calculate_default(self):
         """
         Calculate the default dimentions of the screen.
-
-        ``size``
-            The screen's size to calculate the default of (``QtCore.QRect``).
         """
+        size = self.screens.current[u'size']
         self.width = size.width()
         self.height = size.height()
         self.screen_ratio = float(self.height) / float(self.width)
