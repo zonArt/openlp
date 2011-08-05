@@ -243,19 +243,17 @@ class Renderer(object):
             new_pages.append(page)
         return new_pages
 
-    def _calculate_default(self, screen):
+    def _calculate_default(self, size):
         """
         Calculate the default dimentions of the screen.
 
-        ``screen``
-            The screen to calculate the default of.
+        ``size``
+            The screen's size to calculate the default of (``QtCore.QRect``).
         """
-        log.debug(u'_calculate default %s', screen)
-        self.width = screen.width()
-        self.height = screen.height()
+        self.width = size.width()
+        self.height = size.height()
         self.screen_ratio = float(self.height) / float(self.width)
-        log.debug(u'calculate default %d, %d, %f',
-            self.width, self.height, self.screen_ratio)
+        log.debug(u'_calculate default %s, %f' % (size, self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -316,8 +314,8 @@ class Renderer(object):
                 // work as expected.
                 return document.all.main.offsetHeight;
             }
-            </script><style>*{margin:0; padding:0; border:0;}
-            #main {position:absolute; top:0px; %s %s}</style></head><body>
+            </script><style>*{margin: 0; padding: 0; border: 0;}
+            #main {position: absolute; top: 0px; %s %s}</style></head><body>
             <div id="main"></div></body></html>""" % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
