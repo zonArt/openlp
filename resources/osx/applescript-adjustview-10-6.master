@@ -49,15 +49,19 @@ on run
 			set theViewOptions to the icon view options of container window
 			set arrangement of theViewOptions to not arranged
 			set icon size of theViewOptions to 128
-			set background picture of theViewOptions to file ".installer-background.png"
-			make new alias file at container window to POSIX file "/Applications" with properties {name:"Applications"}
-			delay 5
+			set background picture of theViewOptions to file ".background:installer-background.png"
+                        if not exists file "Applications" then
+			    make new alias file at container window to POSIX file "/Applications" with properties {name:"Applications"}
+                        end if
+			delay 1
 			set position of item "%s" of container window to {160, 200}
 			set position of item ".Trashes" of container window to {100, 500}
-			set position of item ".installer-background.png" of container window to {200, 500}
+			set position of item ".background" of container window to {200, 500}
 			set position of item ".DS_Store" of container window to {400, 500}
 			set position of item "Applications" of container window to {550, 200}
-			set position of item ".VolumeIcon.icns" of container window to {500, 500}
+                        if exists file ".VolumeIcon.icns" then
+			    set position of item ".VolumeIcon.icns" of container window to {500, 500}
+                        end if
 			set position of item ".fseventsd" of container window to {300, 500}
 			if exists POSIX file ".SymAVx86QSFile" then
 				set position of item ".SymAVx86QSFile" of container window to {600, 500}
