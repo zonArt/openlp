@@ -408,20 +408,33 @@ class ServiceManager(QtGui.QWidget):
                     return False
         self.newFile()
 
-    def onLoadServiceClicked(self):
+    def onLoadServiceClicked(self, loadFile=None):
+        """
+        Loads the service file and saves the existing one it there is one
+        unchanged
+
+        ``loadFile``
+            The service file to the loaded.  Will be None is from menu so
+            selection will be required.
+        """
         if self.isModified():
             result = self.saveModifiedService()
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
                 self.saveFile()
-        fileName = unicode(QtGui.QFileDialog.getOpenFileName(self.mainwindow,
-            translate('OpenLP.ServiceManager', 'Open File'),
-            SettingsManager.get_last_dir(
-            self.mainwindow.serviceSettingsSection),
-            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
-        if not fileName:
-            return False
+        if not loadFile:
+            fileName = unicode(QtGui.QFileDialog.getOpenFileName(
+                self.mainwindow,
+                translate('OpenLP.ServiceManager', 'Open File'),
+                SettingsManager.get_last_dir(
+                self.mainwindow.serviceSettingsSection),
+                translate('OpenLP.ServiceManager',
+                'OpenLP Service Files (*.osz)')))
+            if not fileName:
+                return False
+        else:
+            fileName = loadFile
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
             split_filename(fileName)[0])
         self.loadFile(fileName)
@@ -1239,7 +1252,14 @@ class ServiceManager(QtGui.QWidget):
             Handle of the event pint passed
         """
         link = event.mimeData()
-        if link.hasText():
+        if event.mimeData().hasUrls():
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            for url in event.mimeData().urls():
+                filename = unicode(url.toLocalFile())
+                if filename.endswith(u'.osz'):
+                    self.onLoadServiceClicked(filename)
+        elif event.mimeData().hasText():
             plugin = unicode(event.mimeData().text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
