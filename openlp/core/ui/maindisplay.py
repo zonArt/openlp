@@ -188,7 +188,7 @@ class MainDisplay(QtGui.QGraphicsView):
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' % \
+        self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
 
