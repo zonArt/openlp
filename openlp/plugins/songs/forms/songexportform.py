@@ -249,6 +249,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
+        songs.sort(key=lambda custom: custom.title.lower())
         for song in songs:
             authors = u', '.join([author.display_name
                 for author in song.authors])
