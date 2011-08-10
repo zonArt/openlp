@@ -474,6 +474,7 @@ class ServiceManager(QtGui.QWidget):
                 item[u'service_item'].get_service_repr()})
             if not item[u'service_item'].uses_file():
                 continue
+            skipMissing = False
             for frame in item[u'service_item'].get_frames():
                 if item[u'service_item'].is_image():
                     path_from = frame[u'path']
@@ -483,19 +484,24 @@ class ServiceManager(QtGui.QWidget):
                 if path_from in write_list:
                     continue
                 if not os.path.exists(path_from):
-                    Receiver.send_message(u'cursor_normal')
-                    title = unicode(translate('OpenLP.ServiceManager',
-                        'Service File Missing'))
-                    message = unicode(translate('OpenLP.ServiceManager',
-                        'File missing from service\n\n %s \n\n'
-                        'Continue saving?' % path_from ))
-                    answer = QtGui.QMessageBox.critical(self, title, message,
-                        QtGui.QMessageBox.StandardButtons(
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) 
-                    if answer == QtGui.QMessageBox.No:
-                        self.mainwindow.finishedProgressBar()
-                        return False
-                    Receiver.send_message(u'cursor_busy')
+                    if not skipMissing:
+                        Receiver.send_message(u'cursor_normal')
+                        title = unicode(translate('OpenLP.ServiceManager',
+                            'Service File Missing'))
+                        message = unicode(translate('OpenLP.ServiceManager',
+                            'File missing from service\n\n %s \n\n'
+                            'Continue saving?' % path_from ))
+                        answer = QtGui.QMessageBox.critical(self, title,
+                            message,
+                            QtGui.QMessageBox.StandardButtons(
+                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No |
+                            QtGui.QMessageBox.YesToAll))
+                        if answer == QtGui.QMessageBox.No:
+                            self.mainwindow.finishedProgressBar()
+                            return False
+                        if answer == QtGui.QMessageBox.YesToAll:
+                            skipMissing = True
+                        Receiver.send_message(u'cursor_busy')
                 else:
                     file_size = os.path.getsize(path_from)
                     write_list.append(path_from)
