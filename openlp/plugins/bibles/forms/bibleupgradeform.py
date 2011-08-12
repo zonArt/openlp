@@ -37,7 +37,7 @@ from openlp.core.lib import Receiver, SettingsManager, translate, \
     check_directory_exists
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
     BiblesResourcesDB
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
@@ -254,23 +254,22 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, filename in enumerate(self.files):
             bible = OldBibleDB(self.mediaItem, path=self.path, file=filename[0])
             self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
-            checkBoxName = u'checkBox[%d]' % number
-            self.checkBox[number].setObjectName(checkBoxName)
+            self.checkBox[number].setObjectName(u'checkBox[%d]' % number)
             self.checkBox[number].setText(bible.get_name())
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
             self.verticalWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            verticalWidgetName = u'verticalWidget[%d]' % number
-            self.verticalWidget[number].setObjectName(verticalWidgetName)
+            self.verticalWidget[number].setObjectName(
+                u'verticalWidget[%d]' % number)
             self.horizontalLayout[number] = QtGui.QHBoxLayout(
                 self.verticalWidget[number])
             self.horizontalLayout[number].setContentsMargins(25, 0, 0, 0)
-            horizontalLayoutName = u'horizontalLayout[%d]' % number
-            self.horizontalLayout[number].setObjectName(horizontalLayoutName)
+            self.horizontalLayout[number].setObjectName(
+                u'horizontalLayout[%d]' % number)
             self.versionInfoPixmap[number] = QtGui.QLabel(
                 self.verticalWidget[number])
-            versionInfoPixmapName = u'versionInfoPixmap[%d]' % number
-            self.versionInfoPixmap[number].setObjectName(versionInfoPixmapName)
+            self.versionInfoPixmap[number].setObjectName(
+                u'versionInfoPixmap[%d]' % number)
             self.versionInfoPixmap[number].setPixmap(QtGui.QPixmap(
                 u':/bibles/bibles_upgrade_alert.png'))
             self.versionInfoPixmap[number].setAlignment(QtCore.Qt.AlignRight)
@@ -278,8 +277,8 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.versionInfoPixmap[number])
             self.versionInfoLabel[number] = QtGui.QLabel(
                 self.verticalWidget[number])
-            versionInfoLabelName = u'versionInfoLabel[%d]' % number
-            self.versionInfoLabel[number].setObjectName(versionInfoLabelName)
+            self.versionInfoLabel[number].setObjectName(
+                u'versionInfoLabel[%d]' % number)
             sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
                 QtGui.QSizePolicy.Preferred)
             sizePolicy.setHorizontalStretch(0)
@@ -291,14 +290,12 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.versionInfoLabel[number])
             self.formLayout.addWidget(self.verticalWidget[number])
             self.formWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            formWidgetName = u'formWidget[%d]' % number
-            self.formWidget[number].setObjectName(formWidgetName)
+            self.formWidget[number].setObjectName(u'formWidget[%d]' % number)
             self.formLayoutAttention[number] = QtGui.QFormLayout(
                 self.formWidget[number])
             self.formLayoutAttention[number].setContentsMargins(25, 0, 0, 5)
-            formLayoutAttentionName = u'formLayoutAttention[%d]' % number
             self.formLayoutAttention[number].setObjectName(
-                formLayoutAttentionName)
+                u'formLayoutAttention[%d]' % number)
             self.versionNameLabel[number] = QtGui.QLabel(
                 self.formWidget[number])
             self.versionNameLabel[number].setObjectName(u'VersionNameLabel')
@@ -431,7 +428,10 @@ class BibleUpgradeForm(OpenLPWizard):
                 if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     continue
                 # Move bibles to temp dir.
-                shutil.move(os.path.join(self.path, filename[0]), temp_dir)
+                if not os.path.exists(os.path.join(temp_dir, filename[0])):
+                    shutil.move(os.path.join(self.path, filename[0]), temp_dir)
+                else:
+                    delete_file(os.path.join(self.path, filename[0]))
             return True
         if self.currentPage() == self.progressPage:
             return True
@@ -684,20 +684,24 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
                     (number + 1, max_bibles, name),
                     self.progressBar.maximum() - self.progressBar.value())
-        # Remove old bibles.
-        shutil.rmtree(temp_dir, True)
 
     def postWizard(self):
         """
         Clean up the UI after the import has finished.
         """
+        temp_dir = os.path.join(gettempdir(), u'openlp')
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
             if self.success.has_key(number) and self.success[number]:
                 successful_import += 1
-            elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
-                failed_import += 1
+            else:
+                # Delete upgraded (but not complete, corrupted, ...) bible.
+                delete_file(os.path.join(self.path, filename[0]))
+                # Copy not upgraded bible back.
+                shutil.move(os.path.join(temp_dir, filename[0]), self.path)
+                if self.checkBox[number].checkState() == QtCore.Qt.Checked:
+                    failed_import += 1
         if failed_import > 0:
             failed_import_text = unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm',
@@ -720,4 +724,6 @@ class BibleUpgradeForm(OpenLPWizard):
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
+        # Remove old bibles.
+        shutil.rmtree(temp_dir, True)
         OpenLPWizard.postWizard(self)
