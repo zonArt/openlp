@@ -35,6 +35,7 @@ import re
 from lxml import etree
 
 from openlp.core.lib import check_directory_exists, Receiver, translate
+from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)

@@ -39,7 +39,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, clean_filename
 
 log = logging.getLogger(__name__)
 
@@ -62,19 +62,6 @@ class Verse(BaseModel):
     Topic model
     """
     pass
-
-def clean_filename(filename):
-    """
-    Clean up the version name of the Bible and convert it into a valid
-    file name.
-
-    ``filename``
-        The "dirty" file name or version name.
-    """
-    if not isinstance(filename, unicode):
-        filename = unicode(filename, u'utf-8')
-    filename = re.sub(r'[^\w]+', u'_', filename).strip(u'_')
-    return filename + u'.sqlite'
 
 def init_schema(url):
     """
@@ -158,7 +145,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
                 self.name = unicode(self.name, u'utf-8')
-            self.file = clean_filename(self.name)
+            self.file = clean_filename(self.name) + u'.sqlite'
         if u'file' in kwargs:
             self.file = kwargs[u'file']
         Manager.__init__(self, u'bibles', init_schema, self.file)

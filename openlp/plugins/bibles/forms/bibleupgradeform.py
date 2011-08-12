@@ -39,7 +39,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
-    BiblesResourcesDB, clean_filename
+    BiblesResourcesDB
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 
 log = logging.getLogger(__name__)
@@ -432,24 +432,6 @@ class BibleUpgradeForm(OpenLPWizard):
                     continue
                 # Move bibles to temp dir.
                 shutil.move(os.path.join(self.path, filename[0]), temp_dir)
-                version_name = unicode(self.versionNameEdit[number].text())
-                if not version_name:
-                    critical_error_message_box(UiStrings().EmptyField,
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'You need to specify a version name for your Bible.'))
-                    self.versionNameEdit[number].setFocus()
-                    return False
-                elif os.path.exists(os.path.join(self.path,
-                    clean_filename(version_name))):
-                    critical_error_message_box(
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'Bible Exists'),
-                        translate('BiblesPlugin.UpgradeWizardForm',
-                        'This Bible already exists. Please upgrade '
-                        'a different Bible, delete the existing one or '
-                        'uncheck.'))
-                    self.versionNameEdit[number].setFocus()
-                    return False
             return True
         if self.currentPage() == self.progressPage:
             return True
