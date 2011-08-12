@@ -247,7 +247,7 @@ class EventReceiver(QtCore.QObject):
         ``msg``
             Defaults to *None*. The message to send with the event.
         """
-        #log.debug(u'Event %s passed with payload %s' % (event, msg))
+        log.debug(u'Event %s passed with payload %s' % (event, msg))
         self.emit(QtCore.SIGNAL(event), msg)
 
 

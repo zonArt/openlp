@@ -618,7 +618,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     db_book = self.newbibles[number].create_book(book,
                         book_ref_id, book_details[u'testament_id'])
-                    # Try to import still downloaded verses
+                    # Try to import already downloaded verses.
                     oldbook = oldbible.get_book(book)
                     if oldbook:
                         verses = oldbible.get_verses(oldbook[u'id'])
