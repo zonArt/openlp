@@ -153,7 +153,7 @@ class BibleManager(object):
             if name is None:
                 delete_file(os.path.join(self.path, filename))
                 continue
-            # Find old database versions
+            # Find old database versions.
             if bible.is_old_database():
                 self.old_bible_databases.append([filename, name])
                 bible.session.close()
@@ -220,7 +220,7 @@ class BibleManager(object):
         return [
             {
                 u'name': book.name,
-                u'book_reference_id': book.book_reference_id, 
+                u'book_reference_id': book.book_reference_id,
                 u'chapters': self.db_cache[bible].get_chapter_count(book)
             }
             for book in self.db_cache[bible].get_books()
@@ -229,10 +229,10 @@ class BibleManager(object):
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.
-        
+
         ``bible``
             Unicode. The Bible to get the list of books from.
-        
+
         ``book``
             The book object to get the chapter count for.
         """
@@ -295,7 +295,7 @@ class BibleManager(object):
                     if db_book:
                         book_id = db_book.book_reference_id
                         log.debug(u'Book name corrected to "%s"', db_book.name)
-                        new_reflist.append((book_id, item[1], item[2], 
+                        new_reflist.append((book_id, item[1], item[2],
                             item[3]))
                     else:
                         log.debug(u'OpenLP failed to find book %s', item[0])

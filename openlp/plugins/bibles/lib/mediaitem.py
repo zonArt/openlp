@@ -612,7 +612,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
+        combo.addItems(map(unicode, range(range_from, range_to + 1)))
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
