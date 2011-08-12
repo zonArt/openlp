@@ -169,7 +169,6 @@ class BibleDB(QtCore.QObject, Manager):
         self.wizard = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
-        print kwargs, (self.file, self.path)
 
     def stop_import(self):
         """

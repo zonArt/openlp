@@ -35,10 +35,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate, \
     check_directory_exists
-from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, delete_file
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
     BiblesResourcesDB, clean_filename
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
@@ -523,9 +522,6 @@ class BibleUpgradeForm(OpenLPWizard):
                 file=filename[0])
             name = filename[1]
             if name is None:
-                print u'no Name!!!'
-                # FIXME: ?
-                delete_file(os.path.join(self.path, filename[0]))
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
@@ -568,7 +564,6 @@ class BibleUpgradeForm(OpenLPWizard):
                         u'name: "%s" failed' % (
                         meta_data[u'download source'],
                         meta_data[u'download name']))
-                    delete_database(temp_dir, clean_filename(name))
                     del self.newbibles[number]
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm',
@@ -593,7 +588,6 @@ class BibleUpgradeForm(OpenLPWizard):
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
                     log.warn(u'Upgrading from "%s" failed' % filename[0])
-                    delete_database(temp_dir, clean_filename(name))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -618,7 +612,6 @@ class BibleUpgradeForm(OpenLPWizard):
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'],
                             meta_data[u'download name']))
-                        delete_database(temp_dir, clean_filename(name))
                         del self.newbibles[number]
                         bible_failed = True
                         break
@@ -649,7 +642,6 @@ class BibleUpgradeForm(OpenLPWizard):
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
                     log.warn(u'Upgrading books from "%s" failed' % name)
-                    delete_database(temp_dir, clean_filename(name))
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -674,7 +666,6 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.warn(u'Upgrading books from %s " '\
                             'failed - aborted by user' % name)
-                        delete_database(temp_dir, clean_filename(name))
                         del self.newbibles[number]
                         bible_failed = True
                         break
@@ -699,7 +690,6 @@ class BibleUpgradeForm(OpenLPWizard):
             if not bible_failed:
                 self.newbibles[number].create_meta(u'Version', name)
                 oldbible.close_connection()
-                delete_file(os.path.join(temp_dir, filename[0]))
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
@@ -712,7 +702,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
                     (number + 1, max_bibles, name),
                     self.progressBar.maximum() - self.progressBar.value())
-                delete_database(temp_dir, clean_filename(name))
+        # Remove old bibles.
         shutil.rmtree(temp_dir, True)
 
     def postWizard(self):
