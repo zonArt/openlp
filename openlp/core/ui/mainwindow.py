@@ -110,6 +110,8 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName(u'menuBar')
         self.fileMenu = QtGui.QMenu(self.menuBar)
         self.fileMenu.setObjectName(u'fileMenu')
+        self.recentFilesMenu = QtGui.QMenu(self.fileMenu)
+        self.recentFilesMenu.setObjectName(u'recentFilesMenu')
         self.fileImportMenu = QtGui.QMenu(self.fileMenu)
         self.fileImportMenu.setObjectName(u'fileImportMenu')
         self.fileExportMenu = QtGui.QMenu(self.fileMenu)
@@ -303,10 +305,11 @@ class Ui_MainWindow(object):
             (self.importThemeItem, self.importLanguageItem))
         add_actions(self.fileExportMenu,
             (self.exportThemeItem, self.exportLanguageItem))
-        self.fileMenuActions = (self.fileNewItem, self.fileOpenItem,
+        add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
             self.fileSaveItem, self.fileSaveAsItem, None,
-            self.printServiceOrderItem, None, self.fileImportMenu.menuAction(),
-            self.fileExportMenu.menuAction(), self.fileExitItem)
+            self.recentFilesMenu.menuAction(), None, self.printServiceOrderItem,
+            None, self.fileImportMenu.menuAction(),
+            self.fileExportMenu.menuAction(), self.fileExitItem))
         add_actions(self.viewModeMenu, (self.modeDefaultItem,
             self.modeSetupItem, self.modeLiveItem))
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
@@ -347,7 +350,7 @@ class Ui_MainWindow(object):
         self.mediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
         QtCore.QObject.connect(self.fileMenu,
-            QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
+            QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
@@ -364,6 +367,8 @@ class Ui_MainWindow(object):
         self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.fileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
+        self.recentFilesMenu.setTitle(
+            translate('OpenLP.MainWindow', '&Recent Files'))
         self.viewMenu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.viewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.toolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
@@ -535,8 +540,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
-        # Once settings are loaded update FileMenu with recentFiles
-        self.updateFileMenu()
+        # Once settings are loaded update the menu with the recent files.
+        self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem,
@@ -1134,30 +1139,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(self.controlSplitter.saveState()))
         settings.endGroup()
 
-    def updateFileMenu(self):
+    def updateRecentFilesMenu(self):
         """
-        Updates the file menu with the latest list of service files accessed.
+        Updates the recent file menu with the latest list of service files
+        accessed.
         """
         recentFileCount = QtCore.QSettings().value(
             u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
-        self.fileMenu.clear()
-        add_actions(self.fileMenu, self.fileMenuActions[:-1])
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if QtCore.QFile.exists(recentFile)]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
-        if recentFilesToDisplay:
-            self.fileMenu.addSeparator()
-            for fileId, filename in enumerate(recentFilesToDisplay):
-                log.debug('Recent file name: %s', filename)
-                action =  base_action(self, u'')
-                action.setText(u'&%d %s' %
-                    (fileId + 1, QtCore.QFileInfo(filename).fileName()))
-                action.setData(QtCore.QVariant(filename))
-                self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.serviceManagerContents.onRecentServiceClicked)
-                self.fileMenu.addAction(action)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.fileMenuActions[-1])
+        self.recentFilesMenu.clear()
+        for fileId, filename in enumerate(recentFilesToDisplay):
+            log.debug('Recent file name: %s', filename)
+            action =  base_action(self, u'')
+            action.setText(u'&%d %s' %
+                (fileId + 1, QtCore.QFileInfo(filename).fileName()))
+            action.setData(QtCore.QVariant(filename))
+            self.connect(action, QtCore.SIGNAL(u'triggered()'),
+                self.serviceManagerContents.onRecentServiceClicked)
+            self.recentFilesMenu.addAction(action)
+        clearRecentFilesAction =  base_action(self, u'')
+        clearRecentFilesAction.setText(
+            translate('OpenLP.MainWindow', 'Clear List',
+            'Clear List of recent files'))
+        clearRecentFilesAction.setStatusTip(
+            translate('OpenLP.MainWindow', 'Clear the list of recent files.'))
+        add_actions(self.recentFilesMenu, (None, clearRecentFilesAction))
+        self.connect(clearRecentFilesAction, QtCore.SIGNAL(u'triggered()'),
+            self.recentFiles.clear)
+        clearRecentFilesAction.setEnabled(not self.recentFiles.isEmpty())
 
     def addRecentFile(self, filename):
         """
