@@ -703,7 +703,12 @@ class BibleUpgradeForm(OpenLPWizard):
                 # Delete upgraded (but not complete, corrupted, ...) bible.
                 delete_file(os.path.join(self.path, filename[0]))
                 # Copy not upgraded bible back.
-                shutil.move(os.path.join(temp_dir, filename[0]), self.path)
+                try:
+                    shutil.move(os.path.join(temp_dir, filename[0]), self.path)
+                except shutil.Error:
+                    # We can ignore any error, because the temp directory is
+                    # will be deleted later.
+                    pass
                 if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     failed_import += 1
         if failed_import > 0:
@@ -728,6 +733,6 @@ class BibleUpgradeForm(OpenLPWizard):
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
-        # Remove old bibles.
+        # Remove temp directory.
         shutil.rmtree(temp_dir, True)
         OpenLPWizard.postWizard(self)
