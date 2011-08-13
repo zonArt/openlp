@@ -491,16 +491,19 @@ class BibleUpgradeForm(OpenLPWizard):
             if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 max_bibles += 1
         temp_dir = os.path.join(gettempdir(), u'openlp')
+        oldBible = None
         for number, filename in enumerate(self.files):
+            # Close the previous bible's connection.
+            if oldBible is not None:
+                oldBible.close_connection()
             if self.stop_import_flag:
-                bible_failed = True
+                self.success[number] = False
                 break
-            bible_failed = False
-            self.success[number] = False
+            self.success[number] = True
             if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 continue
             self.progressBar.reset()
-            oldbible = OldBibleDB(self.mediaItem, path=temp_dir,
+            oldBible = OldBibleDB(self.mediaItem, path=temp_dir,
                 file=filename[0])
             name = filename[1]
             if name is None:
@@ -519,7 +522,7 @@ class BibleUpgradeForm(OpenLPWizard):
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name, file=filename[0])
             self.newbibles[number].register(self.plugin.upgrade_wizard)
-            metadata = oldbible.get_metadata()
+            metadata = oldBible.get_metadata()
             webbible = False
             meta_data = {}
             for meta in metadata:
@@ -580,7 +583,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     if self.stop_import_flag:
-                        bible_failed = True
+                        self.success[number] = False
                         break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -595,22 +598,22 @@ class BibleUpgradeForm(OpenLPWizard):
                             meta_data[u'download source'],
                             meta_data[u'download name']))
                         del self.newbibles[number]
-                        bible_failed = True
+                        self.success[number] = False
                         break
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     db_book = self.newbibles[number].create_book(book,
                         book_ref_id, book_details[u'testament_id'])
                     # Try to import already downloaded verses.
-                    oldbook = oldbible.get_book(book)
+                    oldbook = oldBible.get_book(book)
                     if oldbook:
-                        verses = oldbible.get_verses(oldbook[u'id'])
+                        verses = oldBible.get_verses(oldbook[u'id'])
                         if not verses:
                             log.warn(u'No verses found to import for book '
                                 u'"%s"', book)
                             continue
                         for verse in verses:
                             if self.stop_import_flag:
-                                bible_failed = True
+                                self.success[number] = False
                                 break
                             self.newbibles[number].create_verse(db_book.id,
                                 int(verse[u'chapter']),
@@ -631,11 +634,11 @@ class BibleUpgradeForm(OpenLPWizard):
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
                     continue
-                books = oldbible.get_books()
+                books = oldBible.get_books()
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     if self.stop_import_flag:
-                        bible_failed = True
+                        self.success[number] = False
                         break
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -649,12 +652,12 @@ class BibleUpgradeForm(OpenLPWizard):
                         log.warn(u'Upgrading books from %s " '\
                             'failed - aborted by user' % name)
                         del self.newbibles[number]
-                        bible_failed = True
+                        self.success[number] = False
                         break
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     db_book = self.newbibles[number].create_book(book[u'name'],
                         book_ref_id, book_details[u'testament_id'])
-                    verses = oldbible.get_verses(book[u'id'])
+                    verses = oldBible.get_verses(book[u'id'])
                     if not verses:
                         log.warn(u'No verses found to import for book '
                             u'"%s"', book[u'name'])
@@ -662,28 +665,29 @@ class BibleUpgradeForm(OpenLPWizard):
                         continue
                     for verse in verses:
                         if self.stop_import_flag:
-                            bible_failed = True
+                            self.success[number] = False
                             break
                         self.newbibles[number].create_verse(db_book.id,
                             int(verse[u'chapter']),
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
-            if not bible_failed:
+            if self.success[number]:
                 self.newbibles[number].create_meta(u'Version', name)
-                oldbible.close_connection()
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Complete')) %
                     (number + 1, max_bibles, name))
-                self.success[number] = True
             else:
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
                     (number + 1, max_bibles, name),
                     self.progressBar.maximum() - self.progressBar.value())
+        # Close the last bible's connection.
+        if oldBible is not None:
+            oldBible.close_connection()
 
     def postWizard(self):
         """
