@@ -113,8 +113,6 @@ class BibleUpgradeForm(OpenLPWizard):
         self.stop_import_flag = True
         if not self.currentPage() == self.progressPage:
             self.done(QtGui.QDialog.Rejected)
-        else:
-            self.postWizard()
 
     def onCurrentIdChanged(self, pageId):
         """
