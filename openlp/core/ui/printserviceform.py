@@ -24,6 +24,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import cgi
 import datetime
 import os
 
@@ -183,7 +184,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'style', custom_css, html_data.head,
             attribute=(u'type', u'text/css'))
         self._addElement(u'body', parent=html_data)
-        self._addElement(u'h1', unicode(self.titleLineEdit.text()),
+        self._addElement(u'h1', cgi.escape(unicode(self.titleLineEdit.text())),
             html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
@@ -193,8 +194,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 classId=u'customNotes')
             self._addElement(u'span', translate('OpenLP.ServiceManager',
                 'Custom Service Notes: '), div, classId=u'customNotesTitle')
-            self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
-                classId=u'customNotesText')
+            self._addElement(u'span',
+                cgi.escape(self.footerTextEdit.toPlainText()),
+                div, classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
 
@@ -204,8 +206,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
         self._addElement(u'img', parent=item_title,
             attribute=(u'src', item.icon))
-        self._addElement(u'span', u'&nbsp;' + item.get_display_title(),
-            item_title)
+        self._addElement(u'span',
+            u'&nbsp;' + cgi.escape(item.get_display_title()), item_title)
         if self.slideTextCheckBox.isChecked():
             # Add the text of the service item.
             if item.is_text():
@@ -230,8 +232,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             foot_text = item.foot_text
             foot_text = foot_text.partition(u'<br>')[2]
             if foot_text:
-                foot = self._addElement(u'div', foot_text, parent=div,
-                    classId=u'itemFooter')
+                foot_text = cgi.escape(foot_text.replace(u'<br>', u'\n'))
+                self._addElement(u'div', foot_text.replace(u'\n', u'<br>'),
+                    parent=div, classId=u'itemFooter')
         # Add service items' notes.
         if self.notesCheckBox.isChecked():
             if item.notes:
@@ -239,8 +242,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 self._addElement(u'span',
                     translate('OpenLP.ServiceManager', 'Notes: '), p,
                     classId=u'itemNotesTitle')
-                notes = self._addElement(u'span',
-                    item.notes.replace(u'\n', u'<br>'), p,
+                self._addElement(u'span',
+                    cgi.escape(unicode(item.notes)).replace(u'\n', u'<br>'), p,
                     classId=u'itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.metaDataCheckBox.isChecked():
