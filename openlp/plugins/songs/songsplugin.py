@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -33,7 +34,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, base_action, icon_action
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -55,7 +57,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
@@ -64,9 +66,13 @@ class SongsPlugin(Plugin):
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
+        self.songImportItem.setVisible(True)
+        self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.songImportItem, UiStrings().Import)
+        action_list.add_action(self.songExportItem, UiStrings().Export)
+        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -78,15 +84,13 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongImportItem = QtGui.QAction(import_menu)
-        self.SongImportItem.setObjectName(u'SongImportItem')
-        self.SongImportItem.setText(translate(
-            'SongsPlugin', '&Song'))
-        self.SongImportItem.setToolTip(translate('SongsPlugin',
+        self.songImportItem = base_action(import_menu, u'songImportItem')
+        self.songImportItem.setText(translate('SongsPlugin', '&Song'))
+        self.songImportItem.setToolTip(translate('SongsPlugin',
             'Import songs using the import wizard.'))
-        import_menu.addAction(self.SongImportItem)
+        import_menu.addAction(self.songImportItem)
         # Signals and slots
-        QtCore.QObject.connect(self.SongImportItem,
+        QtCore.QObject.connect(self.songImportItem,
             QtCore.SIGNAL(u'triggered()'), self.onSongImportItemClicked)
 
     def addExportMenuItem(self, export_menu):
@@ -99,15 +103,13 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongExportItem = QtGui.QAction(export_menu)
-        self.SongExportItem.setObjectName(u'SongExportItem')
-        self.SongExportItem.setText(translate(
-            'SongsPlugin', '&Song'))
-        self.SongExportItem.setToolTip(translate('SongsPlugin',
+        self.songExportItem = base_action(export_menu, u'songExportItem')
+        self.songExportItem.setText(translate('SongsPlugin', '&Song'))
+        self.songExportItem.setToolTip(translate('SongsPlugin',
             'Exports songs using the export wizard.'))
-        export_menu.addAction(self.SongExportItem)
+        export_menu.addAction(self.songExportItem)
         # Signals and slots
-        QtCore.QObject.connect(self.SongExportItem,
+        QtCore.QObject.connect(self.songExportItem,
             QtCore.SIGNAL(u'triggered()'), self.onSongExportItemClicked)
 
     def addToolsMenuItem(self, tools_menu):
@@ -120,9 +122,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReindexItem = QtGui.QAction(tools_menu)
-        self.toolsReindexItem.setIcon(build_icon(u':/plugins/plugin_songs.png'))
-        self.toolsReindexItem.setObjectName(u'toolsReindexItem')
+        self.toolsReindexItem = icon_action(tools_menu, u'toolsReindexItem',
+            u':/plugins/plugin_songs.png')
         self.toolsReindexItem.setText(
             translate('SongsPlugin', '&Re-index Songs'))
         self.toolsReindexItem.setStatusTip(
@@ -141,7 +142,7 @@ class SongsPlugin(Plugin):
         if maxSongs == 0:
             return
         progressDialog = QtGui.QProgressDialog(
-            translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
+            translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.formparent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
@@ -214,13 +215,13 @@ class SongsPlugin(Plugin):
         tooltips = {
             u'load': u'',
             u'import': u'',
-            u'new': translate('SongsPlugin', 'Add a new Song'),
-            u'edit': translate('SongsPlugin', 'Edit the selected Song'),
-            u'delete': translate('SongsPlugin', 'Delete the selected Song'),
-            u'preview': translate('SongsPlugin', 'Preview the selected Song'),
-            u'live': translate('SongsPlugin', 'Send the selected Song live'),
+            u'new': translate('SongsPlugin', 'Add a new song.'),
+            u'edit': translate('SongsPlugin', 'Edit the selected song.'),
+            u'delete': translate('SongsPlugin', 'Delete the selected song.'),
+            u'preview': translate('SongsPlugin', 'Preview the selected song.'),
+            u'live': translate('SongsPlugin', 'Send the selected song live.'),
             u'service': translate('SongsPlugin',
-                'Add the selected Song to the service')
+                'Add the selected song to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
@@ -229,12 +230,14 @@ class SongsPlugin(Plugin):
         If the first time wizard has run, this function is run to import all the
         new songs into the database.
         """
+        self.onToolsReindexItemTriggered()
         db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        if not os.path.exists(db_dir):
+            return
         song_dbs = []
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
-        self.onToolsReindexItemTriggered()
         if len(song_dbs) == 0:
             return
         progress = QtGui.QProgressDialog(self.formparent)
@@ -258,5 +261,11 @@ class SongsPlugin(Plugin):
         """
         log.info(u'Songs Finalising')
         self.manager.finalise()
+        self.songImportItem.setVisible(False)
+        self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.songImportItem, UiStrings().Import)
+        action_list.remove_action(self.songExportItem, UiStrings().Export)
+        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)

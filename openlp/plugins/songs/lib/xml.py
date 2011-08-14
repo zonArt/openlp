@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -72,6 +73,8 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+CHORD_REGEX = re.compile(u'<chord name=".*?"/>')
+
 class SongXML(object):
     """
     This class builds and parses the XML used to describe songs.
@@ -134,14 +137,26 @@ class SongXML(object):
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
-        if xml[:5] == u'<?xml':
+        verse_list = []
+        if not xml.startswith(u'<?xml') and not xml.startswith(u'<song'):
+            # This is an old style song, without XML. Let's handle it correctly
+            # by iterating through the verses, and then recreating the internal
+            # xml object as well.
+            self.song_xml = objectify.fromstring(u'<song version="1.0" />')
+            self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
+            verses = xml.split(u'\n\n')
+            for count, verse in enumerate(verses):
+                verse_list.append([{u'type': u'v', u'label': unicode(count)},
+                    unicode(verse)])
+                self.add_verse_to_lyrics(u'v', unicode(count), verse)
+            return verse_list
+        elif xml.startswith(u'<?xml'):
             xml = xml[38:]
         try:
             self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
         xml_iter = self.song_xml.getiterator()
-        verse_list = []
         for element in xml_iter:
             if element.tag == u'verse':
                 if element.text is None:
@@ -305,7 +320,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
+        xml = CHORD_REGEX.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties
@@ -500,7 +515,7 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        song.song_book_id = 0
+        song.song_book_id = None
         song.song_number = u''
         if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:
@@ -513,8 +528,7 @@ class OpenLyrics(object):
                         book = Book.populate(name=bookname, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
-                    if hasattr(songbook, u'entry'):
-                        song.song_number = self._get(songbook, u'entry')
+                    song.song_number = self._get(songbook, u'entry')
                     # We only support one song book, so take the first one.
                     break
 

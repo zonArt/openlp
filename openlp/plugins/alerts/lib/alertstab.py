@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -33,8 +34,8 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, name, visible_title):
-        SettingsTab.__init__(self, name, visible_title)
+    def __init__(self, parent, name, visible_title, icon_path):
+        SettingsTab.__init__(self, parent, name, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
@@ -109,12 +110,12 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Font size:'))
-        self.FontSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
+        self.FontSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
         self.TimeoutLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(UiStrings.Seconds)
-        self.PreviewGroupBox.setTitle(UiStrings.Preview)
-        self.FontPreview.setText(UiStrings.OLPV2)
+        self.TimeoutSpinBox.setSuffix(UiStrings().Seconds)
+        self.PreviewGroupBox.setTitle(UiStrings().Preview)
+        self.FontPreview.setText(UiStrings().OLPV2)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -192,3 +193,4 @@ class AlertsTab(SettingsTab):
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))
+

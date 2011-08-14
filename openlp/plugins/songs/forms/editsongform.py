@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -31,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    critical_error_message_box
+    critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -46,12 +47,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     log.info(u'%s EditSongForm loaded', __name__)
 
-    def __init__(self, parent, manager):
+    def __init__(self, mediaitem, parent, manager):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
+        self.mediaitem = mediaitem
         self.song = None
         # can this be automated?
         self.width = 400
@@ -89,14 +90,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.renderManager.theme_manager.onAddTheme)
+            self.mediaitem.plugin.renderer.themeManager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(UiStrings.SaveAndPreview)
+        self.previewButton.setText(UiStrings().SaveAndPreview)
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -208,20 +209,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.alternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
-            id = self.songBookComboBox.findText(
-                unicode(book_name.name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-            self.songBookComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(
+                self.songBookComboBox, unicode(book_name.name))
         if self.song.theme_name:
-            id = self.themeComboBox.findText(
-                unicode(self.song.theme_name), QtCore.Qt.MatchExactly)
-            if id == -1:
-                # Not Found
-                id = 0
-                self.song.theme_name = None
-            self.themeComboBox.setCurrentIndex(id)
+            find_and_set_in_combo_box(
+                self.themeComboBox, unicode(self.song.theme_name))
         if self.song.copyright:
             self.copyrightEdit.setText(self.song.copyright)
         else:
@@ -243,7 +235,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
-        self.verseListWidget.setColumnWidth(0, self.width)
         # This is just because occasionally the lyrics come back as a "buffer"
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)
@@ -269,6 +260,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if index is None:
                     index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
+                if verse[0][u'label'] == u'':
+                    verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
@@ -364,7 +357,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -423,7 +416,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self, UiStrings.NISs,
+            QtGui.QMessageBox.warning(self, UiStrings().NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
@@ -585,11 +578,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     if verse_index is not None:
                         order.append(VerseType.Tags[verse_index] + u'1')
                     else:
-                        order.append(u'') # it matches no verses anyway
+                        # it matches no verses anyway
+                        order.append(u'')
                 else:
                     verse_index = VerseType.from_translated_tag(item[0])
                     if verse_index is None:
-                        order.append(u'') # same as above
+                        # it matches no verses anyway
+                        order.append(u'')
                     else:
                         verse_tag = VerseType.Tags[verse_index]
                         verse_num = item[1:].lower()
@@ -655,7 +650,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if item == 0 and text:
             temp_song_book = text
-        self.parent.song_maintenance_form.exec_()
+        self.mediaitem.song_maintenance_form.exec_()
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()
@@ -702,7 +697,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
-            Receiver.send_message(u'songs_load_list')
+            self.song = None
             QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
@@ -760,8 +755,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.topics.append(self.manager.get_object(Topic, topicId))
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        if not preview:
-            self.song = None
+        self.mediaitem.auto_select_id = self.song.id
 
     def _processLyrics(self):
         """

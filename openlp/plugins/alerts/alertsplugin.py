@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -26,10 +27,12 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
+from openlp.core.lib.ui import icon_action, UiStrings
+from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
 from openlp.plugins.alerts.forms import AlertForm
@@ -40,10 +43,11 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', plugin_helpers,
-            settingsTabClass=AlertsTab)
+        Plugin.__init__(self, u'alerts', plugin_helpers,
+            settings_tab_class=AlertsTab)
         self.weight = -3
-        self.icon = build_icon(u':/plugins/plugin_alerts.png')
+        self.icon_path = u':/plugins/plugin_alerts.png'
+        self.icon = build_icon(self.icon_path)
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self)
@@ -58,14 +62,13 @@ class AlertsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsAlertItem = QtGui.QAction(tools_menu)
-        self.toolsAlertItem.setIcon(build_icon(u':/plugins/plugin_alerts.png'))
-        self.toolsAlertItem.setObjectName(u'toolsAlertItem')
+        self.toolsAlertItem = icon_action(tools_menu, u'toolsAlertItem',
+            u':/plugins/plugin_alerts.png')
         self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.serviceManager.mainwindow.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
@@ -74,6 +77,8 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
+        action_list = ActionList.get_instance()
+        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
         self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
@@ -84,6 +89,8 @@ class AlertsPlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
+        action_list = ActionList.get_instance()
+        action_list.remove_action(self.toolsAlertItem, u'Tools')
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
@@ -97,7 +104,7 @@ class AlertsPlugin(Plugin):
     def about(self):
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
             '<br />The alert plugin controls the displaying of nursery alerts '
-            'on the display screen')
+            'on the display screen.')
         return about_text
 
     def setPluginTextStrings(self):
@@ -113,3 +120,4 @@ class AlertsPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
+

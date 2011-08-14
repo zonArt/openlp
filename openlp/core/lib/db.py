@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -31,8 +32,9 @@ import os
 
 from PyQt4 import QtCore
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import NullPool
 
 from openlp.core.utils import AppLocation, delete_file
 
@@ -51,7 +53,7 @@ def init_db(url, auto_flush=True, auto_commit=False):
     ``auto_commit``
         Sets the commit behaviour of the session
     """
-    engine = create_engine(url)
+    engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
     session = scoped_session(sessionmaker(autoflush=auto_flush,
         autocommit=auto_commit, bind=engine))
@@ -87,8 +89,8 @@ class BaseModel(object):
         Creates an instance of a class and populates it, returning the instance
         """
         instance = cls()
-        for key in kwargs:
-            instance.__setattr__(key, kwargs[key])
+        for key, value in kwargs.iteritems():
+            instance.__setattr__(key, value)
         return instance
 
 

@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -107,12 +108,12 @@ class Ui_StartTimeDialog(object):
     def retranslateUi(self, StartTimeDialog):
         self.setWindowTitle(translate('OpenLP.StartTimeForm',
             'Item Start and Finish Time'))
-        self.hourSpinBox.setSuffix(UiStrings.Hours)
-        self.minuteSpinBox.setSuffix(UiStrings.Minutes)
-        self.secondSpinBox.setSuffix(UiStrings.Seconds)
-        self.hourFinishSpinBox.setSuffix(UiStrings.Hours)
-        self.minuteFinishSpinBox.setSuffix(UiStrings.Minutes)
-        self.secondFinishSpinBox.setSuffix(UiStrings.Seconds)
+        self.hourSpinBox.setSuffix(UiStrings().Hours)
+        self.minuteSpinBox.setSuffix(UiStrings().Minutes)
+        self.secondSpinBox.setSuffix(UiStrings().Seconds)
+        self.hourFinishSpinBox.setSuffix(UiStrings().Hours)
+        self.minuteFinishSpinBox.setSuffix(UiStrings().Minutes)
+        self.secondFinishSpinBox.setSuffix(UiStrings().Seconds)
         self.hourLabel.setText(translate('OpenLP.StartTimeForm', 'Hours:'))
         self.minuteLabel.setText(translate('OpenLP.StartTimeForm', 'Minutes:'))
         self.secondLabel.setText(translate('OpenLP.StartTimeForm', 'Seconds:'))

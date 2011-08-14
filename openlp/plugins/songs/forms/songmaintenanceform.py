@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -115,7 +116,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 critical_error_message_box(dlg_title, err_text)
         else:
-            critical_error_message_box(dlg_title, UiStrings.NISs)
+            critical_error_message_box(dlg_title, UiStrings().NISs)
 
     def resetAuthors(self):
         """
@@ -386,7 +387,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         existing_author = self.manager.get_object_filtered(Author,
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name,
-                Author.display_name == old_author.display_name))
+                Author.display_name == old_author.display_name,
+                Author.id != old_author.id))
         # Find the songs, which have the old_author as author.
         songs = self.manager.get_all_objects(Song,
             Song.authors.contains(old_author))
@@ -408,7 +410,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         # Find the duplicate.
         existing_topic = self.manager.get_object_filtered(Topic,
-            Topic.name == old_topic.name)
+            and_(Topic.name == old_topic.name, Topic.id != old_topic.id))
         # Find the songs, which have the old_topic as topic.
         songs = self.manager.get_all_objects(Song,
             Song.topics.contains(old_topic))
@@ -431,7 +433,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         # Find the duplicate.
         existing_book = self.manager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
-                Book.publisher == old_book.publisher))
+                Book.publisher == old_book.publisher,
+                Book.id != old_book.id))
         # Find the songs, which have the old_book as book.
         songs = self.manager.get_all_objects(Song,
             Song.song_book_id == old_book.id)
@@ -504,3 +507,4 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             deleteButton.setEnabled(True)
             editButton.setEnabled(True)
+
