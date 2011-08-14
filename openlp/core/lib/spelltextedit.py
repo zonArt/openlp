@@ -48,10 +48,10 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
-    def __init__(self, parent=None, formatting_tags_allowed=True):
+    def __init__(self, parent=None, formattingTagsAllowed=True):
         global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, parent)
-        self.formattingTagsAllowed = formatting_tags_allowed
+        self.formattingTagsAllowed = formattingTagsAllowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
