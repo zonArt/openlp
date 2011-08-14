@@ -496,6 +496,9 @@ class BibleUpgradeForm(OpenLPWizard):
             # Close the previous bible's connection.
             if oldBible is not None:
                 oldBible.close_connection()
+                # Set to None to make obvious that we have already closed the
+                # database.
+                oldBible = None
             if self.stop_import_flag:
                 self.success[number] = False
                 break
