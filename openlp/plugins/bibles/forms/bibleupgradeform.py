@@ -92,20 +92,6 @@ class BibleUpgradeForm(OpenLPWizard):
         log.debug(u'Stopping import')
         self.stop_import_flag = True
 
-    def onCheckBoxIndexChanged(self, index):
-        """
-        Show/Hide warnings if CheckBox state has changed
-        """
-        for number, filename in enumerate(self.files):
-            if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
-                self.verticalWidget[number].hide()
-                self.formWidget[number].hide()
-            else:
-                version_name = unicode(self.versionNameEdit[number].text())
-                if self.manager.exists(version_name):
-                    self.verticalWidget[number].show()
-                    self.formWidget[number].show()
-
     def reject(self):
         """
         Stop the wizard on cancel button, close button or ESC key.
@@ -242,14 +228,6 @@ class BibleUpgradeForm(OpenLPWizard):
         Add the content to the scrollArea.
         """
         self.checkBox = {}
-        self.versionNameEdit = {}
-        self.versionNameLabel = {}
-        self.versionInfoLabel = {}
-        self.versionInfoPixmap = {}
-        self.verticalWidget = {}
-        self.horizontalLayout = {}
-        self.formWidget = {}
-        self.formLayoutAttention = {}
         for number, filename in enumerate(self.files):
             bible = OldBibleDB(self.mediaItem, path=self.path, file=filename[0])
             self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
@@ -257,60 +235,6 @@ class BibleUpgradeForm(OpenLPWizard):
             self.checkBox[number].setText(bible.get_name())
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
-            self.verticalWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            self.verticalWidget[number].setObjectName(
-                u'verticalWidget[%d]' % number)
-            self.horizontalLayout[number] = QtGui.QHBoxLayout(
-                self.verticalWidget[number])
-            self.horizontalLayout[number].setContentsMargins(25, 0, 0, 0)
-            self.horizontalLayout[number].setObjectName(
-                u'horizontalLayout[%d]' % number)
-            self.versionInfoPixmap[number] = QtGui.QLabel(
-                self.verticalWidget[number])
-            self.versionInfoPixmap[number].setObjectName(
-                u'versionInfoPixmap[%d]' % number)
-            self.versionInfoPixmap[number].setPixmap(QtGui.QPixmap(
-                u':/bibles/bibles_upgrade_alert.png'))
-            self.versionInfoPixmap[number].setAlignment(QtCore.Qt.AlignRight)
-            self.horizontalLayout[number].addWidget(
-                self.versionInfoPixmap[number])
-            self.versionInfoLabel[number] = QtGui.QLabel(
-                self.verticalWidget[number])
-            self.versionInfoLabel[number].setObjectName(
-                u'versionInfoLabel[%d]' % number)
-            sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-                QtGui.QSizePolicy.Preferred)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            sizePolicy.setHeightForWidth(
-                self.versionInfoLabel[number].sizePolicy().hasHeightForWidth())
-            self.versionInfoLabel[number].setSizePolicy(sizePolicy)
-            self.horizontalLayout[number].addWidget(
-                self.versionInfoLabel[number])
-            self.formLayout.addWidget(self.verticalWidget[number])
-            self.formWidget[number] = QtGui.QWidget(self.scrollAreaContents)
-            self.formWidget[number].setObjectName(u'formWidget[%d]' % number)
-            self.formLayoutAttention[number] = QtGui.QFormLayout(
-                self.formWidget[number])
-            self.formLayoutAttention[number].setContentsMargins(25, 0, 0, 5)
-            self.formLayoutAttention[number].setObjectName(
-                u'formLayoutAttention[%d]' % number)
-            self.versionNameLabel[number] = QtGui.QLabel(
-                self.formWidget[number])
-            self.versionNameLabel[number].setObjectName(u'VersionNameLabel')
-            self.formLayoutAttention[number].setWidget(0,
-                QtGui.QFormLayout.LabelRole, self.versionNameLabel[number])
-            self.versionNameEdit[number] = QtGui.QLineEdit(
-                self.formWidget[number])
-            self.versionNameEdit[number].setObjectName(u'VersionNameEdit')
-            self.formLayoutAttention[number].setWidget(0,
-                QtGui.QFormLayout.FieldRole, self.versionNameEdit[number])
-            self.versionNameEdit[number].setText(bible.get_name())
-            self.formLayout.addWidget(self.formWidget[number])
-            # Set up the Signal for the checkbox.
-            QtCore.QObject.connect(self.checkBox[number],
-                QtCore.SIGNAL(u'stateChanged(int)'),
-                self.onCheckBoxIndexChanged)
         self.spacerItem = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.formLayout.addItem(self.spacerItem)
@@ -323,23 +247,6 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, filename in enumerate(self.files):
             self.formLayout.removeWidget(self.checkBox[number])
             self.checkBox[number].setParent(None)
-            self.horizontalLayout[number].removeWidget(
-                self.versionInfoPixmap[number])
-            self.versionInfoPixmap[number].setParent(None)
-            self.horizontalLayout[number].removeWidget(
-                self.versionInfoLabel[number])
-            self.versionInfoLabel[number].setParent(None)
-            self.formLayout.removeWidget(self.verticalWidget[number])
-            self.verticalWidget[number].setParent(None)
-            self.formLayoutAttention[number].removeWidget(
-                self.versionNameLabel[number])
-            self.versionNameLabel[number].setParent(None)
-            self.formLayoutAttention[number].removeWidget(
-                self.versionNameEdit[number])
-            self.formLayoutAttention[number].deleteLater()
-            self.versionNameEdit[number].setParent(None)
-            self.formLayout.removeWidget(self.formWidget[number])
-            self.formWidget[number].setParent(None)
         self.formLayout.removeItem(self.spacerItem)
 
     def retranslateUi(self):
@@ -381,12 +288,6 @@ class BibleUpgradeForm(OpenLPWizard):
         self.selectPage.setSubTitle(
             translate('BiblesPlugin.UpgradeWizardForm',
             'Please select the Bibles to upgrade'))
-        for number, bible in enumerate(self.files):
-            self.versionNameLabel[number].setText(
-                translate('BiblesPlugin.UpgradeWizardForm', 'Version name:'))
-            self.versionInfoLabel[number].setText(
-                translate('BiblesPlugin.UpgradeWizardForm', 'This '
-                'Bible still exists. Please change the name or uncheck it.'))
         self.progressPage.setTitle(translate('BiblesPlugin.UpgradeWizardForm',
             'Upgrading'))
         self.progressPage.setSubTitle(
@@ -451,13 +352,6 @@ class BibleUpgradeForm(OpenLPWizard):
         self.retranslateUi()
         for number, filename in enumerate(self.files):
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
-            oldname = filename[1]
-            if self.manager.exists(oldname):
-                self.verticalWidget[number].show()
-                self.formWidget[number].show()
-            else:
-                self.verticalWidget[number].hide()
-                self.formWidget[number].hide()
         self.progressBar.show()
         self.restart()
         self.finishButton.setVisible(False)
@@ -518,8 +412,6 @@ class BibleUpgradeForm(OpenLPWizard):
                 'BiblesPlugin.UpgradeWizardForm',
                 'Upgrading Bible %s of %s: "%s"\nUpgrading ...')) %
                 (number + 1, max_bibles, name))
-            if os.path.exists(os.path.join(self.path, filename[0])):
-                name = unicode(self.versionNameEdit[number].text())
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name, file=filename[0])
             self.newbibles[number].register(self.plugin.upgrade_wizard)
