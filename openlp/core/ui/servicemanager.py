@@ -24,6 +24,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import cgi
 import cPickle
 import logging
 import os
@@ -719,6 +720,9 @@ class ServiceManager(QtGui.QWidget):
             self.setModified()
 
     def onStartTimeForm(self):
+        """
+        Opens a dialog to type in service item notes.
+        """
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
@@ -957,7 +961,7 @@ class ServiceManager(QtGui.QWidget):
             if serviceitem.notes:
                 tips.append(u'<strong>%s: </strong> %s' %
                     (unicode(translate('OpenLP.ServiceManager', 'Notes')),
-                    unicode(serviceitem.notes)))
+                    cgi.escape(unicode(serviceitem.notes))))
             if item[u'service_item'] \
                 .is_capable(ItemCapabilities.AllowsVariableStartTime):
                 tips.append(item[u'service_item'].get_media_time())
