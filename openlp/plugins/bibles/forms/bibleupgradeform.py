@@ -570,7 +570,6 @@ class BibleUpgradeForm(OpenLPWizard):
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
             if self.success.has_key(number) and not self.success[number]:
-                print u'11111'
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
