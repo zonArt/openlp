@@ -70,6 +70,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
         self.path = AppLocation.get_section_data_path(self.settingsSection)
+        self.temp_dir = os.path.join(gettempdir(), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
@@ -420,14 +421,14 @@ class BibleUpgradeForm(OpenLPWizard):
                         return False
             return True
         elif self.currentPage() == self.selectPage:
-            temp_dir = os.path.join(gettempdir(), u'openlp')
-            check_directory_exists(temp_dir)
+            check_directory_exists(self.temp_dir)
             for number, filename in enumerate(self.files):
                 if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     continue
                 # Move bibles to temp dir.
-                if not os.path.exists(os.path.join(temp_dir, filename[0])):
-                    shutil.move(os.path.join(self.path, filename[0]), temp_dir)
+                if not os.path.exists(os.path.join(self.temp_dir, filename[0])):
+                    shutil.move(
+                        os.path.join(self.path, filename[0]), self.temp_dir)
                 else:
                     delete_file(os.path.join(self.path, filename[0]))
             return True
@@ -488,7 +489,6 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, file in enumerate(self.files):
             if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 max_bibles += 1
-        temp_dir = os.path.join(gettempdir(), u'openlp')
         oldBible = None
         for number, filename in enumerate(self.files):
             # Close the previous bible's connection.
@@ -504,7 +504,7 @@ class BibleUpgradeForm(OpenLPWizard):
             if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 continue
             self.progressBar.reset()
-            oldBible = OldBibleDB(self.mediaItem, path=temp_dir,
+            oldBible = OldBibleDB(self.mediaItem, path=self.temp_dir,
                 file=filename[0])
             name = filename[1]
             if name is None:
@@ -694,7 +694,6 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Clean up the UI after the import has finished.
         """
-        temp_dir = os.path.join(gettempdir(), u'openlp')
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
@@ -704,12 +703,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 # Delete upgraded (but not complete, corrupted, ...) bible.
                 delete_file(os.path.join(self.path, filename[0]))
                 # Copy not upgraded bible back.
-                try:
-                    shutil.move(os.path.join(temp_dir, filename[0]), self.path)
-                except shutil.Error:
-                    # We can ignore any error, because the temp directory is
-                    # will be deleted later.
-                    pass
+                shutil.move(os.path.join(self.temp_dir, filename[0]), self.path)
                 if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                     failed_import += 1
         if failed_import > 0:
@@ -735,5 +729,5 @@ class BibleUpgradeForm(OpenLPWizard):
             self.progressLabel.setText(translate(
                 'BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.
-        shutil.rmtree(temp_dir, True)
+        shutil.rmtree(self.temp_dir, True)
         OpenLPWizard.postWizard(self)
