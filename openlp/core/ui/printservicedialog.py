@@ -108,7 +108,7 @@ class Ui_PrintServiceDialog(object):
         self.footerLabel = QtGui.QLabel(self.optionsWidget)
         self.footerLabel.setObjectName(u'footerLabel')
         self.optionsLayout.addWidget(self.footerLabel)
-        self.footerTextEdit = SpellTextEdit(self.optionsWidget)
+        self.footerTextEdit = SpellTextEdit(self.optionsWidget, False)
         self.footerTextEdit.setObjectName(u'footerTextEdit')
         self.optionsLayout.addWidget(self.footerTextEdit)
         self.optionsGroupBox = QtGui.QGroupBox()
