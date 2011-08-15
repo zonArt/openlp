@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +29,7 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
-from sqlalchemy import Column, ForeignKey, Index, Table, types
+from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation
 
 from openlp.core.lib.db import BaseModel, init_db
@@ -39,6 +40,7 @@ class Author(BaseModel):
     """
     pass
 
+
 class Book(BaseModel):
     """
     Book model
@@ -47,11 +49,13 @@ class Book(BaseModel):
         return u'<Book id="%s" name="%s" publisher="%s" />' % (
             str(self.id), self.name, self.publisher)
 
+
 class MediaFile(BaseModel):
     """
     MediaFile model
     """
     pass
+
 
 class Song(BaseModel):
     """
@@ -59,18 +63,100 @@ class Song(BaseModel):
     """
     pass
 
+
 class Topic(BaseModel):
     """
     Topic model
     """
     pass
 
+
 def init_schema(url):
     """
-    Setup the songs database connection and initialise the database schema
+    Setup the songs database connection and initialise the database schema.
 
     ``url``
         The database to setup
+
+    The song database contains the following tables:
+
+        * authors
+        * authors_songs
+        * media_files
+        * media_files_songs
+        * song_books
+        * songs
+        * songs_topics
+        * topics
+
+    **authors** Table
+        This table holds the names of all the authors. It has the following
+        columns:
+
+        * id
+        * first_name
+        * last_name
+        * display_name
+
+    **authors_songs Table**
+        This is a bridging table between the *authors* and *songs* tables, which
+        serves to create a many-to-many relationship between the two tables. It
+        has the following columns:
+
+        * author_id
+        * song_id
+
+    **media_files Table**
+        * id
+        * file_name
+        * type
+
+    **media_files_songs Table**
+        * media_file_id
+        * song_id
+
+    **song_books Table**
+        The *song_books* table holds a list of books that a congregation gets
+        their songs from, or old hymnals now no longer used. This table has the
+        following columns:
+
+        * id
+        * name
+        * publisher
+
+    **songs Table**
+        This table contains the songs, and each song has a list of attributes.
+        The *songs* table has the following columns:
+
+        * id
+        * song_book_id
+        * title
+        * alternate_title
+        * lyrics
+        * verse_order
+        * copyright
+        * comments
+        * ccli_number
+        * song_number
+        * theme_name
+        * search_title
+        * search_lyrics
+
+    **songs_topics Table**
+        This is a bridging table between the *songs* and *topics* tables, which
+        serves to create a many-to-many relationship between the two tables. It
+        has the following columns:
+
+        * song_id
+        * topic_id
+
+    **topics Table**
+        The topics table holds a selection of topics that songs can cover. This
+        is useful when a worship leader wants to select songs with a certain
+        theme. This table has the following columns:
+
+        * id
+        * name
     """
     session, metadata = init_db(url)
 
@@ -79,7 +165,7 @@ def init_schema(url):
         Column(u'id', types.Integer, primary_key=True),
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
-        Column(u'display_name', types.Unicode(255), nullable=False)
+        Column(u'display_name', types.Unicode(255), index=True, nullable=False)
     )
 
     # Definition of the "media_files" table
@@ -100,7 +186,7 @@ def init_schema(url):
     songs_table = Table(u'songs', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'song_book_id', types.Integer,
-            ForeignKey(u'song_books.id'), default=0),
+            ForeignKey(u'song_books.id'), default=None),
         Column(u'title', types.Unicode(255), nullable=False),
         Column(u'alternate_title', types.Unicode(255)),
         Column(u'lyrics', types.UnicodeText, nullable=False),
@@ -111,13 +197,13 @@ def init_schema(url):
         Column(u'song_number', types.Unicode(64)),
         Column(u'theme_name', types.Unicode(128)),
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, index=True, nullable=False)
+        Column(u'search_lyrics', types.UnicodeText, nullable=False)
     )
 
     # Definition of the "topics" table
     topics_table = Table(u'topics', metadata,
         Column(u'id', types.Integer, primary_key=True),
-        Column(u'name', types.Unicode(128), nullable=False)
+        Column(u'name', types.Unicode(128), index=True, nullable=False)
     )
 
     # Definition of the "authors_songs" table
@@ -144,34 +230,13 @@ def init_schema(url):
             ForeignKey(u'topics.id'), primary_key=True)
     )
 
-    # Define table indexes
-    Index(u'authors_id', authors_table.c.id)
-    Index(u'authors_display_name_id', authors_table.c.display_name,
-        authors_table.c.id)
-    Index(u'media_files_id', media_files_table.c.id)
-    Index(u'song_books_id', song_books_table.c.id)
-    Index(u'songs_id', songs_table.c.id)
-    Index(u'topics_id', topics_table.c.id)
-    Index(u'authors_songs_author', authors_songs_table.c.author_id,
-        authors_songs_table.c.song_id)
-    Index(u'authors_songs_song', authors_songs_table.c.song_id,
-        authors_songs_table.c.author_id)
-    Index(u'media_files_songs_file', media_files_songs_table.c.media_file_id,
-        media_files_songs_table.c.song_id)
-    Index(u'media_files_songs_song', media_files_songs_table.c.song_id,
-        media_files_songs_table.c.media_file_id)
-    Index(u'topics_song_topic', songs_topics_table.c.topic_id,
-        songs_topics_table.c.song_id)
-    Index(u'topics_song_song', songs_topics_table.c.song_id,
-        songs_topics_table.c.topic_id)
-
     mapper(Author, authors_table)
     mapper(Book, song_books_table)
     mapper(MediaFile, media_files_table)
     mapper(Song, songs_table,
         properties={
             'authors': relation(Author, backref='songs',
-                secondary=authors_songs_table),
+                secondary=authors_songs_table, lazy=False),
             'book': relation(Book, backref='songs'),
             'media_files': relation(MediaFile, backref='songs',
                 secondary=media_files_songs_table),

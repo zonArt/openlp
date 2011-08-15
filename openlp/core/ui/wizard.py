@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,13 +28,54 @@
 The :mod:``wizard`` module provides generic wizard tools for OpenLP.
 """
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver
-from openlp.core.lib.ui import add_welcome_page
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
+from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
+
+class WizardStrings(object):
+    """
+    Provide standard strings for wizards to use.
+    """
+    # Applications/Formats we import from or export to. These get used in
+    # multiple places but do not need translating unless you find evidence of
+    # the writers translating their own product name.
+    CCLI = u'CCLI/SongSelect'
+    CSV = u'CSV'
+    EW = u'EasyWorship'
+    ES = u'EasiSlides'
+    FP = u'Foilpresenter'
+    OL = u'OpenLyrics'
+    OS = u'OpenSong'
+    OSIS = u'OSIS'
+    SB = u'SongBeamer'
+    SoF = u'Songs of Fellowship'
+    SSP = u'SongShow Plus'
+    WoW = u'Words of Worship'
+    # These strings should need a good reason to be retranslated elsewhere.
+    FinishedImport = translate('OpenLP.Ui', 'Finished import.')
+    FormatLabel = translate('OpenLP.Ui', 'Format:')
+    HeaderStyle = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
+    Importing = translate('OpenLP.Ui', 'Importing')
+    ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
+    ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
+    ImportSelectLong = unicode(translate('OpenLP.Ui',
+        'Select the import format and the location to import from.'))
+    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
+        'disabled due to a missing Python module. If you want to use this '
+        'importer, you will need to install the "python-sqlite" '
+        'module.')
+    OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
+    Ready = translate('OpenLP.Ui', 'Ready.')
+    StartingImport = translate('OpenLP.Ui', 'Starting import...')
+    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
+        'least one %s file to import from.', 'A file type e.g. OpenSong'))
+
 
 class OpenLPWizard(QtGui.QWizard):
     """
@@ -42,6 +84,7 @@ class OpenLPWizard(QtGui.QWizard):
     """
     def __init__(self, parent, plugin, name, image):
         QtGui.QWizard.__init__(self, parent)
+        self.plugin = plugin
         self.setObjectName(name)
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
@@ -49,11 +92,14 @@ class OpenLPWizard(QtGui.QWizard):
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.setupUi(image)
         self.registerFields()
-        self.plugin = plugin
         self.customInit()
         self.customSignals()
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
+        QtCore.QObject.connect(self.errorCopyToButton,
+            QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
+        QtCore.QObject.connect(self.errorSaveToButton,
+            QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
 
     def setupUi(self, image):
         """
@@ -70,6 +116,12 @@ class OpenLPWizard(QtGui.QWizard):
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def registerFields(self):
+        """
+        Hook method for wizards to register any fields they need.
+        """
+        pass
+
     def addProgressPage(self):
         """
         Add the progress page for the wizard. This page informs the user how
@@ -82,10 +134,36 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLayout.setObjectName(u'progressLayout')
         self.progressLabel = QtGui.QLabel(self.progressPage)
         self.progressLabel.setObjectName(u'progressLabel')
+        self.progressLabel.setWordWrap(True)
         self.progressLayout.addWidget(self.progressLabel)
         self.progressBar = QtGui.QProgressBar(self.progressPage)
         self.progressBar.setObjectName(u'progressBar')
         self.progressLayout.addWidget(self.progressBar)
+        # Add a QTextEdit and a copy to file and copy to clipboard button to be
+        # able to provide feedback to the user. Hidden by default.
+        self.errorReportTextEdit = QtGui.QTextEdit(self.progressPage)
+        self.errorReportTextEdit.setObjectName(u'progresserrorReportTextEdit')
+        self.errorReportTextEdit.setHidden(True)
+        self.errorReportTextEdit.setReadOnly(True)
+        self.progressLayout.addWidget(self.errorReportTextEdit)
+        self.errorButtonLayout = QtGui.QHBoxLayout()
+        self.errorButtonLayout.setObjectName(u'errorButtonLayout')
+        spacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.errorButtonLayout.addItem(spacer)
+        self.errorCopyToButton = QtGui.QPushButton(self.progressPage)
+        self.errorCopyToButton.setObjectName(u'errorCopyToButton')
+        self.errorCopyToButton.setHidden(True)
+        self.errorCopyToButton.setIcon(
+            build_icon(u':/system/system_edit_copy.png'))
+        self.errorButtonLayout.addWidget(self.errorCopyToButton)
+        self.errorSaveToButton = QtGui.QPushButton(self.progressPage)
+        self.errorSaveToButton.setObjectName(u'errorSaveToButton')
+        self.errorSaveToButton.setHidden(True)
+        self.errorSaveToButton.setIcon(
+            build_icon(u':/general/general_save.png'))
+        self.errorButtonLayout.addWidget(self.errorSaveToButton)
+        self.progressLayout.addLayout(self.errorButtonLayout)
         self.addPage(self.progressPage)
 
     def exec_(self):
@@ -112,6 +190,26 @@ class OpenLPWizard(QtGui.QWizard):
             self.preWizard()
             self.performWizard()
             self.postWizard()
+        else:
+            self.customPageChanged(pageId)
+
+    def customPageChanged(self, pageId):
+        """
+        Called when changing to a page other than the progress page
+        """
+        pass
+
+    def onErrorCopyToButtonClicked(self):
+        """
+        Called when the ``onErrorCopyToButtonClicked`` has been clicked.
+        """
+        pass
+
+    def onErrorSaveToButtonClicked(self):
+        """
+        Called when the ``onErrorSaveToButtonClicked`` has been clicked.
+        """
+        pass
 
     def incrementProgressBar(self, status_text, increment=1):
         """
@@ -146,3 +244,31 @@ class OpenLPWizard(QtGui.QWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description
+            as well as the file extension. For example::
+
+                u'OpenLP 2.0 Databases (*.sqlite)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % UiStrings().AllFiles
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)), filters)
+        if filename:
+            editbox.setText(filename)
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
+                filename, 1)
+

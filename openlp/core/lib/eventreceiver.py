@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -101,15 +102,15 @@ class EventReceiver(QtCore.QObject):
     ``servicemanager_previous_item``
         Display the previous item in the service
 
+    ``servicemanager_preview_live``
+        Requests a Preview item from the Service Manager to update live and
+        add a new item to the preview panel
+
     ``servicemanager_next_item``
         Display the next item in the service
 
     ``servicemanager_set_item``
         Go live on a specific item, by index
-
-    ``servicemanager_list_request``
-        Request the service list. Responds with servicemanager_list_response
-        containing a array of dictionaries
 
     ``maindisplay_blank``
         Blank the maindisplay window

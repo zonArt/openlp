@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,13 +40,6 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.itemList = []
-        # enable drop
-        QtCore.QObject.connect(self.upButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemUp)
-        QtCore.QObject.connect(self.downButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemDelete)
         QtCore.QObject.connect(self.listWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
@@ -77,7 +71,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
 
-    def onItemDelete(self):
+    def onDeleteButtonClicked(self):
         """
         Delete the current row.
         """
@@ -85,20 +79,20 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         if not item:
             return
         row = self.listWidget.row(item)
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         self.loadData()
         if row == self.listWidget.count():
             self.listWidget.setCurrentRow(row - 1)
         else:
             self.listWidget.setCurrentRow(row)
 
-    def onItemUp(self):
+    def onUpButtonClicked(self):
         """
         Move the current row up in the list.
         """
         self.__moveItem(u'up')
 
-    def onItemDown(self):
+    def onDownButtonClicked(self):
         """
         Move the current row down in the list
         """
@@ -115,13 +109,14 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             return
         row = self.listWidget.row(item)
         temp = self.itemList[row]
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         if direction == u'up':
-            self.itemList.insert(row - 1, temp)
+            row -= 1
         else:
-            self.itemList.insert(row + 1, temp)
+            row += 1
+        self.itemList.insert(row, temp)
         self.loadData()
-        self.listWidget.setCurrentRow(row + 1)
+        self.listWidget.setCurrentRow(row)
 
     def onCurrentRowChanged(self, row):
         """
@@ -147,4 +142,3 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.upButton.setEnabled(True)
             self.deleteButton.setEnabled(True)
-

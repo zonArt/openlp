@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,6 +27,8 @@
 """
 The :mod:`importer` modules provides the general song import functionality.
 """
+import logging
+
 from opensongimport import OpenSongImport
 from easislidesimport import EasiSlidesImport
 from olpimport import OpenLPSongImport
@@ -34,21 +37,27 @@ from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
+from songshowplusimport import SongShowPlusImport
+from foilpresenterimport import FoilPresenterImport
 # Imports that might fail
+log = logging.getLogger(__name__)
 try:
     from olp1import import OpenLP1SongImport
     HAS_OPENLP1 = True
 except ImportError:
+    log.exception('Error importing %s', 'OpenLP1SongImport')
     HAS_OPENLP1 = False
 try:
     from sofimport import SofImport
     HAS_SOF = True
 except ImportError:
+    log.exception('Error importing %s', 'SofImport')
     HAS_SOF = False
 try:
     from oooimport import OooImport
     HAS_OOO = True
 except ImportError:
+    log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
 
 class SongFormat(object):
@@ -67,10 +76,12 @@ class SongFormat(object):
     CCLI = 5
     SongsOfFellowship = 6
     Generic = 7
-    #CSV = 8
     EasiSlides = 8
     EasyWorship = 9
     SongBeamer = 10
+    SongShowPlus = 11
+    FoilPresenter = 12
+    #CSV = 13
 
     @staticmethod
     def get_class(format):
@@ -102,6 +113,10 @@ class SongFormat(object):
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
             return SongBeamerImport
+        elif format == SongFormat.SongShowPlus:
+            return SongShowPlusImport
+        elif format == SongFormat.FoilPresenter:
+            return FoilPresenterImport
         return None
 
     @staticmethod
@@ -120,7 +135,9 @@ class SongFormat(object):
             SongFormat.Generic,
             SongFormat.EasiSlides,
             SongFormat.EasyWorship,
-            SongFormat.SongBeamer
+            SongFormat.SongBeamer,
+            SongFormat.SongShowPlus,
+            SongFormat.FoilPresenter
         ]
 
     @staticmethod

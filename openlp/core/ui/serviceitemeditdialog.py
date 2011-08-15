@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,13 +27,16 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box, \
+    create_delete_push_button, create_up_down_push_button_set
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
         self.dialogLayout = QtGui.QGridLayout(serviceItemEditDialog)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
+        self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.listWidget = QtGui.QListWidget(serviceItemEditDialog)
         self.listWidget.setAlternatingRowColors(True)
@@ -40,26 +44,19 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addWidget(self.listWidget, 0, 0)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = QtGui.QPushButton(serviceItemEditDialog)
-        self.deleteButton.setObjectName(u'deleteButton')
+        self.deleteButton = create_delete_push_button(serviceItemEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = QtGui.QPushButton(serviceItemEditDialog)
-        self.upButton.setIcon(build_icon(u':/services/service_up.png'))
-        self.upButton.setObjectName(u'upButton')
+        self.upButton, self.downButton = create_up_down_push_button_set(
+            serviceItemEditDialog)
         self.buttonLayout.addWidget(self.upButton)
-        self.downButton = QtGui.QPushButton(serviceItemEditDialog)
-        self.downButton.setIcon(build_icon(u':/services/service_down.png'))
-        self.downButton.setObjectName(u'downButton')
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
         self.dialogLayout.addWidget(
-            save_cancel_button_box(serviceItemEditDialog), 1, 0, 1, 2)
+            create_accept_reject_button_box(serviceItemEditDialog), 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
         QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setWindowTitle(
             translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
-        self.deleteButton.setText(translate('OpenLP.ServiceItemEditForm',
-            'Delete'))

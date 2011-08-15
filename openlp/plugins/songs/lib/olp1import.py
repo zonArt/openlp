@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -55,76 +56,78 @@ class OpenLP1SongImport(SongImport):
         ``filename``
             The database providing the data to import.
         """
-        SongImport.__init__(self, manager)
-        self.import_source = kwargs[u'filename']
+        SongImport.__init__(self, manager, **kwargs)
+        self.available_themes = \
+            kwargs[u'plugin'].formparent.themeManagerContents.getThemes()
 
     def do_import(self):
         """
         Run the import for an openlp.org 1.x song database.
         """
-        # Connect to the database
+        if not self.import_source.endswith(u'.olp'):
+            self.log_error(self.import_source,
+                translate('SongsPlugin.OpenLP1SongImport',
+                'Not a valid openlp.org 1.x song database.'))
+            return
         encoding = self.get_encoding()
         if not encoding:
-            return False
+            return
+        # Connect to the database.
         connection = sqlite.connect(self.import_source, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()
-        # Determine if we're using a new or an old DB
+        # Determine if we're using a new or an old DB.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
         new_db = len(cursor.fetchall()) > 0
-        # Count the number of records we need to import, for the progress bar
-        cursor.execute(u'-- types int')
-        cursor.execute(u'SELECT COUNT(songid) FROM songs')
-        count = cursor.fetchone()[0]
-        success = True
-        self.import_wizard.progressBar.setMaximum(count)
-        # "cache" our list of authors
+        # "cache" our list of authors.
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
         if new_db:
-            # "cache" our list of tracks
+            # "cache" our list of tracks.
             cursor.execute(u'-- types int, unicode')
             cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
             tracks = cursor.fetchall()
-        # Import the songs
-        cursor.execute(u'-- types int, unicode, unicode, unicode')
+        # "cache" our list of themes.
+        cursor.execute(u'-- types int, unicode')
+        cursor.execute(u'SELECT settingsid, settingsname FROM settings')
+        themes = {}
+        for theme_id, theme_name in cursor.fetchall():
+            if theme_name in self.available_themes:
+                themes[theme_id] = theme_name
+        # Import the songs.
+        cursor.execute(u'-- types int, unicode, unicode, unicode, int')
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
-            u'copyrightinfo FROM songs')
+            u'copyrightinfo, settingsid FROM songs')
         songs = cursor.fetchall()
+        self.import_wizard.progressBar.setMaximum(len(songs))
         for song in songs:
             self.set_defaults()
             if self.stop_import_flag:
-                success = False
                 break
             song_id = song[0]
-            title = song[1]
+            self.title = song[1]
             lyrics = song[2].replace(u'\r\n', u'\n')
-            copyright = song[3]
-            self.import_wizard.incrementProgressBar(
-                unicode(translate('SongsPlugin.ImportWizardForm',
-                    'Importing "%s"...')) % title)
-            self.title = title
+            self.add_copyright(song[3])
+            if themes.has_key(song[4]):
+                self.theme_name = themes[song[4]]
             verses = lyrics.split(u'\n\n')
             for verse in verses:
-                if verse.strip() != u'':
+                if verse.strip():
                     self.add_verse(verse.strip())
-            self.add_copyright(copyright)
             cursor.execute(u'-- types int')
             cursor.execute(u'SELECT authorid FROM songauthors '
                 u'WHERE songid = %s' % song_id)
             author_ids = cursor.fetchall()
             for author_id in author_ids:
                 if self.stop_import_flag:
-                    success = False
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
                         self.parse_author(author[1])
                         break
             if self.stop_import_flag:
-                success = False
                 break
             if new_db:
                 cursor.execute(u'-- types int')
@@ -133,28 +136,26 @@ class OpenLP1SongImport(SongImport):
                 track_ids = cursor.fetchall()
                 for track_id in track_ids:
                     if self.stop_import_flag:
-                        success = False
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
                             self.add_media_file(track[1])
                             break
             if self.stop_import_flag:
-                success = False
                 break
-            self.finish()
-        return success
+            if not self.finish():
+                self.log_error(self.import_source)
 
     def get_encoding(self):
         """
         Detect character encoding of an openlp.org 1.x song database.
         """
-        # Connect to the database
+        # Connect to the database.
         connection = sqlite.connect(self.import_source, mode=0444)
         cursor = connection.cursor()
 
         detector = UniversalDetector()
-        # detect charset by authors
+        # Detect charset by authors.
         cursor.execute(u'SELECT authorname FROM authors')
         authors = cursor.fetchall()
         for author in authors:
@@ -162,7 +163,7 @@ class OpenLP1SongImport(SongImport):
             if detector.done:
                 detector.close()
                 return detector.result[u'encoding']
-        # detect charset by songs
+        # Detect charset by songs.
         cursor.execute(u'SELECT songtitle, copyrightinfo, '
             u'lyrics || \'\' AS lyrics FROM songs')
         songs = cursor.fetchall()
@@ -172,7 +173,7 @@ class OpenLP1SongImport(SongImport):
                 if detector.done:
                     detector.close()
                     return detector.result[u'encoding']
-        # detect charset by songs
+        # Detect charset by songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
         if len(cursor.fetchall()) > 0:

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,10 +29,12 @@ import logging
 
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import BackgroundType, BackgroundGradientType
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
+    VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
 
+# FIXME: Add html5 doctype. However, do not break theme gradients.
 HTMLSRC = u"""
 <html>
 <head>
@@ -54,39 +57,44 @@ body {
     height: %spx;
 }
 #black {
-    z-index:8;
+    z-index: 8;
     background-color: black;
     display: none;
 }
 #bgimage {
-    z-index:1;
+    z-index: 1;
 }
 #image {
-    z-index:2;
+    z-index: 2;
 }
 #video1 {
-    z-index:3;
+    z-index: 3;
 }
 #video2 {
-    z-index:3;
+    z-index: 3;
 }
 #alert {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index:10;
+    z-index: 10;
     %s
 }
 #footer {
     position: absolute;
-    z-index:6;
+    z-index: 6;
     %s
 }
 /* lyric css */
 %s
-
+sup {
+    font-size: 0.6em;
+    vertical-align: top;
+    position: relative;
+    top: -0.3em;
+}
 </style>
-<script language="javascript">
+<script>
     var timer = null;
     var video_timer = null;
     var current_video = '1';
@@ -250,11 +258,12 @@ body {
     }
 
     function show_text(newtext){
+        var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext);
+        text_fade('lyricsshadow', newtext.replace(match, ""));
         if(text_opacity()==1) return;
         timer = setTimeout(function(){
             show_text(newtext);
@@ -301,7 +310,7 @@ body {
 </head>
 <body>
 <img id="bgimage" class="size" %s />
-<img id="image" class="size" style="display:none" />
+<img id="image" class="size" %s />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -309,23 +318,32 @@ body {
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
+<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
-    """
+"""
 
-def build_html(item, screen, alert, islive, background):
+def build_html(item, screen, alert, islive, background, image=None):
     """
     Build the full web paged structure for display
 
-    `item`
+    ``item``
         Service Item to be displayed
-    `screen`
+
+    ``screen``
         Current display information
-    `alert`
+
+    ``alert``
         Alert display display information
-    `islive`
+
+    ``islive``
         Item is going live, rather than preview/theme building
+
+    ``background``
+        Theme background image - bytes
+
+    ``image``
+        Image media item - bytes
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -333,11 +351,15 @@ def build_html(item, screen, alert, islive, background):
     webkitvers = webkit_version()
     # Image generated and poked in
     if background:
-        image = u'src="data:image/png;base64,%s"' % background
+        bgimage_src = u'src="data:image/png;base64,%s"' % background
     elif item.bg_image_bytes:
-        image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage_src = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        image = u'style="display:none;"'
+        bgimage_src = u'style="display:none;"'
+    if image:
+        image_src = u'src="data:image/png;base64,%s"' % image
+    else:
+        image_src = u'style="display:none;"'
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
@@ -345,7 +367,7 @@ def build_html(item, screen, alert, islive, background):
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        image,
+        bgimage_src, image_src,
         build_lyrics_html(item, webkitvers))
     return html
 
@@ -365,7 +387,7 @@ def build_background_css(item, width, height):
     """
     Build the background css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
     """
@@ -418,22 +440,22 @@ def build_lyrics_css(item, webkitvers):
     """
     Build the lyrics display css
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
 
     """
-    style = """
+    style = u"""
 .lyricstable {
-    z-index:5;
+    z-index: 5;
     position: absolute;
     display: table;
     %s
 }
 .lyricscell {
-    display:table-cell;
+    display: table-cell;
     word-wrap: break-word;
     %s
 }
@@ -446,7 +468,7 @@ def build_lyrics_css(item, webkitvers):
 .lyricsshadow {
 %s
 }
-     """
+    """
     theme = item.themedata
     lyricstable = u''
     lyrics = u''
@@ -454,8 +476,7 @@ def build_lyrics_css(item, webkitvers):
     outline = u''
     shadow = u''
     if theme and item.main:
-        lyricstable = u'left: %spx; top: %spx;' % \
-            (item.main.x(), item.main.y())
+        lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(),
             item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
@@ -466,11 +487,11 @@ def build_lyrics_css(item, webkitvers):
         # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
         # stroke (outline) color. So put stroke layer underneath the main text.
         #
-        # Before 534.4 the webkit-text-stroke was sometimes out of alignment
+        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment
         # with the fill, or normal text. letter-spacing=1 is workaround
         # https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Before 534.4 the text-shadow didn't get displayed when
+        # Up to 534.3 the text-shadow didn't get displayed when
         # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkitvers >= 533.3:
@@ -478,7 +499,7 @@ def build_lyrics_css(item, webkitvers):
         else:
             outline = build_lyrics_outline_css(theme)
         if theme.font_main_shadow:
-            if theme.font_main_outline and webkitvers < 534.3:
+            if theme.font_main_outline and webkitvers <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) +
                     (int(theme.font_main_outline_size) * 2),
@@ -496,10 +517,10 @@ def build_lyrics_outline_css(theme, is_shadow=False):
     Build the css which controls the theme outline
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `is_shadow`
+    ``is_shadow``
         If true, use the shadow colors instead
     """
     if theme.font_main_outline:
@@ -520,41 +541,31 @@ def build_lyrics_format_css(theme, width, height):
     Build the css which controls the theme format
     Also used by renderer for splitting verses
 
-    `theme`
+    ``theme``
         Object containing theme information
 
-    `width`
+    ``width``
         Width of the lyrics block
 
-    `height`
+    ``height``
         Height of the lyrics block
 
     """
-    if theme.display_horizontal_align == 2:
-        align = u'center'
-    elif theme.display_horizontal_align == 1:
-        align = u'right'
-    else:
-        align = u'left'
-    if theme.display_vertical_align == 2:
-        valign = u'bottom'
-    elif theme.display_vertical_align == 1:
-        valign = u'middle'
-    else:
-        valign = u'top'
+    align = HorizontalType.Names[theme.display_horizontal_align]
+    valign = VerticalType.Names[theme.display_vertical_align]
     if theme.font_main_outline:
         left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
     lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
-        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
+        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
         (align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
-        if webkit_version() < 534.3:
+        if webkit_version() <= 534.3:
             lyrics += u' letter-spacing: 1px;'
     if theme.font_main_italics:
         lyrics += u' font-style:italic; '
@@ -566,10 +577,10 @@ def build_lyrics_html(item, webkitvers):
     """
     Build the HTML required to show the lyrics
 
-    `item`
+    ``item``
         Service Item containing theme and location information
 
-    `webkitvers`
+    ``webkitvers``
         The version of qtwebkit we're using
     """
     # Bugs in some versions of QtWebKit mean we sometimes need additional
@@ -578,7 +589,7 @@ def build_lyrics_html(item, webkitvers):
     # display:table/display:table-cell are required for each lyric block.
     lyrics = u''
     theme = item.themedata
-    if webkitvers < 534.4 and theme and theme.font_main_outline:
+    if webkitvers <= 534.3 and theme and theme.font_main_outline:
         lyrics += u'<div class="lyricstable">' \
             u'<div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
@@ -595,10 +606,10 @@ def build_footer_css(item, height):
     """
     Build the display of the item footer
 
-    `item`
+    ``item``
         Service Item to be processed.
     """
-    style = """
+    style = u"""
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -606,7 +617,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -621,10 +632,10 @@ def build_alert_css(alertTab, width):
     """
     Build the display of the footer
 
-    `alertTab`
+    ``alertTab``
         Details from the Alert tab for fonts etc
     """
-    style = """
+    style = u"""
     width: %spx;
     vertical-align: %s;
     font-family: %s;
@@ -634,13 +645,7 @@ def build_alert_css(alertTab, width):
     """
     if not alertTab:
         return u''
-    align = u''
-    if alertTab.location == 2:
-        align = u'bottom'
-    elif alertTab.location == 1:
-        align = u'middle'
-    else:
-        align = u'top'
+    align = VerticalType.Names[alertTab.location]
     alert = style % (width, align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

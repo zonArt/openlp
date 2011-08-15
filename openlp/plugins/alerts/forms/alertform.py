@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,7 +41,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Initialise the alert form
         """
         self.manager = plugin.manager
-        self.parent = plugin
+        self.plugin = plugin
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
@@ -52,8 +53,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
         QtCore.QObject.connect(self.newButton,
             QtCore.SIGNAL(u'clicked()'), self.onNewClick)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDeleteClick)
         QtCore.QObject.connect(self.saveButton,
             QtCore.SIGNAL(u'clicked()'), self.onSaveClick)
         QtCore.QObject.connect(self.alertListWidget,
@@ -62,6 +61,12 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
         QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+
+    def exec_(self):
+        self.displayButton.setEnabled(False)
+        self.displayCloseButton.setEnabled(False)
+        self.alertTextEdit.setText(u'')
+        return QtGui.QDialog.exec_(self)
 
     def loadList(self):
         """
@@ -82,7 +87,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if self.triggerAlert(unicode(self.alertTextEdit.text())):
             self.close()
 
-    def onDeleteClick(self):
+    def onDeleteButtonClicked(self):
         """
         Deletes the selected item.
         """
@@ -127,6 +132,12 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # Only enable the button, if we are editing an item.
         if self.item_id:
             self.saveButton.setEnabled(True)
+        if self.alertTextEdit.text():
+            self.displayButton.setEnabled(True)
+            self.displayCloseButton.setEnabled(True)
+        else:
+            self.displayButton.setEnabled(False)
+            self.displayCloseButton.setEnabled(False)
 
     def onDoubleClick(self):
         """
@@ -165,8 +176,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # We found '<>' in the alert text, but the ParameterEdit field is empty.
         if text.find(u'<>') != -1 and not self.parameterEdit.text() and \
             QtGui.QMessageBox.question(self,
-            translate('AlertPlugin.AlertForm', 'No Parameter found'),
-            translate('AlertPlugin.AlertForm', 'You have not entered a '
+            translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
+            translate('AlertsPlugin.AlertForm', 'You have not entered a '
             'parameter to be replaced.\nDo you want to continue anyway?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
@@ -176,15 +187,15 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # in the alert text.
         elif text.find(u'<>') == -1 and self.parameterEdit.text() and \
             QtGui.QMessageBox.question(self,
-            translate('AlertPlugin.AlertForm', 'No Placeholder found'),
-            translate('AlertPlugin.AlertForm', 'The alert text does not'
-            ' contain \'<>\'.\nDo want to continue anyway?'),
+            translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
+            translate('AlertsPlugin.AlertForm', 'The alert text does not'
+            ' contain \'<>\'.\nDo you want to continue anyway?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameterEdit.setFocus()
             return False
         text = text.replace(u'<>', unicode(self.parameterEdit.text()))
-        self.parent.alertsmanager.displayAlert(text)
+        self.plugin.alertsmanager.displayAlert(text)
         return True
 
     def onCurrentRowChanged(self, row):

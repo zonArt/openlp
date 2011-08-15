@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,6 +46,7 @@ else:
     try:
         import uno
         from com.sun.star.beans import PropertyValue
+        from com.sun.star.task import ErrorCodeIOException
         uno_available = True
     except ImportError:
         uno_available = False
@@ -69,7 +71,8 @@ class ImpressController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Impress')
+        PresentationController.__init__(self, plugin, u'Impress',
+            ImpressDocument)
         self.supports = [u'odp']
         self.alsosupports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
@@ -122,7 +125,7 @@ class ImpressController(PresentationController):
             try:
                 uno_instance = get_uno_instance(resolver)
             except:
-                log.exception(u'Unable to find running instance ')
+                log.warn(u'Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
@@ -133,7 +136,7 @@ class ImpressController(PresentationController):
                 "com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
-            log.exception(u'Failed to get UNO desktop')
+            log.warn(u'Failed to get UNO desktop')
             return None
 
     def get_com_desktop(self):
@@ -144,7 +147,12 @@ class ImpressController(PresentationController):
         log.debug(u'get COM Desktop OpenOffice')
         if not self.manager:
             return None
-        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        desktop = None
+        try:
+            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        except AttributeError:
+            log.warn(u'Failure to find desktop - Impress may have closed')
+        return desktop if desktop else None
 
     def get_com_servicemanager(self):
         """
@@ -154,7 +162,7 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.exception(u'Failed to get COM service manager. '
+            log.warn(u'Failed to get COM service manager. '
                 u'Impress Controller has been disabled')
             return None
 
@@ -165,13 +173,15 @@ class ImpressController(PresentationController):
         log.debug(u'Kill OpenOffice')
         while self.docs:
             self.docs[0].close_presentation()
-        if os.name != u'nt':
-            desktop = self.get_uno_desktop()
-        else:
-            desktop = self.get_com_desktop()
-        #Sometimes we get a failure and desktop is None
+        desktop = None
+        try:
+            if os.name != u'nt':
+                desktop = self.get_uno_desktop()
+            else:
+                desktop = self.get_com_desktop()
+        except:
+            log.warn(u'Failed to find an OpenOffice desktop to terminate')
         if not desktop:
-            log.exception(u'Failed to find an OpenOffice desktop to terminate')
             return
         docs = desktop.getComponents()
         if docs.hasElements():
@@ -181,16 +191,8 @@ class ImpressController(PresentationController):
                 desktop.terminate()
                 log.debug(u'OpenOffice killed')
             except:
-                log.exception(u'Failed to terminate OpenOffice')
+                log.warn(u'Failed to terminate OpenOffice')
 
-    def add_doc(self, name):
-        """
-        Called when a new Impress document is opened
-        """
-        log.debug(u'Add Doc OpenOffice')
-        doc = ImpressDocument(self, name)
-        self.docs.append(doc)
-        return doc
 
 class ImpressDocument(PresentationDocument):
     """
@@ -211,15 +213,14 @@ class ImpressDocument(PresentationDocument):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is is
-        started.  Once the environment is available the presentation is loaded
+        OpenOffice task started earlier. If OpenOffice is not present is is
+        started. Once the environment is available the presentation is loaded
         and started.
 
         ``presentation``
         The file name of the presentatios to the run.
         """
         log.debug(u'Load Presentation OpenOffice')
-        #print "s.dsk1 ", self.desktop
         if os.name == u'nt':
             desktop = self.controller.get_com_desktop()
             if desktop is None:
@@ -234,17 +235,26 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
-        properties.append(self.create_property(u'Minimized', True))
+        if os.name != u'nt':
+            # Recent versions of Impress on Windows won't start the presentation
+            # if it starts as minimized. It seems OK on Linux though.
+            properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
         try:
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
         except:
-            log.exception(u'Failed to load presentation %s' % url)
+            log.warn(u'Failed to load presentation %s' % url)
             return False
+        if os.name == u'nt':
+            # As we can't start minimized the Impress window gets in the way.
+            # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
+            window = self.document.getCurrentController().getFrame() \
+                .getContainerWindow()
+            window.setVisible(False)
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
-            self.controller.plugin.renderManager.screens.current_display + 1
+            self.controller.plugin.renderer.screens.current[u'number'] + 1
         self.control = None
         self.create_thumbnails()
         return True
@@ -278,6 +288,9 @@ class ImpressDocument(PresentationDocument):
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
                 delete_file(path)
+            except ErrorCodeIOException, exception:
+                log.exception(u'ERROR! ErrorCodeIOException %d' %
+                    exception.ErrCode)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
@@ -310,7 +323,7 @@ class ImpressDocument(PresentationDocument):
                     self.presentation = None
                     self.document.dispose()
                 except:
-                    log.exception("Closing presentation failed")
+                    log.warn("Closing presentation failed")
             self.document = None
         self.controller.remove_doc(self)
 
@@ -328,7 +341,7 @@ class ImpressDocument(PresentationDocument):
                 log.debug("getPresentation failed to find a presentation")
                 return False
         except:
-            log.exception("getPresentation failed to find a presentation")
+            log.warn("getPresentation failed to find a presentation")
             return False
         return True
 
@@ -387,14 +400,14 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
             self.presentation.start()
-            # start() returns before the getCurrentComponent is ready.
-            # Try for 5 seconds
+            self.control = self.presentation.getController()
+            # start() returns before the Component is ready.
+            # Try for 15 seconds
             i = 1
-            while self.desktop.getCurrentComponent() is None and i < 50:
+            while not self.control and i < 150:
                 time.sleep(0.1)
                 i = i + 1
-            self.control = \
-                self.desktop.getCurrentComponent().Presentation.getController()
+                self.control = self.presentation.getController()
         else:
             self.control.activate()
             self.goto_slide(1)
@@ -431,35 +444,36 @@ class ImpressDocument(PresentationDocument):
 
     def get_slide_text(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the text is required for, starting at 1
+            The slide the text is required for, starting at 1
         """
-        doc = self.document
-        pages = doc.getDrawPages()
-        text = ''
-        page = pages.getByIndex(slide_no - 1)
-        for idx in range(page.getCount()):
-            shape = page.getByIndex(idx)
-            if shape.supportsService("com.sun.star.drawing.Text"):
-                text += shape.getString() + '\n'
-        return text
+        return self.__get_text_from_page(slide_no)
 
     def get_slide_notes(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text in the slide notes.
 
         ``slide_no``
-        The slide the notes are required for, starting at 1
+            The slide the notes are required for, starting at 1
         """
-        doc = self.document
-        pages = doc.getDrawPages()
+        return self.__get_text_from_page(slide_no, True)
+
+    def __get_text_from_page(self, slide_no, notes=False):
+        """
+        Return any text extracted from the presentation page.
+
+        ``notes``
+            A boolean. If set the method searches the notes of the slide.
+        """
         text = ''
+        pages = self.document.getDrawPages()
         page = pages.getByIndex(slide_no - 1)
-        notes = page.getNotesPage()
-        for idx in range(notes.getCount()):
-            shape = notes.getByIndex(idx)
+        if notes:
+            page = page.getNotesPage()
+        for idx in range(page.getCount()):
+            shape = page.getByIndex(idx)
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -90,6 +91,7 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+
 class BackgroundType(object):
     """
     Type enumeration for backgrounds.
@@ -121,6 +123,7 @@ class BackgroundType(object):
             return BackgroundType.Gradient
         elif type_string == u'image':
             return BackgroundType.Image
+
 
 class BackgroundGradientType(object):
     """
@@ -164,13 +167,17 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
     """
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 1
-    Right = 2
+    Right = 1
+    Center = 2
+
+    Names = [u'left', u'right', u'center']
+
 
 class VerticalType(object):
     """
@@ -180,6 +187,9 @@ class VerticalType(object):
     Middle = 1
     Bottom = 2
 
+    Names = [u'top', u'middle', u'bottom']
+
+
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
@@ -187,10 +197,13 @@ INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
 
+
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
+    FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
+    SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
     def __init__(self):
         """
         Initialise the theme object.
@@ -565,8 +578,8 @@ class ThemeXML(object):
         """
         Change Camel Case string to python string
         """
-        sub_name = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', sub_name).lower()
+        sub_name = ThemeXML.FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
+        return ThemeXML.SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """
@@ -583,8 +596,7 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
+            filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,

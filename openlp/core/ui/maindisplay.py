@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,51 +35,47 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    build_icon, translate
+    translate
 
-from openlp.core.ui import HideMode
+from openlp.core.ui import HideMode, ScreenList
 
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 #http://html5demos.com/two-videos
 
-class DisplayWidget(QtGui.QGraphicsView):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    log.info(u'Display Widget loaded')
-
-    def __init__(self, live, parent=None):
-        QtGui.QGraphicsView.__init__(self)
-        self.parent = parent
-        self.live = live
-
-
-class MainDisplay(DisplayWidget):
+class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
-    def __init__(self, parent, screens, live):
-        DisplayWidget.__init__(self, live, parent=None)
-        self.parent = parent
-        self.screens = screens
+    def __init__(self, parent, imageManager, live):
+        if live:
+            QtGui.QGraphicsView.__init__(self)
+        else:
+            QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
+        self.imageManager = imageManager
+        self.screens = ScreenList.get_instance()
         self.alertTab = None
         self.hideMode = None
+        self.videoHide = False
         self.override = {}
-        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.setWindowIcon(mainIcon)
         self.retranslateUi()
+        self.mediaObject = None
+        self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
-            QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.X11BypassWindowManagerHint)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'openlp_phonon_creation'),
+                self.createMediaObject)
 
     def retranslateUi(self):
         """
@@ -90,8 +87,7 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
-            self.screens.monitor_number))
+        log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
@@ -102,10 +98,10 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videoWidget)
-        Phonon.createPath(self.mediaObject, self.audio)
+        if self.isLive:
+            if not self.firstTime:
+                self.createMediaObject()
+        log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -122,37 +118,63 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             # Build the initial frame.
             self.black = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             # Build the initial frame.
-            initialFrame = QtGui.QImage(
-                self.screens.current[u'size'].width(),
-                self.screens.current[u'size'].height(),
+            image_file = QtCore.QSettings().value(u'advanced/default image',
+                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+                .toString()
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(QtCore.QSettings().value(
+                u'advanced/default color',
+                QtCore.QVariant(u'#ffffff')).toString())
+            if not background_color.isValid():
+                background_color = QtCore.Qt.white
+            splash_image = QtGui.QImage(image_file)
+            self.initialFrame = QtGui.QImage(
+                self.screen[u'size'].width(),
+                self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
-            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
             painter_image = QtGui.QPainter()
-            painter_image.begin(initialFrame)
-            painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
+            painter_image.begin(self.initialFrame)
+            painter_image.fillRect(self.initialFrame.rect(), background_color)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() -
-                splash_image.width()) / 2,
-                (self.screens.current[u'size'].height()
-                - splash_image.height()) / 2, splash_image)
+                (self.screen[u'size'].width() - splash_image.width()) / 2,
+                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
+            serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.parent.alertTab, self.isLive, None))
-            self.initialFrame = True
+                self.alertTab, self.isLive, None))
+            self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
-                self.show()
                 self.primary = False
             else:
                 self.primary = True
+        log.debug(u'Finished MainDisplay setup')
+
+    def createMediaObject(self):
+        self.firstTime = False
+        log.debug(u'Creating Phonon objects - Start for %s', self.isLive)
+        self.mediaObject = Phonon.MediaObject(self)
+        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        Phonon.createPath(self.mediaObject, self.videoWidget)
+        Phonon.createPath(self.mediaObject, self.audio)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoState)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'),
+            self.videoFinished)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'tick(qint64)'),
+            self.videoTick)
+        log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
 
     def text(self, slide):
         """
@@ -165,7 +187,8 @@ class MainDisplay(DisplayWidget):
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
-        self.frame.evaluateJavaScript(u'show_text("%s")' % \
+        self.setGeometry(self.screen[u'size'])
+        self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
 
@@ -177,8 +200,8 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible() or self.videoWidget.isVisible():
+        if self.height() != self.screen[u'size'].height() or not \
+            self.isVisible() or self.videoWidget.isVisible():
             shrink = True
         else:
             shrink = False
@@ -192,22 +215,30 @@ class MainDisplay(DisplayWidget):
             else:
                 shrinkItem = self
             if text:
-                shrinkItem.resize(self.width(), int(height.toString()))
+                alert_height = int(height.toString())
+                shrinkItem.resize(self.width(), alert_height)
                 shrinkItem.setVisible(True)
+                if self.alertTab.location == 1:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                    (self.screen[u'size'].height() - alert_height) / 2)
+                elif self.alertTab.location == 2:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                        self.screen[u'size'].height() - alert_height)
             else:
                 shrinkItem.setVisible(False)
-                shrinkItem.resize(self.screen[u'size'].width(),
-                    self.screen[u'size'].height())
+                self.setGeometry(self.screen[u'size'])
 
     def directImage(self, name, path):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
         self.imageManager.add_image(name, path)
-        self.image(name)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
+            self.image(name)
+            return True
+        return False
 
     def image(self, name):
         """
@@ -221,22 +252,21 @@ class MainDisplay(DisplayWidget):
         image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
-        # show screen
-        if self.isLive:
-            self.setVisible(True)
         return self.preview()
 
     def displayImage(self, image):
         """
         Display an image, as is.
         """
+        self.setGeometry(self.screen[u'size'])
         if image:
             js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -248,9 +278,11 @@ class MainDisplay(DisplayWidget):
             self.displayImage(self.serviceItem.bg_image_bytes)
         else:
             self.displayImage(None)
+        # clear the cache
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -267,7 +299,8 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_video("close");')
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -307,7 +340,7 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if self.phononActive:
             self.audio.setVolume(vol)
         else:
@@ -318,29 +351,66 @@ class MainDisplay(DisplayWidget):
         """
         Loads and starts a video to run with the option of sound
         """
+        # We request a background video but have no service Item
+        if isBackground and not hasattr(self, u'serviceItem'):
+            return None
+        if not self.mediaObject:
+            self.createMediaObject()
         log.debug(u'video')
         self.webLoaded = True
+        self.setGeometry(self.screen[u'size'])
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-                (videoPath.replace(u'\\', u'\\\\'), \
-                str(vol))
+                (videoPath.replace(u'\\', u'\\\\'), str(vol))
             self.frame.evaluateJavaScript(js)
         else:
             self.phononActive = True
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
+            # Need the timer to trigger set the trigger to 200ms
+            # Value taken from web documentation.
+            if self.serviceItem.end_time != 0:
+                self.mediaObject.setTickInterval(200)
             self.mediaObject.play()
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
         return self.preview()
+
+    def videoState(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if newState == Phonon.PlayingState \
+            and oldState != Phonon.PausedState \
+            and self.serviceItem.start_time > 0:
+            # set start time in milliseconds
+            self.mediaObject.seek(self.serviceItem.start_time * 1000)
+
+    def videoFinished(self):
+        """
+        Blank the Video when it has finished so the final frame is not left
+        hanging
+        """
+        self.videoStop()
+        self.hideDisplay(HideMode.Blank)
+        self.phononActive = False
+        self.videoHide = True
+
+    def videoTick(self, tick):
+        """
+        Triggered on video tick every 200 milli seconds
+        """
+        if tick > self.serviceItem.end_time * 1000:
+            self.videoFinished()
 
     def isWebLoaded(self):
         """
@@ -370,9 +440,17 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-            self.setVisible(True)
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
+            else:
+                # Single screen active
+                if self.screens.display_count == 1:
+                    # Only make visible if setting enabled
+                    if QtCore.QSettings().value(u'general/display on monitor',
+                        QtCore.QVariant(True)).toBool():
+                        self.setVisible(True)
+                else:
+                    self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -382,14 +460,14 @@ class MainDisplay(DisplayWidget):
         painter.end()
         return preview
 
-    def buildHtml(self, serviceItem):
+    def buildHtml(self, serviceItem, image=None):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
         """
         log.debug(u'buildHtml')
         self.webLoaded = False
-        self.initialFrame = False
+        self.initialFrame = None
         self.serviceItem = serviceItem
         background = None
         # We have an image override so keep the image till the theme changes
@@ -398,18 +476,23 @@ class MainDisplay(DisplayWidget):
             if u'video' in self.override:
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
-            elif self.override[u'theme'] != \
-                serviceItem.themedata.theme_name:
+            # We have a different theme.
+            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
+                # replace the background
                 background = self.imageManager. \
                     get_image_bytes(self.override[u'image'])
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
-            self.isLive, background)
+        if image:
+            image_bytes = self.imageManager.get_image_bytes(image)
+        else:
+            image_bytes = None
+        html = build_html(self.serviceItem, self.screen, self.alertTab,
+            self.isLive, background, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
@@ -417,16 +500,16 @@ class MainDisplay(DisplayWidget):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
-        # Hide mouse cursor when moved over display if enabled in settings
-        settings = QtCore.QSettings()
-        if settings.value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
-            self.setCursor(QtCore.Qt.BlankCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
-        else:
-            self.setCursor(QtCore.Qt.ArrowCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+            if QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                Receiver.send_message(u'slidecontroller_live_unblank')
+            else:
+                self.hideDisplay(self.hideMode)
+        # display hidden for video end we have a new item so must be shown
+        if self.videoHide and self.isLive:
+            self.videoHide = False
+            self.showDisplay()
+        self.__hideMouse()
 
     def footer(self, text):
         """
@@ -474,7 +557,18 @@ class MainDisplay(DisplayWidget):
             self.videoPlay()
         self.hideMode = None
         # Trigger actions when display is active again
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
+
+    def __hideMouse(self):
+        # Hide mouse cursor when moved over display if enabled in settings
+        if QtCore.QSettings().value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
 
 class AudioPlayer(QtCore.QObject):
@@ -490,9 +584,6 @@ class AudioPlayer(QtCore.QObject):
 
         ``parent``
             The parent widget.
-
-        ``screens``
-            The list of screens.
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)

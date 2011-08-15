@@ -21,6 +21,13 @@
     <file>song_topic_edit.png</file>
     <file>song_book_edit.png</file>
   </qresource>
+  <qresource prefix="bibles">
+    <file>bibles_search_text.png</file>
+    <file>bibles_search_reference.png</file>
+    <file>bibles_upgrade_alert.png</file>
+    <file>bibles_search_unlock.png</file>
+    <file>bibles_search_lock.png</file>
+  </qresource>
   <qresource prefix="plugins">
     <file>plugin_alerts.png</file>
     <file>plugin_bibles.png</file>
@@ -41,9 +48,15 @@
     <file>general_export.png</file>
     <file>general_import.png</file>
     <file>general_new.png</file>
+    <file>general_zoom_out.png</file>
+    <file>general_zoom_in.png</file>
+    <file>general_zoom_original.png</file>
+    <file>general_print.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
     <file>general_email.png</file>
+    <file>general_revert.png</file>
+    <file>general_clone.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>
@@ -78,14 +91,13 @@
     <file>import_load.png</file>
   </qresource>
   <qresource prefix="exports">
-    <file>export_selectall.png</file>
-    <file>export_remove.png</file>
     <file>export_load.png</file>
-    <file>export_move_to_list.png</file>
   </qresource>
   <qresource prefix="wizards">
+    <file>wizard_exportsong.bmp</file>
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
+    <file>wizard_firsttime.bmp</file>
     <file>wizard_createtheme.bmp</file>
   </qresource>
   <qresource prefix="services">
@@ -103,6 +115,7 @@
     <file>clear_shortcut.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
+    <file>system_online_help.png</file>
     <file>system_mediamanager.png</file>
     <file>system_contribute.png</file>
     <file>system_servicemanager.png</file>
@@ -110,6 +123,9 @@
     <file>system_exit.png</file>
     <file>settings_plugin_list.png</file>
     <file>system_settings.png</file>
+    <file>tag_editor.png</file>
+    <file>system_configure.png</file>
+    <file>system_edit_copy.png</file>
     <file>system_configure_shortcuts.png</file>
   </qresource>
   <qresource prefix="media">
@@ -121,6 +137,10 @@
     <file>messagebox_critical.png</file>
     <file>messagebox_info.png</file>
     <file>messagebox_warning.png</file>
+  </qresource>
+  <qresource prefix="songusage">
+    <file>song_usage_active.png</file>
+    <file>song_usage_inactive.png</file>
   </qresource>
   <qresource prefix="tools">
     <file>tools_add.png</file>
