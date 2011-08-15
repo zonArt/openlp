@@ -584,8 +584,8 @@ class ServiceManager(QtGui.QWidget):
         fileTo = None
         try:
             zip = zipfile.ZipFile(fileName)
-            for file in zip.namelist():
-                ucsfile = file_is_unicode(file)
+            for zipinfo in zip.infolist():
+                ucsfile = file_is_unicode(zipinfo.filename)
                 if not ucsfile:
                     critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
@@ -593,14 +593,11 @@ class ServiceManager(QtGui.QWidget):
                         'The content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
-                filePath = os.path.join(self.servicePath,
-                    os.path.split(osfile)[1])
-                fileTo = open(filePath, u'wb')
-                fileTo.write(zip.read(file))
-                fileTo.flush()
-                fileTo.close()
-                if filePath.endswith(u'osd'):
-                    p_file = filePath
+                filename_only = os.path.split(osfile)[1]
+                zipinfo.filename = filename_only
+                zip.extract(zipinfo, self.servicePath)
+                if filename_only.endswith(u'osd'):
+                    p_file = os.path.join(self.servicePath, filename_only)
             if 'p_file' in locals():
                 Receiver.send_message(u'cursor_busy')
                 fileTo = open(p_file, u'r')
