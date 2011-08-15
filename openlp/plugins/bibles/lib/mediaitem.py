@@ -395,6 +395,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
         """
