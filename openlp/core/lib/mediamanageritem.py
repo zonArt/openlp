@@ -377,7 +377,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         names = []
         for count in range(0, self.listView.count()):
-            names.append(self.listView.item(count).text())
+            names.append(unicode(self.listView.item(count).text()))
         newFiles = []
         duplicatesFound = False
         for file in files:
