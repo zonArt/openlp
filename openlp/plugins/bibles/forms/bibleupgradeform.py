@@ -394,8 +394,8 @@ class BibleUpgradeForm(OpenLPWizard):
             if self.stop_import_flag:
                 self.success[number] = False
                 break
-            self.success[number] = True
             if not self.checkBox[number].checkState() == QtCore.Qt.Checked:
+                self.success[number] = False
                 continue
             self.progressBar.reset()
             oldBible = OldBibleDB(self.mediaItem, path=self.temp_dir,
@@ -407,6 +407,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
                     (number + 1, max_bibles, name),
                     self.progressBar.maximum() - self.progressBar.value())
+                self.success[number] = False
                 continue
             self.progressLabel.setText(unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm',
@@ -454,6 +455,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Upgrading Bible %s of %s: "%s"\nFailed')) %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
+                    self.success[number] = False
                     continue
                 bible = BiblesResourcesDB.get_webbible(
                     meta_data[u'download name'],
@@ -472,6 +474,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Upgrading Bible %s of %s: "%s"\nFailed')) %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
+                    self.success[number] = False
                     continue
                 self.progressBar.setMaximum(len(books))
                 for book in books:
@@ -526,6 +529,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         'Upgrading Bible %s of %s: "%s"\nFailed')) %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
+                    self.success[number] = False
                     continue
                 books = oldBible.get_books()
                 self.progressBar.setMaximum(len(books))
@@ -565,20 +569,22 @@ class BibleUpgradeForm(OpenLPWizard):
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
-            if self.success[number]:
+            if self.success.has_key(number) and not self.success[number]:
+                print u'11111'
+                self.incrementProgressBar(unicode(translate(
+                    'BiblesPlugin.UpgradeWizardForm',
+                    'Upgrading Bible %s of %s: "%s"\nFailed')) %
+                    (number + 1, max_bibles, name),
+                    self.progressBar.maximum() - self.progressBar.value())
+            else:
+                self.success[number] = True
                 self.newbibles[number].create_meta(u'Version', name)
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Complete')) %
                     (number + 1, max_bibles, name))
-            else:
-                self.incrementProgressBar(unicode(translate(
-                    'BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible %s of %s: "%s"\nFailed')) %
-                    (number + 1, max_bibles, name),
-                    self.progressBar.maximum() - self.progressBar.value())
-        # Close the last bible's connection.
+        # Close the last bible's connection if possible.
         if oldBible is not None:
             oldBible.close_connection()
 
@@ -591,13 +597,12 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, filename in enumerate(self.files):
             if self.success.has_key(number) and self.success[number]:
                 successful_import += 1
-            else:
+            elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
+                failed_import += 1
                 # Delete upgraded (but not complete, corrupted, ...) bible.
                 delete_file(os.path.join(self.path, filename[0]))
                 # Copy not upgraded bible back.
                 shutil.move(os.path.join(self.temp_dir, filename[0]), self.path)
-                if self.checkBox[number].checkState() == QtCore.Qt.Checked:
-                    failed_import += 1
         if failed_import > 0:
             failed_import_text = unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm',
