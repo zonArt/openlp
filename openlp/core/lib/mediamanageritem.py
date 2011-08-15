@@ -396,7 +396,7 @@ class MediaManagerItem(QtGui.QWidget):
             critical_error_message_box(
                 UiStrings().Duplicate,
                 unicode(translate('OpenLP.MediaManagerItem',
-                'Duplicate files found on import and ignored.')))
+                'Duplicate files were found on import and were ignored.')))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
