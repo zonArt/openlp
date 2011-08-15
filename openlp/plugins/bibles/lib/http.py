@@ -218,7 +218,7 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.find(u'div').findAll(u'div')
-        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')
