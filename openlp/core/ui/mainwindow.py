@@ -305,10 +305,10 @@ class Ui_MainWindow(object):
         add_actions(self.fileExportMenu,
             (self.exportThemeItem, self.exportLanguageItem))
         add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
-            self.fileSaveItem, self.fileSaveAsItem, None,
-            self.recentFilesMenu.menuAction(), None, self.printServiceOrderItem,
-            None, self.fileImportMenu.menuAction(),
-            self.fileExportMenu.menuAction(), self.fileExitItem))
+            self.fileSaveItem, self.fileSaveAsItem,
+            self.recentFilesMenu.menuAction(), None,
+            self.fileImportMenu.menuAction(), self.fileExportMenu.menuAction(),
+            None, self.printServiceOrderItem, self.fileExitItem))
         add_actions(self.viewModeMenu, (self.modeDefaultItem,
             self.modeSetupItem, self.modeLiveItem))
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
