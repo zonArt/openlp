@@ -443,6 +443,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         u'name: "%s" failed' % (
                         meta_data[u'download source'],
                         meta_data[u'download name']))
+                    self.newbibles[number].session.close()
                     del self.newbibles[number]
                     critical_error_message_box(
                         translate('BiblesPlugin.UpgradeWizardForm',
@@ -468,6 +469,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
                     log.warn(u'Upgrading from "%s" failed' % filename[0])
+                    self.newbibles[number].session.close()
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -493,6 +495,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             u'name: "%s" aborted by user' % (
                             meta_data[u'download source'],
                             meta_data[u'download name']))
+                        self.newbibles[number].session.close()
                         del self.newbibles[number]
                         self.success[number] = False
                         break
@@ -523,6 +526,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     language_id = self.newbibles[number].get_language(name)
                 if not language_id:
                     log.warn(u'Upgrading books from "%s" failed' % name)
+                    self.newbibles[number].session.close()
                     del self.newbibles[number]
                     self.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.UpgradeWizardForm',
@@ -548,6 +552,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.warn(u'Upgrading books from %s " '\
                             'failed - aborted by user' % name)
+                        self.newbibles[number].session.close()
                         del self.newbibles[number]
                         self.success[number] = False
                         break
@@ -583,6 +588,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Complete')) %
                     (number + 1, max_bibles, name))
+            if self.newbibles.has_key(number):
+                self.newbibles[number].session.close()
         # Close the last bible's connection if possible.
         if oldBible is not None:
             oldBible.close_connection()
