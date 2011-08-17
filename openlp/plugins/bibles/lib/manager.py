@@ -151,6 +151,7 @@ class BibleManager(object):
             name = bible.get_name()
             # Remove corrupted files.
             if name is None:
+                bible.session.close()
                 delete_file(os.path.join(self.path, filename))
                 continue
             # Find old database versions.
