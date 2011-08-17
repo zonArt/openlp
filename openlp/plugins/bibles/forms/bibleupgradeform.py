@@ -401,14 +401,6 @@ class BibleUpgradeForm(OpenLPWizard):
             oldBible = OldBibleDB(self.mediaItem, path=self.temp_dir,
                 file=filename[0])
             name = filename[1]
-            if name is None:
-                self.incrementProgressBar(unicode(translate(
-                    'BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible %s of %s: "%s"\nFailed')) %
-                    (number + 1, max_bibles, name),
-                    self.progressBar.maximum() - self.progressBar.value())
-                self.success[number] = False
-                continue
             self.progressLabel.setText(unicode(translate(
                 'BiblesPlugin.UpgradeWizardForm',
                 'Upgrading Bible %s of %s: "%s"\nUpgrading ...')) %
