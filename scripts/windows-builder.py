@@ -46,12 +46,6 @@ PyEnchant
 Inno Setup 5
     Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
 
-UPX
-    This is used to compress DLLs and EXEs so that they take up less space, but
-    still function exactly the same. To install UPX, download it from
-    http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
-    add that directory to your PATH environment variable.
-
 Sphinx
     This is used to build the documentation.  The documentation trunk must be at
     the same directory level as Openlp trunk and named "documentation"
@@ -179,6 +173,7 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
+        u'--noupx', 
         u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,

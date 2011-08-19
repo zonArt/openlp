@@ -66,7 +66,7 @@ class MediaDockManager(object):
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.plugin.name.lower():
+                media_item.plugin.name:
                 match = True
                 break
         if not match:
@@ -84,6 +84,6 @@ class MediaDockManager(object):
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settingsSection == \
-                    media_item.plugin.name.lower():
+                    media_item.plugin.name:
                     self.media_dock.widget(dock_index).setVisible(False)
                     self.media_dock.removeItem(dock_index)

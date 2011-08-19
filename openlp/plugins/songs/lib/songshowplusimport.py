@@ -102,7 +102,6 @@ class SongShowPlusImport(SongImport):
         if not isinstance(self.import_source, list):
             return
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
-
         for file in self.import_source:
             self.sspVerseOrderList = []
             otherCount = 0
@@ -111,7 +110,6 @@ class SongShowPlusImport(SongImport):
             self.import_wizard.incrementProgressBar(
                 WizardStrings.ImportingType % file_name, 0)
             songData = open(file, 'rb')
-
             while True:
                 blockKey, = struct.unpack("I", songData.read(4))
                 # The file ends with 4 NUL's
@@ -126,8 +124,9 @@ class SongShowPlusImport(SongImport):
                         songData.read(2))
                     verseName = songData.read(verseNameLength)
                 lengthDescriptorSize, = struct.unpack("B", songData.read(1))
+                log.debug(lengthDescriptorSize)
                 # Detect if/how long the length descriptor is
-                if lengthDescriptorSize == 12:
+                if lengthDescriptorSize == 12 or lengthDescriptorSize == 20:
                     lengthDescriptor, = struct.unpack("I", songData.read(4))
                 elif lengthDescriptorSize == 2:
                     lengthDescriptor = 1
@@ -135,6 +134,7 @@ class SongShowPlusImport(SongImport):
                     lengthDescriptor = 0
                 else:
                     lengthDescriptor, = struct.unpack("B", songData.read(1))
+                log.debug(lengthDescriptorSize)
                 data = songData.read(lengthDescriptor)
                 if blockKey == TITLE:
                     self.title = unicode(data, u'cp1252')

@@ -24,6 +24,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import cgi
 import cPickle
 import logging
 import os
@@ -408,20 +409,33 @@ class ServiceManager(QtGui.QWidget):
                     return False
         self.newFile()
 
-    def onLoadServiceClicked(self):
+    def onLoadServiceClicked(self, loadFile=None):
+        """
+        Loads the service file and saves the existing one it there is one
+        unchanged
+
+        ``loadFile``
+            The service file to the loaded.  Will be None is from menu so
+            selection will be required.
+        """
         if self.isModified():
             result = self.saveModifiedService()
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
                 self.saveFile()
-        fileName = unicode(QtGui.QFileDialog.getOpenFileName(self.mainwindow,
-            translate('OpenLP.ServiceManager', 'Open File'),
-            SettingsManager.get_last_dir(
-            self.mainwindow.serviceSettingsSection),
-            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
-        if not fileName:
-            return False
+        if not loadFile:
+            fileName = unicode(QtGui.QFileDialog.getOpenFileName(
+                self.mainwindow,
+                translate('OpenLP.ServiceManager', 'Open File'),
+                SettingsManager.get_last_dir(
+                self.mainwindow.serviceSettingsSection),
+                translate('OpenLP.ServiceManager',
+                'OpenLP Service Files (*.osz)')))
+            if not fileName:
+                return False
+        else:
+            fileName = loadFile
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
             split_filename(fileName)[0])
         self.loadFile(fileName)
@@ -474,6 +488,7 @@ class ServiceManager(QtGui.QWidget):
                 item[u'service_item'].get_service_repr()})
             if not item[u'service_item'].uses_file():
                 continue
+            skipMissing = False
             for frame in item[u'service_item'].get_frames():
                 if item[u'service_item'].is_image():
                     path_from = frame[u'path']
@@ -482,25 +497,29 @@ class ServiceManager(QtGui.QWidget):
                 # Only write a file once
                 if path_from in write_list:
                     continue
-                file_size = os.path.getsize(path_from)
-                size_limit = 52428800 # 50MiB
-                #if file_size > size_limit:
-                #    # File exeeds size_limit bytes, ask user
-                #    message = unicode(translate('OpenLP.ServiceManager',
-                #        'Do you want to include \n%.1f MB file "%s"\n'
-                #        'into the service file?\nThis may take some time.\n\n'
-                #        'Please note that you need to\ntake care of that file'
-                #        ' yourself,\nif you leave it out.')) % \
-                #        (file_size/1048576, os.path.split(path_from)[1])
-                #    ans = QtGui.QMessageBox.question(self.mainwindow,
-                #        translate('OpenLP.ServiceManager', 'Including Large '
-                #        'File'), message, QtGui.QMessageBox.StandardButtons(
-                #        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
-                #        QtGui.QMessageBox.Ok)
-                #    if ans == QtGui.QMessageBox.Cancel:
-                #        continue
-                write_list.append(path_from)
-                total_size += file_size
+                if not os.path.exists(path_from):
+                    if not skipMissing:
+                        Receiver.send_message(u'cursor_normal')
+                        title = unicode(translate('OpenLP.ServiceManager',
+                            'Service File Missing'))
+                        message = unicode(translate('OpenLP.ServiceManager',
+                            'File missing from service\n\n %s \n\n'
+                            'Continue saving?' % path_from ))
+                        answer = QtGui.QMessageBox.critical(self, title,
+                            message,
+                            QtGui.QMessageBox.StandardButtons(
+                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No |
+                            QtGui.QMessageBox.YesToAll))
+                        if answer == QtGui.QMessageBox.No:
+                            self.mainwindow.finishedProgressBar()
+                            return False
+                        if answer == QtGui.QMessageBox.YesToAll:
+                            skipMissing = True
+                        Receiver.send_message(u'cursor_busy')
+                else:
+                    file_size = os.path.getsize(path_from)
+                    write_list.append(path_from)
+                    total_size += file_size
         log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
             total_size)
         service_content = cPickle.dumps(service)
@@ -701,6 +720,9 @@ class ServiceManager(QtGui.QWidget):
             self.setModified()
 
     def onStartTimeForm(self):
+        """
+        Opens a dialog to type in service item notes.
+        """
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
@@ -939,11 +961,11 @@ class ServiceManager(QtGui.QWidget):
             if serviceitem.notes:
                 tips.append(u'<strong>%s: </strong> %s' %
                     (unicode(translate('OpenLP.ServiceManager', 'Notes')),
-                    unicode(serviceitem.notes)))
+                    cgi.escape(unicode(serviceitem.notes))))
             if item[u'service_item'] \
                 .is_capable(ItemCapabilities.AllowsVariableStartTime):
                 tips.append(item[u'service_item'].get_media_time())
-            treewidgetitem.setToolTip(0, u'<br />'.join(tips))
+            treewidgetitem.setToolTip(0, u'<br>'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
             treewidgetitem.setSelected(item[u'selected'])
@@ -1239,7 +1261,14 @@ class ServiceManager(QtGui.QWidget):
             Handle of the event pint passed
         """
         link = event.mimeData()
-        if link.hasText():
+        if event.mimeData().hasUrls():
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            for url in event.mimeData().urls():
+                filename = unicode(url.toLocalFile())
+                if filename.endswith(u'.osz'):
+                    self.onLoadServiceClicked(filename)
+        elif event.mimeData().hasText():
             plugin = unicode(event.mimeData().text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
