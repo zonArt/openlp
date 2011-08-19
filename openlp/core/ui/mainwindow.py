@@ -285,12 +285,10 @@ class Ui_MainWindow(object):
         self.settingsConfigureItem = icon_action(mainWindow,
             u'settingsConfigureItem', u':/system/system_settings.png',
             category=UiStrings().Settings)
-        self.settingsImportItem = icon_action(mainWindow,
-            u'settingsImportItem', u':/general/general_import.png', 
-            category=UiStrings().Settings)
-        self.settingsExportItem = icon_action(mainWindow,
-            u'settingsExportItem', u':/general/general_export.png', 
-            category=UiStrings().Settings)    
+        self.settingsImportItem = base_action(mainWindow,
+           u'settingsImportItem', category=UiStrings().Settings)
+        self.settingsExportItem = base_action(mainWindow,
+           u'settingsExportItem', category=UiStrings().Settings)    
         action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
         self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
@@ -308,10 +306,10 @@ class Ui_MainWindow(object):
             u':/system/system_online_help.png', category=UiStrings().Help)
         self.webSiteItem = base_action(
             mainWindow, u'webSiteItem', category=UiStrings().Help)
-        add_actions(self.fileImportMenu,
-            (self.importThemeItem, self.importLanguageItem))
-        add_actions(self.fileExportMenu,
-            (self.exportThemeItem, self.exportLanguageItem))
+        add_actions(self.fileImportMenu, (self.settingsImportItem, None,
+            self.importThemeItem, self.importLanguageItem))
+        add_actions(self.fileExportMenu, (self.settingsExportItem, None,
+            self.exportThemeItem, self.exportLanguageItem))
         add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
             self.fileSaveItem, self.fileSaveAsItem, None,
             self.recentFilesMenu.menuAction(), None, self.printServiceOrderItem,
@@ -332,14 +330,12 @@ class Ui_MainWindow(object):
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
                 self.settingsConfigureItem, self.settingsShortcutsItem,
-                self.formattingTagItem, None,
-                self.settingsImportItem, self.settingsExportItem))
+                self.formattingTagItem))
         else:
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
                 self.formattingTagItem, self.settingsShortcutsItem,
-                self.settingsConfigureItem, None,
-                self.settingsImportItem, self.settingsExportItem))
+                self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
         add_actions(self.toolsMenu, (self.toolsFirstTimeWizard, None))
@@ -430,10 +426,15 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Configure Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
+        self.settingsExportItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Export OpenLP settings to a specified Ini file'))
         self.settingsExportItem.setText(
-            translate('OpenLP.MainWindow', 'Export Settings'))
+            translate('OpenLP.MainWindow', 'Settings'))
+        self.settingsImportItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Import OpenLP settings from a specified Ini file previously '
+            'exported on this or another machine'))
         self.settingsImportItem.setText(
-            translate('OpenLP.MainWindow', 'Import Settings'))
+            translate('OpenLP.MainWindow', 'Settings'))
         self.viewMediaManagerItem.setText(
             translate('OpenLP.MainWindow', '&Media Manager'))
         self.viewMediaManagerItem.setToolTip(
