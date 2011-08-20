@@ -52,6 +52,8 @@ class ImageMediaItem(MediaManagerItem):
         self.hasSearch = True
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
 
     def retranslateUi(self):
         self.onNewPrompt = translate('ImagePlugin.MediaItem',
@@ -131,6 +133,7 @@ class ImageMediaItem(MediaManagerItem):
                 icon = self.iconFromFile(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
+            item_name.setToolTip(imageFile)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
         if not initialLoad:
@@ -208,8 +211,13 @@ class ImageMediaItem(MediaManagerItem):
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
-                self.plugin.liveController.display.directImage(name, filename)
-                self.resetAction.setVisible(True)
+                if self.plugin.liveController.display.directImage(name,
+                    filename):
+                    self.resetAction.setVisible(True)
+                else:
+                    critical_error_message_box(UiStrings().LiveBGError,
+                        translate('ImagePlugin.MediaItem',
+                        'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',

@@ -27,7 +27,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, SpellTextEdit
 from openlp.core.lib.ui import create_accept_reject_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
@@ -49,8 +49,10 @@ class ServiceNoteForm(QtGui.QDialog):
     def setupUi(self):
         self.setObjectName(u'serviceNoteEdit')
         self.dialogLayout = QtGui.QVBoxLayout(self)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
+        self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'verticalLayout')
-        self.textEdit = QtGui.QTextEdit(self)
+        self.textEdit = SpellTextEdit(self, False)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
         self.dialogLayout.addWidget(create_accept_reject_button_box(self))

@@ -96,7 +96,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
-        self.settingsSection = self.plugin.name.lower()
+        self.settingsSection = self.plugin.name
         self.icon = None
         if icon:
             self.icon = build_icon(icon)
@@ -113,7 +113,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         self.auto_select_id = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name.lower()),
+            QtCore.SIGNAL(u'%s_service_load' % self.plugin.name),
             self.serviceLoad)
 
     def requiredIcons(self):
@@ -252,7 +252,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setAlternatingRowColors(True)
-        self.listView.setDragEnabled(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
         # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
@@ -288,6 +287,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.listView, u':/general/general_add.png',
                 translate('OpenLP.MediaManagerItem',
                 '&Add to selected Service Item'), self.onAddEditClick)
+        self.addCustomContextActions()
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()
         self.menu.addActions(self.listView.actions())
@@ -300,6 +300,13 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
+
+    def addCustomContextActions(self):
+        """
+        Implement this method in your descendent media manager item to
+        add any context menu items. This method is called automatically.
+        """
+        pass
 
     def initialise(self):
         """
@@ -331,26 +338,65 @@ class MediaManagerItem(QtGui.QWidget):
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
-            names = []
-            for count in range(0, self.listView.count()):
-                names.append(self.listView.item(count).text())
-            newFiles = []
-            for file in files:
-                filename = os.path.split(unicode(file))[1]
-                if filename in names:
+            self.validateAndLoad(files)
+        Receiver.send_message(u'cursor_normal')
+
+    def loadFile(self, files):
+        """
+        Turn file from Drag and Drop into an array so the Validate code
+        can run it.
+
+        ``files``
+        The list of files to be loaded
+        """
+        newFiles = []
+        errorShown = False
+        for file in files:
+            type = file.split(u'.')[-1]
+            if type.lower() not in self.onNewFileMasks:
+                if not errorShown:
                     critical_error_message_box(
-                        UiStrings().Duplicate,
+                        translate('OpenLP.MediaManagerItem',
+                        'Invalid File Type'),
                         unicode(translate('OpenLP.MediaManagerItem',
-                        'Duplicate filename %s.\nThis filename is already in '
-                        'the list')) % filename)
-                else:
-                    newFiles.append(file)
+                        'Invalid File %s.\nSuffix not supported'))
+                        % file)
+                    errorShown = True
+            else:
+                newFiles.append(file)
+        if file:
+            self.validateAndLoad(newFiles)
+
+    def validateAndLoad(self, files):
+        """
+        Process a list for files either from the File Dialog or from Drag and
+        Drop
+
+         ``files``
+         The files to be loaded
+        """
+        names = []
+        for count in range(0, self.listView.count()):
+            names.append(self.listView.item(count).text())
+        newFiles = []
+        duplicatesFound = False
+        for file in files:
+            filename = os.path.split(unicode(file))[1]
+            if filename in names:
+                duplicatesFound = True
+            else:
+                newFiles.append(file)
+        if newFiles:
             self.loadList(newFiles)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-        Receiver.send_message(u'cursor_normal')
+        if duplicatesFound:
+            critical_error_message_box(
+                UiStrings().Duplicate,
+                unicode(translate('OpenLP.MediaManagerItem',
+                'Duplicate files found on import and ignored.')))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
@@ -550,7 +596,7 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.plugin.name.lower() == serviceItem.name.lower():
+            elif self.plugin.name == serviceItem.name:
                 self.generateSlideData(serviceItem)
                 self.plugin.serviceManager.addServiceItem(serviceItem,
                     replace=True)

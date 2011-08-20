@@ -41,7 +41,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', plugin_helpers,
+        Plugin.__init__(self, u'bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -117,9 +117,9 @@ class BiblePlugin(Plugin):
         self.toolsUpgradeItem = QtGui.QAction(tools_menu)
         self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
         self.toolsUpgradeItem.setText(
-            translate('BiblePlugin', '&Upgrade older Bibles'))
+            translate('BiblesPlugin', '&Upgrade older Bibles'))
         self.toolsUpgradeItem.setStatusTip(
-            translate('BiblePlugin', 'Upgrade the Bible databases to the '
+            translate('BiblesPlugin', 'Upgrade the Bible databases to the '
             'latest format.'))
         tools_menu.addAction(self.toolsUpgradeItem)
         QtCore.QObject.connect(self.toolsUpgradeItem,

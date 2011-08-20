@@ -34,7 +34,8 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
+    media_item_combo_box, critical_error_message_box, \
+    find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -57,8 +58,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.lockIcon = QtGui.QIcon(u':/bibles/bibles_search_lock.png')
-        self.unlockIcon = QtGui.QIcon(u':/bibles/bibles_search_unlock.png')
+        self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
+        self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
@@ -86,7 +87,7 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
-            message=translate('BiblePlugin.MediaItem',
+            message=translate('BiblesPlugin.MediaItem',
             'You cannot combine single and dual Bible verse search results. '
             'Do you want to delete your search results and start a new '
             'search?'),
@@ -394,6 +395,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
         """
@@ -436,7 +438,7 @@ class BibleMediaItem(MediaManagerItem):
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
-                message=translate('BiblePlugin.MediaItem',
+                message=translate('BiblesPlugin.MediaItem',
                 'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
@@ -611,7 +613,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
+        combo.addItems(map(unicode, range(range_from, range_to + 1)))
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -693,8 +695,8 @@ class BibleMediaItem(MediaManagerItem):
                         verse.verse, verse.verse))
                 if passage_not_found:
                     QtGui.QMessageBox.information(self,
-                        translate('BiblePlugin.MediaItem', 'Information'),
-                        unicode(translate('BiblePlugin.MediaItem',
+                        translate('BiblesPlugin.MediaItem', 'Information'),
+                        unicode(translate('BiblesPlugin.MediaItem',
                         'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '
@@ -983,7 +985,8 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False,
+            False)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]

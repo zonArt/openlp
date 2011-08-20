@@ -79,6 +79,8 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
+    args = []
+
     def exec_(self):
         """
         Override exec method to allow the shared memory to be released on exit
@@ -92,7 +94,7 @@ class OpenLP(QtGui.QApplication):
         """
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
-        self.args = args
+        self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -125,6 +127,8 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
             log.debug(u'Splashscreen closed')
+        # make sure Qt really display the splash screen
+        self.processEvents()
         self.mainWindow.repaint()
         self.processEvents()
         if not has_run_wizard:
@@ -179,6 +183,18 @@ class OpenLP(QtGui.QApplication):
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
+
+    def event(self, event):
+        """
+        Enables direct file opening on OS X
+        """
+        if event.type() == QtCore.QEvent.FileOpen:
+            file_name = event.file()
+            log.debug(u'Got open file event for %s!', file_name)
+            self.args.insert(0, unicode(file_name))
+            return True
+        else:
+            return QtGui.QApplication.event(self, event)
 
 def main():
     """

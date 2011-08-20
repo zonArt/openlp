@@ -48,13 +48,13 @@ class MainDisplay(QtGui.QGraphicsView):
     """
     This is the display screen.
     """
-    def __init__(self, parent, image_manager, live):
+    def __init__(self, parent, imageManager, live):
         if live:
             QtGui.QGraphicsView.__init__(self)
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
-        self.image_manager = image_manager
+        self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
         self.alertTab = None
         self.hideMode = None
@@ -188,7 +188,7 @@ class MainDisplay(QtGui.QGraphicsView):
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' % \
+        self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
 
@@ -232,11 +232,13 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        self.image_manager.add_image(name, path)
-        self.image(name)
+        self.imageManager.add_image(name, path)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
+            self.image(name)
+            return True
+        return False
 
     def image(self, name):
         """
@@ -247,7 +249,7 @@ class MainDisplay(QtGui.QGraphicsView):
             The name of the image to be displayed
         """
         log.debug(u'image to display')
-        image = self.image_manager.get_image_bytes(name)
+        image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         return self.preview()
@@ -349,6 +351,9 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         Loads and starts a video to run with the option of sound
         """
+        # We request a background video but have no service Item
+        if isBackground and not hasattr(self, u'serviceItem'):
+            return None
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
@@ -477,13 +482,13 @@ class MainDisplay(QtGui.QGraphicsView):
                 self.override = {}
             else:
                 # replace the background
-                background = self.image_manager. \
+                background = self.imageManager. \
                     get_image_bytes(self.override[u'image'])
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.image_manager. \
+            self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
         if image:
-            image_bytes = self.image_manager.get_image_bytes(image)
+            image_bytes = self.imageManager.get_image_bytes(image)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,

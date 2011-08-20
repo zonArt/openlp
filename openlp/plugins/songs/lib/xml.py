@@ -73,6 +73,8 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+CHORD_REGEX = re.compile(u'<chord name=".*?"/>')
+
 class SongXML(object):
     """
     This class builds and parses the XML used to describe songs.
@@ -234,7 +236,6 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
-        self.chord_regex = re.compile(u'<chord name=".*?"/>')
 
     def song_to_xml(self, song):
         """
@@ -245,8 +246,9 @@ class OpenLyrics(object):
         # Append the necessary meta data to the song.
         song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
         song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
-        song_xml.set(u'createdIn', get_application_version()[u'version'])
-        song_xml.set(u'modifiedIn', get_application_version()[u'version'])
+        application_name = u'OpenLP ' + get_application_version()[u'version']
+        song_xml.set(u'createdIn', application_name)
+        song_xml.set(u'modifiedIn', application_name)
         song_xml.set(u'modifiedDate',
             datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')
@@ -319,7 +321,7 @@ class OpenLyrics(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
-        xml = self.chord_regex.sub(u'', xml)
+        xml = CHORD_REGEX.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties

@@ -35,7 +35,8 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, context_menu_action, \
+    context_menu_separator
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
@@ -127,6 +128,13 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
+
+    def addCustomContextActions(self):
+        context_menu_separator(self.listView)
+        context_menu_action(
+            self.listView, u':/general/general_clone.png',
+            translate('OpenLP.MediaManagerItem',
+            '&Clone'), self.onCloneClick)
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
@@ -353,18 +361,36 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
+                UiStrings().ConfirmDelete,
                 translate('SongsPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected song(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 self.plugin.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
+
+    def onCloneClick(self):
+        """
+        Clone a Song
+        """
+        log.debug(u'onCloneClick')
+        if check_item_selected(self.listView, UiStrings().SelectEdit):
+            self.editItem = self.listView.currentItem()
+            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
+            old_song = self.plugin.manager.get_object(Song, item_id)
+            song_xml = self.openLyrics.song_to_xml(old_song)
+            new_song_id = self.openLyrics.xml_to_song(song_xml)
+            new_song = self.plugin.manager.get_object(Song, new_song_id)
+            new_song.title = u'%s <%s>' % (new_song.title,
+                translate('SongsPlugin.MediaItem', 'copy',
+                'For song cloning'))
+            self.plugin.manager.save_object(new_song)
+        self.onSongListLoad()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
