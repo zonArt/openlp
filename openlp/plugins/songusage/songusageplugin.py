@@ -91,8 +91,8 @@ class SongUsagePlugin(Plugin):
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
         self.songUsageMenu.addAction(self.songUsageStatus)
         self.songUsageMenu.addSeparator()
-        self.songUsageMenu.addAction(self.songUsageDelete)
         self.songUsageMenu.addAction(self.songUsageReport)
+        self.songUsageMenu.addAction(self.songUsageDelete)
         self.songUsageActiveButton = QtGui.QToolButton(
             self.formparent.statusBar)
         self.songUsageActiveButton.setCheckable(True)

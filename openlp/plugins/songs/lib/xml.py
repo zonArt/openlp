@@ -246,8 +246,9 @@ class OpenLyrics(object):
         # Append the necessary meta data to the song.
         song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
         song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
-        song_xml.set(u'createdIn', get_application_version()[u'version'])
-        song_xml.set(u'modifiedIn', get_application_version()[u'version'])
+        application_name = u'OpenLP ' + get_application_version()[u'version']
+        song_xml.set(u'createdIn', application_name)
+        song_xml.set(u'modifiedIn', application_name)
         song_xml.set(u'modifiedDate',
             datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')

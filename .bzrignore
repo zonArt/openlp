@@ -20,3 +20,4 @@ _eric4project
 openlp/core/resources.py.old
 *.qm
 resources/windows/warnOpenLP.txt
+openlp.cfg
