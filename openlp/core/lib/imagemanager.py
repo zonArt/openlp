@@ -36,7 +36,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte
+from openlp.core.lib import resize_image, image_to_byte, Receiver
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -100,12 +100,14 @@ class Image(object):
     variables ``image`` and ``image_bytes`` to ``None`` and add the image object
     to the queue of images to process.
     """
-    def __init__(self, name='', path=''):
+    def __init__(self, name, path, source, background):
         self.name = name
         self.path = path
         self.image = None
         self.image_bytes = None
         self.priority = Priority.Normal
+        self.source = source
+        self.background = background
 
 
 class PriorityQueue(Queue.PriorityQueue):
@@ -151,6 +153,8 @@ class ImageManager(QtCore.QObject):
         self._cache = {}
         self._imageThread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.config_updated)
 
     def update_display(self):
         """
@@ -168,6 +172,11 @@ class ImageManager(QtCore.QObject):
             image.image = None
             image.image_bytes = None
             self._conversion_queue.put((image.priority, image))
+
+    def config_updated(self):
+        """
+        Flush the queue to updated any data to update
+        """
         # We want only one thread.
         if not self._imageThread.isRunning():
             self._imageThread.start()
@@ -215,13 +224,13 @@ class ImageManager(QtCore.QObject):
             self._conversion_queue.remove(self._cache[name])
             del self._cache[name]
 
-    def add_image(self, name, path):
+    def add_image(self, name, path, source, background):
         """
         Add image to cache if it is not already there.
         """
         log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
-            image = Image(name, path)
+            image = Image(name, path, source, background)
             self._cache[name] = image
             self._conversion_queue.put((image.priority, image))
         else:
@@ -247,7 +256,8 @@ class ImageManager(QtCore.QObject):
         image = self._conversion_queue.get()[1]
         # Generate the QImage for the image.
         if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height)
+            image.image = resize_image(image.path, self.width, self.height,
+                image.background)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:

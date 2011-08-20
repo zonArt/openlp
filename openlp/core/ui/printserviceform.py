@@ -31,7 +31,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string
+from openlp.core.lib import translate, get_text_file_string, Receiver
 from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
@@ -188,6 +188,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
+            # Trigger Audit requests
+            Receiver.send_message(u'print_service_started',
+                [item[u'service_item']])
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
             div = self._addElement(u'div', parent=html_data.body,

@@ -140,6 +140,8 @@ class ImageMediaItem(MediaManagerItem):
             self.plugin.formparent.finishedProgressBar()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
+        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection +
+            u'/background color', QtCore.QVariant(u'#000000')))
         if item:
             items = [item]
         else:
@@ -183,7 +185,7 @@ class ImageMediaItem(MediaManagerItem):
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             (path, name) = os.path.split(filename)
-            service_item.add_from_image(filename, name)
+            service_item.add_from_image(filename, name, background)
         return True
 
     def onResetClick(self):

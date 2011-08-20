@@ -64,6 +64,7 @@ class Ui_ThemeWizard(object):
         self.backgroundStack.setObjectName(u'BackgroundStack')
         self.colorWidget = QtGui.QWidget(self.backgroundPage)
         self.colorWidget.setObjectName(u'ColorWidget')
+
         self.colorLayout = QtGui.QFormLayout(self.colorWidget)
         self.colorLayout.setMargin(0)
         self.colorLayout.setObjectName(u'ColorLayout')
@@ -73,6 +74,7 @@ class Ui_ThemeWizard(object):
         self.colorButton.setObjectName(u'ColorButton')
         self.colorLayout.addRow(self.colorLabel, self.colorButton)
         self.colorLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
+
         self.backgroundStack.addWidget(self.colorWidget)
         self.gradientWidget = QtGui.QWidget(self.backgroundPage)
         self.gradientWidget.setObjectName(u'GradientWidget')
@@ -100,11 +102,17 @@ class Ui_ThemeWizard(object):
             self.gradientComboBox)
         self.gradientLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.gradientWidget)
+
         self.imageWidget = QtGui.QWidget(self.backgroundPage)
         self.imageWidget.setObjectName(u'ImageWidget')
         self.imageLayout = QtGui.QFormLayout(self.imageWidget)
         self.imageLayout.setMargin(0)
         self.imageLayout.setObjectName(u'ImageLayout')
+        self.imageColorLabel = QtGui.QLabel(self.colorWidget)
+        self.imageColorLabel.setObjectName(u'ImageColorLabel')
+        self.imageColorButton = QtGui.QPushButton(self.colorWidget)
+        self.imageColorButton.setObjectName(u'ImageColorButton')
+        self.imageLayout.addRow(self.imageColorLabel, self.imageColorButton)
         self.imageLabel = QtGui.QLabel(self.imageWidget)
         self.imageLabel.setObjectName(u'ImageLabel')
         self.imageFileLayout = QtGui.QHBoxLayout()
@@ -118,7 +126,7 @@ class Ui_ThemeWizard(object):
             build_icon(u':/general/general_open.png'))
         self.imageFileLayout.addWidget(self.imageBrowseButton)
         self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
-        self.imageLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.imageLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.imageWidget)
         self.backgroundLayout.addLayout(self.backgroundStack)
         themeWizard.addPage(self.backgroundPage)
@@ -443,6 +451,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
+        self.imageColorLabel.setText(
+            translate(u'OpenLP.ThemeWizard', 'Border color:'))
         self.imageLabel.setText(u'%s:' % UiStrings().Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))

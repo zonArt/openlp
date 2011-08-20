@@ -28,7 +28,7 @@
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +36,8 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem)
+        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
+            ImageTab)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
