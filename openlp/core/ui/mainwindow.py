@@ -28,6 +28,7 @@
 import logging
 import os
 import sys
+import shutil
 from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
@@ -726,11 +727,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        if not os.path.exists(temp_dir):
-            return
-        for filename in os.listdir(temp_dir):
-            delete_file(os.path.join(temp_dir, filename))
-        os.removedirs(temp_dir)
+        shutil.rmtree(temp_dir, True)
 
     def onFirstTimeWizardClicked(self):
         """
