@@ -202,7 +202,8 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<lines>``
-        The attribute *part* is not supported.
+        The attribute *part* is not supported. The *break* attribute is fully
+        supported.
 
     ``<publisher>``
         This property is not supported.
@@ -227,13 +228,28 @@ class OpenLyrics(object):
 
     ``<verse name="v1a" lang="he" translit="en">``
         The attribute *translit* is not supported. Note, the attribute *lang* is
-        considered, but there is not further functionality implemented yet.
+        considered, but there is not further functionality implemented yet. The
+        following verse "types" are supported by OpenLP:
+
+            * v
+            * c
+            * b
+            * p
+            * i
+            * e
+            * o
+
+        The verse "types" stand for *Verse*, *Chorus*, *Bridge*, *Pre-Chorus*,
+        *Intro*, *Ending* and *Other*. Any numeric value is allowed after the
+        verse type. The complete verse name in OpenLP always consists of the
+        verse type and the verse number. If not number is present *1* is
+        assumed.
 
     ``<verseOrder>``
         OpenLP supports this property.
 
     """
-    IMPLEMENTED_VERSION = u'0.7'
+    IMPLEMENTED_VERSION = u'0.8'
     def __init__(self, manager):
         self.manager = manager
 
@@ -290,20 +306,21 @@ class OpenLyrics(object):
         for verse in verse_list:
             verse_tag = verse[0][u'type'][0].lower()
             verse_number = verse[0][u'label']
+            verse_def = verse_tag + verse_number
+            verse_element = \
+                self._add_text_to_element(u'verse', lyrics, None, verse_def)
+            if verse[0].has_key(u'lang'):
+                verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "virtual" verses.
             virtual_verses = verse[1].split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
-                verse_def = verse_tag + verse_number
-                # We need "v1a" because we have more than one virtual verse.
-                if len(virtual_verses) > 1:
-                    verse_def += list(u'abcdefghijklmnopqrstuvwxyz')[index]
-                element = \
-                    self._add_text_to_element(u'verse', lyrics, None, verse_def)
-                if verse[0].has_key(u'lang'):
-                    element.set(u'lang', verse[0][u'lang'])
-                element = self._add_text_to_element(u'lines', element)
+                lines_element = \
+                    self._add_text_to_element(u'lines', verse_element)
+                # Do not add the break attribute to the last lines element.
+                if index < len(virtual_verses) - 1:
+                    lines_element.set(u'break', u'optional')
                 for line in virtual_verse.strip(u'\n').split(u'\n'):
-                    self._add_text_to_element(u'line', element, line)
+                    self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml):
@@ -478,7 +495,10 @@ class OpenLyrics(object):
             for lines in verse.lines:
                 if text:
                     text += u'\n'
-                text += u'\n'.join([unicode(line) for line in lines.line])
+                text += u'\n'.join(map(unicode, lines.line))
+                # Adgetd a virtual split to the verse text.
+                if self._get(lines, u'break'):
+                    text += u'\n[---]'
             verse_def = self._get(verse, u'name').lower()
             if verse_def[0] in VerseType.Tags:
                 verse_tag = verse_def[0]
