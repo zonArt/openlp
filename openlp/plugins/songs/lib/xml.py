@@ -244,6 +244,8 @@ class OpenLyrics(object):
         verse type. The complete verse name in OpenLP always consists of the
         verse type and the verse number. If not number is present *1* is
         assumed.
+        OpenLP will merge verses which are split up by appending a letter to the
+        verse name, such as *v1a*.
 
     ``<verseOrder>``
         OpenLP supports this property.
@@ -497,8 +499,15 @@ class OpenLyrics(object):
             if not verse_number:
                 verse_number = u'1'
             lang = verse.get(u'lang')
-            if verses.has_key((verse_tag, verse_number, lang)):
+            # In OpenLP 1.9.6 we used v1a, v1b ... to represent visual slide
+            # breaks. In OpenLyrics 0.7 an attribute has been added.
+            if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
+                song_xml.get(u'version') == u'0.7' and \
+                verses.has_key((verse_tag, verse_number, lang)):
                 verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
+            # Merge v1a, v1b, .... to v1.
+            elif verses.has_key((verse_tag, verse_number, lang)):
+                verses[(verse_tag, verse_number, lang)] += u'\n' + text
             else:
                 verses[(verse_tag, verse_number, lang)] = text
                 verse_def_list.append((verse_tag, verse_number, lang))
@@ -506,10 +515,10 @@ class OpenLyrics(object):
         for verse in verse_def_list:
             sxml.add_verse_to_lyrics(
                 verse[0], verse[1], verses[verse], verse[2])
-        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        song_obj.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):
-            song.verse_order = self._text(properties.verseOrder)
+            song_obj.verse_order = self._text(properties.verseOrder)
 
     def _process_songbooks(self, properties, song):
         """
