@@ -154,7 +154,7 @@ class ImageManager(QtCore.QObject):
         self._imageThread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.config_updated)
+            QtCore.SIGNAL(u'config_updated'), self.process_updates)
 
     def update_display(self):
         """
@@ -173,7 +173,7 @@ class ImageManager(QtCore.QObject):
             image.image_bytes = None
             self._conversion_queue.put((image.priority, image))
 
-    def update_images(self, background):
+    def update_images(self, image_type, background):
         """
         Screen has changed size so rebuild the cache to new size.
         """
@@ -182,14 +182,14 @@ class ImageManager(QtCore.QObject):
         # stream to None.
         self._conversion_queue = PriorityQueue()
         for key, image in self._cache.iteritems():
-            if image.source == u'images':
+            if image.source == image_type:
                 image.background = background
                 image.priority = Priority.Normal
                 image.image = None
                 image.image_bytes = None
                 self._conversion_queue.put((image.priority, image))
 
-    def config_updated(self):
+    def process_updates(self):
         """
         Flush the queue to updated any data to update
         """

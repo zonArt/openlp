@@ -576,7 +576,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def accept(self):
         """
-        Lets save the them as Finish has been pressed
+        Lets save the theme as Finish has been pressed
         """
         # Save the theme name
         self.theme.theme_name = unicode(self.field(u'name').toString())

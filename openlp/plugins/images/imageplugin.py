@@ -89,6 +89,11 @@ class ImagePlugin(Plugin):
         self.setPluginUiTextStrings(tooltips)
 
     def image_updated(self):
+        """
+        Triggered by saving and changing the image border.  Sets the images in
+        image manager to require updates.  Actual update is triggered by the
+        last part of saving the config.
+        """
         background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
-        self.liveController.imageManager.update_images(background)
+        self.liveController.imageManager.update_images(u'image', background)
