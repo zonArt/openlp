@@ -64,7 +64,6 @@ class Ui_ThemeWizard(object):
         self.backgroundStack.setObjectName(u'BackgroundStack')
         self.colorWidget = QtGui.QWidget(self.backgroundPage)
         self.colorWidget.setObjectName(u'ColorWidget')
-
         self.colorLayout = QtGui.QFormLayout(self.colorWidget)
         self.colorLayout.setMargin(0)
         self.colorLayout.setObjectName(u'ColorLayout')
@@ -74,7 +73,6 @@ class Ui_ThemeWizard(object):
         self.colorButton.setObjectName(u'ColorButton')
         self.colorLayout.addRow(self.colorLabel, self.colorButton)
         self.colorLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
-
         self.backgroundStack.addWidget(self.colorWidget)
         self.gradientWidget = QtGui.QWidget(self.backgroundPage)
         self.gradientWidget.setObjectName(u'GradientWidget')
@@ -102,7 +100,6 @@ class Ui_ThemeWizard(object):
             self.gradientComboBox)
         self.gradientLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.gradientWidget)
-
         self.imageWidget = QtGui.QWidget(self.backgroundPage)
         self.imageWidget.setObjectName(u'ImageWidget')
         self.imageLayout = QtGui.QFormLayout(self.imageWidget)

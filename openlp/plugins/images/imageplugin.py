@@ -25,9 +25,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Receiver
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -41,6 +44,8 @@ class ImagePlugin(Plugin):
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'image_updated'), self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -82,3 +87,8 @@ class ImagePlugin(Plugin):
                 'Add the selected image to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
+
+    def image_updated(self):
+        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+            + u'/background color', QtCore.QVariant(u'#000000')))
+        self.liveController.imageManager.update_images(background)

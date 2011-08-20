@@ -173,6 +173,22 @@ class ImageManager(QtCore.QObject):
             image.image_bytes = None
             self._conversion_queue.put((image.priority, image))
 
+    def update_images(self, background):
+        """
+        Screen has changed size so rebuild the cache to new size.
+        """
+        log.debug(u'update_images')
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
+        self._conversion_queue = PriorityQueue()
+        for key, image in self._cache.iteritems():
+            if image.source == u'images':
+                image.background = background
+                image.priority = Priority.Normal
+                image.image = None
+                image.image_bytes = None
+                self._conversion_queue.put((image.priority, image))
+
     def config_updated(self):
         """
         Flush the queue to updated any data to update
