@@ -386,6 +386,17 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    ``filename``
+        The "dirty" file name to clean.
+    """
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+
 def delete_file(file_path_name):
     """
     Deletes a file from the system.
@@ -492,4 +503,4 @@ from actions import ActionList
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'file_is_unicode', u'get_uno_command',
-    u'get_uno_instance', u'delete_file']
+    u'get_uno_instance', u'delete_file', u'clean_filename']
