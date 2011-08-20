@@ -353,7 +353,7 @@ class OpenLyrics(object):
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
         # The verse order is processed with the lyrics!
-        self._process_lyrics(properties, song_xml.lyrics, song)
+        self._process_lyrics(properties, song_xml, song)
         self._process_comments(properties, song)
         self._process_authors(properties, song)
         self._process_songbooks(properties, song)
@@ -378,20 +378,6 @@ class OpenLyrics(object):
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True)
-
-    def _get(self, element, attribute):
-        """
-        This returns the element's attribute as unicode string.
-
-        ``element``
-            The element.
-
-        ``attribute``
-            The element's attribute (unicode).
-        """
-        if element.get(attribute) is not None:
-            return unicode(element.get(attribute))
-        return u''
 
     def _text(self, element):
         """
@@ -474,22 +460,23 @@ class OpenLyrics(object):
         if hasattr(properties, u'copyright'):
             song.copyright = self._text(properties.copyright)
 
-    def _process_lyrics(self, properties, lyrics, song):
+    def _process_lyrics(self, properties, song_xml, song_obj):
         """
         Processes the verses and search_lyrics for the song.
 
         ``properties``
             The properties object (lxml.objectify.ObjectifiedElement).
 
-        ``lyrics``
-            The lyrics object (lxml.objectify.ObjectifiedElement).
+        ``song_xml``
+            The objectified song (lxml.objectify.ObjectifiedElement).
 
-        ``song``
+        ``song_obj``
             The song object.
         """
         sxml = SongXML()
         verses = {}
         verse_def_list = []
+        lyrics = song_xml.lyrics
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -497,9 +484,9 @@ class OpenLyrics(object):
                     text += u'\n'
                 text += u'\n'.join(map(unicode, lines.line))
                 # Adgetd a virtual split to the verse text.
-                if self._get(lines, u'break'):
+                if lines.get(u'break') is not None:
                     text += u'\n[---]'
-            verse_def = self._get(verse, u'name').lower()
+            verse_def = verse.get(u'name', u' ').lower()
             if verse_def[0] in VerseType.Tags:
                 verse_tag = verse_def[0]
             else:
@@ -509,9 +496,7 @@ class OpenLyrics(object):
             # not correct the verse order.
             if not verse_number:
                 verse_number = u'1'
-            lang = None
-            if self._get(verse, u'lang'):
-                lang = self._get(verse, u'lang')
+            lang = verse.get(u'lang')
             if verses.has_key((verse_tag, verse_number, lang)):
                 verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
             else:
@@ -540,7 +525,7 @@ class OpenLyrics(object):
         song.song_number = u''
         if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:
-                bookname = self._get(songbook, u'name')
+                bookname = songbook.get(u'name', u'')
                 if bookname:
                     book = self.manager.get_object_filtered(Book,
                         Book.name == bookname)
@@ -549,7 +534,7 @@ class OpenLyrics(object):
                         book = Book.populate(name=bookname, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
-                    song.song_number = self._get(songbook, u'entry')
+                    song.song_number = songbook.get(u'entry', u'')
                     # We only support one song book, so take the first one.
                     break
 
