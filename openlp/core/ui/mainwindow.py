@@ -992,7 +992,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         # Make sure it's an .ini file.
         if not exportFileName.endswith(u'ini'):
-            exportFileName =+ u'.ini'
+            exportFileName = exportFileName + u'.ini'
         self.saveSettings()
         headerSection = u'SettingsExport'
         settingSections = []
