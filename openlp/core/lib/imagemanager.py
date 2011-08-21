@@ -197,7 +197,7 @@ class ImageManager(QtCore.QObject):
         image.priority = Priority.Normal
         image.image = None
         image.image_bytes = None
-        self._conversion_queue.put((image.priority, image))
+        self._conversion_queue.modify_priority(image, image.priority)
 
     def process_updates(self):
         """
