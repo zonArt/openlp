@@ -167,7 +167,7 @@ class ImageManager(QtCore.QObject):
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
         for key, image in self._cache.iteritems():
-            self.add_to_queue(image)
+            self._reset_image(image)
 
     def update_images(self, image_type, background):
         """
@@ -179,7 +179,7 @@ class ImageManager(QtCore.QObject):
         for key, image in self._cache.iteritems():
             if image.source == image_type:
                 image.background = background
-                self.add_to_queue(image)
+                self._reset_image(image)
 
     def update_image(self, name, image_type, background):
         """
@@ -191,13 +191,12 @@ class ImageManager(QtCore.QObject):
         for key, image in self._cache.iteritems():
             if image.source == image_type and image.name == name:
                 image.background = background
-                self.add_to_queue(image)
+                self._reset_image(image)
 
-    def add_to_queue(self, image):
-        image.priority = Priority.Normal
+    def _reset_image(self, image):
         image.image = None
         image.image_bytes = None
-        self._conversion_queue.modify_priority(image, image.priority)
+        self._conversion_queue.modify_priority(image, Priority.Normal)
 
     def process_updates(self):
         """
