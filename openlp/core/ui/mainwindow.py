@@ -977,7 +977,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.Ok))
         self.settingsImported = True
         self.cleanUp()
-        sys.exit()
+        sys.exit(0)
 
     def onSettingsExportItemClicked(self, exportFileName=None):
         """
@@ -990,6 +990,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     'OpenLP Export Settings File (*.ini)')))
         if not exportFileName:
             return
+        # Make sure it's an .ini file.
+        if not exportFileName.endswith(u'ini'):
+            exportFileName =+ u'.ini'
         self.saveSettings()
         headerSection = u'SettingsExport'
         settingSections = []
