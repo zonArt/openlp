@@ -166,12 +166,8 @@ class ImageManager(QtCore.QObject):
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._conversion_queue = PriorityQueue()
         for key, image in self._cache.iteritems():
-            image.priority = Priority.Normal
-            image.image = None
-            image.image_bytes = None
-            self._conversion_queue.put((image.priority, image))
+            self.add_to_queue(image)
 
     def update_images(self, image_type, background):
         """
@@ -180,14 +176,10 @@ class ImageManager(QtCore.QObject):
         log.debug(u'update_images')
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._conversion_queue = PriorityQueue()
         for key, image in self._cache.iteritems():
             if image.source == image_type:
                 image.background = background
-                image.priority = Priority.Normal
-                image.image = None
-                image.image_bytes = None
-                self._conversion_queue.put((image.priority, image))
+                self.add_to_queue(image)
 
     def update_image(self, name, image_type, background):
         """
@@ -196,14 +188,16 @@ class ImageManager(QtCore.QObject):
         log.debug(u'update_images')
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._conversion_queue = PriorityQueue()
         for key, image in self._cache.iteritems():
             if image.source == image_type and image.name == name:
                 image.background = background
-                image.priority = Priority.Normal
-                image.image = None
-                image.image_bytes = None
-                self._conversion_queue.put((image.priority, image))
+                self.add_to_queue(image)
+
+    def add_to_queue(self, image):
+        image.priority = Priority.Normal
+        image.image = None
+        image.image_bytes = None
+        self._conversion_queue.put((image.priority, image))
 
     def process_updates(self):
         """
