@@ -73,8 +73,6 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
-CHORD_REGEX = re.compile(u'<chord name=".*?"/>')
-
 class SongXML(object):
     """
     This class builds and parses the XML used to describe songs.
@@ -202,7 +200,7 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<lines>``
-        The attribute *part* is not supported. The *break* attribute is fully
+        The attribute *part* is not supported. The *break* attribute is
         supported.
 
     ``<publisher>``
@@ -339,8 +337,6 @@ class OpenLyrics(object):
             return None
         if xml[:5] == u'<?xml':
             xml = xml[38:]
-        # Remove chords from xml.
-        xml = CHORD_REGEX.sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         if hasattr(song_xml, u'properties'):
             properties = song_xml.properties
@@ -479,13 +475,19 @@ class OpenLyrics(object):
         verses = {}
         verse_def_list = []
         lyrics = song_xml.lyrics
+        # Loop over the "verse" elements.
         for verse in lyrics.verse:
             text = u''
+            # Loop over the "lines" elements.
             for lines in verse.lines:
                 if text:
                     text += u'\n'
-                text += u'\n'.join(map(unicode, lines.line))
-                # Adgetd a virtual split to the verse text.
+                # Loop over the "line" elements removing chords.
+                for line in lines.line:
+                    if text:
+                        text += u'\n'
+                    text += u''.join(map(unicode, line.itertext()))
+                # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
