@@ -265,8 +265,7 @@ class OpenLyrics(object):
         application_name = u'OpenLP ' + get_application_version()[u'version']
         song_xml.set(u'createdIn', application_name)
         song_xml.set(u'modifiedIn', application_name)
-        song_xml.set(u'modifiedDate',
-            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
+        song_xml.set(u'modifiedDate', datetime.datetime.now().isoformat())
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
         self._add_text_to_element(u'title', titles, song.title)
