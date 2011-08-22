@@ -208,13 +208,16 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
+            background = QtGui.QColor(QtCore.QSettings().value(
+                self.settingsSection + u'/background color',
+                QtCore.QVariant(u'#000000')))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 if self.plugin.liveController.display.directImage(name,
-                    filename):
+                    filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

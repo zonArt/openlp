@@ -188,9 +188,6 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
-            # Trigger Audit requests
-            Receiver.send_message(u'print_service_started',
-                [item[u'service_item']])
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
             div = self._addElement(u'div', parent=html_data.body,
@@ -299,6 +296,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         ``printer``
             A *QPrinter* object.
         """
+        self.update_song_usage()
         self.document.print_(printer)
 
     def displaySizeChanged(self, display):
@@ -330,12 +328,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
@@ -400,3 +400,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.setValue(u'print notes',
             QtCore.QVariant(self.notesCheckBox.isChecked()))
         settings.endGroup()
+
+    def update_song_usage(self):
+        for index, item in enumerate(self.serviceManager.serviceItems):
+            # Trigger Audit requests
+            Receiver.send_message(u'print_service_started',
+                [item[u'service_item']])
