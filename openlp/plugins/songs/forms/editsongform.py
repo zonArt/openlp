@@ -93,6 +93,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.mediaitem.plugin.renderer.themeManager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
+        QtCore.QObject.connect(self.audioAddFromFileButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAudioAddFromFileButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
@@ -303,6 +305,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name = QtGui.QListWidgetItem(unicode(topic.name))
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.topicsListView.addItem(topic_name)
+        self.audioListWidget.clear()
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # Hide or show the preview button.
         self.previewButton.setVisible(preview)
@@ -669,6 +672,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if unicode(button.objectName()) == u'previewButton':
             self.saveSong(True)
             Receiver.send_message(u'songs_preview')
+
+    def onAudioAddFromFileButtonClicked(self):
+        """
+        Loads file(s) from the filesystem.
+        """
+        filters = u'%s (*)' % UiStrings().AllFiles
+        filenames = QtGui.QFileDialog.getOpenFileNames(self,
+            translate('SongsPlugin.EditSongForm', 'Open File(s)'),
+            QtCore.QString(), filters)
+        for filename in filenames:
+            self.audioListWidget.addItem(filename)
+
+    def onUpButtonClicked(self):
+        pass
+
+    def onDownButtonClicked(self):
+        pass
 
     def clearCaches(self):
         """
