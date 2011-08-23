@@ -246,6 +246,28 @@ class Ui_EditSongDialog(object):
         self.commentsLayout.addWidget(self.commentsEdit)
         self.themeTabLayout.addWidget(self.commentsGroupBox)
         self.songTabWidget.addTab(self.themeTab, u'')
+        # audio tab
+        self.audioTab = QtGui.QWidget()
+        self.audioTab.setObjectName(u'audioTab')
+        self.audioLayout = QtGui.QVBoxLayout(self.audioTab)
+        #self.audioLayout.setSpacing(8)
+        #self.audioLayout.setContentsMargins(8, 8, 8, 8)
+        self.audioLayout.setObjectName(u'audioLayout')
+        self.audioListWidget = QtGui.QListWidget(self.audioTab)
+        self.audioListWidget.setObjectName(u'audioListWidget')
+        self.audioLayout.addWidget(self.audioListWidget)
+        self.audioAddLayout = QtGui.QHBoxLayout()
+        self.audioAddLayout.addStretch(1)
+        self.audioAddLayout.setObjectName(u'audioAddLayout')
+        self.audioAddFromFileButton = QtGui.QPushButton(self.audioTab)
+        self.audioAddFromFileButton.setObjectName(u'audioAddFromFileButton')
+        self.audioAddLayout.addWidget(self.audioAddFromFileButton)
+        self.audioAddFromMediaButton = QtGui.QPushButton(self.audioTab)
+        self.audioAddFromMediaButton.setObjectName(u'audioAddFromMediaButton')
+        self.audioAddLayout.addWidget(self.audioAddFromMediaButton)
+        self.audioLayout.addLayout(self.audioAddLayout)
+        self.songTabWidget.addTab(self.audioTab, u'')
+        # Last few bits
         self.dialogLayout.addWidget(self.songTabWidget)
         self.buttonBox = create_accept_reject_button_box(editSongDialog)
         self.dialogLayout.addWidget(self.buttonBox)
@@ -305,6 +327,13 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.themeTab),
             translate('SongsPlugin.EditSongForm',
                 'Theme, Copyright Info && Comments'))
+        self.songTabWidget.setTabText(
+            self.songTabWidget.indexOf(self.audioTab),
+            translate('SongsPlugin.EditSongForm', 'Linked Audio'))
+        self.audioAddFromFileButton.setText(
+            translate('SongsPlugin.EditSongForm', 'Add From &File(s)'))
+        self.audioAddFromMediaButton.setText(
+            translate('SongsPlugin.EditSongForm', 'Add From &Media'))
 
 def editSongDialogComboBox(parent, name):
     """
