@@ -69,6 +69,10 @@ class Display(QtGui.QGraphicsView):
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
+            QtCore.Qt.ScrollBarAlwaysOff)
         screen = {}
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()

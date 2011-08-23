@@ -203,8 +203,8 @@ class WebkitAPI(MediaAPI):
                 var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
                 var src = "src = 'file:///" + path + "'";
                 var view_parm = " wmode='opaque'" +
-                    " width='" + window.innerWidth + "'" +
-                    " height='" + window.innerHeight + "'";
+                    " width='100%%'" +
+                    " height='100%%'";
                 var swf_parm = " name='OpenLPFlashMovie'" +
                     " autostart='true' loop='false' play='true'" +
                     " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
@@ -275,8 +275,11 @@ class WebkitAPI(MediaAPI):
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        volume = controller.media_info.volume
-        vol = float(volume) / float(100)
+        if display.hasAudio:
+            volume = controller.media_info.volume
+            vol = float(volume) / float(100)
+        else:
+            vol = 0
         path = controller.media_info.file_info.absoluteFilePath()
         if controller.media_info.is_background:
             loop = u'true'
@@ -329,7 +332,7 @@ class WebkitAPI(MediaAPI):
     def volume(self, display, vol):
         controller = display.controller
         # 1.0 is the highest value
-        if display.hasVolume:
+        if display.hasAudio:
             vol = float(vol) / float(100)
             if not controller.media_info.isFlash:
                 display.frame.evaluateJavaScript(

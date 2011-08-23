@@ -135,6 +135,7 @@ class MediaManager(object):
             self.Timer.stop()
         else:
             for display in self.curDisplayMediaAPI.keys():
+                self.curDisplayMediaAPI[display].resize(display)
                 self.curDisplayMediaAPI[display].update_ui(display)
                 if self.curDisplayMediaAPI[display] \
                     .state == MediaState.Playing:
@@ -228,7 +229,6 @@ class MediaManager(object):
             return
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
-            display.resize(display.controller.slidePreview.size())
             display.hasAudio = False
         for api in self.APIs.values():
             api.setup(display)
@@ -246,9 +246,6 @@ class MediaManager(object):
         After Mainwindow changes or Splitter moved all related media
         widgets have to be resized
         """
-        if display == self.parent.previewController.previewDisplay or \
-            display == self.parent.liveController.previewDisplay:
-            display.resize(controller.slidePreview.size())
         api.resize(display)
 
     def video(self, controller, file, muted, isBackground):
