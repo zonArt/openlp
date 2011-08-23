@@ -46,8 +46,6 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-HTML_END = u'</div></body></html>'
-
 class Renderer(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
@@ -87,7 +85,7 @@ class Renderer(object):
         Updates the render manager's information about the current screen.
         """
         log.debug(u'Update Display')
-        self._calculate_default(self.screens.current[u'size'])
+        self._calculate_default()
         if self.display:
             self.display.close()
         self.display = MainDisplay(None, self.imageManager, False, self,
@@ -166,7 +164,7 @@ class Renderer(object):
             self.theme_data = override_theme
         else:
             self.theme_data = self.themeManager.getThemeData(theme)
-        self._calculate_default(self.screens.current[u'size'])
+        self._calculate_default()
         self._build_text_rectangle(self.theme_data)
         # if No file do not update cache
         if self.theme_data.background_filename:
@@ -188,7 +186,7 @@ class Renderer(object):
         # save value for use in format_slide
         self.force_page = force_page
         # set the default image size for previews
-        self._calculate_default(self.screens.preview[u'size'])
+        self._calculate_default()
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = theme_data
@@ -206,7 +204,7 @@ class Renderer(object):
             raw_html = serviceItem.get_rendered_frame(0)
             preview = self.display.text(raw_html)
             # Reset the real screen size for subsequent render requests
-            self._calculate_default(self.screens.current[u'size'])
+            self._calculate_default()
             return preview
         self.force_page = False
 
@@ -227,7 +225,7 @@ class Renderer(object):
             line_end = u' '
         # Bibles
         if item.is_capable(ItemCapabilities.AllowsWordSplit):
-            pages = self._paginate_slide_words(text, line_end)
+            pages = self._paginate_slide_words(text.split(u'\n'), line_end)
         else:
             # Clean up line endings.
             lines = self._lines_split(text)
@@ -248,19 +246,16 @@ class Renderer(object):
             new_pages.append(page)
         return new_pages
 
-    def _calculate_default(self, screen):
+    def _calculate_default(self):
         """
         Calculate the default dimentions of the screen.
-
-        ``screen``
-            The screen to calculate the default of.
         """
-        log.debug(u'_calculate default %s', screen)
-        self.width = screen.width()
-        self.height = screen.height()
+        screen_size = self.screens.current[u'size']
+        self.width = screen_size.width()
+        self.height = screen_size.height()
         self.screen_ratio = float(self.height) / float(self.width)
-        log.debug(u'calculate default %d, %d, %f',
-            self.width, self.height, self.screen_ratio)
+        log.debug(u'_calculate default %s, %f' % (screen_size,
+            self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -313,17 +308,28 @@ class Renderer(object):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css
-        self.page_shell = u'<!DOCTYPE html><html><head><style>' \
-            u'*{margin:0; padding:0; border:0;} '\
-            u'#main {position:absolute; top:0px; %s %s}</style></head><body>' \
-            u'<div id="main">' % \
+        html = u"""<!DOCTYPE html><html><head><script>
+            function show_text(newtext) {
+                var main = document.getElementById('main');
+                main.innerHTML = newtext;
+                // We need to be sure that the page is loaded, that is why we
+                // return the element's height (even though we do not use the
+                // returned value).
+                return main.offsetHeight;
+            }
+            </script><style>*{margin: 0; padding: 0; border: 0;}
+            #main {position: absolute; top: 0px; %s %s}</style></head><body>
+            <div id="main"></div></body></html>""" % \
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
+        self.web.setHtml(html)
 
     def _paginate_slide(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one line.
+        If the line is too long it will be cut off when displayed.
 
         ``lines``
             The text to be fitted on the slide split into lines.
@@ -337,10 +343,8 @@ class Renderer(object):
         previous_raw = u''
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
-        html = self.page_shell + separator.join(html_lines) + HTML_END
-        self.web.setHtml(html)
         # Text too long so go to next page.
-        if self.web_frame.contentsSize().height() > self.page_height:
+        if self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -350,48 +354,41 @@ class Renderer(object):
         log.debug(u'_paginate_slide - End')
         return formatted
 
-    def _paginate_slide_words(self, text, line_end):
+    def _paginate_slide_words(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current
-        theme settings. This version is to handle text which needs to be split
-        into words to get it to fit.
+        theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one word.
+        If one line is too long it will be processed word by word. This is
+        sometimes need for **bible** verses.
 
-        ``text``
-            The words to be fitted on the slide split into lines.
+        ``lines``
+            The text to be fitted on the slide split into lines.
 
         ``line_end``
             The text added after each line. Either ``u' '`` or ``u'<br>``.
-            This is needed for bibles.
+            This is needed for **bibles**.
         """
         log.debug(u'_paginate_slide_words - Start')
         formatted = []
         previous_html = u''
         previous_raw = u''
-        lines = text.split(u'\n')
         for line in lines:
             line = line.strip()
             html_line = expand_tags(line)
-            html = self.page_shell + previous_html + html_line + HTML_END
-            self.web.setHtml(html)
             # Text too long so go to next page.
-            if self.web_frame.contentsSize().height() > self.page_height:
+            if self._text_fits_on_slide(previous_html + html_line):
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
                 if previous_html:
-                    html = self.page_shell + previous_html + HTML_END
-                    self.web.setHtml(html)
-                    if self.web_frame.contentsSize().height() <= \
-                        self.page_height:
+                    if not self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
-                        html = self.page_shell + html_line + HTML_END
-                        self.web.setHtml(html)
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
-                        if self.web_frame.contentsSize().height() <= \
-                            self.page_height:
+                        if not self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
@@ -425,7 +422,7 @@ class Renderer(object):
             to the list of slides. (unicode string)
 
         ``previous_raw``
-            The raw text (with display tags) which is know to fit on a slide,
+            The raw text (with formatting tags) which is know to fit on a slide,
             but is not yet added to the list of slides. (unicode string)
 
         ``html_list``
@@ -434,7 +431,7 @@ class Renderer(object):
 
         ``raw_list``
             The elements which do not fit on a slide and needs to be processed
-            using the binary chop. The elements can contain display tags.
+            using the binary chop. The elements can contain formatting tags.
 
         ``separator``
             The separator for the elements. For lines this is ``u'<br>'`` and
@@ -448,10 +445,8 @@ class Renderer(object):
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            html = self.page_shell + previous_html + \
-                separator.join(html_list[:index + 1]).strip() + HTML_END
-            self.web.setHtml(html)
-            if self.web_frame.contentsSize().height() > self.page_height:
+            if self._text_fits_on_slide(
+                previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the
                 # new index and highest_index accordingly.
                 highest_index = index
@@ -473,10 +468,8 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            html = self.page_shell + \
-                separator.join(html_list[index + 1:]).strip() + HTML_END
-            self.web.setHtml(html)
-            if self.web_frame.contentsSize().height() <= self.page_height:
+            if not self._text_fits_on_slide(
+                separator.join(html_list[index + 1:]).strip()):
                 previous_html = separator.join(
                     html_list[index + 1:]).strip() + line_end
                 previous_raw = separator.join(
@@ -491,6 +484,18 @@ class Renderer(object):
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)
         return previous_html, previous_raw
+
+    def _text_fits_on_slide(self, text):
+        """
+        Checks if the given ``text`` fits on a slide. If it does ``True`` is
+        returned, otherwise ``False``.
+
+        ``text``
+            The text to check. It can contain HTML tags.
+        """
+        self.web_frame.evaluateJavaScript(u'show_text("%s")' %
+            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        return self.web_frame.contentsSize().height() > self.page_height
 
     def _words_split(self, line):
         """

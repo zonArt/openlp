@@ -38,6 +38,8 @@ from openlp.core.ui import Controller, Display
 
 log = logging.getLogger(__name__)
 
+CLAPPERBOARD = QtGui.QPixmap(u':/media/media_video.png').toImage()
+
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
@@ -47,8 +49,7 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
-        self.PreviewFunction = QtGui.QPixmap(
-            u':/media/media_video.png').toImage()
+        self.PreviewFunction = CLAPPERBOARD
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
@@ -65,6 +66,8 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -183,17 +186,17 @@ class MediaMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 u'media', self.getFileList())
 
-    def loadList(self, files):
+    def loadList(self, media):
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        files.sort(cmp=locale.strcoll,
+        media.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
-        for file in files:
-            filename = os.path.split(unicode(file))[1]
+        for track in media:
+            filename = os.path.split(unicode(track))[1]
             item_name = QtGui.QListWidgetItem(filename)
-            img = QtGui.QPixmap(u':/media/media_video.png').toImage()
-            item_name.setIcon(build_icon(img))
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            item_name.setIcon(build_icon(CLAPPERBOARD))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            item_name.setToolTip(track)
             self.listView.addItem(item_name)
 
     def search(self, string):

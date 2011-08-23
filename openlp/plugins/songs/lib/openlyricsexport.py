@@ -35,6 +35,7 @@ import re
 from lxml import etree
 
 from openlp.core.lib import check_directory_exists, Receiver, translate
+from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
@@ -72,8 +73,7 @@ class OpenLyricsExport(object):
             tree = etree.ElementTree(etree.fromstring(xml))
             filename = u'%s (%s)' % (song.title,
                 u', '.join([author.display_name for author in song.authors]))
-            filename = re.sub(
-                r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+            filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
             filename = u'%s.xml' % filename[0:250 - len(self.save_path)]
             # Pass a file object, because lxml does not cope with some special
