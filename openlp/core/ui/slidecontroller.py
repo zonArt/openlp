@@ -417,9 +417,8 @@ class SlideController(Controller):
         # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.previewSizeChanged()
         self.mediaManager.setup_display(self.display)
-        self.previewDisplay.resize(self.slidePreview.size())
+        self.previewSizeChanged()
         self.previewDisplay.setup()
         self.mediaManager.setup_display(self.previewDisplay)
         if self.serviceItem:
@@ -443,10 +442,14 @@ class SlideController(Controller):
             max_height = self.previewFrame.height() - self.grid.margin() * 2
             self.slidePreview.setFixedSize(QtCore.QSize(max_height * self.ratio,
                 max_height))
+            self.previewDisplay.setFixedSize(QtCore.QSize(max_height * self.ratio,
+                max_height))
         else:
             # We have to take the width as limit.
             max_width = self.previewFrame.width() - self.grid.margin() * 2
             self.slidePreview.setFixedSize(QtCore.QSize(max_width,
+                max_width / self.ratio))
+            self.previewDisplay.setFixedSize(QtCore.QSize(max_width,
                 max_width / self.ratio))
         # Make sure that the frames have the correct size.
         self.previewListWidget.setColumnWidth(0,

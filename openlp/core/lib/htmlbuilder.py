@@ -53,8 +53,8 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: %spx;
-    height: %spx;
+    width: 100%%;//%spx;
+    height: 100%%;//%spx;
 }
 #black {
     z-index: 8;

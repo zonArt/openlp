@@ -69,6 +69,10 @@ class Display(QtGui.QGraphicsView):
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
+            QtCore.Qt.ScrollBarAlwaysOff)
         screen = {}
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()
@@ -190,7 +194,7 @@ class MainDisplay(Display):
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' % \
+        self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
 

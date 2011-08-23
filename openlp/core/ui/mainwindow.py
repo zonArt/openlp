@@ -28,21 +28,24 @@
 import logging
 import os
 import sys
+import shutil
 from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager
+    PluginManager, Receiver, translate, ImageManager,  PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
-    ShortcutListForm, DisplayTagForm
+    ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaManager
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -108,6 +111,8 @@ class Ui_MainWindow(object):
         self.menuBar.setObjectName(u'menuBar')
         self.fileMenu = QtGui.QMenu(self.menuBar)
         self.fileMenu.setObjectName(u'fileMenu')
+        self.recentFilesMenu = QtGui.QMenu(self.fileMenu)
+        self.recentFilesMenu.setObjectName(u'recentFilesMenu')
         self.fileImportMenu = QtGui.QMenu(self.fileMenu)
         self.fileImportMenu.setObjectName(u'fileImportMenu')
         self.fileExportMenu = QtGui.QMenu(self.fileMenu)
@@ -245,6 +250,9 @@ class Ui_MainWindow(object):
         self.toolsOpenDataFolder = icon_action(mainWindow,
             u'toolsOpenDataFolder', u':/general/general_open.png',
             category=UiStrings().Tools)
+        self.toolsFirstTimeWizard = icon_action(mainWindow,
+            u'toolsFirstTimeWizard', u':/general/general_revert.png',
+            category=UiStrings().Tools)
         self.updateThemeImages = base_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
         action_list.add_category(UiStrings().Settings,
@@ -270,7 +278,8 @@ class Ui_MainWindow(object):
             u'settingsShortcutsItem',
             u':/system/system_configure_shortcuts.png',
             category=UiStrings().Settings)
-        self.displayTagItem = icon_action(mainWindow,
+        # Formatting Tags were also known as display tags.
+        self.formattingTagItem = icon_action(mainWindow,
             u'displayTagItem', u':/system/tag_editor.png',
             category=UiStrings().Settings)
         self.settingsConfigureItem = icon_action(mainWindow,
@@ -297,10 +306,11 @@ class Ui_MainWindow(object):
             (self.importThemeItem, self.importLanguageItem))
         add_actions(self.fileExportMenu,
             (self.exportThemeItem, self.exportLanguageItem))
-        self.fileMenuActions = (self.fileNewItem, self.fileOpenItem,
-            self.fileSaveItem, self.fileSaveAsItem, None,
-            self.printServiceOrderItem, None, self.fileImportMenu.menuAction(),
-            self.fileExportMenu.menuAction(), self.fileExitItem)
+        add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
+            self.fileSaveItem, self.fileSaveAsItem,
+            self.recentFilesMenu.menuAction(), None,
+            self.fileImportMenu.menuAction(), self.fileExportMenu.menuAction(),
+            None, self.printServiceOrderItem, self.fileExitItem))
         add_actions(self.viewModeMenu, (self.modeDefaultItem,
             self.modeSetupItem, self.modeLiveItem))
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
@@ -316,14 +326,15 @@ class Ui_MainWindow(object):
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
                 self.settingsConfigureItem, self.settingsShortcutsItem,
-                self.displayTagItem))
+                self.formattingTagItem))
         else:
             add_actions(self.settingsMenu, (self.settingsPluginListItem,
                 self.settingsLanguageMenu.menuAction(), None,
-                self.displayTagItem, self.settingsShortcutsItem,
+                self.formattingTagItem, self.settingsShortcutsItem,
                 self.settingsConfigureItem))
         add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
         add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
+        add_actions(self.toolsMenu, (self.toolsFirstTimeWizard, None))
         add_actions(self.toolsMenu, [self.updateThemeImages])
         if os.name == u'nt':
             add_actions(self.helpMenu, (self.offlineHelpItem,
@@ -340,7 +351,7 @@ class Ui_MainWindow(object):
         self.mediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
         QtCore.QObject.connect(self.fileMenu,
-            QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
+            QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
@@ -357,6 +368,8 @@ class Ui_MainWindow(object):
         self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.fileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
+        self.recentFilesMenu.setTitle(
+            translate('OpenLP.MainWindow', '&Recent Files'))
         self.viewMenu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.viewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.toolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
@@ -404,8 +417,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Language'))
         self.settingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
-        self.displayTagItem.setText(
-            translate('OpenLP.MainWindow', '&Configure Display Tags'))
+        self.formattingTagItem.setText(
+            translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.viewMediaManagerItem.setText(
@@ -472,6 +485,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.toolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
             'Open the folder where songs, bibles and other data resides.'))
+        self.toolsFirstTimeWizard.setText(
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
+        self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
+            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(
@@ -512,7 +529,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self, self)
-        self.displayTagForm = DisplayTagForm(self)
+        self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
@@ -525,8 +542,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
-        # Once settings are loaded update FileMenu with recentFiles
-        self.updateFileMenu()
+        # Once settings are loaded update the menu with the recent files.
+        self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem,
@@ -548,10 +565,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.toolsOpenDataFolder,
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
+        QtCore.QObject.connect(self.toolsFirstTimeWizard,
+            QtCore.SIGNAL(u'triggered()'), self.onFirstTimeWizardClicked)
         QtCore.QObject.connect(self.updateThemeImages,
             QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
-        QtCore.QObject.connect(self.displayTagItem,
-            QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
+        QtCore.QObject.connect(self.formattingTagItem,
+            QtCore.SIGNAL(u'triggered()'), self.onFormattingTagItemClicked)
         QtCore.QObject.connect(self.settingsConfigureItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsConfigureItemClicked)
         QtCore.QObject.connect(self.settingsShortcutsItem,
@@ -712,11 +731,46 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        if not os.path.exists(temp_dir):
+        shutil.rmtree(temp_dir, True)
+
+    def onFirstTimeWizardClicked(self):
+        """
+        Re-run the first time wizard.  Prompts the user for run confirmation
+        If wizard is run, songs, bibles and themes are imported.  The default
+        theme is changed (if necessary).  The plugins in pluginmanager are
+        set active/in-active to match the selection in the wizard.
+        """
+        answer = QtGui.QMessageBox.warning(self,
+            translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
+            translate('OpenLP.MainWindow',
+            'Are you sure you want to re-run the First Time Wizard?\n\n'
+            'Re-running this wizard may make changes to your current '
+            'OpenLP configuration and possibly add songs to your '
+            'existing songs list and change your default theme.'),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No),
+            QtGui.QMessageBox.No)
+        if answer == QtGui.QMessageBox.No:
             return
-        for filename in os.listdir(temp_dir):
-            delete_file(os.path.join(temp_dir, filename))
-        os.removedirs(temp_dir)
+        Receiver.send_message(u'cursor_busy')
+        screens = ScreenList.get_instance()
+        if FirstTimeForm(screens, self).exec_() == QtGui.QDialog.Accepted:
+            self.firstTime()
+            for plugin in self.pluginManager.plugins:
+                self.activePlugin = plugin
+                oldStatus = self.activePlugin.status
+                self.activePlugin.setStatus()
+                if oldStatus != self.activePlugin.status:
+                    if self.activePlugin.status == PluginStatus.Active:
+                        self.activePlugin.toggleStatus(PluginStatus.Active)
+                        self.activePlugin.appStartup()
+                    else:
+                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
+            self.themeManagerContents.configUpdated()
+            self.themeManagerContents.loadThemes(True)
+            Receiver.send_message(u'theme_update_global',
+                self.themeManagerContents.global_theme)
 
     def blankCheck(self):
         """
@@ -792,11 +846,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.themeManagerContents.updatePreviewImages()
 
-    def onDisplayTagItemClicked(self):
+    def onFormattingTagItemClicked(self):
         """
         Show the Settings dialog
         """
-        self.displayTagForm.exec_()
+        self.formattingTagForm.exec_()
 
     def onSettingsConfigureItemClicked(self):
         """
@@ -1089,30 +1143,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.QVariant(self.controlSplitter.saveState()))
         settings.endGroup()
 
-    def updateFileMenu(self):
+    def updateRecentFilesMenu(self):
         """
-        Updates the file menu with the latest list of service files accessed.
+        Updates the recent file menu with the latest list of service files
+        accessed.
         """
         recentFileCount = QtCore.QSettings().value(
             u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
-        self.fileMenu.clear()
-        add_actions(self.fileMenu, self.fileMenuActions[:-1])
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if QtCore.QFile.exists(recentFile)]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
-        if recentFilesToDisplay:
-            self.fileMenu.addSeparator()
-            for fileId, filename in enumerate(recentFilesToDisplay):
-                log.debug('Recent file name: %s', filename)
-                action =  base_action(self, u'')
-                action.setText(u'&%d %s' %
-                    (fileId + 1, QtCore.QFileInfo(filename).fileName()))
-                action.setData(QtCore.QVariant(filename))
-                self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.serviceManagerContents.onRecentServiceClicked)
-                self.fileMenu.addAction(action)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.fileMenuActions[-1])
+        self.recentFilesMenu.clear()
+        for fileId, filename in enumerate(recentFilesToDisplay):
+            log.debug('Recent file name: %s', filename)
+            action =  base_action(self, u'')
+            action.setText(u'&%d %s' %
+                (fileId + 1, QtCore.QFileInfo(filename).fileName()))
+            action.setData(QtCore.QVariant(filename))
+            self.connect(action, QtCore.SIGNAL(u'triggered()'),
+                self.serviceManagerContents.onRecentServiceClicked)
+            self.recentFilesMenu.addAction(action)
+        clearRecentFilesAction =  base_action(self, u'')
+        clearRecentFilesAction.setText(
+            translate('OpenLP.MainWindow', 'Clear List',
+            'Clear List of recent files'))
+        clearRecentFilesAction.setStatusTip(
+            translate('OpenLP.MainWindow', 'Clear the list of recent files.'))
+        add_actions(self.recentFilesMenu, (None, clearRecentFilesAction))
+        self.connect(clearRecentFilesAction, QtCore.SIGNAL(u'triggered()'),
+            self.recentFiles.clear)
+        clearRecentFilesAction.setEnabled(not self.recentFiles.isEmpty())
 
     def addRecentFile(self, filename):
         """

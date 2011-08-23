@@ -98,10 +98,11 @@ class PhononAPI(MediaAPI):
         display.phononWidget = Phonon.VideoWidget(display)
         display.phononWidget.resize(display.size())
         display.mediaObject = Phonon.MediaObject(display)
-        display.audio = Phonon.AudioOutput( \
-            Phonon.VideoCategory, display.mediaObject)
         Phonon.createPath(display.mediaObject, display.phononWidget)
-        Phonon.createPath(display.mediaObject, display.audio)
+        if display.hasAudio:
+            display.audio = Phonon.AudioOutput( \
+                Phonon.VideoCategory, display.mediaObject)
+            Phonon.createPath(display.mediaObject, display.audio)
         display.phononWidget.raise_()
         display.phononWidget.hide()
         self.hasOwnWidget = True

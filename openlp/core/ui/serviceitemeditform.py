@@ -79,7 +79,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         if not item:
             return
         row = self.listWidget.row(item)
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         self.loadData()
         if row == self.listWidget.count():
             self.listWidget.setCurrentRow(row - 1)
@@ -109,7 +109,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             return
         row = self.listWidget.row(item)
         temp = self.itemList[row]
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         if direction == u'up':
             row -= 1
         else:

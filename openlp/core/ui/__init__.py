@@ -69,7 +69,7 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
-from displaytagform import DisplayTagForm
+from formattingtagform import FormattingTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
