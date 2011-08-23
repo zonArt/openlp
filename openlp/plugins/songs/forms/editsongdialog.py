@@ -37,9 +37,11 @@ class Ui_EditSongDialog(object):
         editSongDialog.setObjectName(u'editSongDialog')
         editSongDialog.resize(650, 400)
         editSongDialog.setWindowIcon(
-            build_icon(u':/icon/openlp.org-icon-32.bmp'))
+            build_icon(u':/icon/openlp-logo-16x16.png'))
         editSongDialog.setModal(True)
         self.dialogLayout = QtGui.QVBoxLayout(editSongDialog)
+        self.dialogLayout.setSpacing(8)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.songTabWidget = QtGui.QTabWidget(editSongDialog)
         self.songTabWidget.setObjectName(u'songTabWidget')

@@ -30,10 +30,10 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import PluginStatus, Receiver, MediaType, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     critical_error_message_box, find_and_set_in_combo_box
-from openlp.plugins.songs.forms import EditVerseForm
+from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -95,6 +95,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.audioAddFromFileButton,
             QtCore.SIGNAL(u'clicked()'), self.onAudioAddFromFileButtonClicked)
+        QtCore.QObject.connect(self.audioAddFromMediaButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAudioAddFromMediaButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
@@ -106,12 +108,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.manager = manager
-        self.verse_form = EditVerseForm(self)
+        self.verseForm = EditVerseForm(self)
+        self.mediaForm = MediaFilesForm(self)
         self.initialise()
         self.authorsListView.setSortingEnabled(False)
         self.authorsListView.setAlternatingRowColors(True)
         self.topicsListView.setSortingEnabled(False)
         self.topicsListView.setAlternatingRowColors(True)
+        self.audioListWidget.setAlternatingRowColors(True)
         self.findVerseSplit = re.compile(u'---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
@@ -163,6 +167,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.themes.append(theme)
         add_widget_completer(self.themes, self.themeComboBox)
 
+    def loadMediaFiles(self):
+        self.audioAddFromMediaButton.setVisible(False)
+        for plugin in self.parent().pluginManager.plugins:
+            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
+                self.audioAddFromMediaButton.setVisible(True)
+                self.mediaForm.populateFiles(
+                    plugin.getMediaManagerItem().getList(MediaType.Audio))
+                break
+
     def newSong(self):
         log.debug(u'New Song')
         self.song = None
@@ -183,6 +196,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.loadMediaFiles()
         self.themeComboBox.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.previewButton.setVisible(False)
@@ -203,6 +217,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.loadMediaFiles()
         self.song = self.manager.get_object(Song, id)
         self.titleEdit.setText(self.song.title)
         if self.song.alternate_title:
@@ -683,6 +698,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.QString(), filters)
         for filename in filenames:
             self.audioListWidget.addItem(filename)
+
+    def onAudioAddFromMediaButtonClicked(self):
+        """
+        Loads file(s) from the media plugin.
+        """
+        self.mediaForm.exec_()
 
     def onUpButtonClicked(self):
         pass

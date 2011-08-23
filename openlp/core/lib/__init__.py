@@ -36,6 +36,13 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
+class MediaType(object):
+    """
+    An enumeration class for types of media.
+    """
+    Audio = 1
+    Video = 2
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
