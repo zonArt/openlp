@@ -28,6 +28,7 @@
 The :mod:`songexportform` module provides the wizard for exporting songs to the
 OpenLyrics format.
 """
+import locale
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -249,6 +250,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
+        songs.sort(cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in songs:
             authors = u', '.join([author.display_name
                 for author in song.authors])

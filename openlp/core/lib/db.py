@@ -223,7 +223,9 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        if order_by_ref is not None:
+        if isinstance(order_by_ref, list):
+            return query.order_by(*order_by_ref).all()
+        elif order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
 

@@ -699,7 +699,8 @@ class SongImportForm(OpenLPWizard):
         elif source_format == SongFormat.OpenLP1:
             # Import an openlp.org database
             importer = self.plugin.importSongs(SongFormat.OpenLP1,
-                filename=unicode(self.openLP1FilenameEdit.text())
+                filename=unicode(self.openLP1FilenameEdit.text()),
+                plugin=self.plugin
             )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
