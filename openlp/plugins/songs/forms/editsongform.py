@@ -27,12 +27,15 @@
 
 import logging
 import re
+import os
+import shutil
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     critical_error_message_box, find_and_set_in_combo_box
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -697,13 +700,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             translate('SongsPlugin.EditSongForm', 'Open File(s)'),
             QtCore.QString(), filters)
         for filename in filenames:
-            self.audioListWidget.addItem(filename)
+            item = QtGui.QListWidgetItem(os.path.split(unicode(filename))[1])
+            item.setData(QtCore.Qt.UserRole, filename)
+            self.audioListWidget.addItem(item)
 
     def onAudioAddFromMediaButtonClicked(self):
         """
         Loads file(s) from the media plugin.
         """
-        self.mediaForm.exec_()
+        if self.mediaForm.exec_():
+            for filename in self.mediaForm.getSelectedFiles():
+                item = QtGui.QListWidgetItem(os.path.split(unicode(filename))[1])
+                item.setData(QtCore.Qt.UserRole, filename)
+                self.audioListWidget.addItem(item)
 
     def onUpButtonClicked(self):
         pass
@@ -785,15 +794,32 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song.theme_name = None
         self._processLyrics()
         self.song.authors = []
-        for row in range(self.authorsListView.count()):
+        for row in xrange(self.authorsListView.count()):
             item = self.authorsListView.item(row)
             authorId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.song.authors.append(self.manager.get_object(Author, authorId))
         self.song.topics = []
-        for row in range(self.topicsListView.count()):
+        for row in xrange(self.topicsListView.count()):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.song.topics.append(self.manager.get_object(Topic, topicId))
+        # Save the song here because we need a valid song id for the audio files.
+        clean_song(self.manager, self.song)
+        self.manager.save_object(self.song)
+        #audio_files = map(lambda a: os.path.split(a.file_name)[1], self.song.media_files)
+        save_path = os.path.join(
+            AppLocation.get_section_data_path(self.mediaitem.plugin.name),
+            'audio', str(self.song.id))
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        self.song.media_files = []
+        for row in xrange(self.audioListWidget.count()):
+            item = self.audioListWidget.item(row)
+            filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+            if not filename.startswith(save_path):
+                newfile = os.path.join(save_path, os.path.split(filename)[1])
+                shutil.copyfile(filename, newfile)
+                #self.song.media_files.append(MediaFile(
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         self.mediaitem.auto_select_id = self.song.id
@@ -824,3 +850,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
+

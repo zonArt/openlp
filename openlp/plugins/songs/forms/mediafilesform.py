@@ -52,5 +52,6 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
             self.fileListWidget.addItem(item)
 
     def getSelectedFiles(self):
-        return []
+        return map(lambda x: unicode(x.data(QtCore.Qt.UserRole).toString()),
+            self.fileListWidget.selectedItems())
 
