@@ -542,6 +542,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.servicemanagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
+        self.displayTagsSection = u'displayTags'
+        self.headerSection = u'SettingsImport'
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self, self)
@@ -925,7 +927,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settingSections.extend([self.uiSettingsSection])
         settingSections.extend([self.servicemanagerSettingsSection])
         settingSections.extend([self.themesSettingsSection])
-        settingSections.extend([u'SettingsExport'])
+        settingSections.extend([self.displayTagsSection])
+        settingSections.extend([self.headerSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             settingSections.extend([plugin.name])
@@ -944,7 +947,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if section == u'General':
                 section = u'general'
             sectionKey = section + "/" + key
-            section = section.replace(u'_', u' ')
             # Make sure it's a valid section for us.
             if not section in settingSections:
                 QtGui.QMessageBox.critical(self,
@@ -961,10 +963,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # We have a good file, import it.
         for sectionKey in importKeys:
             value = importSettings.value(sectionKey)
-            # Get rid of the "_" we replaced the " " with.
-            sectionKey = sectionKey.replace(u'_', u' ')
             settings.setValue(u'%s' % (sectionKey) ,
                 QtCore.QVariant(value))
+        now = datetime.now()
+        settings.beginGroup(self.headerSection)
+        settings.setValue( u'file_imported' , QtCore.QVariant(importFileName))
+        settings.setValue(u'file_date_imported',
+            now.strftime("%Y-%m-%d %H:%M"))
+        settings.endGroup()
+        settings.sync()
         # We must do an immediate restart or current configuration will
         # overwrite what was just imported when application terminates
         # normally.   We need to exit without saving configuration.
@@ -993,8 +1000,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Make sure it's an .ini file.
         if not exportFileName.endswith(u'ini'):
             exportFileName = exportFileName + u'.ini'
+        temp_file = os.path.join(unicode(gettempdir()), 
+            u'openlp', u'exportIni.tmp')
         self.saveSettings()
-        headerSection = u'SettingsExport'
         settingSections = []
         # Add main sections.
         settingSections.extend([self.generalSettingsSection])
@@ -1002,17 +1010,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settingSections.extend([self.uiSettingsSection])
         settingSections.extend([self.servicemanagerSettingsSection])
         settingSections.extend([self.themesSettingsSection])
+        settingSections.extend([self.displayTagsSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             settingSections.extend([plugin.name])
-        # Delete old file if found.
+        # Delete old files if found.
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
         if os.path.exists(exportFileName):
             os.remove(exportFileName)
         settings = QtCore.QSettings()
-        settings.remove(headerSection)
+        settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        exportSettings = QtCore.QSettings(exportFileName,
+        exportSettings = QtCore.QSettings(temp_file,
             QtCore.QSettings.IniFormat)
         # Add a header section.
         # This is to insure it's our ini file for import.
@@ -1020,10 +1031,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         applicationVersion = get_application_version()
         # Write INI format using Qsettings.
         # Write our header.
-        exportSettings.beginGroup(headerSection)
-        exportSettings.setValue(u'Make_Changes', u'At Own RISK')
+        exportSettings.beginGroup(self.headerSection)
+        exportSettings.setValue(u'Make_Changes', u'At_Own_RISK')
         exportSettings.setValue(u'type', u'OpenLP_settings_export')
-        exportSettings.setValue(u'date_created',
+        exportSettings.setValue(u'file_date_created',
             now.strftime("%Y-%m-%d %H:%M"))
         exportSettings.setValue(u'version', applicationVersion[u'full'])
         exportSettings.endGroup()
@@ -1031,13 +1042,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for sectionKey in keys:
             section, key = string.split(sectionKey, u'/')
             keyValue = settings.value(sectionKey)
-            section = section.replace(u' ', u'_')
-            key = key.replace(u' ', u'_')
             sectionKey = section + u"/" + key
             # Change the service section to servicemanager.
             if section == u'service':
                 sectionKey = u'servicemanager/' + key
             exportSettings.setValue(sectionKey, keyValue)
+        exportSettings.sync()
+        # Temp INI file has been written.  Blanks in keys are now '%20'.
+        # Read the  temp file and output the user's INI file with blanks to
+        # make it more readable.
+        tempIni = open(temp_file, u'r')
+        exportIni = open(exportFileName,  u'w')
+        for fileRecord in tempIni:
+            fileRecord = fileRecord.replace(u'%20',  u' ')
+            exportIni.write(fileRecord)
+        tempIni.close()
+        exportIni.close()
+        os.remove(temp_file)
         return
 
     def onModeDefaultItemClicked(self):
