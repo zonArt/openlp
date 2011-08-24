@@ -83,7 +83,6 @@ class UiStrings(object):
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-        self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
@@ -126,8 +125,10 @@ class UiStrings(object):
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
-        self.StopPlaySlidesInLoop = translate('OpenLP.Ui','Stop Play Slides in Loop')
-        self.StopPlaySlidesToEnd = translate('OpenLP.Ui','Stop Play Slides to End')
+        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
+            'Stop Play Slides in Loop')
+        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
+            'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')

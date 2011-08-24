@@ -87,7 +87,7 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
-            message=translate('BiblePlugin.MediaItem',
+            message=translate('BiblesPlugin.MediaItem',
             'You cannot combine single and dual Bible verse search results. '
             'Do you want to delete your search results and start a new '
             'search?'),
@@ -395,6 +395,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
         """
@@ -437,7 +438,7 @@ class BibleMediaItem(MediaManagerItem):
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
-                message=translate('BiblePlugin.MediaItem',
+                message=translate('BiblesPlugin.MediaItem',
                 'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
@@ -612,7 +613,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
+        combo.addItems(map(unicode, range(range_from, range_to + 1)))
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -694,8 +695,8 @@ class BibleMediaItem(MediaManagerItem):
                         verse.verse, verse.verse))
                 if passage_not_found:
                     QtGui.QMessageBox.information(self,
-                        translate('BiblePlugin.MediaItem', 'Information'),
-                        unicode(translate('BiblePlugin.MediaItem',
+                        translate('BiblesPlugin.MediaItem', 'Information'),
+                        unicode(translate('BiblesPlugin.MediaItem',
                         'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '

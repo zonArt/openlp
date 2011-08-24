@@ -53,6 +53,7 @@ APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
     """
@@ -61,8 +62,6 @@ class VersionThread(QtCore.QThread):
     """
     def __init__(self, parent):
         QtCore.QThread.__init__(self, parent)
-        self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
     def run(self):
         """
@@ -73,7 +72,7 @@ class VersionThread(QtCore.QThread):
         version = check_latest_version(app_version)
         remote_version = {}
         local_version = {}
-        match = self.version_splitter.match(version)
+        match = VERSION_SPLITTER.match(version)
         if match:
             remote_version[u'major'] = int(match.group(1))
             remote_version[u'minor'] = int(match.group(2))
@@ -82,7 +81,7 @@ class VersionThread(QtCore.QThread):
                 remote_version[u'revision'] = int(match.group(4))
         else:
             return
-        match = self.version_splitter.match(app_version[u'full'])
+        match = VERSION_SPLITTER.match(app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
             local_version[u'minor'] = int(match.group(2))
@@ -387,6 +386,17 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    ``filename``
+        The "dirty" file name to clean.
+    """
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+
 def delete_file(file_path_name):
     """
     Deletes a file from the system.
@@ -460,25 +470,6 @@ def file_is_unicode(filename):
         return None
     return ucsfile
 
-def string_is_unicode(test_string):
-    """
-    Makes sure a string is unicode.
-
-    ``test_string``
-        The string to confirm is unicode.
-    """
-    return_string = u''
-    if not test_string:
-        return return_string
-    if isinstance(test_string, unicode):
-        return_string = test_string
-    if not isinstance(test_string, unicode):
-        try:
-            return_string = unicode(test_string, u'utf-8')
-        except UnicodeError:
-            log.exception("Error encoding string to unicode")
-    return return_string
-
 def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
@@ -511,5 +502,5 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
-    u'ActionList', u'get_web_page', u'file_is_unicode', u'string_is_unicode',
-    u'get_uno_command', u'get_uno_instance', u'delete_file']
+    u'ActionList', u'get_web_page', u'file_is_unicode', u'get_uno_command',
+    u'get_uno_instance', u'delete_file', u'clean_filename']
