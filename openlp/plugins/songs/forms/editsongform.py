@@ -38,7 +38,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
-from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
+from openlp.plugins.songs.lib.db import Book, Song, Author, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
 
@@ -324,6 +324,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.topicsListView.addItem(topic_name)
         self.audioListWidget.clear()
+        for media in self.song.media_files:
+            media_file = QtGui.QListWidgetItem(os.path.split(media.file_name)[1])
+            media_file.setData(QtCore.Qt.UserRole, QtCore.QVariant(media.file_name))
+            self.audioListWidget.addItem(media_file)
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # Hide or show the preview button.
         self.previewButton.setVisible(preview)
@@ -806,20 +810,34 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # Save the song here because we need a valid song id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        #audio_files = map(lambda a: os.path.split(a.file_name)[1], self.song.media_files)
+        audio_files = map(lambda a: a.file_name, self.song.media_files)
+        log.debug(audio_files)
         save_path = os.path.join(
             AppLocation.get_section_data_path(self.mediaitem.plugin.name),
             'audio', str(self.song.id))
         if not os.path.exists(save_path):
             os.makedirs(save_path)
         self.song.media_files = []
+        files = []
         for row in xrange(self.audioListWidget.count()):
             item = self.audioListWidget.item(row)
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if not filename.startswith(save_path):
-                newfile = os.path.join(save_path, os.path.split(filename)[1])
-                shutil.copyfile(filename, newfile)
-                #self.song.media_files.append(MediaFile(
+                oldfile, filename = filename, os.path.join(save_path,
+                    os.path.split(filename)[1])
+                shutil.copyfile(oldfile, filename)
+                files.append(filename)
+            media_file = MediaFile()
+            media_file.file_name = filename
+            media_file.type = u'audio'
+            self.song.media_files.append(media_file)
+        for audio in audio_files:
+            if audio not in files:
+                try:
+                    os.remove(audio)
+                except:
+                    log.exception('Could not remove file: %s', audio)
+                    pass
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         self.mediaitem.auto_select_id = self.song.id
