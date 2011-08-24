@@ -103,6 +103,7 @@ class MainDisplay(QtGui.QGraphicsView):
                 self.createMediaObject()
         log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
+        self.webView.settings().setAttribute(7, True)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
