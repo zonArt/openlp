@@ -36,6 +36,8 @@ from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
+from openlp.core.lib import translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
@@ -84,19 +86,22 @@ def upgrade_db(url, upgrade):
         version = 0
     else:
         version = int(version_meta.value)
+    if version > upgrade.__version__:
+        return version, upgrade.__version__
     version += 1
     while hasattr(upgrade, u'upgrade_%d' % version):
         log.debug(u'Running upgrade_%d', version)
         try:
             getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
-            version += 1
             version_meta.value = unicode(version)
         except SQLAlchemyError, DBAPIError:
             log.exception(u'Could not run database upgrade script "upgrade_%s"'\
                 ', upgrade process has been halted.', version)
             break
+        version += 1
     session.add(version_meta)
     session.commit()
+    return int(version_meta.value), upgrade.__version__
 
 def delete_database(plugin_name, db_file_name=None):
     """
@@ -186,8 +191,26 @@ class Manager(object):
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
         if upgrade_mod:
-            upgrade_db(self.db_url, upgrade_mod)
-        self.session = init_schema(self.db_url)
+            db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            if db_ver > up_ver:
+                critical_error_message_box(
+                    translate('OpenLP.Manager', 'Database Error'),
+                    unicode(translate('OpenLP.Manager', 'The database being '
+                        'loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP '
+                        'expects version %d. The database will not be loaded.'
+                        '\n\nDatabase: %s')) % \
+                        (db_ver, up_ver, self.db_url)
+                )
+                return
+        try:
+            self.session = init_schema(self.db_url)
+        except:
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
+                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s')) % self.db_url
+            )
 
     def save_object(self, object_instance, commit=True):
         """
