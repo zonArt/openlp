@@ -24,9 +24,186 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
+__all__ = ('OpenLP', 'main')
+
+import os
+import sys
+import logging
+# Import uuid now, to avoid the rare bug described in the support system:
+# http://support.openlp.org/issues/102
+# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
+# removed.
+import uuid
+from optparse import OptionParser
+from traceback import format_exception
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
+from openlp.core.resources import qInitResources
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
+    get_application_version, DelayStartThread
+
+log = logging.getLogger()
+
+
 """
 The :mod:`core` module provides all core application functions
 
 All the core functions of the OpenLP application including the GUI, settings,
 logging and a plugin framework are contained within the openlp.core module.
 """
+
+application_stylesheet = u"""
+QMainWindow::separator
+{
+  border: none;
+}
+
+QDockWidget::title
+{
+  border: 1px solid palette(dark);
+  padding-left: 5px;
+  padding-top: 2px;
+  margin: 1px 0;
+}
+
+QToolBar
+{
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+"""
+
+class OpenLP(QtGui.QApplication):
+    """
+    The core application class. This class inherits from Qt's QApplication
+    class in order to provide the core of the application.
+    """
+
+    args = []
+
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+
+    def run(self, args):
+        """
+        Run the OpenLP application.
+        """
+        # On Windows, the args passed into the constructor are
+        # ignored. Not very handy, so set the ones we want to use.
+        self.args.extend(args)
+        # provide a listener for widgets to reqest a screen update.
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        has_run_wizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        if not has_run_wizard:
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                QtCore.QSettings().setValue(u'general/has run wizard',
+                    QtCore.QVariant(True))
+        if os.name == u'nt':
+            self.setStyleSheet(application_stylesheet)
+        show_splash = QtCore.QSettings().value(
+            u'general/show splash', QtCore.QVariant(True)).toBool()
+        if show_splash:
+            self.splash = SplashScreen()
+            self.splash.show()
+        # make sure Qt really display the splash screen
+        self.processEvents()
+        # start the main app window
+        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow.show()
+        if show_splash:
+            # now kill the splashscreen
+            self.splash.finish(self.mainWindow)
+            log.debug(u'Splashscreen closed')
+        # make sure Qt really display the splash screen
+        self.processEvents()
+        self.mainWindow.repaint()
+        self.processEvents()
+        if not has_run_wizard:
+            self.mainWindow.firstTime()
+        update_check = QtCore.QSettings().value(
+            u'general/update check', QtCore.QVariant(True)).toBool()
+        if update_check:
+            VersionThread(self.mainWindow).start()
+        Receiver.send_message(u'maindisplay_blank_check')
+        self.mainWindow.appStartup()
+        DelayStartThread(self.mainWindow).start()
+        return self.exec_()
+
+    def isAlreadyRunning(self):
+        """
+        Look to see if OpenLP is already running and ask if a 2nd copy
+        is to be started.
+        """
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            status = QtGui.QMessageBox.critical(None,
+                UiStrings().Error, UiStrings().OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
+        else:
+            self.sharedMemory.create(1)
+            return False
+
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow'):
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.setNormalCursor()
+        self.exceptionForm.exec_()
+
+    def setBusyCursor(self):
+        """
+        Sets the Busy Cursor for the Application
+        """
+        self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        self.processEvents()
+
+    def setNormalCursor(self):
+        """
+        Sets the Normal Cursor for the Application
+        """
+        self.restoreOverrideCursor()
+
+    def event(self, event):
+        """
+        Enables direct file opening on OS X
+        """
+        if event.type() == QtCore.QEvent.FileOpen:
+            file_name = event.file()
+            log.debug(u'Got open file event for %s!', file_name)
+            self.args.insert(0, unicode(file_name))
+            return True
+        else:
+            return QtGui.QApplication.event(self, event)
+
+
