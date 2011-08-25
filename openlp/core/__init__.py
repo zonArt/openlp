@@ -98,10 +98,6 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        self.setOrganizationName(u'OpenLP')
-        self.setOrganizationDomain(u'openlp.org')
-        self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(get_application_version()[u'version'])
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -261,6 +257,10 @@ def main(args=None):
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    app.setOrganizationName(u'OpenLP')
+    app.setOrganizationDomain(u'openlp.org')
+    app.setApplicationName(u'OpenLP')
+    app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if app.isAlreadyRunning():
         sys.exit()
@@ -270,9 +270,6 @@ def main(args=None):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()
-    #if sys.platform == u'darwin':
-    #    OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
-    #        + "/qt4_plugins")
     # i18n Set Language
     language = LanguageManager.get_language()
     app_translator, default_translator = \
