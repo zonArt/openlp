@@ -54,12 +54,24 @@ def upgrade_setup(metadata):
 
 
 def upgrade_1(session, metadata, tables):
+    """
+    Version 1 upgrade.
+
+    This upgrade removes the many-to-many relationship between songs and 
+    media_files and replaces it with a one-to-many, which is far more
+    representative of the real relationship between the two entities.
+
+    In order to facilitate this one-to-many relationship, a song_id column is
+    added to the media_files table, and a weight column so that the media
+    files can be ordered.
+    """
     Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
     Column(u'song_id', types.Integer(), default=None)\
         .create(table=tables[u'media_files'], populate_default=True)
     Column(u'weight', types.Integer(), default=0)\
         .create(table=tables[u'media_files'], populate_default=True)
     if metadata.bind.url.get_dialect().name != 'sqlite':
+        # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
             table=tables[u'media_files']).create()
 
