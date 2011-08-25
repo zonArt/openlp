@@ -28,6 +28,7 @@
 import logging
 import os
 import sys, string
+import shutil
 from tempfile import gettempdir
 from datetime import datetime
 
@@ -311,10 +312,10 @@ class Ui_MainWindow(object):
         add_actions(self.fileExportMenu, (self.settingsExportItem, None,
             self.exportThemeItem, self.exportLanguageItem))
         add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
-            self.fileSaveItem, self.fileSaveAsItem, None,
-            self.recentFilesMenu.menuAction(), None, self.printServiceOrderItem,
-            None, self.fileImportMenu.menuAction(),
-            self.fileExportMenu.menuAction(), self.fileExitItem))
+            self.fileSaveItem, self.fileSaveAsItem,
+            self.recentFilesMenu.menuAction(), None,
+            self.fileImportMenu.menuAction(), self.fileExportMenu.menuAction(),
+            None, self.printServiceOrderItem, self.fileExitItem))
         add_actions(self.viewModeMenu, (self.modeDefaultItem,
             self.modeSetupItem, self.modeLiveItem))
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(),
@@ -423,7 +424,7 @@ class Ui_MainWindow(object):
         self.settingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.formattingTagItem.setText(
-            translate('OpenLP.MainWindow', '&Configure Formatting Tags...'))
+            translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.settingsExportItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -750,11 +751,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        if not os.path.exists(temp_dir):
-            return
-        for filename in os.listdir(temp_dir):
-            delete_file(os.path.join(temp_dir, filename))
-        os.removedirs(temp_dir)
+        shutil.rmtree(temp_dir, True)
 
     def onFirstTimeWizardClicked(self):
         """

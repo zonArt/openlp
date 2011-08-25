@@ -96,6 +96,7 @@ class SongUsagePlugin(Plugin):
         self.songUsageActiveButton = QtGui.QToolButton(
             self.formparent.statusBar)
         self.songUsageActiveButton.setCheckable(True)
+        self.songUsageActiveButton.setAutoRaise(True)
         self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin',
             'Toggle the tracking of song usage.'))
         self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
