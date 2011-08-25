@@ -31,9 +31,9 @@ import logging
 import os
 
 from PyQt4 import QtCore
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import Table, MetaData, Column, types, create_engine
 from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
 from openlp.core.utils import AppLocation, delete_file
@@ -59,6 +59,42 @@ def init_db(url, auto_flush=True, auto_commit=False):
         autocommit=auto_commit, bind=engine))
     return session, metadata
 
+
+def upgrade_db(url, upgrade):
+    """
+    Upgrade a database.
+
+    ``url``
+        The url of the database to upgrade.
+
+    ``upgrade``
+        The python module that contains the upgrade instructions.
+    """
+    session, metadata = init_db(url)
+    tables = upgrade.upgrade_setup(metadata)
+    metadata_table = Table(u'metadata', metadata,
+        Column(u'key', types.Unicode(64), primary_key=True),
+        Column(u'value', types.UnicodeText(), default=None)
+    )
+    metadata_table.create(checkfirst=True)
+    mapper(Metadata, metadata_table)
+    version_meta = session.query(Metadata).get(u'version')
+    if version_meta is None:
+        version_meta = Metadata.populate(key=u'version', value=u'0')
+        version = 0
+    else:
+        version = int(version_meta.value)
+    version += 1
+    while hasattr(upgrade, u'upgrade_%d' % version):
+        log.debug(u'Running upgrade_%d', version)
+        do_upgrade = getattr(upgrade, u'upgrade_%d' % version)
+        if not do_upgrade(session, metadata, tables):
+            break
+        version += 1
+        version_meta.value = unicode(version)
+    session.add(version_meta)
+    session.commit()
+
 def delete_database(plugin_name, db_file_name=None):
     """
     Remove a database file from the system.
@@ -79,6 +115,7 @@ def delete_database(plugin_name, db_file_name=None):
             AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
 
+
 class BaseModel(object):
     """
     BaseModel provides a base object with a set of generic functions
@@ -94,11 +131,18 @@ class BaseModel(object):
         return instance
 
 
+class Metadata(BaseModel):
+    """
+    Provides a class for the metadata table.
+    """
+    pass
+
+
 class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None, upgrade_schema=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -108,6 +152,9 @@ class Manager(object):
 
         ``init_schema``
             The init_schema function for this database
+
+        ``upgrade_schema``
+            The upgrade_schema function for this database
 
         ``db_file_name``
             The file name to use for this database. Defaults to None resulting
@@ -134,6 +181,8 @@ class Manager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
+        if upgrade_schema:
+            upgrade_schema(self.db_url)
         self.session = init_schema(self.db_url)
 
     def save_object(self, object_instance, commit=True):

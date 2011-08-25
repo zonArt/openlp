@@ -37,7 +37,7 @@ from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, base_action, icon_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
-from openlp.plugins.songs.lib.db import init_schema, Song
+from openlp.plugins.songs.lib.db import init_schema, upgrade_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
@@ -58,8 +58,8 @@ class SongsPlugin(Plugin):
         Create and set up the Songs plugin.
         """
         Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
+        self.manager = Manager(u'songs', init_schema, upgrade_schema=upgrade_schema)
         self.weight = -10
-        self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
 
