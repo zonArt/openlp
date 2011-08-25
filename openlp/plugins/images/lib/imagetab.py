@@ -57,6 +57,8 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
+        self.rightColumn.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
@@ -64,9 +66,9 @@ class ImageTab(SettingsTab):
 
     def retranslateUi(self):
         self.fontGroupBox.setTitle(
-            translate('ImagesPlugin.ImageTab', 'Background Font'))
+            translate('ImagesPlugin.ImageTab', 'Background Color'))
         self.backgroundColorLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Background color:'))
+            translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Provides border where image '
             'is not the correct dimensions for the screen when resized.'))

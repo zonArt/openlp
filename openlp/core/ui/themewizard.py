@@ -449,7 +449,7 @@ class Ui_ThemeWizard(object):
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
         self.imageColorLabel.setText(
-            translate(u'OpenLP.ThemeWizard', 'Border color:'))
+            translate(u'OpenLP.ThemeWizard', 'Background color:'))
         self.imageLabel.setText(u'%s:' % UiStrings().Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
