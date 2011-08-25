@@ -27,7 +27,7 @@
 
 import logging
 import os
-import sys, string
+import sys
 import shutil
 from tempfile import gettempdir
 from datetime import datetime
@@ -936,8 +936,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for sectionKey in importKeys:
             # We need to handle the really bad files.
             try:
-                section, key = string.split(sectionKey, u'/')
-            except:
+                section, key = sectionKey.split(u'/')
+            except ValueError:
                 section = u'unknown'
                 key = u''
             # Switch General back to lowercase.
@@ -976,7 +976,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             translate('OpenLP.MainWindow', 'Import settings'),
             translate('OpenLP.MainWindow',
             'OpenLP will now close.  Imported settings will '
-            'take place the next time you start OpenLP'),
+            'be applied the next time you start OpenLP.'),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Ok))
         self.settingsImported = True
@@ -1037,7 +1037,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         exportSettings.endGroup()
         # Write all the sections and keys.
         for sectionKey in keys:
-            section, key = string.split(sectionKey, u'/')
+            section, key = sectionKey.split(u'/')
             keyValue = settings.value(sectionKey)
             sectionKey = section + u"/" + key
             # Change the service section to servicemanager.
