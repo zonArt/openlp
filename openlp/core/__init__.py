@@ -94,7 +94,7 @@ class OpenLP(QtGui.QApplication):
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
-    def run(self, args):
+    def run(self, args, testing=False):
         """
         Run the OpenLP application.
         """
@@ -150,7 +150,9 @@ class OpenLP(QtGui.QApplication):
         Receiver.send_message(u'maindisplay_blank_check')
         self.mainWindow.appStartup()
         DelayStartThread(self.mainWindow).start()
-        return self.exec_()
+        # Skip exec_() for gui tests
+        if not testing:
+            return self.exec_()
 
     def isAlreadyRunning(self):
         """
@@ -207,7 +209,7 @@ class OpenLP(QtGui.QApplication):
             return QtGui.QApplication.event(self, event)
 
 
-def main():
+def main(args=None):
     """
     The main function which parses command line options and then runs
     the PyQt4 Application.
@@ -228,6 +230,8 @@ def main():
         'version directly from Bazaar')
     parser.add_option('-s', '--style', dest='style',
         help='Set the Qt4 style (passed directly to Qt4).')
+    parser.add_option('--testing', dest='testing',
+        action='store_true', help='Run by testing framework')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
     check_directory_exists(log_path)
@@ -238,7 +242,9 @@ def main():
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
-    (options, args) = parser.parse_args()
+    if not args:
+        args = sys.argv  # Use args not supplied programatically
+    (options, args) = parser.parse_args(args)
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
@@ -279,4 +285,8 @@ def main():
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit(app.run(qt_args))
+    # Do not run method app.exec_() when running gui tests
+    if options.testing:
+        app.run(qt_args, testing=True)
+    else:
+        sys.exit(app.run(qt_args))
