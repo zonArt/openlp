@@ -32,8 +32,7 @@ the Songs plugin
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation
 
-from openlp.core.lib.db import BaseModel, init_db, upgrade_db
-from openlp.plugins.songs.lib import upgrade
+from openlp.core.lib.db import BaseModel, init_db
 
 class Author(BaseModel):
     """
@@ -70,15 +69,6 @@ class Topic(BaseModel):
     Topic model
     """
     pass
-
-def upgrade_schema(url):
-    """
-    Upgrades the songs database.
-
-    ``url``
-        The database to upgrade
-    """
-    upgrade_db(url, upgrade)
 
 def init_schema(url):
     """

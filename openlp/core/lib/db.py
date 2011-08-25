@@ -142,7 +142,8 @@ class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None, upgrade_schema=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None,
+                 upgrade_mod=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -181,8 +182,8 @@ class Manager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        if upgrade_schema:
-            upgrade_schema(self.db_url)
+        if upgrade_mod:
+            upgrade_db(self.db_url, upgrade_mod)
         self.session = init_schema(self.db_url)
 
     def save_object(self, object_instance, commit=True):
