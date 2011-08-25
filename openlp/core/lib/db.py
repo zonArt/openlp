@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
-from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
@@ -87,11 +87,14 @@ def upgrade_db(url, upgrade):
     version += 1
     while hasattr(upgrade, u'upgrade_%d' % version):
         log.debug(u'Running upgrade_%d', version)
-        do_upgrade = getattr(upgrade, u'upgrade_%d' % version)
-        if not do_upgrade(session, metadata, tables):
+        try:
+            getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
+            version += 1
+            version_meta.value = unicode(version)
+        except SQLAlchemyError, DBAPIError:
+            log.exception(u'Could not run database upgrade script "upgrade_%s"'\
+                ', upgrade process has been halted.', version)
             break
-        version += 1
-        version_meta.value = unicode(version)
     session.add(version_meta)
     session.commit()
 

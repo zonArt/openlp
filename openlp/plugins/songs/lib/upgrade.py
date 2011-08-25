@@ -60,4 +60,4 @@ def upgrade_1(session, metadata, tables):
     if metadata.bind.url.get_dialect().name != 'sqlite':
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
             table=tables[u'media_files']).create()
-    return True
+
