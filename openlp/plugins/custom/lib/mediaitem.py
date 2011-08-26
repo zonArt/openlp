@@ -217,8 +217,7 @@ class CustomMediaItem(MediaManagerItem):
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
-            for row in row_list:
-                self.listView.takeItem(row)
+            self.onSearchTextButtonClick()
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
