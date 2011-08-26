@@ -198,7 +198,8 @@ def init_schema(url):
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
         Column(u'search_lyrics', types.UnicodeText, nullable=False),
         Column(u'create_date', types.DateTime(), default=func.now()),
-        Column(u'last_modified', types.DateTime(), onupdate=func.now())
+        Column(u'last_modified', types.DateTime(), default=func.now(),
+            onupdate=func.now())
     )
 
     # Definition of the "topics" table
