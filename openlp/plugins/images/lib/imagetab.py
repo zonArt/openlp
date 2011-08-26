@@ -40,22 +40,22 @@ class ImageTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'ImagesTab')
         SettingsTab.setupUi(self)
-        self.fontGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.fontGroupBox.setObjectName(u'FontGroupBox')
-        self.formLayout = QtGui.QFormLayout(self.fontGroupBox)
+        self.bgColorGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.bgColorGroupBox.setObjectName(u'FontGroupBox')
+        self.formLayout = QtGui.QFormLayout(self.bgColorGroupBox)
         self.formLayout.setObjectName(u'FormLayout')
         self.colorLayout = QtGui.QHBoxLayout()
-        self.backgroundColorLabel = QtGui.QLabel(self.fontGroupBox)
+        self.backgroundColorLabel = QtGui.QLabel(self.bgColorGroupBox)
         self.backgroundColorLabel.setObjectName(u'BackgroundColorLabel')
         self.colorLayout.addWidget(self.backgroundColorLabel)
-        self.backgroundColorButton = QtGui.QPushButton(self.fontGroupBox)
+        self.backgroundColorButton = QtGui.QPushButton(self.bgColorGroupBox)
         self.backgroundColorButton.setObjectName(u'BackgroundColorButton')
         self.colorLayout.addWidget(self.backgroundColorButton)
         self.formLayout.addRow(self.colorLayout)
-        self.informationLabel = QtGui.QLabel(self.fontGroupBox)
+        self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
         self.informationLabel.setObjectName(u'InformationLabel')
         self.formLayout.addRow(self.informationLabel)
-        self.leftLayout.addWidget(self.fontGroupBox)
+        self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
         self.rightColumn.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
@@ -65,7 +65,7 @@ class ImageTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
-        self.fontGroupBox.setTitle(
+        self.bgColorGroupBox.setTitle(
             translate('ImagesPlugin.ImageTab', 'Background Color'))
         self.backgroundColorLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
