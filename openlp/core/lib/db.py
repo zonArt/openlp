@@ -205,7 +205,8 @@ class Manager(object):
                 return
         try:
             self.session = init_schema(self.db_url)
-        except:
+        except SQLAlchemyError, DBAPIError:
+            log.exception(u'Error loading database: %s', self.db_url)
             critical_error_message_box(
                 translate('OpenLP.Manager', 'Database Error'),
                 unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '

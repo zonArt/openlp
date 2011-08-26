@@ -100,6 +100,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onAudioAddFromFileButtonClicked)
         QtCore.QObject.connect(self.audioAddFromMediaButton,
             QtCore.SIGNAL(u'clicked()'), self.onAudioAddFromMediaButtonClicked)
+        QtCore.QObject.connect(self.audioRemoveButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
+        QtCore.QObject.connect(self.audioRemoveAllButton,
+            QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveAllButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
@@ -718,11 +722,42 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 item.setData(QtCore.Qt.UserRole, filename)
                 self.audioListWidget.addItem(item)
 
+    def onAudioRemoveButtonClicked(self):
+        """
+        Removes a file from the list.
+        """
+        row = self.audioListWidget.currentRow()
+        if row == -1:
+            return
+        self.audioListWidget.takeItem(row)
+
+    def onAudioRemoveAllButtonClicked(self):
+        """
+        Removes all files from the list.
+        """
+        self.audioListWidget.clear()
+
     def onUpButtonClicked(self):
-        pass
+        """
+        Moves a file up when the user clicks the up button on the audio tab.
+        """
+        row = self.audioListWidget.currentRow()
+        if row <= 0:
+            return
+        item = self.audioListWidget.takeItem(row)
+        self.audioListWidget.insertItem(row - 1, item)
+        self.audioListWidget.setCurrentRow(row - 1)
 
     def onDownButtonClicked(self):
-        pass
+        """
+        Moves a file down when the user clicks the up button on the audio tab.
+        """
+        row = self.audioListWidget.currentRow()
+        if row == -1 or row > self.audioListWidget.count() - 1:
+            return
+        item = self.audioListWidget.takeItem(row)
+        self.audioListWidget.insertItem(row + 1, item)
+        self.audioListWidget.setCurrentRow(row + 1)
 
     def clearCaches(self):
         """
@@ -830,6 +865,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             media_file = MediaFile()
             media_file.file_name = filename
             media_file.type = u'audio'
+            media_file.weight = row
             self.song.media_files.append(media_file)
         for audio in audio_files:
             if audio not in files:

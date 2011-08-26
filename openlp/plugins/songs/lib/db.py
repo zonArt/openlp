@@ -232,7 +232,8 @@ def init_schema(url):
             'authors': relation(Author, backref='songs',
                 secondary=authors_songs_table, lazy=False),
             'book': relation(Book, backref='songs'),
-            'media_files': relation(MediaFile, backref='songs'),
+            'media_files': relation(MediaFile, backref='songs',
+                order_by=media_files_table.c.weight),
             'topics': relation(Topic, backref='songs',
                 secondary=songs_topics_table)
         })
