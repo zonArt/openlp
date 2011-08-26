@@ -132,7 +132,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
             u'end tag': u'{/n}',
             u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
-            u'protected': False
+            u'protected': False,
+            u'temporary': False
         }
         FormattingTags.add_html_tags([tag])
         self._resetTable()
@@ -172,6 +173,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             html[u'end html'] = unicode(self.endTagLineEdit.text())
             html[u'start tag'] = u'{%s}' % tag
             html[u'end tag'] = u'{/%s}' % tag
+            # Keep temporary tags when the user changes one.
+            html[u'temporary'] = False
             self.selected = -1
         self._resetTable()
         self._saveTable()
@@ -182,7 +185,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         tags = []
         for tag in FormattingTags.get_html_tags():
-            if not tag[u'protected']:
+            if not tag[u'protected'] and not tag[u'temporary']:
                 tags.append(tag)
         # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
@@ -198,8 +201,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
         for linenumber, html in enumerate(FormattingTags.get_html_tags()):
-            self.tagTableWidget.setRowCount(
-                self.tagTableWidget.rowCount() + 1)
+            self.tagTableWidget.setRowCount(self.tagTableWidget.rowCount() + 1)
             self.tagTableWidget.setItem(linenumber, 0,
                 QtGui.QTableWidgetItem(html[u'desc']))
             self.tagTableWidget.setItem(linenumber, 1,
@@ -208,6 +210,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
                 QtGui.QTableWidgetItem(html[u'start html']))
             self.tagTableWidget.setItem(linenumber, 3,
                 QtGui.QTableWidgetItem(html[u'end html']))
+            # Tags saved prior to 1.9.7 do not have this key.
+            if not html.has_key(u'temporary'):
+                html[u'temporary'] = False
             self.tagTableWidget.resizeRowsToContents()
         self.descriptionLineEdit.setText(u'')
         self.tagLineEdit.setText(u'')
