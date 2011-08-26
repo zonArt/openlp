@@ -914,7 +914,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 translate('OpenLP.MainWindow', 'Open File'),
                 '',
                 translate('OpenLP.MainWindow',
-                'OpenLP Export Settings Files (*.ini)')))
+                'OpenLP Export Settings Files (*.conf)')))
         if not importFileName:
             return
         settingSections = []
@@ -991,12 +991,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             exportFileName = unicode(QtGui.QFileDialog.getSaveFileName(self,
                 translate('OpenLP.MainWindow', 'Export Settings File'), '',
                 translate('OpenLP.MainWindow',
-                    'OpenLP Export Settings File (*.ini)')))
+                    'OpenLP Export Settings File (*.conf)')))
         if not exportFileName:
             return
         # Make sure it's an .ini file.
-        if not exportFileName.endswith(u'ini'):
-            exportFileName = exportFileName + u'.ini'
+        if not exportFileName.endswith(u'conf'):
+            exportFileName = exportFileName + u'.conf'
         temp_file = os.path.join(unicode(gettempdir()), 
             u'openlp', u'exportIni.tmp')
         self.saveSettings()
