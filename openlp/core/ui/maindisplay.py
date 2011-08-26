@@ -228,11 +228,11 @@ class MainDisplay(QtGui.QGraphicsView):
                 shrinkItem.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, name, path):
+    def directImage(self, name, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        self.imageManager.add_image(name, path)
+        self.imageManager.add_image(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
