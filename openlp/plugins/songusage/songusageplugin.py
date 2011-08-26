@@ -122,6 +122,9 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_started'),
             self.onReceiveSongUsage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'print_service_started'),
+            self.onReceiveSongUsage)
         self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()

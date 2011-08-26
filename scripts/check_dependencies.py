@@ -46,14 +46,14 @@ VERS = {
     'sqlalchemy': '0.5',
     # pyenchant 1.6 required on Windows
     'enchant': '1.6' if is_win else '1.3'
-    }
+}
 
 # pywin32
 WIN32_MODULES = [
     'win32com',
     'win32ui',
     'pywintypes',
-    ]
+]
 
 MODULES = [
     'PyQt4',
@@ -72,7 +72,8 @@ MODULES = [
     'enchant',
     'BeautifulSoup',
     'mako',
-    ]
+    'migrate',
+]
 
 
 OPTIONAL_MODULES = [
