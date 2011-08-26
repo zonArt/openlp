@@ -322,7 +322,7 @@ class OpenLyrics(object):
                     self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
-    def xml_to_song(self, xml, save_to_db=True):
+    def xml_to_song(self, xml, only_process_format_tags=False):
         """
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
@@ -331,9 +331,9 @@ class OpenLyrics(object):
         ``xml``
             The XML to parse (unicode).
 
-        ``save_to_db``
-            Switch to prevent storing songs to the database. Defaults to
-            ``True``.
+        ``only_process_format_tags``
+            Switch to skip processing the whole song and to prevent storing the
+            songs to the database. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
@@ -346,21 +346,22 @@ class OpenLyrics(object):
         else:
             return None
         song = Song()
-        # Values will be set when cleaning the song.
-        song.search_lyrics = u''
-        song.verse_order = u''
-        song.search_title = u''
-        self._process_copyright(properties, song)
-        self._process_cclinumber(properties, song)
-        self._process_titles(properties, song)
+        if not only_process_format_tags:
+            # Values will be set when cleaning the song.
+            song.search_lyrics = u''
+            song.verse_order = u''
+            song.search_title = u''
+            self._process_copyright(properties, song)
+            self._process_cclinumber(properties, song)
+            self._process_titles(properties, song)
         # The verse order is processed with the lyrics!
         self._process_lyrics(properties, song_xml, song)
-        self._process_comments(properties, song)
-        self._process_authors(properties, song)
-        self._process_songbooks(properties, song)
-        self._process_topics(properties, song)
-        clean_song(self.manager, song)
-        if save_to_db:
+        if not only_process_format_tags:
+            self._process_comments(properties, song)
+            self._process_authors(properties, song)
+            self._process_songbooks(properties, song)
+            self._process_topics(properties, song)
+            clean_song(self.manager, song)
             self.manager.save_object(song)
             return song.id
 
