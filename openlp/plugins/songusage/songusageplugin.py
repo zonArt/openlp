@@ -37,6 +37,7 @@ from openlp.core.lib.ui import base_action, shortcut_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
+from openlp.plugins.songusage.lib import upgrade
 from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
@@ -46,11 +47,11 @@ class SongUsagePlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'songusage', plugin_helpers)
+        self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.activeIcon = build_icon(u':/songusage/song_usage_active.png')
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
-        self.manager = None
         self.songUsageActive = False
 
     def addToolsMenuItem(self, tools_menu):
@@ -137,8 +138,6 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        if self.manager is None:
-            self.manager = Manager(u'songusage', init_schema)
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)

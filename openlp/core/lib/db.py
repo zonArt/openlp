@@ -72,6 +72,7 @@ def upgrade_db(url, upgrade):
     ``upgrade``
         The python module that contains the upgrade instructions.
     """
+    print url, upgrade
     session, metadata = init_db(url)
     tables = upgrade.upgrade_setup(metadata)
     metadata_table = Table(u'metadata', metadata,

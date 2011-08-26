@@ -26,7 +26,7 @@
 ###############################################################################
 """
 The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the Songs plugin
+backend for the SongsUsage plugin
 """
 
 from sqlalchemy import Column, ForeignKey, Table, types
@@ -42,14 +42,9 @@ def upgrade_setup(metadata):
     here, and add it to your upgrade function.
     """
     tables = {
-        u'authors': Table(u'authors', metadata, autoload=True),
-        u'media_files': Table(u'media_files', metadata, autoload=True),
-        u'song_books': Table(u'song_books', metadata, autoload=True),
-        u'songs': Table(u'songs', metadata, autoload=True),
-        u'topics': Table(u'topics', metadata, autoload=True),
-        u'authors_songs': Table(u'authors_songs', metadata, autoload=True),
-        u'songs_topics': Table(u'songs_topics', metadata, autoload=True)
+        u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
     }
+    print tables
     return tables
 
 
@@ -57,21 +52,10 @@ def upgrade_1(session, metadata, tables):
     """
     Version 1 upgrade.
 
-    This upgrade removes the many-to-many relationship between songs and
-    media_files and replaces it with a one-to-many, which is far more
-    representative of the real relationship between the two entities.
-
-    In order to facilitate this one-to-many relationship, a song_id column is
-    added to the media_files table, and a weight column so that the media
-    files can be ordered.
+    This upgrade adds two new fields to the songusage database
     """
-    Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
-    Column(u'song_id', types.Integer(), default=None)\
-        .create(table=tables[u'media_files'], populate_default=True)
-    Column(u'weight', types.Integer(), default=0)\
-        .create(table=tables[u'media_files'], populate_default=True)
-    if metadata.bind.url.get_dialect().name != 'sqlite':
-        # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
-        ForeignKeyConstraint([u'song_id'], [u'songs.id'],
-            table=tables[u'media_files']).create()
-
+    print "hi"
+    Column(u'plugin_name', types.Unicode(20), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
+    Column(u'source', types.Unicode(10), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
