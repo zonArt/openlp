@@ -286,7 +286,7 @@ class SongExportForm(OpenLPWizard):
         if exporter.do_export():
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm', 'Finished export. To '
-                'import these files again use the <strong>OpenLyrics</strong> '
+                'import these files use the <strong>OpenLyrics</strong> '
                 'importer.'))
         else:
             self.progressLabel.setText(
