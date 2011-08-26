@@ -238,9 +238,8 @@ def main(args=None):
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
-    if not args:
-        args = sys.argv  # Use args not supplied programatically
-    (options, args) = parser.parse_args(args)
+    # Use args supplied programatically if possible.
+    (options, args) = parser.parse_args(args) if args else parser.parse_args()
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
