@@ -11,7 +11,7 @@ Package: openlp
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-qt4,
  python-qt4-phonon, python-sqlalchemy, python-chardet, python-beautifulsoup,
- python-lxml, python-sqlite, python-enchant
+ python-lxml, python-sqlite, python-enchant, python-migrate
 Conflicts: python-openlp
 Description: Church lyrics projection application
  OpenLP is free church presentation software, or lyrics projection software,
