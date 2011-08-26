@@ -296,7 +296,6 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         ``printer``
             A *QPrinter* object.
         """
-        self.update_song_usage()
         self.document.print_(printer)
 
     def displaySizeChanged(self, display):
@@ -344,6 +343,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         if not self.printDialog.exec_():
             return
+        self.update_song_usage()
         # Print the document.
         self.document.print_(self.printer)
 
