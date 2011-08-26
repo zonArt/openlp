@@ -44,7 +44,6 @@ def upgrade_setup(metadata):
     tables = {
         u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
     }
-    print tables
     return tables
 
 
@@ -54,7 +53,6 @@ def upgrade_1(session, metadata, tables):
 
     This upgrade adds two new fields to the songusage database
     """
-    print "hi"
     Column(u'plugin_name', types.Unicode(20), default=u'') \
         .create(table=tables[u'songusage_data'], populate_default=True)
     Column(u'source', types.Unicode(10), default=u'') \
