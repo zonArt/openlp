@@ -236,7 +236,7 @@ class Renderer(object):
                         html_text = expand_tags(text.split(u'[---]', 1)[0])
                         html_text = html_text.strip()
                         html_text = html_text.replace(u'\n', u'<br>')
-                        if not self._text_fits_on_slide(html_text):
+                        if self._text_fits_on_slide(html_text):
                             text = text.replace(u'\n[---]', u'', 1)
                         else:
                             if u'[---]' in text:
@@ -361,7 +361,7 @@ class Renderer(object):
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
-        if self._text_fits_on_slide(separator.join(html_lines)):
+        if not self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -394,18 +394,18 @@ class Renderer(object):
             line = line.strip()
             html_line = expand_tags(line)
             # Text too long so go to next page.
-            if self._text_fits_on_slide(previous_html + html_line):
+            if not self._text_fits_on_slide(previous_html + html_line):
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
                 if previous_html:
-                    if not self._text_fits_on_slide(previous_html):
+                    if self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
-                        if not self._text_fits_on_slide(html_line):
+                        if self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
@@ -462,7 +462,7 @@ class Renderer(object):
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            if self._text_fits_on_slide(
+            if not self._text_fits_on_slide(
                 previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the
                 # new index and highest_index accordingly.
@@ -485,8 +485,8 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            if not self._text_fits_on_slide(
-                separator.join(html_list[index + 1:]).strip()):
+            if self._text_fits_on_slide(
+                    separator.join(html_list[index + 1:]).strip()):
                 previous_html = separator.join(
                     html_list[index + 1:]).strip() + line_end
                 previous_raw = separator.join(
@@ -512,7 +512,7 @@ class Renderer(object):
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() > self.page_height
+        return self.web_frame.contentsSize().height() <= self.page_height
 
     def _words_split(self, line):
         """
