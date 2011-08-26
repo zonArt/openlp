@@ -96,6 +96,7 @@ class SongUsagePlugin(Plugin):
         self.songUsageActiveButton = QtGui.QToolButton(
             self.formparent.statusBar)
         self.songUsageActiveButton.setCheckable(True)
+        self.songUsageActiveButton.setAutoRaise(True)
         self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin',
             'Toggle the tracking of song usage.'))
         self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
@@ -120,6 +121,9 @@ class SongUsagePlugin(Plugin):
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_started'),
+            self.onReceiveSongUsage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'print_service_started'),
             self.onReceiveSongUsage)
         self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',

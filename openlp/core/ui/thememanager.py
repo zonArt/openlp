@@ -610,6 +610,11 @@ class ThemeManager(QtGui.QWidget):
         and to trigger the reload of the theme list
         """
         self._writeTheme(theme, imageFrom, imageTo)
+        if theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
+            self.mainwindow.imageManager.update_image(theme.theme_name,
+                u'theme', QtGui.QColor(theme.background_border_color))
+            self.mainwindow.imageManager.process_updates()
         self.loadThemes()
 
     def _writeTheme(self, theme, imageFrom, imageTo):

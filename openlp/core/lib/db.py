@@ -31,11 +31,13 @@ import logging
 import os
 
 from PyQt4 import QtCore
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import Table, MetaData, Column, types, create_engine
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
+from openlp.core.lib import translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
@@ -59,6 +61,48 @@ def init_db(url, auto_flush=True, auto_commit=False):
         autocommit=auto_commit, bind=engine))
     return session, metadata
 
+
+def upgrade_db(url, upgrade):
+    """
+    Upgrade a database.
+
+    ``url``
+        The url of the database to upgrade.
+
+    ``upgrade``
+        The python module that contains the upgrade instructions.
+    """
+    session, metadata = init_db(url)
+    tables = upgrade.upgrade_setup(metadata)
+    metadata_table = Table(u'metadata', metadata,
+        Column(u'key', types.Unicode(64), primary_key=True),
+        Column(u'value', types.UnicodeText(), default=None)
+    )
+    metadata_table.create(checkfirst=True)
+    mapper(Metadata, metadata_table)
+    version_meta = session.query(Metadata).get(u'version')
+    if version_meta is None:
+        version_meta = Metadata.populate(key=u'version', value=u'0')
+        version = 0
+    else:
+        version = int(version_meta.value)
+    if version > upgrade.__version__:
+        return version, upgrade.__version__
+    version += 1
+    while hasattr(upgrade, u'upgrade_%d' % version):
+        log.debug(u'Running upgrade_%d', version)
+        try:
+            getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
+            version_meta.value = unicode(version)
+        except SQLAlchemyError, DBAPIError:
+            log.exception(u'Could not run database upgrade script "upgrade_%s"'\
+                ', upgrade process has been halted.', version)
+            break
+        version += 1
+    session.add(version_meta)
+    session.commit()
+    return int(version_meta.value), upgrade.__version__
+
 def delete_database(plugin_name, db_file_name=None):
     """
     Remove a database file from the system.
@@ -79,6 +123,7 @@ def delete_database(plugin_name, db_file_name=None):
             AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
 
+
 class BaseModel(object):
     """
     BaseModel provides a base object with a set of generic functions
@@ -94,11 +139,19 @@ class BaseModel(object):
         return instance
 
 
+class Metadata(BaseModel):
+    """
+    Provides a class for the metadata table.
+    """
+    pass
+
+
 class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None,
+                 upgrade_mod=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -108,6 +161,9 @@ class Manager(object):
 
         ``init_schema``
             The init_schema function for this database
+
+        ``upgrade_schema``
+            The upgrade_schema function for this database
 
         ``db_file_name``
             The file name to use for this database. Defaults to None resulting
@@ -134,7 +190,27 @@ class Manager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.session = init_schema(self.db_url)
+        if upgrade_mod:
+            db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            if db_ver > up_ver:
+                critical_error_message_box(
+                    translate('OpenLP.Manager', 'Database Error'),
+                    unicode(translate('OpenLP.Manager', 'The database being '
+                        'loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP '
+                        'expects version %d. The database will not be loaded.'
+                        '\n\nDatabase: %s')) % \
+                        (db_ver, up_ver, self.db_url)
+                )
+                return
+        try:
+            self.session = init_schema(self.db_url)
+        except:
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
+                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s')) % self.db_url
+            )
 
     def save_object(self, object_instance, commit=True):
         """
@@ -223,7 +299,9 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        if order_by_ref is not None:
+        if isinstance(order_by_ref, list):
+            return query.order_by(*order_by_ref).all()
+        elif order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
 
