@@ -49,6 +49,8 @@ class FormattingTags(object):
         """
         Resets the html_expands list.
         """
+        temporary_tags = [tag for tag in FormattingTags.html_expands
+            if tag[u'temporary']]
         FormattingTags.html_expands = []
         base_tags = []
         # Append the base tags.
@@ -131,6 +133,7 @@ class FormattingTags(object):
             u'start tag': u'{br}', u'start html': u'<br>', u'end tag': u'',
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
+        FormattingTags.add_html_tags(temporary_tags)
 
     @staticmethod
     def add_html_tags(tags):

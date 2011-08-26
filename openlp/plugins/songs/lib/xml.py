@@ -322,7 +322,7 @@ class OpenLyrics(object):
                     self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
-    def xml_to_song(self, xml):
+    def xml_to_song(self, xml, save_to_db=True):
         """
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
@@ -330,6 +330,10 @@ class OpenLyrics(object):
 
         ``xml``
             The XML to parse (unicode).
+
+        ``save_to_db``
+            Switch to prevent storing songs to the database. Defaults to
+            ``True``.
         """
         # No xml get out of here.
         if not xml:
@@ -356,8 +360,9 @@ class OpenLyrics(object):
         self._process_songbooks(properties, song)
         self._process_topics(properties, song)
         clean_song(self.manager, song)
-        self.manager.save_object(song)
-        return song.id
+        if save_to_db:
+            self.manager.save_object(song)
+            return song.id
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:

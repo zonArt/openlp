@@ -513,6 +513,9 @@ class SongMediaItem(MediaManagerItem):
         if add_song and self.addSongFromService:
             editId = self.openLyrics.xml_to_song(item.xml_version)
             self.onSearchTextButtonClick()
+        else:
+            # Make sure we temporary import formatting tags.
+            self.openLyrics.xml_to_song(item.xml_version, False)
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
