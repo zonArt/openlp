@@ -122,10 +122,10 @@ class SongUsagePlugin(Plugin):
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_started'),
-            self.onReceiveSongUsage)
+            self.displaySongUsage)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'print_service_started'),
-            self.onReceiveSongUsage)
+            self.printSongUsage)
         self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
@@ -196,10 +196,21 @@ class SongUsagePlugin(Plugin):
         self.songUsageStatus.blockSignals(False)
 
 
-    def onReceiveSongUsage(self, item):
+    def displaySongUsage(self, item):
         """
-        Song Usage for live song from SlideController
+        Song Usage for which has been displayed
         """
+        self._add_song_usage(unicode(translate('SongUsagePlugin',
+            'display')), item)
+
+    def printSongUsage(self, item):
+        """
+        Song Usage for which has been printed
+        """
+        self._add_song_usage(unicode(translate('SongUsagePlugin',
+            'printed')), item)
+
+    def _add_song_usage(self, source, item):
         audit = item[0].audit
         if self.songUsageActive and audit:
             song_usage_item = SongUsageItem()
@@ -209,6 +220,8 @@ class SongUsagePlugin(Plugin):
             song_usage_item.copyright = audit[2]
             song_usage_item.ccl_number = audit[3]
             song_usage_item.authors = u' '.join(audit[1])
+            song_usage_item.plugin_name = item[0].name
+            song_usage_item.source = source
             self.manager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
