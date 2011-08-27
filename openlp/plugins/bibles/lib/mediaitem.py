@@ -391,10 +391,13 @@ class BibleMediaItem(MediaManagerItem):
         elif len(bibles):
             self.initialiseAdvancedBible(bibles[0])
 
-    def reloadBibles(self):
+    def reloadBibles(self, process=False):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        # If called from first time wizard re-run, process any new bibles.
+        if process:
+            Receiver.send_message(u'bibles_appStartup')
         self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):

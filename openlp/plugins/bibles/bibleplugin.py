@@ -29,7 +29,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate,  \
+    Receiver
 from openlp.core.lib.ui import base_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
@@ -62,6 +63,8 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setVisible(False)
         if len(self.manager.old_bible_databases):
             self.toolsUpgradeItem.setVisible(True)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'bibles_appStartup'), self.appStartup)
 
     def finalise(self):
         """
