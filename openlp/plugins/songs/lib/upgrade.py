@@ -30,10 +30,11 @@ backend for the Songs plugin
 """
 
 from sqlalchemy import Column, ForeignKey, Table, types
+from sqlalchemy.sql.expression import func
 from migrate import changeset
 from migrate.changeset.constraint import ForeignKeyConstraint
 
-__version__ = 1
+__version__ = 2
 
 def upgrade_setup(metadata):
     """
@@ -78,3 +79,13 @@ def upgrade_1(session, metadata, tables):
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
             table=tables[u'media_files']).create()
 
+def upgrade_2(session, metadata, tables):
+    """
+    Version 2 upgrade.
+
+    This upgrade adds a create_date and last_modified date to the songs table
+    """
+    Column(u'create_date', types.DateTime(), default=func.now())\
+        .create(table=tables[u'songs'], populate_default=True)
+    Column(u'last_modified', types.DateTime(), default=func.now())\
+        .create(table=tables[u'songs'], populate_default=True)
