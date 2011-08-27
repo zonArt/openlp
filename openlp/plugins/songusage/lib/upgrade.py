@@ -31,7 +31,6 @@ backend for the SongsUsage plugin
 
 from sqlalchemy import Column, Table, types
 from migrate import changeset
-from migrate.changeset.constraint import ForeignKeyConstraint
 
 __version__ = 1
 
