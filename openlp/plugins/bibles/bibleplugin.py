@@ -64,7 +64,7 @@ class BiblePlugin(Plugin):
         if len(self.manager.old_bible_databases):
             self.toolsUpgradeItem.setVisible(True)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_appStartup'), self.appStartup)
+            QtCore.SIGNAL(u'bibles_app_startup'), self.appStartup)
 
     def finalise(self):
         """
