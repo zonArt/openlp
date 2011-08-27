@@ -40,12 +40,9 @@ def upgrade_setup(metadata):
     upgrade process. If you want to drop a table, you need to remove it from
     here, and add it to your upgrade function.
     """
-    try:
-        tables = {
-            u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
-        }
-    except:
-        tables = None
+    tables = {
+        u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
+    }
     return tables
 
 

@@ -42,18 +42,15 @@ def upgrade_setup(metadata):
     upgrade process. If you want to drop a table, you need to remove it from
     here, and add it to your upgrade function.
     """
-    try:
-        tables = {
-            u'authors': Table(u'authors', metadata, autoload=True),
-            u'media_files': Table(u'media_files', metadata, autoload=True),
-            u'song_books': Table(u'song_books', metadata, autoload=True),
-            u'songs': Table(u'songs', metadata, autoload=True),
-            u'topics': Table(u'topics', metadata, autoload=True),
-            u'authors_songs': Table(u'authors_songs', metadata, autoload=True),
-            u'songs_topics': Table(u'songs_topics', metadata, autoload=True)
-        }
-    except:
-        tables = None
+    tables = {
+        u'authors': Table(u'authors', metadata, autoload=True),
+        u'media_files': Table(u'media_files', metadata, autoload=True),
+        u'song_books': Table(u'song_books', metadata, autoload=True),
+        u'songs': Table(u'songs', metadata, autoload=True),
+        u'topics': Table(u'topics', metadata, autoload=True),
+        u'authors_songs': Table(u'authors_songs', metadata, autoload=True),
+        u'songs_topics': Table(u'songs_topics', metadata, autoload=True)
+    }
     return tables
 
 
