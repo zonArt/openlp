@@ -73,6 +73,13 @@ def upgrade_db(url, upgrade):
         The python module that contains the upgrade instructions.
     """
     session, metadata = init_db(url)
+
+    class Metadata(BaseModel):
+        """
+        Provides a class for the metadata table.
+        """
+        pass
+
     tables = upgrade.upgrade_setup(metadata)
     metadata_table = Table(u'metadata', metadata,
         Column(u'key', types.Unicode(64), primary_key=True),
@@ -102,6 +109,7 @@ def upgrade_db(url, upgrade):
     session.add(version_meta)
     session.commit()
     return int(version_meta.value), upgrade.__version__
+
 
 def delete_database(plugin_name, db_file_name=None):
     """
@@ -137,14 +145,6 @@ class BaseModel(object):
         for key, value in kwargs.iteritems():
             instance.__setattr__(key, value)
         return instance
-
-
-class Metadata(BaseModel):
-    """
-    Provides a class for the metadata table.
-    """
-    pass
-
 
 class Manager(object):
     """
