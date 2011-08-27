@@ -27,6 +27,9 @@
 """
 Provide HTML Tag management and Formatting Tag access class
 """
+import cPickle
+
+from PyQt4 import QtCore
 
 from openlp.core.lib import translate
 
@@ -136,12 +139,29 @@ class FormattingTags(object):
         FormattingTags.add_html_tags(temporary_tags)
 
     @staticmethod
-    def add_html_tags(tags):
+    def save_html_tags():
+        """
+        Saves all formatting tags except protected ones.
+        """
+        tags = []
+        for tag in FormattingTags.get_html_tags():
+            if not tag[u'protected'] and not tag[u'temporary']:
+                tags.append(tag)
+        # Formatting Tags were also known as display tags.
+        QtCore.QSettings().setValue(u'displayTags/html_tags',
+            QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
+
+    @staticmethod
+    def add_html_tags(tags, save=False):
         """
         Add a list of tags to the list.
 
         ``tags``
             The list with tags to add.
+
+        ``save``
+            Defaults to ``False``. If set to ``True`` the given ``tags`` are
+            saved to the config.
 
         Each **tag** has to be a ``dict`` and should have the following keys:
 
@@ -170,6 +190,8 @@ class FormattingTags(object):
             displaying text containing the tag. It has to be a ``boolean``.
         """
         FormattingTags.html_expands.extend(tags)
+        if save:
+            FormattingTags.save_html_tags()
 
     @staticmethod
     def remove_html_tag(tag_id):

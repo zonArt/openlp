@@ -150,7 +150,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             FormattingTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
-        self._saveTable()
+        FormattingTags.save_html_tags()
 
     def onSavedPushed(self):
         """
@@ -177,19 +177,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             html[u'temporary'] = False
             self.selected = -1
         self._resetTable()
-        self._saveTable()
-
-    def _saveTable(self):
-        """
-        Saves all formatting tags except protected ones.
-        """
-        tags = []
-        for tag in FormattingTags.get_html_tags():
-            if not tag[u'protected'] and not tag[u'temporary']:
-                tags.append(tag)
-        # Formatting Tags were also known as display tags.
-        QtCore.QSettings().setValue(u'displayTags/html_tags',
-            QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
+        FormattingTags.save_html_tags()
 
     def _resetTable(self):
         """

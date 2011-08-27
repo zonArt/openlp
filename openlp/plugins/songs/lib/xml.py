@@ -67,6 +67,7 @@ import re
 
 from lxml import etree, objectify
 
+from openlp.core.lib import FormattingTags
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.core.utils import get_application_version
@@ -265,7 +266,9 @@ class OpenLyrics(object):
         application_name = u'OpenLP ' + get_application_version()[u'version']
         song_xml.set(u'createdIn', application_name)
         song_xml.set(u'modifiedIn', application_name)
-        song_xml.set(u'modifiedDate', datetime.datetime.now().isoformat())
+        # "Convert" 2011-08-27 11:49:15 to 2011-08-27T11:49:15.
+        song_xml.set(u'modifiedDate',
+            unicode(song.last_modified).replace(u' ', u'T'))
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
         self._add_text_to_element(u'title', titles, song.title)
@@ -299,6 +302,10 @@ class OpenLyrics(object):
             themes = etree.SubElement(properties, u'themes')
             for topic in song.topics:
                 self._add_text_to_element(u'theme', themes, topic.name)
+        # Process the formatting tags.
+        format = etree.SubElement(song_xml, u'format')
+        tags = etree.SubElement(format, u'tags')
+        tags.set(u'application', u'OpenLP')
         # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
         verse_list = sxml.get_verses(song.lyrics)
@@ -345,25 +352,27 @@ class OpenLyrics(object):
             properties = song_xml.properties
         else:
             return None
+        if float(song_xml.get(u'version')) > 0.6:
+            self._process_formatting_tags(song_xml, only_process_format_tags)
+        if only_process_format_tags:
+            return
         song = Song()
-        if not only_process_format_tags:
-            # Values will be set when cleaning the song.
-            song.search_lyrics = u''
-            song.verse_order = u''
-            song.search_title = u''
-            self._process_copyright(properties, song)
-            self._process_cclinumber(properties, song)
-            self._process_titles(properties, song)
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
+        song.search_title = u''
+        self._process_copyright(properties, song)
+        self._process_cclinumber(properties, song)
+        self._process_titles(properties, song)
         # The verse order is processed with the lyrics!
         self._process_lyrics(properties, song_xml, song)
-        if not only_process_format_tags:
-            self._process_comments(properties, song)
-            self._process_authors(properties, song)
-            self._process_songbooks(properties, song)
-            self._process_topics(properties, song)
-            clean_song(self.manager, song)
-            self.manager.save_object(song)
-            return song.id
+        self._process_comments(properties, song)
+        self._process_authors(properties, song)
+        self._process_songbooks(properties, song)
+        self._process_topics(properties, song)
+        clean_song(self.manager, song)
+        self.manager.save_object(song)
+        return song.id
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
@@ -462,6 +471,33 @@ class OpenLyrics(object):
         """
         if hasattr(properties, u'copyright'):
             song.copyright = self._text(properties.copyright)
+
+    def _process_formatting_tags(self, song_xml, temporary):
+        """
+        Process the formatting tags from the song and either add missing tags
+        temporary or permanently to the formatting tag list.
+        """
+        if not hasattr(song_xml, u'format'):
+            return
+        found_tags = []
+        for tag in song_xml.format.tags.getchildren():
+            name = tag.get(u'name')
+            if name is None:
+                continue
+            openlp_tag = {
+                u'desc': name,
+                u'start tag': u'{%s}' % name[:5],
+                u'end tag': u'{/%s}' % name[:5],
+                u'start html': tag.open.text,
+                u'end html': tag.close.text,
+                u'protected': False,
+                u'temporary': temporary
+            }
+            found_tags.append(openlp_tag)
+        existing_tag_ids = [tag[u'start tag']
+            for tag in FormattingTags.get_html_tags()]
+        FormattingTags.add_html_tags([tag for tag in found_tags
+            if tag[u'start tag'] not in existing_tag_ids], True)
 
     def _process_lyrics(self, properties, song_xml, song_obj):
         """
