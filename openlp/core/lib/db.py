@@ -90,7 +90,7 @@ def upgrade_db(url, upgrade):
     version_meta = session.query(Metadata).get(u'version')
     if version_meta is None:
         version_meta = Metadata.populate(key=u'version', value=u'0')
-        version = 0
+        version = 0 if tables else upgrade.__version__;
     else:
         version = int(version_meta.value)
     if version > upgrade.__version__:
