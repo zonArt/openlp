@@ -82,6 +82,20 @@ class SongMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.hasSearch = True
 
+    def _updateBackgroundAudio(self, song, item):
+        song.media_files = []
+        for i, bga in enumerate(item.background_audio):
+            dest_file = os.path.join(
+                AppLocation.get_section_data_path(self.plugin.name),
+                u'audio', str(song.id), os.path.split(bga)[1])
+            shutil.copyfile(os.path.join(
+                AppLocation.get_section_data_path(
+                    u'servicemanager'), bga),
+                dest_file)
+            song.media_files.append(MediaFile.populate(
+                weight=i, file_name=dest_file))
+        self.plugin.manager.save_object(song, True)
+
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
@@ -517,21 +531,14 @@ class SongMediaItem(MediaManagerItem):
                     add_song = False
                     editId = song.id
                     break
+                # If there's any backing tracks, copy them over.
+                if len(item.background_audio) > 0:
+                    self._updateBackgroundAudio(song, item)
         if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
             if len(item.background_audio) > 0:
-                for i, bga in enumerate(item.background_audio):
-                    dest_file = os.path.join(
-                        AppLocation.get_section_data_path(self.plugin.name),
-                        u'audio', str(song.id), os.path.split(bga)[1])
-                    shutil.copyfile(os.path.join(
-                        AppLocation.get_section_data_path(
-                            u'servicemanager'), bga),
-                        dest_file)
-                    song.media_files.append(MediaFile.populate(
-                        weight=i, file_name=dest_file))
-                self.plugin.manager.save_object(song, True)
+                self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
         # Update service with correct song id.
