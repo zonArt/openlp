@@ -232,17 +232,26 @@ class Renderer(object):
                 len(pages) > 1 and u'[---]' in text:
                 pages = []
                 while True:
+                    # Check if the first two potential virtual slides will fit
+                    # (as a whole) on one slide.
                     html_text = expand_tags(
                         u'\n'.join(text.split(u'\n[---]\n', 2)[:-1]))
                     html_text = html_text.replace(u'\n', u'<br>')
                     if self._text_fits_on_slide(html_text):
+                        # The first two virtual slides fit (as a whole) on one
+                        # slide. Replace the occurrences of [---].
                         text = text.replace(u'\n[---]', u'', 2)
                     else:
+                        # The first two virtual slides did not fit as a whole.
+                        # Check if the first virtual slide will fit.
                         html_text = expand_tags(text.split(u'\n[---]\n', 1)[1])
                         html_text = html_text.replace(u'\n', u'<br>')
                         if self._text_fits_on_slide(html_text):
+                            # The first virtual slide fits, so remove it.
                             text = text.replace(u'\n[---]', u'', 1)
                         else:
+                            # The first virtual slide does not fit, which means
+                            # we have to render the first virtual slide.
                             if u'[---]' in text:
                                 html_text, text = text.split(u'\n[---]\n', 1)
                                 html_text = html_text.replace(u'\n', u'<br>')
