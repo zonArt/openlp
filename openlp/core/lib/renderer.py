@@ -227,35 +227,36 @@ class Renderer(object):
             # Clean up line endings.
             lines = self._lines_split(text)
             pages = self._paginate_slide(lines, line_end)
-            if len(pages) > 1:
-                # Songs and Custom
-                if item.is_capable(ItemCapabilities.AllowsVirtualSplit) and \
-                    u'[---]' in text:
-                    pages = []
-                    while True:
-                        html_text = expand_tags(text.split(u'[---]', 1)[0])
-                        html_text = html_text.strip()
+            # Songs and Custom
+            if item.is_capable(ItemCapabilities.AllowsVirtualSplit) and \
+                len(pages) > 1 and u'[---]' in text:
+                pages = []
+                while True:
+                    html_text = expand_tags(
+                        u'\n'.join(text.split(u'\n[---]\n', 2)[:-1]))
+                    html_text = html_text.replace(u'\n', u'<br>')
+                    if self._text_fits_on_slide(html_text):
+                        text = text.replace(u'\n[---]', u'', 2)
+                    else:
+                        html_text = expand_tags(text.split(u'\n[---]\n', 1)[1])
                         html_text = html_text.replace(u'\n', u'<br>')
                         if self._text_fits_on_slide(html_text):
                             text = text.replace(u'\n[---]', u'', 1)
                         else:
                             if u'[---]' in text:
-                                slides = text.split(u'[---]', 1)
-                                text_to_render = slides[0]
-                                text_to_render = text_to_render.strip()
-                                text_to_render = text_to_render.replace(u'\n', u'<br>')
-                                text = slides[1]
+                                html_text, text = text.split(u'\n[---]\n', 1)
+                                html_text = html_text.replace(u'\n', u'<br>')
                             else:
-                                text_to_render = text
+                                html_text = text
                                 text = u''
-                            lines = text_to_render.strip(u'\n').split(u'\n')
-                            lines = map(expand_tags, lines)
+                            lines = expand_tags(html_text)
+                            lines = lines.strip(u'\n').split(u'\n')
                             pages.extend(self._paginate_slide(lines, line_end))
-                        if not text or u'[---]' not in text:
-                            lines = text.strip(u'\n').split(u'\n')
-                            lines = map(expand_tags, lines)
-                            pages.extend(self._paginate_slide(lines, line_end))
-                            break
+                    if u'[---]' not in text:
+                        lines = expand_tags(text)
+                        lines = lines.strip(u'\n').split(u'\n')
+                        pages.extend(self._paginate_slide(lines, line_end))
+                        break
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
