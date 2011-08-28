@@ -79,8 +79,11 @@ def upgrade_db(url, upgrade):
         Provides a class for the metadata table.
         """
         pass
-
-    tables = upgrade.upgrade_setup(metadata)
+    load_changes = True
+    try:
+        tables = upgrade.upgrade_setup(metadata)
+    except SQLAlchemyError, DBAPIError:
+        load_changes = False
     metadata_table = Table(u'metadata', metadata,
         Column(u'key', types.Unicode(64), primary_key=True),
         Column(u'value', types.UnicodeText(), default=None)
@@ -96,16 +99,21 @@ def upgrade_db(url, upgrade):
     if version > upgrade.__version__:
         return version, upgrade.__version__
     version += 1
-    while hasattr(upgrade, u'upgrade_%d' % version):
-        log.debug(u'Running upgrade_%d', version)
-        try:
-            getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
-            version_meta.value = unicode(version)
-        except SQLAlchemyError, DBAPIError:
-            log.exception(u'Could not run database upgrade script "upgrade_%s"'\
-                ', upgrade process has been halted.', version)
-            break
-        version += 1
+    if load_changes:
+        while hasattr(upgrade, u'upgrade_%d' % version):
+            log.debug(u'Running upgrade_%d', version)
+            try:
+                getattr(upgrade, u'upgrade_%d' % version) \
+                    (session, metadata, tables)
+                version_meta.value = unicode(version)
+            except SQLAlchemyError, DBAPIError:
+                log.exception(u'Could not run database upgrade script '
+                    '"upgrade_%s", upgrade process has been halted.', version)
+                break
+            version += 1
+    else:
+        version_meta = Metadata.populate(key=u'version',
+            value=int(upgrade.__version__))
     session.add(version_meta)
     session.commit()
     return int(version_meta.value), upgrade.__version__
