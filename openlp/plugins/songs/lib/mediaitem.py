@@ -28,6 +28,8 @@
 import logging
 import locale
 import re
+import os
+import shutil
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -37,11 +39,12 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
     clean_string
-from openlp.plugins.songs.lib.db import Author, Song
+from openlp.plugins.songs.lib.db import Author, Song, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
@@ -474,7 +477,7 @@ class SongMediaItem(MediaManagerItem):
         # Add the audio file to the service item.
         if len(song.media_files) > 0:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
-
+            service_item.background_audio = [m.file_name for m in song.media_files]
         return True
 
     def serviceLoad(self, item):
@@ -515,7 +518,21 @@ class SongMediaItem(MediaManagerItem):
                     editId = song.id
                     break
         if add_song and self.addSongFromService:
-            editId = self.openLyrics.xml_to_song(item.xml_version)
+            song = self.openLyrics.xml_to_song(item.xml_version)
+            # If there's any backing tracks, copy them over.
+            if len(item.background_audio) > 0:
+                for i, bga in enumerate(item.background_audio):
+                    dest_file = os.path.join(
+                        AppLocation.get_section_data_path(self.plugin.name),
+                        u'audio', str(song.id), os.path.split(bga)[1])
+                    shutil.copyfile(os.path.join(
+                        AppLocation.get_section_data_path(
+                            u'servicemanager'), bga),
+                        dest_file)
+                    song.media_files.append(MediaFile.populate(
+                        weight=i, file_name=dest_file))
+                self.plugin.manager.save_object(song, True)
+            editId = song.id
             self.onSearchTextButtonClick()
         # Update service with correct song id.
         if editId:

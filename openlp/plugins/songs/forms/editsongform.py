@@ -465,9 +465,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        self.verse_form.setVerse(u'', True)
-        if self.verse_form.exec_():
-            after_text, verse_tag, verse_num = self.verse_form.getVerse()
+        self.verseForm.setVerse(u'', True)
+        if self.verseForm.exec_():
+            after_text, verse_tag, verse_num = self.verseForm.getVerse()
             verse_def = u'%s%s' % (verse_tag, verse_num)
             item = QtGui.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
@@ -483,9 +483,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             tempText = item.text()
             verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.verse_form.setVerse(tempText, True, verseId)
-            if self.verse_form.exec_():
-                after_text, verse_tag, verse_num = self.verse_form.getVerse()
+            self.verseForm.setVerse(tempText, True, verseId)
+            if self.verseForm.exec_():
+                after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 item.setText(after_text)
@@ -515,12 +515,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_list += u'---[%s:%s]---\n' % (verse_tag, verse_num)
                 verse_list += item.text()
                 verse_list += u'\n'
-            self.verse_form.setVerse(verse_list)
+            self.verseForm.setVerse(verse_list)
         else:
-            self.verse_form.setVerse(u'')
-        if not self.verse_form.exec_():
+            self.verseForm.setVerse(u'')
+        if not self.verseForm.exec_():
             return
-        verse_list = self.verse_form.getVerseAll()
+        verse_list = self.verseForm.getVerseAll()
         verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)

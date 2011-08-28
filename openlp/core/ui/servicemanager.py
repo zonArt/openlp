@@ -28,6 +28,7 @@ import cgi
 import cPickle
 import logging
 import os
+import shutil
 import zipfile
 
 log = logging.getLogger(__name__)
@@ -493,7 +494,7 @@ class ServiceManager(QtGui.QWidget):
             if len(service_item[u'header'][u'background_audio']) > 0:
                 for i, filename in \
                     enumerate(service_item[u'header'][u'background_audio']):
-                    new_file = os.path.join(u'audio', item._uuid,
+                    new_file = os.path.join(u'audio', item[u'service_item']._uuid,
                         os.path.split(filename)[1])
                     audio_files.append((filename, new_file))
                     service_item[u'header'][u'background_audio'][i] = new_file
@@ -552,6 +553,8 @@ class ServiceManager(QtGui.QWidget):
             # Finally add all the listed media files.
             for path_from in write_list:
                 zip.write(path_from, path_from.encode(u'utf-8'))
+            for path_from, path_to in audio_files:
+                zip.write(path_from, path_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
             success = False
@@ -606,8 +609,14 @@ class ServiceManager(QtGui.QWidget):
                         'The content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
-                filePath = os.path.join(self.servicePath,
-                    os.path.split(osfile)[1])
+                if not osfile.startswith(u'audio'):
+                    osfile = os.path.split(osfile)[1]
+                else:
+                    path = os.path.join(self.servicePath,
+                        os.path.split(osfile)[0])
+                    if not os.path.exists(path):
+                        os.makedirs(path)
+                filePath = os.path.join(self.servicePath, osfile)
                 fileTo = open(filePath, u'wb')
                 fileTo.write(zip.read(file))
                 fileTo.flush()
@@ -644,10 +653,10 @@ class ServiceManager(QtGui.QWidget):
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError, zipfile.BadZipfile):
+            log.exception(u'Problem loading service file %s' % fileName)
             critical_error_message_box(
                 message=translate('OpenLP.ServiceManager',
                 'File could not be opened because it is corrupt.'))
-            log.exception(u'Problem loading service file %s' % fileName)
         except zipfile.BadZipfile:
             if os.path.getsize(fileName) == 0:
                 log.exception(u'Service file is zero sized: %s' % fileName)
@@ -1012,6 +1021,8 @@ class ServiceManager(QtGui.QWidget):
         for file in os.listdir(self.servicePath):
             file_path = os.path.join(self.servicePath, file)
             delete_file(file_path)
+        if os.path.exists(os.path.join(self.servicePath, u'audio')):
+            shutil.rmtree(os.path.join(self.servicePath, u'audio'), False)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
