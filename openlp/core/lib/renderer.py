@@ -252,14 +252,26 @@ class Renderer(object):
                         else:
                             # The first virtual slide does not fit, which means
                             # we have to render the first virtual slide.
-                            if u'[---]' in text:
+                            text_contains_break = u'[---]' in text
+                            if text_contains_break:
                                 html_text, text = text.split(u'\n[---]\n', 1)
                             else:
                                 html_text = text
                                 text = u''
                             lines = expand_tags(html_text)
                             lines = lines.strip(u'\n').split(u'\n')
-                            pages.extend(self._paginate_slide(lines, line_end))
+                            slides = self._paginate_slide(lines, line_end)
+                            if len(slides) > 1 and text:
+                                # Add all slides apart from the last one the
+                                # list.
+                                pages.extend(slides[:-1])
+                                if  text_contains_break:
+                                    text = slides[-1] + u'\n[---]\n' + text
+                                else:
+                                    text = slides[-1] + u'\n'+ text
+                                text = text.replace(u'<br>', u'\n')
+                            else:
+                                pages.extend(slides)
                     if u'[---]' not in text:
                         lines = expand_tags(text)
                         lines = lines.strip(u'\n').split(u'\n')
