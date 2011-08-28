@@ -254,7 +254,6 @@ class Renderer(object):
                             # we have to render the first virtual slide.
                             if u'[---]' in text:
                                 html_text, text = text.split(u'\n[---]\n', 1)
-                                html_text = html_text.replace(u'\n', u'<br>')
                             else:
                                 html_text = text
                                 text = u''
