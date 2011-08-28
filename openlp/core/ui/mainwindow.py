@@ -981,7 +981,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.Ok))
         self.settingsImported = True
         self.cleanUp()
-        os._exit(0)
+        QtCore.QCoreApplication.exit()
 
     def onSettingsExportItemClicked(self, exportFileName=None):
         """
