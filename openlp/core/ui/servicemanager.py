@@ -470,22 +470,33 @@ class ServiceManager(QtGui.QWidget):
         if not self.fileName():
             return self.saveFileAs()
         path_file_name = unicode(self.fileName())
-        (path, file_name) = os.path.split(path_file_name)
-        (basename, extension) = os.path.splitext(file_name)
-        service_file_name = basename + '.osd'
+        path, file_name = os.path.split(path_file_name)
+        basename, extension = os.path.splitext(file_name)
+        service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
             path)
         service = []
         write_list = []
+        audio_files = []
         total_size = 0
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
             self.mainwindow.incrementProgressBar()
-            service.append({u'serviceitem':
-                item[u'service_item'].get_service_repr()})
+            service_item = item[u'service_item'].get_service_repr()
+            # Get all the audio files, and ready them for embedding in the
+            # service file.
+            if len(service_item[u'header'][u'background_audio']) > 0:
+                for i, filename in \
+                    enumerate(service_item[u'header'][u'background_audio']):
+                    new_file = os.path.join(u'audio', item._uuid,
+                        os.path.split(filename)[1])
+                    audio_files.append((filename, new_file))
+                    service_item[u'header'][u'background_audio'][i] = new_file
+            # Add the service item to the service.
+            service.append({u'serviceitem': service_item})
             if not item[u'service_item'].uses_file():
                 continue
             skipMissing = False
@@ -683,16 +694,16 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         self.timeAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanEdit)\
             and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
-            .is_capable(ItemCapabilities.AllowsMaintain):
+            .is_capable(ItemCapabilities.CanMaintain):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
         if serviceItem[u'service_item']\
-            .is_capable(ItemCapabilities.AllowsVariableStartTime):
+            .is_capable(ItemCapabilities.HasVariableStartTime):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
@@ -963,7 +974,7 @@ class ServiceManager(QtGui.QWidget):
                     (unicode(translate('OpenLP.ServiceManager', 'Notes')),
                     cgi.escape(unicode(serviceitem.notes))))
             if item[u'service_item'] \
-                .is_capable(ItemCapabilities.AllowsVariableStartTime):
+                .is_capable(ItemCapabilities.HasVariableStartTime):
                 tips.append(item[u'service_item'].get_media_time())
             treewidgetitem.setToolTip(0, u'<br>'.join(tips))
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
@@ -1196,7 +1207,7 @@ class ServiceManager(QtGui.QWidget):
                 item += 1
                 if self.serviceItems and item < len(self.serviceItems) and \
                     self.serviceItems[item][u'service_item'].is_capable(
-                    ItemCapabilities.AllowsPreview):
+                    ItemCapabilities.CanPreview):
                     self.mainwindow.previewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.previewListWidget.setFocus()
@@ -1214,7 +1225,7 @@ class ServiceManager(QtGui.QWidget):
         """
         item = self.findServiceItem()[0]
         if self.serviceItems[item][u'service_item']\
-            .is_capable(ItemCapabilities.AllowsEdit):
+            .is_capable(ItemCapabilities.CanEdit):
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name.lower(),
                 u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
@@ -1297,7 +1308,7 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
                         serviceItem[u'service_item'].is_capable(
-                        ItemCapabilities.AllowsAdditions)):
+                        ItemCapabilities.HasAdditions)):
                         action = self.dndMenu.exec_(QtGui.QCursor.pos())
                         # New action required
                         if action == self.newAction:

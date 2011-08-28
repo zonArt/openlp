@@ -52,20 +52,21 @@ class ItemCapabilities(object):
     """
     Provides an enumeration of a serviceitem's capabilities
     """
-    AllowsPreview = 1
-    AllowsEdit = 2
-    AllowsMaintain = 3
+    CanPreview = 1
+    CanEdit = 2
+    CanMaintain = 3
     RequiresMedia = 4
-    AllowsLoop = 5
-    AllowsAdditions = 6
+    CanLoop = 5
+    HasAdditions = 6
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
-    AllowsDetailedTitleDisplay = 11
-    AllowsVariableStartTime = 12
-    AllowsVirtualSplit = 13
-    AllowsWordSplit = 14
+    HasDetailedTitleDisplay = 11
+    HasVariableStartTime = 12
+    HasVirtualSplit = 13
+    HasWordSplit = 14
+    HasBackgroundAudio = 15
 
 
 class ServiceItem(object):
@@ -116,6 +117,7 @@ class ServiceItem(object):
         self.media_length = 0
         self.from_service = False
         self.image_border = u'#000000'
+        self.background_audio = []
         self._new_item()
 
     def _new_item(self):
@@ -159,7 +161,7 @@ class ServiceItem(object):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderemanager.
-        At this point all the slides are build for the given
+        At this point all the slides are built for the given
         display size.
         """
         log.debug(u'Render called')
@@ -256,6 +258,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
+            u'uuid': self._uuid,
             u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,
@@ -272,7 +275,8 @@ class ServiceItem(object):
             u'xml_version': self.xml_version,
             u'start_time': self.start_time,
             u'end_time': self.end_time,
-            u'media_length': self.media_length
+            u'media_length': self.media_length,
+            u'background_audio': self.background_audio
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -320,6 +324,8 @@ class ServiceItem(object):
             self.end_time = header[u'end_time']
         if u'media_length' in header:
             self.media_length = header[u'media_length']
+        if u'background_audio' in header:
+            self.background_audio = header[u'background_audio']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -341,7 +347,7 @@ class ServiceItem(object):
         if self.is_text():
             return self.title
         else:
-            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+            if ItemCapabilities.HasDetailedTitleDisplay in self.capabilities:
                 return self._raw_frames[0][u'title']
             elif len(self._raw_frames) > 1:
                 return self.title

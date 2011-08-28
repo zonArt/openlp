@@ -222,7 +222,7 @@ class Renderer(object):
         if item.is_capable(ItemCapabilities.NoLineBreaks):
             line_end = u' '
         # Bibles
-        if item.is_capable(ItemCapabilities.AllowsWordSplit):
+        if item.is_capable(ItemCapabilities.HasWordSplit):
             pages = self._paginate_slide_words(text.split(u'\n'), line_end)
         else:
             # Clean up line endings.
@@ -230,7 +230,7 @@ class Renderer(object):
             pages = self._paginate_slide(lines, line_end)
             if len(pages) > 1:
                 # Songs and Custom
-                if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+                if item.is_capable(ItemCapabilities.HasVirtualSplit):
                     # Do not forget the line breaks!
                     slides = text.split(u'[---]')
                     pages = []

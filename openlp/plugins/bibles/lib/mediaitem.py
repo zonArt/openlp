@@ -860,9 +860,9 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsWordSplit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.HasWordSplit)
         # Service Item: Title
         service_item.title = u', '.join(raw_title)
         # Service Item: Theme

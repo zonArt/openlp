@@ -395,12 +395,12 @@ class SongMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
-        service_item.add_capability(ItemCapabilities.AllowsEdit)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.OnLoadUpdate)
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
-        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
+        service_item.add_capability(ItemCapabilities.HasVirtualSplit)
         song = self.plugin.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
@@ -471,6 +471,10 @@ class SongMediaItem(MediaManagerItem):
         service_item.data_string = {u'title': song.search_title,
             u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
+        # Add the audio file to the service item.
+        if len(song.media_files) > 0:
+            service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
+
         return True
 
     def serviceLoad(self, item):

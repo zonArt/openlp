@@ -149,10 +149,10 @@ class ImageMediaItem(MediaManagerItem):
             if not items:
                 return False
         service_item.title = unicode(self.plugin.nameStrings[u'plural'])
-        service_item.add_capability(ItemCapabilities.AllowsMaintain)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        service_item.add_capability(ItemCapabilities.CanMaintain)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.HasAdditions)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items = []

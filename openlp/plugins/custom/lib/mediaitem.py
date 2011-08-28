@@ -227,10 +227,10 @@ class CustomMediaItem(MediaManagerItem):
         slide = None
         theme = None
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
-        service_item.add_capability(ItemCapabilities.AllowsEdit)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.HasVirtualSplit)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits

@@ -165,7 +165,7 @@ class MediaMediaItem(MediaManagerItem):
             self.mediaObject.stop()
             service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
-                ItemCapabilities.AllowsVariableStartTime)
+                ItemCapabilities.HasVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme

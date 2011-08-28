@@ -518,7 +518,7 @@ class SlideController(QtGui.QWidget):
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.toolbar.makeWidgetsVisible([u'Song Menu'])
-        if item.is_capable(ItemCapabilities.AllowsLoop) and \
+        if item.is_capable(ItemCapabilities.CanLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
@@ -538,7 +538,7 @@ class SlideController(QtGui.QWidget):
         self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible(self.songEditList)
-        if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
+        if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
             self.toolbar.setVisible(False)
