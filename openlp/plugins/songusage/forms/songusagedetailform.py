@@ -117,9 +117,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         try:
             fileHandle = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
-                    instance.usagedate, instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number, instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
+                    u'\"%s\",\"%s\"\n' % ( instance.usagedate,
+                    instance.usagetime, instance.title, instance.copyright,
+                    instance.ccl_number, instance.authors,
+                    instance.plugin_name, instance.source)
                 fileHandle.write(record.encode(u'utf-8'))
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDetailForm',
