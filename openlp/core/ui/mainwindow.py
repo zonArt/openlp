@@ -289,7 +289,7 @@ class Ui_MainWindow(object):
         self.settingsImportItem = base_action(mainWindow,
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = base_action(mainWindow,
-           u'settingsExportItem', category=UiStrings().Settings)    
+           u'settingsExportItem', category=UiStrings().Settings)
         action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
         self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
@@ -428,11 +428,11 @@ class Ui_MainWindow(object):
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.settingsExportItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Export OpenLP settings to a specified Ini file'))
+            'Export OpenLP settings to a specified *.config file'))
         self.settingsExportItem.setText(
             translate('OpenLP.MainWindow', 'Settings'))
         self.settingsImportItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Import OpenLP settings from a specified Ini file previously '
+            'Import OpenLP settings from a specified *.config file previously '
             'exported on this or another machine'))
         self.settingsImportItem.setText(
             translate('OpenLP.MainWindow', 'Settings'))
@@ -791,6 +791,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.themeManagerContents.loadThemes(True)
             Receiver.send_message(u'theme_update_global',
                 self.themeManagerContents.global_theme)
+            # Check if any Bibles downloaded.  If there are, they will be
+            # processed.
+            Receiver.send_message(u'bibles_load_list', True)
 
     def blankCheck(self):
         """
@@ -997,7 +1000,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Make sure it's an .ini file.
         if not exportFileName.endswith(u'conf'):
             exportFileName = exportFileName + u'.conf'
-        temp_file = os.path.join(unicode(gettempdir()), 
+        temp_file = os.path.join(unicode(gettempdir()),
             u'openlp', u'exportIni.tmp')
         self.saveSettings()
         settingSections = []
