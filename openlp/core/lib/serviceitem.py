@@ -115,6 +115,7 @@ class ServiceItem(object):
         self.end_time = 0
         self.media_length = 0
         self.from_service = False
+        self.image_border = u'#000000'
         self._new_item()
 
     def _new_item(self):
@@ -195,7 +196,7 @@ class ServiceItem(object):
         self.foot_text = \
             u'<br>'.join([footer for footer in self.raw_footer if footer])
 
-    def add_from_image(self, path, title):
+    def add_from_image(self, path, title, background=None):
         """
         Add an image slide to the service item.
 
@@ -205,9 +206,12 @@ class ServiceItem(object):
         ``title``
             A title for the slide in the service item.
         """
+        if background:
+            self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.imageManager.add_image(title, path)
+        self.renderer.imageManager.add_image(title, path, u'image',
+            self.image_border)
         self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):

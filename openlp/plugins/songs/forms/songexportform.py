@@ -170,8 +170,8 @@ class SongExportForm(OpenLPWizard):
             translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
-            ' export your songs to the open and free OpenLyrics worship song '
-            'format.'))
+            ' export your songs to the open and free <strong>OpenLyrics'
+            '</strong> worship song format.'))
         self.availableSongsPage.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(
@@ -285,7 +285,9 @@ class SongExportForm(OpenLPWizard):
             self, songs, unicode(self.directoryLineEdit.text()))
         if exporter.do_export():
             self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm', 'Finished export.'))
+                translate('SongsPlugin.SongExportForm', 'Finished export. To '
+                'import these files use the <strong>OpenLyrics</strong> '
+                'importer.'))
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',

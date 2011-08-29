@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -25,18 +24,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`upgrade` module provides a way for the database and schema that is the
+backend for the SongsUsage plugin
+"""
 
-# Import uuid now, to avoid the rare bug described in the support system:
-# http://support.openlp.org/issues/102
-# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
-# removed.
-import uuid
+from sqlalchemy import Column, Table, types
+from migrate import changeset
 
-from openlp.core import main
+__version__ = 1
 
-
-if __name__ == u'__main__':
+def upgrade_setup(metadata):
     """
-    Instantiate and run the application.
+    Set up the latest revision all tables, with reflection, needed for the
+    upgrade process. If you want to drop a table, you need to remove it from
+    here, and add it to your upgrade function.
     """
-    main()
+    tables = {
+        u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
+    }
+    return tables
+
+
+def upgrade_1(session, metadata, tables):
+    """
+    Version 1 upgrade.
+
+    This upgrade adds two new fields to the songusage database
+    """
+    Column(u'plugin_name', types.Unicode(20), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
+    Column(u'source', types.Unicode(10), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)

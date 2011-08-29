@@ -27,7 +27,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtWebKit
+from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
@@ -166,7 +166,8 @@ class Renderer(object):
         # if No file do not update cache
         if self.theme_data.background_filename:
             self.imageManager.add_image(self.theme_data.theme_name,
-                self.theme_data.background_filename)
+                self.theme_data.background_filename, u'theme',
+                QtGui.QColor(self.theme_data.background_border_color))
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
