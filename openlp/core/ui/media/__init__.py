@@ -39,10 +39,12 @@ class MediaState(object):
 class MediaType(object):
     """
     """
-    Audio = 0
-    Video = 1
+    Unused = 0
+    Audio = 1
+    Video = 2
     Cd = 3
     Dvd = 4
+    Folder = 5
 
 class MediaInfo(object):
     """
@@ -50,7 +52,7 @@ class MediaInfo(object):
     """
     file_info = None
     volume = 100
-    isFlash = False
+    is_flash = False
     is_background = False
     length = 0
     start_time = 0

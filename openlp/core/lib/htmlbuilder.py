@@ -36,6 +36,7 @@ log = logging.getLogger(__name__)
 
 # FIXME: Add html5 doctype. However, do not break theme gradients.
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
@@ -276,25 +277,25 @@ def build_html(item, screen, alert, islive, background, plugins=None, \
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
         image_src = u'style="display:none;"'
-    plugin_css = u''
-    plugin_js = u''
-    plugin_html = u''
+    css_additions = u''
+    js_additions = u''
+    html_additions = u''
     if plugins:
         for plugin in plugins:
-            plugin_css += plugin.getDisplayCss()
-            plugin_js += plugin.getDisplayJavascript()
-            plugin_html += plugin.getDisplayHtml()
+            css_additions += plugin.getDisplayCss()
+            js_additions += plugin.getDisplayJavascript()
+            html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
-        plugin_css,
+        css_additions,
         build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        plugin_js,
+        js_additions,
         bgimage_src, image_src,
-        plugin_html,
+        html_additions,
         build_lyrics_html(item, webkitvers))
     return html
 

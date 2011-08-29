@@ -253,7 +253,7 @@ class SlideController(Controller):
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaManager.addControllerItems(self, self.controllerLayout)
+        self.mediaManager.add_controller_items(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
@@ -501,7 +501,7 @@ class SlideController(Controller):
         self.playSlidesOnce.setChecked(False)
         self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
         self.playSlidesLoop.setChecked(False)
-        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))       
+        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
@@ -512,9 +512,13 @@ class SlideController(Controller):
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.mediabar.setVisible(True)
+            self.previousItem.setVisible(False)
+            self.nextItem.setVisible(False)
         else:
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
+            self.previousItem.setVisible(True)
+            self.nextItem.setVisible(True)
             self.toolbar.show()
         self.toolbar.show()
 

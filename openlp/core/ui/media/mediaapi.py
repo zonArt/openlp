@@ -49,7 +49,6 @@ class MediaAPI(object):
         """
         return False
 
-
     def setup(self, display):
         """
         Create the related widgets for the current display
@@ -118,21 +117,19 @@ class MediaAPI(object):
         """
         pass
 
-    def getDisplayCss(self):
+    def get_media_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
         return u''
 
-
-    def getDisplayJavascript(self):
+    def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
         return u''
 
-
-    def getDisplayHtml(self):
+    def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """

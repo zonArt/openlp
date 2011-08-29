@@ -53,7 +53,6 @@ class MediaTab(SettingsTab):
             self.ApiCheckBoxes[api.name] = checkbox
             self.mediaApiLayout.addWidget(checkbox)
         self.leftLayout.addWidget(self.mediaAPIGroupBox)
-
         self.apiOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.apiOrderGroupBox.setObjectName(u'apiOrderGroupBox')
         self.apiOrderLayout = QtGui.QVBoxLayout(self.apiOrderGroupBox)
@@ -67,7 +66,6 @@ class MediaTab(SettingsTab):
         sizePolicy.setHeightForWidth(self.apiOrderlistWidget. \
             sizePolicy().hasHeightForWidth())
         self.apiOrderlistWidget.setSizePolicy(sizePolicy)
-
         self.apiOrderlistWidget.setVerticalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAsNeeded)
         self.apiOrderlistWidget.setHorizontalScrollBarPolicy( \

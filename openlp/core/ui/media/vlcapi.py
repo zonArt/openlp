@@ -48,6 +48,11 @@ class VlcAPI(MediaAPI):
     def __init__(self, parent):
         MediaAPI.__init__(self, parent, u'Vlc')
         self.parent = parent
+        self.audio_extensions_list = [
+              u'*.mp3'
+            , u'*.wav'
+            , u'*.ogg'
+        ]
         self.video_extensions_list = [
             u'*.3gp'
             , u'*.asf', u'*.wmv'
@@ -56,10 +61,10 @@ class VlcAPI(MediaAPI):
             , u'*.flv'
             , u'*.mov'
             , u'*.mp4'
-            , u'*.ogm', u'*.ogg'
+            , u'*.ogm'
             , u'*.mkv', u'*.mka'
             , u'*.ts', u'*.mpg'
-            , u'*.mpg', u'*.mp3', u'*.mp2'
+            , u'*.mpg', u'*.mp2'
             , u'*.nsc'
             , u'*.nsv'
             , u'*.nut'
@@ -67,7 +72,7 @@ class VlcAPI(MediaAPI):
             , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
             , u'*.tta', u'*.tac'
             , u'*.ty'
-            , u'*.wav', u'*.dts'
+            , u'*.dts'
             , u'*.xa'
             , u'*.iso'
             ]
@@ -120,7 +125,7 @@ class VlcAPI(MediaAPI):
         self.volume(display, volume)
         return True
 
-    def mediaStateWait(self, display, mediaState):
+    def media_state_wait(self, display, mediaState):
         """
         Wait for the video to change its state
         Wait no longer than 5 seconds.
@@ -143,20 +148,23 @@ class VlcAPI(MediaAPI):
         if controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
-        if self.mediaStateWait(display, vlc.State.Playing):
+        if self.media_state_wait(display, vlc.State.Playing):
             if start_time > 0:
                 self.seek(display, controller.media_info.start_time*1000)
             controller.media_info.length = \
                 int(display.vlcMediaPlayer.get_media().get_duration()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            self.set_visible(display, True)
+            #self.set_visible(display, True)
+            return True
+        else:
+            return False
 
     def pause(self, display):
         if display.vlcMedia.get_state() != vlc.State.Playing:
             return
         display.vlcMediaPlayer.pause()
-        if self.mediaStateWait(display, vlc.State.Paused):
+        if self.media_state_wait(display, vlc.State.Paused):
             self.state = MediaState.Paused
 
     def stop(self, display):
