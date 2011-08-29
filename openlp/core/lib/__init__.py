@@ -137,7 +137,7 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image_path, width, height, background=QtCore.Qt.black):
+def resize_image(image_path, width, height, background):
     """
     Resize an image to fit on the current screen.
 

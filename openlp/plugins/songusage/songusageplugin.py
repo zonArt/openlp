@@ -37,6 +37,7 @@ from openlp.core.lib.ui import base_action, shortcut_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
+from openlp.plugins.songusage.lib import upgrade
 from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
@@ -46,11 +47,11 @@ class SongUsagePlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'songusage', plugin_helpers)
+        self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.activeIcon = build_icon(u':/songusage/song_usage_active.png')
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
-        self.manager = None
         self.songUsageActive = False
 
     def addToolsMenuItem(self, tools_menu):
@@ -121,7 +122,10 @@ class SongUsagePlugin(Plugin):
         Plugin.initialise(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_started'),
-            self.onReceiveSongUsage)
+            self.displaySongUsage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'print_service_started'),
+            self.printSongUsage)
         self.songUsageActive = QtCore.QSettings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
@@ -134,8 +138,6 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport,
             translate('SongUsagePlugin', 'Song Usage'))
-        if self.manager is None:
-            self.manager = Manager(u'songusage', init_schema)
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
@@ -194,10 +196,21 @@ class SongUsagePlugin(Plugin):
         self.songUsageStatus.blockSignals(False)
 
 
-    def onReceiveSongUsage(self, item):
+    def displaySongUsage(self, item):
         """
-        Song Usage for live song from SlideController
+        Song Usage for which has been displayed
         """
+        self._add_song_usage(unicode(translate('SongUsagePlugin',
+            'display')), item)
+
+    def printSongUsage(self, item):
+        """
+        Song Usage for which has been printed
+        """
+        self._add_song_usage(unicode(translate('SongUsagePlugin',
+            'printed')), item)
+
+    def _add_song_usage(self, source, item):
         audit = item[0].audit
         if self.songUsageActive and audit:
             song_usage_item = SongUsageItem()
@@ -207,6 +220,8 @@ class SongUsagePlugin(Plugin):
             song_usage_item.copyright = audit[2]
             song_usage_item.ccl_number = audit[3]
             song_usage_item.authors = u' '.join(audit[1])
+            song_usage_item.plugin_name = item[0].name
+            song_usage_item.source = source
             self.manager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
