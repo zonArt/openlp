@@ -259,8 +259,7 @@ class Renderer(object):
                             else:
                                 html_text = text
                                 text = u''
-                            lines = expand_tags(html_text)
-                            lines = lines.strip(u'\n').split(u'\n')
+                            lines = html_text.strip(u'\n').split(u'\n')
                             slides = self._paginate_slide(lines, line_end)
                             if len(slides) > 1 and text:
                                 # Add all slides apart from the last one the
@@ -274,8 +273,7 @@ class Renderer(object):
                             else:
                                 pages.extend(slides)
                     if u'[---]' not in text:
-                        lines = expand_tags(text)
-                        lines = lines.strip(u'\n').split(u'\n')
+                        lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
         new_pages = []
