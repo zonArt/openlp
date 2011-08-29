@@ -397,7 +397,7 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
         # If called from first time wizard re-run, process any new bibles.
         if process:
-            Receiver.send_message(u'bibles_app_startup')
+            self.plugin.appStartup()
         self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
