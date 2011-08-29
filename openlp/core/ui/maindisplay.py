@@ -62,6 +62,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.override = {}
         self.retranslateUi()
         self.mediaObject = None
+        self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
@@ -101,6 +102,7 @@ class MainDisplay(QtGui.QGraphicsView):
         if self.isLive:
             if not self.firstTime:
                 self.createMediaObject()
+                self.createAudioPlayer()
         log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
@@ -174,6 +176,12 @@ class MainDisplay(QtGui.QGraphicsView):
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'tick(qint64)'),
             self.videoTick)
+        log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
+
+    def createAudioPlayer(self):
+        self.firstTime = False
+        log.debug(u'Creating audio player - Start for %s', self.isLive)
+        self.audioPlayer = AudioPlayer(self)
         log.debug(u'Creating Phonon objects - Finished for %s', self.isLive)
 
     def text(self, slide):
@@ -587,7 +595,9 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)
+        self.currentIndex = 0
         self.message = None
+        self.playlist = []
         self.mediaObject = Phonon.MediaObject()
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
@@ -597,6 +607,12 @@ class AudioPlayer(QtCore.QObject):
         Sets up the Audio Player for use
         """
         log.debug(u'AudioPlayer Setup')
+        QtCore.QObject.connect(self.mediaObject, QtCore.SIGNAL(u'finished()'),
+            self.onFinished)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'tick(qint64)'), self.onTick)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish())
 
     def close(self):
         """
@@ -605,6 +621,23 @@ class AudioPlayer(QtCore.QObject):
         self.onMediaStop()
         for path in self.mediaObject.outputPaths():
             path.disconnect()
+
+    def addToPlaylist(self, filename):
+        self.playlist.append(Phonon.MediaSource(filename))
+
+    def onFinished(self):
+        """
+        Slot to capture when the currently playing media is finished.
+        """
+
+    def onAboutToFinish(self):
+        """
+        Just before the audio player finishes the current track, queue the next
+        item in the playlist, if there is one.
+        """
+        self.currentIndex += 1
+        if len(self.playlist) > self.currentIndex:
+            self.mediaObject.enqueue(self.playlist[self.currentIndex])
 
     def onMediaQueue(self, message):
         """
