@@ -67,7 +67,6 @@ class Display(QtGui.QGraphicsView):
             self.width(), self.height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
-        self.webView.settings().setAttribute(7, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -130,7 +129,6 @@ class MainDisplay(Display):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute( \
             QtWebKit.QWebSettings.PluginsEnabled, True)
-        self.webView.settings().setAttribute(7, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -209,7 +207,7 @@ class MainDisplay(Display):
         """
         log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible():# or self.videoWidget.isVisible():
+            or not self.isVisible():
             shrink = True
         else:
             shrink = False

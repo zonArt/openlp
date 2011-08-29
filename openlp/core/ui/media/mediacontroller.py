@@ -37,7 +37,7 @@ from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
-class MediaManager(object):
+class MediaController(object):
     """
     The implementation of a Media Manager
     The idea is to separate the media related implementation
@@ -105,7 +105,7 @@ class MediaManager(object):
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
             if filename.endswith(u'api.py') and \
-                not filename == 'mediaapi.py':
+                not filename == 'media_api.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \

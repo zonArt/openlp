@@ -42,8 +42,8 @@ class MediaType(object):
     Unused = 0
     Audio = 1
     Video = 2
-    Cd = 3
-    Dvd = 4
+    CD = 3
+    DVD = 4
     Folder = 5
 
 class MediaInfo(object):
@@ -59,5 +59,5 @@ class MediaInfo(object):
     end_time = 0
     media_type = MediaType()
 
-from mediaapi import MediaAPI
-from mediamanager import MediaManager
+from media_api import MediaAPI
+from mediacontroller import MediaController

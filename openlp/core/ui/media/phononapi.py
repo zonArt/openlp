@@ -39,8 +39,8 @@ log = logging.getLogger(__name__)
 
 class PhononAPI(MediaAPI):
     """
-    Specialiced MediaAPI class
-    to reflect Features of the Phonon API
+    A specialised version of the MediaAPI class, 
+    which provides a Phonon display.
     """
 
     def __init__(self, parent):

@@ -168,7 +168,7 @@ class Plugin(QtCore.QObject):
         self.mediadock = plugin_helpers[u'toolbox']
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formparent = plugin_helpers[u'formparent']
-        self.mediaManager = plugin_helpers[u'mediamanager']
+        self.mediaManager = plugin_helpers[u'mediacontroller']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -376,7 +376,7 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
-    def getDisplayJavascript(self):
+    def getDisplayJavaScript(self):
         """
         Add javascript functions to htmlbuilder
         """
