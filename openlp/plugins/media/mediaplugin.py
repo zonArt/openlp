@@ -99,21 +99,22 @@ class MediaPlugin(Plugin):
         """
         log.info(u'Media Finalising')
         self.mediaManager.finalise()
+        Plugin.finalise(self)
 
     def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
-        return self.mediaManager.getDisplayCss()
+        return self.mediaManager.get_media_display_css()
 
     def getDisplayJavascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return self.mediaManager.getDisplayJavascript()
+        return self.mediaManager.get_media_display_javascript()
 
     def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
-        return self.mediaManager.getDisplayHtml()
+        return self.mediaManager.get_media_display_html()

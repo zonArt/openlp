@@ -25,43 +25,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for
-the SongUsage plugin
+The :mod:`upgrade` module provides a way for the database and schema that is the
+backend for the SongsUsage plugin
 """
 
 from sqlalchemy import Column, Table, types
-from sqlalchemy.orm import mapper
+from migrate import changeset
 
-from openlp.core.lib.db import BaseModel, init_db
+__version__ = 1
 
-class SongUsageItem(BaseModel):
+def upgrade_setup(metadata):
     """
-    SongUsageItem model
+    Set up the latest revision all tables, with reflection, needed for the
+    upgrade process. If you want to drop a table, you need to remove it from
+    here, and add it to your upgrade function.
     """
-    pass
+    tables = {
+        u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
+    }
+    return tables
 
-def init_schema(url):
+
+def upgrade_1(session, metadata, tables):
     """
-    Setup the songusage database connection and initialise the database schema
+    Version 1 upgrade.
 
-    ``url``
-        The database to setup
+    This upgrade adds two new fields to the songusage database
     """
-    session, metadata = init_db(url)
-
-    songusage_table = Table(u'songusage_data', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'usagedate', types.Date, index=True, nullable=False),
-        Column(u'usagetime', types.Time, index=True, nullable=False),
-        Column(u'title', types.Unicode(255), nullable=False),
-        Column(u'authors', types.Unicode(255), nullable=False),
-        Column(u'copyright', types.Unicode(255)),
-        Column(u'ccl_number', types.Unicode(65)),
-        Column(u'plugin_name', types.Unicode(20)),
-        Column(u'source', types.Unicode(10))
-    )
-
-    mapper(SongUsageItem, songusage_table)
-
-    metadata.create_all(checkfirst=True)
-    return session
+    Column(u'plugin_name', types.Unicode(20), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
+    Column(u'source', types.Unicode(10), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)

@@ -76,7 +76,6 @@ class PhononAPI(MediaAPI):
             ext = u'*%s' % extension
             if ext not in list:
                 list.append(ext)
-                #self.parent.parent.serviceManagerContents.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
@@ -87,7 +86,6 @@ class PhononAPI(MediaAPI):
                 ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
-                    #self.parent.parent.serviceManagerContents.supportedSuffixes(extension[1:])
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
 
@@ -133,19 +131,21 @@ class PhononAPI(MediaAPI):
         volume = controller.media_info.volume
         path = controller.media_info.file_info.absoluteFilePath()
         display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
-        if not self.mediaStateWait(display, Phonon.StoppedState):
+        if not self.media_state_wait(display, Phonon.StoppedState):
             return False
         self.volume(display, volume)
         return True
 
-    def mediaStateWait(self, display, mediaState):
+    def media_state_wait(self, display, mediaState):
         """
         Wait for the video to change its state
         Wait no longer than 5 seconds.
         """
         start = datetime.now()
-        while display.mediaObject.state() != mediaState:
-            if display.mediaObject.state() == Phonon.ErrorState:
+        current_state = display.mediaObject.state()
+        while current_state != mediaState:
+            current_state = display.mediaObject.state()
+            if current_state == Phonon.ErrorState:
                 return False
             Receiver.send_message(u'openlp_process_events')
             if (datetime.now() - start).seconds > 5:
@@ -162,7 +162,7 @@ class PhononAPI(MediaAPI):
             controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.mediaObject.play()
-        if self.mediaStateWait(display, Phonon.PlayingState):
+        if self.media_state_wait(display, Phonon.PlayingState):
             if start_time > 0:
                 self.seek(display, controller.media_info.start_time*1000)
             self.volume(display, controller.media_info.volume)
@@ -170,11 +170,15 @@ class PhononAPI(MediaAPI):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            self.set_visible(display, True)
+            #self.set_visible(display, True)
+            return True
+        else:
+            return False
 
     def pause(self, display):
         display.mediaObject.pause()
-        self.state = MediaState.Paused
+        if self.media_state_wait(display, Phonon.PausedState):
+            self.state = MediaState.Paused
 
     def stop(self, display):
         display.mediaObject.stop()

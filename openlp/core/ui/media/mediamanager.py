@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui.media import MediaAPI, MediaState, MediaInfo
+from openlp.core.ui.media import MediaAPI, MediaState, MediaInfo, MediaType
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -61,12 +61,12 @@ class MediaManager(object):
         self.APIs = {}
         self.controller = []
         self.curDisplayMediaAPI = {}
-        #Timer for video state
+        # Timer for video state
         self.Timer = QtCore.QTimer()
         self.Timer.setInterval(200)
         self.withLivePreview = False
-        self.checkPreConditions()
-        #Signals
+        self.check_available_media_apis()
+        # Signals
         QtCore.QObject.connect(self.Timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -86,7 +86,7 @@ class MediaManager(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
 
-    def registerControllers(self, controller):
+    def register_controllers(self, controller):
         """
         Register each media API controller (Webkit, Phonon, etc) and
         store for later use
@@ -94,12 +94,12 @@ class MediaManager(object):
         if controller.check_available():
             self.APIs[controller.name] = controller
 
-    def checkPreConditions(self):
+    def check_available_media_apis(self):
         """
         Check to see if we have any media API's available
         If Not do not install the plugin.
         """
-        log.debug(u'checkPreConditions')
+        log.debug(u'check_available_media_apis')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
@@ -119,7 +119,7 @@ class MediaManager(object):
         controller_classes = MediaAPI.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
-            self.registerControllers(controller)
+            self.register_controllers(controller)
         if self.APIs:
             return True
         else:
@@ -143,34 +143,34 @@ class MediaManager(object):
         if not isAnyonePlaying:
             self.Timer.stop()
 
-    def getDisplayCss(self):
+    def get_media_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
         css = u'';
         for api in self.APIs.values():
-            css += api.getDisplayCss()
+            css += api.get_media_display_css()
         return css
 
-    def getDisplayJavascript(self):
+    def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
         js = u''
         for api in self.APIs.values():
-            js += api.getDisplayJavascript()
+            js += api.get_media_display_javascript()
         return js
 
-    def getDisplayHtml(self):
+    def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
         html = u''
         for api in self.APIs.values():
-            html += api.getDisplayHtml()
+            html += api.get_media_display_html()
         return html
 
-    def addControllerItems(self, controller, control_panel):
+    def add_controller_items(self, controller, control_panel):
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
         for api in self.APIs.values():
@@ -210,7 +210,7 @@ class MediaManager(object):
         controller.mediabar.addToolbarWidget(u'Audio Volume', controller.volumeSlider)
         control_panel.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
-        #Signals
+        # Signals
         QtCore.QObject.connect(controller.seekSlider,
             QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
         QtCore.QObject.connect(controller.volumeSlider,
@@ -277,20 +277,26 @@ class MediaManager(object):
             display = controller.previewDisplay
             isValid = self.check_file_type(controller, display)
         if not isValid:
-            #Media could not be loaded correctly
+            # Media could not be loaded correctly
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'Unsupported File')))
             return False
-        #now start playing
-        self.video_play([controller])
-        self.video_pause([controller])
-        self.video_seek([controller, [0]])
-        self.video_play([controller])
-        self.set_controls_visible(controller, True)
-        log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
-        return True
+        # now start playing
+        if self.video_play([controller]):
+            self.video_pause([controller])
+            self.video_seek([controller, [0]])
+            if self.video_play([controller]):
+                self.set_controls_visible(controller, True)
+                log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
+                return True
+        else:
+            critical_error_message_box(
+                translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                'Unsupported File')))
+        return False
 
     def check_file_type(self, controller, display):
         """
@@ -310,7 +316,13 @@ class MediaManager(object):
                             self.resize(controller, display, api)
                             if api.load(display):
                                 self.curDisplayMediaAPI[display] = api
+                                controller.media_info.media_type = MediaType.Video
                                 return True
+                if suffix in api.audio_extensions_list:
+                    if api.load(display):
+                        self.curDisplayMediaAPI[display] = api
+                        controller.media_info.media_type = MediaType.Audio
+                        return True
         # no valid api found
         return False
 
@@ -325,17 +337,19 @@ class MediaManager(object):
                 if controller.isLive:
                     if controller.hideMenu.defaultAction().isChecked():
                         controller.hideMenu.defaultAction().trigger()
-                    #Receiver.send_message(u'maindisplay_show')
-                self.curDisplayMediaAPI[display].play(display)
+                if not self.curDisplayMediaAPI[display].play(display):
+                    return False
+                self.curDisplayMediaAPI[display].set_visible(display, True)
         # Start Timer for ui updates
         if not self.Timer.isActive():
             self.Timer.start()
+        return True
 
     def video_pause(self, msg):
         """
         Responds to the request to pause a loaded video
         """
-        log.debug(u'videoPause')
+        log.debug(u'video_pause')
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
@@ -383,6 +397,7 @@ class MediaManager(object):
             if display.controller == controller:
                 display.override = {}
                 self.curDisplayMediaAPI[display].reset(display)
+                self.curDisplayMediaAPI[display].set_visible(display, False)
                 del self.curDisplayMediaAPI[display]
         self.set_controls_visible(controller, False)
 
@@ -428,9 +443,9 @@ class MediaManager(object):
                 if display.controller == controller:
                     if self.curDisplayMediaAPI[display] \
                         .state == MediaState.Paused:
-                        self.curDisplayMediaAPI[display].play(display)
-                        self.curDisplayMediaAPI[display] \
-                            .set_visible(display, True)
+                        if self.curDisplayMediaAPI[display].play(display):
+                            self.curDisplayMediaAPI[display] \
+                                .set_visible(display, True)
 
     def get_audio_extensions_list(self):
         audio_list = []

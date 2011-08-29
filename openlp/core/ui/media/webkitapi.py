@@ -44,6 +44,10 @@ class WebkitAPI(MediaAPI):
         MediaAPI.__init__(self, parent, u'Webkit')
         self.parent = parent
         self.canBackground = True
+        self.audio_extensions_list = [
+              u'*.mp3'
+            , u'*.ogg'
+        ]
         self.video_extensions_list = [
              u'*.3gp'
             , u'*.3gpp'
@@ -62,8 +66,6 @@ class WebkitAPI(MediaAPI):
             , u'*.m4v'
             , u'*.mkv'
             , u'*.mp4'
-            , u'*.mp3'
-            , u'*.ogg'
             , u'*.ogv'
             , u'*.webm'
             , u'*.swf', u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
@@ -73,7 +75,7 @@ class WebkitAPI(MediaAPI):
         # no special controls
         pass
 
-    def getDisplayCss(self):
+    def get_media_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
@@ -91,7 +93,7 @@ class WebkitAPI(MediaAPI):
         return css
 
 
-    def getDisplayJavascript(self):
+    def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
@@ -99,7 +101,7 @@ class WebkitAPI(MediaAPI):
         var video_timer = null;
         var current_video = '1';
 
-            function show_video(state, path, volume, loop, seekVal){
+            function show_video(state, path, volume, loop, varVal){
                 // Note, the preferred method for looping would be to use the
                 // video tag loop attribute.
                 // But QtWebKit doesn't support this. Neither does it support the
@@ -139,7 +141,7 @@ class WebkitAPI(MediaAPI):
                         break;
                     case 'play':
                         vid.play();
-                        vid.style.visibility = 'visible';
+                        //vid.style.visibility = 'visible';
                         if(vid.looping){
                             video_timer = setInterval(
                                 function() {
@@ -156,7 +158,6 @@ class WebkitAPI(MediaAPI):
                         break;
                     case 'stop':
                         show_video('pause');
-                        vid.style.visibility = 'hidden';
                         break;
                     case 'poll':
                         if(vid.ended||vid.currentTime+0.2>vid.duration)
@@ -182,7 +183,10 @@ class WebkitAPI(MediaAPI):
                         return vid.currentTime;
                     case 'seek':
                         // doesnt work currently
-                        //vid.currentTime = seekVal;
+                        //vid.currentTime = varVal;
+                        break;
+                    case 'setVisible':
+                        vid.style.visibility = varVal;
                         break;
                }
             }
@@ -197,8 +201,7 @@ class WebkitAPI(MediaAPI):
                     return document.embeds[movieName];
             }
 
-        // http://www.adobe.com/support/flash/publishexport/scriptingwithflash/scriptingwithflash_03.html
-            function show_flash(state, path, volume, seekVal){
+            function show_flash(state, path, volume, varVal){
                 var text = document.getElementById('flash');
                 var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
                 var src = "src = 'file:///" + path + "'";
@@ -214,27 +217,22 @@ class WebkitAPI(MediaAPI):
                     case 'load':
                         text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
                         flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-                        text.style.visibility = 'visible';
                         flashMovie.Play();
                         break;
                     case 'play':
-                        text.style.visibility = 'visible';
                         flashMovie.Play();
                         break;
                     case 'pause':
                         flashMovie.StopPlay();
-                        text.style.visibility = 'hidden';
                         break;
                     case 'stop':
                         flashMovie.StopPlay();
-                        text.style.visibility = 'hidden';
                         tempHtml = text.innerHTML;
                         text.innerHTML = '';
                         text.innerHTML = tempHtml;
                         break;
                     case 'close':
                         flashMovie.StopPlay();
-                        text.style.visibility = 'hidden';
                         text.innerHTML = '';
                         break;
                     case 'length':
@@ -242,7 +240,10 @@ class WebkitAPI(MediaAPI):
                     case 'currentTime':
                         return flashMovie.CurrentFrame();
                     case 'seek':
-        //                flashMovie.GotoFrame(seekVal);
+        //                flashMovie.GotoFrame(varVal);
+                        break;
+                    case 'setVisible':
+                        text.style.visibility = varVal;
                         break;
                 }
             }
@@ -250,16 +251,16 @@ class WebkitAPI(MediaAPI):
         return js
 
 
-    def getDisplayHtml(self):
+    def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
         html = u'''
-        <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-        </video>
-        <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-        </video>
-        <div id="flash" class="size" style="visibility:hidden"></div>
+            <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
+            </video>
+            <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
+            </video>
+            <div id="flash" class="size" style="visibility:hidden"></div>
         '''
         return html
 
@@ -267,7 +268,6 @@ class WebkitAPI(MediaAPI):
         display.webView.resize(display.size())
         display.webView.raise_()
         self.hasOwnWidget = False
-        #display.webView.hide()
 
     def check_available(self):
         return True
@@ -287,7 +287,7 @@ class WebkitAPI(MediaAPI):
             loop = u'false'
         display.webView.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
-            controller.media_info.isFlash = True
+            controller.media_info.is_flash = True
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
         else:
@@ -305,17 +305,18 @@ class WebkitAPI(MediaAPI):
         display.webLoaded = True
         length = 0
         self.set_visible(display, True)
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("play");')
         else:
             display.frame.evaluateJavaScript(u'show_video("play");')
-        #TODO add playing check and get the correct media length
+        # TODO add playing check and get the correct media length
         controller.media_info.length = length
         self.state = MediaState.Playing
+        return True
 
     def pause(self, display):
         controller = display.controller
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("pause");')
         else:
             display.frame.evaluateJavaScript(u'show_video("pause");')
@@ -323,7 +324,7 @@ class WebkitAPI(MediaAPI):
 
     def stop(self, display):
         controller = display.controller
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("stop");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
@@ -334,13 +335,13 @@ class WebkitAPI(MediaAPI):
         # 1.0 is the highest value
         if display.hasAudio:
             vol = float(vol) / float(100)
-            if not controller.media_info.isFlash:
+            if not controller.media_info.is_flash:
                 display.frame.evaluateJavaScript(
                     u'show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seekVal):
         controller = display.controller
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             seek = seekVal
             display.frame.evaluateJavaScript( \
                 u'show_flash("seek", null, null, "%s");' % (seek))
@@ -351,19 +352,28 @@ class WebkitAPI(MediaAPI):
 
     def reset(self, display):
         controller = display.controller
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("close");')
         else:
             display.frame.evaluateJavaScript(u'show_video("close");')
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
-        if self.hasOwnWidget:
-            display.webView.setVisible(status)
+        controller = display.controller
+        if status:
+            is_visible = "visible"
+        else:
+            is_visible = "hidden"
+        if controller.media_info.is_flash:
+            display.frame.evaluateJavaScript(u'show_flash( \
+                "setVisible", null, null, "%s");' % (is_visible))
+        else:
+            display.frame.evaluateJavaScript(u'show_video( \
+                "setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
         controller = display.controller
-        if controller.media_info.isFlash:
+        if controller.media_info.is_flash:
             currentTime = display.frame.evaluateJavaScript( \
                 u'show_flash("currentTime");').toInt()[0]
             length = display.frame.evaluateJavaScript( \
@@ -372,12 +382,12 @@ class WebkitAPI(MediaAPI):
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()
             # check if conversion was ok and value is not 'NaN'
-            if ok and currentTime == currentTime:
+            if ok and currentTime != float('inf'):
                 currentTime = int(currentTime*1000)
             (length, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("length");').toFloat()
             # check if conversion was ok and value is not 'NaN'
-            if ok and length == length:
+            if ok and length != float('inf'):
                 length = int(length*1000)
         if currentTime > 0:
             controller.media_info.length = length

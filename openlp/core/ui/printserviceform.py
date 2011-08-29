@@ -31,7 +31,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string
+from openlp.core.lib import translate, get_text_file_string, Receiver
 from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
@@ -327,12 +327,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
@@ -341,6 +343,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         if not self.printDialog.exec_():
             return
+        self.update_song_usage()
         # Print the document.
         self.document.print_(self.printer)
 
@@ -397,3 +400,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.setValue(u'print notes',
             QtCore.QVariant(self.notesCheckBox.isChecked()))
         settings.endGroup()
+
+    def update_song_usage(self):
+        for index, item in enumerate(self.serviceManager.serviceItems):
+            # Trigger Audit requests
+            Receiver.send_message(u'print_service_started',
+                [item[u'service_item']])

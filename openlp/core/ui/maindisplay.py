@@ -67,6 +67,7 @@ class Display(QtGui.QGraphicsView):
             self.width(), self.height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
+        self.webView.settings().setAttribute(7, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -129,6 +130,7 @@ class MainDisplay(Display):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute( \
             QtWebKit.QWebSettings.PluginsEnabled, True)
+        self.webView.settings().setAttribute(7, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -231,11 +233,11 @@ class MainDisplay(Display):
                 shrinkItem.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, name, path):
+    def directImage(self, name, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        self.imageManager.add_image(name, path)
+        self.imageManager.add_image(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
@@ -253,7 +255,7 @@ class MainDisplay(Display):
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
-        self.resetVideo()
+        self.controller.mediaManager.video_reset(self.controller)
         self.displayImage(image)
         return self.preview()
 

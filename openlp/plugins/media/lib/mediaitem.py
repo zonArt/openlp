@@ -56,11 +56,15 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.mediaController = Controller(parent)
         self.mediaController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaManager.addControllerItems(self.mediaController, self.mediaController.controllerLayout)
-        self.plugin.mediaManager.set_controls_visible(self.mediaController, False)
-        self.mediaController.previewDisplay = Display(self.mediaController, False, self.mediaController, self.plugin.pluginManager.plugins)
+        self.plugin.mediaManager.add_controller_items(self.mediaController, \
+            self.mediaController.controllerLayout)
+        self.plugin.mediaManager.set_controls_visible(self.mediaController, \
+            False)
+        self.mediaController.previewDisplay = Display(self.mediaController, \
+            False, self.mediaController, self.plugin.pluginManager.plugins)
         self.mediaController.previewDisplay.setup()
-        self.plugin.mediaManager.setup_display(self.mediaController.previewDisplay)
+        self.plugin.mediaManager.setup_display( \
+            self.mediaController.previewDisplay)
         self.mediaController.previewDisplay.hide()
 
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -100,7 +104,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onResetClick(self):
         """
-        Called to reset the Live backgound with the media selected,
+        Called to reset the Live background with the media selected,
         """
         self.plugin.liveController.mediaManager.video_reset( \
             self.plugin.liveController)
@@ -114,7 +118,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onReplaceClick(self):
         """
-        Called to replace Live backgound with the media selected.
+        Called to replace Live background with the media selected.
         """
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
@@ -122,7 +126,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
+                #(path, name) = os.path.split(filename)
                 if self.plugin.liveController.mediaManager.video( \
                     self.plugin.liveController, filename, True, True):
                     self.resetAction.setVisible(True)
@@ -158,6 +162,8 @@ class MediaMediaItem(MediaManagerItem):
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.AllowsVariableStartTime)
+        else:
+            return False
         service_item.media_length = self.mediaLength
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
