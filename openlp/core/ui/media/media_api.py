@@ -29,9 +29,10 @@ from openlp.core.ui.media import MediaState
 
 class MediaAPI(object):
     """
-    Specialiced Media API class
-    to reflect Features of the related API
+    A generic media API class to provide OpenLP
+    with a pluggable media display framework. 
     """
+    
     def __init__(self, parent, name=u'MediaApi'):
         self.parent = parent
         self.name = name

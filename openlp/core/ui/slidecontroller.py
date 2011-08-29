@@ -67,7 +67,7 @@ class Controller(QtGui.QWidget):
         created from within other plugins
         This function is needed to catch the current controller
         """
-        sender = self.sender().objectName() or self.sender().text()
+        sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 

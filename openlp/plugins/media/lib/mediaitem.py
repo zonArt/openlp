@@ -126,7 +126,6 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                #(path, name) = os.path.split(filename)
                 if self.plugin.liveController.mediaManager.video( \
                     self.plugin.liveController, filename, True, True):
                     self.resetAction.setVisible(True)

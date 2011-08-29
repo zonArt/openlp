@@ -42,9 +42,10 @@ log = logging.getLogger(__name__)
 
 class VlcAPI(MediaAPI):
     """
-    Specialiced MediaAPI class
-    to reflect Features of the Vlc API
+    A specialised version of the MediaAPI class, 
+    which provides a QtWebKit display.
     """
+    
     def __init__(self, parent):
         MediaAPI.__init__(self, parent, u'Vlc')
         self.parent = parent

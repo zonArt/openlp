@@ -107,7 +107,7 @@ class MediaPlugin(Plugin):
         """
         return self.mediaManager.get_media_display_css()
 
-    def getDisplayJavascript(self):
+    def getDisplayJavaScript(self):
         """
         Add javascript functions to htmlbuilder
         """

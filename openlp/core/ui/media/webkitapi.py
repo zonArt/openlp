@@ -36,8 +36,8 @@ log = logging.getLogger(__name__)
 
 class WebkitAPI(MediaAPI):
     """
-    Specialiced MediaAPI class
-    to reflect Features of the QtWebkit API
+    A specialised version of the MediaAPI class, 
+    which provides a QtWebKit display.
     """
 
     def __init__(self, parent):
