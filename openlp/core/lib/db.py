@@ -73,7 +73,17 @@ def upgrade_db(url, upgrade):
         The python module that contains the upgrade instructions.
     """
     session, metadata = init_db(url)
-    tables = upgrade.upgrade_setup(metadata)
+
+    class Metadata(BaseModel):
+        """
+        Provides a class for the metadata table.
+        """
+        pass
+    load_changes = True
+    try:
+        tables = upgrade.upgrade_setup(metadata)
+    except SQLAlchemyError, DBAPIError:
+        load_changes = False
     metadata_table = Table(u'metadata', metadata,
         Column(u'key', types.Unicode(64), primary_key=True),
         Column(u'value', types.UnicodeText(), default=None)
@@ -89,19 +99,25 @@ def upgrade_db(url, upgrade):
     if version > upgrade.__version__:
         return version, upgrade.__version__
     version += 1
-    while hasattr(upgrade, u'upgrade_%d' % version):
-        log.debug(u'Running upgrade_%d', version)
-        try:
-            getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
-            version_meta.value = unicode(version)
-        except SQLAlchemyError, DBAPIError:
-            log.exception(u'Could not run database upgrade script "upgrade_%s"'\
-                ', upgrade process has been halted.', version)
-            break
-        version += 1
+    if load_changes:
+        while hasattr(upgrade, u'upgrade_%d' % version):
+            log.debug(u'Running upgrade_%d', version)
+            try:
+                getattr(upgrade, u'upgrade_%d' % version) \
+                    (session, metadata, tables)
+                version_meta.value = unicode(version)
+            except SQLAlchemyError, DBAPIError:
+                log.exception(u'Could not run database upgrade script '
+                    '"upgrade_%s", upgrade process has been halted.', version)
+                break
+            version += 1
+    else:
+        version_meta = Metadata.populate(key=u'version',
+            value=int(upgrade.__version__))
     session.add(version_meta)
     session.commit()
     return int(version_meta.value), upgrade.__version__
+
 
 def delete_database(plugin_name, db_file_name=None):
     """
@@ -137,14 +153,6 @@ class BaseModel(object):
         for key, value in kwargs.iteritems():
             instance.__setattr__(key, value)
         return instance
-
-
-class Metadata(BaseModel):
-    """
-    Provides a class for the metadata table.
-    """
-    pass
-
 
 class Manager(object):
     """

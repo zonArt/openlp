@@ -228,15 +228,56 @@ class Renderer(object):
             # Clean up line endings.
             lines = self._lines_split(text)
             pages = self._paginate_slide(lines, line_end)
-            if len(pages) > 1:
-                # Songs and Custom
-                if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-                    # Do not forget the line breaks!
-                    slides = text.split(u'[---]')
-                    pages = []
-                    for slide in slides:
-                        lines = slide.strip(u'\n').split(u'\n')
+            # Songs and Custom
+            if item.is_capable(ItemCapabilities.AllowsVirtualSplit) and \
+                len(pages) > 1 and u'[---]' in text:
+                pages = []
+                while True:
+                    # Check if the first two potential virtual slides will fit
+                    # (as a whole) on one slide.
+                    html_text = expand_tags(
+                        u'\n'.join(text.split(u'\n[---]\n', 2)[:-1]))
+                    html_text = html_text.replace(u'\n', u'<br>')
+                    if self._text_fits_on_slide(html_text):
+                        # The first two virtual slides fit (as a whole) on one
+                        # slide. Replace the occurrences of [---].
+                        text = text.replace(u'\n[---]', u'', 2)
+                    else:
+                        # The first two virtual slides did not fit as a whole.
+                        # Check if the first virtual slide will fit.
+                        html_text = expand_tags(text.split(u'\n[---]\n', 1)[1])
+                        html_text = html_text.replace(u'\n', u'<br>')
+                        if self._text_fits_on_slide(html_text):
+                            # The first virtual slide fits, so remove it.
+                            text = text.replace(u'\n[---]', u'', 1)
+                        else:
+                            # The first virtual slide does not fit, which means
+                            # we have to render the first virtual slide.
+                            text_contains_break = u'[---]' in text
+                            if text_contains_break:
+                                html_text, text = text.split(u'\n[---]\n', 1)
+                            else:
+                                html_text = text
+                                text = u''
+                            lines = expand_tags(html_text)
+                            lines = lines.strip(u'\n').split(u'\n')
+                            slides = self._paginate_slide(lines, line_end)
+                            if len(slides) > 1 and text:
+                                # Add all slides apart from the last one the
+                                # list.
+                                pages.extend(slides[:-1])
+                                if  text_contains_break:
+                                    text = slides[-1] + u'\n[---]\n' + text
+                                else:
+                                    text = slides[-1] + u'\n'+ text
+                                text = text.replace(u'<br>', u'\n')
+                            else:
+                                pages.extend(slides)
+                    if u'[---]' not in text:
+                        lines = expand_tags(text)
+                        lines = lines.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
+                        break
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
@@ -342,7 +383,7 @@ class Renderer(object):
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
-        if self._text_fits_on_slide(separator.join(html_lines)):
+        if not self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -375,18 +416,18 @@ class Renderer(object):
             line = line.strip()
             html_line = expand_tags(line)
             # Text too long so go to next page.
-            if self._text_fits_on_slide(previous_html + html_line):
+            if not self._text_fits_on_slide(previous_html + html_line):
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
                 if previous_html:
-                    if not self._text_fits_on_slide(previous_html):
+                    if self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
-                        if not self._text_fits_on_slide(html_line):
+                        if self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
@@ -443,7 +484,7 @@ class Renderer(object):
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            if self._text_fits_on_slide(
+            if not self._text_fits_on_slide(
                 previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the
                 # new index and highest_index accordingly.
@@ -466,8 +507,8 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            if not self._text_fits_on_slide(
-                separator.join(html_list[index + 1:]).strip()):
+            if self._text_fits_on_slide(
+                    separator.join(html_list[index + 1:]).strip()):
                 previous_html = separator.join(
                     html_list[index + 1:]).strip() + line_end
                 previous_raw = separator.join(
@@ -489,11 +530,11 @@ class Renderer(object):
         returned, otherwise ``False``.
 
         ``text``
-            The text to check. It can contain HTML tags.
+            The text to check. It may contain HTML tags.
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() > self.page_height
+        return self.web_frame.contentsSize().height() <= self.page_height
 
     def _words_split(self, line):
         """
