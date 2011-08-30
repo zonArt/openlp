@@ -235,27 +235,36 @@ class Renderer(object):
                 while True:
                     # Check if the first two potential virtual slides will fit
                     # (as a whole) on one slide.
-                    html_text = expand_tags(
-                        u'\n'.join(text.split(u'\n[---]\n', 2)[:-1]))
+                    slides = text.split(u'\n[---]\n', 2)
+                    # If there are (at least) two occurrences of [---] we use
+                    # the use the first two slides (and neglect the last for
+                    # now).
+                    if len(slides) == 3:
+                        html_text = expand_tags(u'\n'.join(slides[:2]))
+                    # We check both slides to determine if the virtual break is
+                    # needed.
+                    else:
+                        html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
                     if self._text_fits_on_slide(html_text):
                         # The first two virtual slides fit (as a whole) on one
                         # slide. Replace the occurrences of [---].
-                        text = text.replace(u'\n[---]', u'', 2)
+                        text = text.replace(u'\n[---]', u'', 1)
                     else:
                         # The first two virtual slides did not fit as a whole.
-                        # Check if the first virtual slide will fit.
+                        # Check if the second part fits.
                         html_text = expand_tags(text.split(u'\n[---]\n', 1)[1])
                         html_text = html_text.replace(u'\n', u'<br>')
-                        if self._text_fits_on_slide(html_text):
+                        if not self._text_fits_on_slide(html_text):
                             # The first virtual slide fits, so remove it.
                             text = text.replace(u'\n[---]', u'', 1)
                         else:
-                            # The first virtual slide does not fit, which means
+                            # The first virtual slide fits, which means
                             # we have to render the first virtual slide.
                             text_contains_break = u'[---]' in text
                             if text_contains_break:
-                                text_to_render, text = text.split(u'\n[---]\n', 1)
+                                text_to_render, text = text.split(
+                                    u'\n[---]\n', 1)
                             else:
                                 text_to_render = text
                                 text = u''
