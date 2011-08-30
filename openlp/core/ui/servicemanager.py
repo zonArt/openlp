@@ -600,8 +600,8 @@ class ServiceManager(QtGui.QWidget):
         fileTo = None
         try:
             zip = zipfile.ZipFile(fileName)
-            for file in zip.namelist():
-                ucsfile = file_is_unicode(file)
+            for zipinfo in zip.infolist():
+                ucsfile = file_is_unicode(zipinfo.filename)
                 if not ucsfile:
                     critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
@@ -611,18 +611,10 @@ class ServiceManager(QtGui.QWidget):
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 if not osfile.startswith(u'audio'):
                     osfile = os.path.split(osfile)[1]
-                else:
-                    path = os.path.join(self.servicePath,
-                        os.path.split(osfile)[0])
-                    if not os.path.exists(path):
-                        os.makedirs(path)
-                filePath = os.path.join(self.servicePath, osfile)
-                fileTo = open(filePath, u'wb')
-                fileTo.write(zip.read(file))
-                fileTo.flush()
-                fileTo.close()
-                if filePath.endswith(u'osd'):
-                    p_file = filePath
+                zipinfo.filename = osfile
+                zip.extract(zipinfo, self.servicePath)
+                if osfile.endswith(u'osd'):
+                    p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
                 Receiver.send_message(u'cursor_busy')
                 fileTo = open(p_file, u'r')
