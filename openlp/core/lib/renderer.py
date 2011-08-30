@@ -255,12 +255,11 @@ class Renderer(object):
                             # we have to render the first virtual slide.
                             text_contains_break = u'[---]' in text
                             if text_contains_break:
-                                html_text, text = text.split(u'\n[---]\n', 1)
+                                text_to_render, text = text.split(u'\n[---]\n', 1)
                             else:
-                                html_text = text
+                                text_to_render = text
                                 text = u''
-                            lines = expand_tags(html_text)
-                            lines = lines.strip(u'\n').split(u'\n')
+                            lines = text_to_render.strip(u'\n').split(u'\n')
                             slides = self._paginate_slide(lines, line_end)
                             if len(slides) > 1 and text:
                                 # Add all slides apart from the last one the
@@ -274,8 +273,7 @@ class Renderer(object):
                             else:
                                 pages.extend(slides)
                     if u'[---]' not in text:
-                        lines = expand_tags(text)
-                        lines = lines.strip(u'\n').split(u'\n')
+                        lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
         new_pages = []
