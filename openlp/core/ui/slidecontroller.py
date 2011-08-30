@@ -85,7 +85,7 @@ class SlideController(Controller):
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.imageManager = self.parent().imageManager
-        self.mediaManager = self.parent().mediaManager
+        self.mediaController = self.parent().mediaController
         self.loopList = [
             u'Play Slides Menu',
             u'Loop Separator',
@@ -253,7 +253,7 @@ class SlideController(Controller):
                 self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaManager.add_controller_items(self, self.controllerLayout)
+        self.mediaController.add_controller_items(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
@@ -390,7 +390,7 @@ class SlideController(Controller):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        Receiver.send_message('Media Stop', [self])
+        self.mediaController.video_stop([self])
 
     def servicePrevious(self):
         time.sleep(0.1)
@@ -417,10 +417,10 @@ class SlideController(Controller):
         # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.mediaManager.setup_display(self.display)
+        self.mediaController.setup_display(self.display)
         self.previewSizeChanged()
         self.previewDisplay.setup()
-        self.mediaManager.setup_display(self.previewDisplay)
+        self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
             self.refreshServiceItem()
 
@@ -519,7 +519,6 @@ class SlideController(Controller):
             # See bug #791050
             self.previousItem.setVisible(True)
             self.nextItem.setVisible(True)
-            self.toolbar.show()
         self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
@@ -1148,8 +1147,8 @@ class SlideController(Controller):
         """
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        self.mediaManager.video(self, file, False, False)
-        if not self.isLive or self.mediaManager.withLivePreview:
+        self.mediaController.video(self, file, False, False)
+        if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
             self.slidePreview.hide()
 
@@ -1158,7 +1157,7 @@ class SlideController(Controller):
         Respond to a request to close the Video
         """
         log.debug(u'SlideController onMediaClose')
-        self.mediaManager.video_reset(self)
+        self.mediaController.video_reset(self)
         self.previewDisplay.hide()
         self.slidePreview.show()
 

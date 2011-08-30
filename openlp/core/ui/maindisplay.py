@@ -253,7 +253,7 @@ class MainDisplay(Display):
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
-        self.controller.mediaManager.video_reset(self.controller)
+        self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
         return self.preview()
 
