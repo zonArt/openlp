@@ -148,7 +148,7 @@ class Ui_MainWindow(object):
         self.defaultThemeLabel = QtGui.QLabel(self.statusBar)
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
-        # Create the MediaController
+        # Create the MediaManager
         self.mediaManagerDock = OpenLPDockWidget(mainWindow,
             u'mediaManagerDock', u':/system/system_mediamanager.png')
         self.mediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
@@ -557,7 +557,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
-        self.mediaManager = MediaController(self)
+        self.mediaController = MediaController(self)
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -646,7 +646,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginHelpers[u'toolbox'] = self.mediaDockManager
         self.pluginHelpers[u'pluginmanager'] = self.pluginManager
         self.pluginHelpers[u'formparent'] = self
-        self.pluginHelpers[u'mediacontroller'] = self.mediaManager
+        self.pluginHelpers[u'mediacontroller'] = self.mediaController
         self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here

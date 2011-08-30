@@ -34,9 +34,189 @@ from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
+video_css = u"""
+#video1 {
+    z-index:3;
+}
+#video2 {
+    z-index:3;
+}
+"""
+
+video_js = u"""
+    var video_timer = null;
+    var current_video = '1';
+
+    function show_video(state, path, volume, loop, varVal){
+        // Note, the preferred method for looping would be to use the
+        // video tag loop attribute.
+        // But QtWebKit doesn't support this. Neither does it support the
+        // onended event, hence the setInterval()
+        // In addition, setting the currentTime attribute to zero to restart
+        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
+        // To complicate it further, sometimes vid.currentTime stops
+        // slightly short of vid.duration and vid.ended is intermittent!
+        //
+        // Note, currently the background may go black between loops. Not
+        // desirable. Need to investigate using two <video>'s, and hiding/
+        // preloading one, and toggle between the two when looping.
+
+        if(current_video=='1'){
+            var vid = document.getElementById('video1');
+            var vid2 = document.getElementById('video2');
+        } else {
+            var vid = document.getElementById('video2');
+            var vid2 = document.getElementById('video1');
+        }
+        if(volume != null){
+            vid.volume = volume;
+            vid2.volume = volume;
+        }
+        switch(state){
+            case 'init':
+                vid.src = path;
+                vid2.src = path;
+                if(loop == null) loop = false;
+                vid.looping = loop;
+                vid2.looping = loop;
+                vid.load();
+                break;
+            case 'load':
+                vid2.style.visibility = 'hidden';
+                vid2.load();
+                break;
+            case 'play':
+                vid.play();
+                //vid.style.visibility = 'visible';
+                if(vid.looping){
+                    video_timer = setInterval(
+                        function() {
+                            show_video('poll');
+                        }, 200);
+                }
+                break;
+            case 'pause':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
+                vid.pause();
+                break;
+            case 'stop':
+                show_video('pause');
+                break;
+            case 'poll':
+                if(vid.ended||vid.currentTime+0.2>vid.duration)
+                    show_video('swap');
+                break;
+            case 'swap':
+                show_video('pause');
+                if(current_video=='1')
+                    current_video = '2';
+                else
+                    current_video = '1';
+                show_video('play');
+                show_video('load');
+                break;
+            case 'close':
+                show_video('stop');
+                vid.src = '';
+                vid2.src = '';
+                break;
+             case 'length':
+                return vid.duration;
+            case 'currentTime':
+                return vid.currentTime;
+            case 'seek':
+                // doesnt work currently
+                //vid.currentTime = varVal;
+                break;
+            case 'setVisible':
+                vid.style.visibility = varVal;
+                break;
+       }
+    }
+"""
+
+video_html = u"""
+<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
+</video>
+<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
+</video>
+"""
+
+flash_css = u"""
+#flash {
+    z-index:4;
+}
+"""
+
+flash_js = u"""
+    function getFlashMovieObject(movieName)
+    {
+        if (window.document[movieName])
+        {
+            return window.document[movieName];
+        }
+        if (document.embeds && document.embeds[movieName])
+            return document.embeds[movieName];
+    }
+
+    function show_flash(state, path, volume, varVal){
+        var text = document.getElementById('flash');
+        var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+        var src = "src = 'file:///" + path + "'";
+        var view_parm = " wmode='opaque'" +
+            " width='100%%'" +
+            " height='100%%'";
+        var swf_parm = " name='OpenLPFlashMovie'" +
+            " autostart='true' loop='false' play='true'" +
+            " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
+            " volume='" + volume + "'";
+
+        switch(state){
+            case 'load':
+                text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
+                flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                flashMovie.Play();
+                break;
+            case 'play':
+                flashMovie.Play();
+                break;
+            case 'pause':
+                flashMovie.StopPlay();
+                break;
+            case 'stop':
+                flashMovie.StopPlay();
+                tempHtml = text.innerHTML;
+                text.innerHTML = '';
+                text.innerHTML = tempHtml;
+                break;
+            case 'close':
+                flashMovie.StopPlay();
+                text.innerHTML = '';
+                break;
+            case 'length':
+                return flashMovie.TotalFrames();
+            case 'currentTime':
+                return flashMovie.CurrentFrame();
+            case 'seek':
+//                flashMovie.GotoFrame(varVal);
+                break;
+            case 'setVisible':
+                text.style.visibility = varVal;
+                break;
+        }
+    }
+"""
+
+flash_html = u"""
+<div id="flash" class="size" style="visibility:hidden"></div>
+"""
+
 class WebkitAPI(MediaAPI):
     """
-    A specialised version of the MediaAPI class, 
+    A specialised version of the MediaAPI class,
     which provides a QtWebKit display.
     """
 
@@ -68,7 +248,8 @@ class WebkitAPI(MediaAPI):
             , u'*.mp4'
             , u'*.ogv'
             , u'*.webm'
-            , u'*.swf', u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+            , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+            , u'*.swf'
         ]
 
     def setup_controls(self, controller, control_panel):
@@ -79,190 +260,21 @@ class WebkitAPI(MediaAPI):
         """
         Add css style sheets to htmlbuilder
         """
-        css = u'''
-        #video1 {
-            z-index:3;
-        }
-        #video2 {
-            z-index:3;
-        }
-        #flash {
-            z-index:4;
-        }
-        '''
-        return css
+        return video_css + flash_css
 
 
     def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        js = u'''
-        var video_timer = null;
-        var current_video = '1';
-
-            function show_video(state, path, volume, loop, varVal){
-                // Note, the preferred method for looping would be to use the
-                // video tag loop attribute.
-                // But QtWebKit doesn't support this. Neither does it support the
-                // onended event, hence the setInterval()
-                // In addition, setting the currentTime attribute to zero to restart
-                // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-                // To complicate it further, sometimes vid.currentTime stops
-                // slightly short of vid.duration and vid.ended is intermittent!
-                //
-                // Note, currently the background may go black between loops. Not
-                // desirable. Need to investigate using two <video>'s, and hiding/
-                // preloading one, and toggle between the two when looping.
-
-                if(current_video=='1'){
-                    var vid = document.getElementById('video1');
-                    var vid2 = document.getElementById('video2');
-                } else {
-                    var vid = document.getElementById('video2');
-                    var vid2 = document.getElementById('video1');
-                }
-                if(volume != null){
-                    vid.volume = volume;
-                    vid2.volume = volume;
-                }
-                switch(state){
-                    case 'init':
-                        vid.src = path;
-                        vid2.src = path;
-                        if(loop == null) loop = false;
-                        vid.looping = loop;
-                        vid2.looping = loop;
-                        vid.load();
-                        break;
-                    case 'load':
-                        vid2.style.visibility = 'hidden';
-                        vid2.load();
-                        break;
-                    case 'play':
-                        vid.play();
-                        //vid.style.visibility = 'visible';
-                        if(vid.looping){
-                            video_timer = setInterval(
-                                function() {
-                                    show_video('poll');
-                                }, 200);
-                        }
-                        break;
-                    case 'pause':
-                        if(video_timer!=null){
-                            clearInterval(video_timer);
-                            video_timer = null;
-                        }
-                        vid.pause();
-                        break;
-                    case 'stop':
-                        show_video('pause');
-                        break;
-                    case 'poll':
-                        if(vid.ended||vid.currentTime+0.2>vid.duration)
-                            show_video('swap');
-                        break;
-                    case 'swap':
-                        show_video('pause');
-                        if(current_video=='1')
-                            current_video = '2';
-                        else
-                            current_video = '1';
-                        show_video('play');
-                        show_video('load');
-                        break;
-                    case 'close':
-                        show_video('stop');
-                        vid.src = '';
-                        vid2.src = '';
-                        break;
-                     case 'length':
-                        return vid.duration;
-                    case 'currentTime':
-                        return vid.currentTime;
-                    case 'seek':
-                        // doesnt work currently
-                        //vid.currentTime = varVal;
-                        break;
-                    case 'setVisible':
-                        vid.style.visibility = varVal;
-                        break;
-               }
-            }
-
-            function getFlashMovieObject(movieName)
-            {
-                if (window.document[movieName])
-                {
-                    return window.document[movieName];
-                }
-                if (document.embeds && document.embeds[movieName])
-                    return document.embeds[movieName];
-            }
-
-            function show_flash(state, path, volume, varVal){
-                var text = document.getElementById('flash');
-                var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-                var src = "src = 'file:///" + path + "'";
-                var view_parm = " wmode='opaque'" +
-                    " width='100%%'" +
-                    " height='100%%'";
-                var swf_parm = " name='OpenLPFlashMovie'" +
-                    " autostart='true' loop='false' play='true'" +
-                    " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
-                    " volume='" + volume + "'";
-
-                switch(state){
-                    case 'load':
-                        text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
-                        flashMovie = getFlashMovieObject("OpenLPFlashMovie");
-                        flashMovie.Play();
-                        break;
-                    case 'play':
-                        flashMovie.Play();
-                        break;
-                    case 'pause':
-                        flashMovie.StopPlay();
-                        break;
-                    case 'stop':
-                        flashMovie.StopPlay();
-                        tempHtml = text.innerHTML;
-                        text.innerHTML = '';
-                        text.innerHTML = tempHtml;
-                        break;
-                    case 'close':
-                        flashMovie.StopPlay();
-                        text.innerHTML = '';
-                        break;
-                    case 'length':
-                        return flashMovie.TotalFrames();
-                    case 'currentTime':
-                        return flashMovie.CurrentFrame();
-                    case 'seek':
-        //                flashMovie.GotoFrame(varVal);
-                        break;
-                    case 'setVisible':
-                        text.style.visibility = varVal;
-                        break;
-                }
-            }
-        '''
-        return js
+        return video_js + flash_js
 
 
     def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
-        html = u'''
-            <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-            </video>
-            <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-            </video>
-            <div id="flash" class="size" style="visibility:hidden"></div>
-        '''
-        return html
+        return video_html + flash_html
 
     def setup(self, display):
         display.webView.resize(display.size())

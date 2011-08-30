@@ -56,14 +56,14 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.mediaController = Controller(parent)
         self.mediaController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaManager.add_controller_items(self.mediaController, \
+        self.plugin.mediaController.add_controller_items(self.mediaController, \
             self.mediaController.controllerLayout)
-        self.plugin.mediaManager.set_controls_visible(self.mediaController, \
+        self.plugin.mediaController.set_controls_visible(self.mediaController, \
             False)
         self.mediaController.previewDisplay = Display(self.mediaController, \
             False, self.mediaController, self.plugin.pluginManager.plugins)
         self.mediaController.previewDisplay.setup()
-        self.plugin.mediaManager.setup_display( \
+        self.plugin.mediaController.setup_display( \
             self.mediaController.previewDisplay)
         self.mediaController.previewDisplay.hide()
 
@@ -106,7 +106,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaManager.video_reset( \
+        self.plugin.liveController.mediaController.video_reset( \
             self.plugin.liveController)
         self.resetAction.setVisible(False)
 
@@ -126,7 +126,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                if self.plugin.liveController.mediaManager.video( \
+                if self.plugin.liveController.mediaController.video( \
                     self.plugin.liveController, filename, True, True):
                     self.resetAction.setVisible(True)
                 else:
@@ -153,11 +153,11 @@ class MediaMediaItem(MediaManagerItem):
                 'The file %s no longer exists.')) % filename)
             return False
         self.mediaLength = 0
-        if self.plugin.mediaManager.video( \
+        if self.plugin.mediaController.video( \
                     self.mediaController, filename, False, False):
             self.mediaLength = self.mediaController.media_info.length
             service_item.media_length = self.mediaLength
-            self.plugin.mediaManager.video_reset(self.mediaController)
+            self.plugin.mediaController.video_reset(self.mediaController)
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.AllowsVariableStartTime)

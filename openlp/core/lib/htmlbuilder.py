@@ -53,8 +53,8 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 100%%;//%spx;
-    height: 100%%;//%spx;
+    width: 100%%;
+    height: 100%%;
 }
 #black {
     z-index: 8;
@@ -285,9 +285,8 @@ def build_html(item, screen, alert, islive, background, plugins=None, \
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
-        width, height,
         css_additions,
-        build_alert_css(alert, width),
+        build_alert_css(alert),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
@@ -555,7 +554,7 @@ def build_footer_css(item, height):
         theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
 
-def build_alert_css(alertTab, width):
+def build_alert_css(alertTab):
     """
     Build the display of the footer
 
@@ -563,7 +562,7 @@ def build_alert_css(alertTab, width):
         Details from the Alert tab for fonts etc
     """
     style = u"""
-    width: %spx;
+    width: 100%%;
     vertical-align: %s;
     font-family: %s;
     font-size: %spt;
@@ -573,6 +572,6 @@ def build_alert_css(alertTab, width):
     if not alertTab:
         return u''
     align = VerticalType.Names[alertTab.location]
-    alert = style % (width, align, alertTab.font_face, alertTab.font_size,
+    alert = style % (align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

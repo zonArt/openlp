@@ -45,11 +45,11 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.audio_extensions_list = \
-            self.mediaManager.get_audio_extensions_list()
+            self.mediaController.get_audio_extensions_list()
         for ext in self.audio_extensions_list:
             self.serviceManager.supportedSuffixes(ext[2:])
         self.video_extensions_list = \
-            self.mediaManager.get_video_extensions_list()
+            self.mediaController.get_video_extensions_list()
         for ext in self.video_extensions_list:
             self.serviceManager.supportedSuffixes(ext[2:])
 
@@ -59,7 +59,7 @@ class MediaPlugin(Plugin):
         """
         visible_name = self.getString(StringContent.VisibleName)
         return MediaTab(parent, self.name, visible_name[u'title'],
-            self.mediaManager.APIs, self.icon_path)
+            self.mediaController.APIs, self.icon_path)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -98,23 +98,23 @@ class MediaPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Media Finalising')
-        self.mediaManager.finalise()
+        self.mediaController.finalise()
         Plugin.finalise(self)
 
     def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
-        return self.mediaManager.get_media_display_css()
+        return self.mediaController.get_media_display_css()
 
     def getDisplayJavaScript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return self.mediaManager.get_media_display_javascript()
+        return self.mediaController.get_media_display_javascript()
 
     def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
-        return self.mediaManager.get_media_display_html()
+        return self.mediaController.get_media_display_html()
