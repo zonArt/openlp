@@ -248,9 +248,10 @@ class Renderer(object):
                         # slide. Replace the first occurrence of [---].
                         text = text.replace(u'\n[---]', u'', 1)
                     else:
-                        # The first virtual slide fits, which means
-                        # we have to render the first virtual slide.
-                        if u'[---]' in text:
+                        # The first virtual slide fits, which means we have to
+                        # render the first virtual slide.
+                        text_contains_break = u'[---]' in text
+                        if text_contains_break:
                             text_to_render, text = text.split(u'\n[---]\n', 1)
                         else:
                             text_to_render = text
@@ -258,8 +259,7 @@ class Renderer(object):
                         lines = text_to_render.strip(u'\n').split(u'\n')
                         slides = self._paginate_slide(lines, line_end)
                         if len(slides) > 1 and text:
-                            # Add all slides apart from the last one the
-                            # list.
+                            # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
                             if  text_contains_break:
                                 text = slides[-1] + u'\n[---]\n' + text
