@@ -512,7 +512,7 @@ class SlideController(QtGui.QWidget):
         self.playSlidesOnce.setChecked(False)
         self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
         self.playSlidesLoop.setChecked(False)
-        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))       
+        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
@@ -618,6 +618,12 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setColumnWidth(0, width)
         if self.isLive:
             self.songMenu.menu().clear()
+            self.display.audioPlayer.reset()
+            if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
+                log.debug(u'Starting to play...')
+                self.display.audioPlayer.addToPlaylist(
+                    self.serviceItem.background_audio)
+                self.display.audioPlayer.play()
         row = 0
         text = []
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
