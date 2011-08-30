@@ -256,6 +256,13 @@ class SlideController(QtGui.QWidget):
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+            # Stuff for items with background audio.
+            #self.toolbar.addToolbarSeparator(u'Audio Separator')
+            self.audioPauseItem = self.toolbar.addToolbarButton(
+                u'Pause Audio', u':/slides/media_playback_pause.png',
+                translate('OpenLP.SlideController', 'Pause audio.'),
+                self.onAudioPauseClicked, True)
+            self.audioPauseItem.setVisible(False)
             # Build the volumeSlider.
             self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
             self.volumeSlider.setTickInterval(1)
@@ -619,11 +626,14 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.songMenu.menu().clear()
             self.display.audioPlayer.reset()
+            self.setAudioItemsVisibility(False)
+            self.audioPauseItem.setChecked(False)
             if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
                 self.display.audioPlayer.addToPlaylist(
                     self.serviceItem.background_audio)
                 self.display.audioPlayer.play()
+                self.setAudioItemsVisibility(True)
         row = 0
         text = []
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
@@ -1102,6 +1112,17 @@ class SlideController(QtGui.QWidget):
         self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
         self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
+
+    def setAudioItemsVisibility(self, visible):
+        self.audioPauseItem.setVisible(visible)
+
+    def onAudioPauseClicked(self, checked):
+        if not self.audioPauseItem.isVisible():
+            return
+        if checked:
+            self.display.audioPlayer.pause()
+        else:
+            self.display.audioPlayer.play()
 
     def timerEvent(self, event):
         """

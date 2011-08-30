@@ -617,6 +617,9 @@ class AudioPlayer(QtCore.QObject):
         if len(self.playlist) > self.currentIndex:
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
 
+    def connectVolumeSlider(self, slider):
+        slider.setAudioOutput(self.audioObject)
+
     def reset(self):
         """
         Reset the audio player, clearing the playlist and the queue.
@@ -632,8 +635,7 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer.play() called')
         if self.currentIndex == -1:
-            self.currentIndex += 1
-            self.mediaObject.enqueue(self.playlist[self.currentIndex])
+            self.onAboutToFinish()
         self.mediaObject.play()
 
     def pause(self):
