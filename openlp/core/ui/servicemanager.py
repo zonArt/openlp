@@ -290,7 +290,7 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
-            self.mainwindow.serviceSettingsSection + u'/service theme',
+            self.mainwindow.servicemanagerSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
@@ -371,7 +371,7 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.setServiceModified(self.isModified(),
             self.shortFileName())
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(fileName))
+            setValue(u'servicemanager/last file',QtCore.QVariant(fileName))
 
     def fileName(self):
         """
@@ -429,14 +429,15 @@ class ServiceManager(QtGui.QWidget):
                 self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
                 SettingsManager.get_last_dir(
-                self.mainwindow.serviceSettingsSection),
+                self.mainwindow.servicemanagerSettingsSection),
                 translate('OpenLP.ServiceManager',
                 'OpenLP Service Files (*.osz)')))
             if not fileName:
                 return False
         else:
             fileName = loadFile
-        SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
+        SettingsManager.set_last_dir(
+            self.mainwindow.servicemanagerSettingsSection,
             split_filename(fileName)[0])
         self.loadFile(fileName)
 
@@ -461,7 +462,7 @@ class ServiceManager(QtGui.QWidget):
         self.setFileName(u'')
         self.setModified(False)
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(u''))
+            setValue(u'servicemanager/last file',QtCore.QVariant(u''))
 
     def saveFile(self):
         """
@@ -474,7 +475,8 @@ class ServiceManager(QtGui.QWidget):
         (basename, extension) = os.path.splitext(file_name)
         service_file_name = basename + '.osd'
         log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
-        SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
+        SettingsManager.set_last_dir(
+            self.mainwindow.servicemanagerSettingsSection,
             path)
         service = []
         write_list = []
@@ -562,7 +564,7 @@ class ServiceManager(QtGui.QWidget):
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService,
             SettingsManager.get_last_dir(
-            self.mainwindow.serviceSettingsSection),
+            self.mainwindow.servicemanagerSettingsSection),
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
@@ -584,8 +586,8 @@ class ServiceManager(QtGui.QWidget):
         fileTo = None
         try:
             zip = zipfile.ZipFile(fileName)
-            for file in zip.namelist():
-                ucsfile = file_is_unicode(file)
+            for zipinfo in zip.infolist():
+                ucsfile = file_is_unicode(zipinfo.filename)
                 if not ucsfile:
                     critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
@@ -593,14 +595,11 @@ class ServiceManager(QtGui.QWidget):
                         'The content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
-                filePath = os.path.join(self.servicePath,
-                    os.path.split(osfile)[1])
-                fileTo = open(filePath, u'wb')
-                fileTo.write(zip.read(file))
-                fileTo.flush()
-                fileTo.close()
-                if filePath.endswith(u'osd'):
-                    p_file = filePath
+                filename_only = os.path.split(osfile)[1]
+                zipinfo.filename = filename_only
+                zip.extract(zipinfo, self.servicePath)
+                if filename_only.endswith(u'osd'):
+                    p_file = os.path.join(self.servicePath, filename_only)
             if 'p_file' in locals():
                 Receiver.send_message(u'cursor_busy')
                 fileTo = open(p_file, u'r')
@@ -624,7 +623,7 @@ class ServiceManager(QtGui.QWidget):
                 self.mainwindow.addRecentFile(fileName)
                 self.setModified(False)
                 QtCore.QSettings().setValue(
-                    'service/last file', QtCore.QVariant(fileName))
+                    'servicemanager/last file', QtCore.QVariant(fileName))
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
@@ -666,7 +665,7 @@ class ServiceManager(QtGui.QWidget):
         present.
         """
         fileName = QtCore.QSettings(). \
-            value(u'service/last file',QtCore.QVariant(u'')).toString()
+            value(u'servicemanager/last file',QtCore.QVariant(u'')).toString()
         if fileName:
             self.loadFile(fileName)
 
@@ -1008,7 +1007,8 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
-            self.mainwindow.serviceSettingsSection + u'/service theme',
+            self.mainwindow.servicemanagerSettingsSection +
+                u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
 
