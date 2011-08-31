@@ -258,7 +258,6 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'uuid': self._uuid,
             u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,

@@ -257,7 +257,6 @@ class SlideController(QtGui.QWidget):
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
             # Stuff for items with background audio.
-            #self.toolbar.addToolbarSeparator(u'Audio Separator')
             self.audioPauseItem = self.toolbar.addToolbarButton(
                 u'Pause Audio', u':/slides/media_playback_pause.png',
                 translate('OpenLP.SlideController', 'Pause audio.'),
