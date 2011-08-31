@@ -582,7 +582,7 @@ class SlideController(QtGui.QWidget):
         """
         Replacement item following a remote edit
         """
-        if item.__eq__(self.serviceItem):
+        if item == self.serviceItem:
             self._processItem(item, self.previewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
@@ -592,15 +592,17 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
-        # If no valid slide number is specified we take the first one.
+        # If no valid slide number is specified we take the first one, but we
+        # remember the initial value to see if we should reload the song or not
+        slidenum = slideno
         if slideno == -1:
-            slideno = 0
-        # If service item is the same as the current on only change slide
-        if item.__eq__(self.serviceItem):
-            self.__checkUpdateSelectedSlide(slideno)
+            slidenum = 0
+        # If service item is the same as the current one, only change slide
+        if slideno >= 0 and item == self.serviceItem:
+            self.__checkUpdateSelectedSlide(slidenum)
             self.slideSelected()
-            return
-        self._processItem(item, slideno)
+        else:
+            self._processItem(item, slidenum)
 
     def _processItem(self, serviceItem, slideno):
         """

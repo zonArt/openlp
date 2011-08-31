@@ -354,7 +354,7 @@ class SongMediaItem(MediaManagerItem):
         if valid:
             self.remoteSong = song_id
             self.remoteTriggered = remote_type
-            self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
+            self.edit_song_form.loadSong(song_id, remote_type == u'P')
             self.edit_song_form.exec_()
             self.auto_select_id = -1
             self.onSongListLoad()
