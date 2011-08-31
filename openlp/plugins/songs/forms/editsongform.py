@@ -198,6 +198,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verseListWidget.setRowCount(0)
         self.authorsListView.clear()
         self.topicsListView.clear()
+        self.audioListWidget.clear()
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         self.songBookNumberEdit.setText(u'')
         self.loadAuthors()

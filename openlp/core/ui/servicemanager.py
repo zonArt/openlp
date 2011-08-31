@@ -1314,7 +1314,7 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
                         serviceItem[u'service_item'].is_capable(
-                        ItemCapabilities.HasAdditions)):
+                        ItemCapabilities.CanAppend)):
                         action = self.dndMenu.exec_(QtGui.QCursor.pos())
                         # New action required
                         if action == self.newAction:

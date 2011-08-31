@@ -627,7 +627,7 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex = -1
         self.playlist = []
         self.stop()
-        self.clearQueue()
+        self.mediaObject.clear()
 
     def play(self):
         """
@@ -664,9 +664,3 @@ class AudioPlayer(QtCore.QObject):
         for filename in filenames:
             self.playlist.append(Phonon.MediaSource(filename))
 
-    def clearQueue(self):
-        """
-        Clean up the Object queue
-        """
-        log.debug(u'AudioPlayer.clearQueue() called')
-        self.mediaObject.clearQueue()

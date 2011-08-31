@@ -230,7 +230,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
-        service_item.add_capability(ItemCapabilities.HasVirtualSplit)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits

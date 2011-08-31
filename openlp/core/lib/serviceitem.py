@@ -57,15 +57,15 @@ class ItemCapabilities(object):
     CanMaintain = 3
     RequiresMedia = 4
     CanLoop = 5
-    HasAdditions = 6
+    CanAppend = 6
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
     HasDetailedTitleDisplay = 11
     HasVariableStartTime = 12
-    HasVirtualSplit = 13
-    HasWordSplit = 14
+    CanSoftBreak = 13
+    CanWordSplit = 14
     HasBackgroundAudio = 15
 
 
