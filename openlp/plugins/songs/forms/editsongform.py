@@ -877,7 +877,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     pass
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        self.mediaitem.auto_select_id = self.song.id
+        self.mediaitem.autoSelectId = self.song.id
 
     def _processLyrics(self):
         """

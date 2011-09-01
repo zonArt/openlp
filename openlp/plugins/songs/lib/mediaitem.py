@@ -229,7 +229,7 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.theme_name.like(u'%' + search_keywords + u'%'))
             self.displayResultsSong(search_results)
-        self.check_search_result()
+        self.checkSearchReslt()
 
     def searchEntire(self, search_keywords):
         return self.plugin.manager.get_all_objects(Song,
@@ -263,7 +263,7 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
-        self.save_auto_select_id()
+        self.saveAutoSelectId()
         self.listView.clear()
         # Sort the songs by its title considering language specific characters.
         # lower() is needed for windows!
@@ -277,9 +277,9 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
-            if song.id == self.auto_select_id:
+            if song.id == self.autoSelectId:
                 self.listView.setCurrentItem(song_name)
-        self.auto_select_id = -1
+        self.autoSelectId = -1
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -331,7 +331,7 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
-        self.auto_select_id = -1
+        self.autoSelectId = -1
 
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
@@ -356,7 +356,7 @@ class SongMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_song_form.loadSong(song_id, remote_type == u'P')
             self.edit_song_form.exec_()
-            self.auto_select_id = -1
+            self.autoSelectId = -1
             self.onSongListLoad()
 
     def onEditClick(self):
@@ -369,7 +369,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
-            self.auto_select_id = -1
+            self.autoSelectId = -1
             self.onSongListLoad()
         self.editItem = None
 
