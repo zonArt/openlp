@@ -190,7 +190,10 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                verse_index = VerseType.from_loose_input(verse_tag)
+                if len(verse_tag) == 0:
+                    verse_index = 0
+                else:
+                    verse_index = VerseType.from_loose_input(verse_tag)
                 verse_tag = VerseType.Tags[verse_index]
                 inst = 1
                 if [verse_tag, verse_num, inst] in our_verse_order \
