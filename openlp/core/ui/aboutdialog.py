@@ -116,7 +116,7 @@ class Ui_AboutDialog(object):
             u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
             u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
-            u'Stevan "StevanP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
+            u'Stevan "ElderP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
             u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
             u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
@@ -125,7 +125,7 @@ class Ui_AboutDialog(object):
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
             u'Tim "TRB143" Bentley (Fedora)',
             u'Matthias "matthub" Hub (Mac OS X)',
-            u'Stevan "StevanP" Pettit (Windows)',
+            u'Stevan "ElderP" Pettit (Windows)',
             u'Raoul "superfly" Snyman (Ubuntu)']
         translators = {
             u'af': [u'Johan "nuvolari" Mynhardt'],
