@@ -67,7 +67,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.search_results = {}
         self.second_search_results = {}
-        self.checkSearchReslt()
+        self.checkSearchResult()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -651,7 +651,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
-        self.checkSearchReslt()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -715,7 +715,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
-        self.checkSearchReslt()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 

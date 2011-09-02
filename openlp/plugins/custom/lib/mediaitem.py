@@ -273,7 +273,7 @@ class CustomMediaItem(MediaManagerItem):
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
-        self.checkSearchReslt()
+        self.checkSearchResult()
 
     def onSearchTextEditChanged(self, text):
         """

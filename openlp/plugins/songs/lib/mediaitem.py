@@ -229,7 +229,7 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.theme_name.like(u'%' + search_keywords + u'%'))
             self.displayResultsSong(search_results)
-        self.checkSearchReslt()
+        self.checkSearchResult()
 
     def searchEntire(self, search_keywords):
         return self.plugin.manager.get_all_objects(Song,
