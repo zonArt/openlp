@@ -540,6 +540,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
         self.advancedlSettingsSection = u'advanced'
+        self.shortcutsSettingsSection = u'shortcuts'
         self.servicemanagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
@@ -925,6 +926,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settingSections.extend([self.generalSettingsSection])
         settingSections.extend([self.advancedlSettingsSection])
         settingSections.extend([self.uiSettingsSection])
+        settingSections.extend([self.shortcutsSettingsSection])
         settingSections.extend([self.servicemanagerSettingsSection])
         settingSections.extend([self.themesSettingsSection])
         settingSections.extend([self.displayTagsSection])
@@ -1008,6 +1010,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settingSections.extend([self.generalSettingsSection])
         settingSections.extend([self.advancedlSettingsSection])
         settingSections.extend([self.uiSettingsSection])
+        settingSections.extend([self.shortcutsSettingsSection])
         settingSections.extend([self.servicemanagerSettingsSection])
         settingSections.extend([self.themesSettingsSection])
         settingSections.extend([self.displayTagsSection])
@@ -1055,7 +1058,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         exportIni = open(exportFileName,  u'w')
         for fileRecord in tempIni:
             fileRecord = fileRecord.replace(u'%20',  u' ')
-            exportIni.write(fileRecord)
+            # Get rid of any invalid entries.
+            if not fileRecord.count(u'@Invalid()'):
+                exportIni.write(fileRecord)
         tempIni.close()
         exportIni.close()
         os.remove(temp_file)
