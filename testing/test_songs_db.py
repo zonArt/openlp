@@ -27,14 +27,27 @@
 ###############################################################################
 
 """
-GUI tests
+Songs database tests
 """
 
-from openlp.core import OpenLP
-from openlp.core.ui.mainwindow import MainWindow
+from openlp.plugins.songs.lib.db import Author, Book, MediaFile, Song, Topic
 
 
-def test_start_app(openlpapp):
-    assert type(openlpapp) == OpenLP
-    assert type(openlpapp.mainWindow) == MainWindow
-    assert unicode(openlpapp.mainWindow.windowTitle()) == u'OpenLP 2.0'
+def test_empty_songdb(empty_songs_db):
+    g = empty_songs_db.get_all_objects
+    assert g(Author) == []
+    assert g(Book) == []
+    assert g(MediaFile) == []
+    assert g(Song) == []
+    assert g(Topic) == []
+    c = empty_songs_db.get_object_count
+    assert c(Author) == 0
+    assert c(Book) == 0
+    assert c(MediaFile) == 0
+    assert c(Song) == 0
+    assert c(Topic) == 0
+
+
+def test_nonexisting_class(empty_songs_db):
+    # test class not mapped to any sqlalchemy table
+    assert 0

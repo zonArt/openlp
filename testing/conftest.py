@@ -66,11 +66,11 @@ def pytest_funcarg__openlpapp(request):
 
 
 # Test function argument to make openlp gui instance persistent for all tests.
-def pytest_funcarg__empty_dbmanager(request):
+def pytest_funcarg__empty_songs_db(request):
     def setup():
         tmpdir = request.getfuncargvalue('tmpdir')
         db_file_path = tmpdir.join('songs.sqlite')
-        print db_file_path
+        # unique QSettings group
         unique = ''.join(random.choice(string.letters + string.digits)
             for i in range(8))
         plugin_name = 'test_songs_%s' % unique
@@ -82,5 +82,6 @@ def pytest_funcarg__empty_dbmanager(request):
             db_file_path=db_file_path.strpath)
         return manager
     def teardown(manager):
+        # sqlalchemy allows to map classess to only one database at a time
         clear_mappers()
     return request.cached_setup(setup=setup, teardown=teardown, scope='function')
