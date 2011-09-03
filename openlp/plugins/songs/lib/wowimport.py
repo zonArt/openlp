@@ -105,6 +105,8 @@ class WowImport(SongImport):
         if isinstance(self.import_source, list):
             self.import_wizard.progressBar.setMaximum(len(self.import_source))
             for file in self.import_source:
+                if self.stop_import_flag:
+                    return
                 file_name = os.path.split(file)[1]
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]

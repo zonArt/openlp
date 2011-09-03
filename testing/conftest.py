@@ -8,7 +8,7 @@
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Armin Köhler, Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
@@ -26,17 +26,20 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-# Import uuid now, to avoid the rare bug described in the support system:
-# http://support.openlp.org/issues/102
-# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
-# removed.
-import uuid
+"""
+Configuration file for pytest framework.
+"""
 
-from openlp.core import main
+from openlp.core import main as openlp_main
 
 
-if __name__ == u'__main__':
-    """
-    Instantiate and run the application.
-    """
-    main()
+# Test function argument to make openlp gui instance persistent for all tests.
+# All test cases have to access the same instance. To allow create multiple
+# instances it would be necessary use diffrent configuraion and data files.
+# Created instance will use your OpenLP settings.
+def pytest_funcarg__openlpapp(request):
+    def setup():
+        return openlp_main(['--testing'])
+    def teardown(app):
+        pass
+    return request.cached_setup(setup=setup, teardown=teardown, scope='session')

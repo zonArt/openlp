@@ -26,17 +26,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-# Import uuid now, to avoid the rare bug described in the support system:
-# http://support.openlp.org/issues/102
-# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
-# removed.
-import uuid
+"""
+This script is used to run set of automated tests of OpenLP. To start tests,
+simply run this script::
 
-from openlp.core import main
+    @:~$ ./run.py
+
+"""
+
+import os.path
+import sys
+
+TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
+SRC_PATH = os.path.join(TESTS_PATH, '..')
+
+PYTEST_OPTIONS = [TESTS_PATH]
+
+# Extend python PATH with openlp source
+sys.path.insert(0, SRC_PATH)
+
+# Python testing framework
+# http://pytest.org
+import pytest
+
+
+def main():
+    print 'pytest options:', PYTEST_OPTIONS
+    pytest.main(PYTEST_OPTIONS)
 
 
 if __name__ == u'__main__':
-    """
-    Instantiate and run the application.
-    """
     main()
