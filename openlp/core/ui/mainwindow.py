@@ -914,43 +914,43 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        importFileName = unicode(QtGui.QFileDialog.getOpenFileName(self,
+        import_file_name = unicode(QtGui.QFileDialog.getOpenFileName(self,
                 translate('OpenLP.MainWindow', 'Open File'),
                 '',
                 translate('OpenLP.MainWindow',
                 'OpenLP Export Settings Files (*.conf)')))
-        if not importFileName:
+        if not import_file_name:
             return
-        settingSections = []
+        setting_sections = []
         # Add main sections.
-        settingSections.extend([self.generalSettingsSection])
-        settingSections.extend([self.advancedlSettingsSection])
-        settingSections.extend([self.uiSettingsSection])
-        settingSections.extend([self.shortcutsSettingsSection])
-        settingSections.extend([self.servicemanagerSettingsSection])
-        settingSections.extend([self.themesSettingsSection])
-        settingSections.extend([self.displayTagsSection])
-        settingSections.extend([self.headerSection])
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
+        setting_sections.extend([self.headerSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
-            settingSections.extend([plugin.name])
+            setting_sections.extend([plugin.name])
         settings = QtCore.QSettings()
-        importSettings = QtCore.QSettings(importFileName,
+        import_settings = QtCore.QSettings(import_file_name,
             QtCore.QSettings.IniFormat)
-        importKeys = importSettings.allKeys()
-        for sectionKey in importKeys:
+        import_keys = import_settings.allKeys()
+        for section_key in import_keys:
             # We need to handle the really bad files.
             try:
-                section, key = sectionKey.split(u'/')
+                section, key = section_key.split(u'/')
             except ValueError:
                 section = u'unknown'
                 key = u''
             # Switch General back to lowercase.
             if section == u'General':
                 section = u'general'
-            sectionKey = section + "/" + key
+                section_key = section + "/" + key
             # Make sure it's a valid section for us.
-            if not section in settingSections:
+            if not section in setting_sections:
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.MainWindow', 'Import settings'),
                     translate('OpenLP.MainWindow',
@@ -963,13 +963,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Ok))
                 return
         # We have a good file, import it.
-        for sectionKey in importKeys:
-            value = importSettings.value(sectionKey)
-            settings.setValue(u'%s' % (sectionKey) ,
+        for section_key in import_keys:
+            value = import_settings.value(section_key)
+            settings.setValue(u'%s' % (section_key) ,
                 QtCore.QVariant(value))
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue( u'file_imported' , QtCore.QVariant(importFileName))
+        settings.setValue( u'file_imported' , QtCore.QVariant(import_file_name))
         settings.setValue(u'file_date_imported',
             now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
@@ -1005,18 +1005,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_file = os.path.join(unicode(gettempdir()),
             u'openlp', u'exportIni.tmp')
         self.saveSettings()
-        settingSections = []
+        setting_sections = []
         # Add main sections.
-        settingSections.extend([self.generalSettingsSection])
-        settingSections.extend([self.advancedlSettingsSection])
-        settingSections.extend([self.uiSettingsSection])
-        settingSections.extend([self.shortcutsSettingsSection])
-        settingSections.extend([self.servicemanagerSettingsSection])
-        settingSections.extend([self.themesSettingsSection])
-        settingSections.extend([self.displayTagsSection])
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
-            settingSections.extend([plugin.name])
+            setting_sections.extend([plugin.name])
         # Delete old files if found.
         if os.path.exists(temp_file):
             os.remove(temp_file)
@@ -1026,43 +1026,42 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        exportSettings = QtCore.QSettings(temp_file,
+        export_settings = QtCore.QSettings(temp_file,
             QtCore.QSettings.IniFormat)
         # Add a header section.
         # This is to insure it's our ini file for import.
         now = datetime.now()
-        applicationVersion = get_application_version()
+        application_version = get_application_version()
         # Write INI format using Qsettings.
         # Write our header.
-        exportSettings.beginGroup(self.headerSection)
-        exportSettings.setValue(u'Make_Changes', u'At_Own_RISK')
-        exportSettings.setValue(u'type', u'OpenLP_settings_export')
-        exportSettings.setValue(u'file_date_created',
+        export_settings.beginGroup(self.headerSection)
+        export_settings.setValue(u'Make_Changes', u'At_Own_RISK')
+        export_settings.setValue(u'type', u'OpenLP_settings_export')
+        export_settings.setValue(u'file_date_created',
             now.strftime("%Y-%m-%d %H:%M"))
-        exportSettings.setValue(u'version', applicationVersion[u'full'])
-        exportSettings.endGroup()
+        export_settings.setValue(u'version', application_version[u'full'])
+        export_settings.endGroup()
         # Write all the sections and keys.
-        for sectionKey in keys:
-            section, key = sectionKey.split(u'/')
-            keyValue = settings.value(sectionKey)
-            sectionKey = section + u"/" + key
+        for section_key in keys:
+            section, key = section_key.split(u'/')
+            key_value = settings.value(section_key)
             # Change the service section to servicemanager.
             if section == u'service':
-                sectionKey = u'servicemanager/' + key
-            exportSettings.setValue(sectionKey, keyValue)
-        exportSettings.sync()
+                section_key = u'servicemanager/' + key
+            export_settings.setValue(section_key, key_value)
+        export_settings.sync()
         # Temp INI file has been written.  Blanks in keys are now '%20'.
         # Read the  temp file and output the user's INI file with blanks to
         # make it more readable.
-        tempIni = open(temp_file, u'r')
-        exportIni = open(exportFileName,  u'w')
-        for fileRecord in tempIni:
-            fileRecord = fileRecord.replace(u'%20',  u' ')
+        temp_ini = open(temp_file, u'r')
+        export_ini = open(exportFileName,  u'w')
+        for file_record in temp_ini:
+            file_record = file_record.replace(u'%20',  u' ')
             # Get rid of any invalid entries.
-            if not fileRecord.count(u'@Invalid()'):
-                exportIni.write(fileRecord)
-        tempIni.close()
-        exportIni.close()
+            if file_record.find(u'@Invalid()') == -1:
+                export_ini.write(file_record)
+        temp_ini.close()
+        export_ini.close()
         os.remove(temp_file)
         return
 
