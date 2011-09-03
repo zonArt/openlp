@@ -30,16 +30,57 @@
 Configuration file for pytest framework.
 """
 
+import logging
+import random
+import string
+
+from PyQt4 import QtCore
+from sqlalchemy.orm import clear_mappers
+
 from openlp.core import main as openlp_main
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib.db import init_schema
+
+# set up logging to stderr (console)
+_handler = logging.StreamHandler(stream=None)
+_handler.setFormatter(logging.Formatter(
+    u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+logging.addLevelName(15, u'Timer')
+log = logging.getLogger()
+log.addHandler(_handler)
+log.setLevel(logging.DEBUG)
 
 
 # Test function argument to make openlp gui instance persistent for all tests.
-# All test cases have to access the same instance. To allow create multiple
+# Test cases in module have to access the same instance. To allow creating
+# multiple
 # instances it would be necessary use diffrent configuraion and data files.
 # Created instance will use your OpenLP settings.
 def pytest_funcarg__openlpapp(request):
     def setup():
         return openlp_main(['--testing'])
     def teardown(app):
-        pass
-    return request.cached_setup(setup=setup, teardown=teardown, scope='session')
+        # sqlalchemy allows to map classess to only one database at a time
+        clear_mappers()
+    return request.cached_setup(setup=setup, teardown=teardown, scope='module')
+
+
+# Test function argument to make openlp gui instance persistent for all tests.
+def pytest_funcarg__empty_dbmanager(request):
+    def setup():
+        tmpdir = request.getfuncargvalue('tmpdir')
+        db_file_path = tmpdir.join('songs.sqlite')
+        print db_file_path
+        unique = ''.join(random.choice(string.letters + string.digits)
+            for i in range(8))
+        plugin_name = 'test_songs_%s' % unique
+        settings = QtCore.QSettings()
+        settings.beginGroup(plugin_name)
+        settings.setValue(u'db type', QtCore.QVariant(u'sqlite'))
+        settings.endGroup()
+        manager = Manager(plugin_name, init_schema,
+            db_file_path=db_file_path.strpath)
+        return manager
+    def teardown(manager):
+        clear_mappers()
+    return request.cached_setup(setup=setup, teardown=teardown, scope='function')
