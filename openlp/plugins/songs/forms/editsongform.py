@@ -877,6 +877,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 except:
                     log.exception('Could not remove file: %s', audio)
                     pass
+        if not files:
+            try:
+                os.rmdir(save_path)
+            except OSError:
+                log.exception(u'Could not remove directory: %s', save_path)
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         self.mediaitem.autoSelectId = self.song.id
