@@ -28,7 +28,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
+from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
+    create_up_down_push_button_set
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_EditSongDialog(object):
@@ -36,9 +37,11 @@ class Ui_EditSongDialog(object):
         editSongDialog.setObjectName(u'editSongDialog')
         editSongDialog.resize(650, 400)
         editSongDialog.setWindowIcon(
-            build_icon(u':/icon/openlp.org-icon-32.bmp'))
+            build_icon(u':/icon/openlp-logo-16x16.png'))
         editSongDialog.setModal(True)
         self.dialogLayout = QtGui.QVBoxLayout(editSongDialog)
+        self.dialogLayout.setSpacing(8)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.songTabWidget = QtGui.QTabWidget(editSongDialog)
         self.songTabWidget.setObjectName(u'songTabWidget')
@@ -246,6 +249,36 @@ class Ui_EditSongDialog(object):
         self.commentsLayout.addWidget(self.commentsEdit)
         self.themeTabLayout.addWidget(self.commentsGroupBox)
         self.songTabWidget.addTab(self.themeTab, u'')
+        # audio tab
+        self.audioTab = QtGui.QWidget()
+        self.audioTab.setObjectName(u'audioTab')
+        self.audioLayout = QtGui.QHBoxLayout(self.audioTab)
+        self.audioLayout.setObjectName(u'audioLayout')
+        self.audioListWidget = QtGui.QListWidget(self.audioTab)
+        self.audioListWidget.setObjectName(u'audioListWidget')
+        self.audioLayout.addWidget(self.audioListWidget)
+        self.audioButtonsLayout = QtGui.QVBoxLayout()
+        self.audioButtonsLayout.setObjectName(u'audioButtonsLayout')
+        self.audioAddFromFileButton = QtGui.QPushButton(self.audioTab)
+        self.audioAddFromFileButton.setObjectName(u'audioAddFromFileButton')
+        self.audioButtonsLayout.addWidget(self.audioAddFromFileButton)
+        self.audioAddFromMediaButton = QtGui.QPushButton(self.audioTab)
+        self.audioAddFromMediaButton.setObjectName(u'audioAddFromMediaButton')
+        self.audioButtonsLayout.addWidget(self.audioAddFromMediaButton)
+        self.audioRemoveButton = QtGui.QPushButton(self.audioTab)
+        self.audioRemoveButton.setObjectName(u'audioRemoveButton')
+        self.audioButtonsLayout.addWidget(self.audioRemoveButton)
+        self.audioRemoveAllButton = QtGui.QPushButton(self.audioTab)
+        self.audioRemoveAllButton.setObjectName(u'audioRemoveAllButton')
+        self.audioButtonsLayout.addWidget(self.audioRemoveAllButton)
+        self.audioButtonsLayout.addStretch(1)
+        self.upButton, self.downButton = \
+            create_up_down_push_button_set(self)
+        self.audioButtonsLayout.addWidget(self.upButton)
+        self.audioButtonsLayout.addWidget(self.downButton)
+        self.audioLayout.addLayout(self.audioButtonsLayout)
+        self.songTabWidget.addTab(self.audioTab, u'')
+        # Last few bits
         self.dialogLayout.addWidget(self.songTabWidget)
         self.buttonBox = create_accept_reject_button_box(editSongDialog)
         self.dialogLayout.addWidget(self.buttonBox)
@@ -305,6 +338,17 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.themeTab),
             translate('SongsPlugin.EditSongForm',
                 'Theme, Copyright Info && Comments'))
+        self.songTabWidget.setTabText(
+            self.songTabWidget.indexOf(self.audioTab),
+            translate('SongsPlugin.EditSongForm', 'Linked Audio'))
+        self.audioAddFromFileButton.setText(
+            translate('SongsPlugin.EditSongForm', 'Add &File(s)'))
+        self.audioAddFromMediaButton.setText(
+            translate('SongsPlugin.EditSongForm', 'Add &Media'))
+        self.audioRemoveButton.setText(
+            translate('SongsPlugin.EditSongForm', '&Remove'))
+        self.audioRemoveAllButton.setText(
+            translate('SongsPlugin.EditSongForm', 'Remove &All'))
 
 def editSongDialogComboBox(parent, name):
     """

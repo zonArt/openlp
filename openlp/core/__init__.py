@@ -25,7 +25,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-__all__ = ('OpenLP', 'main')
+"""
+The :mod:`core` module provides all core application functions
+
+All the core functions of the OpenLP application including the GUI, settings,
+logging and a plugin framework are contained within the openlp.core module.
+"""
 
 import os
 import sys
@@ -46,16 +51,11 @@ from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
     get_application_version, DelayStartThread
 
+
+__all__ = [u'OpenLP', u'main']
+
+
 log = logging.getLogger()
-
-
-"""
-The :mod:`core` module provides all core application functions
-
-All the core functions of the OpenLP application including the GUI, settings,
-logging and a plugin framework are contained within the openlp.core module.
-"""
-
 application_stylesheet = u"""
 QMainWindow::separator
 {
