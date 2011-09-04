@@ -177,7 +177,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadMediaFiles(self):
         self.audioAddFromMediaButton.setVisible(False)
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
+            if plugin.name == u'media' and \
+                plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(
                     plugin.getMediaManagerItem().getList(MediaType.Audio))
@@ -490,14 +491,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 item.setText(after_text)
-                # number of lines has change so repaint the list moving the data
+                # number of lines has changed, repaint the list moving the data
                 if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
                     tempList = {}
                     tempId = {}
                     for row in range(0, self.verseListWidget.rowCount()):
-                        tempList[row] = self.verseListWidget.item(row, 0).text()
-                        tempId[row] = self.verseListWidget.item(row, 0).\
-                            data(QtCore.Qt.UserRole)
+                        tempList[row] = self.verseListWidget.item(row, 0)\
+                            .text()
+                        tempId[row] = self.verseListWidget.item(row, 0)\
+                            .data(QtCore.Qt.UserRole)
                     self.verseListWidget.clear()
                     for row in range (0, len(tempList)):
                         item = QtGui.QTableWidgetItem(tempList[row], 0)
@@ -843,7 +845,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.song.topics.append(self.manager.get_object(Topic, topicId))
-        # Save the song here because we need a valid song id for the audio files.
+        # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         audio_files = map(lambda a: a.file_name, self.song.media_files)
@@ -862,7 +864,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 oldfile, filename = filename, os.path.join(save_path,
                     os.path.split(filename)[1])
                 shutil.copyfile(oldfile, filename)
-                files.append(filename)
+            files.append(filename)
             media_file = MediaFile()
             media_file.file_name = filename
             media_file.type = u'audio'
