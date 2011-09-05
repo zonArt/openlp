@@ -111,7 +111,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        self.auto_select_id = -1
+        self.autoSelectId = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.plugin.name),
             self.serviceLoad)
@@ -506,7 +506,7 @@ class MediaManagerItem(QtGui.QWidget):
         if QtCore.QSettings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() \
-            and self.auto_select_id == -1:
+            and self.autoSelectId == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):
@@ -626,7 +626,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def check_search_result(self):
+    def checkSearchResult(self):
         """
         Checks if the listView is empty and adds a "No Search Results" item.
         """
@@ -662,15 +662,15 @@ class MediaManagerItem(QtGui.QWidget):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
 
-    def save_auto_select_id(self):
+    def saveAutoSelectId(self):
         """
         Sorts out, what item to select after loading a list.
         """
         # The item to select has not been set.
-        if self.auto_select_id == -1:
+        if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+                self.autoSelectId = item.data(QtCore.Qt.UserRole).toInt()[0]
 
     def search(self, string):
         """

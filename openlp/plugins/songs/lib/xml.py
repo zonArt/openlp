@@ -372,7 +372,7 @@ class OpenLyrics(object):
         self._process_topics(properties, song)
         clean_song(self.manager, song)
         self.manager.save_object(song)
-        return song.id
+        return song
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:

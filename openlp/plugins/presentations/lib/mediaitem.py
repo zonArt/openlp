@@ -248,7 +248,7 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = unicode(self.displayTypeComboBox.currentText())
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.AllowsDetailedTitleDisplay)
+        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if shortname:
             for bitem in items:

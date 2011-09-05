@@ -24,12 +24,34 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`openlp` module contains all the project produced OpenLP functionality
-"""
 
-import core
-import plugins
+import logging
+import os
 
-__all__ = [u'core', u'plugins']
+from PyQt4 import QtCore, QtGui
+
+from mediafilesdialog import Ui_MediaFilesDialog
+
+log = logging.getLogger(__name__)
+
+class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
+    """
+    Class to show a list of files from the
+    """
+    log.info(u'%s MediaFilesForm loaded', __name__)
+
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self)
+        self.setupUi(self)
+
+    def populateFiles(self, files):
+        self.fileListWidget.clear()
+        for file in files:
+            item = QtGui.QListWidgetItem(os.path.split(file)[1])
+            item.setData(QtCore.Qt.UserRole, file)
+            self.fileListWidget.addItem(item)
+
+    def getSelectedFiles(self):
+        return map(lambda x: unicode(x.data(QtCore.Qt.UserRole).toString()),
+            self.fileListWidget.selectedItems())
 
