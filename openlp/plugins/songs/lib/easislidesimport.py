@@ -49,21 +49,21 @@ class EasiSlidesImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
-    def do_import(self):
+    def doImport(self):
         """
-        Import either each of the files in self.import_sources - each element of
+        Import either each of the files in self.importSources - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        log.info(u'Importing EasiSlides XML file %s', self.import_source)
+        log.info(u'Importing EasiSlides XML file %s', self.importSource)
         parser = etree.XMLParser(remove_blank_text=True)
-        parsed_file = etree.parse(self.import_source, parser)
+        parsed_file = etree.parse(self.importSource, parser)
         xml = unicode(etree.tostring(parsed_file))
         song_xml = objectify.fromstring(xml)
-        self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
+        self.importWizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 return
             self._parse_song(song)
 
@@ -88,9 +88,9 @@ class EasiSlidesImport(SongImport):
         self._parse_and_add_lyrics(song)
         if self._success:
             if not self.finish():
-                self.log_error(song.Title1 if song.Title1 else u'')
+                self.logError(song.Title1 if song.Title1 else u'')
         else:
-            self.set_defaults()
+            self.setDefaults()
 
     def _add_unicode_attribute(self, self_attribute, import_attribute,
         mandatory=False):

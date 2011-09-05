@@ -55,13 +55,13 @@ class CCLIFileImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def do_import(self):
+    def doImport(self):
         """
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
         log.debug(u'Starting CCLI File Import')
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        for filename in self.import_source:
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        for filename in self.importSource:
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
@@ -80,23 +80,23 @@ class CCLIFileImport(SongImport):
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found: %s', filename)
-                    if not self.do_import_usr_file(lines):
-                        self.log_error(filename)
+                    if not self.doImportUsrFile(lines):
+                        self.logError(filename)
                 elif ext.lower() == u'.txt':
                     log.info(u'SongSelect .txt format file found: %s', filename)
-                    if not self.do_import_txt_file(lines):
-                        self.log_error(filename)
+                    if not self.doImportTxtFile(lines):
+                        self.logError(filename)
                 else:
-                    self.log_error(filename,
+                    self.logError(filename,
                         translate('SongsPlugin.CCLIFileImport',
                         'The file does not have a valid extension.'))
                     log.info(u'Extension %s is not valid', filename)
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 return
 
-    def do_import_usr_file(self, textList):
+    def doImportUsrFile(self, textList):
         """
-        The :func:`do_import_usr_file` method provides OpenLP with the ability
+        The :func:`doImport_usr_file` method provides OpenLP with the ability
         to import CCLI SongSelect songs in *USR* file format.
 
         ``textList``
@@ -219,9 +219,9 @@ class CCLIFileImport(SongImport):
         self.topics = [topic.strip() for topic in song_topics.split(u'/t')]
         return self.finish()
 
-    def do_import_txt_file(self, textList):
+    def doImportTxtFile(self, textList):
         """
-        The :func:`do_import_txt_file` method provides OpenLP with the ability
+        The :func:`doImport_txt_file` method provides OpenLP with the ability
         to import CCLI SongSelect songs in *TXT* file format.
 
         ``textList``

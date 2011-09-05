@@ -61,21 +61,21 @@ class OooImport(SongImport):
         self.document = None
         self.process_started = False
 
-    def do_import(self):
-        if not isinstance(self.import_source, list):
+    def doImport(self):
+        if not isinstance(self.importSource, list):
             return
         try:
             self.start_ooo()
         except NoConnectException as exc:
-            self.log_error(
-                self.import_source[0],
+            self.logError(
+                self.importSource[0],
                 translate('SongsPlugin.SongImport',
                 'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
             return
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        for filename in self.import_source:
-            if self.stop_import_flag:
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        for filename in self.importSource:
+            if self.stopImportFlag:
                 break
             filename = unicode(filename)
             if os.path.isfile(filename):
@@ -84,11 +84,11 @@ class OooImport(SongImport):
                     self.process_ooo_document()
                     self.close_ooo_file()
                 else:
-                    self.log_error(self.filepath,
+                    self.logError(self.filepath,
                         translate('SongsPlugin.SongImport',
                         'Unable to open file'))
             else:
-                self.log_error(self.filepath,
+                self.logError(self.filepath,
                     translate('SongsPlugin.SongImport', 'File not found'))
         self.close_ooo()
 
@@ -168,7 +168,7 @@ class OooImport(SongImport):
                 self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.close_ooo_file()
             else:
-                self.import_wizard.incrementProgressBar(
+                self.importWizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except AttributeError:
             log.exception("open_ooo_file failed: %s", url)
@@ -196,8 +196,8 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.stop_import_flag:
-                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+            if self.stopImportFlag:
+                self.importWizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)
             slidetext = u''
@@ -235,12 +235,12 @@ class OooImport(SongImport):
 
     def process_songs_text(self, text):
         songtexts = self.tidy_text(text).split(u'\f')
-        self.set_defaults()
+        self.setDefaults()
         for songtext in songtexts:
             if songtext.strip():
                 self.process_song_text(songtext.strip())
                 if self.check_complete():
                     self.finish()
-                    self.set_defaults()
+                    self.setDefaults()
         if self.check_complete():
             self.finish()

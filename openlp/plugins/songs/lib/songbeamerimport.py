@@ -98,18 +98,18 @@ class SongBeamerImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def do_import(self):
+    def doImport(self):
         """
         Receive a single file or a list of files to import.
         """
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        if not isinstance(self.import_source, list):
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        if not isinstance(self.importSource, list):
             return
-        for file in self.import_source:
+        for file in self.importSource:
             # TODO: check that it is a valid SongBeamer file
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 return
-            self.set_defaults()
+            self.setDefaults()
             self.current_verse = u''
             self.current_verse_type = VerseType.Tags[VerseType.Verse]
             read_verses = False
@@ -150,7 +150,7 @@ class SongBeamerImport(SongImport):
                 self.replace_html_tags()
                 self.add_verse(self.current_verse, self.current_verse_type)
             if not self.finish():
-                self.log_error(file)
+                self.logError(file)
 
     def replace_html_tags(self):
         """

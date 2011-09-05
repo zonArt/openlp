@@ -98,7 +98,7 @@ class SofImport(OooImport):
         try:
             paragraphs = self.document.getText().createEnumeration()
             while paragraphs.hasMoreElements():
-                if self.stop_import_flag:
+                if self.stopImportFlag:
                     return
                 paragraph = paragraphs.nextElement()
                 if paragraph.supportsService("com.sun.star.text.Paragraph"):
@@ -106,7 +106,7 @@ class SofImport(OooImport):
         except RuntimeException as exc:
             log.exception(u'Error processing file: %s', exc)
         if not self.finish():
-            self.log_error(self.filepath)
+            self.logError(self.filepath)
 
     def process_paragraph(self, paragraph):
         """
@@ -222,7 +222,7 @@ class SofImport(OooImport):
                 return
             self.finish()
         self.song = True
-        self.set_defaults()
+        self.setDefaults()
         self.skip_to_close_bracket = False
         self.is_chorus = False
         self.italics = False
@@ -256,7 +256,7 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.title = title
-        self.import_wizard.incrementProgressBar(u'Processing song ' + title, 0)
+        self.importWizard.incrementProgressBar(u'Processing song ' + title, 0)
 
     def add_sof_author(self, text):
         """

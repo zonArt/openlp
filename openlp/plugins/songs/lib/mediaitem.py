@@ -69,11 +69,11 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_song_form = EditSongForm(self, self.plugin.formparent,
+        self.editSongForm = EditSongForm(self, self.plugin.formparent,
             self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
-        self.song_maintenance_form = SongMaintenanceForm(
+        self.songMaintenanceForm = SongMaintenanceForm(
             self.plugin.manager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
@@ -316,25 +316,26 @@ class SongMediaItem(MediaManagerItem):
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
-        if not hasattr(self, u'import_wizard'):
-            self.import_wizard = SongImportForm(self, self.plugin)
-        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+        if not hasattr(self, u'importWizard'):
+            self.importWizard = SongImportForm(self, self.plugin)
+        if self.importWizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
-        export_wizard = SongExportForm(self, self.plugin)
-        export_wizard.exec_()
+        if not hasattr(self, u'exportWizard'):
+            self.exportWizard = SongExportForm(self, self.plugin)
+        self.exportWizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')
-        self.edit_song_form.newSong()
-        self.edit_song_form.exec_()
+        self.editSongForm.newSong()
+        self.editSongForm.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
         self.autoSelectId = -1
 
     def onSongMaintenanceClick(self):
-        self.song_maintenance_form.exec_()
+        self.songMaintenanceForm.exec_()
 
     def onRemoteEditClear(self):
         log.debug(u'onRemoteEditClear')
@@ -354,8 +355,8 @@ class SongMediaItem(MediaManagerItem):
         if valid:
             self.remoteSong = song_id
             self.remoteTriggered = remote_type
-            self.edit_song_form.loadSong(song_id, remote_type == u'P')
-            self.edit_song_form.exec_()
+            self.editSongForm.loadSong(song_id, remote_type == u'P')
+            self.editSongForm.exec_()
             self.autoSelectId = -1
             self.onSongListLoad()
 
@@ -367,8 +368,8 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.edit_song_form.loadSong(item_id, False)
-            self.edit_song_form.exec_()
+            self.editSongForm.loadSong(item_id, False)
+            self.editSongForm.exec_()
             self.autoSelectId = -1
             self.onSongListLoad()
         self.editItem = None

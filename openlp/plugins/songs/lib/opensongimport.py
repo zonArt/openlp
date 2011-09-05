@@ -107,24 +107,24 @@ class OpenSongImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def do_import(self):
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        for filename in self.import_source:
-            if self.stop_import_flag:
+    def doImport(self):
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        for filename in self.importSource:
+            if self.stopImportFlag:
                 return
             song_file = open(filename)
-            self.do_import_file(song_file)
+            self.doImportFile(song_file)
             song_file.close()
 
-    def do_import_file(self, file):
+    def doImportFile(self, file):
         """
         Process the OpenSong file - pass in a file-like object, not a file path.
         """
-        self.set_defaults()
+        self.setDefaults()
         try:
             tree = objectify.parse(file)
         except (Error, LxmlError):
-            self.log_error(file.name, SongStrings.XMLSyntaxError)
+            self.logError(file.name, SongStrings.XMLSyntaxError)
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
@@ -251,4 +251,4 @@ class OpenSongImport(SongImport):
                     log.info(u'Got order %s but not in verse tags, dropping'
                         u'this item from presentation order', verse_def)
         if not self.finish():
-            self.log_error(file.name)
+            self.logError(file.name)
