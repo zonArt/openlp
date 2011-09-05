@@ -34,7 +34,7 @@ from openlp.core import OpenLP
 from openlp.core.ui.mainwindow import MainWindow
 
 
-def test_start_app(openlpapp):
-    assert type(openlpapp) == OpenLP
-    assert type(openlpapp.mainWindow) == MainWindow
-    assert unicode(openlpapp.mainWindow.windowTitle()) == u'OpenLP 2.0'
+#def test_start_app(openlpapp):
+    #assert type(openlpapp) == OpenLP
+    #assert type(openlpapp.mainWindow) == MainWindow
+    #assert unicode(openlpapp.mainWindow.windowTitle()) == u'OpenLP 2.0'

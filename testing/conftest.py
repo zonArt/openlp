@@ -31,6 +31,8 @@ Configuration file for pytest framework.
 """
 
 import os
+import sys
+import subprocess
 import logging
 import random
 import string
@@ -56,6 +58,18 @@ logging.addLevelName(15, u'Timer')
 log = logging.getLogger()
 log.addHandler(_handler)
 log.setLevel(logging.DEBUG)
+
+
+# Paths with resources for tests
+def pytest_funcarg__pth(request):
+    def setup():
+        class Pth(object):
+            def __init__(self):
+                self.tests = py.path.local(TESTS_PATH)
+                self.resources = py.path.local(RESOURCES_PATH)
+                self.songs = py.path.local(SONGS_PATH)
+        return Pth()
+    return request.cached_setup(setup=setup, scope='module')
 
 
 # Test function argument to make openlp gui instance persistent for all tests.
@@ -115,3 +129,30 @@ def pytest_funcarg__songs_db(request):
         # sqlalchemy allows to map classess to only one database at a time
         clear_mappers()
     return request.cached_setup(setup=setup, teardown=teardown, scope='function')
+
+
+class OpenLyricsValidator(object):
+    """Validate xml if it conformns to OpenLyrics xml schema."""
+    def __init__(self, script, schema):
+            self.cmd = [sys.executable, script, schema]
+
+    def validate(self, file_path):
+        self.cmd.append(file_path)
+        print self.cmd
+        retcode = subprocess.call(self.cmd)
+        if retcode == 0:
+            # xml conforms to schema
+            return True
+        else:
+            # xml has invalid syntax
+            return False
+
+
+# Test function argument giving access to song database.
+def pytest_funcarg__openlyrics_validator(request):
+    def setup():
+        script = os.path.join(RESOURCES_PATH, 'openlyrics', 'validate.py')
+        schema = os.path.join(RESOURCES_PATH, 'openlyrics',
+            'openlyrics_schema.rng')
+        return OpenLyricsValidator(script, schema)
+    return request.cached_setup(setup=setup, scope='session')
