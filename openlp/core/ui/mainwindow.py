@@ -988,22 +988,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.cleanUp()
         QtCore.QCoreApplication.exit()
 
-    def onSettingsExportItemClicked(self, exportFileName=None):
+    def onSettingsExportItemClicked(self):
         """
-        Export settings to an INI file
+        Export settings to a .conf file in INI format
         """
-        if not exportFileName:
-            exportFileName = unicode(QtGui.QFileDialog.getSaveFileName(self,
-                translate('OpenLP.MainWindow', 'Export Settings File'), '',
-                translate('OpenLP.MainWindow',
-                    'OpenLP Export Settings File (*.conf)')))
-        if not exportFileName:
+        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+            translate('OpenLP.MainWindow', 'Export Settings File'), '',
+            translate('OpenLP.MainWindow',
+                'OpenLP Export Settings File (*.conf)')))
+        if not export_file_name:
             return
-        # Make sure it's an .ini file.
-        if not exportFileName.endswith(u'conf'):
-            exportFileName = exportFileName + u'.conf'
+        # Make sure it's a .conf file.
+        if not export_file_name.endswith(u'conf'):
+            export_file_name = export_file_name + u'.conf'
         temp_file = os.path.join(unicode(gettempdir()),
-            u'openlp', u'exportIni.tmp')
+            u'openlp', u'exportConf.tmp')
         self.saveSettings()
         setting_sections = []
         # Add main sections.
@@ -1020,8 +1019,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Delete old files if found.
         if os.path.exists(temp_file):
             os.remove(temp_file)
-        if os.path.exists(exportFileName):
-            os.remove(exportFileName)
+        if os.path.exists(export_file_name):
+            os.remove(export_file_name)
         settings = QtCore.QSettings()
         settings.remove(self.headerSection)
         # Get the settings.
@@ -1029,7 +1028,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings = QtCore.QSettings(temp_file,
             QtCore.QSettings.IniFormat)
         # Add a header section.
-        # This is to insure it's our ini file for import.
+        # This is to insure it's our conf file for import.
         now = datetime.now()
         application_version = get_application_version()
         # Write INI format using Qsettings.
@@ -1050,18 +1049,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 section_key = u'servicemanager/' + key
             export_settings.setValue(section_key, key_value)
         export_settings.sync()
-        # Temp INI file has been written.  Blanks in keys are now '%20'.
-        # Read the  temp file and output the user's INI file with blanks to
+        # Temp CONF file has been written.  Blanks in keys are now '%20'.
+        # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
-        temp_ini = open(temp_file, u'r')
-        export_ini = open(exportFileName,  u'w')
-        for file_record in temp_ini:
-            file_record = file_record.replace(u'%20',  u' ')
+        temp_conf = open(temp_file, u'r')
+        export_conf = open(export_file_name,  u'w')
+        for file_record in temp_conf:
             # Get rid of any invalid entries.
             if file_record.find(u'@Invalid()') == -1:
-                export_ini.write(file_record)
-        temp_ini.close()
-        export_ini.close()
+                file_record = file_record.replace(u'%20',  u' ')
+                export_conf.write(file_record)
+        temp_conf.close()
+        export_conf.close()
         os.remove(temp_file)
         return
 
