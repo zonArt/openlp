@@ -30,16 +30,23 @@
 Configuration file for pytest framework.
 """
 
+import os
 import logging
 import random
 import string
 
+import py.path
 from PyQt4 import QtCore
 from sqlalchemy.orm import clear_mappers
 
 from openlp.core import main as openlp_main
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib.db import init_schema
+
+TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
+
+RESOURCES_PATH = os.path.join(TESTS_PATH, 'resources')
+SONGS_PATH = os.path.join(RESOURCES_PATH, 'songs')
 
 # set up logging to stderr (console)
 _handler = logging.StreamHandler(stream=None)
@@ -65,19 +72,42 @@ def pytest_funcarg__openlpapp(request):
     return request.cached_setup(setup=setup, teardown=teardown, scope='module')
 
 
-# Test function argument to make openlp gui instance persistent for all tests.
+def _get_unique_qsettings():
+    # unique QSettings group
+    unique = ''.join(random.choice(string.letters + string.digits)
+        for i in range(8))
+    group_name = 'test_%s' % unique
+    settings = QtCore.QSettings()
+    settings.beginGroup(group_name)
+    settings.setValue(u'db type', QtCore.QVariant(u'sqlite'))
+    settings.endGroup()
+    return group_name
+
+
+# Test function argument giving access to empty song database.
 def pytest_funcarg__empty_songs_db(request):
     def setup():
         tmpdir = request.getfuncargvalue('tmpdir')
         db_file_path = tmpdir.join('songs.sqlite')
-        # unique QSettings group
-        unique = ''.join(random.choice(string.letters + string.digits)
-            for i in range(8))
-        plugin_name = 'test_songs_%s' % unique
-        settings = QtCore.QSettings()
-        settings.beginGroup(plugin_name)
-        settings.setValue(u'db type', QtCore.QVariant(u'sqlite'))
-        settings.endGroup()
+        plugin_name = _get_unique_qsettings()
+        manager = Manager(plugin_name, init_schema,
+            db_file_path=db_file_path.strpath)
+        return manager
+    def teardown(manager):
+        # sqlalchemy allows to map classess to only one database at a time
+        clear_mappers()
+    return request.cached_setup(setup=setup, teardown=teardown, scope='function')
+
+
+# Test function argument giving access to song database.
+def pytest_funcarg__songs_db(request):
+    def setup():
+        tmpdir = request.getfuncargvalue('tmpdir')
+        db_file_path = tmpdir.join('songs.sqlite')
+        # copy test data to tmpdir
+        orig_db = py.path.local(SONGS_PATH).join('songs.sqlite')
+        orig_db.copy(db_file_path)
+        plugin_name = _get_unique_qsettings()
         manager = Manager(plugin_name, init_schema,
             db_file_path=db_file_path.strpath)
         return manager
