@@ -25,7 +25,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-__all__ = ('OpenLP', 'main')
+"""
+The :mod:`core` module provides all core application functions
+
+All the core functions of the OpenLP application including the GUI, settings,
+logging and a plugin framework are contained within the openlp.core module.
+"""
 
 import os
 import sys
@@ -46,16 +51,11 @@ from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
     get_application_version, DelayStartThread
 
+
+__all__ = [u'OpenLP', u'main']
+
+
 log = logging.getLogger()
-
-
-"""
-The :mod:`core` module provides all core application functions
-
-All the core functions of the OpenLP application including the GUI, settings,
-logging and a plugin framework are contained within the openlp.core module.
-"""
-
 application_stylesheet = u"""
 QMainWindow::separator
 {
@@ -261,8 +261,10 @@ def main(args=None):
     app.setApplicationName(u'OpenLP')
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if app.isAlreadyRunning():
-        sys.exit()
+    if not options.testing:
+        # Instance check
+        if app.isAlreadyRunning():
+            sys.exit()
     # First time checks in settings
     if not QtCore.QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
@@ -284,5 +286,7 @@ def main(args=None):
     # Do not run method app.exec_() when running gui tests
     if options.testing:
         app.run(qt_args, testing=True)
+        # For gui tests we need access to window intances and their components
+        return app
     else:
         sys.exit(app.run(qt_args))

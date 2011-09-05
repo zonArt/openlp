@@ -31,11 +31,11 @@ import os
 import locale
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.phonon import Phonon
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver
+    SettingsManager, translate, check_item_selected, Receiver, MediaType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
 
@@ -48,9 +48,9 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin, icon):
-        self.IconPath = u'images/image'
+        self.iconPath = u'images/image'
         self.background = False
-        self.PreviewFunction = CLAPPERBOARD
+        self.previewFunction = CLAPPERBOARD
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
@@ -139,8 +139,8 @@ class MediaMediaItem(MediaManagerItem):
             # File is no longer present
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                unicode(translate('MediaPlugin.MediaItem',
-                'The file %s no longer exists.')) % filename)
+                    unicode(translate('MediaPlugin.MediaItem',
+                        'The file %s no longer exists.')) % filename)
             return False
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
@@ -156,13 +156,16 @@ class MediaMediaItem(MediaManagerItem):
                 or self.mediaObject.currentSource().type() \
                 == Phonon.MediaSource.Invalid:
                 self.mediaObject.stop()
-                critical_error_message_box(UiStrings().UnsupportedFile,
-                        UiStrings().UnsupportedFile)
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'File Too Big'),
+                    translate('MediaPlugin.MediaItem', 'The file you are '
+                        'trying to load is too big. Please reduce it to less '
+                        'than 50MiB.'))
                 return False
             self.mediaObject.stop()
             service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
-                ItemCapabilities.AllowsVariableStartTime)
+                ItemCapabilities.HasVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
@@ -216,6 +219,19 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
+
+    def getList(self, type=MediaType.Audio):
+        media = SettingsManager.load_list(self.settingsSection, u'media')
+        media.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        ext = []
+        if type == MediaType.Audio:
+            ext = self.plugin.audio_extensions_list
+        else:
+            ext = self.plugin.video_extensions_list
+        ext = map(lambda x: x[1:], ext)
+        media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
+        return media
 
     def createPhonon(self):
         log.debug(u'CreatePhonon')
