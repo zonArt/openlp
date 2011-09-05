@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<song xmlns="http://openlyrics.info/namespace/2009/song" version="0.8" createdIn="OpenLP 1.9.5" modifiedIn="OpenLP 1.9.5" modifiedDate="2011-09-05T11:25:25">
+  <properties>
+    <titles>
+      <title>Jezu Kriste, štědrý kněže</title>
+    </titles>
+    <authors>
+      <author>M. Jan Hus</author>
+    </authors>
+    <songbooks>
+      <songbook name="Jistebnický kancionál"/>
+    </songbooks>
+  </properties>
+  <lyrics>
+    <verse name="v1">
+      <lines>
+        <line>Jezu Kriste, štědrý kněže,</line>
+        <line>s Otcem, Duchem jeden Bože,</line>
+        <line>štědrost Tvá je naše zboží,</line>
+        <line>z Tvé milosti.</line>
+      </lines>
+    </verse>
+    <verse name="v2">
+      <lines>
+        <line>Ty jsi v světě, bydlil s námi,</line>
+        <line>Tvé tělo trpělo rány</line>
+        <line>za nás za hříšné křesťany,</line>
+        <line>z Tvé milosti.</line>
+      </lines>
+    </verse>
+    <verse name="v3">
+      <lines>
+        <line>Ó, Tvá dobroto důstojná</line>
+        <line>a k nám milosti přehojná!</line>
+        <line>Dáváš nám bohatství mnohá</line>
+        <line>z Tvé milosti.</line>
+      </lines>
+    </verse>
+    <verse name="v4">
+      <lines>
+        <line>Ráčils nás sám zastoupiti,</line>
+        <line>život za nás položiti,</line>
+        <line>tak smrt věčnou zahladiti,</line>
+        <line>z Tvé milosti.</line>
+      </lines>
+    </verse>
+    <verse name="v5">
+      <lines>
+        <line>Ó, křesťané, z bludů vstaňme,</line>
+        <line>dané dobro nám poznejme,</line>
+        <line>k Synu Božímu chvátejme,</line>
+        <line>k té milosti!</line>
+      </lines>
+    </verse>
+    <verse name="v6">
+      <lines>
+        <line>Chvála budiž Bohu Otci,</line>
+        <line>Synu jeho téže moci,</line>
+        <line>Duchu jeho rovné moci,</line>
+        <line>z též milosti!</line>
+      </lines>
+    </verse>
+  </lyrics>
+</song>
