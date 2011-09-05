@@ -261,8 +261,10 @@ def main(args=None):
     app.setApplicationName(u'OpenLP')
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if app.isAlreadyRunning():
-        sys.exit()
+    if not options.testing:
+        # Instance check
+        if app.isAlreadyRunning():
+            sys.exit()
     # First time checks in settings
     if not QtCore.QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
@@ -284,5 +286,7 @@ def main(args=None):
     # Do not run method app.exec_() when running gui tests
     if options.testing:
         app.run(qt_args, testing=True)
+        # For gui tests we need access to window intances and their components
+        return app
     else:
         sys.exit(app.run(qt_args))
