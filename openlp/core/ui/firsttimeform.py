@@ -135,6 +135,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Determine the next page in the Wizard to go to.
         """
+        Receiver.send_message(u'openlp_process_events')
         if self.currentId() == FirstTimePage.Plugins:
             if not self.webAccess:
                 return FirstTimePage.NoInternet
@@ -175,9 +176,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
             self._preWizard()
+            Receiver.send_message(u'openlp_process_events')
             self._performWizard()
+            Receiver.send_message(u'openlp_process_events')
             self._postWizard()
             Receiver.send_message(u'cursor_normal')
+            Receiver.send_message(u'openlp_process_events')
 
     def updateScreenListCombo(self):
         """
@@ -219,6 +223,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Prepare the UI for the process.
         """
         self.max_progress = 0
+        self.finishButton.setVisible(False)
+        Receiver.send_message(u'openlp_process_events')
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
             item = self.songsListWidget.item(i)
@@ -242,7 +248,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
-        self.finishButton.setVisible(False)
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
             self.max_progress = self.max_progress + 2
