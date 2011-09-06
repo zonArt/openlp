@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities
+    ItemCapabilities, FormattingTags
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -377,7 +377,8 @@ class Renderer(object):
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
-        if not self._text_fits_on_slide(separator.join(html_lines)):
+        text = separator.join(html_lines)
+        if not self._text_fits_on_slide(text):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -439,6 +440,22 @@ class Renderer(object):
         log.debug(u'_paginate_slide_words - End')
         return formatted
 
+    def _get_start_tags(self, text):
+        missing_raw_tags = []
+        missing_html_tags = []
+        for tag in FormattingTags.get_html_tags():
+            if tag[u'start html'] == u'<br>':
+                continue
+            if tag[u'start html'] in text:
+                missing_raw_tags.append((tag[u'start tag'], text.find(tag[u'start html'])))
+                missing_html_tags.append((tag[u'start html'], text.find(tag[u'start html'])))
+            elif tag[u'start tag'] in text:
+                missing_raw_tags.append((tag[u'start tag'], text.find(tag[u'start tag'])))
+                missing_html_tags.append((tag[u'start html'], text.find(tag[u'start tag'])))
+        missing_raw_tags.sort(key=lambda tag: tag[1])
+        missing_html_tags.sort(key=lambda tag: tag[1])
+        return u''.join(missing_raw_tags), u''.join(missing_html_tags)
+
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
         raw_list, separator, line_end):
         """
@@ -490,8 +507,10 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                formatted.append(previous_raw.rstrip(u'<br>') +
-                    separator.join(raw_list[:index + 1]))
+                text = previous_raw.rstrip(u'<br>') + \
+                    separator.join(raw_list[:index + 1])
+                formatted.append(text)
+                raw_tags, html_tags = self._get_start_tags(text)
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
@@ -502,17 +521,19 @@ class Renderer(object):
                 continue
             # Check if the remaining elements fit on the slide.
             if self._text_fits_on_slide(
-                    separator.join(html_list[index + 1:]).strip()):
-                previous_html = separator.join(
+                    html_tags + separator.join(html_list[index + 1:]).strip()):
+                previous_html = html_tags + separator.join(
                     html_list[index + 1:]).strip() + line_end
-                previous_raw = separator.join(
+                previous_raw = raw_tags + separator.join(
                     raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The remaining elements do not fit, thus reset the indexes,
                 # create a new list and continue.
                 raw_list = raw_list[index + 1:]
+                raw_list[0] = raw_tags + raw_list[0]
                 html_list = html_list[index + 1:]
+                html_list[0] = html_tags + html_list[0]
                 smallest_index = 0
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)
