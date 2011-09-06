@@ -73,6 +73,7 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+
 class SongXML(object):
     """
     This class builds and parses the XML used to describe songs.
@@ -250,6 +251,7 @@ class OpenLyrics(object):
 
     """
     IMPLEMENTED_VERSION = u'0.8'
+
     def __init__(self, manager):
         self.manager = manager
 
@@ -318,7 +320,7 @@ class OpenLyrics(object):
             verse_def = verse_tag + verse_number
             verse_element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_def)
-            if verse[0].has_key(u'lang'):
+            if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "virtual" verses.
             virtual_verses = verse[1].split(u'[---]')
@@ -549,10 +551,10 @@ class OpenLyrics(object):
             # breaks. In OpenLyrics 0.7 an attribute has been added.
             if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
                 song_xml.get(u'version') == u'0.7' and \
-                verses.has_key((verse_tag, verse_number, lang)):
+                (verse_tag, verse_number, lang) in verses:
                 verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
             # Merge v1a, v1b, .... to v1.
-            elif verses.has_key((verse_tag, verse_number, lang)):
+            elif (verse_tag, verse_number, lang) in verses:
                 verses[(verse_tag, verse_number, lang)] += u'\n' + text
             else:
                 verses[(verse_tag, verse_number, lang)] = text
