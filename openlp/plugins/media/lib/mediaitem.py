@@ -129,18 +129,20 @@ class MediaMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if not os.path.exists(filename):
-            # File is no longer present
-            critical_error_message_box(
-                translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                    unicode(translate('MediaPlugin.MediaItem',
-                        'The file %s no longer exists.')) % filename)
+            if not remote:
+                # File is no longer present
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        unicode(translate('MediaPlugin.MediaItem',
+                            'The file %s no longer exists.')) % filename)
             return False
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
