@@ -784,6 +784,8 @@ class SlideController(QtGui.QWidget):
                 self.onBlankDisplay(True)
             else:
                 Receiver.send_message(u'maindisplay_show')
+        else:
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
 
     def onSlideBlank(self):
         """
