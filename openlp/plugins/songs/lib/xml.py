@@ -61,7 +61,6 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
     </song>
 """
 
-import datetime
 import logging
 import re
 
@@ -303,9 +302,13 @@ class OpenLyrics(object):
             for topic in song.topics:
                 self._add_text_to_element(u'theme', themes, topic.name)
         # Process the formatting tags.
-        format = etree.SubElement(song_xml, u'format')
-        tags = etree.SubElement(format, u'tags')
-        tags.set(u'application', u'OpenLP')
+        # have we any tags in song lyrics?
+        match = re.match(u'.*\{/?\w+\}', song.lyrics)
+        if match:
+            # named 'formatting' - 'format' is built-in fuction in Python
+            formatting = etree.SubElement(song_xml, u'format')
+            tags = etree.SubElement(formatting, u'tags')
+            tags.set(u'application', u'OpenLP')
         # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
         verse_list = sxml.get_verses(song.lyrics)
