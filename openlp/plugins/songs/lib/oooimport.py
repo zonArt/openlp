@@ -59,7 +59,7 @@ class OooImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
         self.document = None
-        self.process_started = False
+        self.processStarted = False
 
     def doImport(self):
         if not isinstance(self.importSource, list):
@@ -79,10 +79,10 @@ class OooImport(SongImport):
                 break
             filename = unicode(filename)
             if os.path.isfile(filename):
-                self.open_ooo_file(filename)
+                self.openOooFile(filename)
                 if self.document:
-                    self.process_ooo_document()
-                    self.close_ooo_file()
+                    self.processOooDocument()
+                    self.closeOooFile()
                 else:
                     self.logError(self.filepath,
                         translate('SongsPlugin.SongImport',
@@ -90,27 +90,27 @@ class OooImport(SongImport):
             else:
                 self.logError(self.filepath,
                     translate('SongsPlugin.SongImport', 'File not found'))
-        self.close_ooo()
+        self.closeOoo()
 
-    def process_ooo_document(self):
+    def processOooDocument(self):
         """
         Handle the import process for OpenOffice files. This method facilitates
         allowing subclasses to handle specific types of OpenOffice files.
         """
         if self.document.supportsService(
             "com.sun.star.presentation.PresentationDocument"):
-            self.process_pres()
+            self.processPres()
         if self.document.supportsService("com.sun.star.text.TextDocument"):
-            self.process_doc()
+            self.processDoc()
 
-    def start_ooo(self):
+    def startOoo(self):
         """
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
         if os.name == u'nt':
-            self.start_ooo_process()
-            self.desktop = self.ooo_manager.createInstance(
+            self.startOooProcess()
+            self.desktop = self.oooManager.createInstance(
                 u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
@@ -123,7 +123,7 @@ class OooImport(SongImport):
                     uno_instance = get_uno_instance(resolver)
                 except NoConnectException:
                     log.exception("Failed to resolve uno connection")
-                    self.start_ooo_process()
+                    self.startOooProcess()
                     loop += 1
                 else:
                     manager = uno_instance.ServiceManager
@@ -132,22 +132,22 @@ class OooImport(SongImport):
                     return
             raise
 
-    def start_ooo_process(self):
+    def startOooProcess(self):
         try:
             if os.name == u'nt':
-                self.ooo_manager = Dispatch(u'com.sun.star.ServiceManager')
-                self.ooo_manager._FlagAsMethod(u'Bridge_GetStruct')
-                self.ooo_manager._FlagAsMethod(u'Bridge_GetValueObject')
+                self.oooManager = Dispatch(u'com.sun.star.ServiceManager')
+                self.oooManager._FlagAsMethod(u'Bridge_GetStruct')
+                self.oooManager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
-            self.process_started = True
+            self.processStarted = True
         except:
             log.exception("start_ooo_process failed")
 
-    def open_ooo_file(self, filepath):
+    def openOooFile(self, filepath):
         """
         Open the passed file in OpenOffice.org Impress
         """
@@ -166,7 +166,7 @@ class OooImport(SongImport):
             if not self.document.supportsService(
                 "com.sun.star.presentation.PresentationDocument") and not \
                 self.document.supportsService("com.sun.star.text.TextDocument"):
-                self.close_ooo_file()
+                self.closeOooFile()
             else:
                 self.importWizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
@@ -174,21 +174,21 @@ class OooImport(SongImport):
             log.exception("open_ooo_file failed: %s", url)
         return
 
-    def close_ooo_file(self):
+    def closeOooFile(self):
         """
         Close file.
         """
         self.document.close(True)
         self.document = None
 
-    def close_ooo(self):
+    def closeOoo(self):
         """
         Close OOo. But only if we started it and not on windows
         """
-        if self.process_started:
+        if self.processStarted:
             self.desktop.terminate()
 
-    def process_pres(self):
+    def processPres(self):
         """
         Process the file
         """
@@ -209,10 +209,10 @@ class OooImport(SongImport):
             if slidetext.strip() == u'':
                 slidetext = u'\f'
             text += slidetext
-        self.process_songs_text(text)
+        self.processSongsText(text)
         return
 
-    def process_doc(self):
+    def processDoc(self):
         """
         Process the doc file, a paragraph at a time
         """
@@ -231,16 +231,16 @@ class OooImport(SongImport):
                     if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                         paratext += u'\f'
             text += paratext + u'\n'
-        self.process_songs_text(text)
+        self.processSongsText(text)
 
-    def process_songs_text(self, text):
-        songtexts = self.tidy_text(text).split(u'\f')
+    def processSongsText(self, text):
+        songtexts = self.tidyText(text).split(u'\f')
         self.setDefaults()
         for songtext in songtexts:
             if songtext.strip():
-                self.process_song_text(songtext.strip())
-                if self.check_complete():
+                self.processSongText(songtext.strip())
+                if self.checkComplete():
                     self.finish()
                     self.setDefaults()
-        if self.check_complete():
+        if self.checkComplete():
             self.finish()

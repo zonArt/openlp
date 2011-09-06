@@ -165,7 +165,7 @@ class CCLIFileImport(SongImport):
             elif line.startswith(u'Themes='):
                 song_topics = line[7:].strip()
             elif line.startswith(u'[S A'):
-                self.ccli_number = line[4:-3].strip()
+                self.ccliNumber = line[4:-3].strip()
             elif line.startswith(u'Fields='):
                 # Fields contain single line indicating verse, chorus, etc,
                 # /t delimited, same as with words field. store seperately
@@ -204,7 +204,7 @@ class CCLIFileImport(SongImport):
                     verse_type = VerseType.Tags[VerseType.Other]
                     verse_text = verse_lines[1]
             if len(verse_text) > 0:
-                self.add_verse(verse_text, verse_type)
+                self.addVerse(verse_text, verse_type)
             check_first_verse_line = False
         # Handle multiple authors
         author_list = song_author.split(u'/')
@@ -213,9 +213,9 @@ class CCLIFileImport(SongImport):
         for author in author_list:
             separated = author.split(u',')
             if len(separated) > 1:
-                self.add_author(u' '.join(reversed(separated)))
+                self.addAuthor(u' '.join(reversed(separated)))
             else:
-                self.add_author(author)
+                self.addAuthor(author)
         self.topics = [topic.strip() for topic in song_topics.split(u'/t')]
         return self.finish()
 
@@ -264,7 +264,7 @@ class CCLIFileImport(SongImport):
                     continue
                 elif verse_start:
                     if verse_text:
-                        self.add_verse(verse_text, verse_type)
+                        self.addVerse(verse_text, verse_type)
                         verse_text = u''
                         verse_start = False
             else:
@@ -278,7 +278,7 @@ class CCLIFileImport(SongImport):
                     if clean_line.startswith(u'CCLI'):
                         line_number += 1
                         ccli_parts = clean_line.split(' ')
-                        self.ccli_number = ccli_parts[len(ccli_parts) - 1]
+                        self.ccliNumber = ccli_parts[len(ccli_parts) - 1]
                     elif not verse_start:
                         # We have the verse descriptor
                         verse_desc_parts = clean_line.split(u' ')
@@ -333,5 +333,5 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         # Clean spaces before and after author names.
-        [self.add_author(author_name.strip()) for author_name in author_list]
+        [self.addAuthor(author_name.strip()) for author_name in author_list]
         return self.finish()
