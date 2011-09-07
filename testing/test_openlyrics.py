@@ -46,7 +46,7 @@ def test_openlyrics_export(songs_db, openlyrics_validator, pth, tmpdir):
     tree.write(open(f.strpath, u'w'), encoding=u'utf-8', xml_declaration=True,
         pretty_print=True)
     # validate file
-    #assert openlyrics_validator.validate(f.strpath) == True
+    assert openlyrics_validator.validate(f.strpath) == True
     # string comparison with original file line by line
     f_orig = pth.songs.join('openlyrics_test_1.xml')
     for l, l_orig in zip(f.readlines(), f_orig.readlines()):

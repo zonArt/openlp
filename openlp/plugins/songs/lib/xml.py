@@ -310,6 +310,8 @@ class OpenLyrics(object):
         tags_element = None
         match = re.search(u'\{/?\w+\}', song.lyrics, re.UNICODE)
         if match:
+            # reset available tags
+            FormattingTags.reset_html_tags()
             # named 'formatting' - 'format' is built-in fuction in Python
             formatting = etree.SubElement(song_xml, u'format')
             tags_element = etree.SubElement(formatting, u'tags')
@@ -398,12 +400,32 @@ class OpenLyrics(object):
         parent.append(element)
         return element
 
+    def _add_tag_to_formatting(self, tag_name, tags_element):
+        print '------'
+        available_tags = FormattingTags.get_html_tags()
+        start_tag = '{%s}' % tag_name
+        for t in available_tags:
+            if t[u'start tag'] == start_tag:
+                # create new formatting tag in openlyrics xml
+                el = self._add_text_to_element(u'tag', tags_element)
+                el.set(u'name', tag_name)
+                el_open = self._add_text_to_element(u'open', el)
+                el_close = self._add_text_to_element(u'close', el)
+                el_open.text = etree.CDATA(t[u'start html'])
+                el_close.text = etree.CDATA(t[u'end html'])
+
     def _add_line_with_tags_to_lines(self, parent, text, tags_element):
+        # tags already converted to xml structure
+        xml_tags = tags_element.xpath(u'tag/attribute::name')
         start_tags = self.start_tags_regex.findall(text)
         end_tags = self.end_tags_regex.findall(text)
         # replace start tags with xml syntax
-        for t in start_tags:
-            text = text.replace(t, u'<tag name="%s">' % t[1:-1])
+        for tag in start_tags:
+            name = tag[1:-1]
+            text = text.replace(tag, u'<tag name="%s">' % name)
+            # add tag to <format> elment if tag not present
+            if name not in xml_tags:
+                self._add_tag_to_formatting(name, tags_element)
         # replace end tags
         for t in end_tags:
             text = text.replace(t, u'</tag>')
