@@ -254,6 +254,8 @@ class OpenLyrics(object):
 
     def __init__(self, manager):
         self.manager = manager
+        self.start_tags_regex = re.compile(r'\{\w+\}')  # {abc}
+        self.end_tags_regex = re.compile(r'\{\/\w+\}')  # {/abc}
 
     def song_to_xml(self, song):
         """
@@ -305,12 +307,13 @@ class OpenLyrics(object):
                 self._add_text_to_element(u'theme', themes, topic.name)
         # Process the formatting tags.
         # have we any tags in song lyrics?
-        match = re.match(u'.*\{/?\w+\}', song.lyrics)
+        tags_element = None
+        match = re.search(u'\{/?\w+\}', song.lyrics, re.UNICODE)
         if match:
             # named 'formatting' - 'format' is built-in fuction in Python
             formatting = etree.SubElement(song_xml, u'format')
-            tags = etree.SubElement(formatting, u'tags')
-            tags.set(u'application', u'OpenLP')
+            tags_element = etree.SubElement(formatting, u'tags')
+            tags_element.set(u'application', u'OpenLP')
         # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
         verse_list = sxml.get_verses(song.lyrics)
@@ -331,7 +334,13 @@ class OpenLyrics(object):
                 if index < len(virtual_verses) - 1:
                     lines_element.set(u'break', u'optional')
                 for line in virtual_verse.strip(u'\n').split(u'\n'):
-                    self._add_text_to_element(u'line', lines_element, line)
+                    # Process only lines containing formatting tags
+                    if self.start_tags_regex.search(line):
+                        # add formatting tags to text
+                        self._add_line_with_tags_to_lines(lines_element, line,
+                            tags_element)
+                    else:
+                        self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml, only_process_format_tags=False):
@@ -388,6 +397,19 @@ class OpenLyrics(object):
             element.text = unicode(text)
         parent.append(element)
         return element
+
+    def _add_line_with_tags_to_lines(self, parent, text, tags_element):
+        start_tags = self.start_tags_regex.findall(text)
+        end_tags = self.end_tags_regex.findall(text)
+        # replace start tags with xml syntax
+        for t in start_tags:
+            text = text.replace(t, u'<tag name="%s">' % t[1:-1])
+        # replace end tags
+        for t in end_tags:
+            text = text.replace(t, u'</tag>')
+        text = u'<line>' + text + u'</line>'
+        element = etree.XML(text)
+        parent.append(element)
 
     def _extract_xml(self, xml):
         """
