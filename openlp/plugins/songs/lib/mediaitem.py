@@ -412,7 +412,8 @@ class SongMediaItem(MediaManagerItem):
             self.plugin.manager.save_object(new_song)
         self.onSongListLoad()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
