@@ -414,8 +414,9 @@ class SlideController(QtGui.QWidget):
             translate('OpenLP.SlideController', 'Escape Item'))
 
     def liveEscape(self):
-        self.display.setVisible(False)
-        self.display.videoStop()
+        if not self.display.primary:
+            self.display.setVisible(False)
+            self.display.videoStop()
 
     def servicePrevious(self):
         time.sleep(0.1)
