@@ -401,7 +401,6 @@ class OpenLyrics(object):
         return element
 
     def _add_tag_to_formatting(self, tag_name, tags_element):
-        print '------'
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
         for t in available_tags:
