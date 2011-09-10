@@ -222,7 +222,8 @@ class CustomMediaItem(MediaManagerItem):
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         raw_footer = []
         slide = None
         theme = None
