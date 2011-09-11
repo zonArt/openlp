@@ -37,14 +37,15 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 from openlp.plugins.songs.lib.db import Author, Book, MediaFile, Song, Topic
 
 
-def test_empty_songdb(empty_songs_db):
-    g = empty_songs_db.get_all_objects
+def test_empty_songdb(openlp_runner):
+    db = openlp_runner.get_songs_db(empty=True)
+    g = db.get_all_objects
     assert g(Author) == []
     assert g(Book) == []
     assert g(MediaFile) == []
     assert g(Song) == []
     assert g(Topic) == []
-    c = empty_songs_db.get_object_count
+    c = db.get_object_count
     assert c(Author) == 0
     assert c(Book) == 0
     assert c(MediaFile) == 0
@@ -52,11 +53,11 @@ def test_empty_songdb(empty_songs_db):
     assert c(Topic) == 0
 
 
-def test_unmapped_class(empty_songs_db):
+def test_unmapped_class(openlp_runner):
     # test class not mapped to any sqlalchemy table
     class A(object):
         pass
-    db = empty_songs_db
+    db = openlp_runner.get_songs_db(empty=True)
     assert db.save_object(A()) == False
     assert db.save_objects([A(), A()]) == False
     # no key - new object instance is created from supplied class

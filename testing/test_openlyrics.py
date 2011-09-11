@@ -35,10 +35,11 @@ from lxml import etree
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib import OpenLyrics
 
-def test_openlyrics_export(songs_db, openlyrics_validator, pth, tmpdir):
+
+def test_openlyrics_export(openlp_runner, openlyrics_validator, pth, tmpdir):
     # export song to file
     f = tmpdir.join('out.xml')
-    db = songs_db
+    db = openlp_runner.get_songs_db()
     s = db.get_all_objects(Song)[0]
     o = OpenLyrics(db)
     xml = o.song_to_xml(s)

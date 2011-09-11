@@ -34,7 +34,10 @@ from openlp.core import OpenLP
 from openlp.core.ui.mainwindow import MainWindow
 
 
-#def test_start_app(openlpapp):
-    #assert type(openlpapp) == OpenLP
-    #assert type(openlpapp.mainWindow) == MainWindow
-    #assert unicode(openlpapp.mainWindow.windowTitle()) == u'OpenLP 2.0'
+# TODO Uncommend when using custom OpenLP configuration is implemented.
+# Otherwise it would mess up user's OpenLP settings
+#def test_start_app(openlp_runner):
+    #app = openlp_runner.get_app()
+    #assert type(app) == OpenLP
+    #assert type(app.mainWindow) == MainWindow
+    #assert unicode(app.mainWindow.windowTitle()) == u'OpenLP 2.0'
