@@ -159,7 +159,7 @@ class Manager(object):
     Provide generic object persistence management
     """
     def __init__(self, plugin_name, init_schema, db_file_name=None,
-                 db_file_path=None, upgrade_mod=None):
+                 upgrade_mod=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -176,10 +176,6 @@ class Manager(object):
         ``db_file_name``
             The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
-
-        ``db_file_path``
-            The path to sqlite file to use for this database. This is useful
-            for testing purposes.
         """
         settings = QtCore.QSettings()
         settings.beginGroup(plugin_name)
@@ -188,11 +184,7 @@ class Manager(object):
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
-            # For automated tests we need to supply file_path directly
-            if db_file_path:
-                self.db_url = u'sqlite:///%s' % os.path.normpath(
-                    os.path.abspath(db_file_path))
-            elif db_file_name:
+            if db_file_name:
                 self.db_url = u'sqlite:///%s/%s' % (
                     AppLocation.get_section_data_path(plugin_name),
                     db_file_name)
