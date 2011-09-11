@@ -34,14 +34,13 @@ import os
 import sys
 import subprocess
 import logging
-import random
-import string
 
 import py.path
 from PyQt4 import QtCore
 from sqlalchemy.orm import clear_mappers
 
 from openlp.core import main as openlp_main
+from openlp.core.utils import AppLocation
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib.db import init_schema
 
@@ -86,30 +85,29 @@ def pytest_funcarg__openlpapp(request):
     return request.cached_setup(setup=setup, teardown=teardown, scope='module')
 
 
-def _get_unique_qsettings():
-    # unique QSettings group
-    unique = ''.join(random.choice(string.letters + string.digits)
-        for i in range(8))
-    group_name = 'test_%s' % unique
-    settings = QtCore.QSettings()
-    settings.beginGroup(group_name)
-    settings.setValue(u'db type', QtCore.QVariant(u'sqlite'))
-    settings.endGroup()
-    return group_name
+# Clean up QSettings for all plugins
+def _cleanup_qsettings():
+    s = QtCore.QSettings()
+    keys = s.allKeys()
+    for k in keys:
+        s.setValue(k, QtCore.QVariant(None))
 
 
 # Test function argument giving access to empty song database.
 def pytest_funcarg__empty_songs_db(request):
+    #def get_data_dir(section):
+    #    return request.getfuncargvalue('tmpdir').strpath
     def setup():
         tmpdir = request.getfuncargvalue('tmpdir')
-        db_file_path = tmpdir.join('songs.sqlite')
-        plugin_name = _get_unique_qsettings()
-        manager = Manager(plugin_name, init_schema,
-            db_file_path=db_file_path.strpath)
+        # override data dir
+        AppLocation.BaseDir = tmpdir.strpath
+        manager = Manager('songs', init_schema)
         return manager
     def teardown(manager):
+        _cleanup_qsettings()
         # sqlalchemy allows to map classess to only one database at a time
         clear_mappers()
+        AppLocation.BaseDir = None
     return request.cached_setup(setup=setup, teardown=teardown, scope='function')
 
 
@@ -117,17 +115,19 @@ def pytest_funcarg__empty_songs_db(request):
 def pytest_funcarg__songs_db(request):
     def setup():
         tmpdir = request.getfuncargvalue('tmpdir')
-        db_file_path = tmpdir.join('songs.sqlite')
+        # override data dir
+        AppLocation.BaseDir = tmpdir.strpath
+        datadir = tmpdir.mkdir(u'data').mkdir( u'songs')
         # copy test data to tmpdir
         orig_db = py.path.local(SONGS_PATH).join('songs.sqlite')
-        orig_db.copy(db_file_path)
-        plugin_name = _get_unique_qsettings()
-        manager = Manager(plugin_name, init_schema,
-            db_file_path=db_file_path.strpath)
+        orig_db.copy(datadir)
+        manager = Manager('songs', init_schema)
         return manager
     def teardown(manager):
+        _cleanup_qsettings()
         # sqlalchemy allows to map classess to only one database at a time
         clear_mappers()
+        AppLocation.BaseDir = None
     return request.cached_setup(setup=setup, teardown=teardown, scope='function')
 
 
