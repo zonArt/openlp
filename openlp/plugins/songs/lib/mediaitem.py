@@ -391,6 +391,18 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                media_files = self.plugin.manager.get_all_objects(MediaFile,
+                    MediaFile.song_id == item_id)
+                for media_file in media_files:
+                    try:
+                        os.remove(media_file.file_name)
+                    except:
+                        log.exception('Could not remove file: %s', audio)
+                try:
+                    os.rmdir(os.path.join(AppLocation.get_section_data_path(
+                        self.plugin.name), 'audio', str(item_id)))
+                except OSError:
+                    log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
