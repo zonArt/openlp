@@ -189,9 +189,7 @@ class Ui_FirstTimeWizard(object):
         self.progressBar.setObjectName(u'progressBar')
         self.progressLayout.addWidget(self.progressBar)
         FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
-
         self.retranslateUi(FirstTimeWizard)
-        QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
         FirstTimeWizard.setWindowTitle(translate(
