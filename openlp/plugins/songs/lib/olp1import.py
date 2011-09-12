@@ -33,6 +33,7 @@ import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
 import sys
+import os
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import retrieve_windows_encoding
@@ -131,8 +132,8 @@ class OpenLP1SongImport(SongImport):
             if self.stopImportFlag:
                 break
             if new_db:
-                cursor.execute(u'-- types int, unicode, int')
-                cursor.execute(u'SELECT trackid, fulltrackname, listindex '
+                cursor.execute(u'-- types int, int')
+                cursor.execute(u'SELECT trackid, listindex '
                     u'FROM songtracks '
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()

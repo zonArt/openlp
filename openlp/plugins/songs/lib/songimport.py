@@ -359,7 +359,7 @@ class SongImport(QtCore.QObject):
                 MediaFile.file_name == filename)
             if not media_file:
                 if os.path.dirname(filename):
-                    filename = self.copyMediaFile(filename)
+                    filename = self.copyMediaFile(song.id, filename)
                 song.media_files.append(
                     MediaFile.populate(file_name=filename, weight=weight)
                 )
@@ -367,7 +367,7 @@ class SongImport(QtCore.QObject):
         self.setDefaults()
         return True
 
-    def copyMediaFile(self, filename):
+    def copyMediaFile(self, song_id, filename):
         """
         This method copies the media file to the correct location and returns
         the new file location.
@@ -377,12 +377,13 @@ class SongImport(QtCore.QObject):
         """
         if not hasattr(self, u'save_path'):
             self.save_path = os.path.join(
-                AppLocation.get_section_data_path(self.mediaitem.plugin.name),
-                'audio', str(self.song.id))
+                AppLocation.get_section_data_path(
+                    self.importWizard.plugin.name),
+                'audio', str(song_id))
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
-        if not filename.startswith(save_path):
-            oldfile, filename = filename, os.path.join(save_path,
+        if not filename.startswith(self.save_path):
+            oldfile, filename = filename, os.path.join(self.save_path,
                 os.path.split(filename)[1])
             shutil.copyfile(oldfile, filename)
         return filename
