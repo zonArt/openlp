@@ -32,6 +32,7 @@ openlp.org 1.x song databases into the current installation database.
 import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
+import sys
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import retrieve_windows_encoding
@@ -131,7 +132,8 @@ class OpenLP1SongImport(SongImport):
                 break
             if new_db:
                 cursor.execute(u'-- types int, unicode, int')
-                cursor.execute(u'SELECT trackid, fulltrackname, listindex FROM songtracks '
+                cursor.execute(u'SELECT trackid, fulltrackname, listindex '
+                    u'FROM songtracks '
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
                 for track_id, listindex in track_ids:
@@ -139,7 +141,8 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id:
-                            self.addMediaFile(track[1], listindex)
+                            media_file = self.expandMediaFile(track[1])
+                            self.addMediaFile(media_file, listindex)
                             break
             if self.stopImportFlag:
                 break
@@ -186,3 +189,22 @@ class OpenLP1SongImport(SongImport):
                     return detector.result[u'encoding']
         detector.close()
         return retrieve_windows_encoding(detector.result[u'encoding'])
+
+    def expandMediaFile(self, filename):
+        """
+        When you're on Windows, this function expands the file name to include
+        the path to OpenLP's application data directory. If you are not on
+        Windows, it returns the original file name.
+
+        ``filename``
+            The filename to expand.
+        """
+        if sys.platform != u'win32' and \
+            not os.environ.get(u'ALLUSERSPROFILE') and \
+            not os.environ.get(u'APPDATA'):
+            return filename
+        common_app_data = os.path.join(os.environ[u'ALLUSERSPROFILE'],
+            os.path.split(os.environ[u'APPDATA'])[1])
+        if not common_app_data:
+            return filename
+        return os.path.join(common_app_data, u'openlp.org', 'Audio', filename)

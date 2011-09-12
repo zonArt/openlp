@@ -26,11 +26,14 @@
 ###############################################################################
 import logging
 import re
+import shutil
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.ui.wizard import WizardStrings
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -330,12 +333,6 @@ class SongImport(QtCore.QObject):
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
-        for filename, weight in self.mediaFiles:
-            media_file = self.manager.get_object_filtered(MediaFile,
-                MediaFile.file_name == filename)
-            if not media_file:
-                song.media_files.append(
-                    MediaFile.populate(file_name=filename, weight=weight))
         if self.songBookName:
             song_book = self.manager.get_object_filtered(Book,
                 Book.name == self.songBookName)
@@ -351,7 +348,41 @@ class SongImport(QtCore.QObject):
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
+        # We need to save the song now, before adding the media files, so that
+        # we know where to save the media files to.
         clean_song(self.manager, song)
+        self.manager.save_object(song)
+        # Now loop through the media files, copy them to the correct location,
+        # and save the song again.
+        for filename, weight in self.mediaFiles:
+            media_file = self.manager.get_object_filtered(MediaFile,
+                MediaFile.file_name == filename)
+            if not media_file:
+                if os.path.dirname(filename):
+                    filename = self.copyMediaFile(filename)
+                song.media_files.append(
+                    MediaFile.populate(file_name=filename, weight=weight)
+                )
         self.manager.save_object(song)
         self.setDefaults()
         return True
+
+    def copyMediaFile(self, filename):
+        """
+        This method copies the media file to the correct location and returns
+        the new file location.
+
+        ``filename``
+            The file to copy.
+        """
+        if not hasattr(self, u'save_path'):
+            self.save_path = os.path.join(
+                AppLocation.get_section_data_path(self.mediaitem.plugin.name),
+                'audio', str(self.song.id))
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+        if not filename.startswith(save_path):
+            oldfile, filename = filename, os.path.join(save_path,
+                os.path.split(filename)[1])
+            shutil.copyfile(oldfile, filename)
+        return filename
