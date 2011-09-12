@@ -228,29 +228,26 @@ def main(args=None):
         help='Set the Qt4 style (passed directly to Qt4).')
     parser.add_option('--testing', dest='testing',
         action='store_true', help='Run by testing framework')
+    # Set up logging
+    log_path = AppLocation.get_directory(AppLocation.CacheDir)
+    check_directory_exists(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = logging.FileHandler(filename, u'w')
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
-    # Set up logging
-    # In test mode it is skipped
-    if not options.testing:
-        log_path = AppLocation.get_directory(AppLocation.CacheDir)
-        check_directory_exists(log_path)
-        filename = os.path.join(log_path, u'openlp.log')
-        logfile = logging.FileHandler(filename, u'w')
-        logfile.setFormatter(logging.Formatter(
-            u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
-        log.addHandler(logfile)
-        logging.addLevelName(15, u'Timer')
-        if options.loglevel.lower() in ['d', 'debug']:
-            log.setLevel(logging.DEBUG)
-            print 'Logging to:', filename
-        elif options.loglevel.lower() in ['w', 'warning']:
-            log.setLevel(logging.WARNING)
-        else:
-            log.setLevel(logging.INFO)
-    # Deal with other command line options.
     qt_args = []
+    if options.loglevel.lower() in ['d', 'debug']:
+        log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
+    elif options.loglevel.lower() in ['w', 'warning']:
+        log.setLevel(logging.WARNING)
+    else:
+        log.setLevel(logging.INFO)
     if options.style:
         qt_args.extend(['-style', options.style])
     # Throw the rest of the arguments at Qt, just in case.
