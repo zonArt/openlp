@@ -222,6 +222,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.lastId == FirstTimePage.NoInternet or \
             (self.lastId <= FirstTimePage.Plugins and \
             not self.hasRunWizard):
+            QtCore.QCoreApplication.exit()
             sys.exit()
         self.downloadCanceled = True
         Receiver.send_message(u'cursor_normal')
