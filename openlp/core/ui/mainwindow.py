@@ -1044,9 +1044,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for section_key in keys:
             section, key = section_key.split(u'/')
             key_value = settings.value(section_key)
-            # Change the service section to servicemanager.
-            if section == u'service':
-                section_key = u'servicemanager/' + key
             export_settings.setValue(section_key, key_value)
         export_settings.sync()
         # Temp CONF file has been written.  Blanks in keys are now '%20'.
@@ -1294,6 +1291,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
+        # Remove obsolete entries.
+        settings.remove(u'custom slide')
+        settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
         self.recentFiles = settings.value(u'recent files').toStringList()
         settings.endGroup()

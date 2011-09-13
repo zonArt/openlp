@@ -107,32 +107,32 @@ class OpenSongImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
 
-    def do_import(self):
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        for filename in self.import_source:
-            if self.stop_import_flag:
+    def doImport(self):
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        for filename in self.importSource:
+            if self.stopImportFlag:
                 return
             song_file = open(filename)
-            self.do_import_file(song_file)
+            self.doImportFile(song_file)
             song_file.close()
 
-    def do_import_file(self, file):
+    def doImportFile(self, file):
         """
         Process the OpenSong file - pass in a file-like object, not a file path.
         """
-        self.set_defaults()
+        self.setDefaults()
         try:
             tree = objectify.parse(file)
         except (Error, LxmlError):
-            self.log_error(file.name, SongStrings.XMLSyntaxError)
+            self.logError(file.name, SongStrings.XMLSyntaxError)
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
         fields = dir(root)
         decode = {
-            u'copyright': self.add_copyright,
+            u'copyright': self.addCopyright,
             u'ccli': u'ccli_number',
-            u'author': self.parse_author,
+            u'author': self.parseAuthor,
             u'title': u'title',
             u'aka': u'alternate_title',
             u'hymn_number': u'song_number'
@@ -214,7 +214,7 @@ class OpenSongImport(SongImport):
                 verses[verse_tag][verse_num][inst] = []
                 our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
-            this_line = self.tidy_text(this_line)
+            this_line = self.tidyText(this_line)
             this_line = this_line.replace(u'_', u'')
             this_line = this_line.replace(u'|', u'\n')
             verses[verse_tag][verse_num][inst].append(this_line)
@@ -223,9 +223,9 @@ class OpenSongImport(SongImport):
         for (verse_tag, verse_num, inst) in our_verse_order:
             verse_def = u'%s%s' % (verse_tag, verse_num)
             lines = u'\n'.join(verses[verse_tag][verse_num][inst])
-            self.add_verse(lines, verse_def)
+            self.addVerse(lines, verse_def)
         if not self.verses:
-            self.add_verse('')
+            self.addVerse('')
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation:
             order = unicode(root.presentation)
@@ -246,9 +246,9 @@ class OpenSongImport(SongImport):
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 if verses.has_key(verse_tag) and \
                     verses[verse_tag].has_key(verse_num):
-                    self.verse_order_list.append(verse_def)
+                    self.verseOrderList.append(verse_def)
                 else:
                     log.info(u'Got order %s but not in verse tags, dropping'
                         u'this item from presentation order', verse_def)
         if not self.finish():
-            self.log_error(file.name)
+            self.logError(file.name)

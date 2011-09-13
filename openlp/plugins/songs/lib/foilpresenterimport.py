@@ -115,23 +115,23 @@ class FoilPresenterImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.FoilPresenter = FoilPresenter(self.manager)
 
-    def do_import(self):
+    def doImport(self):
         """
         Imports the songs.
         """
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
         parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.import_source:
-            if self.stop_import_flag:
+        for file_path in self.importSource:
+            if self.stopImportFlag:
                 return
-            self.import_wizard.incrementProgressBar(
+            self.importWizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))
                 self.FoilPresenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
-                self.log_error(file_path, SongStrings.XMLSyntaxError)
+                self.logError(file_path, SongStrings.XMLSyntaxError)
                 log.exception(u'XML syntax error in file %s' % file_path)
 
 

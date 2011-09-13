@@ -686,7 +686,7 @@ class SongImportForm(OpenLPWizard):
     def performWizard(self):
         """
         Perform the actual import. This method pulls in the correct importer
-        class, and then runs the ``do_import`` method of the importer to do
+        class, and then runs the ``doImport`` method of the importer to do
         the actual importing.
         """
         source_format = self.formatComboBox.currentIndex()
@@ -759,8 +759,8 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        importer.do_import()
-        if importer.error_log:
+        importer.doImport()
+        if importer.errorLog:
             self.progressLabel.setText(translate(
                 'SongsPlugin.SongImportForm', 'Your song import failed.'))
         else:

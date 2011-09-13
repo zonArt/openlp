@@ -634,7 +634,14 @@ class SlideController(QtGui.QWidget):
                 log.debug(u'Starting to play...')
                 self.display.audioPlayer.addToPlaylist(
                     self.serviceItem.background_audio)
-                self.display.audioPlayer.play()
+                if QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + \
+                        u'/audio start paused',
+                    QtCore.QVariant(True)).toBool():
+                    self.audioPauseItem.setChecked(True)
+                    self.display.audioPlayer.pause()
+                else:
+                    self.display.audioPlayer.play()
                 self.setAudioItemsVisibility(True)
         row = 0
         text = []
