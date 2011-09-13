@@ -196,7 +196,7 @@ class SongsPlugin(Plugin):
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get_class(format)
         importer = class_(self.manager, **kwargs)
-        importer.register(self.mediaItem.import_wizard)
+        importer.register(self.mediaItem.importWizard)
         return importer
 
     def setPluginTextStrings(self):
@@ -252,7 +252,7 @@ class SongsPlugin(Plugin):
             progress.setValue(idx)
             Receiver.send_message(u'openlp_process_events')
             importer = OpenLPSongImport(self.manager, filename=db)
-            importer.do_import()
+            importer.doImport()
         progress.setValue(len(song_dbs))
         self.mediaItem.onSearchTextButtonClick()
 
