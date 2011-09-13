@@ -345,7 +345,7 @@ class OpenLyrics(object):
                         self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
-    def xml_to_song(self, xml, only_process_format_tags=False):
+    def xml_to_song(self, xml, parse_and_not_save=False):
         """
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
@@ -354,7 +354,7 @@ class OpenLyrics(object):
         ``xml``
             The XML to parse (unicode).
 
-        ``only_process_format_tags``
+        ``parse_and_not_save``
             Switch to skip processing the whole song and to prevent storing the
             songs to the database. Defaults to ``False``.
         """
@@ -369,8 +369,8 @@ class OpenLyrics(object):
         else:
             return None
         if float(song_xml.get(u'version')) > 0.6:
-            self._process_formatting_tags(song_xml, only_process_format_tags)
-        if only_process_format_tags:
+            self._process_formatting_tags(song_xml, parse_and_not_save)
+        if parse_and_not_save:
             return
         song = Song()
         # Values will be set when cleaning the song.
