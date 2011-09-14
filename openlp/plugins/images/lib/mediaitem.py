@@ -99,6 +99,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         Remove an image item from the list
         """
+        # Turn off auto preview triggers.
+        self.listView.blockSignals(True)
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
             'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
@@ -111,6 +113,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
+        self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
