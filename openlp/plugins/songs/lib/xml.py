@@ -412,7 +412,7 @@ class OpenLyrics(object):
         start_tag = '{%s}' % tag_name
         for t in available_tags:
             if t[u'start tag'] == start_tag:
-                # Rreate new formatting tag in openlyrics xml.
+                # Create new formatting tag in openlyrics xml.
                 el = self._add_text_to_element(u'tag', tags_element)
                 el.set(u'name', tag_name)
                 el_open = self._add_text_to_element(u'open', el)
