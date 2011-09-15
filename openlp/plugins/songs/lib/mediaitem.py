@@ -28,6 +28,8 @@
 import logging
 import locale
 import re
+import os
+import shutil
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
@@ -37,11 +39,12 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
     clean_string
-from openlp.plugins.songs.lib.db import Author, Song
+from openlp.plugins.songs.lib.db import Author, Song, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
@@ -66,11 +69,11 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_song_form = EditSongForm(self, self.plugin.formparent,
+        self.editSongForm = EditSongForm(self, self.plugin.formparent,
             self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
-        self.song_maintenance_form = SongMaintenanceForm(
+        self.songMaintenanceForm = SongMaintenanceForm(
             self.plugin.manager, self)
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
@@ -78,6 +81,22 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.quickPreviewAllowed = True
         self.hasSearch = True
+
+    def _updateBackgroundAudio(self, song, item):
+        song.media_files = []
+        for i, bga in enumerate(item.background_audio):
+            dest_file = os.path.join(
+                AppLocation.get_section_data_path(self.plugin.name),
+                u'audio', str(song.id), os.path.split(bga)[1])
+            if not os.path.exists(os.path.split(dest_file)[0]):
+                os.makedirs(os.path.split(dest_file)[0])
+            shutil.copyfile(os.path.join(
+                AppLocation.get_section_data_path(
+                    u'servicemanager'), bga),
+                dest_file)
+            song.media_files.append(MediaFile.populate(
+                weight=i, file_name=dest_file))
+        self.plugin.manager.save_object(song, True)
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -210,7 +229,7 @@ class SongMediaItem(MediaManagerItem):
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.theme_name.like(u'%' + search_keywords + u'%'))
             self.displayResultsSong(search_results)
-        self.check_search_result()
+        self.checkSearchResult()
 
     def searchEntire(self, search_keywords):
         return self.plugin.manager.get_all_objects(Song,
@@ -244,7 +263,7 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
-        self.save_auto_select_id()
+        self.saveAutoSelectId()
         self.listView.clear()
         # Sort the songs by its title considering language specific characters.
         # lower() is needed for windows!
@@ -258,9 +277,9 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
-            if song.id == self.auto_select_id:
+            if song.id == self.autoSelectId:
                 self.listView.setCurrentItem(song_name)
-        self.auto_select_id = -1
+        self.autoSelectId = -1
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -297,25 +316,26 @@ class SongMediaItem(MediaManagerItem):
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
-        if not hasattr(self, u'import_wizard'):
-            self.import_wizard = SongImportForm(self, self.plugin)
-        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+        if not hasattr(self, u'importWizard'):
+            self.importWizard = SongImportForm(self, self.plugin)
+        if self.importWizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
-        export_wizard = SongExportForm(self, self.plugin)
-        export_wizard.exec_()
+        if not hasattr(self, u'exportWizard'):
+            self.exportWizard = SongExportForm(self, self.plugin)
+        self.exportWizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')
-        self.edit_song_form.newSong()
-        self.edit_song_form.exec_()
+        self.editSongForm.newSong()
+        self.editSongForm.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
-        self.auto_select_id = -1
+        self.autoSelectId = -1
 
     def onSongMaintenanceClick(self):
-        self.song_maintenance_form.exec_()
+        self.songMaintenanceForm.exec_()
 
     def onRemoteEditClear(self):
         log.debug(u'onRemoteEditClear')
@@ -335,9 +355,9 @@ class SongMediaItem(MediaManagerItem):
         if valid:
             self.remoteSong = song_id
             self.remoteTriggered = remote_type
-            self.edit_song_form.loadSong(song_id, (remote_type == u'P'))
-            self.edit_song_form.exec_()
-            self.auto_select_id = -1
+            self.editSongForm.loadSong(song_id, remote_type == u'P')
+            self.editSongForm.exec_()
+            self.autoSelectId = -1
             self.onSongListLoad()
 
     def onEditClick(self):
@@ -348,9 +368,9 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.edit_song_form.loadSong(item_id, False)
-            self.edit_song_form.exec_()
-            self.auto_select_id = -1
+            self.editSongForm.loadSong(item_id, False)
+            self.editSongForm.exec_()
+            self.autoSelectId = -1
             self.onSongListLoad()
         self.editItem = None
 
@@ -371,6 +391,18 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                media_files = self.plugin.manager.get_all_objects(MediaFile,
+                    MediaFile.song_id == item_id)
+                for media_file in media_files:
+                    try:
+                        os.remove(media_file.file_name)
+                    except:
+                        log.exception('Could not remove file: %s', audio)
+                try:
+                    os.rmdir(os.path.join(AppLocation.get_section_data_path(
+                        self.plugin.name), 'audio', str(item_id)))
+                except OSError:
+                    log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
@@ -392,15 +424,16 @@ class SongMediaItem(MediaManagerItem):
             self.plugin.manager.save_object(new_song)
         self.onSongListLoad()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
-        service_item.add_capability(ItemCapabilities.AllowsEdit)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.OnLoadUpdate)
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
-        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
         song = self.plugin.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
@@ -471,6 +504,10 @@ class SongMediaItem(MediaManagerItem):
         service_item.data_string = {u'title': song.search_title,
             u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
+        # Add the audio file to the service item.
+        if len(song.media_files) > 0:
+            service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
+            service_item.background_audio = [m.file_name for m in song.media_files]
         return True
 
     def serviceLoad(self, item):
@@ -510,8 +547,15 @@ class SongMediaItem(MediaManagerItem):
                     add_song = False
                     editId = song.id
                     break
+                # If there's any backing tracks, copy them over.
+                if len(item.background_audio) > 0:
+                    self._updateBackgroundAudio(song, item)
         if add_song and self.addSongFromService:
-            editId = self.openLyrics.xml_to_song(item.xml_version)
+            song = self.openLyrics.xml_to_song(item.xml_version)
+            # If there's any backing tracks, copy them over.
+            if len(item.background_audio) > 0:
+                self._updateBackgroundAudio(song, item)
+            editId = song.id
             self.onSearchTextButtonClick()
         # Update service with correct song id.
         if editId:
