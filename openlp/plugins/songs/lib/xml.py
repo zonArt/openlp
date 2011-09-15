@@ -172,7 +172,7 @@ class SongXML(object):
 
 class OpenLyrics(object):
     """
-    This class represents the converter for OpenLyrics XML (version 0.7)
+    This class represents the converter for OpenLyrics XML (version 0.8)
     to/from a song.
 
     As OpenLyrics has a rich set of different features, we cannot support them
@@ -196,6 +196,9 @@ class OpenLyrics(object):
 
     ``<key>``
         This property is not supported.
+
+    ``<format>``
+        The custom formatting tags are fully supported.
 
     ``<keywords>``
         This property is not supported.
@@ -306,13 +309,13 @@ class OpenLyrics(object):
             for topic in song.topics:
                 self._add_text_to_element(u'theme', themes, topic.name)
         # Process the formatting tags.
-        # have we any tags in song lyrics?
+        # Have we any tags in song lyrics?
         tags_element = None
         match = re.search(u'\{/?\w+\}', song.lyrics, re.UNICODE)
         if match:
-            # reset available tags
+            # Reset available tags.
             FormattingTags.reset_html_tags()
-            # named 'formatting' - 'format' is built-in fuction in Python
+            # Named 'formatting' - 'format' is built-in fuction in Python.
             formatting = etree.SubElement(song_xml, u'format')
             tags_element = etree.SubElement(formatting, u'tags')
             tags_element.set(u'application', u'OpenLP')
@@ -401,11 +404,15 @@ class OpenLyrics(object):
         return element
 
     def _add_tag_to_formatting(self, tag_name, tags_element):
+        """
+        Add new formatting tag to the element ``<format>``
+        if the tag is not present yet.
+        """
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
         for t in available_tags:
             if t[u'start tag'] == start_tag:
-                # create new formatting tag in openlyrics xml
+                # Rreate new formatting tag in openlyrics xml.
                 el = self._add_text_to_element(u'tag', tags_element)
                 el.set(u'name', tag_name)
                 el_open = self._add_text_to_element(u'open', el)
@@ -414,18 +421,22 @@ class OpenLyrics(object):
                 el_close.text = etree.CDATA(t[u'end html'])
 
     def _add_line_with_tags_to_lines(self, parent, text, tags_element):
-        # tags already converted to xml structure
+        """
+        Convert text with formatting tags from OpenLP format to OpenLyrics
+        format and append it to element ``<lines>``.
+        """
+        # Tags already converted to xml structure.
         xml_tags = tags_element.xpath(u'tag/attribute::name')
         start_tags = self.start_tags_regex.findall(text)
         end_tags = self.end_tags_regex.findall(text)
-        # replace start tags with xml syntax
+        # Replace start tags with xml syntax.
         for tag in start_tags:
             name = tag[1:-1]
             text = text.replace(tag, u'<tag name="%s">' % name)
-            # add tag to <format> elment if tag not present
+            # Add tag to <format> elment if tag not present.
             if name not in xml_tags:
                 self._add_tag_to_formatting(name, tags_element)
-        # replace end tags
+        # Replace end tags.
         for t in end_tags:
             text = text.replace(t, u'</tag>')
         text = u'<line>' + text + u'</line>'
