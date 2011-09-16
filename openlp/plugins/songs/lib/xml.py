@@ -433,7 +433,7 @@ class OpenLyrics(object):
         for tag in start_tags:
             name = tag[1:-1]
             text = text.replace(tag, u'<tag name="%s">' % name)
-            # Add tag to <format> elment if tag not present.
+            # Add tag to <format> element if tag not present.
             if name not in xml_tags:
                 self._add_tag_to_formatting(name, tags_element)
         # Replace end tags.
