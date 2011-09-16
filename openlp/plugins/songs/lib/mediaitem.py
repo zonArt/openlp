@@ -399,8 +399,10 @@ class SongMediaItem(MediaManagerItem):
                     except:
                         log.exception('Could not remove file: %s', audio)
                 try:
-                    os.rmdir(os.path.join(AppLocation.get_section_data_path(
-                        self.plugin.name), 'audio', str(item_id)))
+                    save_path = os.path.join(AppLocation.get_section_data_path(
+                        self.plugin.name), 'audio', str(item_id))
+                    if os.path.exists(save_path):
+                        os.rmdir(save_path)
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
