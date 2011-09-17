@@ -27,8 +27,10 @@
 
 import io
 import logging
-import os, sys
-import urllib, urllib2
+import os
+import sys
+import urllib
+import urllib2
 from tempfile import gettempdir
 from ConfigParser import SafeConfigParser
 
