@@ -382,13 +382,15 @@ class MediaManagerItem(QtGui.QWidget):
             fullList.append(unicode(self.listView.item(count).
                 data(QtCore.Qt.UserRole).toString()))
         duplicatesFound = False
+        filesAdded = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
                 duplicatesFound = True
             else:
+                filesAdded = True
                 fullList.append(file)
-        if fullList:
+        if fullList and filesAdded:
             self.listView.clear()
             self.loadList(fullList)
             lastDir = os.path.split(unicode(files[0]))[0]
