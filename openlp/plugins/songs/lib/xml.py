@@ -73,6 +73,9 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+NAMESPACE = u'http://openlyrics.info/namespace/2009/song'
+NSMAP = '{' + NAMESPACE + '}' + '%s'
+
 
 class SongXML(object):
     """
@@ -267,7 +270,7 @@ class OpenLyrics(object):
         sxml = SongXML()
         song_xml = objectify.fromstring(u'<song/>')
         # Append the necessary meta data to the song.
-        song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
+        song_xml.set(u'xmlns', NAMESPACE)
         song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
         application_name = u'OpenLP ' + get_application_version()[u'version']
         song_xml.set(u'createdIn', application_name)
@@ -371,7 +374,8 @@ class OpenLyrics(object):
             properties = song_xml.properties
         else:
             return None
-        if float(song_xml.get(u'version')) > 0.6:
+        # Formatting tags are new in OpenLyrics 0.8
+        if float(song_xml.get(u'version')) > 0.7:
             self._process_formatting_tags(song_xml, parse_and_not_save)
         if parse_and_not_save:
             return
@@ -558,6 +562,52 @@ class OpenLyrics(object):
         FormattingTags.add_html_tags([tag for tag in found_tags
             if tag[u'start tag'] not in existing_tag_ids], True)
 
+    def _process_lyrics_mixed_content(self, element):
+        text = u''
+
+        #print '1:', repr(text)
+        # Skip <chord> element.
+        #if element.tag == u'chord' and element.tail:
+            ## Append tail text at chord element.
+            #text += element.tail
+
+        # Start formatting tag.
+        #print NSMAP % 'tag'
+        #print repr(element.tag)
+        if element.tag == NSMAP % 'tag':
+            text += u'{%s}' % element.get(u'name')
+        print '1:', repr(text)
+
+        # Append text from element
+        if element.text:
+            text += element.text
+        print '2:', repr(text)
+
+        #print '3:', repr(text)
+        # Process nested formatting tags
+        for child in element:
+            # Use recursion since nested formatting tags are allowed.
+            text += self._process_lyrics_mixed_content(child)
+
+        # Append text from tail and add formatting end tag.
+        if element.tag == NSMAP % 'tag':
+            text += u'{/%s}' % element.get(u'name')
+        print '3:', repr(text)
+
+        # Append text from tail
+        if element.tail:
+            text += element.tail
+        print '4:', repr(text)
+
+        return text
+
+    def _process_lyrics_line(self, line):
+        # Convert lxml.objectify to lxml.etree representation
+        line = etree.tostring(line)
+        element = etree.XML(line)
+        print element.nsmap
+        return self._process_lyrics_mixed_content(element)
+
     def _process_lyrics(self, properties, song_xml, song_obj):
         """
         Processes the verses and search_lyrics for the song.
@@ -586,7 +636,11 @@ class OpenLyrics(object):
                 for line in lines.line:
                     if text:
                         text += u'\n'
-                    text += u''.join(map(unicode, line.itertext()))
+                    text += self._process_lyrics_line(line)
+                    #AAA = u''.join(map(unicode, line.itertext()))
+                    #print 'AAA:', repr(AAA)
+                    #text += AAA
+                    #print repr(text)
                 # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
