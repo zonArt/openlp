@@ -34,7 +34,6 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 
 log = logging.getLogger(__name__)
 
-# FIXME: Add html5 doctype. However, do not break theme gradients.
 HTMLSRC = u"""
 <!DOCTYPE html>
 <html>
