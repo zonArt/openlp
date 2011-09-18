@@ -393,18 +393,18 @@ def build_background_css(item, width, height):
     """
     width = int(width) / 2
     theme = item.themedata
-    background = u'background-color: black;'
+    background = u'background-color: black'
     if theme:
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
-            background = u'background-color: %s;' % theme.background_color
+            background = u'background-color: %s' % theme.background_color
         else:
             if theme.background_direction == BackgroundGradientType.to_string \
                 (BackgroundGradientType.Horizontal):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s)) fixed;' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string( \
@@ -412,7 +412,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s)) fixed;' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
@@ -420,19 +420,19 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s)) fixed;' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
                 (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s)) fixed;' % \
+                    u'right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s)) fixed;' % (width, width,
+                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
                     width, theme.background_start_color,
                     theme.background_end_color)
     return background
