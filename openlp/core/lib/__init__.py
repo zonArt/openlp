@@ -36,6 +36,13 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
+class MediaType(object):
+    """
+    An enumeration class for types of media.
+    """
+    Audio = 1
+    Video = 2
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -241,9 +248,7 @@ from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from serviceitem import ServiceItem
-from serviceitem import ServiceItemType
-from serviceitem import ItemCapabilities
+from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
 from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar

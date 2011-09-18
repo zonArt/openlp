@@ -51,8 +51,10 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage)
+            QtGui.QWizard.NoBackButtonOnLastPage |
+            QtGui.QWizard.HaveCustomButton1)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
+        self.noInternetFinishButton = self.button(QtGui.QWizard.CustomButton1)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.nextButton = self.button(QtGui.QWizard.NextButton)
         self.backButton = self.button(QtGui.QWizard.BackButton)
@@ -189,9 +191,7 @@ class Ui_FirstTimeWizard(object):
         self.progressBar.setObjectName(u'progressBar')
         self.progressLayout.addWidget(self.progressBar)
         FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
-
         self.retranslateUi(FirstTimeWizard)
-        QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
         FirstTimeWizard.setWindowTitle(translate(
@@ -230,14 +230,17 @@ class Ui_FirstTimeWizard(object):
         self.noInternetPage.setSubTitle(translate(
             'OpenLP.FirstTimeWizard',
             'Unable to detect an Internet connection.'))
-        self.noInternetLabel.setText(translate('OpenLP.FirstTimeWizard',
+        self.noInternetText = translate('OpenLP.FirstTimeWizard',
             'No Internet connection was found. The First Time Wizard needs an '
             'Internet connection in order to be able to download sample '
-            'songs, Bibles and themes.\n\nTo re-run the First Time Wizard and '
-            'import this sample data at a later stage, press the cancel '
-            'button now, check your Internet connection, and restart OpenLP.'
-            '\n\nTo cancel the First Time Wizard completely, press the finish '
-            'button now.'))
+            'songs, Bibles and themes.  Press the Finish button now to start '
+            'OpenLP with initial settings and no sample data.\n\nTo re-run the '
+            'First Time Wizard and import this sample data at a later time, '
+            'check your Internet connection and re-run this wizard by '
+            'selecting "Tools/Re-run First Time Wizard" from OpenLP.')
+        self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
+            '\n\nTo cancel the First Time Wizard completely (and not start '
+            'OpenLP), press the Cancel button now.')
         self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Sample Songs'))
         self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
@@ -260,3 +263,5 @@ class Ui_FirstTimeWizard(object):
             'Select default theme:'))
         self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Starting configuration process...'))
+        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1, 
+            translate('OpenLP.FirstTimeWizard', 'Finish'))
