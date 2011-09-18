@@ -376,18 +376,23 @@ class MediaManagerItem(QtGui.QWidget):
          The files to be loaded
         """
         names = []
+        fullList = []
         for count in range(0, self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
-        newFiles = []
+            fullList.append(unicode(self.listView.item(count).
+                data(QtCore.Qt.UserRole).toString()))
         duplicatesFound = False
+        filesAdded = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
                 duplicatesFound = True
             else:
-                newFiles.append(file)
-        if newFiles:
-            self.loadList(newFiles)
+                filesAdded = True
+                fullList.append(file)
+        if fullList and filesAdded:
+            self.listView.clear()
+            self.loadList(fullList)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
@@ -485,7 +490,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
+    def generateSlideData(self, serviceItem, item=None, xmlVersion=False,
+        remote=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
@@ -539,12 +545,12 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.goLive()
 
-    def goLive(self, item_id=None):
+    def goLive(self, item_id=None, remote=False):
         log.debug(u'%s Live requested', self.plugin.name)
         item = None
         if item_id:
             item = self.createItemFromId(item_id)
-        serviceItem = self.buildServiceItem(item)
+        serviceItem = self.buildServiceItem(item, remote=remote)
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
@@ -574,8 +580,8 @@ class MediaManagerItem(QtGui.QWidget):
                 for item in items:
                     self.addToService(item)
 
-    def addToService(self, item=None, replace=None):
-        serviceItem = self.buildServiceItem(item, True)
+    def addToService(self, item=None, replace=None, remote=False):
+        serviceItem = self.buildServiceItem(item, True, remote=remote)
         if serviceItem:
             serviceItem.from_plugin = False
             self.plugin.serviceManager.addServiceItem(serviceItem,
@@ -608,13 +614,13 @@ class MediaManagerItem(QtGui.QWidget):
                     unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
-    def buildServiceItem(self, item=None, xmlVersion=False):
+    def buildServiceItem(self, item=None, xmlVersion=False, remote=False):
         """
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
         serviceItem.add_icon(self.plugin.icon_path)
-        if self.generateSlideData(serviceItem, item, xmlVersion):
+        if self.generateSlideData(serviceItem, item, xmlVersion, remote):
             return serviceItem
         else:
             return None

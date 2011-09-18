@@ -233,7 +233,8 @@ class PresentationMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 u'presentations', self.getFileList())
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image
@@ -275,12 +276,13 @@ class PresentationMediaItem(MediaManagerItem):
                         return True
                     else:
                         # File is no longer present
-                        critical_error_message_box(
-                            translate('PresentationPlugin.MediaItem',
-                            'Missing Presentation'),
-                            unicode(translate('PresentationPlugin.MediaItem',
-                            'The Presentation %s is incomplete,'
-                            ' please reload.')) % filename)
+                        if not remote:
+                            critical_error_message_box(
+                                translate('PresentationPlugin.MediaItem',
+                                'Missing Presentation'),
+                                unicode(translate('PresentationPlugin.MediaItem',
+                                'The Presentation %s is incomplete,'
+                                ' please reload.')) % filename)
                         return False
                 else:
                     # File is no longer present

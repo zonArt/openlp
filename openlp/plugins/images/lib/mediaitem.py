@@ -99,6 +99,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         Remove an image item from the list
         """
+        # Turn off auto preview triggers.
+        self.listView.blockSignals(True)
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
             'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
@@ -111,6 +113,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
+        self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
@@ -139,7 +142,8 @@ class ImageMediaItem(MediaManagerItem):
         if not initialLoad:
             self.plugin.formparent.finishedProgressBar()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
         if item:
@@ -166,11 +170,12 @@ class ImageMediaItem(MediaManagerItem):
             items.remove(item)
         # We cannot continue, as all images do not exist.
         if not items:
-            critical_error_message_box(
-                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                unicode(translate('ImagePlugin.MediaItem',
-                'The following image(s) no longer exist: %s')) %
-                u'\n'.join(missing_items_filenames))
+            if not remote:
+                critical_error_message_box(
+                    translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The following image(s) no longer exist: %s')) %
+                    u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items and QtGui.QMessageBox.question(self,
