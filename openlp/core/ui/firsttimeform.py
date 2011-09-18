@@ -28,7 +28,9 @@
 import io
 import logging
 import os
-import urllib, urllib2
+import sys
+import urllib
+import urllib2
 from tempfile import gettempdir
 from ConfigParser import SafeConfigParser
 
@@ -65,6 +67,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             'Downloading %s...'))
         QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
+        QtCore.QObject.connect(self.noInternetFinishButton,
+            QtCore.SIGNAL('clicked()'), self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -83,6 +87,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.restart()
         check_directory_exists(os.path.join(gettempdir(), u'openlp'))
+        self.noInternetFinishButton.setVisible(False)
+        # Check if this is a re-run of the wizard.
+        self.hasRunWizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
@@ -155,17 +163,24 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Detects Page changes and updates as approprate.
         """
+        # Keep track of the page we are at.  Pressing "Cancel" causes pageId
+        # to be a -1.
+        if pageId != -1:
+            self.lastId = pageId
         if pageId == FirstTimePage.Plugins:
-            # Check if this is a re-run of the wizard.
-            self.has_run_wizard = QtCore.QSettings().value(
-                u'general/has run wizard', QtCore.QVariant(False)).toBool()
+            # Set the no internet page text.
+            if self.hasRunWizard:
+                self.noInternetLabel.setText(self.noInternetText)
+            else:
+                self.noInternetLabel.setText(self.noInternetText + 
+                    self.cancelWizardText)
         elif pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
             for iter in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(iter)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.themeComboBox.addItem(item.text())
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 # Add any existing themes to list.
                 for theme in self.parent().themeManagerContents.getThemes():
                     index = self.themeComboBox.findText(theme)
@@ -177,6 +192,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)
+        elif pageId == FirstTimePage.NoInternet:
+            self.backButton.setVisible(False)
+            self.nextButton.setVisible(False)
+            self.noInternetFinishButton.setVisible(True)
+            if self.hasRunWizard:
+                self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
             self._preWizard()
@@ -197,8 +218,28 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.displayComboBox.setCurrentIndex(self.displayComboBox.count() - 1)
 
     def onCancelButtonClicked(self):
+        """
+        Process the pressing of the cancel button.
+        """
+        if self.lastId == FirstTimePage.NoInternet or \
+            (self.lastId <= FirstTimePage.Plugins and \
+            not self.hasRunWizard):
+            QtCore.QCoreApplication.exit()
+            sys.exit()
         self.downloadCanceled = True
         Receiver.send_message(u'cursor_normal')
+
+    def onNoInternetFinishButtonClicked(self):
+        """
+        Process the pressing of the "Finish" button on the No Internet page.
+        """
+        Receiver.send_message(u'cursor_busy')
+        self._performWizard()
+        Receiver.send_message(u'openlp_process_events')
+        Receiver.send_message(u'cursor_normal')
+        QtCore.QSettings().setValue(u'general/has run wizard',
+            QtCore.QVariant(True))
+        self.close()
 
     def urlGetFile(self, url, fpath):
         """"
@@ -302,7 +343,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         if self.max_progress:
             self.progressBar.setValue(self.progressBar.maximum())
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
                     'Download complete.'
                     ' Click the finish button to return to OpenLP.'))
@@ -311,7 +352,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     'Download complete.'
                     ' Click the finish button to start OpenLP.'))
         else:
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
                     'Click the finish button to return to OpenLP.'))
             else:
