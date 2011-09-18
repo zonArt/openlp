@@ -562,51 +562,43 @@ class OpenLyrics(object):
         FormattingTags.add_html_tags([tag for tag in found_tags
             if tag[u'start tag'] not in existing_tag_ids], True)
 
-    def _process_lyrics_mixed_content(self, element):
+    def _process_line_mixed_content(self, element):
         text = u''
 
-        #print '1:', repr(text)
         # Skip <chord> element.
-        #if element.tag == u'chord' and element.tail:
-            ## Append tail text at chord element.
-            #text += element.tail
+        if element.tag == u'chord' and element.tail:
+            # Append tail text at chord element.
+            text += element.tail
+            return
 
         # Start formatting tag.
-        #print NSMAP % 'tag'
-        #print repr(element.tag)
         if element.tag == NSMAP % 'tag':
             text += u'{%s}' % element.get(u'name')
-        print '1:', repr(text)
 
         # Append text from element
         if element.text:
             text += element.text
-        print '2:', repr(text)
 
-        #print '3:', repr(text)
         # Process nested formatting tags
         for child in element:
             # Use recursion since nested formatting tags are allowed.
-            text += self._process_lyrics_mixed_content(child)
+            text += self._process_line_mixed_content(child)
 
         # Append text from tail and add formatting end tag.
         if element.tag == NSMAP % 'tag':
             text += u'{/%s}' % element.get(u'name')
-        print '3:', repr(text)
 
         # Append text from tail
         if element.tail:
             text += element.tail
-        print '4:', repr(text)
 
         return text
 
-    def _process_lyrics_line(self, line):
+    def _process_verse_line(self, line):
         # Convert lxml.objectify to lxml.etree representation
         line = etree.tostring(line)
         element = etree.XML(line)
-        print element.nsmap
-        return self._process_lyrics_mixed_content(element)
+        return self._process_line_mixed_content(element)
 
     def _process_lyrics(self, properties, song_xml, song_obj):
         """
@@ -636,11 +628,7 @@ class OpenLyrics(object):
                 for line in lines.line:
                     if text:
                         text += u'\n'
-                    text += self._process_lyrics_line(line)
-                    #AAA = u''.join(map(unicode, line.itertext()))
-                    #print 'AAA:', repr(AAA)
-                    #text += AAA
-                    #print repr(text)
+                    text += self._process_verse_line(line)
                 # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
