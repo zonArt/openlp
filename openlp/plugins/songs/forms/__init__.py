@@ -52,6 +52,7 @@ them separate from the functionality, so that it is easier to recreate the GUI
 from the .ui files later if necessary.
 """
 
+from mediafilesform import MediaFilesForm
 from authorsform import AuthorsForm
 from topicsform import TopicsForm
 from songbookform import SongBookForm

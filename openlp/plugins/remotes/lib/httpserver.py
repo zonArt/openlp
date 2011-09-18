@@ -528,7 +528,7 @@ class HttpConnection(object):
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id)
+            plugin.mediaItem.goLive(id, remote=True)
 
     def add_to_service(self, type):
         """
@@ -538,7 +538,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id)
+            plugin.mediaItem.addToService(item_id, remote=True)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

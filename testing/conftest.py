@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -7,7 +8,7 @@
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Armin Köhler, Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
@@ -24,12 +25,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+Configuration file for pytest framework.
 """
 
-import core
-import plugins
+from openlp.core import main as openlp_main
 
-__all__ = [u'core', u'plugins']
 
+# Test function argument to make openlp gui instance persistent for all tests.
+# All test cases have to access the same instance. To allow create multiple
+# instances it would be necessary use diffrent configuraion and data files.
+# Created instance will use your OpenLP settings.
+def pytest_funcarg__openlpapp(request):
+    def setup():
+        return openlp_main(['--testing'])
+    def teardown(app):
+        pass
+    return request.cached_setup(setup=setup, teardown=teardown, scope='session')
