@@ -377,8 +377,7 @@ class Renderer(object):
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
-        text = separator.join(html_lines)
-        if not self._text_fits_on_slide(text):
+        if not self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
