@@ -563,6 +563,13 @@ class OpenLyrics(object):
             if tag[u'start tag'] not in existing_tag_ids], True)
 
     def _process_line_mixed_content(self, element):
+        """
+        Converts the xml text with mixed content to OpenLP representation.
+        Chords are skipped and formatting tags are converted.
+
+        ``element``
+            The property object (lxml.etree.Element).
+        """
         text = u''
 
         # Skip <chord> element.
@@ -575,11 +582,11 @@ class OpenLyrics(object):
         if element.tag == NSMAP % 'tag':
             text += u'{%s}' % element.get(u'name')
 
-        # Append text from element
+        # Append text from element.
         if element.text:
             text += element.text
 
-        # Process nested formatting tags
+        # Process nested formatting tags.
         for child in element:
             # Use recursion since nested formatting tags are allowed.
             text += self._process_line_mixed_content(child)
@@ -588,14 +595,20 @@ class OpenLyrics(object):
         if element.tag == NSMAP % 'tag':
             text += u'{/%s}' % element.get(u'name')
 
-        # Append text from tail
+        # Append text from tail.
         if element.tail:
             text += element.tail
 
         return text
 
     def _process_verse_line(self, line):
-        # Convert lxml.objectify to lxml.etree representation
+        """
+        Converts lyrics line to OpenLP representation.
+
+        ``line``
+            The line object (lxml.objectify.ObjectifiedElement).
+        """
+        # Convert lxml.objectify to lxml.etree representation.
         line = etree.tostring(line)
         element = etree.XML(line)
         return self._process_line_mixed_content(element)
