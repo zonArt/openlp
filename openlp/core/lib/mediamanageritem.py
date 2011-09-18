@@ -376,18 +376,23 @@ class MediaManagerItem(QtGui.QWidget):
          The files to be loaded
         """
         names = []
+        fullList = []
         for count in range(0, self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
-        newFiles = []
+            fullList.append(unicode(self.listView.item(count).
+                data(QtCore.Qt.UserRole).toString()))
         duplicatesFound = False
+        filesAdded = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
                 duplicatesFound = True
             else:
-                newFiles.append(file)
-        if newFiles:
-            self.loadList(newFiles)
+                filesAdded = True
+                fullList.append(file)
+        if fullList and filesAdded:
+            self.listView.clear()
+            self.loadList(fullList)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,

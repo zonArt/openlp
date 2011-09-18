@@ -236,7 +236,6 @@ def main(args=None):
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
-    logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
