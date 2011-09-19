@@ -444,7 +444,7 @@ class Renderer(object):
         Tests the given text for not closed formatting tags and returns a tuple
         consisting of three unicode strings::
 
-            (u'{st}{r}Text text text{/st}{/r}', u'{st}{r}', u'<strong>
+            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong>
             <span style="-webkit-text-fill-color:red">')
 
         The first unicode string is the text, with correct closing tags. The
