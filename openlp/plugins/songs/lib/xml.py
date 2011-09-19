@@ -638,10 +638,13 @@ class OpenLyrics(object):
                 if text:
                     text += u'\n'
                 # Loop over the "line" elements removing chords.
+                lines_text = u''
                 for line in lines.line:
-                    if text:
-                        text += u'\n'
-                    text += self._process_verse_line(line)
+                    if lines_text:
+                        lines_text += u'\n'
+                    lines_text += self._process_verse_line(line)
+                # Append text from "lines" element to verse text.
+                text += lines_text
                 # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
