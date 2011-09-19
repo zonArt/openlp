@@ -442,17 +442,20 @@ class Renderer(object):
     def _get_start_tags(self, raw_text):
         """
         Tests the given text for not closed formatting tags and returns a tuple
-        consisting of two unicode strings::
+        consisting of three unicode strings::
 
-            (u'{st}{r}', u'<strong><span style="-webkit-text-fill-color:red">')
+            (u'{st}{r}Text text text{/st}{/r}', u'{st}{r}', u'<strong>
+            <span style="-webkit-text-fill-color:red">')
 
-        The returned strings can be prepended to the next slide. The first
-        unicode string are OpenLP's formatting tags and the second unicode
-        string the html formatting tags.
+        The first unicode string is the text, with correct closing tags. The
+        second unicode string are OpenLP's opening formatting tags and the third
+        unicode string the html opening formatting tags.
 
         ``raw_text``
             The text to test. The text must **not** contain html tags, only
-            OpenLP formatting tags are allowed.
+            OpenLP formatting tags are allowed::
+
+                {st}{r}Text text text
         """
         raw_tags = []
         html_tags = []
@@ -462,18 +465,23 @@ class Renderer(object):
             if tag[u'start tag'] in raw_text and not \
                 tag[u'end tag'] in raw_text:
                 raw_tags.append(
-                    (tag[u'start tag'], raw_text.find(tag[u'start tag'])))
+                    (raw_text.find(tag[u'start tag']), tag[u'start tag'],
+                    tag[u'end tag']))
                 html_tags.append(
-                    (tag[u'start html'], raw_text.find(tag[u'start tag'])))
+                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.
-        raw_tags.sort(key=lambda tag: tag[1])
-        html_tags.sort(key=lambda tag: tag[1])
+        raw_tags.sort(key=lambda tag: tag[0])
+        html_tags.sort(key=lambda tag: tag[0])
+        # Create a list with closing tags for the raw_text.
+        end_tags = [tag[2] for tag in raw_tags]
+        end_tags.reverse()
         # Remove the indexes.
-        raw_tags = [tag[0] for tag in raw_tags]
-        html_tags = [tag[0] for tag in html_tags]
-        return u''.join(raw_tags), u''.join(html_tags)
+        raw_tags = [tag[1] for tag in raw_tags]
+        html_tags = [tag[1] for tag in html_tags]
+        return raw_text + u''.join(end_tags),  u''.join(raw_tags), \
+            u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
         raw_list, separator, line_end):
@@ -528,8 +536,8 @@ class Renderer(object):
                 index = smallest_index
                 text = previous_raw.rstrip(u'<br>') + \
                     separator.join(raw_list[:index + 1])
+                text, raw_tags, html_tags = self._get_start_tags(text)
                 formatted.append(text)
-                raw_tags, html_tags = self._get_start_tags(text)
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
