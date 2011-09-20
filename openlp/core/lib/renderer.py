@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities
+    ItemCapabilities, FormattingTags
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -439,6 +439,50 @@ class Renderer(object):
         log.debug(u'_paginate_slide_words - End')
         return formatted
 
+    def _get_start_tags(self, raw_text):
+        """
+        Tests the given text for not closed formatting tags and returns a tuple
+        consisting of three unicode strings::
+
+            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong>
+            <span style="-webkit-text-fill-color:red">')
+
+        The first unicode string is the text, with correct closing tags. The
+        second unicode string are OpenLP's opening formatting tags and the third
+        unicode string the html opening formatting tags.
+
+        ``raw_text``
+            The text to test. The text must **not** contain html tags, only
+            OpenLP formatting tags are allowed::
+
+                {st}{r}Text text text
+        """
+        raw_tags = []
+        html_tags = []
+        for tag in FormattingTags.get_html_tags():
+            if tag[u'start tag'] == u'{br}':
+                continue
+            if raw_text.count(tag[u'start tag']) != \
+                raw_text.count(tag[u'end tag']):
+                raw_tags.append(
+                    (raw_text.find(tag[u'start tag']), tag[u'start tag'],
+                    tag[u'end tag']))
+                html_tags.append(
+                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
+        # Sort the lists, so that the tags which were opened first on the first
+        # slide (the text we are checking) will be opened first on the next
+        # slide as well.
+        raw_tags.sort(key=lambda tag: tag[0])
+        html_tags.sort(key=lambda tag: tag[0])
+        # Create a list with closing tags for the raw_text.
+        end_tags = [tag[2] for tag in raw_tags]
+        end_tags.reverse()
+        # Remove the indexes.
+        raw_tags = [tag[1] for tag in raw_tags]
+        html_tags = [tag[1] for tag in html_tags]
+        return raw_text + u''.join(end_tags),  u''.join(raw_tags), \
+            u''.join(html_tags)
+
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
         raw_list, separator, line_end):
         """
@@ -490,8 +534,10 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                formatted.append(previous_raw.rstrip(u'<br>') +
-                    separator.join(raw_list[:index + 1]))
+                text = previous_raw.rstrip(u'<br>') + \
+                    separator.join(raw_list[:index + 1])
+                text, raw_tags, html_tags = self._get_start_tags(text)
+                formatted.append(text)
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
@@ -502,17 +548,19 @@ class Renderer(object):
                 continue
             # Check if the remaining elements fit on the slide.
             if self._text_fits_on_slide(
-                    separator.join(html_list[index + 1:]).strip()):
-                previous_html = separator.join(
+                    html_tags + separator.join(html_list[index + 1:]).strip()):
+                previous_html = html_tags + separator.join(
                     html_list[index + 1:]).strip() + line_end
-                previous_raw = separator.join(
+                previous_raw = raw_tags + separator.join(
                     raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The remaining elements do not fit, thus reset the indexes,
                 # create a new list and continue.
                 raw_list = raw_list[index + 1:]
+                raw_list[0] = raw_tags + raw_list[0]
                 html_list = html_list[index + 1:]
+                html_list[0] = html_tags + html_list[0]
                 smallest_index = 0
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)

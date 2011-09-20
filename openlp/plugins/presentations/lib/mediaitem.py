@@ -56,6 +56,7 @@ class PresentationMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
+        self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
         # Allow DnD from the desktop
