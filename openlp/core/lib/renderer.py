@@ -462,8 +462,8 @@ class Renderer(object):
         for tag in FormattingTags.get_html_tags():
             if tag[u'start tag'] == u'{br}':
                 continue
-            if tag[u'start tag'] in raw_text and not \
-                tag[u'end tag'] in raw_text:
+            if raw_text.count(tag[u'start tag']) != \
+                raw_text.count(tag[u'end tag']):
                 raw_tags.append(
                     (raw_text.find(tag[u'start tag']), tag[u'start tag'],
                     tag[u'end tag']))
