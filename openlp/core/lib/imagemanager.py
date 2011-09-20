@@ -215,6 +215,8 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image is None:
             self._conversion_queue.modify_priority(image, Priority.High)
+            # make sure we are runnning and if not give it a kick
+            self.process_updates()
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
@@ -235,6 +237,8 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image_bytes is None:
             self._conversion_queue.modify_priority(image, Priority.Urgent)
+            # make sure we are runnning and if not give it a kick
+            self.process_updates()
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
@@ -279,6 +283,7 @@ class ImageManager(QtCore.QObject):
         """
         log.debug(u'_process_cache')
         image = self._conversion_queue.get()[1]
+        print image
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height,
