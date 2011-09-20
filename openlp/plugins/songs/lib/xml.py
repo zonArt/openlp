@@ -260,8 +260,8 @@ class OpenLyrics(object):
 
     def __init__(self, manager):
         self.manager = manager
-        self.start_tags_regex = re.compile(r'\{\w+\}')  # {abc}
-        self.end_tags_regex = re.compile(r'\{\/\w+\}')  # {/abc}
+        self.start_tags_regex = re.compile(r'\{(\w+)\}')  # {abc} -> abc
+        self.end_tags_regex = re.compile(r'\{\/(\w+)\}')  # {/abc} -> abc
 
     def song_to_xml(self, song):
         """
@@ -336,19 +336,12 @@ class OpenLyrics(object):
             # Create a list with all "virtual" verses.
             virtual_verses = verse[1].split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
-                lines_element = \
-                    self._add_text_to_element(u'lines', verse_element)
+                # Add formatting tags to text
+                lines_element =self._add_text_with_tags_to_lines(verse_element,
+                    virtual_verse, tags_element)
                 # Do not add the break attribute to the last lines element.
                 if index < len(virtual_verses) - 1:
                     lines_element.set(u'break', u'optional')
-                for line in virtual_verse.strip(u'\n').split(u'\n'):
-                    # Process only lines containing formatting tags
-                    if self.start_tags_regex.search(line):
-                        # add formatting tags to text
-                        self._add_line_with_tags_to_lines(lines_element, line,
-                            tags_element)
-                    else:
-                        self._add_text_to_element(u'line', lines_element, line)
         return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml, parse_and_not_save=False):
@@ -420,32 +413,48 @@ class OpenLyrics(object):
                 el = self._add_text_to_element(u'tag', tags_element)
                 el.set(u'name', tag_name)
                 el_open = self._add_text_to_element(u'open', el)
-                el_close = self._add_text_to_element(u'close', el)
                 el_open.text = etree.CDATA(t[u'start html'])
-                el_close.text = etree.CDATA(t[u'end html'])
+                # Check if formatting tag contains end tag. Some formatting
+                # tags e.g. {br} has only start tag. If no end tag is present
+                # <close> element has not to be in OpenLyrics xml.
+                if t['end tag']:
+                    el_close = self._add_text_to_element(u'close', el)
+                    el_close.text = etree.CDATA(t[u'end html'])
 
-    def _add_line_with_tags_to_lines(self, parent, text, tags_element):
+    def _add_text_with_tags_to_lines(self, verse_element, text, tags_element):
         """
         Convert text with formatting tags from OpenLP format to OpenLyrics
         format and append it to element ``<lines>``.
         """
-        # Tags already converted to xml structure.
-        xml_tags = tags_element.xpath(u'tag/attribute::name')
         start_tags = self.start_tags_regex.findall(text)
         end_tags = self.end_tags_regex.findall(text)
+
         # Replace start tags with xml syntax.
         for tag in start_tags:
-            name = tag[1:-1]
-            text = text.replace(tag, u'<tag name="%s">' % name)
+            # Tags already converted to xml structure.
+            xml_tags = tags_element.xpath(u'tag/attribute::name')
+            # Some formatting tag has only starting part e.g. <br>.
+            # Handle this case.
+            if tag in end_tags:
+                text = text.replace(u'{%s}' % tag, u'<tag name="%s">' % tag)
+            else:
+                text = text.replace(u'{%s}' % tag, u'<tag name="%s"/>' % tag)
             # Add tag to <format> element if tag not present.
-            if name not in xml_tags:
-                self._add_tag_to_formatting(name, tags_element)
+            if tag not in xml_tags:
+                self._add_tag_to_formatting(tag, tags_element)
+
         # Replace end tags.
         for t in end_tags:
-            text = text.replace(t, u'</tag>')
-        text = u'<line>' + text + u'</line>'
+            print repr(t)
+            text = text.replace(u'{/%s}' % t, u'</tag>')
+
+        # Replace \n with <br/>.
+        text = text.replace(u'\n', u'<br/>')
+        text = u'<lines>' + text + u'</lines>'
+        print repr(text)
         element = etree.XML(text)
-        parent.append(element)
+        verse_element.append(element)
+        return element
 
     def _extract_xml(self, xml):
         """
