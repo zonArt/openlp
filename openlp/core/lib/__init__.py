@@ -185,7 +185,7 @@ def resize_image(image_path, width, height, background):
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
-    painter.fillRect(new_image.rect(), background)
+    painter.fillRect(new_image.rect(), QtGui.QColor(background))
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
