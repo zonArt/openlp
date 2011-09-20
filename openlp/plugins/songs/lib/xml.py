@@ -547,12 +547,16 @@ class OpenLyrics(object):
             name = tag.get(u'name')
             if name is None:
                 continue
+            start_tag = u'{%s}' % name[:5]
+            # Some tags have only start tag e.g. {br}
+            end_tag = u'{' + name[:5] + u'}' if hasattr(tag, 'close') else u''
             openlp_tag = {
                 u'desc': name,
-                u'start tag': u'{%s}' % name[:5],
-                u'end tag': u'{/%s}' % name[:5],
+                u'start tag': start_tag,
+                u'end tag': end_tag,
                 u'start html': tag.open.text,
-                u'end html': tag.close.text,
+                # Some tags have only start html e.g. {br}
+                u'end html': tag.close.text if hasattr(tag, 'close') else u'',
                 u'protected': False,
                 u'temporary': temporary
             }
@@ -562,25 +566,45 @@ class OpenLyrics(object):
         FormattingTags.add_html_tags([tag for tag in found_tags
             if tag[u'start tag'] not in existing_tag_ids], True)
 
-    def _process_line_mixed_content(self, element):
+    def _process_lines_mixed_content(self, element, newlines=True):
         """
         Converts the xml text with mixed content to OpenLP representation.
         Chords are skipped and formatting tags are converted.
 
         ``element``
             The property object (lxml.etree.Element).
+
+        ``newlines``
+            The switch to enable/disable processing of line breaks <br/>.
+            The <br/> is used since OpenLyrics 0.8.
         """
         text = u''
+        use_endtag = True
 
-        # Skip <chord> element.
-        if element.tag == u'chord' and element.tail:
+        # Skip <comment> elements - not yet supported.
+        if element.tag == NSMAP % u'comment' and element.tail:
             # Append tail text at chord element.
             text += element.tail
-            return
+            return text
+        # Skip <chord> element - not yet supported.
+        elif element.tag == NSMAP % u'chord' and element.tail:
+            # Append tail text at chord element.
+            text += element.tail
+            return text
+        # Convert line breaks <br/> to \n.
+        elif newlines and element.tag == NSMAP % u'br':
+            text += u'\n'
+            if element.tail:
+                text += element.tail
+            return text
 
         # Start formatting tag.
-        if element.tag == NSMAP % 'tag':
+        if element.tag == NSMAP % u'tag':
             text += u'{%s}' % element.get(u'name')
+            # Some formattings may have only start tag.
+            # Handle this case if element has no children and contains no text.
+            if len(element) == 0 and not element.text:
+                use_endtag = False
 
         # Append text from element.
         if element.text:
@@ -589,10 +613,10 @@ class OpenLyrics(object):
         # Process nested formatting tags.
         for child in element:
             # Use recursion since nested formatting tags are allowed.
-            text += self._process_line_mixed_content(child)
+            text += self._process_lines_mixed_content(child, newlines)
 
         # Append text from tail and add formatting end tag.
-        if element.tag == NSMAP % 'tag':
+        if element.tag == NSMAP % 'tag' and use_endtag:
             text += u'{/%s}' % element.get(u'name')
 
         # Append text from tail.
@@ -601,17 +625,31 @@ class OpenLyrics(object):
 
         return text
 
-    def _process_verse_line(self, line):
+    def _process_verse_lines(self, lines):
         """
-        Converts lyrics line to OpenLP representation.
+        Converts lyrics lines to OpenLP representation.
 
-        ``line``
-            The line object (lxml.objectify.ObjectifiedElement).
+        ``lines``
+            The lines object (lxml.objectify.ObjectifiedElement).
         """
+        text = u''
         # Convert lxml.objectify to lxml.etree representation.
-        line = etree.tostring(line)
-        element = etree.XML(line)
-        return self._process_line_mixed_content(element)
+        lines = etree.tostring(lines)
+        element = etree.XML(lines)
+        # OpenLyrics version <= 0.7 contais <line> elements to represent lines.
+        # First child element is tested.
+        if element[0].tag == NSMAP % 'line':
+            # Loop over the "line" elements removing comments and chords.
+            for line in element:
+                if text:
+                    text += u'\n'
+                text += self._process_lines_mixed_content(line, newlines=False)
+        # OpenLyrics 0.8 uses <br/> for new lines.
+        # Append text from "lines" element to verse text.
+        else:
+            text = self._process_lines_mixed_content(element)
+
+        return text
 
     def _process_lyrics(self, properties, song_xml, song_obj):
         """
@@ -637,14 +675,8 @@ class OpenLyrics(object):
             for lines in verse.lines:
                 if text:
                     text += u'\n'
-                # Loop over the "line" elements removing chords.
-                lines_text = u''
-                for line in lines.line:
-                    if lines_text:
-                        lines_text += u'\n'
-                    lines_text += self._process_verse_line(line)
                 # Append text from "lines" element to verse text.
-                text += lines_text
+                text += self._process_verse_lines(lines)
                 # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
