@@ -144,7 +144,7 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image_path, width, height, background):
+def resize_image(image_path, width, height, background=u'#000000'):
     """
     Resize an image to fit on the current screen.
 
@@ -159,6 +159,8 @@ def resize_image(image_path, width, height, background):
 
     ``background``
         The background colour defaults to black.
+
+    DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
