@@ -49,50 +49,50 @@ class EasiSlidesImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
-    def do_import(self):
+    def doImport(self):
         """
-        Import either each of the files in self.import_sources - each element of
+        Import either each of the files in self.importSources - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        log.info(u'Importing EasiSlides XML file %s', self.import_source)
+        log.info(u'Importing EasiSlides XML file %s', self.importSource)
         parser = etree.XMLParser(remove_blank_text=True)
-        parsed_file = etree.parse(self.import_source, parser)
+        parsed_file = etree.parse(self.importSource, parser)
         xml = unicode(etree.tostring(parsed_file))
         song_xml = objectify.fromstring(xml)
-        self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
+        self.importWizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 return
-            self._parse_song(song)
+            self._parseSong(song)
 
-    def _parse_song(self, song):
+    def _parseSong(self, song):
         self._success = True
-        self._add_unicode_attribute(u'title', song.Title1, True)
+        self._addUnicodeAttribute(u'title', song.Title1, True)
         if hasattr(song, u'Title2'):
-            self._add_unicode_attribute(u'alternate_title', song.Title2)
+            self._addUnicodeAttribute(u'alternateTitle', song.Title2)
         if hasattr(song, u'SongNumber'):
-            self._add_unicode_attribute(u'song_number', song.SongNumber)
-        if self.song_number == u'0':
-            self.song_number = u''
-        self._add_authors(song)
+            self._addUnicodeAttribute(u'songNumber', song.SongNumber)
+        if self.songNumber == u'0':
+            self.songNumber = u''
+        self._addAuthors(song)
         if hasattr(song, u'Copyright'):
-            self._add_copyright(song.Copyright)
+            self._addCopyright(song.Copyright)
         if hasattr(song, u'LicenceAdmin1'):
-            self._add_copyright(song.LicenceAdmin1)
+            self._addCopyright(song.LicenceAdmin1)
         if hasattr(song, u'LicenceAdmin2'):
-            self._add_copyright(song.LicenceAdmin2)
+            self._addCopyright(song.LicenceAdmin2)
         if hasattr(song, u'BookReference'):
-            self._add_unicode_attribute(u'song_book_name', song.BookReference)
-        self._parse_and_add_lyrics(song)
+            self._addUnicodeAttribute(u'songBookName', song.BookReference)
+        self._parseAndAddLyrics(song)
         if self._success:
             if not self.finish():
-                self.log_error(song.Title1 if song.Title1 else u'')
+                self.logError(song.Title1 if song.Title1 else u'')
         else:
-            self.set_defaults()
+            self.setDefaults()
 
-    def _add_unicode_attribute(self, self_attribute, import_attribute,
+    def _addUnicodeAttribute(self, self_attribute, import_attribute,
         mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
@@ -119,7 +119,7 @@ class EasiSlidesImport(SongImport):
             if mandatory:
                 self._success = False
 
-    def _add_authors(self, song):
+    def _addAuthors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
             self.authors = \
@@ -130,7 +130,7 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             pass
 
-    def _add_copyright(self, element):
+    def _addCopyright(self, element):
         """
         Add a piece of copyright to the total copyright information for the
         song.
@@ -139,14 +139,14 @@ class EasiSlidesImport(SongImport):
             The imported variable to get the data from.
         """
         try:
-            self.add_copyright(unicode(element).strip())
+            self.addCopyright(unicode(element).strip())
         except UnicodeDecodeError:
             log.exception(u'Unicode error on decoding copyright: %s' % element)
             self._success = False
         except AttributeError:
             pass
 
-    def _parse_and_add_lyrics(self, song):
+    def _parseAndAddLyrics(self, song):
         try:
             lyrics = unicode(song.Contents).strip()
         except UnicodeDecodeError:
@@ -295,7 +295,7 @@ class EasiSlidesImport(SongImport):
                 else:
                     continue
                 if tag in versetags:
-                    self.verse_order_list.append(tag)
+                    self.verseOrderList.append(tag)
                 else:
                     log.info(u'Got order item %s, which is not in versetags,'
                         u'dropping item from presentation order', tag)

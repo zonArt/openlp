@@ -541,6 +541,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
         self.advancedlSettingsSection = u'advanced'
+        self.shortcutsSettingsSection = u'shortcuts'
         self.servicemanagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
@@ -779,25 +780,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         Receiver.send_message(u'cursor_busy')
         screens = ScreenList.get_instance()
-        if FirstTimeForm(screens, self).exec_() == QtGui.QDialog.Accepted:
-            self.firstTime()
-            for plugin in self.pluginManager.plugins:
-                self.activePlugin = plugin
-                oldStatus = self.activePlugin.status
-                self.activePlugin.setStatus()
-                if oldStatus != self.activePlugin.status:
-                    if self.activePlugin.status == PluginStatus.Active:
-                        self.activePlugin.toggleStatus(PluginStatus.Active)
-                        self.activePlugin.appStartup()
-                    else:
-                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
-            self.themeManagerContents.configUpdated()
-            self.themeManagerContents.loadThemes(True)
-            Receiver.send_message(u'theme_update_global',
-                self.themeManagerContents.global_theme)
-            # Check if any Bibles downloaded.  If there are, they will be
-            # processed.
-            Receiver.send_message(u'bibles_load_list', True)
+        FirstTimeForm(screens, self).exec_()
+        self.firstTime()
+        for plugin in self.pluginManager.plugins:
+            self.activePlugin = plugin
+            oldStatus = self.activePlugin.status
+            self.activePlugin.setStatus()
+            if oldStatus != self.activePlugin.status:
+                if self.activePlugin.status == PluginStatus.Active:
+                    self.activePlugin.toggleStatus(PluginStatus.Active)
+                    self.activePlugin.appStartup()
+                else:
+                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
+        self.themeManagerContents.configUpdated()
+        self.themeManagerContents.loadThemes(True)
+        Receiver.send_message(u'theme_update_global',
+            self.themeManagerContents.global_theme)
+        # Check if any Bibles downloaded.  If there are, they will be
+        # processed.
+        Receiver.send_message(u'bibles_load_list', True)
 
     def blankCheck(self):
         """
@@ -917,42 +918,43 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        importFileName = unicode(QtGui.QFileDialog.getOpenFileName(self,
+        import_file_name = unicode(QtGui.QFileDialog.getOpenFileName(self,
                 translate('OpenLP.MainWindow', 'Open File'),
                 '',
                 translate('OpenLP.MainWindow',
                 'OpenLP Export Settings Files (*.conf)')))
-        if not importFileName:
+        if not import_file_name:
             return
-        settingSections = []
+        setting_sections = []
         # Add main sections.
-        settingSections.extend([self.generalSettingsSection])
-        settingSections.extend([self.advancedlSettingsSection])
-        settingSections.extend([self.uiSettingsSection])
-        settingSections.extend([self.servicemanagerSettingsSection])
-        settingSections.extend([self.themesSettingsSection])
-        settingSections.extend([self.displayTagsSection])
-        settingSections.extend([self.headerSection])
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
+        setting_sections.extend([self.headerSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
-            settingSections.extend([plugin.name])
+            setting_sections.extend([plugin.name])
         settings = QtCore.QSettings()
-        importSettings = QtCore.QSettings(importFileName,
+        import_settings = QtCore.QSettings(import_file_name,
             QtCore.QSettings.IniFormat)
-        importKeys = importSettings.allKeys()
-        for sectionKey in importKeys:
+        import_keys = import_settings.allKeys()
+        for section_key in import_keys:
             # We need to handle the really bad files.
             try:
-                section, key = sectionKey.split(u'/')
+                section, key = section_key.split(u'/')
             except ValueError:
                 section = u'unknown'
                 key = u''
             # Switch General back to lowercase.
             if section == u'General':
                 section = u'general'
-            sectionKey = section + "/" + key
+                section_key = section + "/" + key
             # Make sure it's a valid section for us.
-            if not section in settingSections:
+            if not section in setting_sections:
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.MainWindow', 'Import settings'),
                     translate('OpenLP.MainWindow',
@@ -965,13 +967,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Ok))
                 return
         # We have a good file, import it.
-        for sectionKey in importKeys:
-            value = importSettings.value(sectionKey)
-            settings.setValue(u'%s' % (sectionKey) ,
+        for section_key in import_keys:
+            value = import_settings.value(section_key)
+            settings.setValue(u'%s' % (section_key) ,
                 QtCore.QVariant(value))
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue( u'file_imported' , QtCore.QVariant(importFileName))
+        settings.setValue( u'file_imported' , QtCore.QVariant(import_file_name))
         settings.setValue(u'file_date_imported',
             now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
@@ -990,78 +992,76 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.cleanUp()
         QtCore.QCoreApplication.exit()
 
-    def onSettingsExportItemClicked(self, exportFileName=None):
+    def onSettingsExportItemClicked(self):
         """
-        Export settings to an INI file
+        Export settings to a .conf file in INI format
         """
-        if not exportFileName:
-            exportFileName = unicode(QtGui.QFileDialog.getSaveFileName(self,
-                translate('OpenLP.MainWindow', 'Export Settings File'), '',
-                translate('OpenLP.MainWindow',
-                    'OpenLP Export Settings File (*.conf)')))
-        if not exportFileName:
+        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+            translate('OpenLP.MainWindow', 'Export Settings File'), '',
+            translate('OpenLP.MainWindow',
+                'OpenLP Export Settings File (*.conf)')))
+        if not export_file_name:
             return
-        # Make sure it's an .ini file.
-        if not exportFileName.endswith(u'conf'):
-            exportFileName = exportFileName + u'.conf'
+        # Make sure it's a .conf file.
+        if not export_file_name.endswith(u'conf'):
+            export_file_name = export_file_name + u'.conf'
         temp_file = os.path.join(unicode(gettempdir()),
-            u'openlp', u'exportIni.tmp')
+            u'openlp', u'exportConf.tmp')
         self.saveSettings()
-        settingSections = []
+        setting_sections = []
         # Add main sections.
-        settingSections.extend([self.generalSettingsSection])
-        settingSections.extend([self.advancedlSettingsSection])
-        settingSections.extend([self.uiSettingsSection])
-        settingSections.extend([self.servicemanagerSettingsSection])
-        settingSections.extend([self.themesSettingsSection])
-        settingSections.extend([self.displayTagsSection])
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
-            settingSections.extend([plugin.name])
+            setting_sections.extend([plugin.name])
         # Delete old files if found.
         if os.path.exists(temp_file):
             os.remove(temp_file)
-        if os.path.exists(exportFileName):
-            os.remove(exportFileName)
+        if os.path.exists(export_file_name):
+            os.remove(export_file_name)
         settings = QtCore.QSettings()
         settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        exportSettings = QtCore.QSettings(temp_file,
+        export_settings = QtCore.QSettings(temp_file,
             QtCore.QSettings.IniFormat)
         # Add a header section.
-        # This is to insure it's our ini file for import.
+        # This is to insure it's our conf file for import.
         now = datetime.now()
-        applicationVersion = get_application_version()
+        application_version = get_application_version()
         # Write INI format using Qsettings.
         # Write our header.
-        exportSettings.beginGroup(self.headerSection)
-        exportSettings.setValue(u'Make_Changes', u'At_Own_RISK')
-        exportSettings.setValue(u'type', u'OpenLP_settings_export')
-        exportSettings.setValue(u'file_date_created',
+        export_settings.beginGroup(self.headerSection)
+        export_settings.setValue(u'Make_Changes', u'At_Own_RISK')
+        export_settings.setValue(u'type', u'OpenLP_settings_export')
+        export_settings.setValue(u'file_date_created',
             now.strftime("%Y-%m-%d %H:%M"))
-        exportSettings.setValue(u'version', applicationVersion[u'full'])
-        exportSettings.endGroup()
+        export_settings.setValue(u'version', application_version[u'full'])
+        export_settings.endGroup()
         # Write all the sections and keys.
-        for sectionKey in keys:
-            section, key = sectionKey.split(u'/')
-            keyValue = settings.value(sectionKey)
-            sectionKey = section + u"/" + key
-            # Change the service section to servicemanager.
-            if section == u'service':
-                sectionKey = u'servicemanager/' + key
-            exportSettings.setValue(sectionKey, keyValue)
-        exportSettings.sync()
-        # Temp INI file has been written.  Blanks in keys are now '%20'.
-        # Read the  temp file and output the user's INI file with blanks to
+        for section_key in keys:
+            section, key = section_key.split(u'/')
+            key_value = settings.value(section_key)
+            export_settings.setValue(section_key, key_value)
+        export_settings.sync()
+        # Temp CONF file has been written.  Blanks in keys are now '%20'.
+        # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
-        tempIni = open(temp_file, u'r')
-        exportIni = open(exportFileName,  u'w')
-        for fileRecord in tempIni:
-            fileRecord = fileRecord.replace(u'%20',  u' ')
-            exportIni.write(fileRecord)
-        tempIni.close()
-        exportIni.close()
+        temp_conf = open(temp_file, u'r')
+        export_conf = open(export_file_name,  u'w')
+        for file_record in temp_conf:
+            # Get rid of any invalid entries.
+            if file_record.find(u'@Invalid()') == -1:
+                file_record = file_record.replace(u'%20',  u' ')
+                export_conf.write(file_record)
+        temp_conf.close()
+        export_conf.close()
         os.remove(temp_file)
         return
 
@@ -1295,6 +1295,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
+        # Remove obsolete entries.
+        settings.remove(u'custom slide')
+        settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
         self.recentFiles = settings.value(u'recent files').toStringList()
         settings.endGroup()
