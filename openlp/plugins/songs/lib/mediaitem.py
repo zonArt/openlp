@@ -239,7 +239,7 @@ class SongMediaItem(MediaManagerItem):
                 + u'%'),
             Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
-    def onSongListLoad(self, item_id=None):
+    def onSongListLoad(self):
         """
         Handle the exit from the edit dialog and trigger remote updates
         of songs
@@ -371,7 +371,7 @@ class SongMediaItem(MediaManagerItem):
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
-            self.onSongListLoad(item_id)
+            self.onSongListLoad()
         self.editItem = None
 
     def onDeleteClick(self):
