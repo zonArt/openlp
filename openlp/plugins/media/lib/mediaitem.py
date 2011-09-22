@@ -109,9 +109,10 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.addAction(self.replaceAction)
 
-    def addStartHeaderBar(self):
-        self.replaceAction = self.addToolbarButton(u'', u'',
-            u':/general/general_open.png', self.onMediaOpenClick, False)
+# TODO activate own media open menu
+#    def addStartHeaderBar(self):
+#        self.replaceAction = self.addToolbarButton(u'', u'',
+#            u':/general/general_open.png', self.onMediaOpenClick, False)
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
@@ -283,13 +284,12 @@ class MediaMediaItem(MediaManagerItem):
                 item_name.setIcon(build_icon(CLAPPERBOARD))
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             else:
-                print "tus doch"
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                imageFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video.png'
-                thumbFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video_thumb.png'
-                icon = self.iconFromFile(imageFile, thumbFile)
-                item_name.setIcon(icon)
+                #imageFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video.png'
+                #thumbFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video_thumb.png'
+                #icon = self.iconFromFile(imageFile, thumbFile)
+                #item_name.setIcon(icon)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
