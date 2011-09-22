@@ -554,6 +554,18 @@ class ServiceManager(QtGui.QWidget):
             for path_from in write_list:
                 zip.write(path_from, path_from.encode(u'utf-8'))
             for path_from, path_to in audio_files:
+                if path_from == path_to:
+                    # If this file has already been saved, let's use set the
+                    # from path to the real location of the files
+                    path_from = os.path.join(self.servicePath, path_from)
+                else:
+                    # If this file has not yet been saved, let's copy the file
+                    # to the service manager path
+                    save_file = os.path.join(self.servicePath, path_to)
+                    save_path = os.path.split(save_file)[0]
+                    if not os.path.exists(save_path):
+                        os.makedirs(save_path)
+                    shutil.copy(path_from, save_file)
                 zip.write(path_from, path_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
