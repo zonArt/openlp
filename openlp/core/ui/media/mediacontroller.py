@@ -278,10 +278,12 @@ class MediaController(object):
         if self.video_play([controller]):
             self.video_pause([controller])
             self.video_seek([controller, [0]])
-            if self.video_play([controller]):
-                self.set_controls_visible(controller, True)
-                log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
-                return True
+            if controller.isLive and  QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                self.video_play([controller])
+            self.set_controls_visible(controller, True)
+            log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
+            return True
         else:
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),

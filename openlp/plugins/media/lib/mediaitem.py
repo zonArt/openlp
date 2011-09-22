@@ -213,7 +213,7 @@ class MediaMediaItem(MediaManagerItem):
             self.plugin.mediaController.video_reset(self.mediaController)
             if self.mediaLength > 0:
                 service_item.add_capability(
-                    ItemCapabilities.AllowsVariableStartTime)
+                    ItemCapabilities.HasVariableStartTime)
         else:
             return False
         service_item.media_length = self.mediaLength
