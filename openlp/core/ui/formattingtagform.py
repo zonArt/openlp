@@ -30,13 +30,12 @@ protected and included each time loaded. Custom tags can be defined and saved.
 The Custom Tag arrays are saved in a pickle so QSettings works on them. Base
 Tags cannot be changed.
 """
-import cPickle
-
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, FormattingTags
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
+
 
 class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
     """
@@ -48,7 +47,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self._loadFormattingTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
         QtCore.QObject.connect(self.newPushButton,
@@ -65,28 +63,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
-        self._loadFormattingTags()
         self._resetTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
-
-    def _loadFormattingTags(self):
-        """
-        Load the Tags from store so can be used in the system or used to
-        update the display. If Cancel was selected this is needed to reset the
-        dsiplay to the correct version.
-        """
-        # Initial Load of the Tags
-        FormattingTags.reset_html_tags()
-        # Formatting Tags were also known as display tags.
-        user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
-            QtCore.QVariant(u'')).toString()
-        # cPickle only accepts str not unicode strings
-        user_expands_string = str(unicode(user_expands).encode(u'utf8'))
-        if user_expands_string:
-            user_tags = cPickle.loads(user_expands_string)
-            # If we have some user ones added them as well
-            FormattingTags.add_html_tags(user_tags)
 
     def onRowSelected(self):
         """
@@ -199,7 +178,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             self.tagTableWidget.setItem(linenumber, 3,
                 QtGui.QTableWidgetItem(html[u'end html']))
             # Tags saved prior to 1.9.7 do not have this key.
-            if not html.has_key(u'temporary'):
+            if u'temporary' not in html:
                 html[u'temporary'] = False
             self.tagTableWidget.resizeRowsToContents()
         self.descriptionLineEdit.setText(u'')

@@ -33,6 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import translate
 
+
 class FormattingTags(object):
     """
     Static Class to HTML Tags to be access around the code the list is managed
@@ -45,6 +46,8 @@ class FormattingTags(object):
         """
         Provide access to the html_expands list.
         """
+        # Load user defined tags otherwise user defined tags are not present.
+        FormattingTags.load_tags()
         return FormattingTags.html_expands
 
     @staticmethod
@@ -63,7 +66,7 @@ class FormattingTags(object):
             u'start html': u'<span style="-webkit-text-fill-color:red">',
             u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True,
             u'temporary': False})
-        base_tags.append({u'desc':  translate('OpenLP.FormattingTags', 'Black'),
+        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Black'),
             u'start tag': u'{b}',
             u'start html': u'<span style="-webkit-text-fill-color:black">',
             u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
@@ -144,12 +147,31 @@ class FormattingTags(object):
         Saves all formatting tags except protected ones.
         """
         tags = []
-        for tag in FormattingTags.get_html_tags():
+        for tag in FormattingTags.html_expands:
             if not tag[u'protected'] and not tag[u'temporary']:
                 tags.append(tag)
         # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
             QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
+
+    @staticmethod
+    def load_tags():
+        """
+        Load the Tags from store so can be used in the system or used to
+        update the display. If Cancel was selected this is needed to reset the
+        dsiplay to the correct version.
+        """
+        # Initial Load of the Tags
+        FormattingTags.reset_html_tags()
+        # Formatting Tags were also known as display tags.
+        user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
+            QtCore.QVariant(u'')).toString()
+        # cPickle only accepts str not unicode strings
+        user_expands_string = str(unicode(user_expands).encode(u'utf8'))
+        if user_expands_string:
+            user_tags = cPickle.loads(user_expands_string)
+            # If we have some user ones added them as well
+            FormattingTags.add_html_tags(user_tags)
 
     @staticmethod
     def add_html_tags(tags, save=False):

@@ -319,8 +319,8 @@ class OpenLyrics(object):
             # Reset available tags.
             FormattingTags.reset_html_tags()
             # Named 'formatting' - 'format' is built-in fuction in Python.
-            formatting = etree.SubElement(song_xml, u'format')
-            tags_element = etree.SubElement(formatting, u'tags')
+            format_ = etree.SubElement(song_xml, u'format')
+            tags_element = etree.SubElement(format_, u'tags')
             tags_element.set(u'application', u'OpenLP')
         # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
@@ -337,7 +337,7 @@ class OpenLyrics(object):
             virtual_verses = verse[1].split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
                 # Add formatting tags to text
-                lines_element =self._add_text_with_tags_to_lines(verse_element,
+                lines_element = self._add_text_with_tags_to_lines(verse_element,
                     virtual_verse, tags_element)
                 # Do not add the break attribute to the last lines element.
                 if index < len(virtual_verses) - 1:
@@ -428,7 +428,6 @@ class OpenLyrics(object):
         """
         start_tags = self.start_tags_regex.findall(text)
         end_tags = self.end_tags_regex.findall(text)
-
         # Replace start tags with xml syntax.
         for tag in start_tags:
             # Tags already converted to xml structure.
@@ -442,16 +441,12 @@ class OpenLyrics(object):
             # Add tag to <format> element if tag not present.
             if tag not in xml_tags:
                 self._add_tag_to_formatting(tag, tags_element)
-
         # Replace end tags.
         for t in end_tags:
-            print repr(t)
             text = text.replace(u'{/%s}' % t, u'</tag>')
-
         # Replace \n with <br/>.
         text = text.replace(u'\n', u'<br/>')
         text = u'<lines>' + text + u'</lines>'
-        print repr(text)
         element = etree.XML(text)
         verse_element.append(element)
         return element
@@ -558,7 +553,7 @@ class OpenLyrics(object):
                 continue
             start_tag = u'{%s}' % name[:5]
             # Some tags have only start tag e.g. {br}
-            end_tag = u'{' + name[:5] + u'}' if hasattr(tag, 'close') else u''
+            end_tag = u'{/' + name[:5] + u'}' if hasattr(tag, 'close') else u''
             openlp_tag = {
                 u'desc': name,
                 u'start tag': start_tag,
@@ -572,8 +567,9 @@ class OpenLyrics(object):
             found_tags.append(openlp_tag)
         existing_tag_ids = [tag[u'start tag']
             for tag in FormattingTags.get_html_tags()]
-        FormattingTags.add_html_tags([tag for tag in found_tags
-            if tag[u'start tag'] not in existing_tag_ids], True)
+        new_tags = [tag for tag in found_tags
+            if tag[u'start tag'] not in existing_tag_ids]
+        FormattingTags.add_html_tags(new_tags, True)
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """
@@ -589,7 +585,6 @@ class OpenLyrics(object):
         """
         text = u''
         use_endtag = True
-
         # Skip <comment> elements - not yet supported.
         if element.tag == NSMAP % u'comment' and element.tail:
             # Append tail text at chord element.
@@ -606,7 +601,6 @@ class OpenLyrics(object):
             if element.tail:
                 text += element.tail
             return text
-
         # Start formatting tag.
         if element.tag == NSMAP % u'tag':
             text += u'{%s}' % element.get(u'name')
@@ -614,24 +608,19 @@ class OpenLyrics(object):
             # Handle this case if element has no children and contains no text.
             if len(element) == 0 and not element.text:
                 use_endtag = False
-
         # Append text from element.
         if element.text:
             text += element.text
-
         # Process nested formatting tags.
         for child in element:
             # Use recursion since nested formatting tags are allowed.
             text += self._process_lines_mixed_content(child, newlines)
-
         # Append text from tail and add formatting end tag.
         if element.tag == NSMAP % 'tag' and use_endtag:
             text += u'{/%s}' % element.get(u'name')
-
         # Append text from tail.
         if element.tail:
             text += element.tail
-
         return text
 
     def _process_verse_lines(self, lines):
@@ -657,7 +646,6 @@ class OpenLyrics(object):
         # Append text from "lines" element to verse text.
         else:
             text = self._process_lines_mixed_content(element)
-
         return text
 
     def _process_lyrics(self, properties, song_xml, song_obj):
