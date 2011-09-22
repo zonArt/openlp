@@ -127,7 +127,7 @@ class MainDisplay(Display):
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute( \
+        self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -206,8 +206,8 @@ class MainDisplay(Display):
             The slide text to be displayed
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible():
+        if self.height() != self.screen[u'size'].height() or \
+            not self.isVisible():
             shrink = True
         else:
             shrink = False
@@ -216,19 +216,18 @@ class MainDisplay(Display):
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
-            shrinkItem = self
             if text:
                 alert_height = int(height.toString())
-                shrinkItem.resize(self.width(), alert_height)
-                shrinkItem.setVisible(True)
+                self.resize(self.width(), alert_height)
+                self.setVisible(True)
                 if self.alertTab.location == 1:
-                    shrinkItem.move(self.screen[u'size'].left(),
+                    self.move(self.screen[u'size'].left(),
                     (self.screen[u'size'].height() - alert_height) / 2)
                 elif self.alertTab.location == 2:
-                    shrinkItem.move(self.screen[u'size'].left(),
+                    self.move(self.screen[u'size'].left(),
                         self.screen[u'size'].height() - alert_height)
             else:
-                shrinkItem.setVisible(False)
+                self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
     def directImage(self, name, path, background):

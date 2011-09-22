@@ -30,15 +30,16 @@ from openlp.core.ui.media import MediaState
 class MediaAPI(object):
     """
     A generic media API class to provide OpenLP
-    with a pluggable media display framework. 
+    with a pluggable media display framework.
     """
-    
+
     def __init__(self, parent, name=u'MediaApi'):
         self.parent = parent
         self.name = name
         self.available = self.check_available()
         self.isActive = False
         self.canBackground = False
+        self.canFolder = False
         self.state = MediaState.Off
         self.hasOwnWidget = False
         self.audio_extensions_list = []

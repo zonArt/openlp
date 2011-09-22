@@ -25,41 +25,26 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class MediaState(object):
-    """
-    An enumeration for possible States of the Media Player
-    (copied partially from Phonon::State)
-    """
-    Loading = 0
-    Stopped = 1
-    Playing = 2
-    Paused = 4
-    Off = 6
+import logging
 
+from PyQt4 import QtCore, QtGui
 
-class MediaType(object):
-    """
-    """
-    Unused = 0
-    Audio = 1
-    Video = 2
-    CD = 3
-    DVD = 4
-    Folder = 5
+from openlp.core.lib import Receiver, translate
+from mediaopendialog import Ui_MediaOpenDialog
 
+log = logging.getLogger(__name__)
 
-class MediaInfo(object):
+class MediaOpenForm(QtGui.QDialog, Ui_MediaOpenDialog):
     """
-    This class hold the media related infos
+    Class documentation goes here.
     """
-    file_info = None
-    volume = 100
-    is_flash = False
-    is_background = False
-    length = 0
-    start_time = 0
-    end_time = 0
-    media_type = MediaType()
-
-from media_api import MediaAPI
-from mediacontroller import MediaController
+    log.info(u'Media Open Form loaded')
+    def __init__(self, parent):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        # Connecting signals and slots
+#        QtCore.QObject.connect(self.previewButton,
+#            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)

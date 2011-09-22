@@ -42,13 +42,14 @@ log = logging.getLogger(__name__)
 
 class VlcAPI(MediaAPI):
     """
-    A specialised version of the MediaAPI class, 
+    A specialised version of the MediaAPI class,
     which provides a QtWebKit display.
     """
-    
+
     def __init__(self, parent):
         MediaAPI.__init__(self, parent, u'Vlc')
         self.parent = parent
+        self.canFolder = True
         self.audio_extensions_list = [
               u'*.mp3'
             , u'*.wav'
@@ -136,7 +137,7 @@ class VlcAPI(MediaAPI):
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
             Receiver.send_message(u'openlp_process_events')
-            if (datetime.now() - start).seconds > 5:
+            if (datetime.now() - start).seconds > 50:
                 return False
         return True
 

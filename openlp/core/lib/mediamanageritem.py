@@ -385,6 +385,7 @@ class MediaManagerItem(QtGui.QWidget):
             if filename in names:
                 duplicatesFound = True
             else:
+                print file
                 newFiles.append(file)
         if newFiles:
             self.loadList(newFiles)

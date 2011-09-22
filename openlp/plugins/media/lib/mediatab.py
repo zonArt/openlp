@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib.ui import UiStrings
 
 class MediaTab(SettingsTab):
     """
@@ -87,6 +88,14 @@ class MediaTab(SettingsTab):
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
         self.apiOrderLayout.addWidget(self.orderingButtonsWidget)
         self.leftLayout.addWidget(self.apiOrderGroupBox)
+        self.AdvancedGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.AdvancedGroupBox.setObjectName(u'AdvancedGroupBox')
+        self.AdvancedLayout = QtGui.QVBoxLayout(self.AdvancedGroupBox)
+        self.AdvancedLayout.setObjectName(u'AdvancedLayout')
+        self.OverrideApiCheckBox = QtGui.QCheckBox(self.AdvancedGroupBox)
+        self.OverrideApiCheckBox.setObjectName(u'OverrideApiCheckBox')
+        self.AdvancedLayout.addWidget(self.OverrideApiCheckBox)
+        self.leftLayout.addWidget(self.AdvancedGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         for key in self.apis:
@@ -102,7 +111,7 @@ class MediaTab(SettingsTab):
 
     def retranslateUi(self):
         self.mediaAPIGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'Media APIs'))
+            translate('MediaPlugin.MediaTab', 'Available Media APIs'))
         for key in self.apis:
             api = self.apis[key]
             checkbox = self.ApiCheckBoxes[api.name]
@@ -118,6 +127,10 @@ class MediaTab(SettingsTab):
             translate('MediaPlugin.MediaTab', 'Down'))
         self.orderingUpButton.setText(
             translate('MediaPlugin.MediaTab', 'Up'))
+        self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
+        self.OverrideApiCheckBox.setText(
+            translate('MediaPlugin.MediaTab',
+            'Allow media api to be overriden'))
 
     def onApiCheckBoxChanged(self, check_state):
         api = self.sender().text()
@@ -160,8 +173,13 @@ class MediaTab(SettingsTab):
             if api.available and api.name in self.usedAPIs:
                 checkbox.setChecked(True)
         self.updateApiList()
+        self.OverrideApiCheckBox.setChecked(QtCore.QSettings().value(
+            self.settingsSection + u'/override api',
+            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
+        override_changed = False
+        api_string_changed = False
         oldApiString = QtCore.QSettings().value(
             self.settingsSection + u'/apis',
             QtCore.QVariant(u'Webkit')).toString()
@@ -170,4 +188,16 @@ class MediaTab(SettingsTab):
             # clean old Media stuff
             QtCore.QSettings().setValue(self.settingsSection + u'/apis',
                 QtCore.QVariant(newApiString))
+            api_string_changed = True
+            override_changed = True
+        setting_key = self.settingsSection + u'/override api'
+        if QtCore.QSettings().value(setting_key) != \
+            self.OverrideApiCheckBox.checkState():
+            QtCore.QSettings().setValue(setting_key,
+                QtCore.QVariant(self.OverrideApiCheckBox.checkState()))
+            override_changed = True
+        if override_changed:
+            Receiver.send_message(u'mediaitem_media_rebuild')
+        if api_string_changed:
             Receiver.send_message(u'config_screen_changed')
+

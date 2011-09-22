@@ -25,41 +25,4 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-class MediaState(object):
-    """
-    An enumeration for possible States of the Media Player
-    (copied partially from Phonon::State)
-    """
-    Loading = 0
-    Stopped = 1
-    Playing = 2
-    Paused = 4
-    Off = 6
-
-
-class MediaType(object):
-    """
-    """
-    Unused = 0
-    Audio = 1
-    Video = 2
-    CD = 3
-    DVD = 4
-    Folder = 5
-
-
-class MediaInfo(object):
-    """
-    This class hold the media related infos
-    """
-    file_info = None
-    volume = 100
-    is_flash = False
-    is_background = False
-    length = 0
-    start_time = 0
-    end_time = 0
-    media_type = MediaType()
-
-from media_api import MediaAPI
-from mediacontroller import MediaController
+from mediaopenform import MediaOpenForm

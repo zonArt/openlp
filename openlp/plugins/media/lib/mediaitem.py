@@ -33,8 +33,10 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    media_item_combo_box
 from openlp.core.ui import Controller, Display
+from openlp.plugins.media.forms import MediaOpenForm
 
 log = logging.getLogger(__name__)
 
@@ -50,8 +52,10 @@ class MediaMediaItem(MediaManagerItem):
         self.IconPath = u'images/image'
         self.background = False
         self.PreviewFunction = CLAPPERBOARD
+        self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
+        self.mediaOpenForm = MediaOpenForm(self.plugin.formparent)
         self.hasSearch = True
         self.mediaObject = None
         self.mediaController = Controller(parent)
@@ -70,6 +74,8 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -83,16 +89,29 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
+        self.Automatic = translate('MediaPlugin.MediaItem',
+            'Automatic')
+        self.displayTypeLabel.setText(
+            translate('MediaPlugin.MediaItem', 'Use Api:'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasFileIcon = True
+        apiSettings = str(QtCore.QSettings().value(u'media/apis',
+            QtCore.QVariant(u'Webkit')).toString())
+        usedAPIs = apiSettings.split(u',')
+        for title in usedAPIs:
+            api = self.plugin.mediaController.APIs[title]
         self.hasNewIcon = False
         self.hasEditIcon = False
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.addAction(self.replaceAction)
+
+    def addStartHeaderBar(self):
+        self.replaceAction = self.addToolbarButton(u'', u'',
+            u':/general/general_open.png', self.onMediaOpenClick, False)
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
@@ -101,6 +120,36 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction = self.addToolbarButton(u'', u'',
             u':/system/system_close.png', self.onResetClick, False)
         self.resetAction.setVisible(False)
+        self.mediaWidget = QtGui.QWidget(self)
+        self.mediaWidget.setObjectName(u'mediaWidget')
+        self.displayLayout = QtGui.QFormLayout(self.mediaWidget)
+        self.displayLayout.setMargin(self.displayLayout.spacing())
+        self.displayLayout.setObjectName(u'displayLayout')
+        self.displayTypeLabel = QtGui.QLabel(self.mediaWidget)
+        self.displayTypeLabel.setObjectName(u'displayTypeLabel')
+        self.displayTypeComboBox = media_item_combo_box(
+            self.mediaWidget, u'displayTypeComboBox')
+        self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
+        self.displayLayout.addRow(self.displayTypeLabel,
+            self.displayTypeComboBox)
+        # Add the Media widget to the page layout
+        self.pageLayout.addWidget(self.mediaWidget)
+        QtCore.QObject.connect(self.displayTypeComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overrideApiChanged)
+
+    def onMediaOpenClick(self):
+        """
+        Add a folder to the list widget to make it available for showing
+        """
+        self.mediaOpenForm.exec_()
+#        folder = QtGui.QFileDialog.getExistingDirectory (
+#            self, self.onNewPrompt,
+#            SettingsManager.get_last_dir(self.settingsSection))
+#        log.info(u'New folder(s) %s', unicode(folder))
+
+    def overrideApiChanged(self, index):
+        Receiver.send_message(u'media_overrideApi', \
+            u'%s' % self.displayTypeComboBox.currentText())
 
     def onResetClick(self):
         """
@@ -177,6 +226,36 @@ class MediaMediaItem(MediaManagerItem):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
+        self.populateDisplayTypes()
+
+    def rebuild(self):
+        """
+        Rebuild the tab in the media manager when changes are made in
+        the settings
+        """
+        self.populateDisplayTypes()
+
+    def populateDisplayTypes(self):
+        """
+        Load the combobox with the enabled media apis,
+        allowing user to select a specific api if settings allow
+        """
+        self.displayTypeComboBox.clear()
+        apiSettings = str(QtCore.QSettings().value(u'media/apis',
+            QtCore.QVariant(u'Webkit')).toString())
+        usedAPIs = apiSettings.split(u',')
+        for title in usedAPIs:
+            # load the drop down selection
+            self.displayTypeComboBox.addItem(title)
+        if self.displayTypeComboBox.count() > 1:
+            self.displayTypeComboBox.insertItem(0, self.Automatic)
+            self.displayTypeComboBox.setCurrentIndex(0)
+        if QtCore.QSettings().value(self.settingsSection + u'/override api',
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            self.mediaWidget.show()
+        else:
+            self.mediaWidget.hide()
+
 
     def onDeleteClick(self):
         """
@@ -197,10 +276,21 @@ class MediaMediaItem(MediaManagerItem):
         media.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
-            filename = os.path.split(unicode(track))[1]
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setIcon(build_icon(CLAPPERBOARD))
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            track_info = QtCore.QFileInfo(track)
+            if not track_info.isFile():
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(CLAPPERBOARD))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            else:
+                print "tus doch"
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                imageFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video.png'
+                thumbFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video_thumb.png'
+                icon = self.iconFromFile(imageFile, thumbFile)
+                item_name.setIcon(icon)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
 
