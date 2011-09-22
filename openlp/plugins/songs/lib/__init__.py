@@ -184,10 +184,11 @@ class VerseType(object):
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_translated_tag(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_tag(verse_name)
+        elif len(verse_name) == 1:
+            if verse_index is None:
+                verse_index = VerseType.from_translated_tag(verse_name)
+            if verse_index is None:
+                verse_index = VerseType.from_tag(verse_name)
         return verse_index
 
 def retrieve_windows_encoding(recommendation=None):

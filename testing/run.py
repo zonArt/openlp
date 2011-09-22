@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -24,12 +25,35 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+This script is used to run set of automated tests of OpenLP. To start tests,
+simply run this script::
+
+    @:~$ ./run.py
+
 """
 
-import core
-import plugins
+import os.path
+import sys
 
-__all__ = [u'core', u'plugins']
+TESTS_PATH = os.path.dirname(os.path.abspath(__file__))
+SRC_PATH = os.path.join(TESTS_PATH, '..')
 
+PYTEST_OPTIONS = [TESTS_PATH]
+
+# Extend python PATH with openlp source
+sys.path.insert(0, SRC_PATH)
+
+# Python testing framework
+# http://pytest.org
+import pytest
+
+
+def main():
+    print 'pytest options:', PYTEST_OPTIONS
+    pytest.main(PYTEST_OPTIONS)
+
+
+if __name__ == u'__main__':
+    main()

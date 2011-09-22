@@ -97,6 +97,10 @@ class MainDisplay(Display):
         self.override = {}
         self.retranslateUi()
         self.mediaObject = None
+        if live:
+            self.audioPlayer = AudioPlayer(self)
+        else:
+            self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
@@ -127,7 +131,7 @@ class MainDisplay(Display):
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute( \
+        self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -206,8 +210,8 @@ class MainDisplay(Display):
             The slide text to be displayed
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible():
+        if self.height() != self.screen[u'size'].height() or \
+            not self.isVisible():
             shrink = True
         else:
             shrink = False
@@ -216,19 +220,18 @@ class MainDisplay(Display):
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
-            shrinkItem = self
             if text:
                 alert_height = int(height.toString())
-                shrinkItem.resize(self.width(), alert_height)
-                shrinkItem.setVisible(True)
+                self.resize(self.width(), alert_height)
+                self.setVisible(True)
                 if self.alertTab.location == 1:
-                    shrinkItem.move(self.screen[u'size'].left(),
+                    self.move(self.screen[u'size'].left(),
                     (self.screen[u'size'].height() - alert_height) / 2)
                 elif self.alertTab.location == 2:
-                    shrinkItem.move(self.screen[u'size'].left(),
+                    self.move(self.screen[u'size'].left(),
                         self.screen[u'size'].height() - alert_height)
             else:
-                shrinkItem.setVisible(False)
+                self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
     def directImage(self, name, path, background):
@@ -452,61 +455,75 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)
-        self.message = None
+        self.currentIndex = -1
+        self.playlist = []
         self.mediaObject = Phonon.MediaObject()
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
 
-    def setup(self):
-        """
-        Sets up the Audio Player for use
-        """
-        log.debug(u'AudioPlayer Setup')
-
-    def close(self):
+    def __del__(self):
         """
         Shutting down so clean up connections
         """
-        self.onMediaStop()
+        self.stop()
         for path in self.mediaObject.outputPaths():
             path.disconnect()
 
-    def onMediaQueue(self, message):
+    def onAboutToFinish(self):
         """
-        Set up a video to play from the serviceitem.
+        Just before the audio player finishes the current track, queue the next
+        item in the playlist, if there is one.
         """
-        log.debug(u'AudioPlayer Queue new media message %s' % message)
-        mfile = os.path.join(message[0].get_frame_path(),
-            message[0].get_frame_title())
-        self.mediaObject.setCurrentSource(Phonon.MediaSource(mfile))
-        self.onMediaPlay()
+        self.currentIndex += 1
+        if len(self.playlist) > self.currentIndex:
+            self.mediaObject.enqueue(self.playlist[self.currentIndex])
 
-    def onMediaPlay(self):
+    def connectVolumeSlider(self, slider):
+        slider.setAudioOutput(self.audioObject)
+
+    def reset(self):
         """
-        We want to play the play so start it
+        Reset the audio player, clearing the playlist and the queue.
         """
-        log.debug(u'AudioPlayer _play called')
+        self.currentIndex = -1
+        self.playlist = []
+        self.stop()
+        self.mediaObject.clear()
+
+    def play(self):
+        """
+        We want to play the file so start it
+        """
+        log.debug(u'AudioPlayer.play() called')
+        if self.currentIndex == -1:
+            self.onAboutToFinish()
         self.mediaObject.play()
 
-    def onMediaPause(self):
+    def pause(self):
         """
         Pause the Audio
         """
-        log.debug(u'AudioPlayer Media paused by user')
+        log.debug(u'AudioPlayer.pause() called')
         self.mediaObject.pause()
 
-    def onMediaStop(self):
+    def stop(self):
         """
         Stop the Audio and clean up
         """
-        log.debug(u'AudioPlayer Media stopped by user')
-        self.message = None
+        log.debug(u'AudioPlayer.stop() called')
         self.mediaObject.stop()
-        self.onMediaFinish()
 
-    def onMediaFinish(self):
+    def addToPlaylist(self, filenames):
         """
-        Clean up the Object queue
+        Add another file to the playlist.
+
+        ``filename``
+            The file to add to the playlist.
         """
-        log.debug(u'AudioPlayer Reached end of media playlist')
-        self.mediaObject.clearQueue()
+        if not isinstance(filenames, list):
+            filenames = [filenames]
+        for filename in filenames:
+            self.playlist.append(Phonon.MediaSource(filename))
+

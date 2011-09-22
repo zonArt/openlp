@@ -825,17 +825,17 @@ demand and thus an internet connection is required.</source>
         <translation type="unfinished">一つの聖書と複数の聖書の検索結果をくっつける事はできません。検索結果を削除して、再検索しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="440"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="443"/>
         <source>Bible not fully loaded.</source>
         <translation type="unfinished">聖書が完全に読み込まれていません。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="697"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="700"/>
         <source>Information</source>
         <translation type="unfinished">情報</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="697"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="700"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
         <translation type="unfinished">第二訳には検索した箇所全てが含まれていません。両方の聖書に含まれている箇所を表示します。第%d節が除外されます。</translation>
     </message>
@@ -1325,24 +1325,24 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
 <context>
     <name>ImagePlugin</name>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="45"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="51"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
         <translation>&lt;strong&gt;画像プラグイン&lt;/strong&gt;&lt;br /&gt;画像プラグインは、画像を表示する機能を提供します。&lt;br /&gt;礼拝プログラムで複数の画像をグループ化したり、複数の画像を簡単に表示することができます。タイムアウトループの機能を使用してスライドショーを自動的に表示することもできます。さらに、賛美などのテキストベースの項目の背景を、外観テーマで指定されたものからこのプラグインの画像に変更することもできます。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="64"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="70"/>
         <source>Image</source>
         <comment>name singular</comment>
         <translation>画像</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="65"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="71"/>
         <source>Images</source>
         <comment>name plural</comment>
         <translation>画像</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="69"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="75"/>
         <source>Images</source>
         <comment>container title</comment>
         <translation>画像</translation>
@@ -1383,37 +1383,37 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation type="obsolete">選択した画像を礼拝プログラムに追加します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="73"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="79"/>
         <source>Load a new image.</source>
         <translation>新しい画像を取込み。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="75"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="81"/>
         <source>Add a new image.</source>
         <translation>新しい画像を追加します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="76"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="82"/>
         <source>Edit the selected image.</source>
         <translation>選択した画像を編集します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="77"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="83"/>
         <source>Delete the selected image.</source>
         <translation>選択した画像を削除します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="78"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="84"/>
         <source>Preview the selected image.</source>
         <translation>選択した画像をプレビューします。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="79"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="85"/>
         <source>Send the selected image live.</source>
         <translation>選択した画像をライブへ送ります。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="80"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="86"/>
         <source>Add the selected image to the service.</source>
         <translation>選択した画像を礼拝プログラムに追加します。</translation>
     </message>
@@ -1434,40 +1434,58 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <translation>画像を選択</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="102"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="104"/>
         <source>You must select an image to delete.</source>
         <translation>削除する画像を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="206"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="213"/>
         <source>You must select an image to replace the background with.</source>
         <translation>置き換える画像を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="174"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="181"/>
         <source>Missing Image(s)</source>
         <translation>画像が見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="167"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="174"/>
         <source>The following image(s) no longer exist: %s</source>
         <translation>以下の画像は既に存在しません</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="174"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="181"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
         <translation>以下の画像は既に存在しません:%s
 それでも他の画像を追加しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="222"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="232"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
         <translation>背景画像を置換する際に問題が発生しました。画像ファイル&quot;%s&quot;が存在しません。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="218"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="228"/>
         <source>There was no display item to amend.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ImagesPlugin.ImageTab</name>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="68"/>
+        <source>Background Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="70"/>
+        <source>Default Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="72"/>
+        <source>Provides border where image is not the correct dimensions for the screen when resized.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1575,17 +1593,17 @@ Do you want to add the other images anyway?</source>
         <translation>メディア選択</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="198"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="203"/>
         <source>You must select a media file to delete.</source>
         <translation>削除するメディアファイルを選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="140"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="142"/>
         <source>Missing Media File</source>
         <translation>メディアファイルが見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="140"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="142"/>
         <source>The file %s no longer exists.</source>
         <translation>ファイル %s が見つかりません。</translation>
     </message>
@@ -1607,6 +1625,16 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="123"/>
         <source>There was no display item to amend.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="161"/>
+        <source>File Too Big</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="161"/>
+        <source>The file you are trying to load is too big. Please reduce it to less than 50MiB.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2248,17 +2276,17 @@ Version: %s
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="63"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="66"/>
         <source>Downloading %s...</source>
         <translation>ダウンロード中 %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="274"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="351"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
         <translation>ダウンロードが完了しました。完了をクリックすると、OpenLPが開始します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="295"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="372"/>
         <source>Enabling selected plugins...</source>
         <translation>選択されたプラグインを有効化しています...</translation>
     </message>
@@ -2344,49 +2372,49 @@ Version: %s
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
 
 To cancel the First Time Wizard completely, press the finish button now.</source>
-        <translation>インターネット接続が見つかりませんでした。初回起動ウィザードは、サンプルとなる聖書、テーマ、賛美データを取得するためにインターネット接続を必要とします。
+        <translation type="obsolete">インターネット接続が見つかりませんでした。初回起動ウィザードは、サンプルとなる聖書、テーマ、賛美データを取得するためにインターネット接続を必要とします。
 
 初回起動ウィザードを後で再実行しサンプルをインポートしたい場合は、キャンセルボタンをクリックし、インターネット接続を確認してから、OpenLPを再起動してください。P.
 
 初回起動ウィザードを完全にキャンセルする場合は、終了ボタンを押下してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Sample Songs</source>
         <translation>サンプル賛美</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="243"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Select and download public domain songs.</source>
         <translation>パブリックドメインの賛美を選択する事でダウンロードできます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Sample Bibles</source>
         <translation>サンプル聖書</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Select and download free Bibles.</source>
         <translation>以下のフリー聖書を選択する事でダウンロードできます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Sample Themes</source>
         <translation>サンプル外観テーマ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="251"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Select and download sample themes.</source>
         <translation>サンプル外観テーマを選択する事でダウンロードできます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="253"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Default Settings</source>
         <translation>既定設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="255"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>既定設定がOpenLPに使われるようにセットアップします。</translation>
     </message>
@@ -2401,17 +2429,17 @@ To cancel the First Time Wizard completely, press the finish button now.</source
         <translation type="obsolete">OpenLPがセットアップされ、あなたのデータがインポートされるまでお待ち下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="257"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
         <source>Default output display:</source>
         <translation>既定出力先:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="259"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
         <source>Select default theme:</source>
         <translation>既定外観テーマを選択:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
         <source>Starting configuration process...</source>
         <translation>設定処理を開始しています...</translation>
     </message>
@@ -2421,22 +2449,22 @@ To cancel the First Time Wizard completely, press the finish button now.</source
         <translation>このウィザードで、OpenLPを初めて使用する際の設定をします。次へをクリックして開始してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="252"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="329"/>
         <source>Setting Up And Downloading</source>
         <translation>設定とダウンロード中</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="254"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="331"/>
         <source>Please wait while OpenLP is set up and your data is downloaded.</source>
         <translation>OpenLPがセットアップされ、あなたのデータがインポートされるまでお待ち下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="259"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="336"/>
         <source>Setting Up</source>
         <translation>設定中</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="282"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="359"/>
         <source>Click the finish button to start OpenLP.</source>
         <translation>完了をクリックすると、OpenLPが開始します。</translation>
     </message>
@@ -2446,14 +2474,33 @@ To cancel the First Time Wizard completely, press the finish button now.</source
         <translation type="unfinished">カスタムスライド</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="270"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="347"/>
         <source>Download complete. Click the finish button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="279"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="356"/>
         <source>Click the finish button to return to OpenLP.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
+        <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Press the Finish button now to start OpenLP with initial settings and no sample data.
+
+To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <source>
+
+To cancel the First Time Wizard completely (and not start OpenLP), press the Cancel button now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="266"/>
+        <source>Finish</source>
+        <translation type="unfinished">終了</translation>
     </message>
 </context>
 <context>
@@ -2628,129 +2675,139 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 <context>
     <name>OpenLP.GeneralTab</name>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="200"/>
+        <location filename="openlp/core/ui/generaltab.py" line="209"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="201"/>
+        <location filename="openlp/core/ui/generaltab.py" line="210"/>
         <source>Monitors</source>
         <translation>モニタ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="203"/>
+        <location filename="openlp/core/ui/generaltab.py" line="212"/>
         <source>Select monitor for output display:</source>
         <translation>画面出力に使用するスクリーン:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="205"/>
+        <location filename="openlp/core/ui/generaltab.py" line="214"/>
         <source>Display if a single screen</source>
         <translation>スクリーンが1つしかなくても表示する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="207"/>
+        <location filename="openlp/core/ui/generaltab.py" line="216"/>
         <source>Application Startup</source>
         <translation>アプリケーションの起動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="209"/>
+        <location filename="openlp/core/ui/generaltab.py" line="218"/>
         <source>Show blank screen warning</source>
         <translation>警告中には、ブランク画面を表示する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="211"/>
+        <location filename="openlp/core/ui/generaltab.py" line="220"/>
         <source>Automatically open the last service</source>
         <translation>自動的に前回の礼拝プログラムを開く</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="213"/>
+        <location filename="openlp/core/ui/generaltab.py" line="222"/>
         <source>Show the splash screen</source>
         <translation>スプラッシュスクリーンを表示</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="217"/>
+        <location filename="openlp/core/ui/generaltab.py" line="226"/>
         <source>Application Settings</source>
         <translation>アプリケーションの設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="219"/>
+        <location filename="openlp/core/ui/generaltab.py" line="228"/>
         <source>Prompt to save before starting a new service</source>
         <translation>新しい礼拝プログラムを開く前に保存を確認する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="223"/>
+        <location filename="openlp/core/ui/generaltab.py" line="232"/>
         <source>Automatically preview next item in service</source>
         <translation>自動的に次の項目をプレビューする</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="229"/>
+        <location filename="openlp/core/ui/generaltab.py" line="238"/>
         <source> sec</source>
         <translation>秒</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="230"/>
+        <location filename="openlp/core/ui/generaltab.py" line="239"/>
         <source>CCLI Details</source>
         <translation>CCLI詳細</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="233"/>
+        <location filename="openlp/core/ui/generaltab.py" line="242"/>
         <source>SongSelect username:</source>
         <translation>SongSelect ユーザー名:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="235"/>
+        <location filename="openlp/core/ui/generaltab.py" line="244"/>
         <source>SongSelect password:</source>
         <translation>SongSelect パスワード:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="238"/>
+        <location filename="openlp/core/ui/generaltab.py" line="247"/>
         <source>Display Position</source>
         <translation>表示位置</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="242"/>
+        <location filename="openlp/core/ui/generaltab.py" line="251"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="243"/>
+        <location filename="openlp/core/ui/generaltab.py" line="252"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="244"/>
+        <location filename="openlp/core/ui/generaltab.py" line="253"/>
         <source>Height</source>
         <translation>高</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="245"/>
+        <location filename="openlp/core/ui/generaltab.py" line="254"/>
         <source>Width</source>
         <translation>幅</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="240"/>
+        <location filename="openlp/core/ui/generaltab.py" line="249"/>
         <source>Override display position</source>
         <translation>表示位置を変更する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="215"/>
+        <location filename="openlp/core/ui/generaltab.py" line="224"/>
         <source>Check for updates to OpenLP</source>
         <translation>OpenLPのバージョン更新の確認</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="221"/>
+        <location filename="openlp/core/ui/generaltab.py" line="230"/>
         <source>Unblank display when adding new live item</source>
         <translation>ライブ項目の追加時にブランクを解除</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="225"/>
+        <location filename="openlp/core/ui/generaltab.py" line="234"/>
         <source>Enable slide wrap-around</source>
         <translation>スライドの最後から最初に戻る</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="227"/>
+        <location filename="openlp/core/ui/generaltab.py" line="236"/>
         <source>Timed slide interval:</source>
         <translation>時間付きスライドの間隔:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="255"/>
+        <source>Background Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="257"/>
+        <source>Start background audio paused</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2769,7 +2826,7 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="84"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="88"/>
         <source>OpenLP Display</source>
         <translation>OpenLP ディスプレイ</translation>
     </message>
@@ -2777,287 +2834,287 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="367"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
         <source>&amp;File</source>
         <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="368"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="375"/>
         <source>&amp;Import</source>
         <translation>インポート(&amp;I)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="369"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
         <source>&amp;Export</source>
         <translation>エクスポート(&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
         <source>&amp;View</source>
         <translation>表示(&amp;V)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="373"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
         <source>M&amp;ode</source>
         <translation>モード(&amp;O)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="381"/>
         <source>&amp;Tools</source>
         <translation>ツール(&amp;T)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="375"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>&amp;Language</source>
         <translation>言語(&amp;L)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
         <source>&amp;Help</source>
         <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
         <source>Media Manager</source>
         <translation>メディアマネジャー</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="381"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
         <source>Service Manager</source>
         <translation>礼拝プログラム</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="383"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
         <source>Theme Manager</source>
         <translation>外観テーママネジャー</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;New</source>
         <translation>新規作成(&amp;N)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>&amp;Open</source>
         <translation>開く(&amp;O)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
         <source>Open an existing service.</source>
         <translation>存在する礼拝プログラムを開きます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>Save the current service to disk.</source>
         <translation>現在の礼拝プログラムをディスクに保存します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
         <source>Save &amp;As...</source>
         <translation>名前を付けて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
         <source>Save Service As</source>
         <translation>名前をつけて礼拝プログラムを保存</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
         <source>Save the current service under a new name.</source>
         <translation>現在の礼拝プログラムを新しい名前で保存します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>E&amp;xit</source>
         <translation>終了(&amp;X)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
         <source>Quit OpenLP</source>
         <translation>Open LPを終了</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>&amp;Theme</source>
         <translation>外観テーマ(&amp;T)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
         <source>&amp;Configure OpenLP...</source>
         <translation>OpenLPの設定(&amp;C)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
         <source>&amp;Media Manager</source>
         <translation>メディアマネジャー(&amp;M)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
         <source>Toggle Media Manager</source>
         <translation>メディアマネジャーを切り替える</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation>メディアマネジャーの可視性を切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>&amp;Theme Manager</source>
         <translation>外観テーママネジャー(&amp;T)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>Toggle Theme Manager</source>
         <translation>外観テーママネジャーの切り替え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
         <source>Toggle the visibility of the theme manager.</source>
         <translation>外観テーママネジャーの可視性を切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>&amp;Service Manager</source>
         <translation>礼拝プログラム(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
         <source>Toggle Service Manager</source>
         <translation>礼拝プログラムを切り替え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation>礼拝プログラムの可視性を切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
         <source>&amp;Preview Panel</source>
         <translation>プレビューパネル(&amp;P)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>Toggle Preview Panel</source>
         <translation>プレビューパネルの切り替え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation>プレビューパネルの可視性を切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="463"/>
         <source>&amp;Live Panel</source>
         <translation>ライブパネル(&amp;L)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
         <source>Toggle Live Panel</source>
         <translation>ライブパネルの切り替え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="471"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation>ライブパネルの可視性を切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
         <source>&amp;Plugin List</source>
         <translation>プラグイン一覧(&amp;P)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
         <source>List the Plugins</source>
         <translation>プラグイン一覧</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
         <source>&amp;User Guide</source>
         <translation>ユーザガイド(&amp;U)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
         <source>&amp;About</source>
         <translation>バージョン情報(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
         <source>More information about OpenLP</source>
         <translation>OpenLPの詳細情報</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
         <source>&amp;Online Help</source>
         <translation>オンラインヘルプ(&amp;O)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
         <source>&amp;Web Site</source>
         <translation>ウェブサイト(&amp;W)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
         <source>Use the system language, if available.</source>
         <translation>システム言語を可能であれば使用します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
         <source>Set the interface language to %s</source>
         <translation>インターフェイス言語を%sに設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="479"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="495"/>
         <source>Add &amp;Tool...</source>
         <translation>ツールの追加(&amp;T)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="497"/>
         <source>Add an application to the list of tools.</source>
         <translation>ツールの一覧にアプリケーションを追加。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
         <source>&amp;Default</source>
         <translation>デフォルト(&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="498"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
         <source>Set the view mode back to the default.</source>
         <translation>表示モードを既定に戻す。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="500"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
         <source>&amp;Setup</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="501"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="517"/>
         <source>Set the view mode to Setup.</source>
         <translation>ビューモードに設定します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="519"/>
         <source>&amp;Live</source>
         <translation>ライブ(&amp;L)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="504"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="520"/>
         <source>Set the view mode to Live.</source>
         <translation>表示モードをライブにします。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="675"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="700"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -3066,22 +3123,22 @@ You can download the latest version from http://openlp.org/.</source>
 http://openlp.org/から最新版がダウンロード可能です。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="679"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="704"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLPのバージョンアップ完了</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="809"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLPのプライマリディスプレイがブランクです</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="809"/>
         <source>The Main Display has been blanked out</source>
         <translation>OpenLPのプライマリディスプレイがブランクになりました</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1017"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1213"/>
         <source>Default Theme: %s</source>
         <translation>既定外観テーマ: %s</translation>
     </message>
@@ -3092,17 +3149,17 @@ http://openlp.org/から最新版がダウンロード可能です。</translati
         <translation>日本語</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="417"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation>ショートカットの設定(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="939"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1135"/>
         <source>Close OpenLP</source>
         <translation>OpenLPの終了</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="939"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1135"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>本当にOpenLPを終了してもよろしいですか?</translation>
     </message>
@@ -3117,93 +3174,174 @@ http://openlp.org/から最新版がダウンロード可能です。</translati
         <translation type="obsolete">表示タグを設定(&amp;C)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="499"/>
         <source>Open &amp;Data Folder...</source>
         <translation>データフォルダを開く(&amp;D)...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="501"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>賛美、聖書データなどのデータが含まれているフォルダを開く。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
         <source>&amp;Autodetect</source>
         <translation>自動検出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="507"/>
         <source>Update Theme Images</source>
         <translation>テーマの縮小画像を更新</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="509"/>
         <source>Update the preview images for all themes.</source>
         <translation>全てのテーマの縮小画像を更新します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
         <source>Print the current service.</source>
         <translation>現在の礼拝プログラムを印刷します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
         <source>L&amp;ock Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
         <source>Prevent the panels being moved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="487"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
         <source>Re-run First Time Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="505"/>
         <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="739"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="764"/>
         <source>Re-run First Time Wizard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="739"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="764"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="370"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="377"/>
         <source>&amp;Recent Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="419"/>
-        <source>&amp;Configure Formatting Tags...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1163"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1365"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1166"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1368"/>
         <source>Clear the list of recent files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <source>Configure &amp;Formatting Tags...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
+        <source>Export OpenLP settings to a specified *.config file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <source>Settings</source>
+        <translation type="unfinished">設定</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
+        <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
+        <source>Import settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
+        <source>Are you sure you want to import settings?
+
+Importing settings will make permanent changes to your current OpenLP configuration.
+
+Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="917"/>
+        <source>Open File</source>
+        <translation type="unfinished">ファイルを開く</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="917"/>
+        <source>OpenLP Export Settings Files (*.conf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="980"/>
+        <source>Import settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="980"/>
+        <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="995"/>
+        <source>Export Settings File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="995"/>
+        <source>OpenLP Export Settings File (*.conf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.Manager</name>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="218"/>
+        <source>Database Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="204"/>
+        <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
+
+Database: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="218"/>
+        <source>OpenLP cannot load your database.
+
+Database: %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.MediaManagerItem</name>
     <message>
-        <location filename="openlp/core/lib/__init__.py" line="196"/>
+        <location filename="openlp/core/lib/__init__.py" line="203"/>
         <source>No Items Selected</source>
         <translation>項目の選択がありません</translation>
     </message>
@@ -3213,32 +3351,32 @@ Re-running this wizard may make changes to your current OpenLP configuration and
         <translation>選択された礼拝項目を追加(&amp;A</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="518"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="524"/>
         <source>You must select one or more items to preview.</source>
         <translation>プレビューを見るには、一つ以上の項目を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="536"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="542"/>
         <source>You must select one or more items to send live.</source>
         <translation>ライブビューを見るには、一つ以上の項目を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="589"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="595"/>
         <source>You must select one or more items.</source>
         <translation>一つ以上の項目を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="596"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="602"/>
         <source>You must select an existing service item to add to.</source>
         <translation>追加するには、既存の礼拝項目を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="611"/>
         <source>Invalid Service Item</source>
         <translation>無効な礼拝項目</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="605"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="611"/>
         <source>You must select a %s service item.</source>
         <translation>%sの項目を選択してください。</translation>
     </message>
@@ -3250,12 +3388,12 @@ Filename already exists in list</source>
 このファイル名は既にリストに存在します</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="563"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="569"/>
         <source>You must select one or more items to add.</source>
         <translation>追加するには、一つ以上の項目を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="635"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="641"/>
         <source>No Search Results</source>
         <translation>見つかりませんでした</translation>
     </message>
@@ -3267,7 +3405,7 @@ This filename is already in the list</source>
 このファイル名は既に一覧に存在します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="134"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="153"/>
         <source>&amp;Clone</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3283,8 +3421,8 @@ Suffix not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="396"/>
-        <source>Duplicate files found on import and ignored.</source>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="401"/>
+        <source>Duplicate files were found on import and were ignored.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3448,12 +3586,12 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="450"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="461"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="454"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="465"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3469,209 +3607,209 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ServiceManager</name>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="169"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
         <source>Move to &amp;top</source>
         <translation>一番上に移動(&amp;t)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="169"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
         <source>Move item to the top of the service.</source>
         <translation>選択した項目を最も上に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="181"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
         <source>Move &amp;up</source>
         <translation>一つ上に移動(&amp;u)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="181"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
         <source>Move item up one position in the service.</source>
         <translation>選択した項目を1つ上に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="208"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="209"/>
         <source>Move &amp;down</source>
         <translation>一つ下に移動(&amp;d)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="190"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="191"/>
         <source>Move item down one position in the service.</source>
         <translation>選択した項目を1つ下に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="199"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="200"/>
         <source>Move to &amp;bottom</source>
         <translation>一番下に移動(&amp;b)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="199"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="200"/>
         <source>Move item to the end of the service.</source>
         <translation>選択した項目を最も下に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="321"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="322"/>
         <source>&amp;Delete From Service</source>
         <translation>削除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="227"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="228"/>
         <source>Delete the selected item from the service.</source>
         <translation>選択した項目を礼拝プログラムから削除する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="298"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="299"/>
         <source>&amp;Add New Item</source>
         <translation>新しい項目を追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="301"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="302"/>
         <source>&amp;Add to Selected Item</source>
         <translation>選択された項目を追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="306"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="307"/>
         <source>&amp;Edit Item</source>
         <translation>項目の編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="309"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="310"/>
         <source>&amp;Reorder Item</source>
         <translation>項目を並べ替え(&amp;R)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="313"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="314"/>
         <source>&amp;Notes</source>
         <translation>メモ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="334"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="335"/>
         <source>&amp;Change Item Theme</source>
         <translation>項目の外観テーマを変更(&amp;C)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="590"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="606"/>
         <source>File is not a valid service.
 The content encoding is not UTF-8.</source>
         <translation>礼拝プログラムファイルが有効でありません。
 エンコードがUTF-8でありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="629"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="643"/>
         <source>File is not a valid service.</source>
         <translation>礼拝プログラムファイルが有効でありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1204"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1221"/>
         <source>Missing Display Handler</source>
         <translation>ディスプレイハンドラが見つかりません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1152"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1169"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>ディスプレイハンドラが見つからないため項目を表示する事ができません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1204"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1221"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>必要なプラグインが見つからないか無効なため、項目を表示する事ができません</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="234"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="235"/>
         <source>&amp;Expand all</source>
         <translation>すべて展開(&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="234"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="235"/>
         <source>Expand all the service items.</source>
         <translation>全ての項目を展開する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="243"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="244"/>
         <source>&amp;Collapse all</source>
         <translation>すべて折り畳む(&amp;C)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="243"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="244"/>
         <source>Collapse all the service items.</source>
         <translation>全ての項目を折り畳みます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="428"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="429"/>
         <source>Open File</source>
         <translation>ファイルを開く</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="562"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="578"/>
         <source>OpenLP Service Files (*.osz)</source>
         <translation>OpenLP 礼拝プログラムファイル (*.osz)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="208"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="209"/>
         <source>Moves the selection down the window.</source>
         <translation>選択をウィンドウの下に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="217"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="218"/>
         <source>Move up</source>
         <translation>上に移動</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="217"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="218"/>
         <source>Moves the selection up the window.</source>
         <translation>選択をウィンドウの上に移動する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="253"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="254"/>
         <source>Go Live</source>
         <translation>ライブへ送る</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="253"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="254"/>
         <source>Send the selected item to Live.</source>
         <translation>選択された項目をライブ表示する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="444"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="446"/>
         <source>Modified Service</source>
         <translation>礼拝プログラムの編集</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="317"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="318"/>
         <source>&amp;Start Time</source>
         <translation>開始時間(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="326"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="327"/>
         <source>Show &amp;Preview</source>
         <translation>プレビュー表示(&amp;P)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="330"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="331"/>
         <source>Show &amp;Live</source>
         <translation>ライブ表示(&amp;L)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="444"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="446"/>
         <source>The current service has been modified. Would you like to save this service?</source>
         <translation>現在の礼拝プログラムは、編集されています。保存しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="634"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="649"/>
         <source>File could not be opened because it is corrupt.</source>
         <translation>ファイルが破損しているため開けません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="641"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="655"/>
         <source>Empty File</source>
         <translation>空のファイル</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="641"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="655"/>
         <source>This service file does not contain any data.</source>
         <translation>この礼拝プログラムファイルは空です。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="648"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="662"/>
         <source>Corrupt File</source>
         <translation>破損したファイル</translation>
     </message>
@@ -3691,7 +3829,7 @@ The content encoding is not UTF-8.</source>
         <translation>再生時間: </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="356"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="357"/>
         <source>Untitled Service</source>
         <translation>無題</translation>
     </message>
@@ -3701,37 +3839,37 @@ The content encoding is not UTF-8.</source>
         <translation type="obsolete">このファイルは破損しているかOpenLP 2.0の礼拝プログラムファイルではありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="121"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="122"/>
         <source>Load an existing service.</source>
         <translation>既存の礼拝プログラムを読み込みます。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="125"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="126"/>
         <source>Save this service.</source>
         <translation>礼拝プログラムを保存します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="135"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="136"/>
         <source>Select a theme for the service.</source>
         <translation>礼拝プログラムの外観テーマを選択します。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="648"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="662"/>
         <source>This file is either corrupt or it is not an OpenLP 2.0 service file.</source>
         <translation>このファイルは破損しているかOpenLP 2.0の礼拝プログラムファイルではありません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="958"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="972"/>
         <source>Slide theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="962"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="976"/>
         <source>Notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="503"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="517"/>
         <source>Service File Missing</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3863,17 +4001,17 @@ The content encoding is not UTF-8.</source>
         <translation>次スライド</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="395"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="401"/>
         <source>Previous Service</source>
         <translation>前の礼拝プログラム</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="401"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="407"/>
         <source>Next Service</source>
         <translation>次の礼拝プログラム</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="407"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="413"/>
         <source>Escape Item</source>
         <translation>項目をエスケープ</translation>
     </message>
@@ -3926,6 +4064,11 @@ The content encoding is not UTF-8.</source>
         <location filename="openlp/core/ui/slidecontroller.py" line="246"/>
         <source>Start playing media.</source>
         <translation>メディアの再生を開始する。</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="260"/>
+        <source>Pause audio.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4012,32 +4155,32 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>OpenLP.ThemeForm</name>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="490"/>
+        <location filename="openlp/core/ui/themeform.py" line="502"/>
         <source>Select Image</source>
         <translation>画像の選択</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="572"/>
+        <location filename="openlp/core/ui/themeform.py" line="584"/>
         <source>Theme Name Missing</source>
         <translation>外観テーマ名が不明です</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="572"/>
+        <location filename="openlp/core/ui/themeform.py" line="584"/>
         <source>There is no name for this theme. Please enter one.</source>
         <translation>外観テーマ名がありません。入力してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="578"/>
+        <location filename="openlp/core/ui/themeform.py" line="590"/>
         <source>Theme Name Invalid</source>
         <translation>無効な外観テーマ名</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="578"/>
+        <location filename="openlp/core/ui/themeform.py" line="590"/>
         <source>Invalid theme name. Please enter one.</source>
         <translation>無効な外観テーマ名です。入力してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="204"/>
+        <location filename="openlp/core/ui/themeform.py" line="206"/>
         <source>(approximately %d lines per slide)</source>
         <translation>(スライド1枚におよそ%d行)</translation>
     </message>
@@ -4115,12 +4258,12 @@ The content encoding is not UTF-8.</source>
         <translation>編集する外観テーマを選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="748"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>You are unable to delete the default theme.</source>
         <translation>既定の外観テーマを削除する事はできません。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="761"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>%s プラグインでこの外観テーマは利用されています。</translation>
     </message>
@@ -4216,7 +4359,7 @@ The content encoding is not UTF-8.</source>
         <translation>%s 外観テーマを削除します。宜しいですか?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="761"/>
         <source>Validation Error</source>
         <translation>検証エラー</translation>
     </message>
@@ -4240,254 +4383,259 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>OpenLP.ThemeWizard</name>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="407"/>
+        <location filename="openlp/core/ui/themewizard.py" line="412"/>
         <source>Theme Wizard</source>
         <translation>外観テーマウィザード</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="409"/>
+        <location filename="openlp/core/ui/themewizard.py" line="414"/>
         <source>Welcome to the Theme Wizard</source>
         <translation>外観テーマウィザードをようこそ</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="416"/>
+        <location filename="openlp/core/ui/themewizard.py" line="421"/>
         <source>Set Up Background</source>
         <translation>背景設定</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="418"/>
+        <location filename="openlp/core/ui/themewizard.py" line="423"/>
         <source>Set up your theme&apos;s background according to the parameters below.</source>
         <translation>以下の項目に応じて、外観テーマに使用する背景を設定してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="421"/>
+        <location filename="openlp/core/ui/themewizard.py" line="426"/>
         <source>Background type:</source>
         <translation>背景の種類:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="423"/>
+        <location filename="openlp/core/ui/themewizard.py" line="428"/>
         <source>Solid Color</source>
         <translation>単色</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="425"/>
+        <location filename="openlp/core/ui/themewizard.py" line="430"/>
         <source>Gradient</source>
         <translation>グラデーション</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="475"/>
+        <location filename="openlp/core/ui/themewizard.py" line="482"/>
         <source>Color:</source>
         <translation>色:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="434"/>
+        <location filename="openlp/core/ui/themewizard.py" line="439"/>
         <source>Gradient:</source>
         <translation>グラデーション:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="436"/>
+        <location filename="openlp/core/ui/themewizard.py" line="441"/>
         <source>Horizontal</source>
         <translation>横</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="438"/>
+        <location filename="openlp/core/ui/themewizard.py" line="443"/>
         <source>Vertical</source>
         <translation>縦</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="440"/>
+        <location filename="openlp/core/ui/themewizard.py" line="445"/>
         <source>Circular</source>
         <translation>放射状</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="442"/>
+        <location filename="openlp/core/ui/themewizard.py" line="447"/>
         <source>Top Left - Bottom Right</source>
         <translation>左上 - 右下</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="444"/>
+        <location filename="openlp/core/ui/themewizard.py" line="449"/>
         <source>Bottom Left - Top Right</source>
         <translation>左下 - 右上</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="447"/>
+        <location filename="openlp/core/ui/themewizard.py" line="454"/>
         <source>Main Area Font Details</source>
         <translation>中央表示エリアのフォント詳細</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="449"/>
+        <location filename="openlp/core/ui/themewizard.py" line="456"/>
         <source>Define the font and display characteristics for the Display text</source>
         <translation>中央エリアの表示のための文字設定とフォントを定義してください</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="474"/>
+        <location filename="openlp/core/ui/themewizard.py" line="481"/>
         <source>Font:</source>
         <translation>フォント:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="476"/>
+        <location filename="openlp/core/ui/themewizard.py" line="483"/>
         <source>Size:</source>
         <translation>文字サイズ:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="456"/>
+        <location filename="openlp/core/ui/themewizard.py" line="463"/>
         <source>Line Spacing:</source>
         <translation>文字間:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="459"/>
+        <location filename="openlp/core/ui/themewizard.py" line="466"/>
         <source>&amp;Outline:</source>
         <translation>アウトライン(&amp;O):</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="463"/>
+        <location filename="openlp/core/ui/themewizard.py" line="470"/>
         <source>&amp;Shadow:</source>
         <translation>影(&amp;S):</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="466"/>
+        <location filename="openlp/core/ui/themewizard.py" line="473"/>
         <source>Bold</source>
         <translation>太字</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="467"/>
+        <location filename="openlp/core/ui/themewizard.py" line="474"/>
         <source>Italic</source>
         <translation>斜体</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="469"/>
+        <location filename="openlp/core/ui/themewizard.py" line="476"/>
         <source>Footer Area Font Details</source>
         <translation>フッターフォント詳細</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="471"/>
+        <location filename="openlp/core/ui/themewizard.py" line="478"/>
         <source>Define the font and display characteristics for the Footer text</source>
         <translation>フッター表示のための文字設定とフォントを定義してください</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="478"/>
+        <location filename="openlp/core/ui/themewizard.py" line="485"/>
         <source>Text Formatting Details</source>
         <translation>テキストフォーマット詳細</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="480"/>
+        <location filename="openlp/core/ui/themewizard.py" line="487"/>
         <source>Allows additional display formatting information to be defined</source>
         <translation>追加の表示フォーマット情報が定義される事を許可する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="483"/>
+        <location filename="openlp/core/ui/themewizard.py" line="490"/>
         <source>Horizontal Align:</source>
         <translation>水平位置:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="485"/>
+        <location filename="openlp/core/ui/themewizard.py" line="492"/>
         <source>Left</source>
         <translation>左揃え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="487"/>
+        <location filename="openlp/core/ui/themewizard.py" line="494"/>
         <source>Right</source>
         <translation>右揃え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="489"/>
+        <location filename="openlp/core/ui/themewizard.py" line="496"/>
         <source>Center</source>
         <translation>中央揃え</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="493"/>
+        <location filename="openlp/core/ui/themewizard.py" line="500"/>
         <source>Output Area Locations</source>
         <translation>出力エリアの場所</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="495"/>
+        <location filename="openlp/core/ui/themewizard.py" line="502"/>
         <source>Allows you to change and move the main and footer areas.</source>
         <translation>中央エリアとフッターエリアの場所が変更される事を許可する。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="498"/>
+        <location filename="openlp/core/ui/themewizard.py" line="505"/>
         <source>&amp;Main Area</source>
         <translation>中央エリア(&amp;M)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="500"/>
+        <location filename="openlp/core/ui/themewizard.py" line="507"/>
         <source>&amp;Use default location</source>
         <translation>既定の場所を使う(&amp;U)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="513"/>
+        <location filename="openlp/core/ui/themewizard.py" line="520"/>
         <source>X position:</source>
         <translation>X位置:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="525"/>
+        <location filename="openlp/core/ui/themewizard.py" line="532"/>
         <source>px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="516"/>
+        <location filename="openlp/core/ui/themewizard.py" line="523"/>
         <source>Y position:</source>
         <translation>Y位置:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="519"/>
+        <location filename="openlp/core/ui/themewizard.py" line="526"/>
         <source>Width:</source>
         <translation>幅:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="523"/>
+        <location filename="openlp/core/ui/themewizard.py" line="530"/>
         <source>Height:</source>
         <translation>高:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="527"/>
+        <location filename="openlp/core/ui/themewizard.py" line="534"/>
         <source>Use default location</source>
         <translation>既定の場所を使う</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="529"/>
+        <location filename="openlp/core/ui/themewizard.py" line="536"/>
         <source>Save and Preview</source>
         <translation>保存とプレビュー</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="531"/>
+        <location filename="openlp/core/ui/themewizard.py" line="538"/>
         <source>View the theme and save it replacing the current one or change the name to create a new theme</source>
         <translation>外観テーマを表示し、現在の外観テーマを置き換えるか名前を変更して新しい外観テーマを作成し、保存する</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="535"/>
+        <location filename="openlp/core/ui/themewizard.py" line="542"/>
         <source>Theme name:</source>
         <translation>外観テーマ名:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="412"/>
+        <location filename="openlp/core/ui/themewizard.py" line="417"/>
         <source>This wizard will help you to create and edit your themes. Click the next button below to start the process by setting up your background.</source>
         <translation>このウィザードで、外観テーマを作成し編集します。次へをクリックして、背景を選択してください。</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="491"/>
+        <location filename="openlp/core/ui/themewizard.py" line="498"/>
         <source>Transitions:</source>
         <translation>切り替え:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="511"/>
+        <location filename="openlp/core/ui/themewizard.py" line="518"/>
         <source>&amp;Footer Area</source>
         <translation>フッター(&amp;F)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="292"/>
+        <location filename="openlp/core/ui/themeform.py" line="294"/>
         <source>Edit Theme - %s</source>
         <translation>外観テーマ編集 - %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="430"/>
+        <location filename="openlp/core/ui/themewizard.py" line="435"/>
         <source>Starting color:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="432"/>
+        <location filename="openlp/core/ui/themewizard.py" line="437"/>
         <source>Ending color:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="451"/>
+        <source>Background color:</source>
+        <translation type="unfinished">背景色:</translation>
     </message>
 </context>
 <context>
@@ -4879,7 +5027,7 @@ The content encoding is not UTF-8.</source>
         <translation>準備完了。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="245"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="246"/>
         <source>Starting import...</source>
         <translation>インポートを開始しています....</translation>
     </message>
@@ -5236,17 +5384,17 @@ The content encoding is not UTF-8.</source>
         <translation>プレゼンテーション (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="287"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="289"/>
         <source>Missing Presentation</source>
         <translation>不明なプレゼンテーション</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="287"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="289"/>
         <source>The Presentation %s no longer exists.</source>
         <translation>プレゼンテーション%sが見つかりません。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="278"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="280"/>
         <source>The Presentation %s is incomplete, please reload.</source>
         <translation>プレゼンテーション%sは不完全です。再度読み込んでください。</translation>
     </message>
@@ -5424,126 +5572,141 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongUsagePlugin</name>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="69"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="70"/>
         <source>&amp;Song Usage Tracking</source>
         <translation>賛美の利用記録(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="73"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="74"/>
         <source>&amp;Delete Tracking Data</source>
         <translation>利用記録を削除(&amp;D)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="75"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="76"/>
         <source>Delete song usage data up to a specified date.</source>
         <translation>削除する利用記録の対象となるまでの日付を指定してください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="79"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="80"/>
         <source>&amp;Extract Tracking Data</source>
         <translation>利用記録の抽出(&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="81"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="82"/>
         <source>Generate a report on song usage.</source>
         <translation>利用記録のレポートを出力する。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="86"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="87"/>
         <source>Toggle Tracking</source>
         <translation>記録の切り替え</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="99"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="101"/>
         <source>Toggle the tracking of song usage.</source>
         <translation>賛美の利用記録の切り替える。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="219"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="235"/>
         <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
         <translation>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;このプラグインは、賛美の利用頻度を記録します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="230"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="246"/>
         <source>SongUsage</source>
         <comment>name singular</comment>
         <translation>利用記録</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="232"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="248"/>
         <source>SongUsage</source>
         <comment>name plural</comment>
         <translation>利用記録</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="237"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="253"/>
         <source>SongUsage</source>
         <comment>container title</comment>
         <translation>利用記録</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="157"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="160"/>
         <source>Song Usage</source>
         <translation>利用記録</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="184"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="187"/>
         <source>Song usage tracking is active.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="190"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="193"/>
         <source>Song usage tracking is inactive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="203"/>
+        <source>display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="210"/>
+        <source>printed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDeleteForm</name>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="57"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="59"/>
         <source>Delete Song Usage Data</source>
         <translation>利用記録削除</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="47"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Delete Selected Song Usage Events?</source>
         <translation>選択された賛美の利用記録を削除しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="47"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Are you sure you want to delete selected Song Usage data?</source>
         <translation>選択された賛美の利用記録を削除します。よろしいですか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="64"/>
         <source>Deletion Successful</source>
         <translation>正常に削除されました</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="59"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="64"/>
         <source>All requested data has been deleted successfully. </source>
         <translation>正常に削除されました。</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="62"/>
+        <source>Select the date up to which the song usage data should be deleted. All data recorded before this date will be permanently deleted.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDetailForm</name>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="86"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="87"/>
         <source>Song Usage Extraction</source>
         <translation>賛美利用記録の抽出</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="89"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="90"/>
         <source>Select Date Range</source>
         <translation>賛美利用の期間</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="92"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
         <source>to</source>
         <translation>から</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="94"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
         <source>Report Location</source>
         <translation>レポートの出力</translation>
     </message>
@@ -5558,12 +5721,12 @@ The content encoding is not UTF-8.</source>
         <translation>usage_detail_%s_%s.txt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="124"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="126"/>
         <source>Report Creation</source>
         <translation>レポート生成</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="124"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="126"/>
         <source>Report 
 %s 
 has been successfully created. </source>
@@ -5585,143 +5748,143 @@ has been successfully created. </source>
 <context>
     <name>SongsPlugin</name>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="107"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="108"/>
         <source>&amp;Song</source>
         <translation>賛美(&amp;S)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="89"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="90"/>
         <source>Import songs using the import wizard.</source>
         <translation>インポートウィザードを使用して賛美をインポートします。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="165"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
         <translation>&lt;strong&gt;賛美プラグイン&lt;/strong&gt;&lt;br /&gt;賛美プラグインは、賛美を表示し管理する機能を提供します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="127"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="128"/>
         <source>&amp;Re-index Songs</source>
         <translation>賛美のインデックスを再作成(&amp;R)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="129"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="130"/>
         <source>Re-index the songs database to improve searching and ordering.</source>
         <translation>賛美データベースのインデックスを再作成し、検索や並べ替えを速くします。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="144"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="145"/>
         <source>Reindexing songs...</source>
         <translation>賛美のインデックスを再作成中...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="207"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="208"/>
         <source>Song</source>
         <comment>name singular</comment>
         <translation>賛美</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="208"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="209"/>
         <source>Songs</source>
         <comment>name plural</comment>
         <translation>賛美</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="212"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="213"/>
         <source>Songs</source>
         <comment>container title</comment>
         <translation>賛美</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="215"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="216"/>
         <source>Arabic (CP-1256)</source>
         <translation>アラブ語 (CP-1256)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="216"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="217"/>
         <source>Baltic (CP-1257)</source>
         <translation>バルト語 (CP-1257)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="217"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="218"/>
         <source>Central European (CP-1250)</source>
         <translation>中央ヨーロッパ (CP-1250)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="218"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="219"/>
         <source>Cyrillic (CP-1251)</source>
         <translation>キリル文字 (CP-1251)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="219"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="220"/>
         <source>Greek (CP-1253)</source>
         <translation>ギリシャ語 (CP-1253)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="220"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="221"/>
         <source>Hebrew (CP-1255)</source>
         <translation>ヘブライ語 (CP-1255)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="221"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="222"/>
         <source>Japanese (CP-932)</source>
         <translation>日本語 (CP-932)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="222"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="223"/>
         <source>Korean (CP-949)</source>
         <translation>韓国語 (CP-949)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="223"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="224"/>
         <source>Simplified Chinese (CP-936)</source>
         <translation>簡体中国語 (CP-936)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="224"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="225"/>
         <source>Thai (CP-874)</source>
         <translation>タイ語 (CP-874)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="225"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="226"/>
         <source>Traditional Chinese (CP-950)</source>
         <translation>繁体中国語 (CP-950)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="226"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="227"/>
         <source>Turkish (CP-1254)</source>
         <translation>トルコ語 (CP-1254)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="227"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="228"/>
         <source>Vietnam (CP-1258)</source>
         <translation>ベトナム語 (CP-1258)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="228"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="229"/>
         <source>Western European (CP-1252)</source>
         <translation>西ヨーロッパ (CP-1252)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="243"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="244"/>
         <source>Character Encoding</source>
         <translation>文字コード</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="236"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="237"/>
         <source>The codepage setting is responsible
 for the correct character representation.
 Usually you are fine with the preselected choice.</source>
         <translation>文字コード設定は、文字が正常に表示されるのに必要な設定です。通常、既定設定で問題ありません。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="243"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="244"/>
         <source>Please choose the character encoding.
 The encoding is responsible for the correct character representation.</source>
         <translation>文字コードを選択してください。文字が正常に表示されるのに必要な設定です。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="108"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="109"/>
         <source>Exports songs using the export wizard.</source>
         <translation>エキスポートウィザードを使って賛美をエキスポートする。</translation>
     </message>
@@ -5756,32 +5919,32 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="obsolete">選択した賛美を礼拝プログラムに追加します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="218"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="219"/>
         <source>Add a new song.</source>
         <translation>賛美を追加します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="219"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="220"/>
         <source>Edit the selected song.</source>
         <translation>選択した賛美を編集します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="220"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
         <source>Delete the selected song.</source>
         <translation>選択した賛美を削除します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
         <source>Preview the selected song.</source>
         <translation>選択した賛美をプレビューします。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="223"/>
         <source>Send the selected song live.</source>
         <translation>選択した賛美をライブへ送ります。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="223"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
         <source>Add the selected song to the service.</source>
         <translation>選択した賛美を礼拝プログラムに追加します。</translation>
     </message>
@@ -5840,7 +6003,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation>%s によって管理されています</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/ewimport.py" line="312"/>
+        <location filename="openlp/plugins/songs/lib/ewimport.py" line="313"/>
         <source>
 [above are Song Tags with notes imported from 
                         EasyWorship]</source>
@@ -5850,177 +6013,177 @@ The encoding is responsible for the correct character representation.</source>
 <context>
     <name>SongsPlugin.EditSongForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="256"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="289"/>
         <source>Song Editor</source>
         <translation>ソングエディタ</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="258"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="291"/>
         <source>&amp;Title:</source>
         <translation>タイトル(&amp;T):</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="260"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="293"/>
         <source>Alt&amp;ernate title:</source>
         <translation>サブタイトル(&amp;e):</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="262"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="295"/>
         <source>&amp;Lyrics:</source>
         <translation>賛美詞(&amp;L):</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="264"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="297"/>
         <source>&amp;Verse order:</source>
         <translation>節順(&amp;V):</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="268"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="301"/>
         <source>Ed&amp;it All</source>
         <translation>全て編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="271"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
         <source>Title &amp;&amp; Lyrics</source>
         <translation>タイトル &amp;&amp; 賛美詞</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="275"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="308"/>
         <source>&amp;Add to Song</source>
         <translation>賛美に追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="277"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="348"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="279"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="312"/>
         <source>&amp;Manage Authors, Topics, Song Books</source>
         <translation>アーティスト、題目、アルバムを管理(&amp;M)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="282"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="315"/>
         <source>A&amp;dd to Song</source>
         <translation>賛美に追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="284"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>R&amp;emove</source>
         <translation>削除(&amp;e)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="287"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="320"/>
         <source>Book:</source>
         <translation>書名:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="289"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Number:</source>
         <translation>ナンバー:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="291"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Song Book</source>
         <translation>アーティスト、題目 &amp;&amp; アルバム</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="296"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="329"/>
         <source>New &amp;Theme</source>
         <translation>新しい外観テーマ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="298"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="331"/>
         <source>Copyright Information</source>
         <translation>著作権情報</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="302"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="335"/>
         <source>Comments</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="337"/>
         <source>Theme, Copyright Info &amp;&amp; Comments</source>
         <translation>外観テーマ、著作情報 &amp;&amp; コメント</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="330"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="361"/>
         <source>Add Author</source>
         <translation>アーティストを追加</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="330"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="361"/>
         <source>This author does not exist, do you want to add them?</source>
         <translation>アーティストが存在しません。追加しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="353"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="384"/>
         <source>This author is already in the list.</source>
         <translation>既にアーティストは一覧に存在します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="360"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="391"/>
         <source>You have not selected a valid author. Either select an author from the list, or type in a new author and click the &quot;Add Author to Song&quot; button to add the new author.</source>
         <translation>有効なアーティストを選択してください。一覧から選択するか新しいアーティストを入力し、&quot;賛美にアーティストを追加&quot;をクリックしてください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="388"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="419"/>
         <source>Add Topic</source>
         <translation>トピックを追加</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="388"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="419"/>
         <source>This topic does not exist, do you want to add it?</source>
         <translation>このトピックは存在しません。追加しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="409"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="440"/>
         <source>This topic is already in the list.</source>
         <translation>このトピックは既に存在します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="419"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="450"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
         <translation>有効なトピックを選択してください。一覧から選択するか新しいトピックを入力し、&quot;賛美にトピックを追加&quot;をクリックしてください。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="554"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="586"/>
         <source>You need to type in a song title.</source>
         <translation>賛美のタイトルを入力する必要があります。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="561"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="593"/>
         <source>You need to type in at least one verse.</source>
         <translation>最低一つのバースを入力する必要があります。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="614"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="646"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="604"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="636"/>
         <source>The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.</source>
         <translation>バース順序が無効です。%sに対応するバースはありません。%sは有効です。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="614"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="646"/>
         <source>You have not used %s anywhere in the verse order. Are you sure you want to save the song like this?</source>
         <translation>%sはバース順序で使われていません。本当にこの賛美を保存しても宜しいですか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="626"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="658"/>
         <source>Add Book</source>
         <translation>アルバムを追加</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="626"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="658"/>
         <source>This song book does not exist, do you want to add it?</source>
         <translation>アルバムが存在しません、追加しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="568"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="600"/>
         <source>You need to have an author for this song.</source>
         <translation>アーティストを入力する必要があります。</translation>
     </message>
@@ -6028,6 +6191,31 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/forms/editverseform.py" line="198"/>
         <source>You need to type some text in to the verse.</source>
         <translation>バースにテキストを入力する必要があります。</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="341"/>
+        <source>Linked Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="344"/>
+        <source>Add &amp;File(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="346"/>
+        <source>Add &amp;Media</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="350"/>
+        <source>Remove &amp;All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="710"/>
+        <source>Open File(s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6073,7 +6261,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="171"/>
         <source>This wizard will help to export your songs to the open and free OpenLyrics worship song format.</source>
-        <translation>このウィザードで、賛美をオープンで無償なOpenLyrics worship song形式としてエキスポートできます。</translation>
+        <translation type="obsolete">このウィザードで、賛美をオープンで無償なOpenLyrics worship song形式としてエキスポートできます。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="175"/>
@@ -6136,7 +6324,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation>ディレクトリを選択して下さい。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="360"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="362"/>
         <source>Select Destination Folder</source>
         <translation>出力先フォルダを選択して下さい</translation>
     </message>
@@ -6144,6 +6332,11 @@ The encoding is responsible for the correct character representation.</source>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="187"/>
         <source>Select the directory where you want the songs to be saved.</source>
         <translation>賛美を保存したいディレクトリを選択してください。</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="171"/>
+        <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics&lt;/strong&gt; worship song format.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6265,14 +6458,27 @@ The encoding is responsible for the correct character representation.</source>
     </message>
 </context>
 <context>
+    <name>SongsPlugin.MediaFilesForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/mediafilesdialog.py" line="69"/>
+        <source>Select Media File(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/mediafilesdialog.py" line="71"/>
+        <source>Select one or more audio files from the list below, and click OK to import them into this song.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SongsPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="161"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
         <source>Titles</source>
         <translation>タイトル</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="161"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
         <source>Lyrics</source>
         <translation>賛美詞</translation>
     </message>
@@ -6282,29 +6488,29 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="obsolete">これらの賛美を削除しますか?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="464"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="499"/>
         <source>CCLI License: </source>
         <translation>CCLI ライセンス:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="161"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
         <source>Entire Song</source>
         <translation>賛美全体</translation>
     </message>
     <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="363"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="383"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
         <translation>
             <numerusform>選択された%n件の賛美を削除します。宜しいですか?</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="157"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="176"/>
         <source>Maintain the lists of authors, topics and books.</source>
         <translation>アーティスト、トピックとアルバムの一覧を保守します。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="389"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="423"/>
         <source>copy</source>
         <comment>For song cloning</comment>
         <translation type="unfinished"></translation>
@@ -6313,7 +6519,7 @@ The encoding is responsible for the correct character representation.</source>
 <context>
     <name>SongsPlugin.OpenLP1SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="68"/>
+        <location filename="openlp/plugins/songs/lib/olp1import.py" line="70"/>
         <source>Not a valid openlp.org 1.x song database.</source>
         <translation>有効なopenlp.org v1.xデータベースではありません。</translation>
     </message>
@@ -6362,23 +6568,28 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="287"/>
         <source>Finished export.</source>
-        <translation>エキスポート完了。</translation>
+        <translation type="obsolete">エキスポート完了。</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="290"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="292"/>
         <source>Your song export failed.</source>
         <translation>賛美のエキスポートに失敗しました。</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="287"/>
+        <source>Finished export. To import these files use the &lt;strong&gt;OpenLyrics&lt;/strong&gt; importer.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="97"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="100"/>
         <source>copyright</source>
         <translation>著作権</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="117"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="120"/>
         <source>The following songs could not be imported:</source>
         <translation>以下の賛美はインポートできませんでした:</translation>
     </message>

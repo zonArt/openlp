@@ -36,6 +36,7 @@ class MediaState(object):
     Paused = 4
     Off = 6
 
+
 class MediaType(object):
     """
     """
@@ -45,6 +46,7 @@ class MediaType(object):
     CD = 3
     DVD = 4
     Folder = 5
+
 
 class MediaInfo(object):
     """

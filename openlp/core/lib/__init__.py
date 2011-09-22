@@ -36,6 +36,13 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
+class MediaType(object):
+    """
+    An enumeration class for types of media.
+    """
+    Audio = 1
+    Video = 2
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -137,7 +144,7 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image_path, width, height, background):
+def resize_image(image_path, width, height, background=u'#000000'):
     """
     Resize an image to fit on the current screen.
 
@@ -152,6 +159,8 @@ def resize_image(image_path, width, height, background):
 
     ``background``
         The background colour defaults to black.
+
+    DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
@@ -178,7 +187,7 @@ def resize_image(image_path, width, height, background):
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
-    painter.fillRect(new_image.rect(), background)
+    painter.fillRect(new_image.rect(), QtGui.QColor(background))
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
@@ -241,9 +250,7 @@ from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from serviceitem import ServiceItem
-from serviceitem import ServiceItemType
-from serviceitem import ItemCapabilities
+from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
 from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar

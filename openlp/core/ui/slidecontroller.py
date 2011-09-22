@@ -263,6 +263,12 @@ class SlideController(Controller):
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+            # Stuff for items with background audio.
+            self.audioPauseItem = self.toolbar.addToolbarButton(
+                u'Pause Audio', u':/slides/media_playback_pause.png',
+                translate('OpenLP.SlideController', 'Pause audio.'),
+                self.onAudioPauseClicked, True)
+            self.audioPauseItem.setVisible(False)
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -507,7 +513,7 @@ class SlideController(Controller):
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.toolbar.makeWidgetsVisible([u'Song Menu'])
-        if item.is_capable(ItemCapabilities.AllowsLoop) and \
+        if item.is_capable(ItemCapabilities.CanLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
@@ -530,7 +536,7 @@ class SlideController(Controller):
         self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible(self.songEditList)
-        if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
+        if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
             self.toolbar.setVisible(False)
@@ -568,7 +574,7 @@ class SlideController(Controller):
         """
         Replacement item following a remote edit
         """
-        if item.__eq__(self.serviceItem):
+        if item == self.serviceItem:
             self._processItem(item, self.previewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
@@ -578,15 +584,17 @@ class SlideController(Controller):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
-        # If no valid slide number is specified we take the first one.
+        # If no valid slide number is specified we take the first one, but we
+        # remember the initial value to see if we should reload the song or not
+        slidenum = slideno
         if slideno == -1:
-            slideno = 0
-        # If service item is the same as the current on only change slide
-        if item.__eq__(self.serviceItem):
-            self.__checkUpdateSelectedSlide(slideno)
+            slidenum = 0
+        # If service item is the same as the current one, only change slide
+        if slideno >= 0 and item == self.serviceItem:
+            self.__checkUpdateSelectedSlide(slidenum)
             self.slideSelected()
-            return
-        self._processItem(item, slideno)
+        else:
+            self._processItem(item, slidenum)
 
     def _processItem(self, serviceItem, slideno):
         """
@@ -610,6 +618,22 @@ class SlideController(Controller):
         self.previewListWidget.setColumnWidth(0, width)
         if self.isLive:
             self.songMenu.menu().clear()
+            self.display.audioPlayer.reset()
+            self.setAudioItemsVisibility(False)
+            self.audioPauseItem.setChecked(False)
+            if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
+                log.debug(u'Starting to play...')
+                self.display.audioPlayer.addToPlaylist(
+                    self.serviceItem.background_audio)
+                if QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + \
+                        u'/audio start paused',
+                    QtCore.QVariant(True)).toBool():
+                    self.audioPauseItem.setChecked(True)
+                    self.display.audioPlayer.pause()
+                else:
+                    self.display.audioPlayer.play()
+                self.setAudioItemsVisibility(True)
         row = 0
         text = []
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
@@ -759,6 +783,8 @@ class SlideController(Controller):
                 self.onBlankDisplay(True)
             else:
                 Receiver.send_message(u'maindisplay_show')
+        else:
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
 
     def onSlideBlank(self):
         """
@@ -1088,6 +1114,17 @@ class SlideController(Controller):
         self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
         self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
+
+    def setAudioItemsVisibility(self, visible):
+        self.audioPauseItem.setVisible(visible)
+
+    def onAudioPauseClicked(self, checked):
+        if not self.audioPauseItem.isVisible():
+            return
+        if checked:
+            self.display.audioPlayer.pause()
+        else:
+            self.display.audioPlayer.play()
 
     def timerEvent(self, event):
         """

@@ -24,12 +24,27 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`openlp` module contains all the project produced OpenLP functionality
-"""
 
-import core
-import plugins
+import logging
 
-__all__ = [u'core', u'plugins']
+from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import Receiver, translate
+from mediaopendialog import Ui_MediaOpenDialog
+
+log = logging.getLogger(__name__)
+
+class MediaOpenForm(QtGui.QDialog, Ui_MediaOpenDialog):
+    """
+    Class documentation goes here.
+    """
+    log.info(u'Media Open Form loaded')
+    def __init__(self, parent):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        # Connecting signals and slots
+#        QtCore.QObject.connect(self.previewButton,
+#            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)
