@@ -177,7 +177,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
                 QtGui.QTableWidgetItem(html[u'start html']))
             self.tagTableWidget.setItem(linenumber, 3,
                 QtGui.QTableWidgetItem(html[u'end html']))
-            # Tags saved prior to 1.9.7 do not have this key.
+            # Permanent (persistent) tags do not have this key.
             if u'temporary' not in html:
                 html[u'temporary'] = False
             self.tagTableWidget.resizeRowsToContents()

@@ -56,7 +56,7 @@ class FormattingTags(object):
         Resets the html_expands list.
         """
         temporary_tags = [tag for tag in FormattingTags.html_expands
-            if tag[u'temporary']]
+            if tag.get(u'temporary')]
         FormattingTags.html_expands = []
         base_tags = []
         # Append the base tags.
@@ -148,8 +148,12 @@ class FormattingTags(object):
         """
         tags = []
         for tag in FormattingTags.html_expands:
-            if not tag[u'protected'] and not tag[u'temporary']:
+            if not tag[u'protected'] and not tag.get(u'temporary'):
                 tags.append(tag)
+        # Remove key 'temporary' from tags. It is not needed to be saved.
+        for tag in tags:
+            if u'temporary' in tag:
+                del tag[u'temporary']
         # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
             QtCore.QVariant(cPickle.dumps(tags) if tags else u''))

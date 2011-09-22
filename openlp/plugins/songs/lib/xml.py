@@ -562,8 +562,11 @@ class OpenLyrics(object):
                 # Some tags have only start html e.g. {br}
                 u'end html': tag.close.text if hasattr(tag, 'close') else u'',
                 u'protected': False,
-                u'temporary': temporary
             }
+            # Add 'temporary' key in case the formatting tag should not be
+            # saved otherwise it is supposed that formatting tag is permanent.
+            if temporary:
+                openlp_tag[u'temporary'] = temporary
             found_tags.append(openlp_tag)
         existing_tag_ids = [tag[u'start tag']
             for tag in FormattingTags.get_html_tags()]
