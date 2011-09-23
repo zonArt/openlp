@@ -57,6 +57,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             self.close)
+        # Forces reloading of tags from openlp configuration.
+        FormattingTags.load_tags()
 
     def exec_(self):
         """
@@ -72,7 +74,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         Table Row selected so display items and set field state.
         """
         row = self.tagTableWidget.currentRow()
-        html = FormattingTags.get_html_tags()[row]
+        html = FormattingTags.html_expands[row]
         self.selected = row
         self.descriptionLineEdit.setText(html[u'desc'])
         self.tagLineEdit.setText(self._strip(html[u'start tag']))
@@ -97,7 +99,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Add a new tag to list only if it is not a duplicate.
         """
-        for html in FormattingTags.get_html_tags():
+        for html in FormattingTags.html_expands:
             if self._strip(html[u'start tag']) == u'n':
                 critical_error_message_box(
                     translate('OpenLP.FormattingTagForm', 'Update Error'),
@@ -135,7 +137,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Update Custom Tag details if not duplicate and save the data.
         """
-        html_expands = FormattingTags.get_html_tags()
+        html_expands = FormattingTags.html_expands
         if self.selected != -1:
             html = html_expands[self.selected]
             tag = unicode(self.tagLineEdit.text())
@@ -167,7 +169,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.newPushButton.setEnabled(True)
         self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
-        for linenumber, html in enumerate(FormattingTags.get_html_tags()):
+        for linenumber, html in enumerate(FormattingTags.html_expands):
             self.tagTableWidget.setRowCount(self.tagTableWidget.rowCount() + 1)
             self.tagTableWidget.setItem(linenumber, 0,
                 QtGui.QTableWidgetItem(html[u'desc']))
