@@ -466,7 +466,7 @@ class ServiceItem(object):
                 '<strong>Length</strong>: %s')) % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
-            return None
+            return u''
         elif start and not end:
             return start
         elif not start and end:
