@@ -589,14 +589,16 @@ class OpenLyrics(object):
         text = u''
         use_endtag = True
         # Skip <comment> elements - not yet supported.
-        if element.tag == NSMAP % u'comment' and element.tail:
-            # Append tail text at chord element.
-            text += element.tail
+        if element.tag == NSMAP % u'comment':
+            if element.tail:
+                # Append tail text at chord element.
+                text += element.tail
             return text
         # Skip <chord> element - not yet supported.
-        elif element.tag == NSMAP % u'chord' and element.tail:
-            # Append tail text at chord element.
-            text += element.tail
+        elif element.tag == NSMAP % u'chord':
+            if element.tail:
+                # Append tail text at chord element.
+                text += element.tail
             return text
         # Convert line breaks <br/> to \n.
         elif newlines and element.tag == NSMAP % u'br':
@@ -626,7 +628,7 @@ class OpenLyrics(object):
             text += element.tail
         return text
 
-    def _process_verse_lines(self, lines):
+    def _process_verse_lines(self, lines, version):
         """
         Converts lyrics lines to OpenLP representation.
 
@@ -637,18 +639,22 @@ class OpenLyrics(object):
         # Convert lxml.objectify to lxml.etree representation.
         lines = etree.tostring(lines)
         element = etree.XML(lines)
+
+        # OpenLyrics 0.8 uses <br/> for new lines.
+        # Append text from "lines" element to verse text.
+        if version > '0.7':
+            text = self._process_lines_mixed_content(element)
         # OpenLyrics version <= 0.7 contais <line> elements to represent lines.
         # First child element is tested.
-        if element[0].tag == NSMAP % 'line':
+        else:
             # Loop over the "line" elements removing comments and chords.
             for line in element:
+                # Skip comment lines.
+                if line.tag == NSMAP % u'comment':
+                    continue
                 if text:
                     text += u'\n'
                 text += self._process_lines_mixed_content(line, newlines=False)
-        # OpenLyrics 0.8 uses <br/> for new lines.
-        # Append text from "lines" element to verse text.
-        else:
-            text = self._process_lines_mixed_content(element)
         return text
 
     def _process_lyrics(self, properties, song_xml, song_obj):
@@ -676,7 +682,8 @@ class OpenLyrics(object):
                 if text:
                     text += u'\n'
                 # Append text from "lines" element to verse text.
-                text += self._process_verse_lines(lines)
+                text += self._process_verse_lines(lines,
+                    version=song_xml.get(u'version'))
                 # Add a virtual split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
