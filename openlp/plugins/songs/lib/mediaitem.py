@@ -562,6 +562,9 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
+        else:
+            # Make sure we temporary import formatting tags.
+            self.openLyrics.xml_to_song(item.xml_version, True)
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
