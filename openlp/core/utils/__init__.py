@@ -127,6 +127,9 @@ class AppLocation(object):
     CacheDir = 6
     LanguageDir = 7
 
+    # Base path where data/config/cache dir is located
+    BaseDir = None
+
     @staticmethod
     def get_directory(dir_type=1):
         """
@@ -152,6 +155,8 @@ class AppLocation(object):
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
+        elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
+            return os.path.join(AppLocation.BaseDir, 'data')
         else:
             return _get_os_dir_path(dir_type)
 
