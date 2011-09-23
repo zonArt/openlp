@@ -399,8 +399,10 @@ class SongMediaItem(MediaManagerItem):
                     except:
                         log.exception('Could not remove file: %s', audio)
                 try:
-                    os.rmdir(os.path.join(AppLocation.get_section_data_path(
-                        self.plugin.name), 'audio', str(item_id)))
+                    save_path = os.path.join(AppLocation.get_section_data_path(
+                        self.plugin.name), 'audio', str(item_id))
+                    if os.path.exists(save_path):
+                        os.rmdir(save_path)
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
@@ -426,8 +428,11 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
-        item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
+        log.debug(u'generateSlideData: %s, %s, %s' % (service_item, item, self.remoteSong))
+        # The ``None`` below is a workaround for bug #812289 - I think that Qt
+        # deletes the item somewhere along the line because the user is taking
+        # so long to update their item (or something weird like that).
+        item_id = self._getIdOfItemToGenerate(None, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
@@ -557,6 +562,9 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
+        else:
+            # Make sure we temporary import formatting tags.
+            self.openLyrics.xml_to_song(item.xml_version, True)
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',

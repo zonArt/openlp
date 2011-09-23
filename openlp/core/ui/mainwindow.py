@@ -776,25 +776,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         Receiver.send_message(u'cursor_busy')
         screens = ScreenList.get_instance()
-        if FirstTimeForm(screens, self).exec_() == QtGui.QDialog.Accepted:
-            self.firstTime()
-            for plugin in self.pluginManager.plugins:
-                self.activePlugin = plugin
-                oldStatus = self.activePlugin.status
-                self.activePlugin.setStatus()
-                if oldStatus != self.activePlugin.status:
-                    if self.activePlugin.status == PluginStatus.Active:
-                        self.activePlugin.toggleStatus(PluginStatus.Active)
-                        self.activePlugin.appStartup()
-                    else:
-                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
-            self.themeManagerContents.configUpdated()
-            self.themeManagerContents.loadThemes(True)
-            Receiver.send_message(u'theme_update_global',
-                self.themeManagerContents.global_theme)
-            # Check if any Bibles downloaded.  If there are, they will be
-            # processed.
-            Receiver.send_message(u'bibles_load_list', True)
+        FirstTimeForm(screens, self).exec_()
+        self.firstTime()
+        for plugin in self.pluginManager.plugins:
+            self.activePlugin = plugin
+            oldStatus = self.activePlugin.status
+            self.activePlugin.setStatus()
+            if oldStatus != self.activePlugin.status:
+                if self.activePlugin.status == PluginStatus.Active:
+                    self.activePlugin.toggleStatus(PluginStatus.Active)
+                    self.activePlugin.appStartup()
+                else:
+                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
+        self.themeManagerContents.configUpdated()
+        self.themeManagerContents.loadThemes(True)
+        Receiver.send_message(u'theme_update_global',
+            self.themeManagerContents.global_theme)
+        # Check if any Bibles downloaded.  If there are, they will be
+        # processed.
+        Receiver.send_message(u'bibles_load_list', True)
 
     def blankCheck(self):
         """
