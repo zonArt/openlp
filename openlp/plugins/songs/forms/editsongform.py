@@ -682,7 +682,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if item == 0 and text:
             temp_song_book = text
-        self.mediaitem.song_maintenance_form.exec_()
+        self.mediaitem.songMaintenanceForm.exec_()
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()

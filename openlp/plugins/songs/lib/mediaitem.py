@@ -428,8 +428,11 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
-        item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
+        log.debug(u'generateSlideData: %s, %s, %s' % (service_item, item, self.remoteSong))
+        # The ``None`` below is a workaround for bug #812289 - I think that Qt
+        # deletes the item somewhere along the line because the user is taking
+        # so long to update their item (or something weird like that).
+        item_id = self._getIdOfItemToGenerate(None, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
