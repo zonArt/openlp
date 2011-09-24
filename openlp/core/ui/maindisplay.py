@@ -606,7 +606,6 @@ class AudioPlayer(QtCore.QObject):
         self.stop()
         for path in self.mediaObject.outputPaths():
             path.disconnect()
-        QtCore.QObject.__del__(self)
 
     def onAboutToFinish(self):
         """
