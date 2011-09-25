@@ -663,6 +663,7 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
+                    self.loadItem_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
@@ -1124,14 +1125,9 @@ class ServiceManager(QtGui.QWidget):
     def serviceItemUpdate(self, message):
         """
         Triggered from plugins to update service items.
+        Save the values as they will be used as part of the service load
         """
-        editId, uuid = message.split(u':')
-        self.loadItem_uuid = uuid
-        self.loadItem_editId = editId
-        for item in self.serviceItems:
-            if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].edit_id = int(editId)
-        self.setModified()
+        self.loadItem_editId, self.loadItem_uuid = message.split(u':')
 
     def replaceServiceItem(self, newItem):
         """
