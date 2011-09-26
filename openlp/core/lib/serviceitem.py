@@ -87,7 +87,6 @@ class ServiceItem(object):
         if plugin:
             self.renderer = plugin.renderer
             self.name = plugin.name
-        self.from_service = False if plugin else False
         self.title = u''
         self.shortname = u''
         self.audit = u''
@@ -116,6 +115,7 @@ class ServiceItem(object):
         self.start_time = 0
         self.end_time = 0
         self.media_length = 0
+        self.from_service = False
         self.image_border = u'#000000'
         self.background_audio = []
         self._new_item()
