@@ -224,14 +224,10 @@ class Renderer(object):
         # Bibles
         if item.is_capable(ItemCapabilities.CanWordSplit):
             pages = self._paginate_slide_words(text.split(u'\n'), line_end)
-        else:
-            # Clean up line endings.
-            lines = self._lines_split(text)
-            pages = self._paginate_slide(lines, line_end)
-            # Songs and Custom
-            if item.is_capable(ItemCapabilities.CanSoftBreak) and \
-                len(pages) > 1 and u'[---]' in text:
-                pages = []
+        # Songs and Custom
+        elif item.is_capable(ItemCapabilities.CanSoftBreak):
+            pages = []
+            if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use
@@ -272,6 +268,11 @@ class Renderer(object):
                         lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
+            else:
+                # Clean up line endings.
+                pages = self._paginate_slide(text.split(u'\n'), line_end)
+        else:
+            pages = self._paginate_slide(text.split(u'\n'), line_end)
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
@@ -585,12 +586,3 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
-
-    def _lines_split(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        text = text.replace(u'\n[---]', u'')
-        text = text.replace(u'[---]', u'')
-        return text.split(u'\n')
