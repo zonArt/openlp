@@ -44,8 +44,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-VERSE_FOR_LINE_COUNT = u'1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15' \
-    '\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33'
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class Renderer(object):
