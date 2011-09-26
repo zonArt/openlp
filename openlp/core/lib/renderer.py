@@ -271,6 +271,8 @@ class Renderer(object):
             else:
                 # Clean up line endings.
                 pages = self._paginate_slide(text.split(u'\n'), line_end)
+        else:
+            pages = self._paginate_slide(text.split(u'\n'), line_end)
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
