@@ -227,46 +227,50 @@ class Renderer(object):
         # Songs and Custom
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
-            while True:
-                slides = text.split(u'\n[---]\n', 2)
-                # If there are (at least) two occurrences of [---] we use
-                # the first two slides (and neglect the last for now).
-                if len(slides) == 3:
-                    html_text = expand_tags(u'\n'.join(slides[:2]))
-                # We check both slides to determine if the virtual break is
-                # needed (there is only one virtual break).
-                else:
-                    html_text = expand_tags(u'\n'.join(slides))
-                html_text = html_text.replace(u'\n', u'<br>')
-                if self._text_fits_on_slide(html_text):
-                    # The first two virtual slides fit (as a whole) on one
-                    # slide. Replace the first occurrence of [---].
-                    text = text.replace(u'\n[---]', u'', 1)
-                else:
-                    # The first virtual slide fits, which means we have to
-                    # render the first virtual slide.
-                    text_contains_break = u'[---]' in text
-                    if text_contains_break:
-                        text_to_render, text = text.split(u'\n[---]\n', 1)
+            if u'[---]' in text:
+                while True:
+                    slides = text.split(u'\n[---]\n', 2)
+                    # If there are (at least) two occurrences of [---] we use
+                    # the first two slides (and neglect the last for now).
+                    if len(slides) == 3:
+                        html_text = expand_tags(u'\n'.join(slides[:2]))
+                    # We check both slides to determine if the virtual break is
+                    # needed (there is only one virtual break).
                     else:
-                        text_to_render = text
-                        text = u''
-                    lines = text_to_render.strip(u'\n').split(u'\n')
-                    slides = self._paginate_slide(lines, line_end)
-                    if len(slides) > 1 and text:
-                        # Add all slides apart from the last one the list.
-                        pages.extend(slides[:-1])
-                        if  text_contains_break:
-                            text = slides[-1] + u'\n[---]\n' + text
+                        html_text = expand_tags(u'\n'.join(slides))
+                    html_text = html_text.replace(u'\n', u'<br>')
+                    if self._text_fits_on_slide(html_text):
+                        # The first two virtual slides fit (as a whole) on one
+                        # slide. Replace the first occurrence of [---].
+                        text = text.replace(u'\n[---]', u'', 1)
+                    else:
+                        # The first virtual slide fits, which means we have to
+                        # render the first virtual slide.
+                        text_contains_break = u'[---]' in text
+                        if text_contains_break:
+                            text_to_render, text = text.split(u'\n[---]\n', 1)
                         else:
-                            text = slides[-1] + u'\n'+ text
-                        text = text.replace(u'<br>', u'\n')
+                            text_to_render = text
+                            text = u''
+                        lines = text_to_render.strip(u'\n').split(u'\n')
+                        slides = self._paginate_slide(lines, line_end)
+                        if len(slides) > 1 and text:
+                            # Add all slides apart from the last one the list.
+                            pages.extend(slides[:-1])
+                            if  text_contains_break:
+                                text = slides[-1] + u'\n[---]\n' + text
+                            else:
+                                text = slides[-1] + u'\n'+ text
+                            text = text.replace(u'<br>', u'\n')
+                        else:
+                            pages.extend(slides)
+                    if u'[---]' not in text:
+                        lines = text.strip(u'\n').split(u'\n')
+                        pages.extend(self._paginate_slide(lines, line_end))
+                        break
                     else:
-                        pages.extend(slides)
-                if u'[---]' not in text:
-                    lines = text.strip(u'\n').split(u'\n')
-                    pages.extend(self._paginate_slide(lines, line_end))
-                    break
+                        pages = self._paginate_slide(
+                            text.split(u'\n'), line_end)
             else:
                 # Clean up line endings.
                 pages = self._paginate_slide(text.split(u'\n'), line_end)
