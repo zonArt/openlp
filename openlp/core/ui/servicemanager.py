@@ -30,6 +30,7 @@ import logging
 import os
 import shutil
 import zipfile
+from tempfile import mkstemp
 
 log = logging.getLogger(__name__)
 
@@ -467,15 +468,24 @@ class ServiceManager(QtGui.QWidget):
 
     def saveFile(self):
         """
-        Save the current Service file.
+        Save the current service file.
+
+        A temporary file is created so that we don't overwrite the existing one
+        and leave a mangled service file should there be an error when saving.
+        Audio files are also copied into the service manager directory, and
+        then packaged into the zip file.
         """
         if not self.fileName():
             return self.saveFileAs()
+        temp_file, temp_file_name = mkstemp(u'.osz', u'openlp_')
+        # We don't need the file handle.
+        os.close(temp_file)
+        log.debug(temp_file_name)
         path_file_name = unicode(self.fileName())
         path, file_name = os.path.split(path_file_name)
         basename, extension = os.path.splitext(file_name)
         service_file_name = '%s.osd' % basename
-        log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
+        log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(
             self.mainwindow.servicemanagerSettingsSection,
             path)
@@ -494,7 +504,8 @@ class ServiceManager(QtGui.QWidget):
             if len(service_item[u'header'][u'background_audio']) > 0:
                 for i, filename in \
                     enumerate(service_item[u'header'][u'background_audio']):
-                    new_file = os.path.join(u'audio', item[u'service_item']._uuid,
+                    new_file = os.path.join(u'audio',
+                        item[u'service_item']._uuid,
                         os.path.split(filename)[1])
                     audio_files.append((filename, new_file))
                     service_item[u'header'][u'background_audio'][i] = new_file
@@ -545,30 +556,38 @@ class ServiceManager(QtGui.QWidget):
         success = True
         self.mainwindow.incrementProgressBar()
         try:
-            zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
+            zip = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
             # First we add service contents.
             # We save ALL filenames into ZIP using UTF-8.
             zip.writestr(service_file_name.encode(u'utf-8'), service_content)
             # Finally add all the listed media files.
-            for path_from in write_list:
-                zip.write(path_from, path_from.encode(u'utf-8'))
-            for path_from, path_to in audio_files:
-                if path_from == path_to:
-                    # If this file has already been saved, let's use set the
-                    # from path to the real location of the files
-                    path_from = os.path.join(self.servicePath, path_from)
-                else:
-                    # If this file has not yet been saved, let's copy the file
-                    # to the service manager path
-                    save_file = os.path.join(self.servicePath, path_to)
-                    save_path = os.path.split(save_file)[0]
-                    if not os.path.exists(save_path):
-                        os.makedirs(save_path)
-                    shutil.copy(path_from, save_file)
-                zip.write(path_from, path_to.encode(u'utf-8'))
+            for write_from in write_list:
+                zip.write(write_from, write_from.encode(u'utf-8'))
+            for audio_from, audio_to in audio_files:
+                if audio_from.startswith(u'audio'):
+                    # When items are saved, they get new UUID's. Let's copy the
+                    # file to the new location. Unused files can be ignored,
+                    # OpenLP automatically cleans up the service manager dir on
+                    # exit.
+                    audio_from = os.path.join(self.servicePath, audio_from)
+                save_file = os.path.join(self.servicePath, audio_to)
+                save_path = os.path.split(save_file)[0]
+                if not os.path.exists(save_path):
+                    os.makedirs(save_path)
+                if not os.path.exists(save_file):
+                    shutil.copy(audio_from, save_file)
+                zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
-            log.exception(u'Failed to save service to disk')
+            log.exception(u'Failed to save service to disk: %s', temp_file_name)
+            # Add this line in after the release to notify the user that saving
+            # their file failed. Commented out due to string freeze.
+            #Receiver.send_message(u'openlp_error_message', {
+            #    u'title': translate(u'OpenLP.ServiceManager',
+            #        u'Error Saving File'),
+            #    u'message': translate(u'OpenLP.ServiceManager',
+            #        u'There was an error saving your file.')
+            #})
             success = False
         finally:
             if zip:
@@ -576,10 +595,13 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
         if success:
+            shutil.copy(temp_file_name, path_file_name)
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
-        else:
-            delete_file(path_file_name)
+        try:
+            delete_file(temp_file_name)
+        except:
+            pass
         return success
 
     def saveFileAs(self):
@@ -623,6 +645,7 @@ class ServiceManager(QtGui.QWidget):
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 if not osfile.startswith(u'audio'):
                     osfile = os.path.split(osfile)[1]
+                log.debug(u'Extract file: %s', osfile)
                 zipinfo.filename = osfile
                 zip.extract(zipinfo, self.servicePath)
                 if osfile.endswith(u'osd'):
@@ -1022,11 +1045,12 @@ class ServiceManager(QtGui.QWidget):
         """
         Empties the servicePath of temporary files.
         """
+        log.debug(u'Cleaning up servicePath')
         for file in os.listdir(self.servicePath):
             file_path = os.path.join(self.servicePath, file)
             delete_file(file_path)
         if os.path.exists(os.path.join(self.servicePath, u'audio')):
-            shutil.rmtree(os.path.join(self.servicePath, u'audio'), False)
+            shutil.rmtree(os.path.join(self.servicePath, u'audio'), True)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
