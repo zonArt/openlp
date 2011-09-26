@@ -1127,8 +1127,8 @@ class ServiceManager(QtGui.QWidget):
         Triggered from plugins to update service items.
         Save the values as they will be used as part of the service load
         """
-        self.loadItem_editId, uuid = message.split(u':')
-        self.loadItem_uuid = int(uuid)
+        editId, self.loadItem_uuid = message.split(u':')
+        self.loadItem_editId = int(editId)
 
     def replaceServiceItem(self, newItem):
         """
