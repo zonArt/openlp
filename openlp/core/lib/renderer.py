@@ -268,9 +268,6 @@ class Renderer(object):
                         lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
-                    else:
-                        pages = self._paginate_slide(
-                            text.split(u'\n'), line_end)
             else:
                 # Clean up line endings.
                 pages = self._paginate_slide(text.split(u'\n'), line_end)
