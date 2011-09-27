@@ -229,12 +229,46 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Detects Page changes and updates as approprate.
         """
+        if self.page(pageId) == self.areaPositionPage:
+            self._generate_layout()
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
             self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.displayAspectRatio = float(frame.width()) / frame.height()
             self.resizeEvent()
+
+    def _generate_layout(self):
+        width = self.thememanager.mainwindow.renderer.width
+        height = self.thememanager.mainwindow.renderer.height
+        footer_start = int(height * 0.90)
+        pixmap = QtGui.QPixmap(width, height)
+        pixmap.fill(QtCore.Qt.white)
+        paint = QtGui.QPainter(pixmap)
+        paint.setPen(QtCore.Qt.blue)
+        if not self.theme.font_main_override:
+            main_rect = QtCore.QRect(10, 0, width - 20, footer_start)
+        else:
+            main_rect = QtCore.QRect(self.theme.font_main_x, self.theme.font_main_y,
+                self.theme.font_main_width - 1, self.theme.font_main_height - 1)
+        paint.drawRect(main_rect)
+        paint.setPen(QtCore.Qt.red)
+        if not self.theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, footer_start, width - 20,
+                height - footer_start)
+        else:
+            footer_rect = QtCore.QRect(self.theme.font_footer_x,
+                self.theme.font_footer_y, self.theme.font_footer_width - 1,
+                self.theme.font_footer_height - 1)
+        print footer_rect
+        paint.drawRect(footer_rect)
+        paint.end()
+        pixmap = pixmap.scaled(100, 100 *
+            self.thememanager.mainwindow.renderer.screen_ratio,
+            QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.themeLayoutLabel.setPixmap(pixmap)
+        self.displayAspectRatio = float(pixmap.width()) / pixmap.height()
+        self.resizeEvent()
 
     def onOutlineCheckCheckBoxStateChanged(self, state):
         """
