@@ -176,8 +176,9 @@ class HorizontalType(object):
     Left = 0
     Right = 1
     Center = 2
+    Justify = 3
 
-    Names = [u'left', u'right', u'center']
+    Names = [u'left', u'right', u'center', u'justify']
 
 
 class VerticalType(object):
