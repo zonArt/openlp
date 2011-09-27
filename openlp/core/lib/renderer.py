@@ -44,6 +44,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class Renderer(object):
@@ -190,7 +191,7 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
+            serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
             self.imageManager.del_image(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
@@ -224,14 +225,10 @@ class Renderer(object):
         # Bibles
         if item.is_capable(ItemCapabilities.CanWordSplit):
             pages = self._paginate_slide_words(text.split(u'\n'), line_end)
-        else:
-            # Clean up line endings.
-            lines = self._lines_split(text)
-            pages = self._paginate_slide(lines, line_end)
-            # Songs and Custom
-            if item.is_capable(ItemCapabilities.CanSoftBreak) and \
-                len(pages) > 1 and u'[---]' in text:
-                pages = []
+        # Songs and Custom
+        elif item.is_capable(ItemCapabilities.CanSoftBreak):
+            pages = []
+            if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use
@@ -272,6 +269,11 @@ class Renderer(object):
                         lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
+            else:
+                # Clean up line endings.
+                pages = self._paginate_slide(text.split(u'\n'), line_end)
+        else:
+            pages = self._paginate_slide(text.split(u'\n'), line_end)
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
@@ -585,12 +587,3 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
-
-    def _lines_split(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        text = text.replace(u'\n[---]', u'')
-        text = text.replace(u'[---]', u'')
-        return text.split(u'\n')

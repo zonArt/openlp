@@ -660,14 +660,17 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
-                    serviceItem.from_service = True
                     serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
-                    self.addServiceItem(serviceItem, repaint=False)
+                    self.loadItem_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
+                    # if the item has been processed
+                    if serviceItem._uuid == self.loadItem_uuid:
+                        serviceItem.edit_id = int(self.loadItem_editId)
+                    self.addServiceItem(serviceItem, repaint=False)
                 delete_file(p_file)
                 self.setFileName(fileName)
                 self.mainwindow.addRecentFile(fileName)
@@ -1122,12 +1125,10 @@ class ServiceManager(QtGui.QWidget):
     def serviceItemUpdate(self, message):
         """
         Triggered from plugins to update service items.
+        Save the values as they will be used as part of the service load
         """
-        editId, uuid = message.split(u':')
-        for item in self.serviceItems:
-            if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].edit_id = int(editId)
-        self.setModified()
+        editId, self.loadItem_uuid = message.split(u':')
+        self.loadItem_editId = int(editId)
 
     def replaceServiceItem(self, newItem):
         """
