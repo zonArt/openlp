@@ -241,13 +241,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     def _generate_layout(self):
         width = self.thememanager.mainwindow.renderer.width
         height = self.thememanager.mainwindow.renderer.height
-        footer_start = int(height * 0.90)
         pixmap = QtGui.QPixmap(width, height)
         pixmap.fill(QtCore.Qt.white)
         paint = QtGui.QPainter(pixmap)
-        paint.setPen(QtGui.QPen(QtCore.Qt.blue))
+        paint.setPen(QtGui.QPen(QtCore.Qt.blue, 2))
         paint.drawRect(self.thememanager.mainwindow.renderer.get_main_rectangle(self.theme))
-        paint.setPen(QtGui.QPen(QtCore.Qt.red))
+        paint.setPen(QtGui.QPen(QtCore.Qt.red, 2))
         paint.drawRect(self.thememanager.mainwindow.renderer.get_footer_rectangle(self.theme))
         paint.end()
         pixmap = pixmap.scaledToWidth(200, QtCore.Qt.SmoothTransformation)

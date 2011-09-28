@@ -304,8 +304,6 @@ class Renderer(object):
             The theme to build a text block for.
         """
         log.debug(u'_build_text_rectangle')
-        main_rect = None
-        footer_rect = None
         main_rect = self.get_main_rectangle(theme)
         footer_rect = self.get_main_rectangle(theme)
         self._set_text_rectangle(main_rect, footer_rect)
