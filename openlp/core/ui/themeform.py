@@ -246,23 +246,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         pixmap.fill(QtCore.Qt.white)
         paint = QtGui.QPainter(pixmap)
         paint.setPen(QtGui.QPen(QtCore.Qt.blue))
-        if not self.theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, width - 20, footer_start)
-        else:
-            main_rect = QtCore.QRect(self.theme.font_main_x, self.theme.font_main_y,
-                self.theme.font_main_width - 1, self.theme.font_main_height - 1)
-        paint.drawRect(main_rect)
+        paint.drawRect(self.thememanager.mainwindow.renderer.get_main_rectangle(self.theme))
         paint.setPen(QtGui.QPen(QtCore.Qt.red))
-        if not self.theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, footer_start, width - 20,
-                height - footer_start)
-        else:
-            footer_rect = QtCore.QRect(self.theme.font_footer_x,
-                self.theme.font_footer_y, self.theme.font_footer_width - 1,
-                self.theme.font_footer_height - 1)
-        paint.drawRect(footer_rect)
+        paint.drawRect(self.thememanager.mainwindow.renderer.get_footer_rectangle(self.theme))
         paint.end()
-        pixmap = pixmap.scaledToWidth(100, QtCore.Qt.SmoothTransformation)
+        pixmap = pixmap.scaledToWidth(200, QtCore.Qt.SmoothTransformation)
         self.themeLayoutLabel.setPixmap(pixmap)
         self.displayAspectRatio = float(pixmap.width()) / pixmap.height()
         self.resizeEvent()
