@@ -428,7 +428,8 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
+        log.debug(u'generateSlideData: %s, %s, %s' %
+            (service_item, item, self.remoteSong))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
@@ -509,7 +510,8 @@ class SongMediaItem(MediaManagerItem):
         # Add the audio file to the service item.
         if len(song.media_files) > 0:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
-            service_item.background_audio = [m.file_name for m in song.media_files]
+            service_item.background_audio = \
+                [m.file_name for m in song.media_files]
         return True
 
     def serviceLoad(self, item):
@@ -559,6 +561,9 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
+        else:
+            # Make sure we temporary import formatting tags.
+            self.openLyrics.xml_to_song(item.xml_version, True)
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',

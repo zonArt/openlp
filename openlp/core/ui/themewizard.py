@@ -246,7 +246,7 @@ class Ui_ThemeWizard(object):
         self.horizontalLabel = QtGui.QLabel(self.alignmentPage)
         self.horizontalLabel.setObjectName(u'HorizontalLabel')
         self.horizontalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.horizontalComboBox.addItems([u'', u'', u''])
+        self.horizontalComboBox.addItems([u'', u'', u'', u''])
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
@@ -495,6 +495,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Right'))
         self.horizontalComboBox.setItemText(HorizontalType.Center,
             translate('OpenLP.ThemeWizard', 'Center'))
+        self.horizontalComboBox.setItemText(HorizontalType.Justify,
+            translate('OpenLP.ThemeWizard', 'Justify'))
         self.transitionsLabel.setText(
             translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(

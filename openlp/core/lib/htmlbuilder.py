@@ -34,8 +34,8 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 
 log = logging.getLogger(__name__)
 
-# FIXME: Add html5 doctype. However, do not break theme gradients.
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
@@ -330,7 +330,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string( \
@@ -338,7 +338,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
@@ -346,20 +346,21 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
                 (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s))' % \
+                    u'right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_start_color, theme.background_end_color)
+                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
+                    width, theme.background_start_color,
+                    theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -483,11 +484,15 @@ def build_lyrics_format_css(theme, width, height):
         left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
-    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
+    justify = u'white-space:pre-wrap;'
+    # fix tag incompatibilities
+    if theme.display_horizontal_align == HorizontalType.Justify:
+        justify = u''
+    lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
         'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_size,
+        (justify, align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
