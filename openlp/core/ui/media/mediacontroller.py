@@ -76,6 +76,11 @@ class MediaController(object):
             QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_overrideApi'), self.override_api)
+        # Signals for background video
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_hide'), self.video_hide)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
 
     def register_controllers(self, controller):
         """
@@ -275,11 +280,14 @@ class MediaController(object):
                 'Unsupported File')))
             return False
         # now start playing
-        if self.video_play([controller]):
+        if self.video_play([controller], False):
             self.video_pause([controller])
             self.video_seek([controller, [0]])
-            if controller.isLive and  QtCore.QSettings().value(u'general/auto unblank',
-                QtCore.QVariant(False)).toBool():
+            if controller.isLive and \
+                (QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool() or \
+                controller.media_info.is_background == True) or \
+                controller.isLive == False:
                 self.video_play([controller])
             self.set_controls_visible(controller, True)
             log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
@@ -332,7 +340,7 @@ class MediaController(object):
         # no valid api found
         return False
 
-    def video_play(self, msg):
+    def video_play(self, msg, status=True):
         """
         Responds to the request to play a loaded video
         """
@@ -345,7 +353,8 @@ class MediaController(object):
                         controller.hideMenu.defaultAction().trigger()
                 if not self.curDisplayMediaAPI[display].play(display):
                     return False
-                self.curDisplayMediaAPI[display].set_visible(display, True)
+                if status:
+                    self.curDisplayMediaAPI[display].set_visible(display, True)
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
@@ -452,6 +461,10 @@ class MediaController(object):
                         if self.curDisplayMediaAPI[display].play(display):
                             self.curDisplayMediaAPI[display] \
                                 .set_visible(display, True)
+                                    # Start Timer for ui updates
+                            if not self.timer.isActive():
+                                self.timer.start()
+
 
     def get_audio_extensions_list(self):
         audio_list = []

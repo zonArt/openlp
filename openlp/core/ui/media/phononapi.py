@@ -39,7 +39,7 @@ log = logging.getLogger(__name__)
 
 class PhononAPI(MediaAPI):
     """
-    A specialised version of the MediaAPI class, 
+    A specialised version of the MediaAPI class,
     which provides a Phonon display.
     """
 
@@ -170,7 +170,6 @@ class PhononAPI(MediaAPI):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            #self.set_visible(display, True)
             return True
         else:
             return False
