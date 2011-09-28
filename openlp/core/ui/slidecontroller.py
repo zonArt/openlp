@@ -539,12 +539,15 @@ class SlideController(Controller):
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
-            self.toolbar.setVisible(False)
+            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
+            self.previousItem.setVisible(False)
+            self.nextItem.setVisible(False)
         if not item.is_media():
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
-            self.toolbar.show()
+            self.previousItem.setVisible(True)
+            self.nextItem.setVisible(True)
         self.toolbar.show()
 
     def refreshServiceItem(self):

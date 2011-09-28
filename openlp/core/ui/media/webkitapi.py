@@ -115,8 +115,9 @@ video_js = u"""
                     current_video = '2';
                 else
                     current_video = '1';
-                show_video('play');
                 show_video('load');
+                show_video('play');
+                show_video('setVisible',null,null,null,'visible');
                 break;
             case 'close':
                 show_video('stop');
