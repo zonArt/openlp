@@ -49,7 +49,7 @@ class WizardStrings(object):
     EW = u'EasyWorship'
     ES = u'EasiSlides'
     FP = u'Foilpresenter'
-    OL = u'OpenLyrics'
+    OL = u'OpenLyrics or OpenLP 2.0 Exported Song'
     OS = u'OpenSong'
     OSIS = u'OSIS'
     SB = u'SongBeamer'

@@ -508,7 +508,8 @@ class SongImportForm(OpenLPWizard):
         Get OpenLyrics song database files
         """
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.OL,
-            self.openLyricsFileListWidget)
+            self.openLyricsFileListWidget, u'%s (*.xml)' %
+            translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'))
 
     def onOpenLyricsRemoveButtonClicked(self):
         """
