@@ -230,7 +230,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Detects Page changes and updates as approprate.
         """
         if self.page(pageId) == self.areaPositionPage:
+            self.setOption(QtGui.QWizard.HaveCustomButton1, True)
             self._generate_layout()
+        else:
+            self.setOption(QtGui.QWizard.HaveCustomButton1, False)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
@@ -250,10 +253,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         paint.drawRect(self.thememanager.mainwindow.renderer.get_footer_rectangle(self.theme))
         paint.end()
         pixmap = pixmap.scaledToHeight(150, QtCore.Qt.SmoothTransformation)
-        self.themeLayoutLabel.setFixedSize(pixmap.width() + 2, pixmap.height() + 2)
-        self.themeLayoutLabel.setPixmap(pixmap)
-        self.displayAspectRatio = float(pixmap.width()) / pixmap.height()
-        self.resizeEvent()
+        #self.themeLayoutLabel.setFixedSize(pixmap.width() + 2, pixmap.height() + 2)
+        #self.themeLayoutLabel.setPixmap(pixmap)
+        #self.displayAspectRatio = float(pixmap.width()) / pixmap.height()
+        #self.resizeEvent()
 
     def onOutlineCheckCheckBoxStateChanged(self, state):
         """

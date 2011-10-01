@@ -38,7 +38,8 @@ class Ui_ThemeWizard(object):
         themeWizard.setModal(True)
         themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage)
+            QtGui.QWizard.NoBackButtonOnStartPage |
+            QtGui.QWizard.HaveCustomButton1)
         self.spacer = QtGui.QSpacerItem(10, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
@@ -336,21 +337,6 @@ class Ui_ThemeWizard(object):
         self.footerPositionLayout.addRow(self.footerHeightLabel,
             self.footerHeightSpinBox)
         self.areaPositionLayout.addWidget(self.footerPositionGroupBox)
-        self.layoutArea = QtGui.QWidget(self.areaPositionPage)
-        self.layoutArea.setObjectName(u'LayoutArea')
-        self.themeLayoutPreview = QtGui.QGridLayout(self.layoutArea)
-        self.themeLayoutPreview.setMargin(0)
-        self.themeLayoutPreview.setColumnStretch(0, 1)
-        self.themeLayoutPreview.setRowStretch(0, 1)
-        self.themeLayoutLabel = QtGui.QLabel(self.areaPositionPage)
-        self.themeLayoutLabel.setObjectName(u'ThemeLayoutPreview')
-        self.themeLayoutLabel.setObjectName(u'ThemeLayoutPreview')
-        self.themeLayoutLabel = QtGui.QLabel(self.layoutArea)
-        self.themeLayoutLabel.setFrameShape(QtGui.QFrame.Box)
-        self.themeLayoutLabel.setScaledContents(True)
-        self.themeLayoutLabel.setObjectName(u'ThemeLayoutLabel')
-        self.areaPositionLayout.addWidget(self.themeLayoutLabel)
-        self.areaPositionLayout.addWidget(self.layoutArea)
         themeWizard.addPage(self.areaPositionPage)
         # Preview Page
         self.previewPage = QtGui.QWizardPage()
@@ -550,6 +536,9 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'px'))
         self.footerPositionCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Use default location'))
+        themeWizard.setOption(QtGui.QWizard.HaveCustomButton1, False)
+        themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
+            translate('OpenLP.ThemeWizard', 'Preview'))
         self.previewPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Save and Preview'))
         self.previewPage.setSubTitle(
