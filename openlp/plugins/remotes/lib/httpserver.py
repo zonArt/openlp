@@ -397,7 +397,9 @@ class HttpConnection(object):
         result = {
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
-                if self.parent.current_item else u''
+                if self.parent.current_item else u'',
+            u'twelve':QtCore.QSettings().value(
+            u'remotes/twelve hour', QtCore.QVariant(True)).toBool()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
