@@ -57,8 +57,11 @@ class PresentationMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
+        self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
 
     def retranslateUi(self):
         """
@@ -209,6 +212,7 @@ class PresentationMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
+            item_name.setToolTip(file)
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
@@ -234,7 +238,8 @@ class PresentationMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 u'presentations', self.getFileList())
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image
@@ -249,7 +254,7 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = unicode(self.displayTypeComboBox.currentText())
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.AllowsDetailedTitleDisplay)
+        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if shortname:
             for bitem in items:
@@ -276,12 +281,13 @@ class PresentationMediaItem(MediaManagerItem):
                         return True
                     else:
                         # File is no longer present
-                        critical_error_message_box(
-                            translate('PresentationPlugin.MediaItem',
-                            'Missing Presentation'),
-                            unicode(translate('PresentationPlugin.MediaItem',
-                            'The Presentation %s is incomplete,'
-                            ' please reload.')) % filename)
+                        if not remote:
+                            critical_error_message_box(
+                                translate('PresentationPlugin.MediaItem',
+                                'Missing Presentation'),
+                                unicode(translate('PresentationPlugin.MediaItem',
+                                'The Presentation %s is incomplete,'
+                                ' please reload.')) % filename)
                         return False
                 else:
                     # File is no longer present

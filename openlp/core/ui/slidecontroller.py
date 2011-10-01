@@ -27,12 +27,14 @@
 
 import logging
 import os
+import time
+import copy
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
-    ItemCapabilities, translate
+from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
+    translate, build_icon
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -193,13 +195,11 @@ class SlideController(QtGui.QWidget):
             self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
                 u'playSlidesLoop', [], self.onPlaySlidesLoop,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesLoop.setText(
-                translate('OpenLP.SlideController', 'Play Slides in Loop'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
             self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
                 u'playSlidesOnce', [], self.onPlaySlidesOnce,
                 u':/media/media_time.png', False, UiStrings().LiveToolbar)
-            self.playSlidesOnce.setText(
-                translate('OpenLP.SlideController', 'Play Slides to End'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
             if QtCore.QSettings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
@@ -256,6 +256,12 @@ class SlideController(QtGui.QWidget):
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+            # Stuff for items with background audio.
+            self.audioPauseItem = self.toolbar.addToolbarButton(
+                u'Pause Audio', u':/slides/media_playback_pause.png',
+                translate('OpenLP.SlideController', 'Pause audio.'),
+                self.onAudioPauseClicked, True)
+            self.audioPauseItem.setVisible(False)
             # Build the volumeSlider.
             self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
             self.volumeSlider.setTickInterval(1)
@@ -412,9 +418,11 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_previous_item')
 
     def serviceNext(self):
+        time.sleep(0.1)
         Receiver.send_message('servicemanager_next_item')
 
     def screenSizeChanged(self):
@@ -500,35 +508,52 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.toolbar.makeWidgetsInvisible(self.loopList)
+        # Reset the button
+        self.playSlidesOnce.setChecked(False)
+        self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
+        self.playSlidesLoop.setChecked(False)
+        self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.toolbar.makeWidgetsVisible([u'Song Menu'])
-        if item.is_capable(ItemCapabilities.AllowsLoop) and \
+        if item.is_capable(ItemCapabilities.CanLoop) and \
             len(item.get_frames()) > 1:
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
+        else:
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
-        self.toolbar.setVisible(True)
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
+        self.toolbar.hide()
         self.mediabar.setVisible(False)
         self.toolbar.makeWidgetsInvisible(self.songEditList)
-        if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
+        if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
             self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
+        if not item.is_media():
+            # Work-around for OS X, hide and then show the toolbar
+            # See bug #791050
+            self.toolbar.show()
 
     def refreshServiceItem(self):
         """
@@ -557,7 +582,7 @@ class SlideController(QtGui.QWidget):
         """
         Replacement item following a remote edit
         """
-        if item.__eq__(self.serviceItem):
+        if item == self.serviceItem:
             self._processItem(item, self.previewListWidget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
@@ -567,15 +592,17 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
-        # If no valid slide number is specified we take the first one.
+        # If no valid slide number is specified we take the first one, but we
+        # remember the initial value to see if we should reload the song or not
+        slidenum = slideno
         if slideno == -1:
-            slideno = 0
-        # If service item is the same as the current on only change slide
-        if item.__eq__(self.serviceItem):
-            self.__checkUpdateSelectedSlide(slideno)
+            slidenum = 0
+        # If service item is the same as the current one, only change slide
+        if slideno >= 0 and item == self.serviceItem:
+            self.__checkUpdateSelectedSlide(slidenum)
             self.slideSelected()
-            return
-        self._processItem(item, slideno)
+        else:
+            self._processItem(item, slidenum)
 
     def _processItem(self, serviceItem, slideno):
         """
@@ -585,7 +612,8 @@ class SlideController(QtGui.QWidget):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
-        self.serviceItem = serviceItem
+        # take a copy not a link to the servicemeanager copy.
+        self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
             self._resetBlank()
@@ -598,6 +626,22 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setColumnWidth(0, width)
         if self.isLive:
             self.songMenu.menu().clear()
+            self.display.audioPlayer.reset()
+            self.setAudioItemsVisibility(False)
+            self.audioPauseItem.setChecked(False)
+            if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
+                log.debug(u'Starting to play...')
+                self.display.audioPlayer.addToPlaylist(
+                    self.serviceItem.background_audio)
+                if QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + \
+                        u'/audio start paused',
+                    QtCore.QVariant(True)).toBool():
+                    self.audioPauseItem.setChecked(True)
+                    self.display.audioPlayer.pause()
+                else:
+                    self.display.audioPlayer.play()
+                self.setAudioItemsVisibility(True)
         row = 0
         text = []
         for framenumber, frame in enumerate(self.serviceItem.get_frames()):
@@ -747,6 +791,8 @@ class SlideController(QtGui.QWidget):
                 self.onBlankDisplay(True)
             else:
                 Receiver.send_message(u'maindisplay_show')
+        else:
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
 
     def onSlideBlank(self):
         """
@@ -1044,6 +1090,14 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesLoop.setChecked(checked)
         log.debug(u'onPlaySlidesLoop %s' % checked)
+        if checked:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesLoop.setText(UiStrings().StopPlaySlidesInLoop)
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
+        else:
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
         self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
         self.playSlidesOnce.setChecked(False)
         self.onToggleLoop()
@@ -1057,9 +1111,28 @@ class SlideController(QtGui.QWidget):
         else:
             self.playSlidesOnce.setChecked(checked)
         log.debug(u'onPlaySlidesOnce %s' % checked)
+        if checked:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_stop.png'))
+            self.playSlidesOnce.setText(UiStrings().StopPlaySlidesToEnd)
+            self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
+            self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
+        else:
+            self.playSlidesOnce.setIcon(build_icon(u':/media/media_time'))
+            self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
         self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
         self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
+
+    def setAudioItemsVisibility(self, visible):
+        self.audioPauseItem.setVisible(visible)
+
+    def onAudioPauseClicked(self, checked):
+        if not self.audioPauseItem.isVisible():
+            return
+        if checked:
+            self.display.audioPlayer.pause()
+        else:
+            self.display.audioPlayer.play()
 
     def timerEvent(self, event):
         """

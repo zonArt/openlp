@@ -115,7 +115,8 @@ class CSVBible(BibleDB):
                 if self.stop_import_flag:
                     break
                 self.wizard.incrementProgressBar(unicode(
-                    translate('BibleDB.Wizard', 'Importing books... %s')) %
+                    translate('BiblesPlugin.CSVBible',
+                    'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
                 book_ref_id = self.get_book_ref_id_by_name(
                     unicode(line[2], details['encoding']), 67, language_id)
@@ -155,7 +156,7 @@ class CSVBible(BibleDB):
                     book = self.get_book(line_book)
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(unicode(translate(
-                        'BibleDB.Wizard', 'Importing verses from %s...',
+                        'BiblesPlugin.CSVBible', 'Importing verses from %s...',
                         'Importing verses from <book name>...')) % book.name)
                     self.session.commit()
                 try:
@@ -163,7 +164,7 @@ class CSVBible(BibleDB):
                 except UnicodeError:
                     verse_text = unicode(line[3], u'cp1252')
                 self.create_verse(book.id, line[1], line[2], verse_text)
-            self.wizard.incrementProgressBar(translate('BibleDB.Wizard',
+            self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible',
                 'Importing verses... done.'))
             Receiver.send_message(u'openlp_process_events')
             self.session.commit()

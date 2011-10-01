@@ -36,6 +36,13 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
+class MediaType(object):
+    """
+    An enumeration class for types of media.
+    """
+    Audio = 1
+    Video = 2
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -190,7 +197,7 @@ def validate_thumb(file_path, thumb_path):
     thumb_date = os.stat(unicode(thumb_path)).st_mtime
     return image_date <= thumb_date
 
-def resize_image(image_path, width, height, background=QtCore.Qt.black):
+def resize_image(image_path, width, height, background=u'#000000'):
     """
     Resize an image to fit on the current screen.
 
@@ -204,7 +211,9 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
         The new image height.
 
     ``background``
-        The background colour. Defaults to ``QtCore.Qt.black``.
+        The background colour. Defaults to black.
+
+    DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
@@ -231,7 +240,7 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
-    painter.fillRect(new_image.rect(), background)
+    painter.fillRect(new_image.rect(), QtGui.QColor(background))
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
@@ -258,7 +267,7 @@ def clean_tags(text):
     text = text.replace(u'<br>', u'\n')
     text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
     return text
@@ -267,7 +276,7 @@ def expand_tags(text):
     """
     Expand tags HTML for display
     """
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
@@ -286,17 +295,15 @@ def check_directory_exists(dir):
     except IOError:
         pass
 
-from listwidgetwithdnd import ListWidgetWithDnD
-from displaytags import DisplayTags
 from eventreceiver import Receiver
+from listwidgetwithdnd import ListWidgetWithDnD
+from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from serviceitem import ServiceItem
-from serviceitem import ServiceItemType
-from serviceitem import ItemCapabilities
+from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
 from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar

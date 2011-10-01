@@ -25,10 +25,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Receiver
+from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
 
@@ -36,10 +39,13 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', plugin_helpers, ImageMediaItem)
+        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
+            ImageTab)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'image_updated'), self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -81,3 +87,13 @@ class ImagePlugin(Plugin):
                 'Add the selected image to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
+
+    def image_updated(self):
+        """
+        Triggered by saving and changing the image border.  Sets the images in
+        image manager to require updates.  Actual update is triggered by the
+        last part of saving the config.
+        """
+        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+            + u'/background color', QtCore.QVariant(u'#000000')))
+        self.liveController.imageManager.update_images(u'image', background)

@@ -48,7 +48,7 @@ on run
 			set theViewOptions to the icon view options of container window
 			set arrangement of theViewOptions to not arranged
 			set icon size of theViewOptions to 128
-			set background picture of theViewOptions to file ".installer-background.png"
+			set background picture of theViewOptions to file ".background:installer-background.png"
                         if not exists file "Applications" then
 			    make new alias file at container window to POSIX file "/Applications" with properties {name:"Applications"}
                         end if
