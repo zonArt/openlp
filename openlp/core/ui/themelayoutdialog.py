@@ -24,58 +24,42 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
-from PyQt4 import QtGui
+
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
-class HideMode(object):
-    """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
 
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
+class Ui_ThemeLayoutDialog(object):
+    def setupUi(self, themeLayoutDialog):
+        themeLayoutDialog.setObjectName(u'themeLayoutDialogDialog')
+        themeLayoutDialog.resize(300, 200)
+        self.previewLayout = QtGui.QVBoxLayout(themeLayoutDialog)
+        self.previewLayout.setObjectName(u'PreviewLayout')
+        self.previewArea = QtGui.QWidget(themeLayoutDialog)
+        self.previewArea.setObjectName(u'PreviewArea')
+        self.previewAreaLayout = QtGui.QGridLayout(self.previewArea)
+        self.previewAreaLayout.setMargin(0)
+        self.previewAreaLayout.setColumnStretch(0, 1)
+        self.previewAreaLayout.setRowStretch(0, 1)
+        self.previewAreaLayout.setObjectName(u'PreviewAreaLayout')
+        self.themeDisplayLabel = QtGui.QLabel(self.previewArea)
+        self.themeDisplayLabel.setFrameShape(QtGui.QFrame.Box)
+        self.themeDisplayLabel.setScaledContents(True)
+        self.themeDisplayLabel.setObjectName(u'ThemeDisplayLabel')
+        self.previewAreaLayout.addWidget(self.themeDisplayLabel)
+        self.previewLayout.addWidget(self.previewArea)
+        self.buttonBox = QtGui.QDialogButtonBox(themeLayoutDialog)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(u'ButtonBox')
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            themeLayoutDialog.accept)
+        self.previewLayout.addWidget(self.buttonBox)
+        self.retranslateUi(themeLayoutDialog)
+        QtCore.QMetaObject.connectSlotsByName(themeLayoutDialog)
 
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
+    def retranslateUi(self, themeLayoutDialog):
+        themeLayoutDialog.setWindowTitle(
+            translate('OpenLP.StartTimeForm', 'Theme Layout'))
 
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
-
-from firsttimeform import FirstTimeForm
-from firsttimelanguageform import FirstTimeLanguageForm
-from themelayoutform import ThemeLayoutForm
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from screen import ScreenList
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from formattingtagform import FormattingTagForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
