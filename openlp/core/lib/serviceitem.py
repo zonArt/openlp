@@ -366,7 +366,7 @@ class ServiceItem(object):
         self.notes = other.notes
         # copy theme over if present.  Assumes overridden
         if other.theme is not None:
-            self.theme = other.theme
+            self.update_theme(other.theme)
         if self.is_capable(ItemCapabilities.HasBackgroundAudio):
             log.debug(self.background_audio)
 
