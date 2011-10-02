@@ -246,6 +246,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.resizeEvent()
 
     def onCustom1ButtonClicked(self, number):
+        """
+        Generate layout preview and display the form
+        """
         width = self.thememanager.mainwindow.renderer.width
         height = self.thememanager.mainwindow.renderer.height
         pixmap = QtGui.QPixmap(width, height)
@@ -259,7 +262,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             get_footer_rectangle(self.theme))
         paint.end()
         self.themeLayoutForm.exec_(pixmap)
-
 
     def onOutlineCheckCheckBoxStateChanged(self, state):
         """
@@ -294,7 +296,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         if self.updateThemeAllowed:
             self.theme.font_main_override = not (value == QtCore.Qt.Checked)
-            self._generate_layout()
 
     def onFooterPositionCheckBoxStateChanged(self, value):
         """
@@ -303,7 +304,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         if self.updateThemeAllowed:
             self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
-            self._generate_layout()
 
     def exec_(self, edit=False):
         """

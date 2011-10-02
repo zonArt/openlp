@@ -34,7 +34,7 @@ from openlp.core.lib.ui import create_accept_reject_button_box
 class Ui_ThemeLayoutDialog(object):
     def setupUi(self, themeLayoutDialog):
         themeLayoutDialog.setObjectName(u'themeLayoutDialogDialog')
-        themeLayoutDialog.resize(300, 200)
+        #themeLayoutDialog.resize(300, 200)
         self.previewLayout = QtGui.QVBoxLayout(themeLayoutDialog)
         self.previewLayout.setObjectName(u'PreviewLayout')
         self.previewArea = QtGui.QWidget(themeLayoutDialog)

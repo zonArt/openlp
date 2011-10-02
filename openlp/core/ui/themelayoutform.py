@@ -44,11 +44,12 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         """
         Run the Dialog with correct heading.
         """
-        pixmap = image.scaledToHeight(150, QtCore.Qt.SmoothTransformation)
+        pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
         self.themeDisplayLabel.setPixmap(image)
+        displayAspectRatio = float(image.width()) / image.height()
+        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio )
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
         return QtGui.QDialog.accept(self)
-
 
