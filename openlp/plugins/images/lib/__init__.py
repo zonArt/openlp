@@ -26,3 +26,4 @@
 ###############################################################################
 
 from mediaitem import ImageMediaItem
+from imagetab import ImageTab

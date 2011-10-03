@@ -111,7 +111,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
-        self.auto_select_id = -1
+        self.autoSelectId = -1
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_service_load' % self.plugin.name),
             self.serviceLoad)
@@ -376,18 +376,23 @@ class MediaManagerItem(QtGui.QWidget):
          The files to be loaded
         """
         names = []
+        fullList = []
         for count in range(0, self.listView.count()):
-            names.append(self.listView.item(count).text())
-        newFiles = []
+            names.append(unicode(self.listView.item(count).text()))
+            fullList.append(unicode(self.listView.item(count).
+                data(QtCore.Qt.UserRole).toString()))
         duplicatesFound = False
+        filesAdded = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
                 duplicatesFound = True
             else:
-                newFiles.append(file)
-        if newFiles:
-            self.loadList(newFiles)
+                filesAdded = True
+                fullList.append(file)
+        if fullList and filesAdded:
+            self.listView.clear()
+            self.loadList(fullList)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
@@ -396,7 +401,7 @@ class MediaManagerItem(QtGui.QWidget):
             critical_error_message_box(
                 UiStrings().Duplicate,
                 unicode(translate('OpenLP.MediaManagerItem',
-                'Duplicate files found on import and ignored.')))
+                'Duplicate files were found on import and were ignored.')))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
@@ -419,44 +424,6 @@ class MediaManagerItem(QtGui.QWidget):
             filelist.append(filename)
             count += 1
         return filelist
-
-    def validate(self, image, thumb):
-        """
-        Validates whether an image still exists and, if it does, is the
-        thumbnail representation of the image up to date.
-        """
-        if not os.path.exists(unicode(image)):
-            return False
-        if os.path.exists(thumb):
-            imageDate = os.stat(unicode(image)).st_mtime
-            thumbDate = os.stat(unicode(thumb)).st_mtime
-            # If image has been updated rebuild icon
-            if imageDate > thumbDate:
-                self.iconFromFile(image, thumb)
-        else:
-            self.iconFromFile(image, thumb)
-        return True
-
-    def iconFromFile(self, image_path, thumb_path):
-        """
-        Create a thumbnail icon from a given image.
-
-        ``image_path``
-            The image file to create the icon from.
-
-        ``thumb_path``
-            The filename to save the thumbnail to.
-        """
-        ext = os.path.splitext(thumb_path)[1].lower()
-        reader = QtGui.QImageReader(image_path)
-        ratio = float(reader.size().width()) / float(reader.size().height())
-        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
-        thumb = reader.read()
-        thumb.save(thumb_path, ext[1:])
-        if os.path.exists(thumb_path):
-            return build_icon(unicode(thumb_path))
-        # Fallback for files with animation support.
-        return build_icon(unicode(image_path))
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
@@ -485,7 +452,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def generateSlideData(self, serviceItem, item=None, xmlVersion=False):
+    def generateSlideData(self, serviceItem, item=None, xmlVersion=False,
+        remote=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
@@ -506,7 +474,7 @@ class MediaManagerItem(QtGui.QWidget):
         if QtCore.QSettings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() \
-            and self.auto_select_id == -1:
+            and self.autoSelectId == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):
@@ -539,12 +507,12 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.goLive()
 
-    def goLive(self, item_id=None):
+    def goLive(self, item_id=None, remote=False):
         log.debug(u'%s Live requested', self.plugin.name)
         item = None
         if item_id:
             item = self.createItemFromId(item_id)
-        serviceItem = self.buildServiceItem(item)
+        serviceItem = self.buildServiceItem(item, remote=remote)
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
@@ -574,8 +542,8 @@ class MediaManagerItem(QtGui.QWidget):
                 for item in items:
                     self.addToService(item)
 
-    def addToService(self, item=None, replace=None):
-        serviceItem = self.buildServiceItem(item, True)
+    def addToService(self, item=None, replace=None, remote=False):
+        serviceItem = self.buildServiceItem(item, True, remote=remote)
         if serviceItem:
             serviceItem.from_plugin = False
             self.plugin.serviceManager.addServiceItem(serviceItem,
@@ -608,13 +576,13 @@ class MediaManagerItem(QtGui.QWidget):
                     unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
-    def buildServiceItem(self, item=None, xmlVersion=False):
+    def buildServiceItem(self, item=None, xmlVersion=False, remote=False):
         """
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
         serviceItem.add_icon(self.plugin.icon_path)
-        if self.generateSlideData(serviceItem, item, xmlVersion):
+        if self.generateSlideData(serviceItem, item, xmlVersion, remote):
             return serviceItem
         else:
             return None
@@ -626,7 +594,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def check_search_result(self):
+    def checkSearchResult(self):
         """
         Checks if the listView is empty and adds a "No Search Results" item.
         """
@@ -662,15 +630,15 @@ class MediaManagerItem(QtGui.QWidget):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
         return item_id
 
-    def save_auto_select_id(self):
+    def saveAutoSelectId(self):
         """
         Sorts out, what item to select after loading a list.
         """
         # The item to select has not been set.
-        if self.auto_select_id == -1:
+        if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.auto_select_id = item.data(QtCore.Qt.UserRole).toInt()[0]
+                self.autoSelectId = item.data(QtCore.Qt.UserRole).toInt()[0]
 
     def search(self, string):
         """

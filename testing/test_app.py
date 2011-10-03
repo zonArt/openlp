@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -7,7 +8,7 @@
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Armin Köhler, Joshua Millar, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
@@ -24,12 +25,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`openlp` module contains all the project produced OpenLP functionality
-"""
 
-import core
-import plugins
+from openlp.core import OpenLP
+from openlp.core.ui.mainwindow import MainWindow
 
-__all__ = [u'core', u'plugins']
 
+def test_start_app(openlpapp):
+    assert type(openlpapp) == OpenLP
+    assert type(openlpapp.mainWindow) == MainWindow
+    assert unicode(openlpapp.mainWindow.windowTitle()) == u'OpenLP 2.0'

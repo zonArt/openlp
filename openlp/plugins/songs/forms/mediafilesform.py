@@ -25,42 +25,33 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+import os
+
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from mediafilesdialog import Ui_MediaFilesDialog
 
-class Ui_SongUsageDeleteDialog(object):
-    def setupUi(self, songUsageDeleteDialog):
-        songUsageDeleteDialog.setObjectName(u'songUsageDeleteDialog')
-        songUsageDeleteDialog.resize(291, 243)
-        self.verticalLayout = QtGui.QVBoxLayout(songUsageDeleteDialog)
-        self.verticalLayout.setSpacing(8)
-        self.verticalLayout.setContentsMargins(8, 8, 8, 8)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.deleteLabel = QtGui.QLabel(songUsageDeleteDialog)
-        self.deleteLabel.setObjectName(u'deleteLabel')
-        self.verticalLayout.addWidget(self.deleteLabel)
-        self.deleteCalendar = QtGui.QCalendarWidget(songUsageDeleteDialog)
-        self.deleteCalendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
-        self.deleteCalendar.setGridVisible(True)
-        self.deleteCalendar.setVerticalHeaderFormat(
-            QtGui.QCalendarWidget.NoVerticalHeader)
-        self.deleteCalendar.setObjectName(u'deleteCalendar')
-        self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = QtGui.QDialogButtonBox(songUsageDeleteDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.verticalLayout.addWidget(self.buttonBox)
-        self.retranslateUi(songUsageDeleteDialog)
+log = logging.getLogger(__name__)
 
-    def retranslateUi(self, songUsageDeleteDialog):
-        songUsageDeleteDialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Delete Song Usage Data'))
-        self.deleteLabel.setText(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Select the date up to which the song usage data should be '
-                'deleted. All data recorded before this date will be '
-                'permanently deleted.'))
+class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
+    """
+    Class to show a list of files from the
+    """
+    log.info(u'%s MediaFilesForm loaded', __name__)
+
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self)
+        self.setupUi(self)
+
+    def populateFiles(self, files):
+        self.fileListWidget.clear()
+        for file in files:
+            item = QtGui.QListWidgetItem(os.path.split(file)[1])
+            item.setData(QtCore.Qt.UserRole, file)
+            self.fileListWidget.addItem(item)
+
+    def getSelectedFiles(self):
+        return map(lambda x: unicode(x.data(QtCore.Qt.UserRole).toString()),
+            self.fileListWidget.selectedItems())
+

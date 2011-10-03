@@ -368,3 +368,4 @@ class Plugin(QtCore.QObject):
         after this has been set.
         """
         self.textStrings[name] = {u'title': title, u'tooltip': tooltip}
+

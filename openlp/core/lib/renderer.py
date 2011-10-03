@@ -27,11 +27,11 @@
 
 import logging
 
-from PyQt4 import QtCore, QtWebKit
+from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities
+    ItemCapabilities, FormattingTags
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -44,6 +44,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class Renderer(object):
@@ -166,7 +167,8 @@ class Renderer(object):
         # if No file do not update cache
         if self.theme_data.background_filename:
             self.imageManager.add_image(self.theme_data.theme_name,
-                self.theme_data.background_filename)
+                self.theme_data.background_filename, u'theme',
+                QtGui.QColor(self.theme_data.background_border_color))
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -189,7 +191,7 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
+            serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
             self.imageManager.del_image(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
@@ -221,21 +223,57 @@ class Renderer(object):
         if item.is_capable(ItemCapabilities.NoLineBreaks):
             line_end = u' '
         # Bibles
-        if item.is_capable(ItemCapabilities.AllowsWordSplit):
+        if item.is_capable(ItemCapabilities.CanWordSplit):
             pages = self._paginate_slide_words(text.split(u'\n'), line_end)
-        else:
-            # Clean up line endings.
-            lines = self._lines_split(text)
-            pages = self._paginate_slide(lines, line_end)
-            if len(pages) > 1:
-                # Songs and Custom
-                if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-                    # Do not forget the line breaks!
-                    slides = text.split(u'[---]')
-                    pages = []
-                    for slide in slides:
-                        lines = slide.strip(u'\n').split(u'\n')
+        # Songs and Custom
+        elif item.is_capable(ItemCapabilities.CanSoftBreak):
+            pages = []
+            if u'[---]' in text:
+                while True:
+                    slides = text.split(u'\n[---]\n', 2)
+                    # If there are (at least) two occurrences of [---] we use
+                    # the first two slides (and neglect the last for now).
+                    if len(slides) == 3:
+                        html_text = expand_tags(u'\n'.join(slides[:2]))
+                    # We check both slides to determine if the virtual break is
+                    # needed (there is only one virtual break).
+                    else:
+                        html_text = expand_tags(u'\n'.join(slides))
+                    html_text = html_text.replace(u'\n', u'<br>')
+                    if self._text_fits_on_slide(html_text):
+                        # The first two virtual slides fit (as a whole) on one
+                        # slide. Replace the first occurrence of [---].
+                        text = text.replace(u'\n[---]', u'', 1)
+                    else:
+                        # The first virtual slide fits, which means we have to
+                        # render the first virtual slide.
+                        text_contains_break = u'[---]' in text
+                        if text_contains_break:
+                            text_to_render, text = text.split(u'\n[---]\n', 1)
+                        else:
+                            text_to_render = text
+                            text = u''
+                        lines = text_to_render.strip(u'\n').split(u'\n')
+                        slides = self._paginate_slide(lines, line_end)
+                        if len(slides) > 1 and text:
+                            # Add all slides apart from the last one the list.
+                            pages.extend(slides[:-1])
+                            if  text_contains_break:
+                                text = slides[-1] + u'\n[---]\n' + text
+                            else:
+                                text = slides[-1] + u'\n'+ text
+                            text = text.replace(u'<br>', u'\n')
+                        else:
+                            pages.extend(slides)
+                    if u'[---]' not in text:
+                        lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
+                        break
+            else:
+                # Clean up line endings.
+                pages = self._paginate_slide(text.split(u'\n'), line_end)
+        else:
+            pages = self._paginate_slide(text.split(u'\n'), line_end)
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
@@ -341,7 +379,7 @@ class Renderer(object):
         separator = u'<br>'
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
-        if self._text_fits_on_slide(separator.join(html_lines)):
+        if not self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(formatted,
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
@@ -374,18 +412,18 @@ class Renderer(object):
             line = line.strip()
             html_line = expand_tags(line)
             # Text too long so go to next page.
-            if self._text_fits_on_slide(previous_html + html_line):
+            if not self._text_fits_on_slide(previous_html + html_line):
                 # Check if there was a verse before the current one and append
                 # it, when it fits on the page.
                 if previous_html:
-                    if not self._text_fits_on_slide(previous_html):
+                    if self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
                         # Now check if the current verse will fit, if it does
                         # not we have to start to process the verse word by
                         # word.
-                        if not self._text_fits_on_slide(html_line):
+                        if self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
@@ -402,6 +440,50 @@ class Renderer(object):
         formatted.append(previous_raw)
         log.debug(u'_paginate_slide_words - End')
         return formatted
+
+    def _get_start_tags(self, raw_text):
+        """
+        Tests the given text for not closed formatting tags and returns a tuple
+        consisting of three unicode strings::
+
+            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong>
+            <span style="-webkit-text-fill-color:red">')
+
+        The first unicode string is the text, with correct closing tags. The
+        second unicode string are OpenLP's opening formatting tags and the third
+        unicode string the html opening formatting tags.
+
+        ``raw_text``
+            The text to test. The text must **not** contain html tags, only
+            OpenLP formatting tags are allowed::
+
+                {st}{r}Text text text
+        """
+        raw_tags = []
+        html_tags = []
+        for tag in FormattingTags.get_html_tags():
+            if tag[u'start tag'] == u'{br}':
+                continue
+            if raw_text.count(tag[u'start tag']) != \
+                raw_text.count(tag[u'end tag']):
+                raw_tags.append(
+                    (raw_text.find(tag[u'start tag']), tag[u'start tag'],
+                    tag[u'end tag']))
+                html_tags.append(
+                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
+        # Sort the lists, so that the tags which were opened first on the first
+        # slide (the text we are checking) will be opened first on the next
+        # slide as well.
+        raw_tags.sort(key=lambda tag: tag[0])
+        html_tags.sort(key=lambda tag: tag[0])
+        # Create a list with closing tags for the raw_text.
+        end_tags = [tag[2] for tag in raw_tags]
+        end_tags.reverse()
+        # Remove the indexes.
+        raw_tags = [tag[1] for tag in raw_tags]
+        html_tags = [tag[1] for tag in html_tags]
+        return raw_text + u''.join(end_tags),  u''.join(raw_tags), \
+            u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
         raw_list, separator, line_end):
@@ -442,7 +524,7 @@ class Renderer(object):
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            if self._text_fits_on_slide(
+            if not self._text_fits_on_slide(
                 previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the
                 # new index and highest_index accordingly.
@@ -454,8 +536,10 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                formatted.append(previous_raw.rstrip(u'<br>') +
-                    separator.join(raw_list[:index + 1]))
+                text = previous_raw.rstrip(u'<br>') + \
+                    separator.join(raw_list[:index + 1])
+                text, raw_tags, html_tags = self._get_start_tags(text)
+                formatted.append(text)
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
@@ -465,18 +549,20 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            if not self._text_fits_on_slide(
-                separator.join(html_list[index + 1:]).strip()):
-                previous_html = separator.join(
+            if self._text_fits_on_slide(
+                    html_tags + separator.join(html_list[index + 1:]).strip()):
+                previous_html = html_tags + separator.join(
                     html_list[index + 1:]).strip() + line_end
-                previous_raw = separator.join(
+                previous_raw = raw_tags + separator.join(
                     raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The remaining elements do not fit, thus reset the indexes,
                 # create a new list and continue.
                 raw_list = raw_list[index + 1:]
+                raw_list[0] = raw_tags + raw_list[0]
                 html_list = html_list[index + 1:]
+                html_list[0] = html_tags + html_list[0]
                 smallest_index = 0
                 highest_index = len(html_list) - 1
                 index = int(highest_index / 2)
@@ -488,11 +574,11 @@ class Renderer(object):
         returned, otherwise ``False``.
 
         ``text``
-            The text to check. It can contain HTML tags.
+            The text to check. It may contain HTML tags.
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() > self.page_height
+        return self.web_frame.contentsSize().height() <= self.page_height
 
     def _words_split(self, line):
         """
@@ -501,12 +587,3 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
-
-    def _lines_split(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        text = text.replace(u'\n[---]', u'')
-        text = text.replace(u'[---]', u'')
-        return text.split(u'\n')

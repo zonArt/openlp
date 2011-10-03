@@ -44,6 +44,7 @@ BLANK_THEME_XML = \
    <name> </name>
    <background type="image">
       <filename></filename>
+      <borderColor>#000000</borderColor>
    </background>
    <background type="gradient">
       <startColor>#000000</startColor>
@@ -175,8 +176,9 @@ class HorizontalType(object):
     Left = 0
     Right = 1
     Center = 2
+    Justify = 3
 
-    Names = [u'left', u'right', u'center']
+    Names = [u'left', u'right', u'center', u'justify']
 
 
 class VerticalType(object):
@@ -282,7 +284,7 @@ class ThemeXML(object):
         # Create direction element
         self.child_element(background, u'direction', unicode(direction))
 
-    def add_background_image(self, filename):
+    def add_background_image(self, filename, borderColor):
         """
         Add a image background.
 
@@ -294,6 +296,8 @@ class ThemeXML(object):
         self.theme.appendChild(background)
         # Create Filename element
         self.child_element(background, u'filename', filename)
+        # Create endColor element
+        self.child_element(background, u'borderColor', unicode(borderColor))
 
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
@@ -597,7 +601,7 @@ class ThemeXML(object):
                 self.background_direction)
         else:
             filename = os.path.split(self.background_filename)[1]
-            self.add_background_image(filename)
+            self.add_background_image(filename, self.background_border_color)
         self.add_font(self.font_main_name,
             self.font_main_color,
             self.font_main_size,

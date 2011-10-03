@@ -25,11 +25,34 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp` module contains all the project produced OpenLP functionality
+The :mod:`upgrade` module provides a way for the database and schema that is the
+backend for the SongsUsage plugin
 """
 
-import core
-import plugins
+from sqlalchemy import Column, Table, types
+from migrate import changeset
 
-__all__ = [u'core', u'plugins']
+__version__ = 1
 
+def upgrade_setup(metadata):
+    """
+    Set up the latest revision all tables, with reflection, needed for the
+    upgrade process. If you want to drop a table, you need to remove it from
+    here, and add it to your upgrade function.
+    """
+    tables = {
+        u'songusage_data': Table(u'songusage_data', metadata, autoload=True)
+    }
+    return tables
+
+
+def upgrade_1(session, metadata, tables):
+    """
+    Version 1 upgrade.
+
+    This upgrade adds two new fields to the songusage database
+    """
+    Column(u'plugin_name', types.Unicode(20), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
+    Column(u'source', types.Unicode(10), default=u'') \
+        .create(table=tables[u'songusage_data'], populate_default=True)
