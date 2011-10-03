@@ -100,7 +100,7 @@ class RemoteTab(SettingsTab):
             'Stage view URL:'))
         self.twelveHourCheckBox.setText(
             translate('RemotePlugin.RemoteTab',
-            'Display stage time in 12hr format'))
+            'Display stage time in 12h format'))
 
     def setUrls(self):
         ipAddress = u'localhost'

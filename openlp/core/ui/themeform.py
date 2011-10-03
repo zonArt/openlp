@@ -247,8 +247,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def onCustom1ButtonClicked(self, number):
         """
-        Generate layout preview and display the form
+        Generate layout preview and display the form.
         """
+        self.updateTheme()
         width = self.thememanager.mainwindow.renderer.width
         height = self.thememanager.mainwindow.renderer.height
         pixmap = QtGui.QPixmap(width, height)

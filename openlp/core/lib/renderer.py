@@ -310,7 +310,7 @@ class Renderer(object):
 
     def get_main_rectangle(self, theme):
         """
-        Calculates the placement and size of the main rectangle
+        Calculates the placement and size of the main rectangle.
 
         ``theme``
             The theme information
@@ -323,7 +323,7 @@ class Renderer(object):
 
     def get_footer_rectangle(self, theme):
         """
-        Calculates the placement and size of the main rectangle
+        Calculates the placement and size of the footer rectangle.
 
         ``theme``
             The theme information
