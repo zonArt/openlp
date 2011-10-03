@@ -940,16 +940,15 @@ class SlideController(QtGui.QWidget):
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    frame = self.display.text(toDisplay)
+                    self.display.text(toDisplay)
                 else:
                     if start:
                         self.display.buildHtml(self.serviceItem, toDisplay)
-                        frame = self.display.preview()
                     else:
-                        frame = self.display.image(toDisplay)
+                        self.display.image(toDisplay)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
-                self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
+                self.slidePreview.setPixmap(self.display.preview())
             self.selectedRow = row
             self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
@@ -977,8 +976,7 @@ class SlideController(QtGui.QWidget):
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
-            self.slidePreview.setPixmap(
-                QtGui.QPixmap.fromImage(self.display.preview()))
+            self.slidePreview.setPixmap(self.display.preview())
 
     def grabMainDisplay(self):
         """
