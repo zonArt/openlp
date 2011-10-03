@@ -118,7 +118,7 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.horizontalHeader().setVisible(False)
         self.previewListWidget.setColumnWidth(0, self.controller.width())
         self.previewListWidget.isLive = self.isLive
-        self.previewListWidget.setObjectName(u'PreviewListWidget')
+        self.previewListWidget.setObjectName(u'previewListWidget')
         self.previewListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
         self.previewListWidget.setSelectionMode(
@@ -288,14 +288,14 @@ class SlideController(QtGui.QWidget):
             QtGui.QSizePolicy.Label))
         self.previewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.previewFrame.setFrameShadow(QtGui.QFrame.Sunken)
-        self.previewFrame.setObjectName(u'PreviewFrame')
+        self.previewFrame.setObjectName(u'previewFrame')
         self.grid = QtGui.QGridLayout(self.previewFrame)
         self.grid.setMargin(8)
         self.grid.setObjectName(u'grid')
         self.slideLayout = QtGui.QVBoxLayout()
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
-        self.slideLayout.setObjectName(u'SlideLayout')
+        self.slideLayout.setObjectName(u'slideLayout')
         if not self.isLive:
             self.mediaObject = Phonon.MediaObject(self)
             self.video = Phonon.VideoWidget()
@@ -319,7 +319,7 @@ class SlideController(QtGui.QWidget):
         self.slidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.slidePreview.setLineWidth(1)
         self.slidePreview.setScaledContents(True)
-        self.slidePreview.setObjectName(u'SlidePreview')
+        self.slidePreview.setObjectName(u'slidePreview')
         self.slideLayout.insertWidget(0, self.slidePreview)
         self.grid.addLayout(self.slideLayout, 0, 0, 1, 1)
         # Signals
@@ -369,9 +369,6 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
-            self.onTextRequest)
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
@@ -717,26 +714,6 @@ class SlideController(QtGui.QWidget):
         else:
             self.__checkUpdateSelectedSlide(slideno)
 
-    def onTextRequest(self):
-        """
-        Return the text for the current item in controller
-        """
-        data = []
-        if self.serviceItem:
-            for framenumber, frame in enumerate(self.serviceItem.get_frames()):
-                dataItem = {}
-                if self.serviceItem.is_text():
-                    dataItem[u'tag'] = unicode(frame[u'verseTag'])
-                    dataItem[u'text'] = unicode(frame[u'html'])
-                else:
-                    dataItem[u'tag'] = unicode(framenumber)
-                    dataItem[u'text'] = u''
-                dataItem[u'selected'] = \
-                    (self.previewListWidget.currentRow() == framenumber)
-                data.append(dataItem)
-        Receiver.send_message(u'slidecontroller_%s_text_response'
-            % self.typePrefix, data)
-
     # Screen event methods
     def onSlideSelectedIndex(self, message):
         """
@@ -928,7 +905,7 @@ class SlideController(QtGui.QWidget):
                         self.display.image(toDisplay)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
-                self.slidePreview.setPixmap(self.display.preview())
+                self.updatePreview()
             self.selectedRow = row
             self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,

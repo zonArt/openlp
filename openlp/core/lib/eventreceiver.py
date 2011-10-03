@@ -76,11 +76,6 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_{live|preview}_changed``
         Broadcasts that the slidecontroller has changed the current slide
 
-    ``slidecontroller_{live|preview}_text_request``
-        Request the text for the current item in the controller
-        Returns a slidecontroller_{live|preview}_text_response with an
-        array of dictionaries with the tag and verse text
-
     ``slidecontroller_{live|preview}_blank``
         Request that the output screen is blanked
 
