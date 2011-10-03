@@ -29,7 +29,7 @@ The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the Songs plugin
 """
 
-from sqlalchemy import Column, ForeignKey, Table, types
+from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
 from migrate import changeset
 from migrate.changeset.constraint import ForeignKeyConstraint

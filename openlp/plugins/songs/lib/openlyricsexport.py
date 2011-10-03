@@ -30,7 +30,6 @@ songs from the database to the OpenLyrics format.
 """
 import logging
 import os
-import re
 
 from lxml import etree
 

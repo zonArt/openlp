@@ -397,7 +397,7 @@ class SongMediaItem(MediaManagerItem):
                     try:
                         os.remove(media_file.file_name)
                     except:
-                        log.exception('Could not remove file: %s', audio)
+                        log.exception('Could not remove file: %s', media_file)
                 try:
                     save_path = os.path.join(AppLocation.get_section_data_path(
                         self.plugin.name), 'audio', str(item_id))
