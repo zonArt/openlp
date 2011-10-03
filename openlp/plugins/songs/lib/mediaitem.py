@@ -510,7 +510,8 @@ class SongMediaItem(MediaManagerItem):
         # Add the audio file to the service item.
         if len(song.media_files) > 0:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
-            service_item.background_audio = [m.file_name for m in song.media_files]
+            service_item.background_audio = \
+                [m.file_name for m in song.media_files]
         return True
 
     def serviceLoad(self, item):
