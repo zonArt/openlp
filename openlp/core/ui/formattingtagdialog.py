@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -27,20 +28,17 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
+from openlp.core.lib.ui import UiStrings
 
-class Ui_DisplayTagDialog(object):
+class Ui_FormattingTagDialog(object):
 
-    def setupUi(self, displayTagDialog):
-        displayTagDialog.setObjectName(u'displayTagDialog')
-        displayTagDialog.resize(725, 548)
-        self.widget = QtGui.QWidget(displayTagDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 701, 521))
-        self.widget.setObjectName(u'widget')
-        self.listdataGridLayout = QtGui.QGridLayout(self.widget)
-        self.listdataGridLayout.setMargin(0)
+    def setupUi(self, formattingTagDialog):
+        formattingTagDialog.setObjectName(u'formattingTagDialog')
+        formattingTagDialog.resize(725, 548)
+        self.listdataGridLayout = QtGui.QGridLayout(formattingTagDialog)
+        self.listdataGridLayout.setMargin(8)
         self.listdataGridLayout.setObjectName(u'listdataGridLayout')
-        self.tagTableWidget = QtGui.QTableWidget(self.widget)
+        self.tagTableWidget = QtGui.QTableWidget(formattingTagDialog)
         self.tagTableWidget.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.tagTableWidget.setEditTriggers(
@@ -54,6 +52,7 @@ class Ui_DisplayTagDialog(object):
         self.tagTableWidget.setObjectName(u'tagTableWidget')
         self.tagTableWidget.setColumnCount(4)
         self.tagTableWidget.setRowCount(0)
+        self.tagTableWidget.horizontalHeader().setStretchLastSection(True)
         item = QtGui.QTableWidgetItem()
         self.tagTableWidget.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -68,14 +67,11 @@ class Ui_DisplayTagDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.defaultPushButton = QtGui.QPushButton(self.widget)
-        self.defaultPushButton.setObjectName(u'defaultPushButton')
-        self.horizontalLayout.addWidget(self.defaultPushButton)
-        self.deletePushButton = QtGui.QPushButton(self.widget)
+        self.deletePushButton = QtGui.QPushButton(formattingTagDialog)
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.horizontalLayout.addWidget(self.deletePushButton)
         self.listdataGridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
-        self.editGroupBox = QtGui.QGroupBox(self.widget)
+        self.editGroupBox = QtGui.QGroupBox(formattingTagDialog)
         self.editGroupBox.setObjectName(u'editGroupBox')
         self.dataGridLayout = QtGui.QGridLayout(self.editGroupBox)
         self.dataGridLayout.setObjectName(u'dataGridLayout')
@@ -116,42 +112,38 @@ class Ui_DisplayTagDialog(object):
         self.savePushButton.setObjectName(u'savePushButton')
         self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(displayTagDialog)
-        closeButton = QtGui.QDialogButtonBox.Close
-        self.buttonBox.setObjectName('displayTagDialogButtonBox')
-        self.buttonBox.setStandardButtons(closeButton)
+        self.buttonBox = QtGui.QDialogButtonBox(formattingTagDialog)
+        self.buttonBox.setObjectName('formattingTagDialogButtonBox')
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
-        self.retranslateUi(displayTagDialog)
-        QtCore.QMetaObject.connectSlotsByName(displayTagDialog)
+        self.retranslateUi(formattingTagDialog)
+        QtCore.QMetaObject.connectSlotsByName(formattingTagDialog)
 
-    def retranslateUi(self, displayTagDialog):
-        displayTagDialog.setWindowTitle(translate('OpenLP.displayTagDialog',
-            'Configure Display Tags'))
+    def retranslateUi(self, formattingTagDialog):
+        formattingTagDialog.setWindowTitle(translate(
+            'OpenLP.FormattingTagDialog', 'Configure Formatting Tags'))
         self.editGroupBox.setTitle(
-            translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
+            translate('OpenLP.FormattingTagDialog', 'Edit Selection'))
         self.savePushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Save'))
+            translate('OpenLP.FormattingTagDialog', 'Save'))
         self.descriptionLabel.setText(
-            translate('OpenLP.DisplayTagDialog', 'Description'))
-        self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
+            translate('OpenLP.FormattingTagDialog', 'Description'))
+        self.tagLabel.setText(translate('OpenLP.FormattingTagDialog', 'Tag'))
         self.startTagLabel.setText(
-            translate('OpenLP.DisplayTagDialog', 'Start tag'))
+            translate('OpenLP.FormattingTagDialog', 'Start tag'))
         self.endTagLabel.setText(
-            translate('OpenLP.DisplayTagDialog', 'End tag'))
+            translate('OpenLP.FormattingTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings().Delete)
-        self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagDialog', 'Default'))
         self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
-            translate('OpenLP.DisplayTagDialog', 'Description'))
+            translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagDialog', 'Tag Id'))
+            translate('OpenLP.FormattingTagDialog', 'Tag Id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagDialog', 'Start HTML'))
+            translate('OpenLP.FormattingTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagDialog', 'End HTML'))
+            translate('OpenLP.FormattingTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
-        self.tagTableWidget.setColumnWidth(1, 40)
-        self.tagTableWidget.setColumnWidth(2, 240)
-        self.tagTableWidget.setColumnWidth(3, 240)
+        self.tagTableWidget.setColumnWidth(1, 80)
+        self.tagTableWidget.setColumnWidth(2, 330)

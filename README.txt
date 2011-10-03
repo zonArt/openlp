@@ -8,12 +8,7 @@ page on the web site::
     http://openlp.org/en/download.html
 
 If you're looking for how to contribute to OpenLP, then please look at the
-contribution page on the web site::
-
-    http://openlp.org/en/documentation/introduction/contributing.html
-
-If you've looked at that page, and are wanting to help develop, test or
-translate OpenLP, have a look at the OpenLP wiki::
+OpenLP wiki::
 
     http://wiki.openlp.org/
 

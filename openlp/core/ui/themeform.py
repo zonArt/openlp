@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -65,6 +66,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onGradientComboBoxCurrentIndexChanged)
         QtCore.QObject.connect(self.colorButton,
             QtCore.SIGNAL(u'clicked()'), self.onColorButtonClicked)
+        QtCore.QObject.connect(self.imageColorButton,
+            QtCore.SIGNAL(u'clicked()'), self.onImageColorButtonClicked)
         QtCore.QObject.connect(self.gradientStartButton,
             QtCore.SIGNAL(u'clicked()'), self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton,
@@ -201,7 +204,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Updates the lines on a page on the wizard
         """
         self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm',
-            '(%d lines per slide)')) % int(lines))
+            '(approximately %d lines per slide)')) % int(lines))
 
     def resizeEvent(self, event=None):
         """
@@ -329,6 +332,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                     self.theme.background_end_color)
             self.setField(u'background_type', QtCore.QVariant(1))
         else:
+            self.imageColorButton.setStyleSheet(u'background-color: %s' %
+                    self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
             self.setField(u'background_type', QtCore.QVariant(2))
         if self.theme.background_direction == \
@@ -463,6 +468,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self._colorButton(self.theme.background_color)
         self.setBackgroundPageValues()
 
+    def onImageColorButtonClicked(self):
+        """
+        Background / Gradient 1 Color button pushed.
+        """
+        self.theme.background_border_color = \
+            self._colorButton(self.theme.background_border_color)
+        self.setBackgroundPageValues()
+
     def onGradientStartButtonClicked(self):
         """
         Gradient 2 Color button pushed.
@@ -563,7 +576,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def accept(self):
         """
-        Lets save the them as Finish has been pressed
+        Lets save the theme as Finish has been pressed
         """
         # Save the theme name
         self.theme.theme_name = unicode(self.field(u'name').toString())

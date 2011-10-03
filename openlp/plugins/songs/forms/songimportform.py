@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -296,7 +297,7 @@ class SongImportForm(OpenLPWizard):
         self.songsOfFellowshipDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The Songs of '
             'Fellowship importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.genericAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.genericRemoveButton.setText(
@@ -304,7 +305,7 @@ class SongImportForm(OpenLPWizard):
         self.genericDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
-            'find OpenOffice.org on your computer.'))
+            'access OpenOffice or LibreOffice.'))
         self.easiSlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.easiSlidesBrowseButton.setText(UiStrings().Browse)
@@ -341,6 +342,13 @@ class SongImportForm(OpenLPWizard):
             self.openLP2FilenameLabel.minimumSizeHint().width())
         self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
+
+    def customPageChanged(self, pageId):
+        """
+        Called when changing to a page other than the progress page
+        """
+        if self.page(pageId) == self.sourcePage:
+            self.onCurrentIndexChanged(self.formatStack.currentIndex())
 
     def validateCurrentPage(self):
         """
@@ -678,7 +686,7 @@ class SongImportForm(OpenLPWizard):
     def performWizard(self):
         """
         Perform the actual import. This method pulls in the correct importer
-        class, and then runs the ``do_import`` method of the importer to do
+        class, and then runs the ``doImport`` method of the importer to do
         the actual importing.
         """
         source_format = self.formatComboBox.currentIndex()
@@ -691,7 +699,8 @@ class SongImportForm(OpenLPWizard):
         elif source_format == SongFormat.OpenLP1:
             # Import an openlp.org database
             importer = self.plugin.importSongs(SongFormat.OpenLP1,
-                filename=unicode(self.openLP1FilenameEdit.text())
+                filename=unicode(self.openLP1FilenameEdit.text()),
+                plugin=self.plugin
             )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
@@ -750,8 +759,8 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        importer.do_import()
-        if importer.error_log:
+        importer.doImport()
+        if importer.errorLog:
             self.progressLabel.setText(translate(
                 'SongsPlugin.SongImportForm', 'Your song import failed.'))
         else:
@@ -771,9 +780,9 @@ class SongImportForm(OpenLPWizard):
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
         if not filename:
             return
-        file = codecs.open(filename, u'w', u'utf-8')
-        file.write(self.errorReportTextEdit.toPlainText())
-        file.close()
+        report_file = codecs.open(filename, u'w', u'utf-8')
+        report_file.write(self.errorReportTextEdit.toPlainText())
+        report_file.close()
 
     def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
         single_select=False):

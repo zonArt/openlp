@@ -93,8 +93,12 @@ script_name = "build"
 def build_application(settings, app_name_lower, app_dir):
     logging.info('[%s] now building the app with pyinstaller at "%s"...',
         script_name, settings['pyinstaller_basedir'])
-    result = os.system('python %s/pyinstaller.py openlp.spec' \
-              % settings['pyinstaller_basedir'])
+    full_python_dir = os.path.join('/opt/local/Library/Frameworks',
+        'Python.framework/Versions/2.6/Resources/',
+        'Python.app/Contents/MacOS/Python')
+    result = os.system('arch -i386 %s %s/pyinstaller.py openlp.spec' \
+              % ( full_python_dir,
+                settings['pyinstaller_basedir']) )
     if (result != 0):
         logging.error('[%s] The pyinstaller build reported an error, cannot \
             continue!', script_name)
@@ -219,10 +223,10 @@ def create_dmg(settings):
         sys.exit(1)
 
     logging.info('[%s] copying the background image...', script_name)
-    # os.mkdir(volume_basedir + '/.background')
+    os.mkdir(volume_basedir + '/.background')
     result = os.system('CpMac %s %s'
         % (settings['installer_backgroundimage_file'],
-           volume_basedir + '/.installer-background.png'))
+           volume_basedir + '/.background/installer-background.png'))
     if (result != 0):
         logging.error('[%s] could not copy the background image, dmg creation\
             failed!', script_name)

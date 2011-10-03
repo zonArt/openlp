@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -38,7 +39,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', plugin_helpers,
+        Plugin.__init__(self, u'media', plugin_helpers,
             MediaMediaItem, MediaTab)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
@@ -111,14 +112,14 @@ class MediaPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('MediaPlugin', 'Load a new Media.'),
+            u'load': translate('MediaPlugin', 'Load new media.'),
             u'import': u'',
-            u'new': translate('MediaPlugin', 'Add a new Media.'),
-            u'edit': translate('MediaPlugin', 'Edit the selected Media.'),
-            u'delete': translate('MediaPlugin', 'Delete the selected Media.'),
-            u'preview': translate('MediaPlugin', 'Preview the selected Media.'),
-            u'live': translate('MediaPlugin', 'Send the selected Media live.'),
+            u'new': translate('MediaPlugin', 'Add new media.'),
+            u'edit': translate('MediaPlugin', 'Edit the selected media.'),
+            u'delete': translate('MediaPlugin', 'Delete the selected media.'),
+            u'preview': translate('MediaPlugin', 'Preview the selected media.'),
+            u'live': translate('MediaPlugin', 'Send the selected media live.'),
             u'service': translate('MediaPlugin',
-                'Add the selected Media to the service.')
+                'Add the selected media to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
