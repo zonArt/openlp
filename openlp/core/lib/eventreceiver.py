@@ -51,9 +51,6 @@ class EventReceiver(QtCore.QObject):
     ``config_screen_changed``
         The display monitor has been changed
 
-    ``slidecontroller_{live|preview}_first``
-        Moves to the first slide
-
     ``slidecontroller_{live|preview}_next``
         Moves to the next slide
 
@@ -65,9 +62,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_previous_noloop``
         Moves to the previous slide, without auto advance
-
-    ``slidecontroller_{live|preview}_last``
-        Moves to the last slide
 
     ``slidecontroller_{live|preview}_set``
         Moves to a specific slide, by index

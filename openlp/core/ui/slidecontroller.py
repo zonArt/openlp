@@ -352,17 +352,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.typePrefix),
             self.onStopLoop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_first' % self.typePrefix),
-            self.onSlideSelectedFirst)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_next' % self.typePrefix),
             self.onSlideSelectedNext)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.typePrefix),
             self.onSlideSelectedPrevious)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_last' % self.typePrefix),
-            self.onSlideSelectedLast)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_change' % self.typePrefix),
             self.onSlideChange)
@@ -744,20 +738,6 @@ class SlideController(QtGui.QWidget):
             % self.typePrefix, data)
 
     # Screen event methods
-    def onSlideSelectedFirst(self):
-        """
-        Go to the first slide.
-        """
-        if not self.serviceItem:
-            return
-        if self.serviceItem.is_command():
-            Receiver.send_message(u'%s_first' % self.serviceItem.name.lower(),
-                [self.serviceItem, self.isLive])
-            self.updatePreview()
-        else:
-            self.previewListWidget.selectRow(0)
-            self.slideSelected()
-
     def onSlideSelectedIndex(self, message):
         """
         Go to the requested slide
@@ -1038,21 +1018,6 @@ class SlideController(QtGui.QWidget):
             self.previewListWidget.scrollToItem(
                 self.previewListWidget.item(row + 1, 0))
         self.previewListWidget.selectRow(row)
-
-    def onSlideSelectedLast(self):
-        """
-        Go to the last slide.
-        """
-        if not self.serviceItem:
-            return
-        Receiver.send_message(u'%s_last' % self.serviceItem.name.lower(),
-            [self.serviceItem, self.isLive])
-        if self.serviceItem.is_command():
-            self.updatePreview()
-        else:
-            self.previewListWidget.selectRow(
-                        self.previewListWidget.rowCount() - 1)
-            self.slideSelected()
 
     def onToggleLoop(self):
         """
