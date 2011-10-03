@@ -31,7 +31,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin, StringContent, PluginStatus
+from openlp.core.lib import Plugin, PluginStatus
 
 log = logging.getLogger(__name__)
 

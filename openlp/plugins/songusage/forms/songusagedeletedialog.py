@@ -34,26 +34,33 @@ class Ui_SongUsageDeleteDialog(object):
     def setupUi(self, songUsageDeleteDialog):
         songUsageDeleteDialog.setObjectName(u'songUsageDeleteDialog')
         songUsageDeleteDialog.resize(291, 243)
-        self.layoutWidget = QtGui.QWidget(songUsageDeleteDialog)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 10, 247, 181))
-        self.layoutWidget.setObjectName(u'layoutWidget')
-        self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget)
+        self.verticalLayout = QtGui.QVBoxLayout(songUsageDeleteDialog)
+        self.verticalLayout.setSpacing(8)
+        self.verticalLayout.setContentsMargins(8, 8, 8, 8)
         self.verticalLayout.setObjectName(u'verticalLayout')
-        self.deleteCalendar = QtGui.QCalendarWidget(self.layoutWidget)
+        self.deleteLabel = QtGui.QLabel(songUsageDeleteDialog)
+        self.deleteLabel.setObjectName(u'deleteLabel')
+        self.verticalLayout.addWidget(self.deleteLabel)
+        self.deleteCalendar = QtGui.QCalendarWidget(songUsageDeleteDialog)
         self.deleteCalendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
         self.deleteCalendar.setGridVisible(True)
         self.deleteCalendar.setVerticalHeaderFormat(
             QtGui.QCalendarWidget.NoVerticalHeader)
         self.deleteCalendar.setObjectName(u'deleteCalendar')
         self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = create_accept_reject_button_box(
-            songUsageDeleteDialog, True)
-        self.buttonBox.setGeometry(QtCore.QRect(30, 210, 245, 25))
+        self.buttonBox = QtGui.QDialogButtonBox(songUsageDeleteDialog)
+        self.buttonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
         self.buttonBox.setObjectName(u'buttonBox')
+        self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDeleteDialog)
-        QtCore.QMetaObject.connectSlotsByName(songUsageDeleteDialog)
 
     def retranslateUi(self, songUsageDeleteDialog):
         songUsageDeleteDialog.setWindowTitle(
             translate('SongUsagePlugin.SongUsageDeleteForm',
-            'Delete Song Usage Data'))
+                'Delete Song Usage Data'))
+        self.deleteLabel.setText(
+            translate('SongUsagePlugin.SongUsageDeleteForm',
+                'Select the date up to which the song usage data should be '
+                'deleted. All data recorded before this date will be '
+                'permanently deleted.'))

@@ -105,6 +105,11 @@ class Ui_ThemeWizard(object):
         self.imageLayout = QtGui.QFormLayout(self.imageWidget)
         self.imageLayout.setMargin(0)
         self.imageLayout.setObjectName(u'ImageLayout')
+        self.imageColorLabel = QtGui.QLabel(self.colorWidget)
+        self.imageColorLabel.setObjectName(u'ImageColorLabel')
+        self.imageColorButton = QtGui.QPushButton(self.colorWidget)
+        self.imageColorButton.setObjectName(u'ImageColorButton')
+        self.imageLayout.addRow(self.imageColorLabel, self.imageColorButton)
         self.imageLabel = QtGui.QLabel(self.imageWidget)
         self.imageLabel.setObjectName(u'ImageLabel')
         self.imageFileLayout = QtGui.QHBoxLayout()
@@ -118,7 +123,7 @@ class Ui_ThemeWizard(object):
             build_icon(u':/general/general_open.png'))
         self.imageFileLayout.addWidget(self.imageBrowseButton)
         self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
-        self.imageLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.imageLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.imageWidget)
         self.backgroundLayout.addLayout(self.backgroundStack)
         themeWizard.addPage(self.backgroundPage)
@@ -241,7 +246,7 @@ class Ui_ThemeWizard(object):
         self.horizontalLabel = QtGui.QLabel(self.alignmentPage)
         self.horizontalLabel.setObjectName(u'HorizontalLabel')
         self.horizontalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.horizontalComboBox.addItems([u'', u'', u''])
+        self.horizontalComboBox.addItems([u'', u'', u'', u''])
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
@@ -443,6 +448,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
+        self.imageColorLabel.setText(
+            translate(u'OpenLP.ThemeWizard', 'Background color:'))
         self.imageLabel.setText(u'%s:' % UiStrings().Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
@@ -488,6 +495,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Right'))
         self.horizontalComboBox.setItemText(HorizontalType.Center,
             translate('OpenLP.ThemeWizard', 'Center'))
+        self.horizontalComboBox.setItemText(HorizontalType.Justify,
+            translate('OpenLP.ThemeWizard', 'Justify'))
         self.transitionsLabel.setText(
             translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(

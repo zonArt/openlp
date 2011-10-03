@@ -184,10 +184,11 @@ class VerseType(object):
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_translated_tag(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_tag(verse_name)
+        elif len(verse_name) == 1:
+            if verse_index is None:
+                verse_index = VerseType.from_translated_tag(verse_name)
+            if verse_index is None:
+                verse_index = VerseType.from_tag(verse_name)
         return verse_index
 
 def retrieve_windows_encoding(recommendation=None):
@@ -267,6 +268,12 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
+    if isinstance(song.title, buffer):
+        song.title = unicode(song.title)
+    if isinstance(song.alternate_title, buffer):
+        song.alternate_title = unicode(song.alternate_title)
+    if isinstance(song.lyrics, buffer):
+        song.lyrics = unicode(song.lyrics)
     song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''

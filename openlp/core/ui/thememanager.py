@@ -36,10 +36,11 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     Receiver, SettingsManager, translate, check_item_selected, \
-    check_directory_exists
+    check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    context_menu_action, context_menu_separator
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -104,25 +105,29 @@ class ThemeManager(QtGui.QWidget):
             self.contextMenu)
         # build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', '&Edit Theme'))
-        self.editAction.setIcon(build_icon(u':/themes/theme_edit.png'))
-        self.copyAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', '&Copy Theme'))
-        self.copyAction.setIcon(build_icon(u':/themes/theme_edit.png'))
-        self.renameAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', '&Rename Theme'))
-        self.renameAction.setIcon(build_icon(u':/themes/theme_edit.png'))
-        self.deleteAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', '&Delete Theme'))
-        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
-        self.separator = self.menu.addSeparator()
-        self.globalAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', 'Set As &Global Default'))
-        self.globalAction.setIcon(build_icon(u':/general/general_export.png'))
-        self.exportAction = self.menu.addAction(
-            translate('OpenLP.ThemeManager', '&Export Theme'))
-        self.exportAction.setIcon(build_icon(u':/general/general_export.png'))
+        self.editAction = context_menu_action(
+            self.menu, u':/themes/theme_edit.png',
+            translate('OpenLP.ThemeManager', '&Edit Theme'), self.onEditTheme)
+        self.copyAction = context_menu_action(
+            self.menu, u':/themes/theme_edit.png',
+            translate('OpenLP.ThemeManager', '&Copy Theme'), self.onCopyTheme)
+        self.renameAction = context_menu_action(
+            self.menu, u':/themes/theme_edit.png',
+            translate('OpenLP.ThemeManager', '&Rename Theme'),
+            self.onRenameTheme)
+        self.deleteAction = context_menu_action(
+            self.menu, u':/general/general_delete.png',
+            translate('OpenLP.ThemeManager', '&Delete Theme'),
+            self.onDeleteTheme)
+        context_menu_separator(self.menu)
+        self.globalAction = context_menu_action(
+            self.menu, u':/general/general_export.png',
+            translate('OpenLP.ThemeManager', 'Set As &Global Default'),
+            self.changeGlobalFromScreen)
+        self.exportAction = context_menu_action(
+            self.menu, u':/general/general_export.png',
+            translate('OpenLP.ThemeManager', '&Export Theme'),
+            self.onExportTheme)
         # Signals
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -198,19 +203,7 @@ class ThemeManager(QtGui.QWidget):
             self.deleteAction.setVisible(True)
             self.renameAction.setVisible(True)
             self.globalAction.setVisible(True)
-        action = self.menu.exec_(self.themeListWidget.mapToGlobal(point))
-        if action == self.editAction:
-            self.onEditTheme()
-        if action == self.copyAction:
-            self.onCopyTheme()
-        if action == self.renameAction:
-            self.onRenameTheme()
-        if action == self.deleteAction:
-            self.onDeleteTheme()
-        if action == self.globalAction:
-            self.changeGlobalFromScreen()
-        if action == self.exportAction:
-            self.onExportTheme()
+        self.menu.exec_(self.themeListWidget.mapToGlobal(point))
 
     def changeGlobalFromTab(self, themeName):
         """
@@ -299,7 +292,9 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(
+            unicode(translate('OpenLP.ThemeManager',
+            'Copy of %s','Copy of <theme name>')) % oldThemeName)
         if self.fileRenameForm.exec_(True):
             newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
             if self.checkIfThemeExists(newThemeName):
@@ -364,7 +359,7 @@ class ThemeManager(QtGui.QWidget):
             The theme to delete.
         """
         self.themelist.remove(theme)
-        thumb = theme + u'.png'
+        thumb = u'%s.png' % theme
         delete_file(os.path.join(self.path, thumb))
         delete_file(os.path.join(self.thumbPath, thumb))
         try:
@@ -478,15 +473,12 @@ class ThemeManager(QtGui.QWidget):
                     name = textName
                 thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
                 item_name = QtGui.QListWidgetItem(name)
-                if os.path.exists(thumb):
+                if validate_thumb(theme, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = build_icon(theme)
-                    pixmap = icon.pixmap(QtCore.QSize(88, 50))
-                    pixmap.save(thumb, u'png')
+                    icon = create_thumb(theme, thumb)
                 item_name.setIcon(icon)
-                item_name.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(textName))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(textName))
                 self.themeListWidget.addItem(item_name)
                 self.themelist.append(textName)
         self._pushThemes()
@@ -615,6 +607,11 @@ class ThemeManager(QtGui.QWidget):
         and to trigger the reload of the theme list
         """
         self._writeTheme(theme, imageFrom, imageTo)
+        if theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
+            self.mainwindow.imageManager.update_image(theme.theme_name,
+                u'theme', QtGui.QColor(theme.background_border_color))
+            self.mainwindow.imageManager.process_updates()
         self.loadThemes()
 
     def _writeTheme(self, theme, imageFrom, imageTo):
@@ -658,9 +655,7 @@ class ThemeManager(QtGui.QWidget):
             os.unlink(samplepathname)
         frame.save(samplepathname, u'png')
         thumb = os.path.join(self.thumbPath, u'%s.png' % name)
-        icon = build_icon(frame)
-        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-        pixmap.save(thumb, u'png')
+        create_thumb(samplepathname, thumb, False)
         log.debug(u'Theme image written to %s', samplepathname)
 
     def updatePreviewImages(self):

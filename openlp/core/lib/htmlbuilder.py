@@ -35,6 +35,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
@@ -56,44 +57,44 @@ body {
     height: %spx;
 }
 #black {
-    z-index:8;
+    z-index: 8;
     background-color: black;
     display: none;
 }
 #bgimage {
-    z-index:1;
+    z-index: 1;
 }
 #image {
-    z-index:2;
+    z-index: 2;
 }
 #video1 {
-    z-index:3;
+    z-index: 3;
 }
 #video2 {
-    z-index:3;
+    z-index: 3;
 }
 #alert {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index:10;
+    z-index: 10;
     %s
 }
 #footer {
     position: absolute;
-    z-index:6;
+    z-index: 6;
     %s
 }
 /* lyric css */
 %s
 sup {
-    font-size:0.6em;
-    vertical-align:top;
-    position:relative;
-    top:-0.3em;
+    font-size: 0.6em;
+    vertical-align: top;
+    position: relative;
+    top: -0.3em;
 }
 </style>
-<script language="javascript">
+<script>
     var timer = null;
     var video_timer = null;
     var current_video = '1';
@@ -317,10 +318,10 @@ sup {
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
+<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
-    """
+"""
 
 def build_html(item, screen, alert, islive, background, image=None):
     """
@@ -403,7 +404,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string( \
@@ -411,7 +412,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
@@ -419,20 +420,21 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
                 (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s))' % \
+                    u'right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_start_color, theme.background_end_color)
+                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
+                    width, theme.background_start_color,
+                    theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -446,15 +448,15 @@ def build_lyrics_css(item, webkitvers):
         The version of qtwebkit we're using
 
     """
-    style = """
+    style = u"""
 .lyricstable {
-    z-index:5;
+    z-index: 5;
     position: absolute;
     display: table;
     %s
 }
 .lyricscell {
-    display:table-cell;
+    display: table-cell;
     word-wrap: break-word;
     %s
 }
@@ -556,11 +558,15 @@ def build_lyrics_format_css(theme, width, height):
         left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
-    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
+    justify = u'white-space:pre-wrap;'
+    # fix tag incompatibilities
+    if theme.display_horizontal_align == HorizontalType.Justify:
+        justify = u''
+    lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
-        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_size,
+        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
+        (justify, align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
@@ -608,7 +614,7 @@ def build_footer_css(item, height):
     ``item``
         Service Item to be processed.
     """
-    style = """
+    style = u"""
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -616,7 +622,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -634,7 +640,7 @@ def build_alert_css(alertTab, width):
     ``alertTab``
         Details from the Alert tab for fonts etc
     """
-    style = """
+    style = u"""
     width: %spx;
     vertical-align: %s;
     font-family: %s;
