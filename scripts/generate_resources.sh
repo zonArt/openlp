@@ -49,7 +49,7 @@ cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' \
     > openlp/core/resources.py
 
 # Patch resources.py to OpenLP coding style
-#patch --posix -s openlp/core/resources.py scripts/resources.patch
+patch --posix -s openlp/core/resources.py scripts/resources.patch
 
 # Remove temporary file
 rm openlp/core/resources.py.new
