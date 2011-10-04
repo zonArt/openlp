@@ -328,8 +328,8 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
+#            QtCore.QObject.connect(Receiver.get_receiver(),
+#                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
@@ -893,7 +893,6 @@ class SlideController(QtGui.QWidget):
                     Receiver.send_message(
                         u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
-                self.updatePreview()
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
@@ -905,7 +904,7 @@ class SlideController(QtGui.QWidget):
                         self.display.image(toDisplay)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
-                self.updatePreview()
+            self.updatePreview()
             self.selectedRow = row
             self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
@@ -926,6 +925,7 @@ class SlideController(QtGui.QWidget):
         using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
+        print u'updatePreview'
         if not self.screens.current[u'primary'] and self.serviceItem and \
             self.serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change
