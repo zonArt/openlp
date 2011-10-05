@@ -538,7 +538,7 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Use default location'))
         themeWizard.setOption(QtGui.QWizard.HaveCustomButton1, False)
         themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
-            translate('OpenLP.ThemeWizard', 'Preview'))
+            translate('OpenLP.ThemeWizard', 'Layout Preview'))
         self.previewPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Save and Preview'))
         self.previewPage.setSubTitle(

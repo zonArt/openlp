@@ -50,6 +50,12 @@ class Ui_ThemeLayoutDialog(object):
         self.themeDisplayLabel.setObjectName(u'ThemeDisplayLabel')
         self.previewAreaLayout.addWidget(self.themeDisplayLabel)
         self.previewLayout.addWidget(self.previewArea)
+        self.mainColourLabel = QtGui.QLabel(self.previewArea)
+        self.mainColourLabel.setObjectName(u'MainColourLabel')
+        self.previewLayout.addWidget(self.mainColourLabel)
+        self.footerColourLabel = QtGui.QLabel(self.previewArea)
+        self.footerColourLabel.setObjectName(u'FooterColourLabel')
+        self.previewLayout.addWidget(self.footerColourLabel)
         self.buttonBox = QtGui.QDialogButtonBox(themeLayoutDialog)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'ButtonBox')
@@ -62,4 +68,8 @@ class Ui_ThemeLayoutDialog(object):
     def retranslateUi(self, themeLayoutDialog):
         themeLayoutDialog.setWindowTitle(
             translate('OpenLP.StartTimeForm', 'Theme Layout'))
+        self.mainColourLabel.setText(translate('OpenLP.StartTimeForm',
+            'The main layout area is shown by a blue box.'))
+        self.footerColourLabel.setText(translate('OpenLP.StartTimeForm',
+            'The footer layout area is shown by a red box.'))
 
