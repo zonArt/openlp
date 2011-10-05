@@ -232,7 +232,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
-            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+            self.previewBoxLabel.setPixmap(frame)
             self.displayAspectRatio = float(frame.width()) / frame.height()
             self.resizeEvent()
 
