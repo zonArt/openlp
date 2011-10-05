@@ -121,11 +121,11 @@ window.OpenLP = {
       $("#nextslide").html(text);
     }
   },
-  updateClock: function() {
+  updateClock: function(data) {
     var div = $("#clock");
     var t = new Date();
     var h = t.getHours();
-    if (h > 12)
+    if (data.results.twelve && h > 12)
       h = h - 12;
     var m = t.getMinutes();
     if (m < 10)
@@ -136,7 +136,7 @@ window.OpenLP = {
     $.getJSON(
       "/api/poll",
       function (data, status) {
-        OpenLP.updateClock();
+        OpenLP.updateClock(data);
         if (OpenLP.currentItem != data.results.item) {
           OpenLP.currentItem = data.results.item;
           OpenLP.loadSlides();

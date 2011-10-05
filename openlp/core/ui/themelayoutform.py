@@ -24,58 +24,32 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
-from PyQt4 import QtGui
+
+from PyQt4 import QtGui, QtCore
+
+from themelayoutdialog import Ui_ThemeLayoutDialog
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
-class HideMode(object):
+class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
-
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
-
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
-
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
+    The exception dialog
     """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
 
-from firsttimeform import FirstTimeForm
-from firsttimelanguageform import FirstTimeLanguageForm
-from themelayoutform import ThemeLayoutForm
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from screen import ScreenList
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from formattingtagform import FormattingTagForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+    def exec_(self, image):
+        """
+        Run the Dialog with correct heading.
+        """
+        pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
+        self.themeDisplayLabel.setPixmap(image)
+        displayAspectRatio = float(image.width()) / image.height()
+        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio )
+        return QtGui.QDialog.exec_(self)
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
+    def accept(self):
+        return QtGui.QDialog.accept(self)
+
