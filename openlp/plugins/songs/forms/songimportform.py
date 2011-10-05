@@ -241,7 +241,8 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings().OLPV2)
         self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings().OLPV1)
         self.formatComboBox.setItemText(SongFormat.OpenLyrics,
-            translate('SongsPlugin.ImportWizardForm', WizardStrings.OL))
+            translate('SongsPlugin.ImportWizardForm', 
+            'OpenLyrics or OpenLP 2.0 Exported Song'))
         self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(
             SongFormat.WordsOfWorship, WizardStrings.WoW)
