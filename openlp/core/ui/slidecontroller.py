@@ -328,8 +328,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
-#            QtCore.QObject.connect(Receiver.get_receiver(),
-#                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
@@ -925,7 +923,6 @@ class SlideController(QtGui.QWidget):
         using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
-        print u'updatePreview'
         if not self.screens.current[u'primary'] and self.serviceItem and \
             self.serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change
