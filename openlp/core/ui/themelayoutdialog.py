@@ -69,7 +69,7 @@ class Ui_ThemeLayoutDialog(object):
         themeLayoutDialog.setWindowTitle(
             translate('OpenLP.StartTimeForm', 'Theme Layout'))
         self.mainColourLabel.setText(translate('OpenLP.StartTimeForm',
-            'The main layout area is shown by a blue box.'))
+            'The blue box shows the main area.'))
         self.footerColourLabel.setText(translate('OpenLP.StartTimeForm',
-            'The footer layout area is shown by a red box.'))
+            'The red box shows the footer.'))
 
