@@ -87,7 +87,7 @@ Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; Valu
 Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
 
 [Code]
-function IsModuleLoaded(modulename: String ):  Boolean;
+function IsModuleLoaded(modulename: AnsiString ):  Boolean;
 external 'IsModuleLoaded@files:psvince.dll stdcall';
 
 function GetUninstallString(): String;
