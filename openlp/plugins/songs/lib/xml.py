@@ -448,7 +448,7 @@ class OpenLyrics(object):
             text = text.replace(u'{/%s}' % tag, u'</tag>')
         # Replace \n with <br/>.
         text = text.replace(u'\n', u'<br/>')
-        element = etree.XML(u'<lines>' + text + u'</lines>')
+        element = etree.XML(u'<lines>%s</lines>' % text)
         verse_element.append(element)
         return element
 
