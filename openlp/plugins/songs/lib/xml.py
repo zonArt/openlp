@@ -257,8 +257,9 @@ class OpenLyrics(object):
 
     """
     IMPLEMENTED_VERSION = u'0.8'
-    START_TAGS_REGEX = re.compile(r'\{(\w+)\}')  # {abc} -> abc
-    END_TAGS_REGEX = re.compile(r'\{\/(\w+)\}')  # {/abc} -> abc
+    START_TAGS_REGEX = re.compile(r'\{(\w+)\}')
+    END_TAGS_REGEX = re.compile(r'\{\/(\w+)\}')
+    VERSE_NUMBER_REGEX = re.compile(u'[a-zA-Z]*')
 
     def __init__(self, manager):
         self.manager = manager
@@ -692,7 +693,7 @@ class OpenLyrics(object):
                 verse_tag = verse_def[0]
             else:
                 verse_tag = VerseType.Tags[VerseType.Other]
-            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_def)
+            verse_number = OpenLyrics.VERSE_NUMBER_REGEX.sub(u'', verse_def)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:
