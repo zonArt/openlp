@@ -271,9 +271,6 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -287,10 +284,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.displayImage(None)
         # clear the cache
         self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            self._parent.updatePreview()
-            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -306,9 +299,6 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
         self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -388,9 +378,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def videoState(self, newState, oldState):
         """
