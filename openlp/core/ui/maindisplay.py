@@ -51,6 +51,8 @@ class MainDisplay(QtGui.QGraphicsView):
     def __init__(self, parent, imageManager, live):
         if live:
             QtGui.QGraphicsView.__init__(self)
+            # Do not overwrite the parent() method.
+            self._parent = parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
@@ -240,6 +242,9 @@ class MainDisplay(QtGui.QGraphicsView):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
             self.image(name)
+            # Update the preview frame.
+            if self.isLive:
+                self._parent.updatePreview()
             return True
         return False
 
@@ -248,8 +253,8 @@ class MainDisplay(QtGui.QGraphicsView):
         Add an image as the background. The image has already been added
         to the cache.
 
-        `Image`
-            The name of the image to be displayed
+        ``Image``
+            The name of the image to be displayed.
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
@@ -272,8 +277,8 @@ class MainDisplay(QtGui.QGraphicsView):
 
     def resetImage(self):
         """
-        Reset the backgound image to the service item image.
-        Used after Image plugin has changed the background
+        Reset the backgound image to the service item image. Used after the
+        image plugin has changed the background.
         """
         log.debug(u'resetImage')
         if hasattr(self, u'serviceItem'):
@@ -284,6 +289,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.override = {}
         # Update the preview frame.
         if self.isLive:
+            self._parent.updatePreview()
             Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
