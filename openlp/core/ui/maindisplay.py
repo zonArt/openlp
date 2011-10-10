@@ -186,7 +186,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         Add the slide text from slideController
 
-        `slide`
+        ``slide``
             The slide text to be displayed
         """
         log.debug(u'text to display')
@@ -199,20 +199,25 @@ class MainDisplay(QtGui.QGraphicsView):
 
     def alert(self, text):
         """
-        Add the alert text
+        Add the alert text. If the alert was not displayed, because the screen
+        is not visible ``False`` is returned, otherwise ``True``.
 
-        `slide`
-            The slide text to be displayed
+        ``slide``
+            The slide text to be displayed.
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() or not \
-            self.isVisible() or self.videoWidget.isVisible():
+        if not self.isVisible():
+            return False
+        if self.height() != self.screen[u'size'].height() or \
+            self.videoWidget.isVisible():
             shrink = True
+            js = u'show_alert("%s", "%s")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
+                u'top')
         else:
             shrink = False
-        js = u'show_alert("%s", "%s")' % (
-            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
-            u'top' if shrink else u'')
+            js = u'show_alert("%s", "")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if self.phononActive:
@@ -232,10 +237,11 @@ class MainDisplay(QtGui.QGraphicsView):
             else:
                 shrinkItem.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
+        return True
 
     def directImage(self, name, path, background):
         """
-        API for replacement backgrounds so Images are added directly to cache
+        API for replacement backgrounds so Images are added directly to cache.
         """
         self.imageManager.add_image(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
