@@ -65,8 +65,11 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: psvince.dll; Flags: dontcopy
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+; DLL used to check if the target program is running at install time
+Source: psvince.dll; flags: dontcopy
+; psvince is installed in {app} folder, so it will be loaded at 
+; uninstall time to check if the target program is running
+Source: psvince.dll; DestDir: {app}
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
@@ -87,8 +90,13 @@ Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; Valu
 Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
 
 [Code]
-function IsModuleLoaded(modulename: AnsiString ):  Boolean;
-external 'IsModuleLoaded@files:psvince.dll stdcall';
+// Function to call psvince.dll at install time
+function IsModuleLoadedInstall(modulename: AnsiString ):  Boolean;
+external 'IsModuleLoaded@files:psvince.dll stdcall setuponly';
+
+// Function to call psvince.dll at uninstall time
+function IsModuleLoadedUninstall(modulename: AnsiString ):  Boolean;
+external 'IsModuleLoaded@{app}\psvince.dll stdcall uninstallonly' ;
 
 function GetUninstallString(): String;
 var
@@ -133,7 +141,7 @@ end;
 function InitializeSetup(): Boolean;
 begin
   Result := true;
-  while IsModuleLoaded( 'OpenLP.exe' ) and Result do
+  while IsModuleLoadedInstall( 'OpenLP.exe' ) and Result do
   begin
     if MsgBox( 'Openlp is currently running, please close it to continue the install.',
       mbError, MB_OKCANCEL ) =  IDCANCEL then
@@ -151,5 +159,18 @@ begin
     begin
       UnInstallOldVersion();
     end;
+  end;
+end;
+
+function InitializeUninstall(): Boolean;
+begin
+  Result := true;
+  while IsModuleLoadedUninstall( 'OpenLP.exe' ) and Result do
+  begin
+    if MsgBox( 'Openlp is currently running, please close it to continue the uninstall.',
+      mbError, MB_OKCANCEL ) =  IDCANCEL then
+	begin
+	  Result := false;
+	end;
   end;
 end;
