@@ -201,7 +201,8 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            preview = self.display.text(raw_html)
+            self.display.text(raw_html)
+            preview = self.display.preview()
             # Reset the real screen size for subsequent render requests
             self._calculate_default()
             return preview
