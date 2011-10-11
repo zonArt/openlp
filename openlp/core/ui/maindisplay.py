@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList
 
@@ -56,6 +56,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.isLive = live
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
+        self.plugins = PluginManager.get_instance().plugins
         self.alertTab = None
         self.hideMode = None
         self.videoHide = False

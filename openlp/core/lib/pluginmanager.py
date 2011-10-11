@@ -42,6 +42,10 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
+    @staticmethod
+    def get_instance():
+        return PluginManager.instance
+
     def __init__(self, plugin_dir):
         """
         The constructor for the plugin manager. Passes the controllers on to
@@ -51,6 +55,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
+        PluginManager.instance = self
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)
