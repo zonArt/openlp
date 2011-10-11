@@ -27,7 +27,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.lib.ui import UiStrings, create_valign_combo
 
 class AlertsTab(SettingsTab):
@@ -140,6 +140,7 @@ class AlertsTab(SettingsTab):
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.timeoutSpinBox.value()
+        self.changed = True
 
     def onFontSizeSpinBoxChanged(self):
         self.font_size = self.fontSizeSpinBox.value()
@@ -171,10 +172,15 @@ class AlertsTab(SettingsTab):
         font.setFamily(self.font_face)
         self.fontComboBox.setCurrentFont(font)
         self.updateDisplay()
+        self.changed = False
 
     def save(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
+        # Check value has changed as no event handles this field
+        if settings.value(u'location', QtCore.QVariant(1)).toInt()[0] != \
+            self.verticalComboBox.currentIndex():
+            self.changed = True
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.setValue(u'font color', QtCore.QVariant(self.font_color))
         settings.setValue(u'font size', QtCore.QVariant(self.font_size))
@@ -184,6 +190,9 @@ class AlertsTab(SettingsTab):
         self.location = self.verticalComboBox.currentIndex()
         settings.setValue(u'location', QtCore.QVariant(self.location))
         settings.endGroup()
+        if self.changed:
+             Receiver.send_message(u'alertTab_updated')
+        self.changed = False
 
     def updateDisplay(self):
         font = QtGui.QFont()
@@ -193,4 +202,5 @@ class AlertsTab(SettingsTab):
         self.fontPreview.setFont(font)
         self.fontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))
+        self.changed = True
 

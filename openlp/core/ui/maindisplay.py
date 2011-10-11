@@ -58,6 +58,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.screens = ScreenList.get_instance()
         self.plugins = PluginManager.get_instance().plugins
         self.alertTab = None
+        self.rebuildCSS = False
         self.hideMode = None
         self.videoHide = False
         self.override = {}
@@ -81,6 +82,20 @@ class MainDisplay(QtGui.QGraphicsView):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'alertTab_updated'), self.alertTabChanged)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def alertTabChanged(self):
+        print "alert"
+        self.rebuildCSS = True
+
+    def configChanged(self):
+        print "config"
+        if self.rebuildCSS:
+            print "Need to rebuild"
+        self.rebuildCSS = False
 
     def retranslateUi(self):
         """
