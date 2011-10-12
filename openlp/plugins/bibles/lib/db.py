@@ -28,7 +28,6 @@
 import logging
 import chardet
 import os
-import re
 import sqlite3
 
 from PyQt4 import QtCore

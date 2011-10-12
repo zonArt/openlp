@@ -33,6 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.ui import ThemeLayoutForm
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -58,6 +59,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.registerFields()
         self.updateThemeAllowed = True
         self.temp_background_filename = u''
+        self.themeLayoutForm = ThemeLayoutForm(self)
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onBackgroundComboBoxCurrentIndexChanged)
@@ -88,6 +90,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onShadowCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.footerColorButton,
             QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
+        QtCore.QObject.connect(self,
+            QtCore.SIGNAL(u'customButtonClicked(int)'),
+            self.onCustom1ButtonClicked)
         QtCore.QObject.connect(self.mainPositionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onMainPositionCheckBoxStateChanged)
@@ -229,12 +234,35 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Detects Page changes and updates as approprate.
         """
+        if self.page(pageId) == self.areaPositionPage:
+            self.setOption(QtGui.QWizard.HaveCustomButton1, True)
+        else:
+            self.setOption(QtGui.QWizard.HaveCustomButton1, False)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
-            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+            self.previewBoxLabel.setPixmap(frame)
             self.displayAspectRatio = float(frame.width()) / frame.height()
             self.resizeEvent()
+
+    def onCustom1ButtonClicked(self, number):
+        """
+        Generate layout preview and display the form.
+        """
+        self.updateTheme()
+        width = self.thememanager.mainwindow.renderer.width
+        height = self.thememanager.mainwindow.renderer.height
+        pixmap = QtGui.QPixmap(width, height)
+        pixmap.fill(QtCore.Qt.white)
+        paint = QtGui.QPainter(pixmap)
+        paint.setPen(QtGui.QPen(QtCore.Qt.blue, 2))
+        paint.drawRect(self.thememanager.mainwindow.renderer.
+            get_main_rectangle(self.theme))
+        paint.setPen(QtGui.QPen(QtCore.Qt.red, 2))
+        paint.drawRect(self.thememanager.mainwindow.renderer.
+            get_footer_rectangle(self.theme))
+        paint.end()
+        self.themeLayoutForm.exec_(pixmap)
 
     def onOutlineCheckCheckBoxStateChanged(self, state):
         """

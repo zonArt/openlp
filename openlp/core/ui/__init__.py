@@ -54,6 +54,7 @@ class HideMode(object):
 
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
+from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
