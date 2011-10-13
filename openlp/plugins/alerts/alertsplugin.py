@@ -32,12 +32,61 @@ from PyQt4 import QtCore
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import icon_action, UiStrings
+from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
 from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
+
+JAVASCRIPT = """
+    function show_alert(alerttext, position){
+        var text = document.getElementById('alert');
+        text.innerHTML = alerttext;
+        if(alerttext == '') {
+            text.style.visibility = 'hidden';
+            return 0;
+        }
+        if(position == ''){
+            position = getComputedStyle(text, '').verticalAlign;
+        }
+        switch(position)
+        {
+            case 'top':
+                text.style.top = '0px';
+                break;
+            case 'middle':
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                    + 'px';
+                break;
+            case 'bottom':
+                text.style.top = (window.innerHeight - text.clientHeight)
+                    + 'px';
+                break;
+        }
+        text.style.visibility = 'visible';
+        return text.clientHeight;
+    }
+"""
+CSS = """
+    #alert {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 10;
+        width: 100%%;
+        vertical-align: %s;
+        font-family: %s;
+        font-size: %spt;
+        color: %s;
+        background-color: %s;
+    }
+"""
+
+HTML = """
+    <div id="alert" style="visibility:hidden"></div>
+"""
 
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
@@ -121,3 +170,15 @@ class AlertsPlugin(Plugin):
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
+    def getDisplayJavaScript(self):
+        return JAVASCRIPT
+
+    def getDisplayCss(self):
+        align = VerticalType.Names[self.settings_tab.location]
+        alert = CSS % (align, self.settings_tab.font_face,
+            self.settings_tab.font_size, self.settings_tab.font_color,
+            self.settings_tab.bg_color)
+        return alert
+
+    def getDisplayHtml(self):
+        return HTML

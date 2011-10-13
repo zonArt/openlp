@@ -508,7 +508,7 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, image_bytes)
+            self.isLive, background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

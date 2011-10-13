@@ -73,13 +73,7 @@ body {
 #video2 {
     z-index: 3;
 }
-#alert {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: 10;
-    %s
-}
+%s
 #footer {
     position: absolute;
     z-index: 6;
@@ -179,7 +173,7 @@ sup {
                 break;
         }
     }
-
+    %s
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
@@ -223,34 +217,6 @@ sup {
             else
                 vid.play();
         }
-    }
-
-    function show_alert(alerttext, position){
-        var text = document.getElementById('alert');
-        text.innerHTML = alerttext;
-        if(alerttext == '') {
-            text.style.visibility = 'hidden';
-            return 0;
-        }
-        if(position == ''){
-            position = getComputedStyle(text, '').verticalAlign;
-        }
-        switch(position)
-        {
-            case 'top':
-                text.style.top = '0px';
-                break;
-            case 'middle':
-                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
-                    + 'px';
-                break;
-            case 'bottom':
-                text.style.top = (window.innerHeight - text.clientHeight)
-                    + 'px';
-                break;
-        }
-        text.style.visibility = 'visible';
-        return text.clientHeight;
     }
 
     function show_footer(footertext){
@@ -316,14 +282,15 @@ sup {
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 %s
+%s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
 """
 
-def build_html(item, screen, alert, islive, background, image=None):
+def build_html(item, screen, alert, islive, background, image=None,
+    plugins=None):
     """
     Build the full web paged structure for display
 
@@ -344,6 +311,9 @@ def build_html(item, screen, alert, islive, background, image=None):
 
     ``image``
         Image media item - bytes
+
+    ``plugins``
+        The List of available plugins
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -360,14 +330,27 @@ def build_html(item, screen, alert, islive, background, image=None):
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
         image_src = u'style="display:none;"'
+    css_additions = u''
+    js_additions = u''
+    html_additions = u''
+    if plugins:
+        for plugin in plugins:
+            print plugin
+            css_additions += plugin.getDisplayCss()
+            js_additions += plugin.getDisplayJavaScript()
+            html_additions += plugin.getDisplayHtml()
+    print js_additions
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
-        build_alert_css(alert, width),
+        css_additions,
+        #build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
+        js_additions,
         bgimage_src, image_src,
+        html_additions,
         build_lyrics_html(item, webkitvers))
     return html
 
