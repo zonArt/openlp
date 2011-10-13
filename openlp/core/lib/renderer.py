@@ -306,7 +306,7 @@ class Renderer(object):
         """
         log.debug(u'_build_text_rectangle')
         main_rect = self.get_main_rectangle(theme)
-        footer_rect = self.get_main_rectangle(theme)
+        footer_rect = self.get_footer_rectangle(theme)
         self._set_text_rectangle(main_rect, footer_rect)
 
     def get_main_rectangle(self, theme):
