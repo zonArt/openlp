@@ -157,9 +157,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
+        subject = u'Bug report: %s in %s' % (exception, source)
         mailto_url = QtCore.QUrl(u'mailto:bugs@openlp.org')
-        mailto_url.addQueryItem(u'subject',
-            u'Bug report: %s in %s' % (exception, source))
+        mailto_url.addQueryItem(u'subject', subject)
         mailto_url.addQueryItem(u'body', body % content)
         if self.fileAttachment:
             mailto_url.addQueryItem(u'attach', self.fileAttachment)
