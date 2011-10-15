@@ -355,7 +355,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         # We request a background video but have no service Item
         if isBackground and not hasattr(self, u'serviceItem'):
-            return None
+            return False
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
@@ -385,6 +385,7 @@ class MainDisplay(QtGui.QGraphicsView):
         # Update the preview frame.
         if self.isLive:
             Receiver.send_message(u'maindisplay_active')
+        return True
 
     def videoState(self, newState, oldState):
         """
