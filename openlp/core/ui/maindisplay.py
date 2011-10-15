@@ -52,7 +52,7 @@ class MainDisplay(QtGui.QGraphicsView):
         if live:
             QtGui.QGraphicsView.__init__(self)
             # Do not overwrite the parent() method.
-            self._parent = parent
+            self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
@@ -242,7 +242,7 @@ class MainDisplay(QtGui.QGraphicsView):
             self.image(name)
             # Update the preview frame.
             if self.isLive:
-                self._parent.updatePreview()
+                self.parent().updatePreview()
             return True
         return False
 
