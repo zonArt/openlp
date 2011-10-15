@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,11 +31,14 @@ import logging
 import os
 
 from PyQt4 import QtCore
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exceptions import InvalidRequestError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import Table, MetaData, Column, types, create_engine
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
+from sqlalchemy.pool import NullPool
 
-from openlp.core.utils import AppLocation
+from openlp.core.lib import translate
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
@@ -51,11 +55,69 @@ def init_db(url, auto_flush=True, auto_commit=False):
     ``auto_commit``
         Sets the commit behaviour of the session
     """
-    engine = create_engine(url)
+    engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
     session = scoped_session(sessionmaker(autoflush=auto_flush,
         autocommit=auto_commit, bind=engine))
     return session, metadata
+
+
+def upgrade_db(url, upgrade):
+    """
+    Upgrade a database.
+
+    ``url``
+        The url of the database to upgrade.
+
+    ``upgrade``
+        The python module that contains the upgrade instructions.
+    """
+    session, metadata = init_db(url)
+
+    class Metadata(BaseModel):
+        """
+        Provides a class for the metadata table.
+        """
+        pass
+    load_changes = True
+    try:
+        tables = upgrade.upgrade_setup(metadata)
+    except (SQLAlchemyError, DBAPIError):
+        load_changes = False
+    metadata_table = Table(u'metadata', metadata,
+        Column(u'key', types.Unicode(64), primary_key=True),
+        Column(u'value', types.UnicodeText(), default=None)
+    )
+    metadata_table.create(checkfirst=True)
+    mapper(Metadata, metadata_table)
+    version_meta = session.query(Metadata).get(u'version')
+    if version_meta is None:
+        version_meta = Metadata.populate(key=u'version', value=u'0')
+        version = 0
+    else:
+        version = int(version_meta.value)
+    if version > upgrade.__version__:
+        return version, upgrade.__version__
+    version += 1
+    if load_changes:
+        while hasattr(upgrade, u'upgrade_%d' % version):
+            log.debug(u'Running upgrade_%d', version)
+            try:
+                getattr(upgrade, u'upgrade_%d' % version) \
+                    (session, metadata, tables)
+                version_meta.value = unicode(version)
+            except (SQLAlchemyError, DBAPIError):
+                log.exception(u'Could not run database upgrade script '
+                    '"upgrade_%s", upgrade process has been halted.', version)
+                break
+            version += 1
+    else:
+        version_meta = Metadata.populate(key=u'version',
+            value=int(upgrade.__version__))
+    session.add(version_meta)
+    session.commit()
+    return int(version_meta.value), upgrade.__version__
+
 
 def delete_database(plugin_name, db_file_name=None):
     """
@@ -65,7 +127,7 @@ def delete_database(plugin_name, db_file_name=None):
         The name of the plugin to remove the database for
 
     ``db_file_name``
-        The database file name.  Defaults to None resulting in the
+        The database file name. Defaults to None resulting in the
         plugin_name being used.
     """
     db_file_path = None
@@ -75,11 +137,8 @@ def delete_database(plugin_name, db_file_name=None):
     else:
         db_file_path = os.path.join(
             AppLocation.get_section_data_path(plugin_name), plugin_name)
-    try:
-        os.remove(db_file_path)
-        return True
-    except OSError:
-        return False
+    return delete_file(db_file_path)
+
 
 class BaseModel(object):
     """
@@ -90,16 +149,17 @@ class BaseModel(object):
         """
         Creates an instance of a class and populates it, returning the instance
         """
-        me = cls()
-        for key in kwargs:
-            me.__setattr__(key, kwargs[key])
-        return me
+        instance = cls()
+        for key, value in kwargs.iteritems():
+            instance.__setattr__(key, value)
+        return instance
 
 class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None,
+                 upgrade_mod=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -110,8 +170,11 @@ class Manager(object):
         ``init_schema``
             The init_schema function for this database
 
+        ``upgrade_schema``
+            The upgrade_schema function for this database
+
         ``db_file_name``
-            The file name to use for this database.  Defaults to None resulting
+            The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
         settings = QtCore.QSettings()
@@ -135,7 +198,28 @@ class Manager(object):
                 unicode(settings.value(u'db hostname').toString()),
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
-        self.session = init_schema(self.db_url)
+        if upgrade_mod:
+            db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            if db_ver > up_ver:
+                critical_error_message_box(
+                    translate('OpenLP.Manager', 'Database Error'),
+                    unicode(translate('OpenLP.Manager', 'The database being '
+                        'loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP '
+                        'expects version %d. The database will not be loaded.'
+                        '\n\nDatabase: %s')) % \
+                        (db_ver, up_ver, self.db_url)
+                )
+                return
+        try:
+            self.session = init_schema(self.db_url)
+        except (SQLAlchemyError, DBAPIError):
+            log.exception(u'Error loading database: %s', self.db_url)
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
+                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s')) % self.db_url
+            )
 
     def save_object(self, object_instance, commit=True):
         """
@@ -215,16 +299,18 @@ class Manager(object):
             The type of objects to return
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
 
         ``order_by_ref``
-            Any parameters to order the returned objects by.  Defaults to None.
+            Any parameters to order the returned objects by. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        if order_by_ref is not None:
+        if isinstance(order_by_ref, list):
+            return query.order_by(*order_by_ref).all()
+        elif order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
 
@@ -236,7 +322,7 @@ class Manager(object):
             The type of objects to return.
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
         """
         query = self.session.query(object_class)

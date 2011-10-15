@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import create_delete_push_button
 
 class Ui_AlertDialog(object):
     def setupUi(self, alertDialog):
@@ -65,9 +67,8 @@ class Ui_AlertDialog(object):
         self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
-        self.deleteButton = QtGui.QPushButton(alertDialog)
-        self.deleteButton.setIcon(build_icon(u':/general/general_delete.png'))
-        self.deleteButton.setObjectName(u'deleteButton')
+        self.deleteButton = create_delete_push_button(alertDialog)
+        self.deleteButton.setEnabled(False)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
@@ -75,11 +76,13 @@ class Ui_AlertDialog(object):
         self.buttonBox.addButton(QtGui.QDialogButtonBox.Close)
         displayIcon = build_icon(u':/general/general_live.png')
         self.displayButton = QtGui.QPushButton(alertDialog)
+        self.displayButton.setEnabled(False)
         self.displayButton.setIcon(displayIcon)
         self.displayButton.setObjectName(u'displayButton')
         self.buttonBox.addButton(self.displayButton,
             QtGui.QDialogButtonBox.ActionRole)
         self.displayCloseButton = QtGui.QPushButton(alertDialog)
+        self.displayCloseButton.setEnabled(False)
         self.displayCloseButton.setIcon(displayIcon)
         self.displayCloseButton.setObjectName(u'displayCloseButton')
         self.buttonBox.addButton(self.displayCloseButton,
@@ -101,8 +104,6 @@ class Ui_AlertDialog(object):
             translate('AlertsPlugin.AlertForm', '&New'))
         self.saveButton.setText(
             translate('AlertsPlugin.AlertForm', '&Save'))
-        self.deleteButton.setText(
-            translate('AlertsPlugin.AlertForm', '&Delete'))
         self.displayButton.setText(
             translate('AlertsPlugin.AlertForm', 'Displ&ay'))
         self.displayCloseButton.setText(

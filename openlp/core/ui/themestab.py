@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,15 +27,19 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
+from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.theme import ThemeLevel
+from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
 class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def __init__(self, parent):
-        self.parent = parent
-        SettingsTab.__init__(self, u'Themes')
+    def __init__(self, parent, mainwindow):
+        self.mainwindow = mainwindow
+        generalTranslated = translate('OpenLP.ThemesTab', 'Themes')
+        SettingsTab.__init__(self, parent, u'Themes', generalTranslated)
+        self.icon_path =  u':/themes/theme_new.png'
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
@@ -98,7 +103,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
+        self.tabTitleVisible = UiStrings().Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(
@@ -140,12 +145,10 @@ class ThemesTab(SettingsTab):
     def save(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'theme level',
-            QtCore.QVariant(self.theme_level))
-        settings.setValue(u'global theme',
-            QtCore.QVariant(self.global_theme))
+        settings.setValue(u'theme level', QtCore.QVariant(self.theme_level))
+        settings.setValue(u'global theme', QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.parent.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -163,15 +166,9 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.parent.renderManager.set_global_theme(
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
-        image = self.parent.ThemeManagerContents.getPreviewImage(
-            self.global_theme)
-        preview = QtGui.QPixmap(unicode(image))
-        if not preview.isNull():
-            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(preview)
+        self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
         """
@@ -187,21 +184,21 @@ class ThemesTab(SettingsTab):
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
-        for theme in theme_list:
-            self.DefaultComboBox.addItem(theme)
-        id = self.DefaultComboBox.findText(
-            self.global_theme, QtCore.Qt.MatchExactly)
-        if id == -1:
-            id = 0 # Not Found
-            self.global_theme = u''
-        self.DefaultComboBox.setCurrentIndex(id)
-        self.parent.renderManager.set_global_theme(
+        self.DefaultComboBox.addItems(theme_list)
+        find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
+        self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(
-                self.global_theme)
-            preview = QtGui.QPixmap(unicode(image))
-            if not preview.isNull():
-                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                    QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(preview)
+            self.__previewGlobalTheme()
+
+    def __previewGlobalTheme(self):
+        """
+        Utility method to update the global theme preview image.
+        """
+        image = self.mainwindow.themeManagerContents.getPreviewImage(
+            self.global_theme)
+        preview = QtGui.QPixmap(unicode(image))
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)

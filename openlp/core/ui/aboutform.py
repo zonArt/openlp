@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,25 +29,26 @@ from PyQt4 import QtCore, QtGui
 
 from aboutdialog import Ui_AboutDialog
 from openlp.core.lib import translate
+from openlp.core.utils import get_application_version
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """
     The About dialog
     """
 
-    def __init__(self, parent, applicationVersion):
+    def __init__(self, parent):
         """
         Do some initialisation stuff
         """
         QtGui.QDialog.__init__(self, parent)
-        self.applicationVersion = applicationVersion
+        applicationVersion = get_application_version()
         self.setupUi(self)
         about_text = self.aboutTextEdit.toPlainText()
         about_text = about_text.replace(u'<version>',
-            self.applicationVersion[u'version'])
-        if self.applicationVersion[u'build']:
+            applicationVersion[u'version'])
+        if applicationVersion[u'build']:
             build_text = unicode(translate('OpenLP.AboutForm', ' build %s')) % \
-                self.applicationVersion[u'build']
+                applicationVersion[u'build']
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
@@ -59,6 +61,5 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         Launch a web browser and go to the contribute page on the site.
         """
         import webbrowser
-        url = u'http://www.openlp.org/en/documentation/introduction/' \
-            + u'contributing.html'
+        url = u'http://openlp.org/en/documentation/introduction/contributing'
         webbrowser.open_new(url)

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,9 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_PluginViewDialog(object):
     def setupUi(self, pluginViewDialog):
@@ -76,10 +79,8 @@ class Ui_PluginViewDialog(object):
             translate('OpenLP.PluginForm', 'Plugin List'))
         self.pluginInfoGroupBox.setTitle(
             translate('OpenLP.PluginForm', 'Plugin Details'))
-        self.versionLabel.setText(
-            translate('OpenLP.PluginForm', 'Version:'))
-        self.aboutLabel.setText(
-            translate('OpenLP.PluginForm', 'About:'))
+        self.versionLabel.setText(u'%s:' % UiStrings().Version)
+        self.aboutLabel.setText(u'%s:' % UiStrings().About)
         self.statusLabel.setText(
             translate('OpenLP.PluginForm', 'Status:'))
         self.statusComboBox.setItemText(0,

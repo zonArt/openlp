@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -86,8 +88,7 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
-        aboutDialog.setWindowTitle(translate('OpenLP.AboutForm',
-            'About OpenLP'))
+        aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
         self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
@@ -95,7 +96,7 @@ class Ui_AboutDialog(object):
             'OpenLP is free church presentation software, or lyrics '
             'projection software, used to display slides of songs, Bible '
             'verses, videos, images, and even presentations (if '
-            'OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) '
+            'Impress, PowerPoint or PowerPoint Viewer is installed) '
             'for church worship using a computer and a data projector.\n'
             '\n'
             'Find out more about OpenLP: http://openlp.org/\n'
@@ -105,40 +106,90 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.aboutTab),
-            translate('OpenLP.AboutForm', 'About'))
-        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm',
+            self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
+        lead = u'Raoul "superfly" Snyman'
+        developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
+            u'Michael "cocooncrash" Gorven',
+            u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
+            u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
+        contributors = [u'Gerald "jerryb" Britton',
+            u'Scott "sguerrieri" Guerrieri',
+            u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
+            u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
+            u'Stevan "ElderP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
+            u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
+            u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
+            u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
+        testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
+            u'John "jseagull1" Cegalis (lead)']
+        packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
+            u'Tim "TRB143" Bentley (Fedora)',
+            u'Matthias "matthub" Hub (Mac OS X)',
+            u'Stevan "ElderP" Pettit (Windows)',
+            u'Raoul "superfly" Snyman (Ubuntu)']
+        translators = {
+            u'af': [u'Johan "nuvolari" Mynhardt'],
+            u'de': [u'Patrick "madmuffin" Br\xfcckner',
+                u'Meinert "m2j" Jordan', u'Andreas "googol" Preikschat',
+                u'Christian "crichter" Richter'],
+            u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
+            u'en_ZA': [u'Raoul "superfly" Snyman'],
+            u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
+            u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
+            u'hu': [u'Gyuris Gell\xe9rt'],
+            u'ja': [u'Kunio "Kunio" Nakamaru'],
+            u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
+            u'nl': [u'Arjen "typovar" van Voorst'],
+            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim',
+                u'Simon "samscudder" Scudder'],
+            u'ru': [u'Sergey "ratz" Ratz']
+        }
+        documentors = [u'Wesley "wrst" Stout',
+            u'John "jseagull1" Cegalis (lead)']
+        self.creditsTextEdit.setPlainText(unicode(translate('OpenLP.AboutForm',
             'Project Lead\n'
-            '    Raoul "superfly" Snyman\n'
+            '    %s\n'
             '\n'
             'Developers\n'
-            '    Tim "TRB143" Bentley\n'
-            '    Jonathan "gushie" Corwin\n'
-            '    Michael "cocooncrash" Gorven\n'
-            '    Scott "sguerrieri" Guerrieri\n'
-            '    Raoul "superfly" Snyman\n'
-            '    Martin "mijiti" Thompson\n'
-            '    Jon "Meths" Tibble\n'
+            '    %s\n'
             '\n'
             'Contributors\n'
-            '    Meinert "m2j" Jordan\n'
-            '    Andreas "googol" Preikschat\n'
-            '    Christian "crichter" Richter\n'
-            '    Philip "Phill" Ridout\n'
-            '    Maikel Stuivenberg\n'
-            '    Carsten "catini" Tingaard\n'
-            '    Frode "frodus" Woldsund\n'
+            '    %s\n'
             '\n'
             'Testers\n'
-            '    Philip "Phill" Ridout\n'
-            '    Wesley "wrst" Stout (lead)\n'
+            '    %s\n'
             '\n'
             'Packagers\n'
-            '    Thomas "tabthorpe" Abthorpe (FreeBSD)\n'
-            '    Tim "TRB143" Bentley (Fedora)\n'
-            '    Michael "cocooncrash" Gorven (Ubuntu)\n'
-            '    Matthias "matthub" Hub (Mac OS X)\n'
-            '    Raoul "superfly" Snyman (Windows, Ubuntu)\n'
+            '    %s\n'
+            '\n'
+            'Translators\n'
+            '    Afrikaans (af)\n'
+            '        %s\n'
+            '    German (de)\n'
+            '        %s\n'
+            '    English, United Kingdom (en_GB)\n'
+            '        %s\n'
+            '    English, South Africa (en_ZA)\n'
+            '        %s\n'
+            '    Estonian (et)\n'
+            '        %s\n'
+            '    French (fr)\n'
+            '        %s\n'
+            '    Hungarian (hu)\n'
+            '        %s\n'
+            '    Japanese (ja)\n'
+            '        %s\n'
+            '    Norwegian Bokm\xe5l (nb)\n'
+            '        %s\n'
+            '    Dutch (nl)\n'
+            '        %s\n'
+            '    Portuguese, Brazil (pt_BR)\n'
+            '        %s\n'
+            '    Russian (ru)\n'
+            '        %s\n'
+            '\n'
+            'Documentation\n'
+            '    %s\n'
             '\n'
             'Built With\n'
             '    Python: http://www.python.org/\n'
@@ -156,30 +207,44 @@ class Ui_AboutDialog(object):
             '    God our Father, for sending His Son to die\n'
             '    on the cross, setting us free from sin. We\n'
             '    bring this software to you for free because\n'
-            '    He has set us free.'
-        ))
+            '    He has set us free.')) % (lead, u'\n    '.join(developers),
+            u'\n    '.join(contributors), u'\n    '.join(testers),
+            u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
+            u'\n        '.join(translators[u'de']),
+            u'\n        '.join(translators[u'en_GB']),
+            u'\n        '.join(translators[u'en_ZA']),
+            u'\n        '.join(translators[u'et']),
+            u'\n        '.join(translators[u'fr']),
+            u'\n        '.join(translators[u'hu']),
+            u'\n        '.join(translators[u'ja']),
+            u'\n        '.join(translators[u'nb']),
+            u'\n        '.join(translators[u'nl']),
+            u'\n        '.join(translators[u'pt_BR']),
+            u'\n        '.join(translators[u'ru']),
+            u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2011 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2011 '
-            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
-            'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
-            'Tibble, Carsten Tinggaard\n'
-            '\n'
+        copyright = unicode(translate('OpenLP.AboutForm',
+            'Copyright \xa9 2004-2011 %s\n'
+            'Portions copyright \xa9 2004-2011 %s')) % (u'Raoul Snyman',
+            u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
+            u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
+            u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
+            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder, '
+            u'Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, '
+            u'Frode Woldsund')
+        licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
             'published by the Free Software Foundation; version 2 of the '
-            'License.\n'
-            '\n'
+            'License.')
+        disclaimer = translate('OpenLP.AboutForm',
             'This program is distributed in the hope that it will be useful, '
             'but WITHOUT ANY WARRANTY; without even the implied warranty of '
             'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below '
-            'for more details.\n'
-            '\n'
-            '\n'
-            'GNU GENERAL PUBLIC LICENSE\n'
+            'for more details.')
+        gpltext = ('GNU GENERAL PUBLIC LICENSE\n'
             'Version 2, June 1991\n'
             '\n'
             'Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 '
@@ -549,7 +614,9 @@ class Ui_AboutDialog(object):
             'subroutine library, you may consider it more useful to permit '
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
-            'instead of this License.'))
+            'instead of this License.')
+        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' %
+            (copyright, licence, disclaimer, gpltext))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))

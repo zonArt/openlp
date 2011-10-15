@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,16 +29,17 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, StringContent, translate
+from openlp.core.lib import PluginStatus, Receiver, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
 
 class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
-
+    """
+    The plugin form provides user control over the plugins OpenLP uses.
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)
@@ -62,7 +64,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self._clearDetails()
         self.programaticChange = True
         pluginListWidth = 0
-        for plugin in self.parent.pluginManager.plugins:
+        for plugin in self.parent().pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -78,15 +80,14 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 # PluginStatus.Inactive
                 status_text = unicode(
                     translate('OpenLP.PluginForm', '%s (Inactive)'))
-            name_string = plugin.getString(StringContent.Name)
-            item.setText(status_text % name_string[u'singular'])
+            item.setText(status_text % plugin.nameStrings[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) % 
-                name_string[u'singular']))
+                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) %
+                plugin.nameStrings[u'singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth +
             self.pluginListWidget.iconSize().width() + 48)
 
@@ -113,11 +114,10 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self._clearDetails()
             return
         plugin_name_singular = \
-            self.pluginListWidget.currentItem().text().split(u' ')[0]
+            self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
         self.activePlugin = None
-        for plugin in self.parent.pluginManager.plugins:
-            name_string = plugin.getString(StringContent.Name)
-            if name_string[u'singular'] == plugin_name_singular:
+        for plugin in self.parent().pluginManager.plugins:
+            if plugin.nameStrings[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
         if self.activePlugin:
@@ -129,7 +129,10 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.programaticChange:
             return
         if status == 0:
+            Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
+            Receiver.send_message(u'cursor_normal')
+            self.activePlugin.appStartup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(
@@ -143,6 +146,5 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = unicode(
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
-        name_string = self.activePlugin.getString(StringContent.Name)
         self.pluginListWidget.currentItem().setText(
-            status_text % name_string[u'singular'])
+            status_text % self.activePlugin.nameStrings[u'singular'])

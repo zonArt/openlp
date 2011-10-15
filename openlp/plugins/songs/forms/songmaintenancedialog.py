@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +27,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon
+from openlp.core.lib.ui import UiStrings
+from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, songMaintenanceDialog):
@@ -143,34 +146,21 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(songMaintenanceDialog)
 
     def retranslateUi(self, songMaintenanceDialog):
-        songMaintenanceDialog.setWindowTitle(
-            translate('SongsPlugin.SongMaintenanceForm', 'Song Maintenance'))
-        authorsString = translate('SongsPlugin.SongMaintenanceForm', 'Authors')
-        topicsString = translate('SongsPlugin.SongMaintenanceForm', 'Topics')
-        booksString = translate('SongsPlugin.SongMaintenanceForm', 'Song Books')
-        self.listItemAuthors.setText(authorsString)
-        self.listItemTopics.setText(topicsString)
-        self.listItemBooks.setText(booksString)
-        self.authorsAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.authorsEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.authorsDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
-        self.topicsAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.topicsEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.topicsDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
-        self.booksAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.booksEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.booksDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
-        typeListWidth = max(self.fontMetrics().width(authorsString),
-            self.fontMetrics().width(topicsString),
-            self.fontMetrics().width(booksString))
+        songMaintenanceDialog.setWindowTitle(SongStrings.SongMaintenance)
+        self.listItemAuthors.setText(SongStrings.Authors)
+        self.listItemTopics.setText(SongStrings.Topics)
+        self.listItemBooks.setText(SongStrings.SongBooks)
+        self.authorsAddButton.setText(UiStrings().Add)
+        self.authorsEditButton.setText(UiStrings().Edit)
+        self.authorsDeleteButton.setText(UiStrings().Delete)
+        self.topicsAddButton.setText(UiStrings().Add)
+        self.topicsEditButton.setText(UiStrings().Edit)
+        self.topicsDeleteButton.setText(UiStrings().Delete)
+        self.booksAddButton.setText(UiStrings().Add)
+        self.booksEditButton.setText(UiStrings().Edit)
+        self.booksDeleteButton.setText(UiStrings().Delete)
+        typeListWidth = max(self.fontMetrics().width(SongStrings.Authors),
+            self.fontMetrics().width(SongStrings.Topics),
+            self.fontMetrics().width(SongStrings.SongBooks))
         self.typeListWidget.setFixedWidth(typeListWidth +
             self.typeListWidget.iconSize().width() + 32)

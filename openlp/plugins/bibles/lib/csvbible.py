@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,15 +24,54 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`cvsbible` modules provides a facility to import bibles from a set of
+CSV files.
 
+The module expects two mandatory files containing the books and the verses and
+will accept an optional third file containing the testaments.
+
+The format of the testament file is:
+
+    <testament_id>,<testament_name>
+
+    For example:
+
+        1,Old Testament
+        2,New Testament
+
+The format of the books file is:
+
+    <book_id>,<testament_id>,<book_name>,<book_abbreviation>
+
+    For example
+
+        1,1,Genesis,Gen
+        2,1,Exodus,Exod
+        ...
+        40,2,Matthew,Matt
+
+There are two acceptable formats of the verses file.  They are:
+
+    <book_id>,<chapter_number>,<verse_number>,<verse_text>
+    or
+    <book_name>,<chapter_number>,<verse_number>,<verse_text>
+
+    For example:
+
+        1,1,1,"In the beginning God created the heaven and the earth."
+        or
+        "Genesis",1,2,"And the earth was without form, and void; and...."
+
+All CSV files are expected to use a comma (',') as the delimeter and double
+quotes ('"') as the quote symbol.
+"""
 import logging
 import chardet
 import csv
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -39,10 +79,11 @@ class CSVBible(BibleDB):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
+    log.info(u'CSVBible loaded')
 
     def __init__(self, parent, **kwargs):
         """
-        Loads a Bible from a pair of CVS files passed in
+        Loads a Bible from a set of CVS files.
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """
@@ -50,57 +91,82 @@ class CSVBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
-    def do_import(self):
+    def do_import(self, bible_name=None):
+        """
+        Import the bible books and verses.
+        """
+        self.wizard.progressBar.setValue(0)
+        self.wizard.progressBar.setMinimum(0)
+        self.wizard.progressBar.setMaximum(66)
         success = True
+        language_id = self.get_language(bible_name)
+        if not language_id:
+            log.exception(u'Importing books from "%s" failed' % self.filename)
+            return False
         books_file = None
-        book_ptr = None
-        verse_file = None
+        book_list = {}
         # Populate the Tables
         try:
+            details = get_file_encoding(self.booksfile)
             books_file = open(self.booksfile, 'r')
-            dialect = csv.Sniffer().sniff(books_file.read(1024))
-            books_file.seek(0)
-            books_reader = csv.reader(books_file, dialect)
+            books_reader = csv.reader(books_file, delimiter=',', quotechar='"')
             for line in books_reader:
-                # cancel pressed
                 if self.stop_import_flag:
                     break
-                details = chardet.detect(line[1])
-                self.create_book(unicode(line[1], details['encoding']),
-                    line[2], int(line[0]))
-                Receiver.send_message(u'openlp_process_events')
-        except IOError, IndexError:
+                self.wizard.incrementProgressBar(unicode(
+                    translate('BiblesPlugin.CSVBible',
+                    'Importing books... %s')) %
+                    unicode(line[2], details['encoding']))
+                book_ref_id = self.get_book_ref_id_by_name(
+                    unicode(line[2], details['encoding']), 67, language_id)
+                if not book_ref_id:
+                    log.exception(u'Importing books from "%s" '\
+                        'failed' % self.booksfile)
+                    return False
+                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+                self.create_book(unicode(line[2], details['encoding']),
+                    book_ref_id, book_details[u'testament_id'])
+                book_list[int(line[0])] = unicode(line[2], details['encoding'])
+            Receiver.send_message(u'openlp_process_events')
+        except (IOError, IndexError):
             log.exception(u'Loading books from file failed')
             success = False
         finally:
             if books_file:
                 books_file.close()
-        if not success:
+        if self.stop_import_flag or not success:
             return False
+        self.wizard.progressBar.setValue(0)
+        self.wizard.progressBar.setMaximum(67)
+        verse_file = None
         try:
-            verse_file = open(self.versesfile, 'r')
-            dialect = csv.Sniffer().sniff(verse_file.read(1024))
-            verse_file.seek(0)
-            verse_reader = csv.reader(verse_file, dialect)
+            book_ptr = None
+            details = get_file_encoding(self.versesfile)
+            verse_file = open(self.versesfile, 'rb')
+            verse_reader = csv.reader(verse_file, delimiter=',', quotechar='"')
             for line in verse_reader:
                 if self.stop_import_flag:
-                    # cancel pressed
                     break
-                details = chardet.detect(line[3])
-                if book_ptr != line[0]:
-                    book = self.get_book(line[0])
+                try:
+                    line_book = book_list[int(line[0])]
+                except ValueError:
+                    line_book = unicode(line[0], details['encoding'])
+                if book_ptr != line_book:
+                    book = self.get_book(line_book)
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.CSVImport', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...')) %
-                        (book.name, int(line[1])))
+                        'BiblesPlugin.CSVBible', 'Importing verses from %s...',
+                        'Importing verses from <book name>...')) % book.name)
                     self.session.commit()
-                self.create_verse(book.id, line[1], line[2],
-                    unicode(line[3], details['encoding']))
-                Receiver.send_message(u'openlp_process_events')
+                try:
+                    verse_text = unicode(line[3], details['encoding'])
+                except UnicodeError:
+                    verse_text = unicode(line[3], u'cp1252')
+                self.create_verse(book.id, line[1], line[2], verse_text)
+            self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible',
+                'Importing verses... done.'))
+            Receiver.send_message(u'openlp_process_events')
             self.session.commit()
         except IOError:
             log.exception(u'Loading verses from file failed')
@@ -112,3 +178,18 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
+
+def get_file_encoding(filename):
+    """
+    Utility function to get the file encoding.
+    """
+    detect_file = None
+    try:
+        detect_file = open(filename, 'r')
+        details = chardet.detect(detect_file.read(1024))
+    except IOError:
+        log.exception(u'Error detecting file encoding')
+    finally:
+        if detect_file:
+            detect_file.close()
+    return details

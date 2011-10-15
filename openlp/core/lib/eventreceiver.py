@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,9 +51,6 @@ class EventReceiver(QtCore.QObject):
     ``config_screen_changed``
         The display monitor has been changed
 
-    ``slidecontroller_{live|preview}_first``
-        Moves to the first slide
-
     ``slidecontroller_{live|preview}_next``
         Moves to the next slide
 
@@ -64,9 +62,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_previous_noloop``
         Moves to the previous slide, without auto advance
-
-    ``slidecontroller_{live|preview}_last``
-        Moves to the last slide
 
     ``slidecontroller_{live|preview}_set``
         Moves to a specific slide, by index
@@ -80,11 +75,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_changed``
         Broadcasts that the slidecontroller has changed the current slide
-
-    ``slidecontroller_{live|preview}_text_request``
-        Request the text for the current item in the controller
-        Returns a slidecontroller_{live|preview}_text_response with an
-        array of dictionaries with the tag and verse text
 
     ``slidecontroller_{live|preview}_blank``
         Request that the output screen is blanked
@@ -101,15 +91,15 @@ class EventReceiver(QtCore.QObject):
     ``servicemanager_previous_item``
         Display the previous item in the service
 
+    ``servicemanager_preview_live``
+        Requests a Preview item from the Service Manager to update live and
+        add a new item to the preview panel
+
     ``servicemanager_next_item``
         Display the next item in the service
 
     ``servicemanager_set_item``
         Go live on a specific item, by index
-
-    ``servicemanager_list_request``
-        Request the service list. Responds with servicemanager_list_response
-        containing a array of dictionaries
 
     ``maindisplay_blank``
         Blank the maindisplay window
@@ -207,14 +197,8 @@ class EventReceiver(QtCore.QObject):
     ``bibles_nobook``
         Attempt to find book resulted in no match
 
-    ``bibles_showprogress``
-        Show progress of bible verse import
-
-    ``bibles_hideprogress``
-        Hide progress of bible verse import
-
-    ``bibles_stop_import``
-        Stops the Bible Import
+    ``openlp_stop_wizard``
+        Stops a wizard before completion
 
     ``remotes_poll_request``
         Waits for openlp to do something "interesting" and sends a

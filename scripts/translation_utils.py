@@ -5,11 +5,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -185,25 +186,6 @@ def update_export_at_pootle(source_filename):
     page = urllib.urlopen(REVIEW_URL)
     page.close()
 
-
-def download_file(source_filename, dest_filename):
-    """
-    Download a file and save it to disk.
-
-    ``source_filename``
-        The file to download.
-
-    ``dest_filename``
-        The new local file name.
-    """
-    print_verbose(u'Downloading from: %s' % (SERVER_URL + source_filename))
-    page = urllib.urlopen(SERVER_URL + source_filename)
-    content = page.read().decode('utf8')
-    page.close()
-    file = open(dest_filename, u'w')
-    file.write(content.encode('utf8'))
-    file.close()
-
 def download_translations():
     """
     This method downloads the translation files from the Pootle server.
@@ -218,7 +200,7 @@ def download_translations():
         filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
             language_file)
         print_verbose(u'Get Translation File: %s' % filename)
-        download_file(language_file, filename)
+        urllib.urlretrieve(SERVER_URL + language_file, filename)
     print_quiet(u'   Done.')
 
 def prepare_project():
@@ -289,16 +271,6 @@ def generate_binaries():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'lrelease openlp.pro')
-        os.chdir(os.path.abspath(u'scripts'))
-        src_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
-        dest_path = os.path.join(os.path.abspath(u'..'), u'openlp', u'i18n')
-        if not os.path.exists(dest_path):
-            os.makedirs(dest_path)
-        src_list = os.listdir(src_path)
-        for file in src_list:
-            if re.search('.qm$', file):
-                copy(os.path.join(src_path, u'%s' % file),
-                    os.path.join(dest_path, u'%s' % file))
         print_quiet(u'   Done.')
 
 
@@ -313,7 +285,7 @@ def create_translation(language):
     if not language.endswith(u'.ts'):
         language += u'.ts'
     filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n', language)
-    download_file(u'en.ts', filename)
+    urllib.urlretrieve(SERVER_URL + u'en.ts', filename)
     print_quiet(u'   ** Please Note **')
     print_quiet(u'   In order to get this file into OpenLP and onto the '
         u'Pootle translation server you will need to subscribe to the '
