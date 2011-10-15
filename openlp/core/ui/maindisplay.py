@@ -57,7 +57,6 @@ class MainDisplay(QtGui.QGraphicsView):
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
         self.plugins = PluginManager.get_instance().plugins
-        self.alertTab = None
         self.rebuildCSS = False
         self.hideMode = None
         self.videoHide = False
@@ -83,18 +82,24 @@ class MainDisplay(QtGui.QGraphicsView):
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'alertTab_updated'), self.alertTabChanged)
+                QtCore.SIGNAL(u'css_update'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
 
-    def alertTabChanged(self):
-        print "alert"
+    def cssChanged(self):
+        """
+        We may need to rebuild the CSS on the live display.
+        """
         self.rebuildCSS = True
 
     def configChanged(self):
-        print "config"
-        if self.rebuildCSS:
-            print "Need to rebuild"
+        """
+        Call the plugins to rebuild the Live display CSS as the screen has
+        not been rebuild on exit of config.
+        """
+        if self.rebuildCSS and self.plugins:
+            for plugin in self.plugins:
+                plugin.refreshCss(self.frame)
         self.rebuildCSS = False
 
     def retranslateUi(self):
@@ -127,6 +132,7 @@ class MainDisplay(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        self.webView.settings().setAttribute(7, True)
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -169,7 +175,7 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None))
+                self.isLive, None))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -507,8 +513,8 @@ class MainDisplay(QtGui.QGraphicsView):
             image_bytes = self.imageManager.get_image_bytes(image)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, image_bytes, self.plugins)
+        html = build_html(self.serviceItem, self.screen, self.isLive,
+            background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

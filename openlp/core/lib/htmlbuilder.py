@@ -289,7 +289,7 @@ sup {
 </html>
 """
 
-def build_html(item, screen, alert, islive, background, image=None,
+def build_html(item, screen, islive, background, image=None,
     plugins=None):
     """
     Build the full web paged structure for display
@@ -299,9 +299,6 @@ def build_html(item, screen, alert, islive, background, image=None,
 
     ``screen``
         Current display information
-
-    ``alert``
-        Alert display display information
 
     ``islive``
         Item is going live, rather than preview/theme building
@@ -335,16 +332,13 @@ def build_html(item, screen, alert, islive, background, image=None,
     html_additions = u''
     if plugins:
         for plugin in plugins:
-            print plugin
             css_additions += plugin.getDisplayCss()
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
-    print js_additions
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         css_additions,
-        #build_alert_css(alert, width),
-        build_footer_css(item, height),
+         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',

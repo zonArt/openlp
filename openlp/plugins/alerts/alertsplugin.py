@@ -68,6 +68,16 @@ JAVASCRIPT = """
         text.style.visibility = 'visible';
         return text.clientHeight;
     }
+
+    function update_css(align, font, size, color, bgcolor){
+        var text = document.getElementById('alert');
+        alert("Hello");
+        document.getElementById('alert').style.verticalalign = align;
+        text.style.fontfamily = font;
+        text.style.size = size;
+        text.style.color = color;
+        text.style.backgroundColor = bgcolor;
+    }
 """
 CSS = """
     #alert {
@@ -128,7 +138,6 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
-        self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
         """
@@ -182,3 +191,9 @@ class AlertsPlugin(Plugin):
 
     def getDisplayHtml(self):
         return HTML
+
+    def refreshCss(self, frame):
+        align = VerticalType.Names[self.settings_tab.location]
+        frame.evaluateJavaScript(u'update_css("%s,%s,%s,%s,%s")' % (align,
+            self.settings_tab.font_face, self.settings_tab.font_size,
+            self.settings_tab.font_color, self.settings_tab.bg_color))

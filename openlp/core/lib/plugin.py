@@ -381,6 +381,12 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
+    def refreshCss(self, frame):
+        """
+        Allow plugins to refresh javascript of displayed screen
+        """
+        return u''
+
     def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
