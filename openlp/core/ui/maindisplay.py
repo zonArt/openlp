@@ -123,14 +123,6 @@ class MainDisplay(QtGui.QGraphicsView):
             QtCore.Qt.ScrollBarAlwaysOff)
         if self.isLive:
             # Build the initial frame.
-            self.black = QtGui.QImage(
-                self.screen[u'size'].width(),
-                self.screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.black)
-            painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
-            # Build the initial frame.
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
