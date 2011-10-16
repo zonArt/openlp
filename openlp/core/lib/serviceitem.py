@@ -159,8 +159,8 @@ class ServiceItem(object):
     def render(self, use_override=False):
         """
         The render method is what generates the frames for the screen and
-        obtains the display information from the renderemanager. At this point
-        all the slides are built for the given display size.
+        obtains the display information from the renderer. At this point all
+        slides are built for the given display size.
         """
         log.debug(u'Render called')
         self._display_frames = []
