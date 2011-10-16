@@ -194,7 +194,7 @@ class SofImport(OooImport):
         into line
         """
         text = textportion.getString()
-        text = self.tidy_text(text)
+        text = self.tidyText(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
