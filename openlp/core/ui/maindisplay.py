@@ -191,17 +191,14 @@ class MainDisplay(QtGui.QGraphicsView):
 
     def alert(self, text):
         """
-        Add the alert text. If the alert was not displayed, because the screen
-        is not visible ``False`` is returned, otherwise ``True``.
+        Display an alert.
 
-        ``slide``
-            The slide text to be displayed.
+        ``text``
+            The text to be displayed.
         """
         log.debug(u'alert to display')
-        if not self.isVisible():
-            return False
-        if self.height() != self.screen[u'size'].height() or \
-            self.videoWidget.isVisible():
+        if self.height() != self.screen[u'size'].height() or not \
+            self.isVisible() or self.videoWidget.isVisible():
             shrink = True
             js = u'show_alert("%s", "%s")' % (
                 text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
@@ -229,7 +226,6 @@ class MainDisplay(QtGui.QGraphicsView):
             else:
                 shrinkItem.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
-        return True
 
     def directImage(self, name, path, background):
         """
