@@ -82,7 +82,7 @@ class MainDisplay(QtGui.QGraphicsView):
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'css_update'), self.cssChanged)
+                QtCore.SIGNAL(u'maindisplay_css_updated'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
 

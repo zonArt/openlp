@@ -179,18 +179,33 @@ class AlertsPlugin(Plugin):
         }
 
     def getDisplayJavaScript(self):
+        """
+        Add Javascript to the main display.
+        """
         return JAVASCRIPT
 
     def getDisplayCss(self):
+        """
+        Add CSS to the main display.
+        """
         align = VerticalType.Names[self.settings_tab.location]
         return CSS % (align, self.settings_tab.font_face,
             self.settings_tab.font_size, self.settings_tab.font_color,
             self.settings_tab.bg_color)
 
     def getDisplayHtml(self):
+        """
+        Add HTML to the main display.
+        """
         return HTML
 
     def refreshCss(self, frame):
+        """
+        Trigger an update of the CSS in the maindisplay.
+
+        `frame`
+            The Web frame holding the page
+        """
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
             (align, self.settings_tab.font_face, self.settings_tab.font_size,

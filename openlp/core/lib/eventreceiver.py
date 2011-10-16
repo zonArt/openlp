@@ -219,6 +219,11 @@ class EventReceiver(QtCore.QObject):
     ``cursor_normal``
         Resets the cursor to default
 
+
+    ``maindisplay_css_updated``
+        CSS has been updated which needs to be changed on the main display.
+
+
     """
     def __init__(self):
         """

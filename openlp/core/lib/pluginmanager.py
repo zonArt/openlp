@@ -44,6 +44,9 @@ class PluginManager(object):
 
     @staticmethod
     def get_instance():
+        """
+        Obtain a single instance of class.
+        """
         return PluginManager.instance
 
     def __init__(self, plugin_dir):
