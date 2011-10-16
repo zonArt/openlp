@@ -338,7 +338,7 @@ def build_html(item, screen, islive, background, image=None,
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         css_additions,
-         build_footer_css(item, height),
+        build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',

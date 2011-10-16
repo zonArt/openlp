@@ -371,25 +371,25 @@ class Plugin(QtCore.QObject):
 
     def getDisplayCss(self):
         """
-        Add css style sheets to htmlbuilder
+        Add css style sheets to htmlbuilder.
         """
         return u''
 
     def getDisplayJavaScript(self):
         """
-        Add javascript functions to htmlbuilder
+        Add javascript functions to htmlbuilder.
         """
         return u''
 
     def refreshCss(self, frame):
         """
-        Allow plugins to refresh javascript of displayed screen
+        Allow plugins to refresh javascript on displayed screen.
         """
         return u''
 
     def getDisplayHtml(self):
         """
-        Add html code to htmlbuilder
+        Add html code to htmlbuilder.
         """
         return u''
 

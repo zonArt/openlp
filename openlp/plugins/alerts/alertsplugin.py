@@ -183,10 +183,9 @@ class AlertsPlugin(Plugin):
 
     def getDisplayCss(self):
         align = VerticalType.Names[self.settings_tab.location]
-        alert = CSS % (align, self.settings_tab.font_face,
+        return CSS % (align, self.settings_tab.font_face,
             self.settings_tab.font_size, self.settings_tab.font_color,
             self.settings_tab.bg_color)
-        return alert
 
     def getDisplayHtml(self):
         return HTML
