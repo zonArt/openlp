@@ -71,10 +71,9 @@ JAVASCRIPT = """
 
     function update_css(align, font, size, color, bgcolor){
         var text = document.getElementById('alert');
-        alert("Hello");
-        document.getElementById('alert').style.verticalalign = align;
-        text.style.fontfamily = font;
-        text.style.size = size;
+        text.style.verticalAlign = align;
+        text.style.fontSize = size + "pt";
+        text.style.fontFamily = font;
         text.style.color = color;
         text.style.backgroundColor = bgcolor;
     }
@@ -194,6 +193,6 @@ class AlertsPlugin(Plugin):
 
     def refreshCss(self, frame):
         align = VerticalType.Names[self.settings_tab.location]
-        frame.evaluateJavaScript(u'update_css("%s,%s,%s,%s,%s")' % (align,
-            self.settings_tab.font_face, self.settings_tab.font_size,
+        frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
+            (align, self.settings_tab.font_face, self.settings_tab.font_size,
             self.settings_tab.font_color, self.settings_tab.bg_color))

@@ -132,7 +132,9 @@ class MainDisplay(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
-        self.webView.settings().setAttribute(7, True)
+        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+            self.webView.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
