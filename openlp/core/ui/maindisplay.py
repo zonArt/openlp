@@ -345,7 +345,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         # We request a background video but have no service Item
         if isBackground and not hasattr(self, u'serviceItem'):
-            return None
+            return False
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
@@ -372,6 +372,7 @@ class MainDisplay(QtGui.QGraphicsView):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+        return True
 
     def videoState(self, newState, oldState):
         """
