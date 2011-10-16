@@ -122,9 +122,8 @@ class ServiceItem(object):
 
     def _new_item(self):
         """
-        Method to set the internal id of the item
-        This is used to compare service items to see if they are
-        the same
+        Method to set the internal id of the item. This is used to compare
+        service items to see if they are the same.
         """
         self._uuid = unicode(uuid.uuid1())
 
@@ -160,9 +159,8 @@ class ServiceItem(object):
     def render(self, use_override=False):
         """
         The render method is what generates the frames for the screen and
-        obtains the display information from the renderemanager.
-        At this point all the slides are built for the given
-        display size.
+        obtains the display information from the renderer. At this point all
+        slides are built for the given display size.
         """
         log.debug(u'Render called')
         self._display_frames = []

@@ -39,7 +39,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QPixmap(u':/media/media_video.png').toImage()
+CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -95,14 +95,14 @@ class MediaMediaItem(MediaManagerItem):
 
     def onResetClick(self):
         """
-        Called to reset the Live backgound with the media selected,
+        Called to reset the Live backgound with the media selected.
         """
         self.resetAction.setVisible(False)
         self.plugin.liveController.display.resetVideo()
 
     def videobackgroundReplaced(self):
         """
-        Triggered by main display on change of serviceitem
+        Triggered by main display on change of serviceitem.
         """
         self.resetAction.setVisible(False)
 
@@ -179,8 +179,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def mediaStateWait(self, mediaState):
         """
-        Wait for the video to change its state
-        Wait no longer than 5 seconds.
+        Wait for the video to change its state. Wait no longer than 5 seconds.
         """
         start = datetime.now()
         while self.mediaObject.state() != mediaState:
@@ -198,7 +197,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         """
-        Remove a media item from the list
+        Remove a media item from the list.
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
             'You must select a media file to delete.')):
