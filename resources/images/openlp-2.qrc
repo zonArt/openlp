@@ -60,8 +60,6 @@
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>
-    <file>slide_first.png</file>
-    <file>slide_last.png</file>
     <file>slide_next.png</file>
     <file>slide_blank.png</file>
     <file>slide_desktop.png</file>

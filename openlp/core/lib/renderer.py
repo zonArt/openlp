@@ -57,14 +57,14 @@ class Renderer(object):
 
     def __init__(self, imageManager, themeManager, plugins):
         """
-        Initialise the render manager.
+        Initialise the renderer.
 
     ``imageManager``
-        A ImageManager instance which takes care of e. g. caching and resizing
+        A imageManager instance which takes care of e. g. caching and resizing
         images.
 
     ``themeManager``
-        The ThemeManager instance, used to get the current theme details.
+        The themeManager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
@@ -83,7 +83,7 @@ class Renderer(object):
 
     def update_display(self):
         """
-        Updates the render manager's information about the current screen.
+        Updates the renderer's information about the current screen.
         """
         log.debug(u'Update Display')
         self._calculate_default()
@@ -204,7 +204,8 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            preview = self.display.text(raw_html)
+            self.display.text(raw_html)
+            preview = self.display.preview()
             # Reset the real screen size for subsequent render requests
             self._calculate_default()
             return preview
@@ -307,21 +308,37 @@ class Renderer(object):
             The theme to build a text block for.
         """
         log.debug(u'_build_text_rectangle')
-        main_rect = None
-        footer_rect = None
+        main_rect = self.get_main_rectangle(theme)
+        footer_rect = self.get_footer_rectangle(theme)
+        self._set_text_rectangle(main_rect, footer_rect)
+
+    def get_main_rectangle(self, theme):
+        """
+        Calculates the placement and size of the main rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
-            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+            return QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
+
+    def get_footer_rectangle(self, theme):
+        """
+        Calculates the placement and size of the footer rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+            return QtCore.QRect(10, self.footer_start, self.width - 20,
                 self.height - self.footer_start)
         else:
-            footer_rect = QtCore.QRect(theme.font_footer_x,
+            return QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
                 theme.font_footer_height - 1)
-        self._set_text_rectangle(main_rect, footer_rect)
 
     def _set_text_rectangle(self, rect_main, rect_footer):
         """

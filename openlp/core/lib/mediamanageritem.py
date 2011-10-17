@@ -425,44 +425,6 @@ class MediaManagerItem(QtGui.QWidget):
             count += 1
         return filelist
 
-    def validate(self, image, thumb):
-        """
-        Validates whether an image still exists and, if it does, is the
-        thumbnail representation of the image up to date.
-        """
-        if not os.path.exists(unicode(image)):
-            return False
-        if os.path.exists(thumb):
-            imageDate = os.stat(unicode(image)).st_mtime
-            thumbDate = os.stat(unicode(thumb)).st_mtime
-            # If image has been updated rebuild icon
-            if imageDate > thumbDate:
-                self.iconFromFile(image, thumb)
-        else:
-            self.iconFromFile(image, thumb)
-        return True
-
-    def iconFromFile(self, image_path, thumb_path):
-        """
-        Create a thumbnail icon from a given image.
-
-        ``image_path``
-            The image file to create the icon from.
-
-        ``thumb_path``
-            The filename to save the thumbnail to.
-        """
-        ext = os.path.splitext(thumb_path)[1].lower()
-        reader = QtGui.QImageReader(image_path)
-        ratio = float(reader.size().width()) / float(reader.size().height())
-        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
-        thumb = reader.read()
-        thumb.save(thumb_path, ext[1:])
-        if os.path.exists(thumb_path):
-            return build_icon(unicode(thumb_path))
-        # Fallback for files with animation support.
-        return build_icon(unicode(image_path))
-
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
             u'defined by the plugin')

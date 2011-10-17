@@ -144,6 +144,59 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
+def create_thumb(image_path, thumb_path, return_icon=True, size=None):
+    """
+    Create a thumbnail from the given image path and depending on
+    ``return_icon`` it returns an icon from this thumb.
+
+    ``image_path``
+        The image file to create the icon from.
+
+    ``thumb_path``
+        The filename to save the thumbnail to.
+
+    ``return_icon``
+        States if an icon should be build and returned from the thumb. Defaults
+        to ``True``.
+
+    ``size``
+        Allows to state a own size to use. Defaults to ``None``, which means
+        that a default height of 88 is used.
+    """
+    ext = os.path.splitext(thumb_path)[1].lower()
+    reader = QtGui.QImageReader(image_path)
+    if size is None:
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+    else:
+        reader.setScaledSize(size)
+    thumb = reader.read()
+    thumb.save(thumb_path, ext[1:])
+    if not return_icon:
+        return
+    if os.path.exists(thumb_path):
+        return build_icon(unicode(thumb_path))
+    # Fallback for files with animation support.
+    return build_icon(unicode(image_path))
+
+def validate_thumb(file_path, thumb_path):
+    """
+    Validates whether an file's thumb still exists and if is up to date.
+    **Note**, you must **not** call this function, before checking the
+    existence of the file.
+
+    ``file_path``
+        The path to the file. The file **must** exist!
+
+    ``thumb_path``
+        The path to the thumb.
+    """
+    if not os.path.exists(unicode(thumb_path)):
+        return False
+    image_date = os.stat(unicode(file_path)).st_mtime
+    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    return image_date <= thumb_date
+
 def resize_image(image_path, width, height, background=u'#000000'):
     """
     Resize an image to fit on the current screen.
@@ -158,7 +211,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
         The new image height.
 
     ``background``
-        The background colour defaults to black.
+        The background colour. Defaults to black.
 
     DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
