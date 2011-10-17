@@ -60,7 +60,7 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
         </lyrics>
     </song>
 """
-
+import cgi
 import logging
 import re
 
@@ -257,11 +257,12 @@ class OpenLyrics(object):
 
     """
     IMPLEMENTED_VERSION = u'0.8'
+    START_TAGS_REGEX = re.compile(r'\{(\w+)\}')
+    END_TAGS_REGEX = re.compile(r'\{\/(\w+)\}')
+    VERSE_NUMBER_REGEX = re.compile(u'[a-zA-Z]*')
 
     def __init__(self, manager):
         self.manager = manager
-        self.start_tags_regex = re.compile(r'\{(\w+)\}')  # {abc} -> abc
-        self.end_tags_regex = re.compile(r'\{\/(\w+)\}')  # {/abc} -> abc
 
     def song_to_xml(self, song):
         """
@@ -334,7 +335,8 @@ class OpenLyrics(object):
             if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "virtual" verses.
-            virtual_verses = verse[1].split(u'[---]')
+            virtual_verses = cgi.escape(verse[1])
+            virtual_verses = virtual_verses.split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
                 # Add formatting tags to text
                 lines_element = self._add_text_with_tags_to_lines(verse_element,
@@ -402,32 +404,32 @@ class OpenLyrics(object):
 
     def _add_tag_to_formatting(self, tag_name, tags_element):
         """
-        Add new formatting tag to the element ``<format>``
-        if the tag is not present yet.
+        Add new formatting tag to the element ``<format>`` if the tag is not
+        present yet.
         """
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
-        for t in available_tags:
-            if t[u'start tag'] == start_tag:
+        for tag in available_tags:
+            if tag[u'start tag'] == start_tag:
                 # Create new formatting tag in openlyrics xml.
-                el = self._add_text_to_element(u'tag', tags_element)
-                el.set(u'name', tag_name)
-                el_open = self._add_text_to_element(u'open', el)
-                el_open.text = etree.CDATA(t[u'start html'])
+                element = self._add_text_to_element(u'tag', tags_element)
+                element.set(u'name', tag_name)
+                element_open = self._add_text_to_element(u'open', element)
+                element_open.text = etree.CDATA(tag[u'start html'])
                 # Check if formatting tag contains end tag. Some formatting
                 # tags e.g. {br} has only start tag. If no end tag is present
                 # <close> element has not to be in OpenLyrics xml.
-                if t['end tag']:
-                    el_close = self._add_text_to_element(u'close', el)
-                    el_close.text = etree.CDATA(t[u'end html'])
+                if tag['end tag']:
+                    element_close = self._add_text_to_element(u'close', element)
+                    element_close.text = etree.CDATA(tag[u'end html'])
 
     def _add_text_with_tags_to_lines(self, verse_element, text, tags_element):
         """
         Convert text with formatting tags from OpenLP format to OpenLyrics
         format and append it to element ``<lines>``.
         """
-        start_tags = self.start_tags_regex.findall(text)
-        end_tags = self.end_tags_regex.findall(text)
+        start_tags = OpenLyrics.START_TAGS_REGEX.findall(text)
+        end_tags = OpenLyrics.END_TAGS_REGEX.findall(text)
         # Replace start tags with xml syntax.
         for tag in start_tags:
             # Tags already converted to xml structure.
@@ -442,12 +444,11 @@ class OpenLyrics(object):
             if tag not in xml_tags:
                 self._add_tag_to_formatting(tag, tags_element)
         # Replace end tags.
-        for t in end_tags:
-            text = text.replace(u'{/%s}' % t, u'</tag>')
+        for tag in end_tags:
+            text = text.replace(u'{/%s}' % tag, u'</tag>')
         # Replace \n with <br/>.
         text = text.replace(u'\n', u'<br/>')
-        text = u'<lines>' + text + u'</lines>'
-        element = etree.XML(text)
+        element = etree.XML(u'<lines>%s</lines>' % text)
         verse_element.append(element)
         return element
 
@@ -692,7 +693,7 @@ class OpenLyrics(object):
                 verse_tag = verse_def[0]
             else:
                 verse_tag = VerseType.Tags[VerseType.Other]
-            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_def)
+            verse_number = OpenLyrics.VERSE_NUMBER_REGEX.sub(u'', verse_def)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:

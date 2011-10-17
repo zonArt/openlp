@@ -87,7 +87,7 @@ class PresentationPlugin(Plugin):
         to close down their applications and release resources.
         """
         log.info(u'Plugin Finalise')
-        #Ask each controller to tidy up
+        # Ask each controller to tidy up.
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.enabled():

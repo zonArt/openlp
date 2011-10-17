@@ -461,6 +461,11 @@ class BibleImportForm(OpenLPWizard):
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
+            elif self.field(u'source_format').toInt()[0] == \
+                BibleFormat.WebDownload:
+                self.versionNameEdit.setText(
+                    self.webTranslationComboBox.currentText())
+                return True
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
                     critical_error_message_box(UiStrings().NFSs,
@@ -674,7 +679,7 @@ class BibleImportForm(OpenLPWizard):
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
-                name=license_version, 
+                name=license_version,
                 booksfile=unicode(self.field(u'csv_booksfile').toString()),
                 versefile=unicode(self.field(u'csv_versefile').toString())
             )

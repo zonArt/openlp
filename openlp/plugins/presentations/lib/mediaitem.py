@@ -32,7 +32,8 @@ import locale
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
-    translate, check_item_selected, Receiver, ItemCapabilities
+    translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
+    validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
@@ -193,10 +194,13 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.load_presentation()
                     preview = doc.get_thumbnail_path(1, True)
                 doc.close_presentation()
-                if preview and self.validate(preview, thumb):
-                    icon = build_icon(thumb)
-                else:
+                if not (preview and os.path.exists(preview)):
                     icon = build_icon(u':/general/general_delete.png')
+                else:
+                    if validate_thumb(preview, thumb):
+                        icon = build_icon(thumb)
+                    else:
+                        icon = create_thumb(preview, thumb)
             else:
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')

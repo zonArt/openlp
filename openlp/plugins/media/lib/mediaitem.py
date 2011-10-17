@@ -41,7 +41,7 @@ from openlp.plugins.media.forms import MediaOpenForm
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QPixmap(u':/media/media_video.png').toImage()
+CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -163,7 +163,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def videobackgroundReplaced(self):
         """
-        Triggered by main display on change of serviceitem
+        Triggered by main display on change of serviceitem.
         """
         self.resetAction.setVisible(False)
 
@@ -263,7 +263,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         """
-        Remove a media item from the list
+        Remove a media item from the list.
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
             'You must select a media file to delete.')):
