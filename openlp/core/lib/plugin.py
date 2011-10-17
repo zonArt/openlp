@@ -384,6 +384,9 @@ class Plugin(QtCore.QObject):
     def refreshCss(self, frame):
         """
         Allow plugins to refresh javascript on displayed screen.
+
+        ``frame``
+            The Web frame holding the page.
         """
         return u''
 

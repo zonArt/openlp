@@ -203,8 +203,8 @@ class AlertsPlugin(Plugin):
         """
         Trigger an update of the CSS in the maindisplay.
 
-        `frame`
-            The Web frame holding the page
+        ``frame``
+            The Web frame holding the page.
         """
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
