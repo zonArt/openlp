@@ -191,16 +191,20 @@ class MediaController(object):
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.seekSlider.setMaximum(1000)
+        controller.seekSlider.setToolTip(translate(
+            'OpenLP.SlideController', 'Video position.'))
+        controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        controller.seekSlider.setObjectName(u'seekSlider')
+        controller.mediabar.addToolbarWidget(u'Seek Slider', controller.seekSlider)
         # Build the volumeSlider.
         controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.volumeSlider.setTickInterval(10)
         controller.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
         controller.volumeSlider.setMinimum(0)
         controller.volumeSlider.setMaximum(100)
+        controller.volumeSlider.setToolTip(translate(
+            'OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
-        controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        controller.seekSlider.setObjectName(u'seekSlider')
-        controller.mediabar.addToolbarWidget(u'Seek Slider', controller.seekSlider)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
         controller.mediabar.addToolbarWidget(u'Audio Volume', controller.volumeSlider)
