@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList
 
@@ -56,7 +56,8 @@ class MainDisplay(QtGui.QGraphicsView):
         self.isLive = live
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
-        self.alertTab = None
+        self.plugins = PluginManager.get_instance().plugins
+        self.rebuildCSS = False
         self.hideMode = None
         self.videoHide = False
         self.override = {}
@@ -80,6 +81,26 @@ class MainDisplay(QtGui.QGraphicsView):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def cssChanged(self):
+        """
+        We may need to rebuild the CSS on the live display.
+        """
+        self.rebuildCSS = True
+
+    def configChanged(self):
+        """
+        Call the plugins to rebuild the Live display CSS as the screen has
+        not been rebuild on exit of config.
+        """
+        if self.rebuildCSS and self.plugins:
+            for plugin in self.plugins:
+                plugin.refreshCss(self.frame)
+        self.rebuildCSS = False
 
     def retranslateUi(self):
         """
@@ -111,6 +132,9 @@ class MainDisplay(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+            self.webView.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -153,7 +177,7 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None))
+                self.isLive, None))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -492,8 +516,8 @@ class MainDisplay(QtGui.QGraphicsView):
             image_bytes = self.imageManager.get_image_bytes(image)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, image_bytes)
+        html = build_html(self.serviceItem, self.screen, self.isLive,
+            background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

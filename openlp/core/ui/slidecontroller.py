@@ -79,7 +79,6 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
-        self.alertTab = None
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -423,7 +422,6 @@ class SlideController(QtGui.QWidget):
         if self.display:
             self.display.close()
         self.display = MainDisplay(self, self.imageManager, self.isLive)
-        self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
