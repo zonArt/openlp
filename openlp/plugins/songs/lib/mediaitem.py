@@ -397,7 +397,8 @@ class SongMediaItem(MediaManagerItem):
                     try:
                         os.remove(media_file.file_name)
                     except:
-                        log.exception('Could not remove file: %s', audio)
+                        log.exception('Could not remove file: %s',
+                            media_file.file_name)
                 try:
                     save_path = os.path.join(AppLocation.get_section_data_path(
                         self.plugin.name), 'audio', str(item_id))
@@ -428,11 +429,9 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        log.debug(u'generateSlideData: %s, %s, %s' % (service_item, item, self.remoteSong))
-        # The ``None`` below is a workaround for bug #812289 - I think that Qt
-        # deletes the item somewhere along the line because the user is taking
-        # so long to update their item (or something weird like that).
-        item_id = self._getIdOfItemToGenerate(None, self.remoteSong)
+        log.debug(u'generateSlideData: %s, %s, %s' %
+            (service_item, item, self.remoteSong))
+        item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
@@ -512,7 +511,8 @@ class SongMediaItem(MediaManagerItem):
         # Add the audio file to the service item.
         if len(song.media_files) > 0:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
-            service_item.background_audio = [m.file_name for m in song.media_files]
+            service_item.background_audio = \
+                [m.file_name for m in song.media_files]
         return True
 
     def serviceLoad(self, item):

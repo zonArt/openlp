@@ -56,7 +56,6 @@ except ImportError:
     SQLITE_VERSION = u'-'
 
 from openlp.core.lib import translate, SettingsManager
-from openlp.core.lib.mailto import mailto
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -159,12 +158,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
+        mailto_url = QtCore.QUrl(u'mailto:bugs@openlp.org')
+        mailto_url.addQueryItem(u'subject', subject)
+        mailto_url.addQueryItem(u'body', body % content)
         if self.fileAttachment:
-            mailto(address=u'bugs@openlp.org', subject=subject,
-                body=body % content, attach=self.fileAttachment)
-        else:
-            mailto(address=u'bugs@openlp.org', subject=subject,
-                body=body % content)
+            mailto_url.addQueryItem(u'attach', self.fileAttachment)
+        QtGui.QDesktopServices.openUrl(mailto_url)
 
     def onDescriptionUpdated(self):
         count = int(20 - len(self.descriptionTextEdit.toPlainText()))

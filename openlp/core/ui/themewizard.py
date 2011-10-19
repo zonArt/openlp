@@ -38,7 +38,8 @@ class Ui_ThemeWizard(object):
         themeWizard.setModal(True)
         themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage)
+            QtGui.QWizard.NoBackButtonOnStartPage |
+            QtGui.QWizard.HaveCustomButton1)
         self.spacer = QtGui.QSpacerItem(10, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
@@ -246,7 +247,7 @@ class Ui_ThemeWizard(object):
         self.horizontalLabel = QtGui.QLabel(self.alignmentPage)
         self.horizontalLabel.setObjectName(u'HorizontalLabel')
         self.horizontalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.horizontalComboBox.addItems([u'', u'', u''])
+        self.horizontalComboBox.addItems([u'', u'', u'', u''])
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
@@ -495,6 +496,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Right'))
         self.horizontalComboBox.setItemText(HorizontalType.Center,
             translate('OpenLP.ThemeWizard', 'Center'))
+        self.horizontalComboBox.setItemText(HorizontalType.Justify,
+            translate('OpenLP.ThemeWizard', 'Justify'))
         self.transitionsLabel.setText(
             translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(
@@ -533,6 +536,9 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'px'))
         self.footerPositionCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Use default location'))
+        themeWizard.setOption(QtGui.QWizard.HaveCustomButton1, False)
+        themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
+            translate('OpenLP.ThemeWizard', 'Layout Preview'))
         self.previewPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Save and Preview'))
         self.previewPage.setSubTitle(

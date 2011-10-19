@@ -57,6 +57,9 @@ class RemoteTab(SettingsTab):
         QtCore.QObject.connect(self.addressEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.setUrls)
         self.serverSettingsLayout.addRow(self.addressLabel, self.addressEdit)
+        self.twelveHourCheckBox = QtGui.QCheckBox(self.serverSettingsGroupBox)
+        self.twelveHourCheckBox.setObjectName(u'twelveHourCheckBox')
+        self.serverSettingsLayout.addRow(self.twelveHourCheckBox)
         self.portLabel = QtGui.QLabel(self.serverSettingsGroupBox)
         self.portLabel.setObjectName(u'portLabel')
         self.portSpinBox = QtGui.QSpinBox(self.serverSettingsGroupBox)
@@ -80,6 +83,9 @@ class RemoteTab(SettingsTab):
         self.leftLayout.addWidget(self.serverSettingsGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
+        QtCore.QObject.connect(self.twelveHourCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onTwelveHourCheckBoxChanged)
 
     def retranslateUi(self):
         self.serverSettingsGroupBox.setTitle(
@@ -92,6 +98,9 @@ class RemoteTab(SettingsTab):
             'Remote URL:'))
         self.stageUrlLabel.setText(translate('RemotePlugin.RemoteTab',
             'Stage view URL:'))
+        self.twelveHourCheckBox.setText(
+            translate('RemotePlugin.RemoteTab',
+            'Display stage time in 12h format'))
 
     def setUrls(self):
         ipAddress = u'localhost'
@@ -123,6 +132,10 @@ class RemoteTab(SettingsTab):
         self.addressEdit.setText(
             QtCore.QSettings().value(self.settingsSection + u'/ip address',
                 QtCore.QVariant(ZERO_URL)).toString())
+        self.twelveHour = QtCore.QSettings().value(
+            self.settingsSection + u'/twelve hour',
+            QtCore.QVariant(True)).toBool()
+        self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
@@ -130,3 +143,11 @@ class RemoteTab(SettingsTab):
             QtCore.QVariant(self.portSpinBox.value()))
         QtCore.QSettings().setValue(self.settingsSection + u'/ip address',
             QtCore.QVariant(self.addressEdit.text()))
+        QtCore.QSettings().setValue(self.settingsSection + u'/twelve hour',
+            QtCore.QVariant(self.twelveHour))
+
+    def onTwelveHourCheckBoxChanged(self, check_state):
+        self.twelveHour = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.twelveHour = True

@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver
+    Receiver, create_thumb, validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -127,13 +127,13 @@ class ImageMediaItem(MediaManagerItem):
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
-            if os.path.exists(thumb):
-                if self.validate(imageFile, thumb):
+            if not os.path.exists(imageFile):
+                icon = build_icon(u':/general/general_delete.png')
+            else:
+                if validate_thumb(imageFile, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = build_icon(u':/general/general_delete.png')
-            else:
-                icon = self.iconFromFile(imageFile, thumb)
+                    icon = create_thumb(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)

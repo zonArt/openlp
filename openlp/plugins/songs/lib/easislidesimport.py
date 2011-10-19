@@ -258,7 +258,7 @@ class EasiSlidesImport(SongImport):
                     verses[reg][vt][vn] = {}
                 if not verses[reg][vt][vn].has_key(inst):
                     verses[reg][vt][vn][inst] = []
-                words = self.tidy_text(line)
+                words = self.tidyText(line)
                 verses[reg][vt][vn][inst].append(words)
         # done parsing
 

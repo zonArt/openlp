@@ -44,6 +44,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class Renderer(object):
@@ -56,14 +57,14 @@ class Renderer(object):
 
     def __init__(self, imageManager, themeManager):
         """
-        Initialise the render manager.
+        Initialise the renderer.
 
     ``imageManager``
-        A ImageManager instance which takes care of e. g. caching and resizing
+        A imageManager instance which takes care of e. g. caching and resizing
         images.
 
     ``themeManager``
-        The ThemeManager instance, used to get the current theme details.
+        The themeManager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
@@ -80,7 +81,7 @@ class Renderer(object):
 
     def update_display(self):
         """
-        Updates the render manager's information about the current screen.
+        Updates the renderer's information about the current screen.
         """
         log.debug(u'Update Display')
         self._calculate_default()
@@ -190,7 +191,7 @@ class Renderer(object):
         serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE)
+            serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
             self.imageManager.del_image(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
@@ -200,7 +201,8 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            preview = self.display.text(raw_html)
+            self.display.text(raw_html)
+            preview = self.display.preview()
             # Reset the real screen size for subsequent render requests
             self._calculate_default()
             return preview
@@ -224,14 +226,10 @@ class Renderer(object):
         # Bibles
         if item.is_capable(ItemCapabilities.CanWordSplit):
             pages = self._paginate_slide_words(text.split(u'\n'), line_end)
-        else:
-            # Clean up line endings.
-            lines = self._lines_split(text)
-            pages = self._paginate_slide(lines, line_end)
-            # Songs and Custom
-            if item.is_capable(ItemCapabilities.CanSoftBreak) and \
-                len(pages) > 1 and u'[---]' in text:
-                pages = []
+        # Songs and Custom
+        elif item.is_capable(ItemCapabilities.CanSoftBreak):
+            pages = []
+            if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use
@@ -272,6 +270,11 @@ class Renderer(object):
                         lines = text.strip(u'\n').split(u'\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
+            else:
+                # Clean up line endings.
+                pages = self._paginate_slide(text.split(u'\n'), line_end)
+        else:
+            pages = self._paginate_slide(text.split(u'\n'), line_end)
         new_pages = []
         for page in pages:
             while page.endswith(u'<br>'):
@@ -302,21 +305,37 @@ class Renderer(object):
             The theme to build a text block for.
         """
         log.debug(u'_build_text_rectangle')
-        main_rect = None
-        footer_rect = None
+        main_rect = self.get_main_rectangle(theme)
+        footer_rect = self.get_footer_rectangle(theme)
+        self._set_text_rectangle(main_rect, footer_rect)
+
+    def get_main_rectangle(self, theme):
+        """
+        Calculates the placement and size of the main rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
-            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+            return QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
+
+    def get_footer_rectangle(self, theme):
+        """
+        Calculates the placement and size of the footer rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+            return QtCore.QRect(10, self.footer_start, self.width - 20,
                 self.height - self.footer_start)
         else:
-            footer_rect = QtCore.QRect(theme.font_footer_x,
+            return QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
                 theme.font_footer_height - 1)
-        self._set_text_rectangle(main_rect, footer_rect)
 
     def _set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -585,12 +604,3 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
-
-    def _lines_split(self, text):
-        """
-        Split the slide up by physical line
-        """
-        # this parse we do not want to use this so remove it
-        text = text.replace(u'\n[---]', u'')
-        text = text.replace(u'[---]', u'')
-        return text.split(u'\n')

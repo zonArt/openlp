@@ -51,9 +51,6 @@ class EventReceiver(QtCore.QObject):
     ``config_screen_changed``
         The display monitor has been changed
 
-    ``slidecontroller_{live|preview}_first``
-        Moves to the first slide
-
     ``slidecontroller_{live|preview}_next``
         Moves to the next slide
 
@@ -65,9 +62,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_previous_noloop``
         Moves to the previous slide, without auto advance
-
-    ``slidecontroller_{live|preview}_last``
-        Moves to the last slide
 
     ``slidecontroller_{live|preview}_set``
         Moves to a specific slide, by index
@@ -81,11 +75,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_changed``
         Broadcasts that the slidecontroller has changed the current slide
-
-    ``slidecontroller_{live|preview}_text_request``
-        Request the text for the current item in the controller
-        Returns a slidecontroller_{live|preview}_text_response with an
-        array of dictionaries with the tag and verse text
 
     ``slidecontroller_{live|preview}_blank``
         Request that the output screen is blanked

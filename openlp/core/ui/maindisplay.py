@@ -194,7 +194,6 @@ class MainDisplay(QtGui.QGraphicsView):
         self.setGeometry(self.screen[u'size'])
         self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.preview()
 
     def alert(self, text):
         """
@@ -256,7 +255,6 @@ class MainDisplay(QtGui.QGraphicsView):
         image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
-        return self.preview()
 
     def displayImage(self, image):
         """
@@ -357,7 +355,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         # We request a background video but have no service Item
         if isBackground and not hasattr(self, u'serviceItem'):
-            return None
+            return False
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
@@ -387,7 +385,7 @@ class MainDisplay(QtGui.QGraphicsView):
         # Update the preview frame.
         if self.isLive:
             Receiver.send_message(u'maindisplay_active')
-        return self.preview()
+        return True
 
     def videoState(self, newState, oldState):
         """
@@ -455,9 +453,8 @@ class MainDisplay(QtGui.QGraphicsView):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        preview = QtGui.QImage(self.screen[u'size'].width(),
-            self.screen[u'size'].height(),
-            QtGui.QImage.Format_ARGB32_Premultiplied)
+        preview = QtGui.QPixmap(self.screen[u'size'].width(),
+            self.screen[u'size'].height())
         painter = QtGui.QPainter(preview)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)

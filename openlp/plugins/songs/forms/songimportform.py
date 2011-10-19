@@ -240,8 +240,9 @@ class SongImportForm(OpenLPWizard):
         self.formatLabel.setText(WizardStrings.FormatLabel)
         self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings().OLPV2)
         self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings().OLPV1)
-        self.formatComboBox.setItemText(
-            SongFormat.OpenLyrics, WizardStrings.OL)
+        self.formatComboBox.setItemText(SongFormat.OpenLyrics,
+            translate('SongsPlugin.ImportWizardForm',
+            'OpenLyrics or OpenLP 2.0 Exported Song'))
         self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(
             SongFormat.WordsOfWorship, WizardStrings.WoW)
@@ -508,7 +509,8 @@ class SongImportForm(OpenLPWizard):
         Get OpenLyrics song database files
         """
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.OL,
-            self.openLyricsFileListWidget)
+            self.openLyricsFileListWidget, u'%s (*.xml)' %
+            translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'))
 
     def onOpenLyricsRemoveButtonClicked(self):
         """
