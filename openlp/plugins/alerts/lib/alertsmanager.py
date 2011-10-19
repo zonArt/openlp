@@ -81,7 +81,7 @@ class AlertsManager(QtCore.QObject):
         Format and request the Alert and start the timer
         """
         log.debug(u'Generate Alert called')
-        if len(self.alertList) == 0:
+        if not self.alertList:
             return
         text = self.alertList.pop(0)
         alertTab = self.parent().settings_tab
