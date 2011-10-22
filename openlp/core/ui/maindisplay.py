@@ -77,9 +77,9 @@ class MainDisplay(QtGui.QGraphicsView):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+                QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+                QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
@@ -570,7 +570,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.hideMode = None
         # Trigger actions when display is active again
         if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
+            Receiver.send_message(u'live_display_active')
 
     def __hideMouse(self):
         # Hide mouse cursor when moved over display if enabled in settings
