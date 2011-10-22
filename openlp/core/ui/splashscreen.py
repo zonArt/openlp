@@ -36,8 +36,7 @@ class SplashScreen(QtGui.QSplashScreen):
             QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
-        self.setObjectName(u'splash_screen')
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setObjectName(u'splashScreen')
         self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.setPixmap(splash_image)

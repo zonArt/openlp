@@ -1160,7 +1160,6 @@ class ServiceManager(QtGui.QWidget):
         # if not passed set to config value
         if expand is None:
             expand = self.expandTabs
-        item.render()
         item.from_service = True
         if replace:
             sitem, child = self.findServiceItem()
@@ -1169,6 +1168,7 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(sitem, child)
             self.mainwindow.liveController.replaceServiceManagerItem(item)
         else:
+            item.render()
             # nothing selected for dnd
             if self.dropPosition == 0:
                 if isinstance(item, list):
