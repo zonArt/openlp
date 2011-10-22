@@ -42,7 +42,7 @@ class EventReceiver(QtCore.QObject):
     **Mainwindow related and generic signals**
 
     ``mainwindow_status_text``
-        Changes the bottom status bar text on the maindisplay window.
+        Changes the bottom status bar text on the mainwindow.
 
     ``openlp_warning_message``
         Displays a standalone Warning Message.
@@ -254,7 +254,7 @@ class Receiver(object):
     To receive a Message
         ``QtCore.QObject.connect(
             Receiver.get_receiver(),
-            QtCore.SIGNAL(u'<<Message ID>>'),
+            QtCore.SIGNALvideodisplay(u'<<Message ID>>'),
             <<ACTION>>
         )``
     """
