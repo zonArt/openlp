@@ -41,7 +41,7 @@ except ImportError:
     PHONON_VERSION = u'-'
 try:
     import migrate
-    MIGRATE_VERSION = migrate.__version__
+    MIGRATE_VERSION = getattr(migrate, u'__version__', u'< 0.7')
 except ImportError:
     MIGRATE_VERSION = u'-'
 try:
