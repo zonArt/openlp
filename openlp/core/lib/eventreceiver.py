@@ -254,7 +254,7 @@ class Receiver(object):
     To receive a Message
         ``QtCore.QObject.connect(
             Receiver.get_receiver(),
-            QtCore.SIGNALvideodisplay(u'<<Message ID>>'),
+            QtCore.SIGNAL(u'<<Message ID>>'),
             <<ACTION>>
         )``
     """
