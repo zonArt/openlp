@@ -321,6 +321,78 @@ class SlideController(QtGui.QWidget):
         self.slidePreview.setObjectName(u'slidePreview')
         self.slideLayout.insertWidget(0, self.slidePreview)
         self.grid.addLayout(self.slideLayout, 0, 0, 1, 1)
+        self.verseShortcut1 = shortcut_action(self, 'verseShortcut1',
+            [QtGui.QKeySequence(u'V'), QtGui.QKeySequence(u'1')],
+            self.slideShortcutActivated, category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut2 = shortcut_action(self, 'verseShortcut2',
+            [QtGui.QKeySequence(u'2')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut3 = shortcut_action(self, 'verseShortcut3',
+            [QtGui.QKeySequence(u'3')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut4 = shortcut_action(self, 'verseShortcut4',
+            [QtGui.QKeySequence(u'4')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut5 = shortcut_action(self, 'verseShortcut5',
+            [QtGui.QKeySequence(u'5')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut6 = shortcut_action(self, 'verseShortcut6',
+            [QtGui.QKeySequence(u'6')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut7 = shortcut_action(self, 'verseShortcut7',
+            [QtGui.QKeySequence(u'7')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut8 = shortcut_action(self, 'verseShortcut8',
+            [QtGui.QKeySequence(u'8')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut9 = shortcut_action(self, 'verseShortcut9',
+            [QtGui.QKeySequence(u'9')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.verseShortcut10 = shortcut_action(self, 'verseShortcut10',
+            [QtGui.QKeySequence(u'0')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.chorusShortcut = shortcut_action(self, 'chorusShortcut',
+            [QtGui.QKeySequence(u'C')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.bridgeShortcut = shortcut_action(self, 'bridgeShortcut',
+            [QtGui.QKeySequence(u'B')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.preChorusShortcut = shortcut_action(self, 'preChorusShortcut',
+            [QtGui.QKeySequence(u'P')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.introShortcut = shortcut_action(self, 'introShortcut',
+            [QtGui.QKeySequence(u'I')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.endingShortcut = shortcut_action(self, 'endingShortcut',
+            [QtGui.QKeySequence(u'E')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.otherShortcut = shortcut_action(self, 'otherShortcut',
+            [QtGui.QKeySequence(u'O')], self.slideShortcutActivated,
+            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.previewListWidget.addActions([
+            self.verseShortcut1, self.verseShortcut2, self.verseShortcut3,
+            self.verseShortcut4, self.verseShortcut5, self.verseShortcut6,
+            self.verseShortcut7, self.verseShortcut8, self.verseShortcut9,
+            self.verseShortcut10, self.chorusShortcut, self.bridgeShortcut,
+            self.preChorusShortcut, self.introShortcut, self.endingShortcut,
+            self.otherShortcut
+        ])
         # Signals
         QtCore.QObject.connect(self.previewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
@@ -366,6 +438,32 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
+
+    def slideShortcutActivated(self):
+        """
+        Called, when a shortcut
+        """
+        verse_type = unicode(self.sender().objectName())
+        keys = self.slideList.keys()
+        key = u''
+        if  verse_type.startswith(u'verseShortcut'):
+            key = u'V%s' % verse_type[13:]
+        elif verse_type == u'chorusShortcut':
+            key = u'C1'
+        elif verse_type == u'bridgeShortcut':
+            key = u'B1'
+        elif verse_type == u'preChorusShortcut':
+            key = u'P1'
+        elif verse_type == u'introShortcut':
+            key = u'I1'
+        elif verse_type == u'endingShortcut':
+            key = u'E1'
+        elif verse_type == u'otherShortcut':
+                key = u'O1'
+        if  key in keys:
+            self.__checkUpdateSelectedSlide(self.slideList[key])
+            self.slideSelected()
+        print self.slideList
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
@@ -643,9 +741,9 @@ class SlideController(QtGui.QWidget):
                     verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
                     two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
-                    if self.isLive:
-                        if verse_def not in self.slideList:
-                            self.slideList[verse_def] = framenumber
+                    if verse_def not in self.slideList:
+                        self.slideList[verse_def] = framenumber
+                        if self.isLive:
                             self.songMenu.menu().addAction(verse_def,
                                 self.onSongBarHandler)
                 else:
