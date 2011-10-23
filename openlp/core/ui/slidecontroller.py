@@ -321,70 +321,122 @@ class SlideController(QtGui.QWidget):
         self.slidePreview.setObjectName(u'slidePreview')
         self.slideLayout.insertWidget(0, self.slidePreview)
         self.grid.addLayout(self.slideLayout, 0, 0, 1, 1)
-        self.verseShortcut1 = shortcut_action(self, 'verseShortcut1',
+        if self.isLive:
+            category = UiStrings().LiveToolbar
+        else:
+            category = UiStrings().PreviewToolbar
+        self.verseShortcut1 = shortcut_action(
+            self, u'verseShortcut1%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'V'), QtGui.QKeySequence(u'1')],
-            self.slideShortcutActivated, category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            self.slideShortcutActivated, category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut2 = shortcut_action(self, 'verseShortcut2',
+        self.verseShortcut1.setText(translate(
+            'OpenLP.SlideController', 'Go to "1. Verse"'))
+        self.verseShortcut2 = shortcut_action(
+            self, u'verseShortcut2%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'2')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut3 = shortcut_action(self, 'verseShortcut3',
+        self.verseShortcut2.setText(translate(
+            'OpenLP.SlideController', 'Go to "2. Verse"'))
+        self.verseShortcut3 = shortcut_action(
+            self, u'verseShortcut3%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'3')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut4 = shortcut_action(self, 'verseShortcut4',
+        self.verseShortcut3.setText(translate(
+            'OpenLP.SlideController', 'Go to "3. Verse"'))
+        self.verseShortcut4 = shortcut_action(
+            self, u'verseShortcut4%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'4')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut5 = shortcut_action(self, 'verseShortcut5',
+        self.verseShortcut4.setText(translate(
+            'OpenLP.SlideController', 'Go to "4. Verse"'))
+        self.verseShortcut5 = shortcut_action(
+            self, u'verseShortcut5%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'5')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut6 = shortcut_action(self, 'verseShortcut6',
+        self.verseShortcut5.setText(translate(
+            'OpenLP.SlideController', 'Go to "5. Verse"'))
+        self.verseShortcut6 = shortcut_action(
+            self, u'verseShortcut6%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'6')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut7 = shortcut_action(self, 'verseShortcut7',
+        self.verseShortcut6.setText(translate(
+            'OpenLP.SlideController', 'Go to "6. Verse"'))
+        self.verseShortcut7 = shortcut_action(
+            self, u'verseShortcut7%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'7')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut8 = shortcut_action(self, 'verseShortcut8',
+        self.verseShortcut7.setText(translate(
+            'OpenLP.SlideController', 'Go to "7. Verse"'))
+        self.verseShortcut8 = shortcut_action(
+            self, u'verseShortcut8%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'8')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut9 = shortcut_action(self, 'verseShortcut9',
+        self.verseShortcut8.setText(translate(
+            'OpenLP.SlideController', 'Go to "8. Verse"'))
+        self.verseShortcut9 = shortcut_action(
+            self, u'verseShortcut9%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'9')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.verseShortcut10 = shortcut_action(self, 'verseShortcut10',
+        self.verseShortcut9.setText(translate(
+            'OpenLP.SlideController', 'Go to "9. Verse"'))
+        self.verseShortcut10 = shortcut_action(
+            self, u'verseShortcut10%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'0')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.chorusShortcut = shortcut_action(self, 'chorusShortcut',
+        self.verseShortcut10.setText(translate(
+            'OpenLP.SlideController', 'Go to "10. Verse"'))
+        self.chorusShortcut = shortcut_action(
+            self, u'chorusShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'C')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.bridgeShortcut = shortcut_action(self, 'bridgeShortcut',
+        self.chorusShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Chorus"'))
+        self.bridgeShortcut = shortcut_action(
+            self, u'bridgeShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'B')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.preChorusShortcut = shortcut_action(self, 'preChorusShortcut',
+        self.bridgeShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Bridge"'))
+        self.preChorusShortcut = shortcut_action(
+            self, u'preChorusShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'P')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.introShortcut = shortcut_action(self, 'introShortcut',
+        self.preChorusShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Pre-Chorus"'))
+        self.introShortcut = shortcut_action(
+            self, u'introShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'I')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.endingShortcut = shortcut_action(self, 'endingShortcut',
+        self.introShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Intro"'))
+        self.endingShortcut = shortcut_action(
+            self, u'endingShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'E')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
-        self.otherShortcut = shortcut_action(self, 'otherShortcut',
+        self.endingShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Ending"'))
+        self.otherShortcut = shortcut_action(
+            self, u'otherShortcut%s' % self.typePrefix.capitalize(),
             [QtGui.QKeySequence(u'O')], self.slideShortcutActivated,
-            category=UiStrings().LiveToolbar if self.isLive else UiStrings().PreviewToolbar,
+            category=category,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
+        self.otherShortcut.setText(translate(
+            'OpenLP.SlideController', 'Go to "Other"'))
         self.previewListWidget.addActions([
             self.verseShortcut1, self.verseShortcut2, self.verseShortcut3,
             self.verseShortcut4, self.verseShortcut5, self.verseShortcut6,
@@ -441,34 +493,38 @@ class SlideController(QtGui.QWidget):
 
     def slideShortcutActivated(self):
         """
-        Called, when a shortcut
+        Called, when a shortcut has been activated to jump to a chorus, verse,
+        etc.
         """
+        #FIXME: translatable verse types
         verse_type = unicode(self.sender().objectName())
-        keys = self.slideList.keys()
+        # Remove the "Live" or "Preview" suffix.
+        verse_type = verse_type[:-len(self.typePrefix)]
         key = u''
         if  verse_type.startswith(u'verseShortcut'):
             key = u'V%s' % verse_type[13:]
-        elif verse_type == u'chorusShortcut':
+        elif verse_type.startswith(u'chorusShortcut'):
             key = u'C1'
-        elif verse_type == u'bridgeShortcut':
+        elif verse_type.startswith(u'bridgeShortcut'):
             key = u'B1'
-        elif verse_type == u'preChorusShortcut':
+        elif verse_type.startswith(u'preChorusShortcut'):
             key = u'P1'
-        elif verse_type == u'introShortcut':
+        elif verse_type.startswith(u'introShortcut'):
             key = u'I1'
-        elif verse_type == u'endingShortcut':
+        elif verse_type.startswith(u'endingShortcut'):
             key = u'E1'
-        elif verse_type == u'otherShortcut':
+        elif verse_type.startswith(u'otherShortcut'):
                 key = u'O1'
-        if  key in keys:
+        if  key in self.slideList.keys():
             self.__checkUpdateSelectedSlide(self.slideList[key])
             self.slideSelected()
-        print self.slideList
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
         self.nextItem.setObjectName(u'nextItemPreview')
         action_list = ActionList.get_instance()
+        action_list.add_category(
+            UiStrings().PreviewToolbar, CategoryOrder.standardToolbar)
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
 
