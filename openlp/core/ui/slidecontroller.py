@@ -497,13 +497,15 @@ class SlideController(QtGui.QWidget):
         if  key in self.slideList.keys():
             self.__checkUpdateSelectedSlide(self.slideList[key])
             self.slideSelected()
+        elif key.startswith(u'V'):
+            if key[1:] in self.slideList.keys():
+                self.__checkUpdateSelectedSlide(self.slideList[key[1:]])
+                self.slideSelected()
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
         self.nextItem.setObjectName(u'nextItemPreview')
         action_list = ActionList.get_instance()
-        action_list.add_category(
-            UiStrings().PreviewToolbar, CategoryOrder.standardToolbar)
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
 
@@ -783,6 +785,7 @@ class SlideController(QtGui.QWidget):
                                 self.onSongBarHandler)
                 else:
                     row += 1
+                    self.slideList[unicode(row)] = row - 1
                 item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
@@ -800,6 +803,7 @@ class SlideController(QtGui.QWidget):
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio
                 row += 1
+                self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
             if slideHeight != 0:
