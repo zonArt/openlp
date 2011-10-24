@@ -286,7 +286,7 @@ class SlideController(Controller):
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
         self.slideLayout.setObjectName(u'SlideLayout')
-        self.previewDisplay = Display(self, self.isLive, self, self.parent().pluginManager.plugins)
+        self.previewDisplay = Display(self, self.isLive, self)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.slideLayout.insertWidget(0, self.previewDisplay)
         self.previewDisplay.hide()
@@ -404,7 +404,7 @@ class SlideController(Controller):
         if self.display:
             self.display.close()
         self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self, self.parent().pluginManager.plugins)
+            self)
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
@@ -528,7 +528,6 @@ class SlideController(Controller):
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
-            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
             self.previousItem.setVisible(False)
             self.nextItem.setVisible(False)

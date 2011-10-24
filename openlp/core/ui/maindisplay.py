@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList
 
@@ -48,14 +48,14 @@ class Display(QtGui.QGraphicsView):
     """
     This is a general display screen class.
     """
-    def __init__(self, parent, live, controller, plugins):
+    def __init__(self, parent, live, controller):
         if live:
             QtGui.QGraphicsView.__init__(self)
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.controller = controller
-        self.plugins = plugins
+        self.plugins = PluginManager.get_instance().plugins
         self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
@@ -77,7 +77,7 @@ class Display(QtGui.QGraphicsView):
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()
         self.webView.setHtml(build_html(serviceItem, screen,
-            None, None, None, self.plugins))
+            None, self.isLive, None))
         self.webView.hide()
 
     def resizeEvent(self, ev):
@@ -88,8 +88,8 @@ class MainDisplay(Display):
     """
     This is the display screen.
     """
-    def __init__(self, parent, imageManager, live, controller, plugins):
-        Display.__init__(self, parent, live, controller, plugins)
+    def __init__(self, parent, imageManager, live, controller):
+        Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
         self.alertTab = None
@@ -177,7 +177,7 @@ class MainDisplay(Display):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None, self.plugins))
+                self.alertTab, self.isLive, None, None, self.plugins))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -367,7 +367,7 @@ class MainDisplay(Display):
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, self.plugins, image_bytes)
+            self.isLive, background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

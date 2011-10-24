@@ -106,18 +106,14 @@ sup {
     function show_blank(state){
         var black = 'none';
         var lyrics = '';
-        var pause = false;
         switch(state){
             case 'theme':
                 lyrics = 'hidden';
-                pause = true;
                 break;
             case 'black':
                 black = 'block';
-                pause = true;
                 break;
             case 'desktop':
-                pause = true;
                 break;
         }
         document.getElementById('black').style.display = black;
@@ -130,13 +126,6 @@ sup {
         if(shadow!=null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
-        var vid = document.getElementById('video');
-        if(vid.src != ''){
-            if(pause)
-                vid.pause();
-            else
-                vid.play();
-        }
     }
 
     function show_alert(alerttext, position){
@@ -220,7 +209,6 @@ sup {
     function show_text_complete(){
         return (text_opacity()==1);
     }
-
 </script>
 </head>
 <body>
@@ -235,8 +223,8 @@ sup {
 </html>
 """
 
-def build_html(item, screen, alert, islive, background, plugins=None,
-    image=None):
+def build_html(item, screen, alert, islive, background, image=None,
+    plugins=None):
     """
     Build the full web paged structure for display
 
@@ -255,11 +243,11 @@ def build_html(item, screen, alert, islive, background, plugins=None,
     ``background``
         Theme background image - bytes
 
-    ``plugins``
-        access to the plugins
-
     ``image``
         Image media item - bytes
+
+    ``plugins``
+        The List of available plugins
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()

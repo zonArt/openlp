@@ -143,7 +143,7 @@ class MediaController(object):
         """
         Add css style sheets to htmlbuilder
         """
-        css = u'';
+        css = u''
         for api in self.APIs.values():
             css += api.get_media_display_css()
         return css
@@ -263,6 +263,7 @@ class MediaController(object):
             controller.media_info.volume = controller.volumeSlider.value()
         controller.media_info.file_info = QtCore.QFileInfo(file)
         controller.media_info.is_background = isBackground
+        display = None
         if controller.isLive:
             if self.withLivePreview and controller.previewDisplay:
                 display = controller.previewDisplay
@@ -284,6 +285,7 @@ class MediaController(object):
                 'Unsupported File')))
             return False
         # now start playing
+        display.frame.evaluateJavaScript(u'show_blank("black");')
         if self.video_play([controller], False):
             self.video_pause([controller])
             self.video_seek([controller, [0]])
@@ -358,6 +360,7 @@ class MediaController(object):
                 if not self.curDisplayMediaAPI[display].play(display):
                     return False
                 if status:
+                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
                     self.curDisplayMediaAPI[display].set_visible(display, True)
         # Start Timer for ui updates
         if not self.timer.isActive():
@@ -382,6 +385,7 @@ class MediaController(object):
         controller = msg[0]
         for display in self.curDisplayMediaAPI.keys():
             if display.controller == controller:
+                display.frame.evaluateJavaScript(u'show_blank("black");')
                 self.curDisplayMediaAPI[display].stop(display)
                 self.curDisplayMediaAPI[display].set_visible(display, False)
 
@@ -440,7 +444,9 @@ class MediaController(object):
         Blank the related video Widget
         """
         isLive = msg[1]
+        hide_mode = msg[2]
         if isLive:
+            Receiver.send_message(u'maindisplay_hide', hide_mode)
             controller = self.parent.liveController
             for display in self.curDisplayMediaAPI.keys():
                 if display.controller == controller:
