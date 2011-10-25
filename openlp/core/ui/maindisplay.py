@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList
 
@@ -51,12 +51,15 @@ class MainDisplay(QtGui.QGraphicsView):
     def __init__(self, parent, imageManager, live):
         if live:
             QtGui.QGraphicsView.__init__(self)
+            # Do not overwrite the parent() method.
+            self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
-        self.alertTab = None
+        self.plugins = PluginManager.get_instance().plugins
+        self.rebuildCSS = False
         self.hideMode = None
         self.videoHide = False
         self.override = {}
@@ -74,12 +77,32 @@ class MainDisplay(QtGui.QGraphicsView):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+                QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+                QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'openlp_phonon_creation'),
                 self.createMediaObject)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def cssChanged(self):
+        """
+        We may need to rebuild the CSS on the live display.
+        """
+        self.rebuildCSS = True
+
+    def configChanged(self):
+        """
+        Call the plugins to rebuild the Live display CSS as the screen has
+        not been rebuild on exit of config.
+        """
+        if self.rebuildCSS and self.plugins:
+            for plugin in self.plugins:
+                plugin.refreshCss(self.frame)
+        self.rebuildCSS = False
 
     def retranslateUi(self):
         """
@@ -111,6 +134,9 @@ class MainDisplay(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+            self.webView.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -120,14 +146,6 @@ class MainDisplay(QtGui.QGraphicsView):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
         if self.isLive:
-            # Build the initial frame.
-            self.black = QtGui.QImage(
-                self.screen[u'size'].width(),
-                self.screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.black)
-            painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             # Build the initial frame.
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
@@ -153,7 +171,7 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None))
+                self.isLive, None))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -184,7 +202,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         Add the slide text from slideController
 
-        `slide`
+        ``slide``
             The slide text to be displayed
         """
         log.debug(u'text to display')
@@ -197,20 +215,22 @@ class MainDisplay(QtGui.QGraphicsView):
 
     def alert(self, text):
         """
-        Add the alert text
+        Display an alert.
 
-        `slide`
-            The slide text to be displayed
+        ``text``
+            The text to be displayed.
         """
         log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() or not \
             self.isVisible() or self.videoWidget.isVisible():
             shrink = True
+            js = u'show_alert("%s", "%s")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
+                u'top')
         else:
             shrink = False
-        js = u'show_alert("%s", "%s")' % (
-            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
-            u'top' if shrink else u'')
+            js = u'show_alert("%s", "")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if self.phononActive:
@@ -233,13 +253,16 @@ class MainDisplay(QtGui.QGraphicsView):
 
     def directImage(self, name, path, background):
         """
-        API for replacement backgrounds so Images are added directly to cache
+        API for replacement backgrounds so Images are added directly to cache.
         """
         self.imageManager.add_image(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
             self.image(name)
+            # Update the preview frame.
+            if self.isLive:
+                self.parent().updatePreview()
             return True
         return False
 
@@ -248,8 +271,8 @@ class MainDisplay(QtGui.QGraphicsView):
         Add an image as the background. The image has already been added
         to the cache.
 
-        `Image`
-            The name of the image to be displayed
+        ``Image``
+            The name of the image to be displayed.
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
@@ -266,14 +289,11 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
-        Reset the backgound image to the service item image.
-        Used after Image plugin has changed the background
+        Reset the backgound image to the service item image. Used after the
+        image plugin has changed the background.
         """
         log.debug(u'resetImage')
         if hasattr(self, u'serviceItem'):
@@ -282,9 +302,6 @@ class MainDisplay(QtGui.QGraphicsView):
             self.displayImage(None)
         # clear the cache
         self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -300,9 +317,6 @@ class MainDisplay(QtGui.QGraphicsView):
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
         self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -355,7 +369,7 @@ class MainDisplay(QtGui.QGraphicsView):
         """
         # We request a background video but have no service Item
         if isBackground and not hasattr(self, u'serviceItem'):
-            return None
+            return False
         if not self.mediaObject:
             self.createMediaObject()
         log.debug(u'video')
@@ -382,9 +396,7 @@ class MainDisplay(QtGui.QGraphicsView):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
+        return True
 
     def videoState(self, newState, oldState):
         """
@@ -491,8 +503,8 @@ class MainDisplay(QtGui.QGraphicsView):
             image_bytes = self.imageManager.get_image_bytes(image)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, image_bytes)
+        html = build_html(self.serviceItem, self.screen, self.isLive,
+            background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
@@ -558,7 +570,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.hideMode = None
         # Trigger actions when display is active again
         if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
+            Receiver.send_message(u'live_display_active')
 
     def __hideMouse(self):
         # Hide mouse cursor when moved over display if enabled in settings

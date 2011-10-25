@@ -57,14 +57,14 @@ class Renderer(object):
 
     def __init__(self, imageManager, themeManager):
         """
-        Initialise the render manager.
+        Initialise the renderer.
 
     ``imageManager``
-        A ImageManager instance which takes care of e. g. caching and resizing
+        A imageManager instance which takes care of e. g. caching and resizing
         images.
 
     ``themeManager``
-        The ThemeManager instance, used to get the current theme details.
+        The themeManager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
@@ -81,7 +81,7 @@ class Renderer(object):
 
     def update_display(self):
         """
-        Updates the render manager's information about the current screen.
+        Updates the renderer's information about the current screen.
         """
         log.debug(u'Update Display')
         self._calculate_default()

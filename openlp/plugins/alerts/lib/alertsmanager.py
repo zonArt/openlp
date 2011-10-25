@@ -45,7 +45,7 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
+            QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
 
@@ -69,11 +69,11 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'display alert called %s' % text)
         self.alertList.append(text)
         if self.timer_id != 0:
-            Receiver.send_message(u'maindisplay_status_text',
+            Receiver.send_message(u'mainwindow_status_text',
                 translate('AlertsPlugin.AlertsManager',
                 'Alert message created and displayed.'))
             return
-        Receiver.send_message(u'maindisplay_status_text', u'')
+        Receiver.send_message(u'mainwindow_status_text', u'')
         self.generateAlert()
 
     def generateAlert(self):
@@ -81,7 +81,7 @@ class AlertsManager(QtCore.QObject):
         Format and request the Alert and start the timer
         """
         log.debug(u'Generate Alert called')
-        if len(self.alertList) == 0:
+        if not self.alertList:
             return
         text = self.alertList.pop(0)
         alertTab = self.parent().settings_tab
