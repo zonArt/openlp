@@ -399,7 +399,7 @@ class SlideController(QtGui.QWidget):
             self.otherShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Other"'))
             self.previewListWidget.addActions([
-                self.shortcut0. self.shortcut1, self.shortcut2, self.shortcut3,
+                self.shortcut0, self.shortcut1, self.shortcut2, self.shortcut3,
                 self.shortcut4, self.shortcut5, self.shortcut6, self.shortcut7,
                 self.shortcut8, self.shortcut9, self.verseShortcut,
                 self.chorusShortcut, self.bridgeShortcut,
