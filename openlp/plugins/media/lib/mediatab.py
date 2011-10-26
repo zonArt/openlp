@@ -200,4 +200,3 @@ class MediaTab(SettingsTab):
             Receiver.send_message(u'mediaitem_media_rebuild')
         if api_string_changed:
             Receiver.send_message(u'config_screen_changed')
-

@@ -68,13 +68,6 @@ body {
     z-index: 2;
 }
 %s
-#alert {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: 10;
-    %s
-}
 #footer {
     position: absolute;
     z-index: 6;
@@ -106,18 +99,14 @@ sup {
     function show_blank(state){
         var black = 'none';
         var lyrics = '';
-        var pause = false;
         switch(state){
             case 'theme':
                 lyrics = 'hidden';
-                pause = true;
                 break;
             case 'black':
                 black = 'block';
-                pause = true;
                 break;
             case 'desktop':
-                pause = true;
                 break;
         }
         document.getElementById('black').style.display = black;
@@ -130,41 +119,6 @@ sup {
         if(shadow!=null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
-        var vid = document.getElementById('video');
-        if(vid.src != ''){
-            if(pause)
-                vid.pause();
-            else
-                vid.play();
-        }
-    }
-
-    function show_alert(alerttext, position){
-        var text = document.getElementById('alert');
-        text.innerHTML = alerttext;
-        if(alerttext == '') {
-            text.style.visibility = 'hidden';
-            return 0;
-        }
-        if(position == ''){
-            position = getComputedStyle(text, '').verticalAlign;
-        }
-        switch(position)
-        {
-            case 'top':
-                text.style.top = '0px';
-                break;
-            case 'middle':
-                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
-                    + 'px';
-                break;
-            case 'bottom':
-                text.style.top = (window.innerHeight - text.clientHeight)
-                    + 'px';
-                break;
-        }
-        text.style.visibility = 'visible';
-        return text.clientHeight;
     }
 
     function show_footer(footertext){
@@ -220,7 +174,6 @@ sup {
     function show_text_complete(){
         return (text_opacity()==1);
     }
-
 </script>
 </head>
 <body>
@@ -230,13 +183,12 @@ sup {
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden"></div>
 </body>
 </html>
 """
 
-def build_html(item, screen, alert, islive, background, plugins=None,
-    image=None):
+def build_html(item, screen, islive, background, image=None,
+    plugins=None):
     """
     Build the full web paged structure for display
 
@@ -246,20 +198,17 @@ def build_html(item, screen, alert, islive, background, plugins=None,
     ``screen``
         Current display information
 
-    ``alert``
-        Alert display display information
-
     ``islive``
         Item is going live, rather than preview/theme building
 
     ``background``
         Theme background image - bytes
 
-    ``plugins``
-        access to the plugins
-
     ``image``
         Image media item - bytes
+
+    ``plugins``
+        The List of available plugins
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -286,7 +235,6 @@ def build_html(item, screen, alert, islive, background, plugins=None,
             html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
         css_additions,
-        build_alert_css(alert),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \

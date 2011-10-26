@@ -98,7 +98,6 @@ class SlideController(Controller):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
-        self.alertTab = None
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -286,7 +285,7 @@ class SlideController(Controller):
         self.slideLayout.setSpacing(0)
         self.slideLayout.setMargin(0)
         self.slideLayout.setObjectName(u'SlideLayout')
-        self.previewDisplay = Display(self, self.isLive, self, self.parent().pluginManager.plugins)
+        self.previewDisplay = Display(self, self.isLive, self)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.slideLayout.insertWidget(0, self.previewDisplay)
         self.previewDisplay.hide()
@@ -404,8 +403,7 @@ class SlideController(Controller):
         if self.display:
             self.display.close()
         self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self, self.parent().pluginManager.plugins)
-        self.display.alertTab = self.alertTab
+            self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -528,7 +526,6 @@ class SlideController(Controller):
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
-            #self.toolbar.setVisible(False)
             self.mediabar.setVisible(True)
             self.previousItem.setVisible(False)
             self.nextItem.setVisible(False)
@@ -740,9 +737,9 @@ class SlideController(Controller):
             elif display_type == u'blanked':
                 self.onBlankDisplay(True)
             else:
-                Receiver.send_message(u'maindisplay_show')
+                Receiver.send_message(u'live_display_show')
         else:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            Receiver.send_message(u'live_display_hide', HideMode.Screen)
 
     def onSlideBlank(self):
         """
@@ -828,21 +825,21 @@ class SlideController(Controller):
         if self.serviceItem is not None:
             if hide_mode:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'maindisplay_hide', hide_mode)
+                    Receiver.send_message(u'live_display_hide', hide_mode)
                 Receiver.send_message(u'%s_blank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive, hide_mode])
             else:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'maindisplay_show')
+                    Receiver.send_message(u'live_display_show')
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
         else:
             if hide_mode:
-                Receiver.send_message(u'maindisplay_hide', hide_mode)
+                Receiver.send_message(u'live_display_hide', hide_mode)
             else:
-                Receiver.send_message(u'maindisplay_show')
+                Receiver.send_message(u'live_display_show')
 
     def hidePlugin(self, hide):
         """
@@ -851,21 +848,21 @@ class SlideController(Controller):
         log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
                 Receiver.send_message(u'%s_hide'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
             else:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'maindisplay_show')
+                    Receiver.send_message(u'live_display_show')
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
         else:
             if hide:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
             else:
-                Receiver.send_message(u'maindisplay_show')
+                Receiver.send_message(u'live_display_show')
 
     def onSlideSelected(self, start=False):
         """

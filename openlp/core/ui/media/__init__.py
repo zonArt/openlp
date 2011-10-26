@@ -39,6 +39,7 @@ class MediaState(object):
 
 class MediaType(object):
     """
+    An enumeration of possibible Media Types
     """
     Unused = 0
     Audio = 1

@@ -34,7 +34,7 @@ from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
-video_css = u"""
+VIDEO_CSS = u"""
 #video1 {
     z-index:3;
 }
@@ -43,7 +43,7 @@ video_css = u"""
 }
 """
 
-video_js = u"""
+VIDEO_JS = u"""
     var video_timer = null;
     var current_video = '1';
 
@@ -139,20 +139,20 @@ video_js = u"""
     }
 """
 
-video_html = u"""
+VIDEO_HTML = u"""
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 """
 
-flash_css = u"""
+FLASH_CSS = u"""
 #flash {
     z-index:4;
 }
 """
 
-flash_js = u"""
+FLASH_JS = u"""
     function getFlashMovieObject(movieName)
     {
         if (window.document[movieName])
@@ -211,7 +211,7 @@ flash_js = u"""
     }
 """
 
-flash_html = u"""
+FLASH_HTML = u"""
 <div id="flash" class="size" style="visibility:hidden"></div>
 """
 
@@ -261,21 +261,21 @@ class WebkitAPI(MediaAPI):
         """
         Add css style sheets to htmlbuilder
         """
-        return video_css + flash_css
+        return VIDEO_CSS + FLASH_CSS
 
 
     def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return video_js + flash_js
+        return VIDEO_JS + FLASH_JS
 
 
     def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
-        return video_html + flash_html
+        return VIDEO_HTML + FLASH_HTML
 
     def setup(self, display):
         display.webView.resize(display.size())

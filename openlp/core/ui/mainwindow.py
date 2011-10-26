@@ -613,11 +613,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
+            QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+            QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox,
             QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -633,8 +633,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.imageManager, self.themeManagerContents,
-            self.pluginManager.plugins)
+        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')

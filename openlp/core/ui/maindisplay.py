@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList
 
@@ -48,14 +48,16 @@ class Display(QtGui.QGraphicsView):
     """
     This is a general display screen class.
     """
-    def __init__(self, parent, live, controller, plugins):
+    def __init__(self, parent, live, controller):
         if live:
             QtGui.QGraphicsView.__init__(self)
+            # Do not overwrite the parent() method.
+            self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.controller = controller
-        self.plugins = plugins
+        self.plugins = PluginManager.get_instance().plugins
         self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
@@ -77,7 +79,7 @@ class Display(QtGui.QGraphicsView):
         screen[u'size'] = self.size()
         serviceItem = ServiceItem()
         self.webView.setHtml(build_html(serviceItem, screen,
-            None, None, None, self.plugins))
+            None, self.isLive, None))
         self.webView.hide()
 
     def resizeEvent(self, ev):
@@ -88,11 +90,12 @@ class MainDisplay(Display):
     """
     This is the display screen.
     """
-    def __init__(self, parent, imageManager, live, controller, plugins):
-        Display.__init__(self, parent, live, controller, plugins)
+    def __init__(self, parent, imageManager, live, controller):
+        Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
-        self.alertTab = None
+        self.plugins = PluginManager.get_instance().plugins
+        self.rebuildCSS = False
         self.hideMode = None
         self.override = {}
         self.retranslateUi()
@@ -109,9 +112,29 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+                QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+                QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def cssChanged(self):
+        """
+        We may need to rebuild the CSS on the live display.
+        """
+        self.rebuildCSS = True
+
+    def configChanged(self):
+        """
+        Call the plugins to rebuild the Live display CSS as the screen has
+        not been rebuild on exit of config.
+        """
+        if self.rebuildCSS and self.plugins:
+            for plugin in self.plugins:
+                plugin.refreshCss(self.frame)
+        self.rebuildCSS = False
 
     def retranslateUi(self):
         """
@@ -135,6 +158,9 @@ class MainDisplay(Display):
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+            self.webView.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -144,14 +170,6 @@ class MainDisplay(Display):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
         if self.isLive:
-            # Build the initial frame.
-            self.black = QtGui.QImage(
-                self.screen[u'size'].width(),
-                self.screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter_image = QtGui.QPainter()
-            painter_image.begin(self.black)
-            painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             # Build the initial frame.
             image_file = QtCore.QSettings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
@@ -177,7 +195,7 @@ class MainDisplay(Display):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.alertTab, self.isLive, None, self.plugins))
+                self.isLive, None))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -190,7 +208,7 @@ class MainDisplay(Display):
         """
         Add the slide text from slideController
 
-        `slide`
+        ``slide``
             The slide text to be displayed
         """
         log.debug(u'text to display')
@@ -203,20 +221,22 @@ class MainDisplay(Display):
 
     def alert(self, text):
         """
-        Add the alert text
+        Display an alert.
 
-        `slide`
-            The slide text to be displayed
+        ``text``
+            The text to be displayed.
         """
         log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() or \
             not self.isVisible():
             shrink = True
+            js = u'show_alert("%s", "%s")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
+                u'top')
         else:
             shrink = False
-        js = u'show_alert("%s", "%s")' % (
-            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
-            u'top' if shrink else u'')
+            js = u'show_alert("%s", "")' % (
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
@@ -235,13 +255,16 @@ class MainDisplay(Display):
 
     def directImage(self, name, path, background):
         """
-        API for replacement backgrounds so Images are added directly to cache
+        API for replacement backgrounds so Images are added directly to cache.
         """
         self.imageManager.add_image(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
             self.image(name)
+            # Update the preview frame.
+            if self.isLive:
+                self.parent().updatePreview()
             return True
         return False
 
@@ -250,8 +273,8 @@ class MainDisplay(Display):
         Add an image as the background. The image has already been added
         to the cache.
 
-        `Image`
-            The name of the image to be displayed
+        ``Image``
+            The name of the image to be displayed.
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
@@ -268,14 +291,11 @@ class MainDisplay(Display):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
-        Reset the backgound image to the service item image.
-        Used after Image plugin has changed the background
+        Reset the backgound image to the service item image. Used after the
+        image plugin has changed the background.
         """
         log.debug(u'resetImage')
         if hasattr(self, u'serviceItem'):
@@ -284,9 +304,6 @@ class MainDisplay(Display):
             self.displayImage(None)
         # clear the cache
         self.override = {}
-        # Update the preview frame.
-        if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
 
     def isWebLoaded(self):
         """
@@ -366,8 +383,8 @@ class MainDisplay(Display):
             image_bytes = self.imageManager.get_image_bytes(image)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.alertTab,
-            self.isLive, background, self.plugins, image_bytes)
+        html = build_html(self.serviceItem, self.screen, self.isLive,
+            background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
@@ -423,7 +440,7 @@ class MainDisplay(Display):
         self.hideMode = None
         # Trigger actions when display is active again
         if self.isLive:
-            Receiver.send_message(u'maindisplay_active')
+            Receiver.send_message(u'live_display_active')
 
     def __hideMouse(self):
         # Hide mouse cursor when moved over display if enabled in settings

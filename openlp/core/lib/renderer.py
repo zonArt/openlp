@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags
+    ItemCapabilities, FormattingTags, PluginManager
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -55,7 +55,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, imageManager, themeManager, plugins):
+    def __init__(self, imageManager, themeManager):
         """
         Initialise the renderer.
 
@@ -69,7 +69,7 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
         self.imageManager = imageManager
-        self.plugins = plugins
+        self.plugins = PluginManager.get_instance().plugins
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''
@@ -77,8 +77,7 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, self.imageManager, False, self,
-            self.plugins)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
 
     def update_display(self):
@@ -89,8 +88,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False, self,
-            self.plugins)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None

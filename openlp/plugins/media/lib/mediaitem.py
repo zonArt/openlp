@@ -42,6 +42,8 @@ from openlp.plugins.media.forms import MediaOpenForm
 log = logging.getLogger(__name__)
 
 CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
+#TODO: Add an appropriate Icon for DVDs, CDs, ...
+DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -52,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.iconPath = u'images/image'
         self.background = False
-        self.PreviewFunction = CLAPPERBOARD
+        self.previewFunction = CLAPPERBOARD
         self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
@@ -66,7 +68,7 @@ class MediaMediaItem(MediaManagerItem):
         self.plugin.mediaController.set_controls_visible(self.mediaController, \
             False)
         self.mediaController.previewDisplay = Display(self.mediaController, \
-            False, self.mediaController, self.plugin.pluginManager.plugins)
+            False, self.mediaController)
         self.mediaController.previewDisplay.setup()
         self.plugin.mediaController.setup_display( \
             self.mediaController.previewDisplay)
@@ -144,10 +146,6 @@ class MediaMediaItem(MediaManagerItem):
         Add a folder to the list widget to make it available for showing
         """
         self.mediaOpenForm.exec_()
-#        folder = QtGui.QFileDialog.getExistingDirectory (
-#            self, self.onNewPrompt,
-#            SettingsManager.get_last_dir(self.settingsSection))
-#        log.info(u'New folder(s) %s', unicode(folder))
 
     def overrideApiChanged(self, index):
         Receiver.send_message(u'media_overrideApi', \
@@ -289,10 +287,8 @@ class MediaMediaItem(MediaManagerItem):
             else:
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                #imageFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video.png'
-                #thumbFile = u'F:/Computer/Platform/pythonDev/openlp/branches/media/media-optical-dvd-video_thumb.png'
-                #icon = self.iconFromFile(imageFile, thumbFile)
-                #item_name.setIcon(icon)
+                #TODO: add the appropriate Icon
+                #item_name.setIcon(build_icon(DVD_ICON))
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
