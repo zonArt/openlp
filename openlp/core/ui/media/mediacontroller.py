@@ -446,7 +446,7 @@ class MediaController(object):
         isLive = msg[1]
         hide_mode = msg[2]
         if isLive:
-            Receiver.send_message(u'maindisplay_hide', hide_mode)
+            Receiver.send_message(u'live_display_hide', hide_mode)
             controller = self.parent.liveController
             for display in self.curDisplayMediaAPI.keys():
                 if display.controller == controller:
@@ -460,7 +460,7 @@ class MediaController(object):
         """
         Unblank the related video Widget
         """
-        Receiver.send_message(u'maindisplay_show')
+        Receiver.send_message(u'live_display_show')
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController

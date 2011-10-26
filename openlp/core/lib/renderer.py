@@ -88,8 +88,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False, self,
-            self.plugins)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None

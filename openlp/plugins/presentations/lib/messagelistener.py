@@ -68,7 +68,7 @@ class Controller(object):
         self.doc.slidenumber = slide_no
         if self.is_live:
             if hide_mode == HideMode.Screen:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
                 self.blank(hide_mode)
@@ -76,7 +76,7 @@ class Controller(object):
                 self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
                 self.doc.slidenumber = 0
                 if slide_no > 1:
                     self.slide(slide_no)
@@ -196,7 +196,7 @@ class Controller(object):
         if not self.doc.is_active():
             return
         if hide_mode == HideMode.Theme:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
+            Receiver.send_message(u'live_display_hide', HideMode.Theme)
         self.doc.blank_screen()
 
     def stop(self):
@@ -224,7 +224,7 @@ class Controller(object):
             self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
-        Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+        Receiver.send_message(u'live_display_hide', HideMode.Screen)
 
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
