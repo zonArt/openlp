@@ -324,6 +324,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.old_shortcut = u''
             self.shortcutTimer = QtCore.QTimer()
+            self.shortcutTimer.setObjectName(u'shortcutTimer')
             self.shortcutTimer.setSingleShot(True)
             self.verseShortcut = shortcut_action(self, u'verseShortcut',
                 [QtGui.QKeySequence(u'V')], self.slideShortcutActivated,
@@ -331,34 +332,34 @@ class SlideController(QtGui.QWidget):
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.verseShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Verse"'))
-            self.verseShortcut0 = shortcut_action(self, u'0',
+            self.shortcut0 = shortcut_action(self, u'0',
                 [QtGui.QKeySequence(u'0')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut1 = shortcut_action(self, u'1',
+            self.shortcut1 = shortcut_action(self, u'1',
                 [QtGui.QKeySequence(u'1')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut2 = shortcut_action(self, u'2',
+            self.shortcut2 = shortcut_action(self, u'2',
                 [QtGui.QKeySequence(u'2')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut3 = shortcut_action(self, u'3',
+            self.shortcut3 = shortcut_action(self, u'3',
                 [QtGui.QKeySequence(u'3')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut4 = shortcut_action(self, u'4',
+            self.shortcut4 = shortcut_action(self, u'4',
                 [QtGui.QKeySequence(u'4')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut5 = shortcut_action(self, u'5',
+            self.shortcut5 = shortcut_action(self, u'5',
                 [QtGui.QKeySequence(u'5')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut6 = shortcut_action(self, u'6',
+            self.shortcut6 = shortcut_action(self, u'6',
                 [QtGui.QKeySequence(u'6')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut7 = shortcut_action(self, u'7',
+            self.shortcut7 = shortcut_action(self, u'7',
                 [QtGui.QKeySequence(u'7')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut8 = shortcut_action(self, u'8',
+            self.shortcut8 = shortcut_action(self, u'8',
                 [QtGui.QKeySequence(u'8')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
-            self.verseShortcut9 = shortcut_action(self, u'9',
+            self.shortcut9 = shortcut_action(self, u'9',
                 [QtGui.QKeySequence(u'9')], self.slideShortcutActivated,
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.chorusShortcut = shortcut_action(self, u'chorusShortcut',
@@ -397,11 +398,11 @@ class SlideController(QtGui.QWidget):
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.otherShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Other"'))
-            self.previewListWidget.addActions([self.verseShortcut,
-                self.verseShortcut1, self.verseShortcut2, self.verseShortcut3,
-                self.verseShortcut4, self.verseShortcut5, self.verseShortcut6,
-                self.verseShortcut7, self.verseShortcut8, self.verseShortcut9,
-                self.verseShortcut0, self.chorusShortcut, self.bridgeShortcut,
+            self.previewListWidget.addActions([
+                self.shortcut0. self.shortcut1, self.shortcut2, self.shortcut3,
+                self.shortcut4, self.shortcut5, self.shortcut6, self.shortcut7,
+                self.shortcut8, self.shortcut9, self.verseShortcut,
+                self.chorusShortcut, self.bridgeShortcut,
                 self.preChorusShortcut, self.introShortcut, self.endingShortcut,
                 self.otherShortcut
             ])
@@ -459,13 +460,7 @@ class SlideController(QtGui.QWidget):
         Called, when a shortcut has been activated to jump to a chorus, verse,
         etc.
         """
-        return_ = False
-        if not self.old_shortcut or self.shortcutTimer.isActive():
-            self.shortcutTimer.start(350)
-            return_ = True
         #FIXME: translatable verse types
-        # TODO: Do not restart timer, when the current key is valid (and there
-        # no other combination is valid).
         verse_type = unicode(self.sender().objectName())
         key = u''
         if verse_type.startswith(u'verseShortcut'):
@@ -484,24 +479,35 @@ class SlideController(QtGui.QWidget):
             key = u'O'
         elif verse_type.isnumeric():
             key = verse_type
-        if return_:
+        # The timer was not interrupted by a user input, thus it timed out.
+        elif verse_type == u'shortcutTimer':
+            key = self.old_shortcut
+            self.old_shortcut = u''
+        keys = self.slideList.keys()
+        if verse_type != u'shortcutTimer':
             self.old_shortcut += key
-            print u'old', self.old_shortcut
+            self.shortcutTimer.start(350)
             return
+#            matches = [match for match in keys if match.startswith(key)]
+#            # Stop here and start the timer.
+#            if len(matches) > 1:
+#                self.shortcutTimer.start(350)
+#                return
+#            # Stop the timer and use the match we have.
+#            elif len(matches) == 1:
+#                print u'exactly one match', matches[0]
+#                self.shortcutTimer.stop()
+#                key = matches[0]
+#                self.old_shortcut = u''
         key = self.old_shortcut + key
-        print u'key',  key
-        self.old_shortcut = u''
-        if  key in self.slideList.keys():
+        if key in keys:
             self.__checkUpdateSelectedSlide(self.slideList[key])
             self.slideSelected()
+        #TODO: remove and use list with matches.
         elif len(key) == 1:
             key += u'1'
-            if  key in self.slideList.keys():
+            if  key in keys:
                 self.__checkUpdateSelectedSlide(self.slideList[key])
-                self.slideSelected()
-        elif key.startswith(u'V'):
-            if key[1:] in self.slideList.keys():
-                self.__checkUpdateSelectedSlide(self.slideList[key[1:]])
                 self.slideSelected()
 
     def setPreviewHotkeys(self, parent=None):
