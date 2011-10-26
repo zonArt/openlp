@@ -48,10 +48,10 @@ Inno Setup 5
 
 Sphinx
     This is used to build the documentation.  The documentation trunk must be at
-    the same directory level as Openlp trunk and named "documentation"
+    the same directory level as Openlp trunk and named "documentation".
 
 HTML Help Workshop
-    This is used to create the help file
+    This is used to create the help file.
 
 PyInstaller
     PyInstaller should be a checkout of revision 1470 of trunk, and in a
@@ -61,13 +61,9 @@ PyInstaller
 
     To install PyInstaller, first checkout trunk from Subversion. The easiest
     way is to install TortoiseSVN and then checkout the following URL to a
-    directory called "pyinstaller"::
+    directory called "pyinstaller".
 
         http://svn.pyinstaller.org/trunk
-
-    Then you need to copy the two hook-*.py files from the "pyinstaller"
-    subdirectory in OpenLP's "resources" directory into PyInstaller's
-    "PyInstaller/hooks" directory.
 
 Bazaar
     You need the command line "bzr" client installed.
@@ -79,7 +75,7 @@ OpenLP
 
 Visual C++ 2008 Express Edition
     This is to build pptviewlib.dll, the library for controlling the
-    PowerPointViewer
+    PowerPointViewer.
 
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
@@ -89,6 +85,8 @@ psvince.dll
     running on the users machine prior to the setup.  If OpenLP is running,
     the install will fail.  The dll can be obtained from here:
     http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+    
+    The dll is presently included in .\resources\windows
 
 Mako
     Mako Templates for Python.  This package is required for building the
@@ -149,6 +147,7 @@ build_path = os.path.join(branch_path, u'build')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
+hooks_path = os.path.join(branch_path , u'resources', u'pyinstaller')
 
 def update_code():
     os.chdir(branch_path)
@@ -173,7 +172,8 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
-        u'--noupx', 
+        u'--noupx',
+        u'--additional-hooks-dir', hooks_path,
         u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,
