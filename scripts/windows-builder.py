@@ -61,7 +61,7 @@ PyInstaller
 
     To install PyInstaller, first checkout trunk from Subversion. The easiest
     way is to install TortoiseSVN and then checkout the following URL to a
-    directory called "pyinstaller".
+    directory called "pyinstaller"::
 
         http://svn.pyinstaller.org/trunk
 
@@ -83,17 +83,19 @@ windows-builder.py
 psvince.dll
     This dll is used during the actual install of OpenLP to check if OpenLP is
     running on the users machine prior to the setup.  If OpenLP is running,
-    the install will fail.  The dll can be obtained from here:
-    http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+    the install will fail.  The dll can be obtained from here::
+        
+        http://www.vincenzo.net/isxkb/index.php?title=PSVince)
     
-    The dll is presently included in .\resources\windows
+    The dll is presently included in .\\resources\\windows
 
 Mako
     Mako Templates for Python.  This package is required for building the
     remote plugin.  It can be installed by going to your
     python_directory\scripts\.. and running "easy_install Mako".  If you do not
-    have easy_install, the Mako package can be obtained here:
-    http://www.makotemplates.org/download.html
+    have easy_install, the Mako package can be obtained here::
+        
+        http://www.makotemplates.org/download.html
 
 """
 
