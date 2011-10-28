@@ -83,7 +83,7 @@ windows-builder.py
 psvince.dll
     This dll is used during the actual install of OpenLP to check if OpenLP is
     running on the users machine prior to the setup.  If OpenLP is running,
-    the install will fail.  The dll can be obtained from here::
+    the install will fail.  The dll can be obtained from here:
         
         http://www.vincenzo.net/isxkb/index.php?title=PSVince)
     
@@ -93,10 +93,16 @@ Mako
     Mako Templates for Python.  This package is required for building the
     remote plugin.  It can be installed by going to your
     python_directory\scripts\.. and running "easy_install Mako".  If you do not
-    have easy_install, the Mako package can be obtained here::
+    have easy_install, the Mako package can be obtained here:
         
         http://www.makotemplates.org/download.html
-
+         
+Sqlalchemy Migrate
+    Required for the data-bases used in OpenLP.  The package can be
+    obtained here:
+    
+        http://code.google.com/p/sqlalchemy-migrate/
+    
 """
 
 import os
