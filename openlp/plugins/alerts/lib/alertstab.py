@@ -159,7 +159,7 @@ class AlertsTab(SettingsTab):
         self.font_face = unicode(settings.value(
             u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
         self.location = settings.value(
-            u'location', QtCore.QVariant(1)).toInt()[0]
+            u'location', QtCore.QVariant(2)).toInt()[0]
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)
         self.timeoutSpinBox.setValue(self.timeout)
