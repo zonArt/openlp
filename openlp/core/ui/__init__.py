@@ -52,10 +52,10 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
-class Location(object):
+class AlertLocation(object):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
+    This is an enumeration class which controls where Alerts are placed on the
+    screen.
 
     ``Top``
         Place the text at the top of the screen.
