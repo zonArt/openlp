@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver
+    Receiver, create_thumb, validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -99,6 +99,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         Remove an image item from the list
         """
+        # Turn off auto preview triggers.
+        self.listView.blockSignals(True)
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
             'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
@@ -111,6 +113,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
+        self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
@@ -124,13 +127,13 @@ class ImageMediaItem(MediaManagerItem):
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
-            if os.path.exists(thumb):
-                if self.validate(imageFile, thumb):
+            if not os.path.exists(imageFile):
+                icon = build_icon(u':/general/general_delete.png')
+            else:
+                if validate_thumb(imageFile, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = build_icon(u':/general/general_delete.png')
-            else:
-                icon = self.iconFromFile(imageFile, thumb)
+                    icon = create_thumb(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)
@@ -139,7 +142,10 @@ class ImageMediaItem(MediaManagerItem):
         if not initialLoad:
             self.plugin.formparent.finishedProgressBar()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
+        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+            + u'/background color', QtCore.QVariant(u'#000000')))
         if item:
             items = [item]
         else:
@@ -147,10 +153,10 @@ class ImageMediaItem(MediaManagerItem):
             if not items:
                 return False
         service_item.title = unicode(self.plugin.nameStrings[u'plural'])
-        service_item.add_capability(ItemCapabilities.AllowsMaintain)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        service_item.add_capability(ItemCapabilities.CanMaintain)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanAppend)
         # force a nonexistent theme
         service_item.theme = -1
         missing_items = []
@@ -164,11 +170,12 @@ class ImageMediaItem(MediaManagerItem):
             items.remove(item)
         # We cannot continue, as all images do not exist.
         if not items:
-            critical_error_message_box(
-                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                unicode(translate('ImagePlugin.MediaItem',
-                'The following image(s) no longer exist: %s')) %
-                u'\n'.join(missing_items_filenames))
+            if not remote:
+                critical_error_message_box(
+                    translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The following image(s) no longer exist: %s')) %
+                    u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items and QtGui.QMessageBox.question(self,
@@ -183,7 +190,7 @@ class ImageMediaItem(MediaManagerItem):
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             (path, name) = os.path.split(filename)
-            service_item.add_from_image(filename, name)
+            service_item.add_from_image(filename, name, background)
         return True
 
     def onResetClick(self):
@@ -206,13 +213,16 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
+            background = QtGui.QColor(QtCore.QSettings().value(
+                self.settingsSection + u'/background color',
+                QtCore.QVariant(u'#000000')))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 if self.plugin.liveController.display.directImage(name,
-                    filename):
+                    filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

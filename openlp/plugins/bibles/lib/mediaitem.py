@@ -67,7 +67,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.search_results = {}
         self.second_search_results = {}
-        self.check_search_result()
+        self.checkSearchResult()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -391,10 +391,13 @@ class BibleMediaItem(MediaManagerItem):
         elif len(bibles):
             self.initialiseAdvancedBible(bibles[0])
 
-    def reloadBibles(self):
+    def reloadBibles(self, process=False):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        # If called from first time wizard re-run, process any new bibles.
+        if process:
+            self.plugin.appStartup()
         self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
@@ -613,7 +616,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
+        combo.addItems(map(unicode, range(range_from, range_to + 1)))
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -648,7 +651,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
-        self.check_search_result()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -712,7 +715,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
-        self.check_search_result()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -785,7 +788,8 @@ class BibleMediaItem(MediaManagerItem):
             items.append(bible_verse)
         return items
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.
@@ -860,9 +864,9 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsWordSplit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanWordSplit)
         # Service Item: Title
         service_item.title = u', '.join(raw_title)
         # Service Item: Theme

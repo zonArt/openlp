@@ -315,7 +315,7 @@ class HttpConnection(object):
         """
         log.debug(u'ready to read socket')
         if self.socket.canReadLine():
-            data = unicode(self.socket.readLine())
+            data = unicode(self.socket.readLine()).encode(u'utf-8')
             log.debug(u'received: ' + data)
             words = data.split(u' ')
             response = None
@@ -397,7 +397,9 @@ class HttpConnection(object):
         result = {
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
-                if self.parent.current_item else u''
+                if self.parent.current_item else u'',
+            u'twelve':QtCore.QSettings().value(
+            u'remotes/twelve hour', QtCore.QVariant(True)).toBool()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
@@ -528,7 +530,7 @@ class HttpConnection(object):
         id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id)
+            plugin.mediaItem.goLive(id, remote=True)
 
     def add_to_service(self, type):
         """
@@ -538,7 +540,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id)
+            plugin.mediaItem.addToService(item_id, remote=True)
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

@@ -82,13 +82,16 @@ class BGExtract(object):
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
         if footnotes:
-            [footnote.extract() for footnote in footnotes]
+            for footnote in footnotes:
+                footnote.extract()
         crossrefs = soup.findAll(u'sup', u'xref')
         if crossrefs:
-            [crossref.extract() for crossref in crossrefs]
+            for crossref in crossrefs:
+                crossref.extract()
         headings = soup.findAll(u'h5')
         if headings:
-            [heading.extract() for heading in headings]
+            for heading in headings:
+                heading.extract()
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         verse_list = {}
@@ -218,7 +221,7 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.find(u'div').findAll(u'div')
-        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')

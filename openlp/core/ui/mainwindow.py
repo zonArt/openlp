@@ -28,12 +28,15 @@
 import logging
 import os
 import sys
+import shutil
 from tempfile import gettempdir
+from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager,  PluginStatus
+    PluginManager, Receiver, translate, ImageManager, PluginStatus, \
+    SettingsManager
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -213,7 +216,7 @@ class Ui_MainWindow(object):
             self.mediaManagerDock.isVisible(), UiStrings().View)
         self.viewThemeManagerItem = shortcut_action(mainWindow,
             u'viewThemeManagerItem', [QtGui.QKeySequence(u'F10')],
-            self.toggleThemeManager,  u':/system/system_thememanager.png',
+            self.toggleThemeManager, u':/system/system_thememanager.png',
             self.themeManagerDock.isVisible(), UiStrings().View)
         self.viewServiceManagerItem = shortcut_action(mainWindow,
             u'viewServiceManagerItem', [QtGui.QKeySequence(u'F9')],
@@ -283,6 +286,10 @@ class Ui_MainWindow(object):
         self.settingsConfigureItem = icon_action(mainWindow,
             u'settingsConfigureItem', u':/system/system_settings.png',
             category=UiStrings().Settings)
+        self.settingsImportItem = base_action(mainWindow,
+           u'settingsImportItem', category=UiStrings().Settings)
+        self.settingsExportItem = base_action(mainWindow,
+           u'settingsExportItem', category=UiStrings().Settings)
         action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
         self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
@@ -300,10 +307,10 @@ class Ui_MainWindow(object):
             u':/system/system_online_help.png', category=UiStrings().Help)
         self.webSiteItem = base_action(
             mainWindow, u'webSiteItem', category=UiStrings().Help)
-        add_actions(self.fileImportMenu,
-            (self.importThemeItem, self.importLanguageItem))
-        add_actions(self.fileExportMenu,
-            (self.exportThemeItem, self.exportLanguageItem))
+        add_actions(self.fileImportMenu, (self.settingsImportItem, None,
+            self.importThemeItem, self.importLanguageItem))
+        add_actions(self.fileExportMenu, (self.settingsExportItem, None,
+            self.exportThemeItem, self.exportLanguageItem))
         add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
             self.fileSaveItem, self.fileSaveAsItem,
             self.recentFilesMenu.menuAction(), None,
@@ -356,6 +363,7 @@ class Ui_MainWindow(object):
         self.importLanguageItem.setVisible(False)
         self.exportLanguageItem.setVisible(False)
         self.setLockPanel(panelLocked)
+        self.settingsImported = False
 
     def retranslateUi(self, mainWindow):
         """
@@ -416,9 +424,18 @@ class Ui_MainWindow(object):
         self.settingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
         self.formattingTagItem.setText(
-            translate('OpenLP.MainWindow', '&Configure Formatting Tags...'))
+            translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
+        self.settingsExportItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Export OpenLP settings to a specified *.config file'))
+        self.settingsExportItem.setText(
+            translate('OpenLP.MainWindow', 'Settings'))
+        self.settingsImportItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Import OpenLP settings from a specified *.config file previously '
+            'exported on this or another machine'))
+        self.settingsImportItem.setText(
+            translate('OpenLP.MainWindow', 'Settings'))
         self.viewMediaManagerItem.setText(
             translate('OpenLP.MainWindow', '&Media Manager'))
         self.viewMediaManagerItem.setToolTip(
@@ -522,8 +539,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
-        self.serviceSettingsSection = u'servicemanager'
+        self.advancedlSettingsSection = u'advanced'
+        self.shortcutsSettingsSection = u'shortcuts'
+        self.servicemanagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
+        self.themesSettingsSection = u'themes'
+        self.displayTagsSection = u'displayTags'
+        self.headerSection = u'SettingsImport'
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self, self)
@@ -572,6 +594,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onSettingsConfigureItemClicked)
         QtCore.QObject.connect(self.settingsShortcutsItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsShortcutsItemClicked)
+        QtCore.QObject.connect(self.settingsImportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onSettingsImportItemClicked)
+        QtCore.QObject.connect(self.settingsExportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onSettingsExportItemClicked)
         # i18n set signals for languages
         self.languageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.modeDefaultItem,
@@ -585,11 +611,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
+            QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+            QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox,
             QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -726,11 +752,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
-        if not os.path.exists(temp_dir):
-            return
-        for filename in os.listdir(temp_dir):
-            delete_file(os.path.join(temp_dir, filename))
-        os.removedirs(temp_dir)
+        shutil.rmtree(temp_dir, True)
 
     def onFirstTimeWizardClicked(self):
         """
@@ -754,22 +776,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         Receiver.send_message(u'cursor_busy')
         screens = ScreenList.get_instance()
-        if FirstTimeForm(screens, self).exec_() == QtGui.QDialog.Accepted:
-            self.firstTime()
-            for plugin in self.pluginManager.plugins:
-                self.activePlugin = plugin
-                oldStatus = self.activePlugin.status
-                self.activePlugin.setStatus()
-                if oldStatus != self.activePlugin.status:
-                    if self.activePlugin.status == PluginStatus.Active:
-                        self.activePlugin.toggleStatus(PluginStatus.Active)
-                        self.activePlugin.appStartup()
-                    else:
-                        self.activePlugin.toggleStatus(PluginStatus.Inactive)
-            self.themeManagerContents.configUpdated()
-            self.themeManagerContents.loadThemes(True)
-            Receiver.send_message(u'theme_update_global',
-                self.themeManagerContents.global_theme)
+        FirstTimeForm(screens, self).exec_()
+        self.firstTime()
+        for plugin in self.pluginManager.plugins:
+            self.activePlugin = plugin
+            oldStatus = self.activePlugin.status
+            self.activePlugin.setStatus()
+            if oldStatus != self.activePlugin.status:
+                if self.activePlugin.status == PluginStatus.Active:
+                    self.activePlugin.toggleStatus(PluginStatus.Active)
+                    self.activePlugin.appStartup()
+                else:
+                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
+        self.themeManagerContents.configUpdated()
+        self.themeManagerContents.loadThemes(True)
+        Receiver.send_message(u'theme_update_global',
+            self.themeManagerContents.global_theme)
+        # Check if any Bibles downloaded.  If there are, they will be
+        # processed.
+        Receiver.send_message(u'bibles_load_list', True)
 
     def blankCheck(self):
         """
@@ -871,6 +896,171 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.shortcutForm.exec_():
             self.shortcutForm.save()
 
+    def onSettingsImportItemClicked(self):
+        """
+        Import settings from an export INI file
+        """
+        answer = QtGui.QMessageBox.critical(self,
+            translate('OpenLP.MainWindow', 'Import settings?'),
+            translate('OpenLP.MainWindow',
+            'Are you sure you want to import settings?\n\n'
+            'Importing settings will make permanent changes to your current '
+            'OpenLP configuration.\n\n'
+            'Importing incorrect settings may cause erratic behaviour or '
+            'OpenLP to terminate abnormally.'),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No),
+            QtGui.QMessageBox.No)
+        if answer == QtGui.QMessageBox.No:
+            return
+        import_file_name = unicode(QtGui.QFileDialog.getOpenFileName(self,
+                translate('OpenLP.MainWindow', 'Open File'),
+                '',
+                translate('OpenLP.MainWindow',
+                'OpenLP Export Settings Files (*.conf)')))
+        if not import_file_name:
+            return
+        setting_sections = []
+        # Add main sections.
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
+        setting_sections.extend([self.headerSection])
+        # Add plugin sections.
+        for plugin in self.pluginManager.plugins:
+            setting_sections.extend([plugin.name])
+        settings = QtCore.QSettings()
+        import_settings = QtCore.QSettings(import_file_name,
+            QtCore.QSettings.IniFormat)
+        import_keys = import_settings.allKeys()
+        for section_key in import_keys:
+            # We need to handle the really bad files.
+            try:
+                section, key = section_key.split(u'/')
+            except ValueError:
+                section = u'unknown'
+                key = u''
+            # Switch General back to lowercase.
+            if section == u'General':
+                section = u'general'
+                section_key = section + "/" + key
+            # Make sure it's a valid section for us.
+            if not section in setting_sections:
+                QtGui.QMessageBox.critical(self,
+                    translate('OpenLP.MainWindow', 'Import settings'),
+                    translate('OpenLP.MainWindow',
+                    'The file you selected does appear to be a valid OpenLP '
+                    'settings file.\n\n'
+                    'Section [%s] is not valid \n\n'
+                    'Processing has terminated and no changed have been made.'
+                    % section),
+                    QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok))
+                return
+        # We have a good file, import it.
+        for section_key in import_keys:
+            value = import_settings.value(section_key)
+            settings.setValue(u'%s' % (section_key) ,
+                QtCore.QVariant(value))
+        now = datetime.now()
+        settings.beginGroup(self.headerSection)
+        settings.setValue( u'file_imported' , QtCore.QVariant(import_file_name))
+        settings.setValue(u'file_date_imported',
+            now.strftime("%Y-%m-%d %H:%M"))
+        settings.endGroup()
+        settings.sync()
+        # We must do an immediate restart or current configuration will
+        # overwrite what was just imported when application terminates
+        # normally.   We need to exit without saving configuration.
+        QtGui.QMessageBox.information(self,
+            translate('OpenLP.MainWindow', 'Import settings'),
+            translate('OpenLP.MainWindow',
+            'OpenLP will now close.  Imported settings will '
+            'be applied the next time you start OpenLP.'),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Ok))
+        self.settingsImported = True
+        self.cleanUp()
+        QtCore.QCoreApplication.exit()
+
+    def onSettingsExportItemClicked(self):
+        """
+        Export settings to a .conf file in INI format
+        """
+        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+            translate('OpenLP.MainWindow', 'Export Settings File'), '',
+            translate('OpenLP.MainWindow',
+                'OpenLP Export Settings File (*.conf)')))
+        if not export_file_name:
+            return
+        # Make sure it's a .conf file.
+        if not export_file_name.endswith(u'conf'):
+            export_file_name = export_file_name + u'.conf'
+        temp_file = os.path.join(unicode(gettempdir()),
+            u'openlp', u'exportConf.tmp')
+        self.saveSettings()
+        setting_sections = []
+        # Add main sections.
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
+        # Add plugin sections.
+        for plugin in self.pluginManager.plugins:
+            setting_sections.extend([plugin.name])
+        # Delete old files if found.
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+        if os.path.exists(export_file_name):
+            os.remove(export_file_name)
+        settings = QtCore.QSettings()
+        settings.remove(self.headerSection)
+        # Get the settings.
+        keys = settings.allKeys()
+        export_settings = QtCore.QSettings(temp_file,
+            QtCore.QSettings.IniFormat)
+        # Add a header section.
+        # This is to insure it's our conf file for import.
+        now = datetime.now()
+        application_version = get_application_version()
+        # Write INI format using Qsettings.
+        # Write our header.
+        export_settings.beginGroup(self.headerSection)
+        export_settings.setValue(u'Make_Changes', u'At_Own_RISK')
+        export_settings.setValue(u'type', u'OpenLP_settings_export')
+        export_settings.setValue(u'file_date_created',
+            now.strftime("%Y-%m-%d %H:%M"))
+        export_settings.setValue(u'version', application_version[u'full'])
+        export_settings.endGroup()
+        # Write all the sections and keys.
+        for section_key in keys:
+            section, key = section_key.split(u'/')
+            key_value = settings.value(section_key)
+            export_settings.setValue(section_key, key_value)
+        export_settings.sync()
+        # Temp CONF file has been written.  Blanks in keys are now '%20'.
+        # Read the  temp file and output the user's CONF file with blanks to
+        # make it more readable.
+        temp_conf = open(temp_file, u'r')
+        export_conf = open(export_file_name,  u'w')
+        for file_record in temp_conf:
+            # Get rid of any invalid entries.
+            if file_record.find(u'@Invalid()') == -1:
+                file_record = file_record.replace(u'%20',  u' ')
+                export_conf.write(file_record)
+        temp_conf.close()
+        export_conf.close()
+        os.remove(temp_file)
+        return
+
     def onModeDefaultItemClicked(self):
         """
         Put OpenLP into "Default" view mode.
@@ -923,6 +1113,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
+        # If we just did a settings import, close without saving changes.
+        if self.settingsImported:
+            event.accept()
         if self.serviceManagerContents.isModified():
             ret = self.serviceManagerContents.saveModifiedService()
             if ret == QtGui.QMessageBox.Save:
@@ -1098,6 +1291,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
+        # Remove obsolete entries.
+        settings.remove(u'custom slide')
+        settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
         self.recentFiles = settings.value(u'recent files').toStringList()
         settings.endGroup()
@@ -1120,6 +1316,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Save the main window settings.
         """
+        # Exit if we just did a settings import.
+        if self.settingsImported:
+            return
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)

@@ -52,8 +52,27 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+class AlertLocation(object):
+    """
+    This is an enumeration class which controls where Alerts are placed on the
+    screen.
+
+    ``Top``
+        Place the text at the top of the screen.
+
+    ``Middle``
+        Place the text in the middle of the screen.
+
+    ``Bottom``
+        Place the text at the bottom of the screen.
+    """
+    Top = 0
+    Middle = 1
+    Bottom = 2
+
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
+from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm

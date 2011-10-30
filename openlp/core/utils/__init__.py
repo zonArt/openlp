@@ -127,6 +127,9 @@ class AppLocation(object):
     CacheDir = 6
     LanguageDir = 7
 
+    # Base path where data/config/cache dir is located
+    BaseDir = None
+
     @staticmethod
     def get_directory(dir_type=1):
         """
@@ -152,6 +155,8 @@ class AppLocation(object):
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
+        elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
+            return os.path.join(AppLocation.BaseDir, 'data')
         else:
             return _get_os_dir_path(dir_type)
 
@@ -386,6 +391,17 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    ``filename``
+        The "dirty" file name to clean.
+    """
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+
 def delete_file(file_path_name):
     """
     Deletes a file from the system.
@@ -492,4 +508,4 @@ from actions import ActionList
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'file_is_unicode', u'get_uno_command',
-    u'get_uno_instance', u'delete_file']
+    u'get_uno_instance', u'delete_file', u'clean_filename']

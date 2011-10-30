@@ -31,15 +31,15 @@ import os
 import locale
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.phonon import Phonon
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver
+    SettingsManager, translate, check_item_selected, Receiver, MediaType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QPixmap(u':/media/media_video.png').toImage()
+CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -48,9 +48,9 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin, icon):
-        self.IconPath = u'images/image'
+        self.iconPath = u'images/image'
         self.background = False
-        self.PreviewFunction = CLAPPERBOARD
+        self.previewFunction = CLAPPERBOARD
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
@@ -95,14 +95,14 @@ class MediaMediaItem(MediaManagerItem):
 
     def onResetClick(self):
         """
-        Called to reset the Live backgound with the media selected,
+        Called to reset the Live backgound with the media selected.
         """
         self.resetAction.setVisible(False)
         self.plugin.liveController.display.resetVideo()
 
     def videobackgroundReplaced(self):
         """
-        Triggered by main display on change of serviceitem
+        Triggered by main display on change of serviceitem.
         """
         self.resetAction.setVisible(False)
 
@@ -129,18 +129,20 @@ class MediaMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if not os.path.exists(filename):
-            # File is no longer present
-            critical_error_message_box(
-                translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                unicode(translate('MediaPlugin.MediaItem',
-                'The file %s no longer exists.')) % filename)
+            if not remote:
+                # File is no longer present
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                        unicode(translate('MediaPlugin.MediaItem',
+                            'The file %s no longer exists.')) % filename)
             return False
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
@@ -156,13 +158,16 @@ class MediaMediaItem(MediaManagerItem):
                 or self.mediaObject.currentSource().type() \
                 == Phonon.MediaSource.Invalid:
                 self.mediaObject.stop()
-                critical_error_message_box(UiStrings().UnsupportedFile,
-                        UiStrings().UnsupportedFile)
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'File Too Big'),
+                    translate('MediaPlugin.MediaItem', 'The file you are '
+                        'trying to load is too big. Please reduce it to less '
+                        'than 50MiB.'))
                 return False
             self.mediaObject.stop()
             service_item.media_length = self.mediaObject.totalTime() / 1000
             service_item.add_capability(
-                ItemCapabilities.AllowsVariableStartTime)
+                ItemCapabilities.HasVariableStartTime)
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
@@ -174,8 +179,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def mediaStateWait(self, mediaState):
         """
-        Wait for the video to change its state
-        Wait no longer than 5 seconds.
+        Wait for the video to change its state. Wait no longer than 5 seconds.
         """
         start = datetime.now()
         while self.mediaObject.state() != mediaState:
@@ -193,7 +197,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onDeleteClick(self):
         """
-        Remove a media item from the list
+        Remove a media item from the list.
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
             'You must select a media file to delete.')):
@@ -216,6 +220,19 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
+
+    def getList(self, type=MediaType.Audio):
+        media = SettingsManager.load_list(self.settingsSection, u'media')
+        media.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        ext = []
+        if type == MediaType.Audio:
+            ext = self.plugin.audio_extensions_list
+        else:
+            ext = self.plugin.video_extensions_list
+        ext = map(lambda x: x[1:], ext)
+        media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
+        return media
 
     def createPhonon(self):
         log.debug(u'CreatePhonon')

@@ -56,7 +56,9 @@ def init_schema(url):
         Column(u'title', types.Unicode(255), nullable=False),
         Column(u'authors', types.Unicode(255), nullable=False),
         Column(u'copyright', types.Unicode(255)),
-        Column(u'ccl_number', types.Unicode(65))
+        Column(u'ccl_number', types.Unicode(65)),
+        Column(u'plugin_name', types.Unicode(20)),
+        Column(u'source', types.Unicode(10))
     )
 
     mapper(SongUsageItem, songusage_table)

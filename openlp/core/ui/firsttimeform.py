@@ -28,7 +28,9 @@
 import io
 import logging
 import os
+import sys
 import urllib
+import urllib2
 from tempfile import gettempdir
 from ConfigParser import SafeConfigParser
 
@@ -60,8 +62,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
+        self.downloadCanceled = False
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
+        QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL('clicked()'),
+            self.onCancelButtonClicked)
+        QtCore.QObject.connect(self.noInternetFinishButton,
+            QtCore.SIGNAL('clicked()'), self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -80,6 +87,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.restart()
         check_directory_exists(os.path.join(gettempdir(), u'openlp'))
+        self.noInternetFinishButton.setVisible(False)
+        # Check if this is a re-run of the wizard.
+        self.hasRunWizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
@@ -120,7 +131,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 title = self.config.get(u'theme_%s' % theme, u'title')
                 filename = self.config.get(u'theme_%s' % theme, u'filename')
                 screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
-                urllib.urlretrieve(u'%s/%s' % (self.web, screenshot),
+                urllib.urlretrieve(u'%s%s' % (self.web, screenshot),
                     os.path.join(gettempdir(), u'openlp', screenshot))
                 item = QtGui.QListWidgetItem(title, self.themesListWidget)
                 item.setData(QtCore.Qt.UserRole,
@@ -135,6 +146,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Determine the next page in the Wizard to go to.
         """
+        Receiver.send_message(u'openlp_process_events')
         if self.currentId() == FirstTimePage.Plugins:
             if not self.webAccess:
                 return FirstTimePage.NoInternet
@@ -151,16 +163,24 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Detects Page changes and updates as approprate.
         """
-        if pageId == FirstTimePage.Defaults:
+        # Keep track of the page we are at.  Pressing "Cancel" causes pageId
+        # to be a -1.
+        if pageId != -1:
+            self.lastId = pageId
+        if pageId == FirstTimePage.Plugins:
+            # Set the no internet page text.
+            if self.hasRunWizard:
+                self.noInternetLabel.setText(self.noInternetText)
+            else:
+                self.noInternetLabel.setText(self.noInternetText + 
+                    self.cancelWizardText)
+        elif pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
             for iter in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(iter)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.themeComboBox.addItem(item.text())
-            # Check if this is a re-run of the wizard.
-            self.has_run_wizard = QtCore.QSettings().value(
-                u'general/has run wizard', QtCore.QVariant(False)).toBool()
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 # Add any existing themes to list.
                 for theme in self.parent().themeManagerContents.getThemes():
                     index = self.themeComboBox.findText(theme)
@@ -172,12 +192,21 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)
+        elif pageId == FirstTimePage.NoInternet:
+            self.backButton.setVisible(False)
+            self.nextButton.setVisible(False)
+            self.noInternetFinishButton.setVisible(True)
+            if self.hasRunWizard:
+                self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
             self._preWizard()
+            Receiver.send_message(u'openlp_process_events')
             self._performWizard()
+            Receiver.send_message(u'openlp_process_events')
             self._postWizard()
             Receiver.send_message(u'cursor_normal')
+            Receiver.send_message(u'openlp_process_events')
 
     def updateScreenListCombo(self):
         """
@@ -188,6 +217,53 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.displayComboBox.addItems(self.screens.get_screen_list())
         self.displayComboBox.setCurrentIndex(self.displayComboBox.count() - 1)
 
+    def onCancelButtonClicked(self):
+        """
+        Process the pressing of the cancel button.
+        """
+        if self.lastId == FirstTimePage.NoInternet or \
+            (self.lastId <= FirstTimePage.Plugins and \
+            not self.hasRunWizard):
+            QtCore.QCoreApplication.exit()
+            sys.exit()
+        self.downloadCanceled = True
+        Receiver.send_message(u'cursor_normal')
+
+    def onNoInternetFinishButtonClicked(self):
+        """
+        Process the pressing of the "Finish" button on the No Internet page.
+        """
+        Receiver.send_message(u'cursor_busy')
+        self._performWizard()
+        Receiver.send_message(u'openlp_process_events')
+        Receiver.send_message(u'cursor_normal')
+        QtCore.QSettings().setValue(u'general/has run wizard',
+            QtCore.QVariant(True))
+        self.close()
+
+    def urlGetFile(self, url, fpath):
+        """"
+        Download a file given a URL.  The file is retrieved in chunks, giving
+        the ability to cancel the download at any point.
+        """
+        block_count = 0
+        block_size = 4096
+        urlfile = urllib2.urlopen(url)
+        filesize = urlfile.headers["Content-Length"]
+        filename = open(fpath, "wb")
+        # Download until finished or canceled.
+        while not self.downloadCanceled:
+            data = urlfile.read(block_size)
+            if not data:
+                break
+            filename.write(data)
+            block_count += 1
+            self._downloadProgress(block_count, block_size, filesize)
+        filename.close()
+        # Delete file if canceled, it may be a partial file.
+        if self.downloadCanceled:
+            os.remove(fpath)
+
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
         meta = site.info()
@@ -197,7 +273,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         increment = (count * block_size) - self.previous_size
         self._incrementProgressBar(None, increment)
         self.previous_size = count * block_size
-
+    
     def _incrementProgressBar(self, status_text, increment=1):
         """
         Update the wizard progress page.
@@ -219,6 +295,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Prepare the UI for the process.
         """
         self.max_progress = 0
+        self.finishButton.setVisible(False)
+        Receiver.send_message(u'openlp_process_events')
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
             item = self.songsListWidget.item(i)
@@ -242,7 +320,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
-        self.finishButton.setVisible(False)
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
             self.max_progress = self.max_progress + 2
@@ -266,7 +343,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         if self.max_progress:
             self.progressBar.setValue(self.progressBar.maximum())
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
                     'Download complete.'
                     ' Click the finish button to return to OpenLP.'))
@@ -275,7 +352,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     'Download complete.'
                     ' Click the finish button to start OpenLP.'))
         else:
-            if self.has_run_wizard:
+            if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
                     'Click the finish button to return to OpenLP.'))
             else:
@@ -304,42 +381,42 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.customCheckBox, u'custom/status')
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
-        # Build directories for downloads
-        songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
-        bibles_destination = AppLocation.get_section_data_path(u'bibles')
-        themes_destination = AppLocation.get_section_data_path(u'themes')
-        # Download songs
-        for i in xrange(self.songsListWidget.count()):
-            item = self.songsListWidget.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole).toString()
-                self._incrementProgressBar(self.downloading % filename, 0)
-                self.previous_size = 0
-                destination = os.path.join(songs_destination, unicode(filename))
-                urllib.urlretrieve(u'%s%s' % (self.web, filename), destination,
-                    self._downloadProgress)
-        # Download Bibles
-        bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
-        while bibles_iterator.value():
-            item = bibles_iterator.value()
-            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
-                self._incrementProgressBar(self.downloading % bible, 0)
-                self.previous_size = 0
-                urllib.urlretrieve(u'%s%s' % (self.web, bible),
-                    os.path.join(bibles_destination, bible),
-                    self._downloadProgress)
-            bibles_iterator += 1
-        # Download themes
-        for i in xrange(self.themesListWidget.count()):
-            item = self.themesListWidget.item(i)
-            if item.checkState() == QtCore.Qt.Checked:
-                theme = unicode(item.data(QtCore.Qt.UserRole).toString())
-                self._incrementProgressBar(self.downloading % theme, 0)
-                self.previous_size = 0
-                urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                    os.path.join(themes_destination, theme),
-                    self._downloadProgress)
+        if self.webAccess:
+            # Build directories for downloads
+            songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
+            bibles_destination = AppLocation.get_section_data_path(u'bibles')
+            themes_destination = AppLocation.get_section_data_path(u'themes')
+            # Download songs
+            for i in xrange(self.songsListWidget.count()):
+                item = self.songsListWidget.item(i)
+                if item.checkState() == QtCore.Qt.Checked:
+                    filename = item.data(QtCore.Qt.UserRole).toString()
+                    self._incrementProgressBar(self.downloading % filename, 0)
+                    self.previous_size = 0
+                    destination = os.path.join(songs_destination,
+                        unicode(filename))
+                    self.urlGetFile(u'%s%s' % (self.web, filename), destination)
+            # Download Bibles
+            bibles_iterator = QtGui.QTreeWidgetItemIterator(
+                self.biblesTreeWidget)
+            while bibles_iterator.value():
+                item = bibles_iterator.value()
+                if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                    bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                    self._incrementProgressBar(self.downloading % bible, 0)
+                    self.previous_size = 0
+                    self.urlGetFile(u'%s%s' % (self.web, bible),
+                        os.path.join(bibles_destination, bible))
+                bibles_iterator += 1
+            # Download themes
+            for i in xrange(self.themesListWidget.count()):
+                item = self.themesListWidget.item(i)
+                if item.checkState() == QtCore.Qt.Checked:
+                    theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                    self._incrementProgressBar(self.downloading % theme, 0)
+                    self.previous_size = 0
+                    self.urlGetFile(u'%s%s' % (self.web, theme),
+                        os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
