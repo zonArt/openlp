@@ -28,7 +28,6 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.ui import UiStrings, create_valign_combo
 
 class ImageTab(SettingsTab):
     """

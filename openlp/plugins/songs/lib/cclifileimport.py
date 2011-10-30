@@ -333,5 +333,6 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         # Clean spaces before and after author names.
-        [self.addAuthor(author_name.strip()) for author_name in author_list]
+        for author_name in author_list:
+            self.addAuthor(author_name.strip())
         return self.finish()
