@@ -37,7 +37,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate, PluginManager
 
-from openlp.core.ui import HideMode, ScreenList
+from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
 log = logging.getLogger(__name__)
 
@@ -213,7 +213,7 @@ class MainDisplay(QtGui.QGraphicsView):
         self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
 
-    def alert(self, text):
+    def alert(self, text, location):
         """
         Display an alert.
 
@@ -241,10 +241,10 @@ class MainDisplay(QtGui.QGraphicsView):
                 alert_height = int(height.toString())
                 shrinkItem.resize(self.width(), alert_height)
                 shrinkItem.setVisible(True)
-                if self.alertTab.location == 1:
+                if location == AlertLocation.Middle:
                     shrinkItem.move(self.screen[u'size'].left(),
                     (self.screen[u'size'].height() - alert_height) / 2)
-                elif self.alertTab.location == 2:
+                elif location == AlertLocation.Bottom:
                     shrinkItem.move(self.screen[u'size'].left(),
                         self.screen[u'size'].height() - alert_height)
             else:

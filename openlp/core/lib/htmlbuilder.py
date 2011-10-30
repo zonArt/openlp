@@ -610,24 +610,3 @@ def build_footer_css(item, height):
         theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
 
-def build_alert_css(alertTab, width):
-    """
-    Build the display of the footer
-
-    ``alertTab``
-        Details from the Alert tab for fonts etc
-    """
-    style = u"""
-    width: %spx;
-    vertical-align: %s;
-    font-family: %s;
-    font-size: %spt;
-    color: %s;
-    background-color: %s;
-    """
-    if not alertTab:
-        return u''
-    align = VerticalType.Names[alertTab.location]
-    alert = style % (width, align, alertTab.font_face, alertTab.font_size,
-        alertTab.font_color, alertTab.bg_color)
-    return alert
