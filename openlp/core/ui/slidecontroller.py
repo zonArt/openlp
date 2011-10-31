@@ -517,7 +517,8 @@ class SlideController(QtGui.QWidget):
         elif verse_type.isnumeric():
             self.current_shortcut += verse_type
         self.current_shortcut = self.current_shortcut.upper()
-        matches = [match for match in self.slideList.keys()
+        keys = self.slideList.keys()
+        matches = [match for match in keys
             if match.startswith(self.current_shortcut)]
         if len(matches) == 1:
             self.shortcutTimer.stop()
@@ -528,8 +529,14 @@ class SlideController(QtGui.QWidget):
             # Start the time as we did not have any match.
             self.shortcutTimer.start(350)
         else:
-           # Reset the key sequence as we do not have any match and the timer
-           # timed out.
+            # The timer timed out.
+            if self.current_shortcut in keys:
+                # We had more than one match (e. g. "V1" and "V10", but "V1" was
+                # the slide we wanted to go.
+                self.__checkUpdateSelectedSlide(
+                    self.slideList[self.current_shortcut])
+                self.slideSelected()
+           # Reset the shortcut.
             self.current_shortcut = u''
 
     def setPreviewHotkeys(self, parent=None):
