@@ -67,7 +67,7 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 ; DLL used to check if the target program is running at install time
 Source: psvince.dll; flags: dontcopy
-; psvince is installed in {app} folder, so it will be loaded at 
+; psvince is installed in {app} folder, so it will be loaded at
 ; uninstall time to check if the target program is running
 Source: psvince.dll; DestDir: {app}
 
@@ -84,10 +84,16 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCR; Subkey: ".osz"; ValueType: string; ValueName: ""; ValueData: "OpenLP"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "OpenLP"; ValueType: string; ValueName: ""; ValueData: "OpenLP Service"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\OpenLP.exe,0"
-Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
+Root: HKCR; Subkey: .osz; ValueType: string; ValueName: ; ValueData: OpenLP; Flags: uninsdeletevalue
+Root: HKCR; Subkey: OpenLP; ValueType: string; ValueName: ; ValueData: OpenLP Service; Flags: uninsdeletekey
+Root: HKCR; Subkey: OpenLP\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\OpenLP.exe,0
+Root: HKCR; Subkey: OpenLP\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\OpenLP.exe"" ""%1"""
+
+[UninstallDelete]
+; Remove support directory created when program is run:
+Type: filesandordirs; Name: {app}\support
+; Remove program directory if empty:
+Name: {app}; Type: dirifempty
 
 [Code]
 // Function to call psvince.dll at install time
@@ -173,4 +179,6 @@ begin
 	  Result := false;
 	end;
   end;
+// Unload psvince.dll, otherwise it is not deleted
+  UnloadDLL(ExpandConstant('{app}\psvince.dll'));
 end;
