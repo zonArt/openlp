@@ -171,7 +171,7 @@ class MainDisplay(QtGui.QGraphicsView):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.isLive, None))
+                self.isLive, None, self.plugins))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
