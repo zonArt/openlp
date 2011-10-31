@@ -531,8 +531,8 @@ class SlideController(QtGui.QWidget):
         else:
             # The timer timed out.
             if self.current_shortcut in keys:
-                # We had more than one match (e. g. "V1" and "V10", but "V1" was
-                # the slide we wanted to go.
+                # We had more than one match for example "V1" and "V10", but
+                # "V1" was the slide we wanted to go.
                 self.__checkUpdateSelectedSlide(
                     self.slideList[self.current_shortcut])
                 self.slideSelected()
