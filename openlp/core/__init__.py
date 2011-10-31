@@ -143,7 +143,7 @@ class OpenLP(QtGui.QApplication):
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
-        Receiver.send_message(u'maindisplay_blank_check')
+        Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
         DelayStartThread(self.mainWindow).start()
         # Skip exec_() for gui tests
