@@ -461,10 +461,10 @@ class SlideController(QtGui.QWidget):
         etc.
 
         **Note**: This implementation is based on shortcuts. But it rather works
-        like "key sequences". You have to press one key after the other and
+        like "key sequenes". You have to press one key after the other and
         **not** at the same time.
         For example to jump to "V3" you have to press "V" and afterwards but
-        within a timeframe of 350ms you have to press "3".
+        within a time frame of 350ms you have to press "3".
         """
         try:
             from openlp.plugins.songs.lib import VerseType
@@ -528,7 +528,7 @@ class SlideController(QtGui.QWidget):
             # Start the time as we did not have any match.
             self.shortcutTimer.start(350)
         else:
-           # Reset the key sequenze as we do not have any match and the timer
+           # Reset the key sequence as we do not have any match and the timer
            # timed out.
             self.current_shortcut = u''
 
