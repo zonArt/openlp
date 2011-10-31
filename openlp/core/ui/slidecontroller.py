@@ -459,9 +459,15 @@ class SlideController(QtGui.QWidget):
         """
         Called, when a shortcut has been activated to jump to a chorus, verse,
         etc.
+
+        **Note**: This implementation is based on shortcuts. But it rather works
+        like "key sequenzes". You have to press one key after the other and
+        **not** at the same time.
+        For example to jump to "V3" you have to press "V" and afterwards but
+        within a timeframe of 350ms you have to press "3".
         """
         try:
-            from openlp.plugins.songs.lib import VerseTypae
+            from openlp.plugins.songs.lib import VerseType
             SONGS_PLUGIN_AVAILABLE = True
         except ImportError:
             SONGS_PLUGIN_AVAILABLE = False
