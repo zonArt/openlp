@@ -460,25 +460,57 @@ class SlideController(QtGui.QWidget):
         Called, when a shortcut has been activated to jump to a chorus, verse,
         etc.
         """
-        #FIXME: translatable verse types
+        try:
+            from openlp.plugins.songs.lib import VerseTypae
+            SONGS_PLUGIN_AVAILABLE = True
+        except ImportError:
+            SONGS_PLUGIN_AVAILABLE = False
         verse_type = unicode(self.sender().objectName())
         if verse_type.startswith(u'verseShortcut'):
-            print u'"%s"' % self.current_shortcut
-            self.current_shortcut = u'V'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Verse]
+            else:
+                self.current_shortcut = u'V'
         elif verse_type.startswith(u'chorusShortcut'):
-            self.current_shortcut = u'C'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Chorus]
+            else:
+                self.current_shortcut = u'C'
         elif verse_type.startswith(u'bridgeShortcut'):
-            self.current_shortcut = u'B'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Bridge]
+            else:
+                self.current_shortcut = u'B'
         elif verse_type.startswith(u'preChorusShortcut'):
-            self.current_shortcut = u'P'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.PreChorus]
+            else:
+                self.current_shortcut = u'P'
         elif verse_type.startswith(u'introShortcut'):
-            self.current_shortcut = u'I'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Intro]
+            else:
+                self.current_shortcut = u'I'
         elif verse_type.startswith(u'endingShortcut'):
-            self.current_shortcut = u'E'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Ending]
+            else:
+                self.current_shortcut = u'E'
         elif verse_type.startswith(u'otherShortcut'):
-            self.current_shortcut = u'O'
+            if SONGS_PLUGIN_AVAILABLE:
+                self.current_shortcut = \
+                    VerseType.TranslatedTags[VerseType.Other]
+            else:
+                self.current_shortcut = u'O'
         elif verse_type.isnumeric():
             self.current_shortcut += verse_type
+        self.current_shortcut = self.current_shortcut.upper()
         matches = [match for match in self.slideList.keys()
             if match.startswith(self.current_shortcut)]
         if len(matches) == 1:
