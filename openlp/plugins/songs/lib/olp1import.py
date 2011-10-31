@@ -78,10 +78,11 @@ class OpenLP1SongImport(SongImport):
         connection = sqlite.connect(self.importSource, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()
-        # Determine if we're using a new or an old DB.
+        # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
         db_has_tracks = len(cursor.fetchall()) > 0
+        # Determine if the db contains theme information.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'settings\'')
         db_has_themes = len(cursor.fetchall()) > 0
