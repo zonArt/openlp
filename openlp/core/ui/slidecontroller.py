@@ -322,7 +322,7 @@ class SlideController(QtGui.QWidget):
         self.slideLayout.insertWidget(0, self.slidePreview)
         self.grid.addLayout(self.slideLayout, 0, 0, 1, 1)
         if self.isLive:
-            self.old_shortcut = u''
+            self.current_shortcut = u''
             self.shortcutTimer = QtCore.QTimer()
             self.shortcutTimer.setObjectName(u'shortcutTimer')
             self.shortcutTimer.setSingleShot(True)
@@ -462,53 +462,37 @@ class SlideController(QtGui.QWidget):
         """
         #FIXME: translatable verse types
         verse_type = unicode(self.sender().objectName())
-        key = u''
         if verse_type.startswith(u'verseShortcut'):
-            key = u'V'
+            print u'"%s"' % self.current_shortcut
+            self.current_shortcut = u'V'
         elif verse_type.startswith(u'chorusShortcut'):
-            key = u'C'
+            self.current_shortcut = u'C'
         elif verse_type.startswith(u'bridgeShortcut'):
-            key = u'B'
+            self.current_shortcut = u'B'
         elif verse_type.startswith(u'preChorusShortcut'):
-            key = u'P'
+            self.current_shortcut = u'P'
         elif verse_type.startswith(u'introShortcut'):
-            key = u'I'
+            self.current_shortcut = u'I'
         elif verse_type.startswith(u'endingShortcut'):
-            key = u'E'
+            self.current_shortcut = u'E'
         elif verse_type.startswith(u'otherShortcut'):
-            key = u'O'
+            self.current_shortcut = u'O'
         elif verse_type.isnumeric():
-            key = verse_type
-        # The timer was not interrupted by a user input, thus it timed out.
-        elif verse_type == u'shortcutTimer':
-            key = self.old_shortcut
-            self.old_shortcut = u''
-        keys = self.slideList.keys()
-        if verse_type != u'shortcutTimer':
-            self.old_shortcut += key
-            self.shortcutTimer.start(350)
-            return
-#            matches = [match for match in keys if match.startswith(key)]
-#            # Stop here and start the timer.
-#            if len(matches) > 1:
-#                self.shortcutTimer.start(350)
-#                return
-#            # Stop the timer and use the match we have.
-#            elif len(matches) == 1:
-#                print u'exactly one match', matches[0]
-#                self.shortcutTimer.stop()
-#                key = matches[0]
-#                self.old_shortcut = u''
-        key = self.old_shortcut + key
-        if key in keys:
-            self.__checkUpdateSelectedSlide(self.slideList[key])
+            self.current_shortcut += verse_type
+        matches = [match for match in self.slideList.keys()
+            if match.startswith(self.current_shortcut)]
+        if len(matches) == 1:
+            self.shortcutTimer.stop()
+            self.current_shortcut = u''
+            self.__checkUpdateSelectedSlide(self.slideList[matches[0]])
             self.slideSelected()
-        #TODO: remove and use list with matches.
-        elif len(key) == 1:
-            key += u'1'
-            if  key in keys:
-                self.__checkUpdateSelectedSlide(self.slideList[key])
-                self.slideSelected()
+        elif verse_type != u'shortcutTimer':
+            # Start the time as we did not have any match.
+            self.shortcutTimer.start(350)
+        else:
+           # Reset the key sequenze as we do not have any match and the timer
+           # timed out.
+            self.current_shortcut = u''
 
     def setPreviewHotkeys(self, parent=None):
         self.previousItem.setObjectName(u'previousItemPreview')
