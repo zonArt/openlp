@@ -46,7 +46,9 @@ log = logging.getLogger(__name__)
 
 class Display(QtGui.QGraphicsView):
     """
-    This is a general display screen class.
+    This is a general display screen class. Here the general display settings 
+   will done. It will be used as specialized classes by Main Display and
+   Preview display.
     """
     def __init__(self, parent, live, controller):
         if live:
@@ -57,38 +59,51 @@ class Display(QtGui.QGraphicsView):
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.controller = controller
+        self.screen = None
         self.plugins = PluginManager.get_instance().plugins
         self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
-        Set up and build the preview screen
+        Set up and build the screen base
         """
+        log.debug(u'Start Display base setup (live = %s)' % self.isLive)        
+        self.setGeometry(self.screen[u'size'])
+        log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
-            self.width(), self.height())
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+            self.webView.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        QtCore.QObject.connect(self.webView,
+            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
-        screen = {}
-        screen[u'size'] = self.size()
-        serviceItem = ServiceItem()
-        self.webView.setHtml(build_html(serviceItem, screen,
-            None, self.isLive, None))
-        self.webView.hide()
 
     def resizeEvent(self, ev):
         self.webView.setGeometry(0, 0,
             self.width(), self.height())
 
+    def isWebLoaded(self):
+        """
+        Called by webView event to show display is fully loaded
+        """
+        log.debug(u'Webloaded')
+        self.webLoaded = True
+
+
 class MainDisplay(Display):
     """
-    This is the display screen.
+    This is the display screen as a specialized class from the Display class
     """
     def __init__(self, parent, imageManager, live, controller):
         Display.__init__(self, parent, live, controller)
@@ -149,26 +164,7 @@ class MainDisplay(Display):
         log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
         self.screen = self.screens.current
         self.setVisible(False)
-        self.setGeometry(self.screen[u'size'])
-        log.debug(u'Setup webView')
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0,
-            self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute(
-            QtWebKit.QWebSettings.PluginsEnabled, True)
-        self.page = self.webView.page()
-        self.frame = self.page.mainFrame()
-        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
-            self.webView.settings().setAttribute(
-                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-        QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
-        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
-            QtCore.Qt.ScrollBarAlwaysOff)
+        Display.setup(self)
         if self.isLive:
             # Build the initial frame.
             image_file = QtCore.QSettings().value(u'advanced/default image',

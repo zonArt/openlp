@@ -34,8 +34,8 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, parent, title, visible_title, apis, icon_path):
-        self.apis = apis
+    def __init__(self, parent, title, visible_title, media_apis, icon_path):
+        self.media_apis = media_apis
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
@@ -46,8 +46,8 @@ class MediaTab(SettingsTab):
         self.mediaApiLayout = QtGui.QVBoxLayout(self.mediaAPIGroupBox)
         self.mediaApiLayout.setObjectName(u'mediaApiLayout')
         self.ApiCheckBoxes = {}
-        for key in self.apis:
-            api = self.apis[key]
+        for key in self.media_apis:
+            api = self.media_apis[key]
             checkbox = QtGui.QCheckBox(self.mediaAPIGroupBox)
             checkbox.setEnabled(api.available)
             checkbox.setObjectName(api.name + u'CheckBox')
@@ -98,8 +98,8 @@ class MediaTab(SettingsTab):
         self.leftLayout.addWidget(self.AdvancedGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        for key in self.apis:
-            api = self.apis[key]
+        for key in self.media_apis:
+            api = self.media_apis[key]
             checkbox = self.ApiCheckBoxes[api.name]
             QtCore.QObject.connect(checkbox,
                 QtCore.SIGNAL(u'stateChanged(int)'),
@@ -112,8 +112,8 @@ class MediaTab(SettingsTab):
     def retranslateUi(self):
         self.mediaAPIGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'Available Media APIs'))
-        for key in self.apis:
-            api = self.apis[key]
+        for key in self.media_apis:
+            api = self.media_apis[key]
             checkbox = self.ApiCheckBoxes[api.name]
             if api.available:
                 checkbox.setText(api.name)
@@ -166,9 +166,9 @@ class MediaTab(SettingsTab):
     def load(self):
         self.usedAPIs = QtCore.QSettings().value(
             self.settingsSection + u'/apis',
-            QtCore.QVariant(u'Webkit')).toString().split(u',')
-        for key in self.apis:
-            api = self.apis[key]
+            QtCore.QVariant(u'webkit')).toString().split(u',')
+        for key in self.media_apis:
+            api = self.media_apis[key]
             checkbox = self.ApiCheckBoxes[api.name]
             if api.available and api.name in self.usedAPIs:
                 checkbox.setChecked(True)
@@ -182,7 +182,7 @@ class MediaTab(SettingsTab):
         api_string_changed = False
         oldApiString = QtCore.QSettings().value(
             self.settingsSection + u'/apis',
-            QtCore.QVariant(u'Webkit')).toString()
+            QtCore.QVariant(u'webkit')).toString()
         newApiString = self.usedAPIs.join(u',')
         if oldApiString != newApiString:
             # clean old Media stuff

@@ -29,11 +29,11 @@ from openlp.core.ui.media import MediaState
 
 class MediaAPI(object):
     """
-    A generic media API class to provide OpenLP
-    with a pluggable media display framework.
+    A generic media API class to provide OpenLP with a pluggable media display 
+    framework.
     """
 
-    def __init__(self, parent, name=u'MediaApi'):
+    def __init__(self, parent, name=u'media_api'):
         self.parent = parent
         self.name = name
         self.available = self.check_available()
@@ -65,8 +65,8 @@ class MediaAPI(object):
 
     def resize(self, display):
         """
-        If the main display size or position is changed,
-        the media widgets should also resized
+        If the main display size or position is changed, the media widgets 
+        should also resized
         """
         pass
 
@@ -114,8 +114,7 @@ class MediaAPI(object):
 
     def update_ui(self, display):
         """
-        Do some ui related stuff
-        (e.g. update the seek slider)
+        Do some ui related stuff (e.g. update the seek slider)
         """
         pass
 

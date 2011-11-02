@@ -46,5 +46,4 @@ class MediaOpenForm(QtGui.QDialog, Ui_MediaOpenDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
-#        QtCore.QObject.connect(self.previewButton,
-#            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)
+

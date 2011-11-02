@@ -39,14 +39,13 @@ log = logging.getLogger(__name__)
 
 class MediaController(object):
     """
-    The implementation of the Media Controller
-    The Media Controller adds an own class for every API
-    Currently these are QtWebkit, Phonon and planed Vlc.
+    The implementation of the Media Controller. The Media Controller adds an own
+    class for every API. Currently these are QtWebkit, Phonon and planed Vlc.
     """
 
     def __init__(self, parent):
         self.parent = parent
-        self.APIs = {}
+        self.mediaApis = {}
         self.controller = []
         self.overridenApi = ''
         self.curDisplayMediaAPI = {}
@@ -59,15 +58,15 @@ class MediaController(object):
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'Media Start'), self.video_play)
+            QtCore.SIGNAL(u'media_playback_play'), self.video_play)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'Media Pause'), self.video_pause)
+            QtCore.SIGNAL(u'media_playback_pause'), self.video_pause)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'Media Stop'), self.video_stop)
+            QtCore.SIGNAL(u'media_playback_stop'), self.video_stop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'seekSlider'), self.video_seek)
+            QtCore.SIGNAL(u'seek_slider'), self.video_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'volumeSlider'), self.video_volume)
+            QtCore.SIGNAL(u'volume_slider'), self.video_volume)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_hide'), self.video_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -75,7 +74,7 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_overrideApi'), self.override_api)
+            QtCore.SIGNAL(u'media_override_api'), self.override_api)
         # Signals for background video
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_hide'), self.video_hide)
@@ -84,16 +83,16 @@ class MediaController(object):
 
     def register_controllers(self, controller):
         """
-        Register each media API controller (Webkit, Phonon, etc) and
-        store for later use
+        Register each media API controller (Webkit, Phonon, etc) and store for
+        later use
         """
         if controller.check_available():
-            self.APIs[controller.name] = controller
+            self.mediaApis[controller.name] = controller
 
     def check_available_media_apis(self):
         """
-        Check to see if we have any media API's available
-        If Not do not install the plugin.
+        Check to see if we have any media API's available. If Not do not install
+        the plugin.
         """
         log.debug(u'check_available_media_apis')
         controller_dir = os.path.join(
@@ -116,17 +115,26 @@ class MediaController(object):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.register_controllers(controller)
-        if self.APIs:
+        if self.mediaApis:
+            apiSettings = str(QtCore.QSettings().value(u'media/apis',
+                QtCore.QVariant(u'webkit')).toString())
+            savedAPIs = apiSettings.split(u',')
+            invalidMediaAPIs = [mediaApi for mediaApi in savedAPIs \
+                if not mediaApi in self.mediaApis]
+            if len(invalidMediaAPIs)>0:
+                [savedAPIs.remove(invalidApi) for invalidApi in invalidMediaAPIs]
+                newApiSetting = u','.join(savedAPIs)
+                QtCore.QSettings().setValue(u'media/apis',
+                    QtCore.QVariant(newApiSetting))
             return True
         else:
             return False
 
     def video_state(self):
         """
-        Check if there is an assigned media API and do some
-        updating stuff (e.g. update the UI)
+        Check if there is a running media Player and do updating stuff (e.g.
+        update the UI)
         """
-        isAnyonePlaying = False
         if len(self.curDisplayMediaAPI.keys()) == 0:
             self.timer.stop()
         else:
@@ -135,16 +143,15 @@ class MediaController(object):
                 self.curDisplayMediaAPI[display].update_ui(display)
                 if self.curDisplayMediaAPI[display] \
                     .state == MediaState.Playing:
-                    isAnyonePlaying = True
-        if not isAnyonePlaying:
-            self.timer.stop()
+                    return
+        self.timer.stop()
 
     def get_media_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
         css = u''
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             css += api.get_media_display_css()
         return css
 
@@ -153,7 +160,7 @@ class MediaController(object):
         Add javascript functions to htmlbuilder
         """
         js = u''
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             js += api.get_media_display_javascript()
         return js
 
@@ -162,30 +169,32 @@ class MediaController(object):
         Add html code to htmlbuilder
         """
         html = u''
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             html += api.get_media_display_html()
         return html
 
     def add_controller_items(self, controller, control_panel):
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
-        for api in self.APIs.values():
-            api.setup_controls(controller, control_panel)
+        self.setup_special_controls(controller, control_panel)
 
     def setup_generic_controls(self, controller, control_panel):
+        """
+        Add generic media control items (valid for all types of medias)
+        """
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
         controller.mediabar.addToolbarButton(
-            u'Media Start', u':/slides/media_playback_start.png',
+            u'media_playback_play', u':/slides/media_playback_start.png',
             translate('OpenLP.SlideController', 'Start playing media'),
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
-            u'Media Pause', u':/slides/media_playback_pause.png',
+            u'media_playback_pause', u':/slides/media_playback_pause.png',
             translate('OpenLP.SlideController', 'Pause playing media'),
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
-            u'Media Stop', u':/slides/media_playback_stop.png',
+            u'media_playback_stop', u':/slides/media_playback_stop.png',
             translate('OpenLP.SlideController', 'Stop playing media'),
             controller.sendToPlugins)
         # Build the seekSlider.
@@ -194,8 +203,9 @@ class MediaController(object):
         controller.seekSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        controller.seekSlider.setObjectName(u'seekSlider')
-        controller.mediabar.addToolbarWidget(u'Seek Slider', controller.seekSlider)
+        controller.seekSlider.setObjectName(u'seek_slider')
+        controller.mediabar.addToolbarWidget(u'Seek Slider', 
+            controller.seekSlider)
         # Build the volumeSlider.
         controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.volumeSlider.setTickInterval(10)
@@ -206,8 +216,9 @@ class MediaController(object):
             'OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
-        controller.volumeSlider.setObjectName(u'volumeSlider')
-        controller.mediabar.addToolbarWidget(u'Audio Volume', controller.volumeSlider)
+        controller.volumeSlider.setObjectName(u'volume_slider')
+        controller.mediabar.addToolbarWidget(u'Audio Volume', 
+            controller.volumeSlider)
         control_panel.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
@@ -216,10 +227,17 @@ class MediaController(object):
         QtCore.QObject.connect(controller.volumeSlider,
             QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
 
+    def setup_special_controls(self, controller, control_panel):
+        """
+        Special media Toolbars will be created here (e.g. for DVD Playback)
+        """
+        controller.media_info = MediaInfo()
+        # TODO: add Toolbar for DVD, ...
+
     def setup_display(self, display):
         """
-        After a new display is configured, all media related widget
-        will be created too
+        After a new display is configured, all media related widget will be 
+        created too
         """
         # clean up possible running old media files
         self.finalise()
@@ -230,21 +248,20 @@ class MediaController(object):
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
             display.hasAudio = False
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             api.setup(display)
 
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
-        # Special controls
+        # Special controls: Here media type specific Controls will be enabled 
+        # (e.g. for DVD control, ...)
         # TODO
-#        for api in self.APIs.values():
-#            api.setup_controls(controller, control_panel)
 
     def resize(self, controller, display, api):
         """
-        After Mainwindow changes or Splitter moved all related media
-        widgets have to be resized
+        After Mainwindow changes or Splitter moved all related media widgets 
+        have to be resized
         """
         api.resize(display)
 
@@ -285,7 +302,6 @@ class MediaController(object):
                 'Unsupported File')))
             return False
         # now start playing
-        display.frame.evaluateJavaScript(u'show_blank("black");')
         if self.video_play([controller], False):
             self.video_pause([controller])
             self.video_seek([controller, [0]])
@@ -295,6 +311,10 @@ class MediaController(object):
                 controller.media_info.is_background == True) or \
                 controller.isLive == False:
                 self.video_play([controller])
+            if controller.isLive and ( \
+                controller.media_info.is_background == False):
+                display.frame.evaluateJavaScript(u'show_video( \
+                "setBackBoard", null, null, null,"visible");')
             self.set_controls_visible(controller, True)
             log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
             return True
@@ -307,20 +327,19 @@ class MediaController(object):
 
     def check_file_type(self, controller, display):
         """
-        Used to choose the right media API type
-        from the prioritized API list
+        Used to choose the right media API type from the prioritized API list
         """
         apiSettings = str(QtCore.QSettings().value(u'media/apis',
-            QtCore.QVariant(u'Webkit')).toString())
+            QtCore.QVariant(u'webkit')).toString())
         usedAPIs = apiSettings.split(u',')
         if QtCore.QSettings().value(u'media/override api',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             if self.overridenApi != '':
                 usedAPIs = [self.overridenApi]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % controller.media_info.file_info.suffix()
+            suffix = u'*.%s' % controller.media_info.file_info.suffix().toLower()
             for title in usedAPIs:
-                api = self.APIs[title]
+                api = self.mediaApis[title]
                 if suffix in api.video_extensions_list:
                     if not controller.media_info.is_background or \
                         controller.media_info.is_background and api.canBackground:
@@ -336,7 +355,7 @@ class MediaController(object):
                         return True
         else:
             for title in usedAPIs:
-                api = self.APIs[title]
+                api = self.mediaApis[title]
                 if api.canFolder:
                     self.resize(controller, display, api)
                     if api.load(display):
@@ -421,6 +440,8 @@ class MediaController(object):
                 display.override = {}
                 self.curDisplayMediaAPI[display].reset(display)
                 self.curDisplayMediaAPI[display].set_visible(display, False)
+                display.frame.evaluateJavaScript(u'show_video( \
+                "setBackBoard", null, null, null,"hidden");')
                 del self.curDisplayMediaAPI[display]
         self.set_controls_visible(controller, False)
 
@@ -478,7 +499,7 @@ class MediaController(object):
 
     def get_audio_extensions_list(self):
         audio_list = []
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             for item in api.audio_extensions_list:
                 if not item in audio_list:
                     audio_list.append(item)
@@ -486,7 +507,7 @@ class MediaController(object):
 
     def get_video_extensions_list(self):
         video_list = []
-        for api in self.APIs.values():
+        for api in self.mediaApis.values():
             for item in api.video_extensions_list:
                 if not item in video_list:
                     video_list.append(item)
@@ -494,7 +515,7 @@ class MediaController(object):
 
     def override_api(self, override_api):
         apiSettings = str(QtCore.QSettings().value(u'media/apis',
-            QtCore.QVariant(u'Webkit')).toString())
+            QtCore.QVariant(u'webkit')).toString())
         usedAPIs = apiSettings.split(u',')
         if override_api in usedAPIs:
             self.overridenApi = override_api

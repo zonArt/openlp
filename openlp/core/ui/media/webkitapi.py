@@ -35,11 +35,15 @@ from openlp.core.ui.media import MediaAPI, MediaState
 log = logging.getLogger(__name__)
 
 VIDEO_CSS = u"""
-#video1 {
+#videobackboard {
     z-index:3;
+    background-color: black;
+}
+#video1 {
+    z-index:4;
 }
 #video2 {
-    z-index:3;
+    z-index:4;
 }
 """
 
@@ -135,11 +139,16 @@ VIDEO_JS = u"""
             case 'setVisible':
                 vid.style.visibility = varVal;
                 break;
+            case 'setBackBoard':
+                var back = document.getElementById('videobackboard');
+                back.style.visibility = varVal;
+                break;
        }
     }
 """
 
 VIDEO_HTML = u"""
+<div id="videobackboard" class="size" style="visibility:hidden"></div>
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -148,7 +157,7 @@ VIDEO_HTML = u"""
 
 FLASH_CSS = u"""
 #flash {
-    z-index:4;
+    z-index:5;
 }
 """
 
@@ -215,21 +224,7 @@ FLASH_HTML = u"""
 <div id="flash" class="size" style="visibility:hidden"></div>
 """
 
-class WebkitAPI(MediaAPI):
-    """
-    A specialised version of the MediaAPI class,
-    which provides a QtWebKit display.
-    """
-
-    def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'Webkit')
-        self.parent = parent
-        self.canBackground = True
-        self.audio_extensions_list = [
-              u'*.mp3'
-            , u'*.ogg'
-        ]
-        self.video_extensions_list = [
+VIDEO_EXT = [
              u'*.3gp'
             , u'*.3gpp'
             , u'*.3g2'
@@ -253,9 +248,24 @@ class WebkitAPI(MediaAPI):
             , u'*.swf'
         ]
 
-    def setup_controls(self, controller, control_panel):
-        # no special controls
-        pass
+AUDIO_EXT =  [
+              u'*.mp3'
+            , u'*.ogg'
+        ]
+
+
+class WebkitAPI(MediaAPI):
+    """
+    A specialised version of the MediaAPI class, which provides a QtWebKit 
+    display.
+    """
+
+    def __init__(self, parent):
+        MediaAPI.__init__(self, parent, u'webkit')
+        self.parent = parent
+        self.canBackground = True
+        self.audio_extensions_list = AUDIO_EXT
+        self.video_extensions_list = VIDEO_EXT
 
     def get_media_display_css(self):
         """
@@ -263,13 +273,11 @@ class WebkitAPI(MediaAPI):
         """
         return VIDEO_CSS + FLASH_CSS
 
-
     def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
         return VIDEO_JS + FLASH_JS
-
 
     def get_media_display_html(self):
         """
@@ -395,10 +403,12 @@ class WebkitAPI(MediaAPI):
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()
             # check if conversion was ok and value is not 'NaN'
+            print currentTime, 
             if ok and currentTime != float('inf'):
                 currentTime = int(currentTime*1000)
             (length, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("length");').toFloat()
+            print length
             # check if conversion was ok and value is not 'NaN'
             if ok and length != float('inf'):
                 length = int(length*1000)

@@ -30,8 +30,9 @@ import sys, os
 from datetime import datetime
 try:
     import vlc
-    vlc_available = True
-except ImportError:
+    if vlc.get_default_instance():
+        vlc_available = True
+except:
     vlc_available = False
 
 from PyQt4 import QtCore, QtGui
@@ -40,47 +41,50 @@ from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
+AUDIO_EXT =  [
+      u'*.mp3'
+    , u'*.wav'
+    , u'*.ogg'
+    ]
+
+VIDEO_EXT = [
+    u'*.3gp'
+    , u'*.asf', u'*.wmv'
+    , u'*.au'
+    , u'*.avi'
+    , u'*.flv'
+    , u'*.mov'
+    , u'*.mp4'
+    , u'*.ogm'
+    , u'*.mkv', u'*.mka'
+    , u'*.ts', u'*.mpg'
+    , u'*.mpg', u'*.mp2'
+    , u'*.nsc'
+    , u'*.nsv'
+    , u'*.nut'
+    , u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv'
+    , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
+    , u'*.tta', u'*.tac'
+    , u'*.ty'
+    , u'*.dts'
+    , u'*.xa'
+    , u'*.iso'
+    , u'*.vob'
+    ]
+
+
 class VlcAPI(MediaAPI):
     """
-    A specialised version of the MediaAPI class,
-    which provides a QtWebKit display.
+    A specialised version of the MediaAPI class, which provides a QtWebKit 
+    display.
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'Vlc')
+        MediaAPI.__init__(self, parent, u'vlc')
         self.parent = parent
         self.canFolder = True
-        self.audio_extensions_list = [
-              u'*.mp3'
-            , u'*.wav'
-            , u'*.ogg'
-        ]
-        self.video_extensions_list = [
-            u'*.3gp'
-            , u'*.asf', u'*.wmv'
-            , u'*.au'
-            , u'*.avi'
-            , u'*.flv'
-            , u'*.mov'
-            , u'*.mp4'
-            , u'*.ogm'
-            , u'*.mkv', u'*.mka'
-            , u'*.ts', u'*.mpg'
-            , u'*.mpg', u'*.mp2'
-            , u'*.nsc'
-            , u'*.nsv'
-            , u'*.nut'
-            , u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv'
-            , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
-            , u'*.tta', u'*.tac'
-            , u'*.ty'
-            , u'*.dts'
-            , u'*.xa'
-            , u'*.iso'
-            ]
-
-    def setup_controls(self, controller, control_panel):
-        pass
+        self.audio_extensions_list = AUDIO_EXT
+        self.video_extensions_list = VIDEO_EXT
 
     def setup(self, display):
         display.vlcWidget = QtGui.QFrame(display)
