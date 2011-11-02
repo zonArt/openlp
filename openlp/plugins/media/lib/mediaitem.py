@@ -33,7 +33,8 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver, MediaType
+    SettingsManager, translate, check_item_selected, Receiver, MediaType, \
+    ServiceItem, build_html
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.core.ui import Controller, Display
@@ -69,6 +70,15 @@ class MediaMediaItem(MediaManagerItem):
             False)
         self.mediaController.previewDisplay = Display(self.mediaController, \
             False, self.mediaController)
+        self.mediaController.previewDisplay.setGeometry(
+            QtCore.QRect(0, 0, 300, 300))
+        self.mediaController.previewDisplay.screen = \
+            {u'size':self.mediaController.previewDisplay.geometry()}
+        self.mediaController.previewDisplay.setup()
+        serviceItem = ServiceItem()
+        self.mediaController.previewDisplay.webView.setHtml(build_html( \
+            serviceItem, self.mediaController.previewDisplay.screen, None, \
+            False, None))
         self.mediaController.previewDisplay.setup()
         self.plugin.mediaController.setup_display( \
             self.mediaController.previewDisplay)
@@ -100,11 +110,6 @@ class MediaMediaItem(MediaManagerItem):
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasFileIcon = True
-        apiSettings = str(QtCore.QSettings().value(u'media/apis',
-            QtCore.QVariant(u'Webkit')).toString())
-        usedAPIs = apiSettings.split(u',')
-        for title in usedAPIs:
-            api = self.plugin.mediaController.APIs[title]
         self.hasNewIcon = False
         self.hasEditIcon = False
 
@@ -148,7 +153,7 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaOpenForm.exec_()
 
     def overrideApiChanged(self, index):
-        Receiver.send_message(u'media_overrideApi', \
+        Receiver.send_message(u'media_override_api', \
             u'%s' % self.displayTypeComboBox.currentText())
 
     def onResetClick(self):
@@ -244,7 +249,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.displayTypeComboBox.clear()
         apiSettings = str(QtCore.QSettings().value(u'media/apis',
-            QtCore.QVariant(u'Webkit')).toString())
+            QtCore.QVariant(u'webkit')).toString())
         usedAPIs = apiSettings.split(u',')
         for title in usedAPIs:
             # load the drop down selection

@@ -37,16 +37,7 @@ from openlp.core.ui.media import MediaAPI, MediaState
 
 log = logging.getLogger(__name__)
 
-class PhononAPI(MediaAPI):
-    """
-    A specialised version of the MediaAPI class,
-    which provides a Phonon display.
-    """
-
-    def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'Phonon')
-        self.parent = parent
-        self.additional_extensions = {
+ADDITIONAL_EXT = {
             u'audio/ac3': [u'.ac3'],
             u'audio/flac': [u'.flac'],
             u'audio/x-m4a': [u'.m4a'],
@@ -61,6 +52,18 @@ class PhononAPI(MediaAPI):
             u'video/x-wmv': [u'.wmv'],
             u'video/x-mpg': [u'.mpg'],
             u'video/x-ms-wmv': [u'.wmv']}
+
+
+class PhononAPI(MediaAPI):
+    """
+    A specialised version of the MediaAPI class, which provides a Phonon 
+    display.
+    """
+
+    def __init__(self, parent):
+        MediaAPI.__init__(self, parent, u'phonon')
+        self.parent = parent
+        self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
@@ -88,9 +91,6 @@ class PhononAPI(MediaAPI):
                     list.append(ext)
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
-
-    def setup_controls(self, controller, control_panel):
-        pass
 
     def setup(self, display):
         display.phononWidget = Phonon.VideoWidget(display)

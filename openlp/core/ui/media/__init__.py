@@ -27,8 +27,8 @@
 
 class MediaState(object):
     """
-    An enumeration for possible States of the Media Player
-    (copied partially from Phonon::State)
+    An enumeration for possible States of the Media Player (copied partially 
+    from Phonon::State)
     """
     Loading = 0
     Stopped = 1

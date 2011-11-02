@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon
+    translate, build_icon, ServiceItem, build_html
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -287,6 +287,12 @@ class SlideController(Controller):
         self.slideLayout.setObjectName(u'SlideLayout')
         self.previewDisplay = Display(self, self.isLive, self)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
+        self.previewDisplay.screen = {u'size':self.previewDisplay.geometry()}
+        self.previewDisplay.setup()
+        serviceItem = ServiceItem()
+        self.previewDisplay.webView.setHtml(build_html(serviceItem, 
+            self.previewDisplay.screen, None, self.isLive, None))
+#        self.previewDisplay.webView.hide()
         self.slideLayout.insertWidget(0, self.previewDisplay)
         self.previewDisplay.hide()
         # Actual preview screen

@@ -31,7 +31,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, PluginManager
+    ItemCapabilities, FormattingTags
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -69,7 +69,6 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
         self.imageManager = imageManager
-        self.plugins = PluginManager.get_instance().plugins
         self.screens = ScreenList.get_instance()
         self.service_theme = u''
         self.theme_level = u''

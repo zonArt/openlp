@@ -25,6 +25,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-hiddenimports = ['openlp.plugins.presentations.lib.impresscontroller',
-                 'openlp.plugins.presentations.lib.powerpointcontroller',
-                 'openlp.plugins.presentations.lib.pptviewcontroller']
+hiddenimports = ['openlp.core.ui.media.phononapi',
+                 'openlp.core.ui.media.vlcapi',
+                 'openlp.core.ui.media.webkitapi']
