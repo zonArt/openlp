@@ -37,7 +37,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate, PluginManager
 
-from openlp.core.ui import HideMode, ScreenList
+from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
 log = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ class Display(QtGui.QGraphicsView):
     def __init__(self, parent, live, controller):
         if live:
             QtGui.QGraphicsView.__init__(self)
-            # Do not overwrite the parent() method.
+            # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
@@ -191,7 +191,7 @@ class MainDisplay(Display):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.isLive, None))
+                self.isLive, None, plugins=self.plugins))
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -215,7 +215,7 @@ class MainDisplay(Display):
         self.frame.evaluateJavaScript(u'show_text("%s")' %
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
 
-    def alert(self, text):
+    def alert(self, text, location):
         """
         Display an alert.
 
@@ -239,10 +239,10 @@ class MainDisplay(Display):
                 alert_height = int(height.toString())
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
-                if self.alertTab.location == 1:
+                if location == AlertLocation.Middle:
                     self.move(self.screen[u'size'].left(),
                     (self.screen[u'size'].height() - alert_height) / 2)
-                elif self.alertTab.location == 2:
+                elif location == AlertLocation.Bottom:
                     self.move(self.screen[u'size'].left(),
                         self.screen[u'size'].height() - alert_height)
             else:
