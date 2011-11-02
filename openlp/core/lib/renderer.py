@@ -229,6 +229,7 @@ class Renderer(object):
         # Songs and Custom
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
+            #
             if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
@@ -250,7 +251,12 @@ class Renderer(object):
                         # render the first virtual slide.
                         text_contains_break = u'[---]' in text
                         if text_contains_break:
-                            text_to_render, text = text.split(u'\n[---]\n', 1)
+                            try:
+                                text_to_render, text = \
+                                    text.split(u'\n[---]\n', 1)
+                            except:
+                                text_to_render = text.split(u'\n[---]\n')[0]
+                                text = u''
                         else:
                             text_to_render = text
                             text = u''
