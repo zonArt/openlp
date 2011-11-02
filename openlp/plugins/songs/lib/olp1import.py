@@ -78,30 +78,35 @@ class OpenLP1SongImport(SongImport):
         connection = sqlite.connect(self.importSource, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()
-        # Determine if we're using a new or an old DB.
+        # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
-        new_db = len(cursor.fetchall()) > 0
+        db_has_tracks = len(cursor.fetchall()) > 0
+        # Determine if the db contains theme information.
+        cursor.execute(u'SELECT name FROM sqlite_master '
+            u'WHERE type = \'table\' AND name = \'settings\'')
+        db_has_themes = len(cursor.fetchall()) > 0
         # "cache" our list of authors.
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
-        if new_db:
+        if db_has_tracks:
             # "cache" our list of tracks.
             cursor.execute(u'-- types int, unicode')
             cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
             tracks = cursor.fetchall()
-        # "cache" our list of themes.
-        cursor.execute(u'-- types int, unicode')
-        cursor.execute(u'SELECT settingsid, settingsname FROM settings')
-        themes = {}
-        for theme_id, theme_name in cursor.fetchall():
-            if theme_name in self.availableThemes:
-                themes[theme_id] = theme_name
+        if db_has_themes:
+            # "cache" our list of themes.
+            themes = {}
+            cursor.execute(u'-- types int, unicode')
+            cursor.execute(u'SELECT settingsid, settingsname FROM settings')
+            for theme_id, theme_name in cursor.fetchall():
+                if theme_name in self.availableThemes:
+                    themes[theme_id] = theme_name
         # Import the songs.
-        cursor.execute(u'-- types int, unicode, unicode, unicode, int')
-        cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
-            u'copyrightinfo, settingsid FROM songs')
+        cursor.execute(u'-- types int, unicode, unicode, unicode')
+        cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS ' \
+                u'lyrics, copyrightinfo FROM songs')
         songs = cursor.fetchall()
         self.importWizard.progressBar.setMaximum(len(songs))
         for song in songs:
@@ -112,8 +117,13 @@ class OpenLP1SongImport(SongImport):
             self.title = song[1]
             lyrics = song[2].replace(u'\r\n', u'\n')
             self.addCopyright(song[3])
-            if themes.has_key(song[4]):
-                self.themeName = themes[song[4]]
+            if db_has_themes:
+                cursor.execute(u'-- types int')
+                cursor.execute(
+                    u'SELECT settingsid FROM songs WHERE songid = %s' % song_id)
+                theme_id = cursor.fetchone()[0]
+                if themes.has_key(theme_id):
+                    self.themeName = themes[theme_id]
             verses = lyrics.split(u'\n\n')
             for verse in verses:
                 if verse.strip():
@@ -131,7 +141,7 @@ class OpenLP1SongImport(SongImport):
                         break
             if self.stopImportFlag:
                 break
-            if new_db:
+            if db_has_tracks:
                 cursor.execute(u'-- types int, int')
                 cursor.execute(u'SELECT trackid, listindex '
                     u'FROM songtracks '

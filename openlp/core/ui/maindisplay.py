@@ -51,7 +51,7 @@ class MainDisplay(QtGui.QGraphicsView):
     def __init__(self, parent, imageManager, live):
         if live:
             QtGui.QGraphicsView.__init__(self)
-            # Do not overwrite the parent() method.
+            # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
