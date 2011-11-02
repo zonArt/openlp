@@ -229,7 +229,6 @@ class Renderer(object):
         # Songs and Custom
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
-            #
             if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
