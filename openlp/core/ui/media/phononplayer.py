@@ -33,7 +33,8 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.core.ui.media import MediaAPI, MediaState
+from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
 
@@ -54,14 +55,14 @@ ADDITIONAL_EXT = {
             u'video/x-ms-wmv': [u'.wmv']}
 
 
-class PhononAPI(MediaAPI):
+class PhononPlayer(MediaPlayer):
     """
-    A specialised version of the MediaAPI class, which provides a Phonon 
+    A specialised version of the MediaPlayer class, which provides a Phonon 
     display.
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'phonon')
+        MediaPlayer.__init__(self, parent, u'phonon')
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()

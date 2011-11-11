@@ -38,7 +38,6 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.core.ui import Controller, Display
-from openlp.plugins.media.forms import MediaOpenForm
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +58,6 @@ class MediaMediaItem(MediaManagerItem):
         self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
-        self.mediaOpenForm = MediaOpenForm(self.plugin.formparent)
         self.hasSearch = True
         self.mediaObject = None
         self.mediaController = Controller(parent)
@@ -105,7 +103,7 @@ class MediaMediaItem(MediaManagerItem):
         self.Automatic = translate('MediaPlugin.MediaItem',
             'Automatic')
         self.displayTypeLabel.setText(
-            translate('MediaPlugin.MediaItem', 'Use Api:'))
+            translate('MediaPlugin.MediaItem', 'Use Player:'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -116,11 +114,6 @@ class MediaMediaItem(MediaManagerItem):
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.addAction(self.replaceAction)
-
-# TODO activate own media open menu
-#    def addStartHeaderBar(self):
-#        self.replaceAction = self.addToolbarButton(u'', u'',
-#            u':/general/general_open.png', self.onMediaOpenClick, False)
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
@@ -144,16 +137,10 @@ class MediaMediaItem(MediaManagerItem):
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
         QtCore.QObject.connect(self.displayTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overrideApiChanged)
+            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overridePlayerChanged)
 
-    def onMediaOpenClick(self):
-        """
-        Add a folder to the list widget to make it available for showing
-        """
-        self.mediaOpenForm.exec_()
-
-    def overrideApiChanged(self, index):
-        Receiver.send_message(u'media_override_api', \
+    def overridePlayerChanged(self, index):
+        Receiver.send_message(u'media_override_player', \
             u'%s' % self.displayTypeComboBox.currentText())
 
     def onResetClick(self):
@@ -244,20 +231,20 @@ class MediaMediaItem(MediaManagerItem):
 
     def populateDisplayTypes(self):
         """
-        Load the combobox with the enabled media apis,
-        allowing user to select a specific api if settings allow
+        Load the combobox with the enabled media players,
+        allowing user to select a specific player if settings allow
         """
         self.displayTypeComboBox.clear()
-        apiSettings = str(QtCore.QSettings().value(u'media/apis',
+        playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
-        usedAPIs = apiSettings.split(u',')
-        for title in usedAPIs:
+        usedPlayers = playerSettings.split(u',')
+        for title in usedPlayers:
             # load the drop down selection
             self.displayTypeComboBox.addItem(title)
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override api',
+        if QtCore.QSettings().value(self.settingsSection + u'/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.mediaWidget.show()
         else:

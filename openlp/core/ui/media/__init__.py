@@ -62,5 +62,4 @@ class MediaInfo(object):
     end_time = 0
     media_type = MediaType()
 
-from media_api import MediaAPI
 from mediacontroller import MediaController

@@ -34,48 +34,48 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, parent, title, visible_title, media_apis, icon_path):
-        self.media_apis = media_apis
+    def __init__(self, parent, title, visible_title, media_players, icon_path):
+        self.media_players = media_players
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.mediaAPIGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.mediaAPIGroupBox.setObjectName(u'mediaAPIGroupBox')
-        self.mediaApiLayout = QtGui.QVBoxLayout(self.mediaAPIGroupBox)
-        self.mediaApiLayout.setObjectName(u'mediaApiLayout')
-        self.ApiCheckBoxes = {}
-        for key in self.media_apis:
-            api = self.media_apis[key]
-            checkbox = QtGui.QCheckBox(self.mediaAPIGroupBox)
-            checkbox.setEnabled(api.available)
-            checkbox.setObjectName(api.name + u'CheckBox')
-            self.ApiCheckBoxes[api.name] = checkbox
-            self.mediaApiLayout.addWidget(checkbox)
-        self.leftLayout.addWidget(self.mediaAPIGroupBox)
-        self.apiOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.apiOrderGroupBox.setObjectName(u'apiOrderGroupBox')
-        self.apiOrderLayout = QtGui.QVBoxLayout(self.apiOrderGroupBox)
-        self.apiOrderLayout.setObjectName(u'apiOrderLayout')
-        self.apiOrderlistWidget = QtGui.QListWidget( \
-            self.apiOrderGroupBox)
+        self.mediaPlayerGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.mediaPlayerGroupBox.setObjectName(u'mediaPlayerGroupBox')
+        self.mediaPlayerLayout = QtGui.QVBoxLayout(self.mediaPlayerGroupBox)
+        self.mediaPlayerLayout.setObjectName(u'mediaPlayerLayout')
+        self.PlayerCheckBoxes = {}
+        for key in self.media_players:
+            player = self.media_players[key]
+            checkbox = QtGui.QCheckBox(self.mediaPlayerGroupBox)
+            checkbox.setEnabled(player.available)
+            checkbox.setObjectName(player.name + u'CheckBox')
+            self.PlayerCheckBoxes[player.name] = checkbox
+            self.mediaPlayerLayout.addWidget(checkbox)
+        self.leftLayout.addWidget(self.mediaPlayerGroupBox)
+        self.playerOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
+        self.playerOrderLayout = QtGui.QVBoxLayout(self.playerOrderGroupBox)
+        self.playerOrderLayout.setObjectName(u'playerOrderLayout')
+        self.playerOrderlistWidget = QtGui.QListWidget( \
+            self.playerOrderGroupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.apiOrderlistWidget. \
+        sizePolicy.setHeightForWidth(self.playerOrderlistWidget. \
             sizePolicy().hasHeightForWidth())
-        self.apiOrderlistWidget.setSizePolicy(sizePolicy)
-        self.apiOrderlistWidget.setVerticalScrollBarPolicy( \
+        self.playerOrderlistWidget.setSizePolicy(sizePolicy)
+        self.playerOrderlistWidget.setVerticalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAsNeeded)
-        self.apiOrderlistWidget.setHorizontalScrollBarPolicy( \
+        self.playerOrderlistWidget.setHorizontalScrollBarPolicy( \
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.apiOrderlistWidget.setEditTriggers( \
+        self.playerOrderlistWidget.setEditTriggers( \
             QtGui.QAbstractItemView.NoEditTriggers)
-        self.apiOrderlistWidget.setObjectName(u'apiOrderlistWidget')
-        self.apiOrderLayout.addWidget(self.apiOrderlistWidget)
-        self.orderingButtonsWidget = QtGui.QWidget(self.apiOrderGroupBox)
+        self.playerOrderlistWidget.setObjectName(u'playerOrderlistWidget')
+        self.playerOrderLayout.addWidget(self.playerOrderlistWidget)
+        self.orderingButtonsWidget = QtGui.QWidget(self.playerOrderGroupBox)
         self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
         self.orderingButtonLayout = QtGui.QHBoxLayout( \
             self.orderingButtonsWidget)
@@ -83,120 +83,120 @@ class MediaTab(SettingsTab):
         self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
         self.orderingDownButton.setObjectName(u'orderingDownButton')
         self.orderingButtonLayout.addWidget(self.orderingDownButton)
-        self.orderingUpButton = QtGui.QPushButton(self.apiOrderGroupBox)
+        self.orderingUpButton = QtGui.QPushButton(self.playerOrderGroupBox)
         self.orderingUpButton.setObjectName(u'orderingUpButton')
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
-        self.apiOrderLayout.addWidget(self.orderingButtonsWidget)
-        self.leftLayout.addWidget(self.apiOrderGroupBox)
+        self.playerOrderLayout.addWidget(self.orderingButtonsWidget)
+        self.leftLayout.addWidget(self.playerOrderGroupBox)
         self.AdvancedGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.AdvancedGroupBox.setObjectName(u'AdvancedGroupBox')
         self.AdvancedLayout = QtGui.QVBoxLayout(self.AdvancedGroupBox)
         self.AdvancedLayout.setObjectName(u'AdvancedLayout')
-        self.OverrideApiCheckBox = QtGui.QCheckBox(self.AdvancedGroupBox)
-        self.OverrideApiCheckBox.setObjectName(u'OverrideApiCheckBox')
-        self.AdvancedLayout.addWidget(self.OverrideApiCheckBox)
+        self.OverridePlayerCheckBox = QtGui.QCheckBox(self.AdvancedGroupBox)
+        self.OverridePlayerCheckBox.setObjectName(u'OverridePlayerCheckBox')
+        self.AdvancedLayout.addWidget(self.OverridePlayerCheckBox)
         self.leftLayout.addWidget(self.AdvancedGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        for key in self.media_apis:
-            api = self.media_apis[key]
-            checkbox = self.ApiCheckBoxes[api.name]
+        for key in self.media_players:
+            player = self.media_players[key]
+            checkbox = self.PlayerCheckBoxes[player.name]
             QtCore.QObject.connect(checkbox,
                 QtCore.SIGNAL(u'stateChanged(int)'),
-                self.onApiCheckBoxChanged)
+                self.onPlayerCheckBoxChanged)
         QtCore.QObject.connect(self.orderingUpButton,
             QtCore.SIGNAL(u'pressed()'), self.onOrderingUpButtonPressed)
         QtCore.QObject.connect(self.orderingDownButton,
             QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
-        self.mediaAPIGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'Available Media APIs'))
-        for key in self.media_apis:
-            api = self.media_apis[key]
-            checkbox = self.ApiCheckBoxes[api.name]
-            if api.available:
-                checkbox.setText(api.name)
+        self.mediaPlayerGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Available Media Players'))
+        for key in self.media_players:
+            player = self.media_players[key]
+            checkbox = self.PlayerCheckBoxes[player.name]
+            if player.available:
+                checkbox.setText(player.name)
             else:
                 checkbox.setText(
                     unicode(translate('MediaPlugin.MediaTab',
-                    '%s (unavailable)')) % api.name)
-        self.apiOrderGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'API Order'))
+                    '%s (unavailable)')) % player.name)
+        self.playerOrderGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Player Order'))
         self.orderingDownButton.setText(
             translate('MediaPlugin.MediaTab', 'Down'))
         self.orderingUpButton.setText(
             translate('MediaPlugin.MediaTab', 'Up'))
         self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
-        self.OverrideApiCheckBox.setText(
+        self.OverridePlayerCheckBox.setText(
             translate('MediaPlugin.MediaTab',
-            'Allow media api to be overriden'))
+            'Allow media player to be overriden'))
 
-    def onApiCheckBoxChanged(self, check_state):
-        api = self.sender().text()
+    def onPlayerCheckBoxChanged(self, check_state):
+        player = self.sender().text()
         if check_state == QtCore.Qt.Checked:
-            if api not in self.usedAPIs:
-                self.usedAPIs.append(api)
+            if player not in self.usedPlayers:
+                self.usedPlayers.append(player)
         else:
-            self.usedAPIs.takeAt(self.usedAPIs.indexOf(api))
-        self.updateApiList()
+            self.usedPlayers.takeAt(self.usedPlayers.indexOf(player))
+        self.updatePlayerList()
 
-    def updateApiList(self):
-        self.apiOrderlistWidget.clear()
-        for api in self.usedAPIs:
-            if api in self.ApiCheckBoxes.keys():
-                self.apiOrderlistWidget.addItem(api)
+    def updatePlayerList(self):
+        self.playerOrderlistWidget.clear()
+        for player in self.usedPlayers:
+            if player in self.PlayerCheckBoxes.keys():
+                self.playerOrderlistWidget.addItem(player)
 
     def onOrderingUpButtonPressed(self):
-        currentRow = self.apiOrderlistWidget.currentRow()
+        currentRow = self.playerOrderlistWidget.currentRow()
         if currentRow > 0:
-            item = self.apiOrderlistWidget.takeItem(currentRow)
-            self.apiOrderlistWidget.insertItem(currentRow - 1, item)
-            self.apiOrderlistWidget.setCurrentRow(currentRow - 1)
-            self.usedAPIs.move(currentRow, currentRow - 1)
+            item = self.playerOrderlistWidget.takeItem(currentRow)
+            self.playerOrderlistWidget.insertItem(currentRow - 1, item)
+            self.playerOrderlistWidget.setCurrentRow(currentRow - 1)
+            self.usedPlayers.move(currentRow, currentRow - 1)
 
     def onOrderingDownButtonPressed(self):
-        currentRow = self.apiOrderlistWidget.currentRow()
-        if currentRow < self.apiOrderlistWidget.count() - 1:
-            item = self.apiOrderlistWidget.takeItem(currentRow)
-            self.apiOrderlistWidget.insertItem(currentRow + 1, item)
-            self.apiOrderlistWidget.setCurrentRow(currentRow + 1)
-            self.usedAPIs.move(currentRow, currentRow + 1)
+        currentRow = self.playerOrderlistWidget.currentRow()
+        if currentRow < self.playerOrderlistWidget.count() - 1:
+            item = self.playerOrderlistWidget.takeItem(currentRow)
+            self.playerOrderlistWidget.insertItem(currentRow + 1, item)
+            self.playerOrderlistWidget.setCurrentRow(currentRow + 1)
+            self.usedPlayers.move(currentRow, currentRow + 1)
 
     def load(self):
-        self.usedAPIs = QtCore.QSettings().value(
-            self.settingsSection + u'/apis',
+        self.usedPlayers = QtCore.QSettings().value(
+            self.settingsSection + u'/players',
             QtCore.QVariant(u'webkit')).toString().split(u',')
-        for key in self.media_apis:
-            api = self.media_apis[key]
-            checkbox = self.ApiCheckBoxes[api.name]
-            if api.available and api.name in self.usedAPIs:
+        for key in self.media_players:
+            player = self.media_players[key]
+            checkbox = self.PlayerCheckBoxes[player.name]
+            if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)
-        self.updateApiList()
-        self.OverrideApiCheckBox.setChecked(QtCore.QSettings().value(
-            self.settingsSection + u'/override api',
+        self.updatePlayerList()
+        self.OverridePlayerCheckBox.setChecked(QtCore.QSettings().value(
+            self.settingsSection + u'/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
         override_changed = False
-        api_string_changed = False
-        oldApiString = QtCore.QSettings().value(
-            self.settingsSection + u'/apis',
+        player_string_changed = False
+        oldPlayerString = QtCore.QSettings().value(
+            self.settingsSection + u'/players',
             QtCore.QVariant(u'webkit')).toString()
-        newApiString = self.usedAPIs.join(u',')
-        if oldApiString != newApiString:
+        newPlayerString = self.usedPlayers.join(u',')
+        if oldPlayerString != newPlayerString:
             # clean old Media stuff
-            QtCore.QSettings().setValue(self.settingsSection + u'/apis',
-                QtCore.QVariant(newApiString))
-            api_string_changed = True
+            QtCore.QSettings().setValue(self.settingsSection + u'/players',
+                QtCore.QVariant(newPlayerString))
+            player_string_changed = True
             override_changed = True
-        setting_key = self.settingsSection + u'/override api'
+        setting_key = self.settingsSection + u'/override player'
         if QtCore.QSettings().value(setting_key) != \
-            self.OverrideApiCheckBox.checkState():
+            self.OverridePlayerCheckBox.checkState():
             QtCore.QSettings().setValue(setting_key,
-                QtCore.QVariant(self.OverrideApiCheckBox.checkState()))
+                QtCore.QVariant(self.OverridePlayerCheckBox.checkState()))
             override_changed = True
         if override_changed:
             Receiver.send_message(u'mediaitem_media_rebuild')
-        if api_string_changed:
+        if player_string_changed:
             Receiver.send_message(u'config_screen_changed')
