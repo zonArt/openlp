@@ -37,7 +37,8 @@ except:
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
-from openlp.core.ui.media import MediaAPI, MediaState
+from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
 
@@ -73,14 +74,14 @@ VIDEO_EXT = [
     ]
 
 
-class VlcAPI(MediaAPI):
+class VlcPlayer(MediaPlayer):
     """
-    A specialised version of the MediaAPI class, which provides a QtWebKit 
+    A specialised version of the MediaPlayer class, which provides a QtWebKit 
     display.
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'vlc')
+        MediaPlayer.__init__(self, parent, u'vlc')
         self.parent = parent
         self.canFolder = True
         self.audio_extensions_list = AUDIO_EXT

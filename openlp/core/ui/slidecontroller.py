@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, ServiceItem, build_html
+    translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -291,7 +291,7 @@ class SlideController(Controller):
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem, 
-            self.previewDisplay.screen, None, self.isLive, None))
+            self.previewDisplay.screen, None, self.isLive, None, PluginManager.get_instance().plugins))
 #        self.previewDisplay.webView.hide()
         self.slideLayout.insertWidget(0, self.previewDisplay)
         self.previewDisplay.hide()
@@ -419,6 +419,10 @@ class SlideController(Controller):
         self.mediaController.setup_display(self.display)
         self.previewSizeChanged()
         self.previewDisplay.setup()
+        serviceItem = ServiceItem()
+        self.previewDisplay.webView.setHtml(build_html(serviceItem, 
+            self.previewDisplay.screen, None, self.isLive, None, 
+            plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
             self.refreshServiceItem()

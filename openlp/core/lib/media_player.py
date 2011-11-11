@@ -27,13 +27,13 @@
 
 from openlp.core.ui.media import MediaState
 
-class MediaAPI(object):
+class MediaPlayer(object):
     """
-    A generic media API class to provide OpenLP with a pluggable media display 
+    This is the base class media Player class to provide OpenLP with a pluggable media display 
     framework.
     """
 
-    def __init__(self, parent, name=u'media_api'):
+    def __init__(self, parent, name=u'media_player'):
         self.parent = parent
         self.name = name
         self.available = self.check_available()
@@ -47,7 +47,7 @@ class MediaAPI(object):
 
     def check_available(self):
         """
-        API is available on this machine
+        Player is available on this machine
         """
         return False
 

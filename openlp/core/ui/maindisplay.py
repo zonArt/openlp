@@ -59,7 +59,7 @@ class Display(QtGui.QGraphicsView):
             QtGui.QGraphicsView.__init__(self, parent)
         self.isLive = live
         self.controller = controller
-        self.screen = None
+        self.screen = {}
         self.plugins = PluginManager.get_instance().plugins
         self.setViewport(QtOpenGL.QGLWidget())
 

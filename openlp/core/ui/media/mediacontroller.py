@@ -31,8 +31,9 @@ import sys, os,time
 from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
+from openlp.core.lib.media_player import MediaPlayer
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui.media import MediaAPI, MediaState, MediaInfo, MediaType
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -40,20 +41,20 @@ log = logging.getLogger(__name__)
 class MediaController(object):
     """
     The implementation of the Media Controller. The Media Controller adds an own
-    class for every API. Currently these are QtWebkit, Phonon and planed Vlc.
+    class for every Player. Currently these are QtWebkit, Phonon and planed Vlc.
     """
 
     def __init__(self, parent):
         self.parent = parent
-        self.mediaApis = {}
+        self.mediaPlayers = {}
         self.controller = []
-        self.overridenApi = ''
-        self.curDisplayMediaAPI = {}
+        self.overridenPlayer = ''
+        self.curDisplayMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
         self.withLivePreview = False
-        self.check_available_media_apis()
+        self.check_available_media_players()
         # Signals
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
@@ -74,7 +75,7 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_override_api'), self.override_api)
+            QtCore.SIGNAL(u'media_override_player'), self.override_player)
         # Signals for background video
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_hide'), self.video_hide)
@@ -83,24 +84,24 @@ class MediaController(object):
 
     def register_controllers(self, controller):
         """
-        Register each media API controller (Webkit, Phonon, etc) and store for
+        Register each media Player controller (Webkit, Phonon, etc) and store for
         later use
         """
         if controller.check_available():
-            self.mediaApis[controller.name] = controller
+            self.mediaPlayers[controller.name] = controller
 
-    def check_available_media_apis(self):
+    def check_available_media_players(self):
         """
-        Check to see if we have any media API's available. If Not do not install
+        Check to see if we have any media Player's available. If Not do not install
         the plugin.
         """
-        log.debug(u'check_available_media_apis')
+        log.debug(u'check_available_media_players')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'api.py') and \
-                not filename == 'media_api.py':
+            if filename.endswith(u'player.py') and \
+                not filename == 'media_player.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -111,21 +112,21 @@ class MediaController(object):
                     except ImportError:
                         log.warn(u'Failed to import %s on path %s',
                             modulename, path)
-        controller_classes = MediaAPI.__subclasses__()
+        controller_classes = MediaPlayer.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.register_controllers(controller)
-        if self.mediaApis:
-            apiSettings = str(QtCore.QSettings().value(u'media/apis',
+        if self.mediaPlayers:
+            playerSettings = str(QtCore.QSettings().value(u'media/players',
                 QtCore.QVariant(u'webkit')).toString())
-            savedAPIs = apiSettings.split(u',')
-            invalidMediaAPIs = [mediaApi for mediaApi in savedAPIs \
-                if not mediaApi in self.mediaApis]
-            if len(invalidMediaAPIs)>0:
-                [savedAPIs.remove(invalidApi) for invalidApi in invalidMediaAPIs]
-                newApiSetting = u','.join(savedAPIs)
-                QtCore.QSettings().setValue(u'media/apis',
-                    QtCore.QVariant(newApiSetting))
+            savedPlayers = playerSettings.split(u',')
+            invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
+                if not mediaPlayer in self.mediaPlayers]
+            if len(invalidMediaPlayers)>0:
+                [savedPlayers.remove(invalidPlayer) for invalidPlayer in invalidMediaPlayers]
+                newPlayerSetting = u','.join(savedPlayers)
+                QtCore.QSettings().setValue(u'media/players',
+                    QtCore.QVariant(newPlayerSetting))
             return True
         else:
             return False
@@ -135,13 +136,13 @@ class MediaController(object):
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        if len(self.curDisplayMediaAPI.keys()) == 0:
+        if len(self.curDisplayMediaPlayer.keys()) == 0:
             self.timer.stop()
         else:
-            for display in self.curDisplayMediaAPI.keys():
-                self.curDisplayMediaAPI[display].resize(display)
-                self.curDisplayMediaAPI[display].update_ui(display)
-                if self.curDisplayMediaAPI[display] \
+            for display in self.curDisplayMediaPlayer.keys():
+                self.curDisplayMediaPlayer[display].resize(display)
+                self.curDisplayMediaPlayer[display].update_ui(display)
+                if self.curDisplayMediaPlayer[display] \
                     .state == MediaState.Playing:
                     return
         self.timer.stop()
@@ -151,8 +152,8 @@ class MediaController(object):
         Add css style sheets to htmlbuilder
         """
         css = u''
-        for api in self.mediaApis.values():
-            css += api.get_media_display_css()
+        for player in self.mediaPlayers.values():
+            css += player.get_media_display_css()
         return css
 
     def get_media_display_javascript(self):
@@ -160,8 +161,8 @@ class MediaController(object):
         Add javascript functions to htmlbuilder
         """
         js = u''
-        for api in self.mediaApis.values():
-            js += api.get_media_display_javascript()
+        for player in self.mediaPlayers.values():
+            js += player.get_media_display_javascript()
         return js
 
     def get_media_display_html(self):
@@ -169,8 +170,8 @@ class MediaController(object):
         Add html code to htmlbuilder
         """
         html = u''
-        for api in self.mediaApis.values():
-            html += api.get_media_display_html()
+        for player in self.mediaPlayers.values():
+            html += player.get_media_display_html()
         return html
 
     def add_controller_items(self, controller, control_panel):
@@ -248,8 +249,8 @@ class MediaController(object):
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
             display.hasAudio = False
-        for api in self.mediaApis.values():
-            api.setup(display)
+        for player in self.mediaPlayers.values():
+            player.setup(display)
 
     def set_controls_visible(self, controller, value):
         # Generic controls
@@ -258,12 +259,12 @@ class MediaController(object):
         # (e.g. for DVD control, ...)
         # TODO
 
-    def resize(self, controller, display, api):
+    def resize(self, controller, display, player):
         """
         After Mainwindow changes or Splitter moved all related media widgets 
         have to be resized
         """
-        api.resize(display)
+        player.resize(display)
 
     def video(self, controller, file, muted, isBackground):
         """
@@ -316,7 +317,7 @@ class MediaController(object):
                 display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"visible");')
             self.set_controls_visible(controller, True)
-            log.debug(u'use %s controller' % self.curDisplayMediaAPI[display])
+            log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
             return True
         else:
             critical_error_message_box(
@@ -327,42 +328,42 @@ class MediaController(object):
 
     def check_file_type(self, controller, display):
         """
-        Used to choose the right media API type from the prioritized API list
+        Used to choose the right media Player type from the prioritized Player list
         """
-        apiSettings = str(QtCore.QSettings().value(u'media/apis',
+        playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
-        usedAPIs = apiSettings.split(u',')
-        if QtCore.QSettings().value(u'media/override api',
+        usedPlayers = playerSettings.split(u',')
+        if QtCore.QSettings().value(u'media/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if self.overridenApi != '':
-                usedAPIs = [self.overridenApi]
+            if self.overridenPlayer != '':
+                usedPlayers = [self.overridenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % controller.media_info.file_info.suffix().toLower()
-            for title in usedAPIs:
-                api = self.mediaApis[title]
-                if suffix in api.video_extensions_list:
+            for title in usedPlayers:
+                player = self.mediaPlayers[title]
+                if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or \
-                        controller.media_info.is_background and api.canBackground:
-                            self.resize(controller, display, api)
-                            if api.load(display):
-                                self.curDisplayMediaAPI[display] = api
+                        controller.media_info.is_background and player.canBackground:
+                            self.resize(controller, display, player)
+                            if player.load(display):
+                                self.curDisplayMediaPlayer[display] = player
                                 controller.media_info.media_type = MediaType.Video
                                 return True
-                if suffix in api.audio_extensions_list:
-                    if api.load(display):
-                        self.curDisplayMediaAPI[display] = api
+                if suffix in player.audio_extensions_list:
+                    if player.load(display):
+                        self.curDisplayMediaPlayer[display] = player
                         controller.media_info.media_type = MediaType.Audio
                         return True
         else:
-            for title in usedAPIs:
-                api = self.mediaApis[title]
-                if api.canFolder:
-                    self.resize(controller, display, api)
-                    if api.load(display):
-                        self.curDisplayMediaAPI[display] = api
+            for title in usedPlayers:
+                player = self.mediaPlayers[title]
+                if player.canFolder:
+                    self.resize(controller, display, player)
+                    if player.load(display):
+                        self.curDisplayMediaPlayer[display] = player
                         controller.media_info.media_type = MediaType.Video
                         return True
-        # no valid api found
+        # no valid player found
         return False
 
     def video_play(self, msg, status=True):
@@ -371,16 +372,16 @@ class MediaController(object):
         """
         log.debug(u'video_play')
         controller = msg[0]
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 if controller.isLive:
                     if controller.hideMenu.defaultAction().isChecked():
                         controller.hideMenu.defaultAction().trigger()
-                if not self.curDisplayMediaAPI[display].play(display):
+                if not self.curDisplayMediaPlayer[display].play(display):
                     return False
                 if status:
                     display.frame.evaluateJavaScript(u'show_blank("desktop");')
-                    self.curDisplayMediaAPI[display].set_visible(display, True)
+                    self.curDisplayMediaPlayer[display].set_visible(display, True)
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
@@ -392,9 +393,9 @@ class MediaController(object):
         """
         log.debug(u'video_pause')
         controller = msg[0]
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
-                self.curDisplayMediaAPI[display].pause(display)
+                self.curDisplayMediaPlayer[display].pause(display)
 
     def video_stop(self, msg):
         """
@@ -402,11 +403,11 @@ class MediaController(object):
         """
         log.debug(u'video_stop')
         controller = msg[0]
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.frame.evaluateJavaScript(u'show_blank("black");')
-                self.curDisplayMediaAPI[display].stop(display)
-                self.curDisplayMediaAPI[display].set_visible(display, False)
+                self.curDisplayMediaPlayer[display].stop(display)
+                self.curDisplayMediaPlayer[display].set_visible(display, False)
 
     def video_volume(self, msg):
         """
@@ -415,9 +416,9 @@ class MediaController(object):
         controller = msg[0]
         vol = msg[1][0]
         log.debug(u'video_volume %d' % vol)
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
-                self.curDisplayMediaAPI[display].volume(display, vol)
+                self.curDisplayMediaPlayer[display].volume(display, vol)
 
     def video_seek(self, msg):
         """
@@ -426,23 +427,23 @@ class MediaController(object):
         log.debug(u'video_seek')
         controller = msg[0]
         seekVal = msg[1][0]
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
-                self.curDisplayMediaAPI[display].seek(display, seekVal)
+                self.curDisplayMediaPlayer[display].seek(display, seekVal)
 
     def video_reset(self, controller):
         """
         Responds to the request to reset a loaded video
         """
         log.debug(u'video_reset')
-        for display in self.curDisplayMediaAPI.keys():
+        for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.override = {}
-                self.curDisplayMediaAPI[display].reset(display)
-                self.curDisplayMediaAPI[display].set_visible(display, False)
+                self.curDisplayMediaPlayer[display].reset(display)
+                self.curDisplayMediaPlayer[display].set_visible(display, False)
                 display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"hidden");')
-                del self.curDisplayMediaAPI[display]
+                del self.curDisplayMediaPlayer[display]
         self.set_controls_visible(controller, False)
 
     def video_hide(self, msg):
@@ -452,12 +453,12 @@ class MediaController(object):
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController
-            for display in self.curDisplayMediaAPI.keys():
+            for display in self.curDisplayMediaPlayer.keys():
                 if display.controller == controller:
-                    if self.curDisplayMediaAPI[display] \
+                    if self.curDisplayMediaPlayer[display] \
                         .state == MediaState.Playing:
-                        self.curDisplayMediaAPI[display].pause(display)
-                        self.curDisplayMediaAPI[display] \
+                        self.curDisplayMediaPlayer[display].pause(display)
+                        self.curDisplayMediaPlayer[display] \
                             .set_visible(display, False)
 
     def video_blank(self, msg):
@@ -469,12 +470,12 @@ class MediaController(object):
         if isLive:
             Receiver.send_message(u'live_display_hide', hide_mode)
             controller = self.parent.liveController
-            for display in self.curDisplayMediaAPI.keys():
+            for display in self.curDisplayMediaPlayer.keys():
                 if display.controller == controller:
-                    if self.curDisplayMediaAPI[display] \
+                    if self.curDisplayMediaPlayer[display] \
                         .state == MediaState.Playing:
-                        self.curDisplayMediaAPI[display].pause(display)
-                        self.curDisplayMediaAPI[display] \
+                        self.curDisplayMediaPlayer[display].pause(display)
+                        self.curDisplayMediaPlayer[display] \
                             .set_visible(display, False)
 
     def video_unblank(self, msg):
@@ -485,12 +486,12 @@ class MediaController(object):
         isLive = msg[1]
         if isLive:
             controller = self.parent.liveController
-            for display in self.curDisplayMediaAPI.keys():
+            for display in self.curDisplayMediaPlayer.keys():
                 if display.controller == controller:
-                    if self.curDisplayMediaAPI[display] \
+                    if self.curDisplayMediaPlayer[display] \
                         .state == MediaState.Paused:
-                        if self.curDisplayMediaAPI[display].play(display):
-                            self.curDisplayMediaAPI[display] \
+                        if self.curDisplayMediaPlayer[display].play(display):
+                            self.curDisplayMediaPlayer[display] \
                                 .set_visible(display, True)
                                     # Start Timer for ui updates
                             if not self.timer.isActive():
@@ -499,28 +500,28 @@ class MediaController(object):
 
     def get_audio_extensions_list(self):
         audio_list = []
-        for api in self.mediaApis.values():
-            for item in api.audio_extensions_list:
+        for player in self.mediaPlayers.values():
+            for item in player.audio_extensions_list:
                 if not item in audio_list:
                     audio_list.append(item)
         return audio_list
 
     def get_video_extensions_list(self):
         video_list = []
-        for api in self.mediaApis.values():
-            for item in api.video_extensions_list:
+        for player in self.mediaPlayers.values():
+            for item in player.video_extensions_list:
                 if not item in video_list:
                     video_list.append(item)
         return video_list
 
-    def override_api(self, override_api):
-        apiSettings = str(QtCore.QSettings().value(u'media/apis',
+    def override_player(self, override_player):
+        playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
-        usedAPIs = apiSettings.split(u',')
-        if override_api in usedAPIs:
-            self.overridenApi = override_api
+        usedPlayers = playerSettings.split(u',')
+        if override_player in usedPlayers:
+            self.overridenPlayer = override_player
         else:
-            self.overridenApi = ''
+            self.overridenPlayer = ''
 
     def finalise(self):
         self.timer.stop()

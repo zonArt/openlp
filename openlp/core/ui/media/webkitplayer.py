@@ -30,7 +30,8 @@ import logging
 from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.core.ui.media import MediaAPI, MediaState
+from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
 
@@ -254,14 +255,14 @@ AUDIO_EXT =  [
         ]
 
 
-class WebkitAPI(MediaAPI):
+class WebkitPlayer(MediaPlayer):
     """
-    A specialised version of the MediaAPI class, which provides a QtWebKit 
+    A specialised version of the MediaPlayer class, which provides a QtWebKit 
     display.
     """
 
     def __init__(self, parent):
-        MediaAPI.__init__(self, parent, u'webkit')
+        MediaPlayer.__init__(self, parent, u'webkit')
         self.parent = parent
         self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT
@@ -403,12 +404,10 @@ class WebkitAPI(MediaAPI):
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()
             # check if conversion was ok and value is not 'NaN'
-            print currentTime, 
             if ok and currentTime != float('inf'):
                 currentTime = int(currentTime*1000)
             (length, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("length");').toFloat()
-            print length
             # check if conversion was ok and value is not 'NaN'
             if ok and length != float('inf'):
                 length = int(length*1000)
