@@ -29,6 +29,7 @@ The :mod:`db` module provides the core database functionality for OpenLP
 """
 import logging
 import os
+from urllib import quote_plus as urlquote
 
 from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
@@ -193,10 +194,10 @@ class Manager(object):
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'db username').toString()),
-                unicode(settings.value(u'db password').toString()),
-                unicode(settings.value(u'db hostname').toString()),
-                unicode(settings.value(u'db database').toString()))
+                urlquote(unicode(settings.value(u'db username').toString())),
+                urlquote(unicode(settings.value(u'db password').toString())),
+                urlquote(unicode(settings.value(u'db hostname').toString())),
+                urlquote(unicode(settings.value(u'db database').toString())))
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
