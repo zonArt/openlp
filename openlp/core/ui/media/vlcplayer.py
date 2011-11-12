@@ -37,7 +37,7 @@ except:
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
-from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)

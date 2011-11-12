@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
