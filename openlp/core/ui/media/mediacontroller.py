@@ -31,7 +31,7 @@ import sys, os,time
 from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
-from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType
 from openlp.core.utils import AppLocation

@@ -30,7 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, translate
-from openlp.core.lib.media_player import MediaPlayer
+from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
