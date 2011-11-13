@@ -325,8 +325,7 @@ class ServiceItem(object):
             self.media_length = header[u'media_length']
         if u'background_audio' in header:
             self.background_audio = header[u'background_audio']
-        if u'theme_overwritten' in header:
-            self.theme_overwritten = header[u'theme_overwritten']
+        self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -488,7 +487,7 @@ class ServiceItem(object):
         ``theme``
             The new theme to be replaced in the service item
         """
-        self.theme_overwritten = False if theme == None else True
+        self.theme_overwritten = (theme == None)
         self.theme = theme
         self._new_item()
         self.render()
