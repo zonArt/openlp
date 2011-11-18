@@ -411,7 +411,7 @@ class HttpConnection(object):
         ``action``
             This is the action, either ``hide`` or ``show``.
         """
-        event = u'maindisplay_%s' % action
+        event = u'live_display_%s' % action
         Receiver.send_message(event, HideMode.Blank)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})

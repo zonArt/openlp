@@ -65,7 +65,7 @@ class OooImport(SongImport):
         if not isinstance(self.importSource, list):
             return
         try:
-            self.start_ooo()
+            self.startOoo()
         except NoConnectException as exc:
             self.logError(
                 self.importSource[0],
@@ -145,7 +145,7 @@ class OooImport(SongImport):
                 process.waitForStarted()
             self.processStarted = True
         except:
-            log.exception("start_ooo_process failed")
+            log.exception("startOooProcess failed")
 
     def openOooFile(self, filepath):
         """
@@ -171,7 +171,7 @@ class OooImport(SongImport):
                 self.importWizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except AttributeError:
-            log.exception("open_ooo_file failed: %s", url)
+            log.exception("openOooFile failed: %s", url)
         return
 
     def closeOooFile(self):
