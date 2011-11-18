@@ -113,7 +113,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 verse_num = int(match.group(2))
             except ValueError:
                 verse_num = 1
-            verse_type_index = VerseType.from_loose_input(verse_tag)
+            verse_type_index = VerseType.from_loose_input(verse_tag, True)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_num)
 
@@ -140,7 +140,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         match = VERSE_REGEX.match(text)
         if match:
             verse_type = match.group(1)
-            verse_type_index = VerseType.from_loose_input(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type, True)
             try:
                 verse_number = int(match.group(2))
             except ValueError:

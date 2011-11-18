@@ -80,15 +80,12 @@ class VerseType(object):
         ``strict``
             Determines if the default Other or None should be returned
         """
-        if strict:
-            not_found_value = None
-        else:
-            not_found_value = VerseType.TranslatedTags[VerseType.Other].upper()
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedTags[num].upper()
-        return not_found_value
+        if not strict:
+            return VerseType.TranslatedTags[VerseType.Other].upper()
 
     @staticmethod
     def translated_name(verse_tag, strict=False):
@@ -101,15 +98,12 @@ class VerseType(object):
         ``strict``
             Determines if the default Other or None should be returned
         """
-        if strict:
-            not_found_value = None
-        else:
-            not_found_value = VerseType.TranslatedNames[VerseType.Other]
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedNames[num]
-        return not_found_value
+        if not strict:
+            return VerseType.TranslatedNames[VerseType.Other]
 
     @staticmethod
     def from_tag(verse_tag, strict=False):
@@ -122,15 +116,12 @@ class VerseType(object):
         ``strict``
             Determines if the default Other or None should be returned
         """
-        if strict:
-            no_return_value = None
-        else:
-            no_return_value = VerseType.Other
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return num
-        return no_return_value
+        if not strict:
+            return VerseType.Other
 
     @staticmethod
     def from_translated_tag(verse_tag):
@@ -146,17 +137,22 @@ class VerseType(object):
                 return num
 
     @staticmethod
-    def from_string(verse_name):
+    def from_string(verse_name, strict=False):
         """
         Return the VerseType for a given string
 
         ``verse_name``
             The string to return a VerseType for
+
+        ``strict``
+            Determines if the default Other or None should be returned
         """
         verse_name = verse_name.lower()
         for num, name in enumerate(VerseType.Names):
             if verse_name == name.lower():
                 return num
+        if not strict:
+            return VerseType.Other
 
     @staticmethod
     def from_translated_string(verse_name):
@@ -172,23 +168,27 @@ class VerseType(object):
                 return num
 
     @staticmethod
-    def from_loose_input(verse_name):
+    def from_loose_input(verse_name, strict=False):
         """
         Return the VerseType for a given string, Other if not found
 
         ``verse_name``
             The string to return a VerseType for
+
+        ``strict``
+            Determines if the default Other or None should be returned
         """
         verse_index = None
         if len(verse_name) > 1:
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
-                verse_index = VerseType.from_string(verse_name)
+                verse_index = VerseType.from_string(verse_name, strict)
         elif len(verse_name) == 1:
+            verse_index = VerseType.from_translated_tag(verse_name)
             if verse_index is None:
-                verse_index = VerseType.from_translated_tag(verse_name)
-            if verse_index is None:
-                verse_index = VerseType.from_tag(verse_name)
+                verse_index = VerseType.from_tag(verse_name, strict)
+        elif not strict:
+            verse_index = VerseType.Other
         return verse_index
 
 def retrieve_windows_encoding(recommendation=None):

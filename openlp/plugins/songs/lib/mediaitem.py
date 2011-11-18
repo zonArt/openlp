@@ -457,7 +457,7 @@ class SongMediaItem(MediaManagerItem):
                         verse_index = \
                             VerseType.from_translated_string(verse_tag)
                         if verse_index is None:
-                            verse_index = VerseType.from_string(verse_tag)
+                            verse_index = VerseType.from_string(verse_tag, True)
                     if verse_index is None:
                         verse_index = VerseType.from_tag(verse_tag)
                     verse_tag = VerseType.TranslatedTags[verse_index].upper()
