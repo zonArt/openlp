@@ -40,6 +40,11 @@ try:
 except ImportError:
     PHONON_VERSION = u'-'
 try:
+    import migrate
+    MIGRATE_VERSION = getattr(migrate, u'__version__', u'< 0.7')
+except ImportError:
+    MIGRATE_VERSION = u'-'
+try:
     import chardet
     CHARDET_VERSION = chardet.__version__
 except ImportError:
@@ -54,6 +59,24 @@ try:
     SQLITE_VERSION = sqlite.version
 except ImportError:
     SQLITE_VERSION = u'-'
+try:
+    import mako
+    MAKO_VERSION = mako.__version__
+except ImportError:
+    MAKO_VERSION = u'-'
+try:
+    import uno
+    arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
+    arg.Name = u'nodepath'
+    arg.Value = u'/org.openoffice.Setup/Product'
+    context = uno.getComponentContext()
+    provider = context.ServiceManager.createInstance(
+        u'com.sun.star.configuration.ConfigurationProvider')
+    node = provider.createInstanceWithArguments(
+        u'com.sun.star.configuration.ConfigurationAccess', (arg,))
+    UNO_VERSION = node.getByName(u'ooSetupVersion')
+except ImportError:
+    UNO_VERSION = u'-'
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.ui import UiStrings
@@ -89,11 +112,14 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'Phonon: %s\n' % PHONON_VERSION + \
             u'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
+            u'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
             u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            u'PySQLite: %s\n' % SQLITE_VERSION
+            u'PySQLite: %s\n' % SQLITE_VERSION + \
+            u'Mako: %s\n' % MAKO_VERSION + \
+            u'pyUNO bridge: %s\n' % UNO_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'
@@ -152,6 +178,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Please add the information that bug reports are favoured written '
             'in English.'))
         content = self._createReport()
+        source = u''
+        exception = u''
         for line in content[2].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
