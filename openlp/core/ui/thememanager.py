@@ -300,7 +300,6 @@ class ThemeManager(QtGui.QWidget):
             if self.checkIfThemeExists(newThemeName):
                 themeData = self.getThemeData(oldThemeName)
                 self.cloneThemeData(themeData, newThemeName)
-                self.loadThemes()
 
     def cloneThemeData(self, themeData, newThemeName):
         """
