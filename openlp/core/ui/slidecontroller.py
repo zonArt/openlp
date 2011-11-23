@@ -79,6 +79,7 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
+        self.accept_keypress = True
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -578,12 +579,17 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
-        time.sleep(0.1)
-        Receiver.send_message('servicemanager_previous_item')
+        if self.accept_keypress:
+            self.accept_keypress = False
+            Receiver.send_message('servicemanager_previous_item')
+            self.accept_keypress = True             
 
     def serviceNext(self):
-        time.sleep(0.1)
-        Receiver.send_message('servicemanager_next_item')
+        if self.accept_keypress:
+            self.accept_keypress = False
+            Receiver.send_message('servicemanager_next_item')
+            self.accept_keypress = True            
+     
 
     def screenSizeChanged(self):
         """
@@ -771,7 +777,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
-        # take a copy not a link to the servicemeanager copy.
+        # take a copy not a link to the servicemanager copy.
         self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
