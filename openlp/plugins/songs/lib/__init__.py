@@ -172,7 +172,7 @@ class VerseType(object):
     @staticmethod
     def from_loose_input(verse_name, default=Other):
         """
-        Return the VerseType for a given string, Other if not found
+        Return the VerseType for a given string
 
         ``verse_name``
             The string to return a VerseType for
