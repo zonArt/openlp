@@ -135,7 +135,7 @@ VIDEO_JS = u"""
                 return vid.currentTime;
             case 'seek':
                 // doesnt work currently
-                //vid.currentTime = varVal;
+                vid.currentTime = varVal;
                 break;
             case 'setVisible':
                 vid.style.visibility = varVal;
@@ -313,7 +313,7 @@ class WebkitPlayer(MediaPlayer):
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "%s", %s, %s);' % \
+            js = u'show_video("init", "file:///%s", %s, %s);' % \
                 (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
@@ -334,6 +334,7 @@ class WebkitPlayer(MediaPlayer):
         # TODO add playing check and get the correct media length
         controller.media_info.length = length
         self.state = MediaState.Playing
+        display.webView.raise_()
         return True
 
     def pause(self, display):
