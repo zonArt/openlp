@@ -113,7 +113,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 verse_num = int(match.group(2))
             except ValueError:
                 verse_num = 1
-            verse_type_index = VerseType.from_loose_input(verse_tag, True)
+            verse_type_index = VerseType.from_loose_input(verse_tag, None)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_num)
 
@@ -140,7 +140,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         match = VERSE_REGEX.match(text)
         if match:
             verse_type = match.group(1)
-            verse_type_index = VerseType.from_loose_input(verse_type, True)
+            verse_type_index = VerseType.from_loose_input(verse_type, None)
             try:
                 verse_number = int(match.group(2))
             except ValueError:
@@ -153,7 +153,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
         self.hasSingleVerse = single
         if single:
-            verse_type_index = VerseType.from_tag(tag[0])
+            verse_type_index = VerseType.from_tag(tag[0], None)
             verse_number = tag[1:]
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
