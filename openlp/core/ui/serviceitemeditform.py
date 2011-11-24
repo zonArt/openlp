@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -78,7 +79,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         if not item:
             return
         row = self.listWidget.row(item)
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         self.loadData()
         if row == self.listWidget.count():
             self.listWidget.setCurrentRow(row - 1)
@@ -108,7 +109,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             return
         row = self.listWidget.row(item)
         temp = self.itemList[row]
-        self.itemList.remove(self.itemList[row])
+        self.itemList.pop(row)
         if direction == u'up':
             row -= 1
         else:
@@ -141,4 +142,3 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.upButton.setEnabled(True)
             self.deleteButton.setEnabled(True)
-

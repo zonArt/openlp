@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,8 +34,10 @@ import sys
 import time
 import urllib2
 from datetime import datetime
+from subprocess import Popen, PIPE
 
 from PyQt4 import QtGui, QtCore
+
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
         from xdg import BaseDirectory
@@ -43,34 +46,33 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, check_directory_exists
 
 log = logging.getLogger(__name__)
+APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
     """
     A special Qt thread class to fetch the version of OpenLP from the website.
     This is threaded so that it doesn't affect the loading time of OpenLP.
     """
-    def __init__(self, parent, app_version):
+    def __init__(self, parent):
         QtCore.QThread.__init__(self, parent)
-        self.app_version = app_version
-        self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
     def run(self):
         """
         Run the thread.
         """
         time.sleep(1)
-        Receiver.send_message(u'maindisplay_blank_check')
-        version = check_latest_version(self.app_version)
+        app_version = get_application_version()
+        version = check_latest_version(app_version)
         remote_version = {}
         local_version = {}
-        match = self.version_splitter.match(version)
+        match = VERSION_SPLITTER.match(version)
         if match:
             remote_version[u'major'] = int(match.group(1))
             remote_version[u'minor'] = int(match.group(2))
@@ -79,7 +81,7 @@ class VersionThread(QtCore.QThread):
                 remote_version[u'revision'] = int(match.group(4))
         else:
             return
-        match = self.version_splitter.match(self.app_version[u'full'])
+        match = VERSION_SPLITTER.match(app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
             local_version[u'minor'] = int(match.group(2))
@@ -98,6 +100,20 @@ class VersionThread(QtCore.QThread):
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 
+class DelayStartThread(QtCore.QThread):
+    """
+    A special Qt thread class to build things after OpenLP has started
+    """
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        Receiver.send_message(u'openlp_phonon_creation')
+
+
 class AppLocation(object):
     """
     The :class:`AppLocation` class is a static class which retrieves a
@@ -110,6 +126,9 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
+
+    # Base path where data/config/cache dir is located
+    BaseDir = None
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -134,8 +153,10 @@ class AppLocation(object):
         elif dir_type == AppLocation.LanguageDir:
             app_path = _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+                _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
+        elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
+            return os.path.join(AppLocation.BaseDir, 'data')
         else:
             return _get_os_dir_path(dir_type)
 
@@ -145,8 +166,7 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         path = AppLocation.get_directory(AppLocation.DataDir)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        check_directory_exists(path)
         return path
 
     @staticmethod
@@ -156,8 +176,7 @@ class AppLocation(object):
         """
         data_path = AppLocation.get_data_path()
         path = os.path.join(data_path, section)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        check_directory_exists(path)
         return path
 
 def _get_os_dir_path(dir_type):
@@ -169,15 +188,21 @@ def _get_os_dir_path(dir_type):
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
                 u'openlp', u'data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
             u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'HOME'), encoding),
                 u'Library', u'Application Support', u'openlp', u'Data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'HOME'), encoding),
             u'Library', u'Application Support', u'openlp')
     else:
+        if dir_type == AppLocation.LanguageDir:
+            return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
                 return os.path.join(unicode(BaseDirectory.xdg_config_home,
@@ -200,6 +225,85 @@ def _get_frozen_path(frozen_option, non_frozen_option):
     if hasattr(sys, u'frozen') and sys.frozen == 1:
         return frozen_option
     return non_frozen_option
+
+def get_application_version():
+    """
+    Returns the application version of the running instance of OpenLP::
+
+        {u'full': u'1.9.4-bzr1249', u'version': u'1.9.4', u'build': u'bzr1249'}
+    """
+    global APPLICATION_VERSION
+    if APPLICATION_VERSION:
+        return APPLICATION_VERSION
+    if u'--dev-version' in sys.argv or u'-d' in sys.argv:
+        # If we're running the dev version, let's use bzr to get the version.
+        try:
+            # If bzrlib is available, use it.
+            from bzrlib.branch import Branch
+            b = Branch.open_containing('.')[0]
+            b.lock_read()
+            try:
+                # Get the branch's latest revision number.
+                revno = b.revno()
+                # Convert said revision number into a bzr revision id.
+                revision_id = b.dotted_revno_to_revision_id((revno,))
+                # Get a dict of tags, with the revision id as the key.
+                tags = b.tags.get_reverse_tag_dict()
+                # Check if the latest
+                if revision_id in tags:
+                    full_version = u'%s' % tags[revision_id][0]
+                else:
+                    full_version = '%s-bzr%s' % \
+                        (sorted(b.tags.get_tag_dict().keys())[-1], revno)
+            finally:
+                b.unlock()
+        except:
+            # Otherwise run the command line bzr client.
+            bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
+            output, error = bzr.communicate()
+            code = bzr.wait()
+            if code != 0:
+                raise Exception(u'Error running bzr tags')
+            lines = output.splitlines()
+            if len(lines) == 0:
+                tag = u'0.0.0'
+                revision = u'0'
+            else:
+                tag, revision = lines[-1].split()
+            bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
+            output, error = bzr.communicate()
+            code = bzr.wait()
+            if code != 0:
+                raise Exception(u'Error running bzr log')
+            latest = output.split(u':')[0]
+            full_version = latest == revision and tag or \
+               u'%s-bzr%s' % (tag, latest)
+    else:
+        # We're not running the development version, let's use the file.
+        filepath = AppLocation.get_directory(AppLocation.VersionDir)
+        filepath = os.path.join(filepath, u'.version')
+        fversion = None
+        try:
+            fversion = open(filepath, u'r')
+            full_version = unicode(fversion.read()).rstrip()
+        except IOError:
+            log.exception('Error in version file.')
+            full_version = u'0.0.0-bzr000'
+        finally:
+            if fversion:
+                fversion.close()
+    bits = full_version.split(u'-')
+    APPLICATION_VERSION = {
+        u'full': full_version,
+        u'version': bits[0],
+        u'build': bits[1] if len(bits) > 1 else None
+    }
+    if APPLICATION_VERSION[u'build']:
+        log.info(u'Openlp version %s build %s',
+            APPLICATION_VERSION[u'version'], APPLICATION_VERSION[u'build'])
+    else:
+        log.info(u'Openlp version %s' % APPLICATION_VERSION[u'version'])
+    return APPLICATION_VERSION
 
 def check_latest_version(current_version):
     """
@@ -242,7 +346,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added. An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword ``None``
         will result in a separator being inserted into the target.
     """
     for action in actions:
@@ -286,6 +390,17 @@ def split_filename(path):
         return path, u''
     else:
         return os.path.split(path)
+
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    ``filename``
+        The "dirty" file name to clean.
+    """
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
 
 def delete_file(file_path_name):
     """
@@ -337,6 +452,7 @@ def get_web_page(url, header=None, update_openlp=False):
         return None
     if update_openlp:
         Receiver.send_message(u'openlp_process_events')
+    log.debug(page)
     return page
 
 def file_is_unicode(filename):
@@ -359,31 +475,12 @@ def file_is_unicode(filename):
         return None
     return ucsfile
 
-def string_is_unicode(test_string):
-    """
-    Makes sure a string is unicode.
-
-    ``test_string``
-        The string to confirm is unicode.
-    """
-    return_string = u''
-    if not test_string:
-        return return_string
-    if isinstance(test_string, unicode):
-        return_string = test_string
-    if not isinstance(test_string, unicode):
-        try:
-            return_string = unicode(test_string, u'utf-8')
-        except UnicodeError:
-            log.exception("Error encoding string to unicode")
-    return return_string
-
 def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
     COMMAND = u'soffice'
-    OPTIONS = u'-nologo -norestore -minimized -invisible -nofirststartwizard'
+    OPTIONS = u'-nologo -norestore -minimized -nodefault -nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
         CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
@@ -408,7 +505,7 @@ def get_uno_instance(resolver):
 from languagemanager import LanguageManager
 from actions import ActionList
 
-__all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page', u'file_is_unicode', u'string_is_unicode',
-    u'get_uno_command', u'get_uno_instance', u'delete_file']
+__all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
+    u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
+    u'ActionList', u'get_web_page', u'file_is_unicode', u'get_uno_command',
+    u'get_uno_instance', u'delete_file', u'clean_filename']

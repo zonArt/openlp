@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,11 +24,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import re
 try:
     import enchant
     from enchant import DictNotFoundError
+    from enchant.errors import Error
     ENCHANT_AVAILABLE = True
 except ImportError:
     ENCHANT_AVAILABLE = False
@@ -36,22 +38,29 @@ except ImportError:
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate, DisplayTags
+
+from openlp.core.lib import translate, FormattingTags
+from openlp.core.lib.ui import checkable_action
+
+log = logging.getLogger(__name__)
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
-    def __init__(self, *args):
-        QtGui.QPlainTextEdit.__init__(self, *args)
+    def __init__(self, parent=None, formattingTagsAllowed=True):
+        global ENCHANT_AVAILABLE
+        QtGui.QPlainTextEdit.__init__(self, parent)
+        self.formattingTagsAllowed = formattingTagsAllowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
-            except DictNotFoundError:
-                self.dictionary = enchant.Dict(u'en_US')
-            self.highlighter = Highlighter(self.document())
-            self.highlighter.spellingDictionary = self.dictionary
+                self.highlighter = Highlighter(self.document())
+                self.highlighter.spellingDictionary = self.dictionary
+            except (Error, DictNotFoundError):
+                ENCHANT_AVAILABLE = False
+                log.debug(u'Could not load default dictionary')
 
     def mousePressEvent(self, event):
         """
@@ -76,6 +85,19 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if not cursor.hasSelection():
             cursor.select(QtGui.QTextCursor.WordUnderCursor)
         self.setTextCursor(cursor)
+        # Add menu with available languages.
+        if ENCHANT_AVAILABLE:
+            lang_menu = QtGui.QMenu(
+                translate('OpenLP.SpellTextEdit', 'Language:'))
+            for lang in enchant.list_languages():
+                action = checkable_action(
+                    lang_menu, lang, lang == self.dictionary.tag)
+                action.setText(lang)
+                lang_menu.addAction(action)
+            popupMenu.insertSeparator(popupMenu.actions()[0])
+            popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
+            QtCore.QObject.connect(lang_menu,
+                QtCore.SIGNAL(u'triggered(QAction*)'), self.setLanguage)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
@@ -89,18 +111,30 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     spell_menu.addAction(action)
                 # Only add the spelling suggests to the menu if there are
                 # suggestions.
-                if len(spell_menu.actions()) != 0:
-                    popupMenu.insertSeparator(popupMenu.actions()[0])
+                if spell_menu.actions():
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
-        for html in DisplayTags.get_html_tags():
-            action = SpellAction( html[u'desc'], tagMenu)
-            action.correct.connect(self.htmlTag)
-            tagMenu.addAction(action)
-        popupMenu.insertSeparator(popupMenu.actions()[0])
-        popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
+        if self.formattingTagsAllowed:
+            for html in FormattingTags.get_html_tags():
+                action = SpellAction(html[u'desc'], tagMenu)
+                action.correct.connect(self.htmlTag)
+                tagMenu.addAction(action)
+            popupMenu.insertSeparator(popupMenu.actions()[0])
+            popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
         popupMenu.exec_(event.globalPos())
+
+    def setLanguage(self, action):
+        """
+        Changes the language for this spelltextedit.
+
+        ``action``
+            The action.
+        """
+        self.dictionary = enchant.Dict(action.text())
+        self.highlighter.spellingDictionary = self.dictionary
+        self.highlighter.highlightBlock(self.toPlainText())
+        self.highlighter.rehighlight()
 
     def correctWord(self, word):
         """
@@ -116,7 +150,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
-        for html in DisplayTags.get_html_tags():
+        for html in FormattingTags.get_html_tags():
             if tag == html[u'desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():

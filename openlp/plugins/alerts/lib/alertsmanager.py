@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,13 +40,12 @@ class AlertsManager(QtCore.QObject):
     log.info(u'Alert Manager loaded')
 
     def __init__(self, parent):
-        QtCore.QObject.__init__(self)
-        self.parent = parent
+        QtCore.QObject.__init__(self, parent)
         self.screen = None
         self.timer_id = 0
         self.alertList = []
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
+            QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
 
@@ -69,11 +69,11 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'display alert called %s' % text)
         self.alertList.append(text)
         if self.timer_id != 0:
-            Receiver.send_message(u'maindisplay_status_text',
+            Receiver.send_message(u'mainwindow_status_text',
                 translate('AlertsPlugin.AlertsManager',
                 'Alert message created and displayed.'))
             return
-        Receiver.send_message(u'maindisplay_status_text', u'')
+        Receiver.send_message(u'mainwindow_status_text', u'')
         self.generateAlert()
 
     def generateAlert(self):
@@ -81,11 +81,11 @@ class AlertsManager(QtCore.QObject):
         Format and request the Alert and start the timer
         """
         log.debug(u'Generate Alert called')
-        if len(self.alertList) == 0:
+        if not self.alertList:
             return
         text = self.alertList.pop(0)
-        alertTab = self.parent.settings_tab
-        self.parent.liveController.display.alert(text)
+        alertTab = self.parent().settings_tab
+        self.parent().liveController.display.alert(text, alertTab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -100,7 +100,8 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            self.parent.liveController.display.alert(u'')
+            alertTab = self.parent().settings_tab
+            self.parent().liveController.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()

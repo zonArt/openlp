@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -114,8 +116,8 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, version=None, pluginHelpers=None,
-        mediaItemClass=None, settingsTabClass=None):
+    def __init__(self, name, plugin_helpers=None, media_item_class=None,
+        settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -123,7 +125,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init__(self, u'MyPlugin', u'0.1')
+                    Plugin.__init__(self, u'MyPlugin', version=u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.
@@ -131,15 +133,16 @@ class Plugin(QtCore.QObject):
         ``version``
             Defaults to *None*. The version of the plugin.
 
-        ``pluginHelpers``
+        ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
 
-        ``mediaItemClass``
+        ``media_item_class``
             The class name of the plugin's media item.
 
-        ``settingsTabClass``
+        ``settings_tab_class``
             The class name of the plugin's settings tab.
         """
+        log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
         self.textStrings = {}
@@ -147,22 +150,24 @@ class Plugin(QtCore.QObject):
         self.nameStrings = self.textStrings[StringContent.Name]
         if version:
             self.version = version
-        self.settingsSection = self.name.lower()
+        else:
+            self.version = get_application_version()[u'version']
+        self.settingsSection = self.name
         self.icon = None
-        self.mediaItemClass = mediaItemClass
-        self.settingsTabClass = settingsTabClass
+        self.media_item_class = media_item_class
+        self.settings_tab_class = settings_tab_class
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.previewController = pluginHelpers[u'preview']
-        self.liveController = pluginHelpers[u'live']
-        self.renderManager = pluginHelpers[u'render']
-        self.serviceManager = pluginHelpers[u'service']
-        self.settingsForm = pluginHelpers[u'settings form']
-        self.mediadock = pluginHelpers[u'toolbox']
-        self.pluginManager = pluginHelpers[u'pluginmanager']
-        self.formparent = pluginHelpers[u'formparent']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderer = plugin_helpers[u'renderer']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
+        self.mediadock = plugin_helpers[u'toolbox']
+        self.pluginManager = plugin_helpers[u'pluginmanager']
+        self.formparent = plugin_helpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -209,8 +214,9 @@ class Plugin(QtCore.QObject):
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
-        if self.mediaItemClass:
-            return self.mediaItemClass(self, self, self.icon)
+        if self.media_item_class:
+            return self.media_item_class(self.mediadock.media_dock, self,
+                self.icon)
         return None
 
     def addImportMenuItem(self, importMenu):
@@ -240,14 +246,15 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def getSettingsTab(self):
+    def getSettingsTab(self, parent):
         """
         Create a tab for the settings window to display the configurable
         options for this plugin to the user.
         """
-        if self.settingsTabClass:
-            return self.settingsTabClass(self.name,
-                self.getString(StringContent.VisibleName)[u'title'])
+        if self.settings_tab_class:
+            return self.settings_tab_class(parent, self.name,
+                self.getString(StringContent.VisibleName)[u'title'],
+                self.icon_path)
         return None
 
     def addToMenu(self, menubar):
@@ -284,31 +291,20 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-        self.insertToolboxItem()
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        self.removeToolboxItem()
-
-    def removeToolboxItem(self):
-        """
-        Called by the plugin to remove toolbar
-        """
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
-        if self.settings_tab:
-            self.settingsForm.removeTab(self.settings_tab)
 
-    def insertToolboxItem(self):
+    def appStartup(self):
         """
-        Called by plugin to replace toolbar
+        Perform tasks on application starup
         """
-        if self.mediaItem:
-            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
-        if self.settings_tab:
-            self.settingsForm.insertTab(self.settings_tab, self.weight)
+        pass
 
     def usesTheme(self, theme):
         """
@@ -342,28 +338,28 @@ class Plugin(QtCore.QObject):
         """
         ## Load Action ##
         self.__setNameTextString(StringContent.Load,
-            UiStrings.Load, tooltips[u'load'])
+            UiStrings().Load, tooltips[u'load'])
         ## Import Action ##
         self.__setNameTextString(StringContent.Import,
-            UiStrings.Import, tooltips[u'import'])
+            UiStrings().Import, tooltips[u'import'])
         ## New Action ##
         self.__setNameTextString(StringContent.New,
-            UiStrings.Add, tooltips[u'new'])
+            UiStrings().Add, tooltips[u'new'])
         ## Edit Action ##
         self.__setNameTextString(StringContent.Edit,
-            UiStrings.Edit, tooltips[u'edit'])
+            UiStrings().Edit, tooltips[u'edit'])
         ## Delete Action ##
         self.__setNameTextString(StringContent.Delete,
-            UiStrings.Delete, tooltips[u'delete'])
+            UiStrings().Delete, tooltips[u'delete'])
         ## Preview Action ##
         self.__setNameTextString(StringContent.Preview,
-            UiStrings.Preview, tooltips[u'preview'])
+            UiStrings().Preview, tooltips[u'preview'])
         ## Send Live Action ##
         self.__setNameTextString(StringContent.Live,
-            UiStrings.Live, tooltips[u'live'])
+            UiStrings().Live, tooltips[u'live'])
         ## Add to Service Action ##
         self.__setNameTextString(StringContent.Service,
-            UiStrings.Service, tooltips[u'service'])
+            UiStrings().Service, tooltips[u'service'])
 
     def __setNameTextString(self, name, title, tooltip):
         """
@@ -372,3 +368,31 @@ class Plugin(QtCore.QObject):
         after this has been set.
         """
         self.textStrings[name] = {u'title': title, u'tooltip': tooltip}
+
+    def getDisplayCss(self):
+        """
+        Add css style sheets to htmlbuilder.
+        """
+        return u''
+
+    def getDisplayJavaScript(self):
+        """
+        Add javascript functions to htmlbuilder.
+        """
+        return u''
+
+    def refreshCss(self, frame):
+        """
+        Allow plugins to refresh javascript on displayed screen.
+
+        ``frame``
+            The Web frame holding the page.
+        """
+        return u''
+
+    def getDisplayHtml(self):
+        """
+        Add html code to htmlbuilder.
+        """
+        return u''
+

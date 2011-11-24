@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +29,7 @@ The :mod:`languagemanager` module provides all the translation settings and
 language file loading for OpenLP.
 """
 import logging
+import sys
 
 from PyQt4 import QtCore, QtGui
 
@@ -55,18 +57,28 @@ class LanguageManager(object):
             language = QtCore.QLocale.system().name()
         lang_path = AppLocation.get_directory(AppLocation.LanguageDir)
         app_translator = QtCore.QTranslator()
-        if app_translator.load(language, lang_path):
-            return app_translator
+        app_translator.load(language, lang_path)
+        # A translator for buttons and other default strings provided by Qt.
+        if sys.platform != u'win32' and sys.platform != u'darwin':
+            lang_path = QtCore.QLibraryInfo.location(
+                QtCore.QLibraryInfo.TranslationsPath)
+        default_translator = QtCore.QTranslator()
+        default_translator.load(u'qt_%s' % language, lang_path)
+        return app_translator, default_translator
 
     @staticmethod
     def find_qm_files():
         """
         Find all available language files in this OpenLP install
         """
+        log.debug(u'Translation files: %s', AppLocation.get_directory(
+            AppLocation.LanguageDir))
         trans_dir = QtCore.QDir(AppLocation.get_directory(
             AppLocation.LanguageDir))
         file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
+        # Remove qm files from the list which start with "qt_".
+        file_names = file_names.filter(QtCore.QRegExp("^(?!qt_)"))
         for name in file_names:
             file_names.replaceInStrings(name, trans_dir.filePath(name))
         return file_names
@@ -89,7 +101,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        settings = QtCore.QSettings()
         language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
@@ -112,14 +124,16 @@ class LanguageManager(object):
         """
         language = u'en'
         if action:
-            action_name = u'%s' % action.objectName()
-            qm_list = LanguageManager.get_qm_list()
-            language = u'%s' % qm_list[action_name]
+            action_name = unicode(action.objectName())
+            if action_name == u'autoLanguageItem':
+                LanguageManager.auto_language = True
+            else:
+                LanguageManager.auto_language = False
+                qm_list = LanguageManager.get_qm_list()
+                language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        # This needs to be here for the setValue to work
-        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
-        settings.setValue(
+        QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:

@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,13 +24,17 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import logging
 import re
+import shutil
+import os
+
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.core.ui.wizard import WizardStrings
+from openlp.core.utils import AppLocation
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
@@ -56,70 +61,82 @@ class SongImport(QtCore.QObject):
         self.manager = manager
         QtCore.QObject.__init__(self)
         if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
+            self.importSource = kwargs[u'filename']
         elif kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
+            self.importSource = kwargs[u'filenames']
         else:
             raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
-        log.debug(self.import_source)
+        log.debug(self.importSource)
+        self.importWizard = None
         self.song = None
-        self.stop_import_flag = False
-        self.set_defaults()
+        self.stopImportFlag = False
+        self.setDefaults()
+        self.errorLog = []
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stopImport)
 
-    def set_defaults(self):
+    def setDefaults(self):
         """
         Create defaults for properties - call this before each song
         if importing many songs at once to ensure a clean beginning
         """
         self.title = u''
-        self.song_number = u''
-        self.alternate_title = u''
+        self.songNumber = u''
+        self.alternateTitle = u''
         self.copyright = u''
         self.comments = u''
-        self.theme_name = u''
-        self.ccli_number = u''
+        self.themeName = u''
+        self.ccliNumber = u''
         self.authors = []
         self.topics = []
-        self.media_files = []
-        self.song_book_name = u''
-        self.song_book_pub = u''
-        self.verse_order_list_generated_useful = False
-        self.verse_order_list_generated = []
-        self.verse_order_list = []
+        self.mediaFiles = []
+        self.songBookName = u''
+        self.songBookPub = u''
+        self.verseOrderListGeneratedUseful = False
+        self.verseOrderListGenerated = []
+        self.verseOrderList = []
         self.verses = []
-        self.verse_counts = {}
-        self.copyright_string = unicode(translate(
+        self.verseCounts = {}
+        self.copyrightString = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
 
-    def stop_import(self):
+    def logError(self, filepath, reason=SongStrings.SongIncomplete):
+        """
+        This should be called, when a song could not be imported.
+
+        ``filepath``
+            This should be the file path if ``self.importSource`` is a list
+            with different files. If it is not a list, but a  single file (for
+            instance a database), then this should be the song's title.
+
+        ``reason``
+            The reason, why the import failed. The string should be as
+            informative as possible.
+        """
+        self.setDefaults()
+        if self.importWizard is None:
+            return
+        if self.importWizard.errorReportTextEdit.isHidden():
+            self.importWizard.errorReportTextEdit.setText(
+                translate('SongsPlugin.SongImport',
+                'The following songs could not be imported:'))
+            self.importWizard.errorReportTextEdit.setVisible(True)
+            self.importWizard.errorCopyToButton.setVisible(True)
+            self.importWizard.errorSaveToButton.setVisible(True)
+        self.importWizard.errorReportTextEdit.append(
+            u'- %s (%s)' % (filepath, reason))
+
+    def stopImport(self):
         """
         Sets the flag for importers to stop their import
         """
         log.debug(u'Stopping songs import')
-        self.stop_import_flag = True
+        self.stopImportFlag = True
 
     def register(self, import_wizard):
-        self.import_wizard = import_wizard
+        self.importWizard = import_wizard
 
-    @staticmethod
-    def process_songs_text(manager, text):
-        songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\f')
-        song = SongImport(manager)
-        for songtext in songtexts:
-            if songtext.strip():
-                song.process_song_text(songtext.strip())
-                if song.check_complete():
-                    songs.append(song)
-                    song = SongImport(manager)
-        if song.check_complete():
-            songs.append(song)
-        return songs
-
-    @staticmethod
-    def tidy_text(text):
+    def tidyText(self, text):
         """
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
@@ -137,34 +154,34 @@ class SongImport(QtCore.QObject):
         text = re.sub(r' ?(\n{5}|\f)+ ?', u'\f', text)
         return text
 
-    def process_song_text(self, text):
+    def processSongText(self, text):
         verse_texts = text.split(u'\n\n')
         for verse_text in verse_texts:
             if verse_text.strip() != u'':
-                self.process_verse_text(verse_text.strip())
+                self.processVerseText(verse_text.strip())
 
-    def process_verse_text(self, text):
+    def processVerseText(self, text):
         lines = text.split(u'\n')
-        if text.lower().find(self.copyright_string) >= 0 \
-            or text.find(SongStrings.CopyrightSymbol) >= 0:
+        if text.lower().find(self.copyrightString) >= 0 \
+            or text.find(unicode(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
-                    line.lower().find(self.copyright_string) >= 0 or
-                    line.find(SongStrings.CopyrightSymbol) >= 0):
+                    line.lower().find(self.copyrightString) >= 0 or
+                    line.find(unicode(SongStrings.CopyrightSymbol)) >= 0):
                     copyright_found = True
-                    self.add_copyright(line)
+                    self.addCopyright(line)
                 else:
-                    self.parse_author(line)
+                    self.parseAuthor(line)
             return
         if len(lines) == 1:
-            self.parse_author(lines[0])
+            self.parseAuthor(lines[0])
             return
         if not self.title:
             self.title = lines[0]
-        self.add_verse(text)
+        self.addVerse(text)
 
-    def add_copyright(self, copyright):
+    def addCopyright(self, copyright):
         """
         Build the copyright field
         """
@@ -174,7 +191,7 @@ class SongImport(QtCore.QObject):
             self.copyright += ' '
         self.copyright += copyright
 
-    def parse_author(self, text):
+    def parseAuthor(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma. However need to check for 'Mr and Mrs Smith' and turn it to
@@ -190,9 +207,9 @@ class SongImport(QtCore.QObject):
                 if author2.endswith(u'.'):
                     author2 = author2[:-1]
                 if author2:
-                    self.add_author(author2)
+                    self.addAuthor(author2)
 
-    def add_author(self, author):
+    def addAuthor(self, author):
         """
         Add an author to the list
         """
@@ -200,15 +217,15 @@ class SongImport(QtCore.QObject):
             return
         self.authors.append(author)
 
-    def add_media_file(self, filename):
+    def addMediaFile(self, filename, weight=0):
         """
         Add a media file to the list
         """
-        if filename in self.media_files:
+        if filename in map(lambda x: x[0], self.mediaFiles):
             return
-        self.media_files.append(filename)
+        self.mediaFiles.append((filename, weight))
 
-    def add_verse(self, verse_text, verse_def=u'v', lang=None):
+    def addVerse(self, verse_text, verse_def=u'v', lang=None):
         """
         Add a verse. This is the whole verse, lines split by \\n. It will also
         attempt to detect duplicates. In this case it will just add to the verse
@@ -227,58 +244,58 @@ class SongImport(QtCore.QObject):
         """
         for (old_verse_def, old_verse, old_lang) in self.verses:
             if old_verse.strip() == verse_text.strip():
-                self.verse_order_list_generated.append(old_verse_def)
-                self.verse_order_list_generated_useful = True
+                self.verseOrderListGenerated.append(old_verse_def)
+                self.verseOrderListGeneratedUseful = True
                 return
-        if verse_def[0] in self.verse_counts:
-            self.verse_counts[verse_def[0]] += 1
+        if verse_def[0] in self.verseCounts:
+            self.verseCounts[verse_def[0]] += 1
         else:
-            self.verse_counts[verse_def[0]] = 1
+            self.verseCounts[verse_def[0]] = 1
         if len(verse_def) == 1:
-            verse_def += unicode(self.verse_counts[verse_def[0]])
-        elif int(verse_def[1:]) > self.verse_counts[verse_def[0]]:
-            self.verse_counts[verse_def[0]] = int(verse_def[1:])
+            verse_def += unicode(self.verseCounts[verse_def[0]])
+        elif int(verse_def[1:]) > self.verseCounts[verse_def[0]]:
+            self.verseCounts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
-        self.verse_order_list_generated.append(verse_def)
+        self.verseOrderListGenerated.append(verse_def)
 
-    def repeat_verse(self):
+    def repeatVerse(self):
         """
         Repeat the previous verse in the verse order
         """
-        self.verse_order_list_generated.append(
-            self.verse_order_list_generated[-1])
-        self.verse_order_list_generated_useful = True
+        self.verseOrderListGenerated.append(
+            self.verseOrderListGenerated[-1])
+        self.verseOrderListGeneratedUseful = True
 
-    def check_complete(self):
+    def checkComplete(self):
         """
         Check the mandatory fields are entered (i.e. title and a verse)
         Author not checked here, if no author then "Author unknown" is
         automatically added
         """
-        if self.title == u'' or len(self.verses) == 0:
+        if not self.title or not len(self.verses):
             return False
         else:
             return True
-
-    def remove_punctuation(self, text):
-        """
-        Extracts alphanumeric words for searchable fields
-        """
-        return re.sub(r'\W+', u' ', text, re.UNICODE)
 
     def finish(self):
         """
         All fields have been set to this song. Write the song to disk.
         """
+        if not self.checkComplete():
+            self.setDefaults()
+            return False
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
-        song.alternate_title = self.alternate_title
-        song.search_title = self.remove_punctuation(self.title).lower() \
-            + '@' + self.remove_punctuation(self.alternate_title).lower()
-        song.search_title = song.search_title.strip()
-        song.song_number = self.song_number
+        if self.importWizard is not None:
+            self.importWizard.incrementProgressBar(
+                WizardStrings.ImportingType % song.title)
+        song.alternate_title = self.alternateTitle
+        # Values will be set when cleaning the song.
+        song.search_title = u''
         song.search_lyrics = u''
+        song.verse_order = u''
+        song.song_number = self.songNumber
         verses_changed_to_other = {}
         sxml = SongXML()
         other_count = 1
@@ -295,21 +312,19 @@ class SongImport(QtCore.QObject):
                     new_verse_def)
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
-            song.search_lyrics += u' ' + self.remove_punctuation(verse_text)
-        song.search_lyrics = song.search_lyrics.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-        if not len(self.verse_order_list) and \
-            self.verse_order_list_generated_useful:
-            self.verse_order_list = self.verse_order_list_generated
-        for i, current_verse_def in enumerate(self.verse_order_list):
+        if not len(self.verseOrderList) and \
+            self.verseOrderListGeneratedUseful:
+            self.verseOrderList = self.verseOrderListGenerated
+        for i, current_verse_def in enumerate(self.verseOrderList):
             if verses_changed_to_other.has_key(current_verse_def):
-                self.verse_order_list[i] = \
+                self.verseOrderList[i] = \
                     verses_changed_to_other[current_verse_def]
-        song.verse_order = u' '.join(self.verse_order_list)
+        song.verse_order = u' '.join(self.verseOrderList)
         song.copyright = self.copyright
         song.comments = self.comments
-        song.theme_name = self.theme_name
-        song.ccli_number = self.ccli_number
+        song.theme_name = self.themeName
+        song.ccli_number = self.ccliNumber
         for authortext in self.authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
@@ -318,59 +333,57 @@ class SongImport(QtCore.QObject):
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
-        # No author, add the default author.
-        if not song.authors:
-            add_author_unknown(self.manager, song)
-        for filename in self.media_files:
-            media_file = self.manager.get_object_filtered(MediaFile,
-                MediaFile.file_name == filename)
-            if not media_file:
-                song.media_files.append(MediaFile.populate(file_name=filename))
-        if self.song_book_name:
+        if self.songBookName:
             song_book = self.manager.get_object_filtered(Book,
-                Book.name == self.song_book_name)
+                Book.name == self.songBookName)
             if song_book is None:
-                song_book = Book.populate(name=self.song_book_name,
-                    publisher=self.song_book_pub)
+                song_book = Book.populate(name=self.songBookName,
+                    publisher=self.songBookPub)
             song.book = song_book
         for topictext in self.topics:
-            if len(topictext) == 0:
+            if not topictext:
                 continue
             topic = self.manager.get_object_filtered(Topic,
                 Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
+        # We need to save the song now, before adding the media files, so that
+        # we know where to save the media files to.
+        clean_song(self.manager, song)
         self.manager.save_object(song)
-        self.set_defaults()
+        # Now loop through the media files, copy them to the correct location,
+        # and save the song again.
+        for filename, weight in self.mediaFiles:
+            media_file = self.manager.get_object_filtered(MediaFile,
+                MediaFile.file_name == filename)
+            if not media_file:
+                if os.path.dirname(filename):
+                    filename = self.copyMediaFile(song.id, filename)
+                song.media_files.append(
+                    MediaFile.populate(file_name=filename, weight=weight)
+                )
+        self.manager.save_object(song)
+        self.setDefaults()
+        return True
 
-    def print_song(self):
+    def copyMediaFile(self, song_id, filename):
         """
-        For debugging
+        This method copies the media file to the correct location and returns
+        the new file location.
+
+        ``filename``
+            The file to copy.
         """
-        print u'========================================' \
-            + u'========================================'
-        print u'TITLE: ' + self.title
-        print u'ALT TITLE: ' + self.alternate_title
-        for (verse_def, verse_text, lang) in self.verses:
-            print u'VERSE ' + verse_def + u': ' + verse_text
-        print u'ORDER: ' + u' '.join(self.verse_order_list)
-        print u'GENERATED ORDER: ' + u' '.join(self.verse_order_list_generated)
-        for author in self.authors:
-            print u'AUTHOR: ' + author
-        if self.copyright:
-            print u'COPYRIGHT: ' + self.copyright
-        if self.song_book_name:
-            print u'BOOK: ' + self.song_book_name
-        if self.song_book_pub:
-            print u'BOOK PUBLISHER: ' + self.song_book_pub
-        if self.song_number:
-            print u'NUMBER: ' + self.song_number
-        for topictext in self.topics:
-            print u'TOPIC: ' + topictext
-        if self.comments:
-            print u'COMMENTS: ' + self.comments
-        if self.theme_name:
-            print u'THEME: ' + self.theme_name
-        if self.ccli_number:
-            print u'CCLI: ' + self.ccli_number
+        if not hasattr(self, u'save_path'):
+            self.save_path = os.path.join(
+                AppLocation.get_section_data_path(
+                    self.importWizard.plugin.name),
+                'audio', str(song_id))
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
+        if not filename.startswith(self.save_path):
+            oldfile, filename = filename, os.path.join(self.save_path,
+                os.path.split(filename)[1])
+            shutil.copyfile(oldfile, filename)
+        return filename

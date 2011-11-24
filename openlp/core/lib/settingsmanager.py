@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,26 +38,9 @@ from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
     """
-    Class to control the initial settings for the UI and provide helper
-    functions for the loading and saving of application settings.
+    Class to provide helper functions for the loading and saving of application
+    settings.
     """
-    def __init__(self, screen):
-        self.screen = screen.current
-        self.width = self.screen[u'size'].width()
-        self.height = self.screen[u'size'].height()
-        self.mainwindow_height = self.height * 0.8
-        mainwindow_docbars = self.width / 5
-        self.mainwindow_left = 0
-        self.mainwindow_right = 0
-        if mainwindow_docbars > 300:
-            self.mainwindow_left = 300
-            self.mainwindow_right = 300
-        else:
-            self.mainwindow_left = mainwindow_docbars
-            self.mainwindow_right = mainwindow_docbars
-        self.slidecontroller = (self.width - (
-            self.mainwindow_left + self.mainwindow_right) - 100) / 2
-        self.slidecontroller_image = self.slidecontroller - 50
 
     @staticmethod
     def get_last_dir(section, num=None):
