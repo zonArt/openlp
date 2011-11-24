@@ -123,7 +123,7 @@ class Ui_AboutDialog(object):
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
-            u'Tim "TRB143" Bentley (Fedora)',
+            u'Tim "TRB143" Bentley (Fedora and Android)',
             u'Matthias "matthub" Hub (Mac OS X)',
             u'Stevan "ElderP" Pettit (Windows)',
             u'Raoul "superfly" Snyman (Ubuntu)']
