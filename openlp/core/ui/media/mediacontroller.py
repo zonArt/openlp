@@ -81,19 +81,28 @@ class MediaController(object):
             QtCore.SIGNAL(u'songs_hide'), self.video_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.set_active_players)
+
+    def set_active_players(self):
+        playerSettings = str(QtCore.QSettings().value(u'media/players',
+            QtCore.QVariant(u'webkit')).toString())
+        savedPlayers = playerSettings.split(u',')
+        for player in savedPlayers:
+            self.mediaPlayers[player].isActive = True
 
     def register_controllers(self, controller):
         """
-        Register each media Player controller (Webkit, Phonon, etc) and store for
-        later use
+        Register each media Player controller (Webkit, Phonon, etc) and store
+        for later use
         """
         if controller.check_available():
             self.mediaPlayers[controller.name] = controller
 
     def check_available_media_players(self):
         """
-        Check to see if we have any media Player's available. If Not do not install
-        the plugin.
+        Check to see if we have any media Player's available. If Not do not
+        install the plugin.
         """
         log.debug(u'check_available_media_players')
         controller_dir = os.path.join(
@@ -127,6 +136,7 @@ class MediaController(object):
                 newPlayerSetting = u','.join(savedPlayers)
                 QtCore.QSettings().setValue(u'media/players',
                     QtCore.QVariant(newPlayerSetting))
+            self.set_active_players()
             return True
         else:
             return False
@@ -153,7 +163,8 @@ class MediaController(object):
         """
         css = u''
         for player in self.mediaPlayers.values():
-            css += player.get_media_display_css()
+            if player.isActive:
+                css += player.get_media_display_css()
         return css
 
     def get_media_display_javascript(self):
@@ -162,7 +173,8 @@ class MediaController(object):
         """
         js = u''
         for player in self.mediaPlayers.values():
-            js += player.get_media_display_javascript()
+            if player.isActive:
+                js += player.get_media_display_javascript()
         return js
 
     def get_media_display_html(self):
@@ -171,7 +183,8 @@ class MediaController(object):
         """
         html = u''
         for player in self.mediaPlayers.values():
-            html += player.get_media_display_html()
+            if player.isActive:
+                html += player.get_media_display_html()
         return html
 
     def add_controller_items(self, controller, control_panel):
@@ -250,7 +263,8 @@ class MediaController(object):
             display == self.parent.liveController.previewDisplay:
             display.hasAudio = False
         for player in self.mediaPlayers.values():
-            player.setup(display)
+            if player.isActive:
+                player.setup(display)
 
     def set_controls_visible(self, controller, value):
         # Generic controls
@@ -302,6 +316,11 @@ class MediaController(object):
                 unicode(translate('MediaPlugin.MediaItem',
                 'Unsupported File')))
             return False
+        # dont care about actual theme, set a black background
+        if controller.isLive and ( \
+            controller.media_info.is_background == False):
+            display.frame.evaluateJavaScript(u'show_video( \
+            "setBackBoard", null, null, null,"visible");')
         # now start playing
         if self.video_play([controller], False):
             self.video_pause([controller])
@@ -312,10 +331,6 @@ class MediaController(object):
                 controller.media_info.is_background == True) or \
                 controller.isLive == False:
                 self.video_play([controller])
-            if controller.isLive and ( \
-                controller.media_info.is_background == False):
-                display.frame.evaluateJavaScript(u'show_video( \
-                "setBackBoard", null, null, null,"visible");')
             self.set_controls_visible(controller, True)
             log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
             return True
@@ -369,19 +384,22 @@ class MediaController(object):
     def video_play(self, msg, status=True):
         """
         Responds to the request to play a loaded video
+        
+         ``msg``
+            First element is the controller which should be used
         """
         log.debug(u'video_play')
         controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
-                if controller.isLive:
-                    if controller.hideMenu.defaultAction().isChecked():
-                        controller.hideMenu.defaultAction().trigger()
                 if not self.curDisplayMediaPlayer[display].play(display):
                     return False
                 if status:
-                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
+                    if controller.isLive:
+                        if controller.hideMenu.defaultAction().isChecked():
+                            controller.hideMenu.defaultAction().trigger()
                     self.curDisplayMediaPlayer[display].set_visible(display, True)
+                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
@@ -390,6 +408,9 @@ class MediaController(object):
     def video_pause(self, msg):
         """
         Responds to the request to pause a loaded video
+
+        ``msg``
+            First element is the controller which should be used
         """
         log.debug(u'video_pause')
         controller = msg[0]
@@ -400,6 +421,9 @@ class MediaController(object):
     def video_stop(self, msg):
         """
         Responds to the request to stop a loaded video
+
+        ``msg``
+            First element is the controller which should be used
         """
         log.debug(u'video_stop')
         controller = msg[0]
@@ -412,6 +436,9 @@ class MediaController(object):
     def video_volume(self, msg):
         """
         Changes the volume of a running video
+
+        ``msg``
+            First element is the controller which should be used
         """
         controller = msg[0]
         vol = msg[1][0]
@@ -423,6 +450,10 @@ class MediaController(object):
     def video_seek(self, msg):
         """
         Responds to the request to change the seek Slider of a loaded video
+
+        ``msg``
+            First element is the controller which should be used
+            Second element is a list with the seek Value as first element
         """
         log.debug(u'video_seek')
         controller = msg[0]
@@ -449,6 +480,9 @@ class MediaController(object):
     def video_hide(self, msg):
         """
         Hide the related video Widget
+
+        ``msg``
+            First element is the boolean for Live indication
         """
         isLive = msg[1]
         if isLive:
@@ -464,6 +498,10 @@ class MediaController(object):
     def video_blank(self, msg):
         """
         Blank the related video Widget
+
+        ``msg``
+            First element is the boolean for Live indication
+            Second element is the hide mode
         """
         isLive = msg[1]
         hide_mode = msg[2]
@@ -481,6 +519,10 @@ class MediaController(object):
     def video_unblank(self, msg):
         """
         Unblank the related video Widget
+
+        ``msg``
+            First element is not relevant in this context
+            Second element is the boolean for Live indication
         """
         Receiver.send_message(u'live_display_show')
         isLive = msg[1]
@@ -501,17 +543,19 @@ class MediaController(object):
     def get_audio_extensions_list(self):
         audio_list = []
         for player in self.mediaPlayers.values():
-            for item in player.audio_extensions_list:
-                if not item in audio_list:
-                    audio_list.append(item)
+            if player.isActive:
+                for item in player.audio_extensions_list:
+                    if not item in audio_list:
+                        audio_list.append(item)
         return audio_list
 
     def get_video_extensions_list(self):
         video_list = []
         for player in self.mediaPlayers.values():
-            for item in player.video_extensions_list:
-                if not item in video_list:
-                    video_list.append(item)
+            if player.isActive:
+                for item in player.video_extensions_list:
+                    if not item in video_list:
+                        video_list.append(item)
         return video_list
 
     def override_player(self, override_player):

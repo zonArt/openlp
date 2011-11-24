@@ -387,7 +387,7 @@ class MainDisplay(Display):
         if serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
-        if self.hideMode and self.isLive:
+        if self.hideMode and self.isLive and not serviceItem.is_media():
             if QtCore.QSettings().value(u'general/auto unblank',
                 QtCore.QVariant(False)).toBool():
                 Receiver.send_message(u'slidecontroller_live_unblank')

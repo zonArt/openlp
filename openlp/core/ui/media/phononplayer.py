@@ -109,23 +109,6 @@ class PhononPlayer(MediaPlayer):
     def check_available(self):
         return True
 
-    def get_supported_file_types(self):
-        self.supported_file_types = ['avi']
-        self.additional_extensions = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-ms-wmv': [u'.wmv']}
-
     def load(self, display):
         log.debug(u'load vid in Phonon Controller')
         controller = display.controller
@@ -171,6 +154,7 @@ class PhononPlayer(MediaPlayer):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
+            display.phononWidget.raise_()            
             return True
         else:
             return False
