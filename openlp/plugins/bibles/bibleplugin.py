@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,6 +33,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import base_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
+from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', plugin_helpers,
+        Plugin.__init__(self, u'bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -59,6 +60,8 @@ class BiblePlugin(Plugin):
         #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
+        if len(self.manager.old_bible_databases):
+            self.toolsUpgradeItem.setVisible(True)
 
     def finalise(self):
         """
@@ -72,6 +75,19 @@ class BiblePlugin(Plugin):
         self.importBibleItem.setVisible(False)
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
+
+    def appStartup(self):
+        """
+        Perform tasks on application starup
+        """
+        if len(self.manager.old_bible_databases):
+            if QtGui.QMessageBox.information(self.formparent,
+                translate('OpenLP', 'Information'), translate('OpenLP',
+                'Bible format has changed.\nYou have to upgrade your '
+                'existing Bibles.\nShould OpenLP upgrade now?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                self.onToolsUpgradeItemTriggered()
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = base_action(import_menu, u'importBibleItem')
@@ -87,6 +103,39 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
         export_menu.addAction(self.exportBibleItem)
         self.exportBibleItem.setVisible(False)
+
+    def addToolsMenuItem(self, tools_menu):
+        """
+        Give the bible plugin the opportunity to add items to the
+        **Tools** menu.
+
+        ``tools_menu``
+            The actual **Tools** menu item, so that your actions can
+            use it as their parent.
+        """
+        log.debug(u'add tools menu')
+        self.toolsUpgradeItem = QtGui.QAction(tools_menu)
+        self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
+        self.toolsUpgradeItem.setText(
+            translate('BiblesPlugin', '&Upgrade older Bibles'))
+        self.toolsUpgradeItem.setStatusTip(
+            translate('BiblesPlugin', 'Upgrade the Bible databases to the '
+            'latest format.'))
+        tools_menu.addAction(self.toolsUpgradeItem)
+        QtCore.QObject.connect(self.toolsUpgradeItem,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsUpgradeItemTriggered)
+        self.toolsUpgradeItem.setVisible(False)
+
+    def onToolsUpgradeItemTriggered(self):
+        """
+        Upgrade older bible databases.
+        """
+        if not hasattr(self, u'upgrade_wizard'):
+            self.upgrade_wizard = BibleUpgradeForm(self.formparent,
+                self.manager, self)
+        # If the import was not cancelled then reload.
+        if self.upgrade_wizard.exec_():
+            self.mediaItem.reloadBibles()
 
     def onBibleImportClick(self):
         if self.mediaItem:
@@ -149,4 +198,3 @@ class BiblePlugin(Plugin):
                 'Add the selected Bible to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
-

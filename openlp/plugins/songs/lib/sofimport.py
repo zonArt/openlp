@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,24 +31,33 @@
 # http://www.oooforum.org/forum/viewtopic.phtml?t=14409
 # http://wiki.services.openoffice.org/wiki/Python
 
+import logging
 import os
 import re
 
 from oooimport import OooImport
 
+
+log = logging.getLogger(__name__)
+
 if os.name == u'nt':
-    BOLD = 150.0
-    ITALIC = 2
     from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    RuntimeException = Exception
 else:
     try:
-        from com.sun.star.awt.FontWeight import BOLD
-        from com.sun.star.awt.FontSlant import ITALIC
         from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
             PAGE_BOTH
+        from com.sun.star.uno import RuntimeException
     except ImportError:
         pass
-
+try:
+    from com.sun.star.awt.FontWeight import BOLD
+except ImportError:
+    BOLD = 150.0
+try:
+    from com.sun.star.awt.FontSlant import ITALIC
+except ImportError:
+    ITALIC = 2
 
 class SofImport(OooImport):
     """
@@ -74,30 +83,32 @@ class SofImport(OooImport):
         OooImport.__init__(self, manager, **kwargs)
         self.song = False
 
-    def process_ooo_document(self):
+    def processOooDocument(self):
         """
         Handle the import process for SoF files.
         """
-        self.process_sof_file()
+        self.processSofFile()
 
-    def process_sof_file(self):
+    def processSofFile(self):
         """
         Process the RTF file, a paragraph at a time
         """
-        self.blanklines = 0
-        self.new_song()
-        paragraphs = self.document.getText().createEnumeration()
-        while paragraphs.hasMoreElements():
-            if self.stop_import_flag:
-                return
-            paragraph = paragraphs.nextElement()
-            if paragraph.supportsService("com.sun.star.text.Paragraph"):
-                self.process_paragraph(paragraph)
-        if self.song:
-            self.finish()
-            self.song = False
+        self.blankLines = 0
+        self.newSong()
+        try:
+            paragraphs = self.document.getText().createEnumeration()
+            while paragraphs.hasMoreElements():
+                if self.stopImportFlag:
+                    return
+                paragraph = paragraphs.nextElement()
+                if paragraph.supportsService("com.sun.star.text.Paragraph"):
+                    self.processParagraph(paragraph)
+        except RuntimeException as exc:
+            log.exception(u'Error processing file: %s', exc)
+        if not self.finish():
+            self.logError(self.filepath)
 
-    def process_paragraph(self, paragraph):
+    def processParagraph(self, paragraph):
         """
         Process a paragraph.
         In the first book, a paragraph is a single line. In the latter ones
@@ -113,26 +124,26 @@ class SofImport(OooImport):
         while textportions.hasMoreElements():
             textportion = textportions.nextElement()
             if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
-                self.process_paragraph_text(text)
-                self.new_song()
+                self.processParagraphText(text)
+                self.newSong()
                 text = u''
             text += self.process_textportion(textportion)
             if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
-                self.process_paragraph_text(text)
-                self.new_song()
+                self.processParagraphText(text)
+                self.newSong()
                 text = u''
-        self.process_paragraph_text(text)
+        self.processParagraphText(text)
 
-    def process_paragraph_text(self, text):
+    def processParagraphText(self, text):
         """
         Split the paragraph text into multiple lines and process
         """
         for line in text.split(u'\n'):
-            self.process_paragraph_line(line)
-        if self.blanklines > 2:
-            self.new_song()
+            self.processParagraphLine(line)
+        if self.blankLines > 2:
+            self.newSong()
 
-    def process_paragraph_line(self, text):
+    def processParagraphLine(self, text):
         """
         Process a single line. Throw away that text which isn't relevant, i.e.
         stuff that appears at the end of the song.
@@ -140,16 +151,16 @@ class SofImport(OooImport):
         """
         text = text.strip()
         if text == u'':
-            self.blanklines += 1
-            if self.blanklines > 1:
+            self.blankLines += 1
+            if self.blankLines > 1:
                 return
             if self.title != u'':
-                self.finish_verse()
+                self.finishVerse()
             return
-        self.blanklines = 0
-        if self.skip_to_close_bracket:
+        self.blankLines = 0
+        if self.skipToCloseBracket:
             if text.endswith(u')'):
-                self.skip_to_close_bracket = False
+                self.skipToCloseBracket = False
             return
         if text.startswith(u'CCL Licence'):
             self.italics = False
@@ -158,24 +169,24 @@ class SofImport(OooImport):
             return
         if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') \
             or text.startswith(u'(From'):
-            self.skip_to_close_bracket = True
+            self.skipToCloseBracket = True
             return
         if text.startswith(u'Copyright'):
-            self.add_copyright(text)
+            self.addCopyright(text)
             return
         if text == u'(Repeat)':
-            self.finish_verse()
-            self.repeat_verse()
+            self.finishVerse()
+            self.repeatVerse()
             return
         if self.title == u'':
             if self.copyright == u'':
-                self.add_sof_author(text)
+                self.addSofAuthor(text)
             else:
-                self.add_copyright(text)
+                self.addCopyright(text)
             return
-        self.add_verse_line(text)
+        self.addVerseLine(text)
 
-    def process_textportion(self, textportion):
+    def processTextPortion(self, textportion):
         """
         Process a text portion. Here we just get the text and detect if
         it's bold or italics. If it's bold then its a song number or song title.
@@ -183,58 +194,58 @@ class SofImport(OooImport):
         into line
         """
         text = textportion.getString()
-        text = self.tidy_text(text)
+        text = self.tidyText(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song_number == '':
-                self.add_songnumber(boldtext)
+            if boldtext.isdigit() and self.songNumber == '':
+                self.addSongNumber(boldtext)
                 return u''
             if self.title == u'':
                 text = self.uncap_text(text)
-                self.add_title(text)
+                self.addTitle(text)
             return text
         if text.strip().startswith(u'('):
             return text
         self.italics = (textportion.CharPosture == ITALIC)
         return text
 
-    def new_song(self):
+    def newSong(self):
         """
         A change of song. Store the old, create a new
         ... but only if the last song was complete. If not, stick with it
         """
         if self.song:
-            self.finish_verse()
-            if not self.check_complete():
+            self.finishVerse()
+            if not self.checkComplete():
                 return
             self.finish()
         self.song = True
-        self.set_defaults()
-        self.skip_to_close_bracket = False
-        self.is_chorus = False
+        self.setDefaults()
+        self.skipToCloseBracket = False
+        self.isChorus = False
         self.italics = False
-        self.currentverse = u''
+        self.currentVerse = u''
 
-    def add_songnumber(self, song_no):
+    def addSongNumber(self, song_no):
         """
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.song_number = song_no
-        self.alternate_title = song_no + u'.'
-        self.song_book_pub = u'Kingsway Publications'
+        self.songNumber = song_no
+        self.alternateTitle = song_no + u'.'
+        self.songBook_pub = u'Kingsway Publications'
         if int(song_no) <= 640:
-            self.song_book = u'Songs of Fellowship 1'
+            self.songBook = u'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.song_book = u'Songs of Fellowship 2'
+            self.songBook = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.song_book = u'Songs of Fellowship 3'
+            self.songBook = u'Songs of Fellowship 3'
         else:
-            self.song_book = u'Songs of Fellowship 4'
+            self.songBook = u'Songs of Fellowship 4'
 
-    def add_title(self, text):
+    def addTitle(self, text):
         """
         Add the title to the song. Strip some leading/trailing punctuation that
         we don't want in a title
@@ -245,9 +256,9 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.title = title
-        self.import_wizard.incrementProgressBar(u'Processing song ' + title, 0)
+        self.importWizard.incrementProgressBar(u'Processing song ' + title, 0)
 
-    def add_sof_author(self, text):
+    def addSofAuthor(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
@@ -255,42 +266,42 @@ class SofImport(OooImport):
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
-        self.parse_author(text)
+        self.parseAuthor(text)
 
-    def add_verse_line(self, text):
+    def addVerseLine(self, text):
         """
         Add a line to the current verse. If the formatting has changed and
         we're beyond the second line of first verse, then this indicates
         a change of verse. Italics are a chorus
         """
-        if self.italics != self.is_chorus and ((len(self.verses) > 0) or
-            (self.currentverse.count(u'\n') > 1)):
-            self.finish_verse()
+        if self.italics != self.isChorus and ((len(self.verses) > 0) or
+            (self.currentVerse.count(u'\n') > 1)):
+            self.finishVerse()
         if self.italics:
-            self.is_chorus = True
-        self.currentverse += text + u'\n'
+            self.isChorus = True
+        self.currentVerse += text + u'\n'
 
-    def finish_verse(self):
+    def finishVerse(self):
         """
         Verse is finished, store it. Note in book 1+2, some songs are formatted
         incorrectly. Here we try and split songs with missing line breaks into
         the correct number of verses.
         """
-        if self.currentverse.strip() == u'':
+        if self.currentVerse.strip() == u'':
             return
-        if self.is_chorus:
+        if self.isChorus:
             versetag = u'C'
             splitat = None
         else:
             versetag = u'V'
-            splitat = self.verse_splits(self.song_number)
+            splitat = self.verseSplits(self.songNumber)
         if splitat:
             ln = 0
             verse = u''
-            for line in self.currentverse.split(u'\n'):
+            for line in self.currentVerse.split(u'\n'):
                 ln += 1
                 if line == u'' or ln > splitat:
-                    self.add_sof_verse(verse, versetag)
+                    self.addSofVerse(verse, versetag)
                     ln = 0
                     if line:
                         verse = line + u'\n'
@@ -299,19 +310,19 @@ class SofImport(OooImport):
                 else:
                     verse += line + u'\n'
             if verse:
-                self.add_sof_verse(verse, versetag)
+                self.addSofVerse(verse, versetag)
         else:
-            self.add_sof_verse(self.currentverse, versetag)
-        self.currentverse = u''
-        self.is_chorus = False
+            self.addSofVerse(self.currentVerse, versetag)
+        self.currentVerse = u''
+        self.isChorus = False
 
-    def add_sof_verse(self, lyrics, tag):
-        self.add_verse(lyrics, tag)
-        if not self.is_chorus and u'C1' in self.verse_order_list_generated:
-            self.verse_order_list_generated.append(u'C1')
-            self.verse_order_list_generated_useful = True
+    def addSofVerse(self, lyrics, tag):
+        self.addVerse(lyrics, tag)
+        if not self.isChorus and u'C1' in self.verseOrderListGenerated:
+            self.verseOrderListGenerated.append(u'C1')
+            self.verseOrderListGenerated_useful = True
 
-    def uncap_text(self, text):
+    def uncapText(self, text):
         """
         Words in the title are in all capitals, so we lowercase them.
         However some of these words, e.g. referring to God need a leading
@@ -337,7 +348,7 @@ class SofImport(OooImport):
         text = u''.join(textarr)
         return text
 
-    def verse_splits(self, song_number):
+    def verseSplits(self, song_number):
         """
         Because someone at Kingsway forgot to check the 1+2 RTF file,
         some verses were not formatted correctly.

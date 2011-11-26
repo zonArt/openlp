@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,11 +27,13 @@
 
 import logging
 import os
+import locale
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
-    translate, check_item_selected, Receiver, ItemCapabilities
+    translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
+    validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
@@ -45,18 +47,21 @@ class PresentationMediaItem(MediaManagerItem):
     """
     log.info(u'Presentations Media Item loaded')
 
-    def __init__(self, parent, icon, title, controllers):
+    def __init__(self, parent, plugin, icon, controllers):
         """
         Constructor. Setup defaults
         """
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        MediaManagerItem.__init__(self, parent, self, icon)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
+        self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+        # Allow DnD from the desktop
+        self.listView.activateDnD()
 
     def retranslateUi(self):
         """
@@ -81,7 +86,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
-                        self.parent.serviceManager.supportedSuffixes(type)
+                        self.plugin.serviceManager.supportedSuffixes(type)
         self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
@@ -118,9 +123,9 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        list = SettingsManager.load_list(
+        files = SettingsManager.load_list(
             self.settingsSection, u'presentations')
-        self.loadList(list, True)
+        self.loadList(files, True)
         self.populateDisplayTypes()
 
     def rebuild(self):
@@ -160,10 +165,14 @@ class PresentationMediaItem(MediaManagerItem):
         titles = [os.path.split(file)[1] for file in currlist]
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
-            self.parent.formparent.displayProgressBar(len(files))
+            self.plugin.formparent.displayProgressBar(len(files))
+        # Sort the themes by its filename considering language specific
+        # characters. lower() is needed for windows!
+        files.sort(cmp=locale.strcoll,
+            key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in files:
             if not initialLoad:
-                self.parent.formparent.incrementProgressBar()
+                self.plugin.formparent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -185,10 +194,13 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.load_presentation()
                     preview = doc.get_thumbnail_path(1, True)
                 doc.close_presentation()
-                if preview and self.validate(preview, thumb):
-                    icon = build_icon(thumb)
-                else:
+                if not (preview and os.path.exists(preview)):
                     icon = build_icon(u':/general/general_delete.png')
+                else:
+                    if validate_thumb(preview, thumb):
+                        icon = build_icon(thumb)
+                    else:
+                        icon = create_thumb(preview, thumb)
             else:
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')
@@ -200,10 +212,11 @@ class PresentationMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
+            item_name.setToolTip(file)
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
-            self.parent.formparent.finishedProgressBar()
+            self.plugin.formparent.finishedProgressBar()
 
     def onDeleteClick(self):
         """
@@ -223,9 +236,10 @@ class PresentationMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+                u'presentations', self.getFileList())
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image
@@ -240,7 +254,7 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = unicode(self.displayTypeComboBox.currentText())
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.AllowsDetailedTitleDisplay)
+        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if shortname:
             for bitem in items:
@@ -267,12 +281,13 @@ class PresentationMediaItem(MediaManagerItem):
                         return True
                     else:
                         # File is no longer present
-                        critical_error_message_box(
-                            translate('PresentationPlugin.MediaItem',
-                            'Missing Presentation'),
-                            unicode(translate('PresentationPlugin.MediaItem',
-                            'The Presentation %s is incomplete,'
-                            ' please reload.')) % filename)
+                        if not remote:
+                            critical_error_message_box(
+                                translate('PresentationPlugin.MediaItem',
+                                'Missing Presentation'),
+                                unicode(translate('PresentationPlugin.MediaItem',
+                                'The Presentation %s is incomplete,'
+                                ' please reload.')) % filename)
                         return False
                 else:
                     # File is no longer present
@@ -307,10 +322,12 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string):
-        list = SettingsManager.load_list(self.settingsSection, u'presentations')
+        files = SettingsManager.load_list(
+            self.settingsSection, u'presentations')
         results = []
         string = string.lower()
-        for file in list:
-            if file.lower().find(string) > -1:
-                results.append([file, file])
+        for file in files:
+            filename = os.path.split(unicode(file))[1]
+            if filename.lower().find(string) > -1:
+                results.append([file, filename])
         return results

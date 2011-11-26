@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,22 +25,21 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`DisplayTagTab` provides an Tag Edit facility.  The Base set are
-protected and included each time loaded.  Custom tags can be defined and saved.
-The Custom Tag arrays are saved in a pickle so QSettings works on them.  Base
+The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are
+protected and included each time loaded. Custom tags can be defined and saved.
+The Custom Tag arrays are saved in a pickle so QSettings works on them. Base
 Tags cannot be changed.
 """
-import cPickle
-
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, DisplayTags
+from openlp.core.lib import translate, FormattingTags
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.displaytagdialog import Ui_DisplayTagDialog
+from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 
-class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
+
+class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
     """
-    The :class:`DisplayTagTab` manages the settings tab .
+    The :class:`FormattingTagForm` manages the settings tab .
     """
     def __init__(self, parent):
         """
@@ -48,11 +47,8 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self._loadDisplayTags()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
-        QtCore.QObject.connect(self.defaultPushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultPushed)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
         QtCore.QObject.connect(self.savePushButton,
@@ -61,41 +57,24 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             self.close)
+        # Forces reloading of tags from openlp configuration.
+        FormattingTags.load_tags()
 
     def exec_(self):
         """
         Load Display and set field state.
         """
         # Create initial copy from master
-        self._loadDisplayTags()
         self._resetTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
-
-    def _loadDisplayTags(self):
-        """
-        Load the Tags from store so can be used in the system or used to
-        update the display. If Cancel was selected this is needed to reset the
-        dsiplay to the correct version.
-        """
-        # Initial Load of the Tags
-        DisplayTags.reset_html_tags()
-        user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
-            QtCore.QVariant(u'')).toString()
-        # cPickle only accepts str not unicode strings
-        user_expands_string = str(unicode(user_expands).encode(u'utf8'))
-        if user_expands_string:
-            user_tags = cPickle.loads(user_expands_string)
-            # If we have some user ones added them as well
-            for t in user_tags:
-                DisplayTags.add_html_tag(t)
 
     def onRowSelected(self):
         """
         Table Row selected so display items and set field state.
         """
         row = self.tagTableWidget.currentRow()
-        html = DisplayTags.get_html_tags()[row]
+        html = FormattingTags.html_expands[row]
         self.selected = row
         self.descriptionLineEdit.setText(html[u'desc'])
         self.tagLineEdit.setText(self._strip(html[u'start tag']))
@@ -120,44 +99,45 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         Add a new tag to list only if it is not a duplicate.
         """
-        for html in DisplayTags.get_html_tags():
+        for html in FormattingTags.html_expands:
             if self._strip(html[u'start tag']) == u'n':
                 critical_error_message_box(
-                    translate('OpenLP.DisplayTagTab', 'Update Error'),
-                    translate('OpenLP.DisplayTagTab',
+                    translate('OpenLP.FormattingTagForm', 'Update Error'),
+                    translate('OpenLP.FormattingTagForm',
                     'Tag "n" already defined.'))
                 return
         # Add new tag to list
-        tag = {u'desc': u'New Item', u'start tag': u'{n}',
-            u'start html': u'<Html_here>', u'end tag': u'{/n}',
-            u'end html': u'</and here>', u'protected': False}
-        DisplayTags.add_html_tag(tag)
+        tag = {
+            u'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
+            u'start tag': u'{n}',
+            u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
+            u'end tag': u'{/n}',
+            u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
+            u'protected': False,
+            u'temporary': False
+        }
+        FormattingTags.add_html_tags([tag])
         self._resetTable()
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
-
-    def onDefaultPushed(self):
-        """
-        Remove all Custom Tags and reset to base set only.
-        """
-        DisplayTags.reset_html_tags()
-        self._resetTable()
+        self.tagTableWidget.scrollToBottom()
 
     def onDeletePushed(self):
         """
         Delete selected custom tag.
         """
         if self.selected != -1:
-            DisplayTags.remove_html_tag(self.selected)
+            FormattingTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
+        FormattingTags.save_html_tags()
 
     def onSavedPushed(self):
         """
         Update Custom Tag details if not duplicate and save the data.
         """
-        html_expands = DisplayTags.get_html_tags()
+        html_expands = FormattingTags.html_expands
         if self.selected != -1:
             html = html_expands[self.selected]
             tag = unicode(self.tagLineEdit.text())
@@ -165,8 +145,8 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
                 if self._strip(html1[u'start tag']) == tag and \
                     linenumber != self.selected:
                     critical_error_message_box(
-                        translate('OpenLP.DisplayTagTab', 'Update Error'),
-                        unicode(translate('OpenLP.DisplayTagTab',
+                        translate('OpenLP.FormattingTagForm', 'Update Error'),
+                        unicode(translate('OpenLP.FormattingTagForm',
                         'Tag %s already defined.')) % tag)
                     return
             html[u'desc'] = unicode(self.descriptionLineEdit.text())
@@ -174,19 +154,11 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             html[u'end html'] = unicode(self.endTagLineEdit.text())
             html[u'start tag'] = u'{%s}' % tag
             html[u'end tag'] = u'{/%s}' % tag
+            # Keep temporary tags when the user changes one.
+            html[u'temporary'] = False
             self.selected = -1
         self._resetTable()
-        temp = []
-        for tag in DisplayTags.get_html_tags():
-            if not tag[u'protected']:
-                temp.append(tag)
-        if temp:
-            ctemp = cPickle.dumps(temp)
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(ctemp))
-        else:
-            QtCore.QSettings().setValue(u'displayTags/html_tags',
-                QtCore.QVariant(u''))
+        FormattingTags.save_html_tags()
 
     def _resetTable(self):
         """
@@ -197,9 +169,8 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self.newPushButton.setEnabled(True)
         self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
-        for linenumber, html in enumerate(DisplayTags.get_html_tags()):
-            self.tagTableWidget.setRowCount(
-                self.tagTableWidget.rowCount() + 1)
+        for linenumber, html in enumerate(FormattingTags.html_expands):
+            self.tagTableWidget.setRowCount(self.tagTableWidget.rowCount() + 1)
             self.tagTableWidget.setItem(linenumber, 0,
                 QtGui.QTableWidgetItem(html[u'desc']))
             self.tagTableWidget.setItem(linenumber, 1,
@@ -208,6 +179,9 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
                 QtGui.QTableWidgetItem(html[u'start html']))
             self.tagTableWidget.setItem(linenumber, 3,
                 QtGui.QTableWidgetItem(html[u'end html']))
+            # Permanent (persistent) tags do not have this key.
+            if u'temporary' not in html:
+                html[u'temporary'] = False
             self.tagTableWidget.resizeRowsToContents()
         self.descriptionLineEdit.setText(u'')
         self.tagLineEdit.setText(u'')

@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +35,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
@@ -56,44 +57,38 @@ body {
     height: %spx;
 }
 #black {
-    z-index:8;
+    z-index: 8;
     background-color: black;
     display: none;
 }
 #bgimage {
-    z-index:1;
+    z-index: 1;
 }
 #image {
-    z-index:2;
+    z-index: 2;
 }
 #video1 {
-    z-index:3;
+    z-index: 3;
 }
 #video2 {
-    z-index:3;
+    z-index: 3;
 }
-#alert {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index:10;
-    %s
-}
+%s
 #footer {
     position: absolute;
-    z-index:6;
+    z-index: 6;
     %s
 }
 /* lyric css */
 %s
 sup {
-    font-size:0.6em;
-    vertical-align:top;
-    position:relative;
-    top:-0.3em;
+    font-size: 0.6em;
+    vertical-align: top;
+    position: relative;
+    top: -0.3em;
 }
 </style>
-<script language="javascript">
+<script>
     var timer = null;
     var video_timer = null;
     var current_video = '1';
@@ -178,7 +173,7 @@ sup {
                 break;
         }
     }
-
+    %s
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
@@ -224,44 +219,17 @@ sup {
         }
     }
 
-    function show_alert(alerttext, position){
-        var text = document.getElementById('alert');
-        text.innerHTML = alerttext;
-        if(alerttext == '') {
-            text.style.visibility = 'hidden';
-            return 0;
-        }
-        if(position == ''){
-            position = getComputedStyle(text, '').verticalAlign;
-        }
-        switch(position)
-        {
-            case 'top':
-                text.style.top = '0px';
-                break;
-            case 'middle':
-                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
-                    + 'px';
-                break;
-            case 'bottom':
-                text.style.top = (window.innerHeight - text.clientHeight)
-                    + 'px';
-                break;
-        }
-        text.style.visibility = 'visible';
-        return text.clientHeight;
-    }
-
     function show_footer(footertext){
         document.getElementById('footer').innerHTML = footertext;
     }
 
     function show_text(newtext){
+        var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext);
+        text_fade('lyricsshadow', newtext.replace(match, ""));
         if(text_opacity()==1) return;
         timer = setTimeout(function(){
             show_text(newtext);
@@ -314,14 +282,15 @@ sup {
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 %s
+%s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
 </body>
 </html>
-    """
+"""
 
-def build_html(item, screen, alert, islive, background, image=None):
+def build_html(item, screen, islive, background, image=None,
+    plugins=None):
     """
     Build the full web paged structure for display
 
@@ -331,9 +300,6 @@ def build_html(item, screen, alert, islive, background, image=None):
     ``screen``
         Current display information
 
-    ``alert``
-        Alert display display information
-
     ``islive``
         Item is going live, rather than preview/theme building
 
@@ -342,6 +308,9 @@ def build_html(item, screen, alert, islive, background, image=None):
 
     ``image``
         Image media item - bytes
+
+    ``plugins``
+        The List of available plugins
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -358,14 +327,24 @@ def build_html(item, screen, alert, islive, background, image=None):
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
         image_src = u'style="display:none;"'
+    css_additions = u''
+    js_additions = u''
+    html_additions = u''
+    if plugins:
+        for plugin in plugins:
+            css_additions += plugin.getDisplayCss()
+            js_additions += plugin.getDisplayJavaScript()
+            html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
-        build_alert_css(alert, width),
+        css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
+        js_additions,
         bgimage_src, image_src,
+        html_additions,
         build_lyrics_html(item, webkitvers))
     return html
 
@@ -402,7 +381,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string( \
@@ -410,7 +389,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
@@ -418,20 +397,21 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
                 (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s))' % \
+                    u'right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_start_color, theme.background_end_color)
+                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
+                    width, theme.background_start_color,
+                    theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -445,15 +425,15 @@ def build_lyrics_css(item, webkitvers):
         The version of qtwebkit we're using
 
     """
-    style = """
+    style = u"""
 .lyricstable {
-    z-index:5;
+    z-index: 5;
     position: absolute;
     display: table;
     %s
 }
 .lyricscell {
-    display:table-cell;
+    display: table-cell;
     word-wrap: break-word;
     %s
 }
@@ -485,11 +465,11 @@ def build_lyrics_css(item, webkitvers):
         # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
         # stroke (outline) color. So put stroke layer underneath the main text.
         #
-        # Before 534.4 the webkit-text-stroke was sometimes out of alignment
+        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment
         # with the fill, or normal text. letter-spacing=1 is workaround
         # https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Before 534.4 the text-shadow didn't get displayed when
+        # Up to 534.3 the text-shadow didn't get displayed when
         # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkitvers >= 533.3:
@@ -497,7 +477,7 @@ def build_lyrics_css(item, webkitvers):
         else:
             outline = build_lyrics_outline_css(theme)
         if theme.font_main_shadow:
-            if theme.font_main_outline and webkitvers < 534.3:
+            if theme.font_main_outline and webkitvers <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) +
                     (int(theme.font_main_outline_size) * 2),
@@ -555,15 +535,19 @@ def build_lyrics_format_css(theme, width, height):
         left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
-    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
+    justify = u'white-space:pre-wrap;'
+    # fix tag incompatibilities
+    if theme.display_horizontal_align == HorizontalType.Justify:
+        justify = u''
+    lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
-        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_size,
+        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
+        (justify, align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
-        if webkit_version() < 534.3:
+        if webkit_version() <= 534.3:
             lyrics += u' letter-spacing: 1px;'
     if theme.font_main_italics:
         lyrics += u' font-style:italic; '
@@ -587,7 +571,7 @@ def build_lyrics_html(item, webkitvers):
     # display:table/display:table-cell are required for each lyric block.
     lyrics = u''
     theme = item.themedata
-    if webkitvers < 534.4 and theme and theme.font_main_outline:
+    if webkitvers <= 534.3 and theme and theme.font_main_outline:
         lyrics += u'<div class="lyricstable">' \
             u'<div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
@@ -607,7 +591,7 @@ def build_footer_css(item, height):
     ``item``
         Service Item to be processed.
     """
-    style = """
+    style = u"""
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -615,7 +599,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -626,24 +610,3 @@ def build_footer_css(item, height):
         theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
 
-def build_alert_css(alertTab, width):
-    """
-    Build the display of the footer
-
-    ``alertTab``
-        Details from the Alert tab for fonts etc
-    """
-    style = """
-    width: %spx;
-    vertical-align: %s;
-    font-family: %s;
-    font-size: %spt;
-    color: %s;
-    background-color: %s;
-    """
-    if not alertTab:
-        return u''
-    align = VerticalType.Names[alertTab.location]
-    alert = style % (width, align, alertTab.font_face, alertTab.font_size,
-        alertTab.font_color, alertTab.bg_color)
-    return alert

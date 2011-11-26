@@ -47,11 +47,12 @@ window.OpenLP = {
         var select = $("#search-plugin");
         select.html("");
         $.each(data.results.items, function (idx, value) {
-          select.append("<option value='" + value + "'>" + value + "</option>");
+          select.append("<option value='" + value[0] + "'>" + value[1] + "</option>");
         });
         select.selectmenu("refresh");
       }
     );
+    return false;
   },
   loadService: function (event) {
     $.getJSON(
@@ -69,6 +70,7 @@ window.OpenLP = {
         ul.listview("refresh");
       }
     );
+    return false;
   },
   loadController: function (event) {
     $.getJSON(
@@ -92,6 +94,7 @@ window.OpenLP = {
         ul.listview("refresh");
       }
     );
+    return false;
   },
   setItem: function (event) {
     var item = OpenLP.getElement(event);
@@ -101,6 +104,7 @@ window.OpenLP = {
       "/api/service/set",
       {"data": text},
       function (data, status) {
+        $.mobile.changePage("#slide-controller");
         $("#service-manager > div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
         while (item[0].tagName != "LI") {
           item = item.parent();
@@ -109,6 +113,7 @@ window.OpenLP = {
         $("#service-manager > div[data-role=content] ul[data-role=listview]").listview("refresh");
       }
     );
+    return false;
   },
   setSlide: function (event) {
     var slide = OpenLP.getElement(event);
@@ -126,6 +131,7 @@ window.OpenLP = {
         $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
       }
     );
+    return false;
   },
   pollServer: function () {
     $.getJSON(
@@ -207,7 +213,7 @@ window.OpenLP = {
     return false;
   },
   search: function (event) {
-    var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
+    var text = "{\"request\": {\"text\": \"" + $("#search-text").val() + "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
@@ -215,16 +221,15 @@ window.OpenLP = {
         var ul = $("#search > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         if (data.results.items.length == 0) {
-          var li = $("<li data-icon=\"false\">").text('No results');
+          var li = $("<li data-icon=\"false\">").text(translationStrings["no_results"]);
           ul.append(li);
         }
         else {
             $.each(data.results.items, function (idx, value) {
-              var item = $("<li>").text(value[1]);
-              var golive = $("<a href=\"#\">Go Live</a>").attr("value", value[0]).click(OpenLP.goLive);
-              var additem = $("<a href=\"#\">Add To Service</a>").attr("value", value[0]).click(OpenLP.addToService);
-              item.append($("<ul>").append($("<li>").append(golive)).append($("<li>").append(additem)));
-              ul.append(item);
+              ul.append($("<li>").append($("<a>").attr("href", "#options")
+                  .attr("data-rel", "dialog").attr("data-transition", "pop")
+                  .attr("value", value[0]).click(OpenLP.showOptions)
+                  .text(value[1])));
             });
         }
         ul.listview("refresh");
@@ -232,19 +237,24 @@ window.OpenLP = {
     );
     return false;
   },
+  showOptions: function (event) {
+    var element = OpenLP.getElement(event);
+    console.log(element);
+    $("#selected-item").val(element.attr("value"));
+    return false;
+  },
   goLive: function (event) {
-    var item = OpenLP.getElement(event);
-    var id = item.attr("value");
-    var text = JSON.stringify({"request": {"id": id}});
+    var id = $("#selected-item").val();
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
-      {"data": text})
-    $.mobile.changePage("slide-controller");
+      {"data": text}
+    );
+    $.mobile.changePage("#slide-controller");
     return false;
   },
   addToService: function (event) {
-    var item = OpenLP.getElement(event);
-    var id = item.attr("value");
+    var id = $("#selected-item").val();
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
@@ -253,27 +263,30 @@ window.OpenLP = {
         history.back();
       }
     );
+    $("#options").dialog("close");
     return false;
   }
 }
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#service-refresh").live("click", OpenLP.loadService);
-$("#service-next").live("click", OpenLP.nextItem);
-$("#service-previous").live("click", OpenLP.previousItem);
-$("#service-blank").live("click", OpenLP.blankDisplay);
-$("#service-unblank").live("click", OpenLP.unblankDisplay);
+$("#service-top-next, #service-btm-next").live("click", OpenLP.nextItem);
+$("#service-top-previous, #service-btm-previous").live("click", OpenLP.previousItem);
+$("#service-top-blank, #service-btm-blank").live("click", OpenLP.blankDisplay);
+$("#service-top-unblank, #service-btm-unblank").live("click", OpenLP.unblankDisplay);
 // Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 $("#controller-refresh").live("click", OpenLP.loadController);
-$("#controller-next").live("click", OpenLP.nextSlide);
-$("#controller-previous").live("click", OpenLP.previousSlide);
-$("#controller-blank").live("click", OpenLP.blankDisplay);
-$("#controller-unblank").live("click", OpenLP.unblankDisplay);
+$("#controller-top-next, #controller-btm-next").live("click", OpenLP.nextSlide);
+$("#controller-top-previous, #controller-btm-previous").live("click", OpenLP.previousSlide);
+$("#controller-top-blank, #controller-btm-blank").live("click", OpenLP.blankDisplay);
+$("#controller-top-unblank, #controller-btm-unblank").live("click", OpenLP.unblankDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
+$("#go-live").live("click", OpenLP.goLive);
+$("#add-to-service").live("click", OpenLP.addToService);
 // Poll the server twice a second to get any updates.
 OpenLP.getSearchablePlugins();
 $.ajaxSetup({ cache: false });

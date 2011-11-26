@@ -5,11 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +28,7 @@
 The :mod:`songexportform` module provides the wizard for exporting songs to the
 OpenLyrics format.
 """
+import locale
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -169,8 +170,8 @@ class SongExportForm(OpenLPWizard):
             translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
-            ' export your songs to the open and free OpenLyrics worship song '
-            'format.'))
+            ' export your songs to the open and free <strong>OpenLyrics'
+            '</strong> worship song format.'))
         self.availableSongsPage.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(
@@ -249,6 +250,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
+        songs.sort(cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in songs:
             authors = u', '.join([author.display_name
                 for author in song.authors])
@@ -283,7 +285,9 @@ class SongExportForm(OpenLPWizard):
             self, songs, unicode(self.directoryLineEdit.text()))
         if exporter.do_export():
             self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm', 'Finished export.'))
+                translate('SongsPlugin.SongExportForm', 'Finished export. To '
+                'import these files use the <strong>OpenLyrics</strong> '
+                'importer.'))
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',

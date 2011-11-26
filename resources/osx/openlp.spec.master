@@ -1,5 +1,5 @@
 # -*- mode: python -*-
-a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(HOMEPATH,'support/useUnicode.py'), '%(openlp_basedir)s/openlp.pyw'],
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'), os.path.join(CONFIGDIR,'support/useUnicode.py'), '%(openlp_basedir)s/openlp.pyw'],
              pathex=['%(pyinstaller_basedir)s'], hookspath=['%(openlp_basedir)s/resources/pyinstaller'])
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
