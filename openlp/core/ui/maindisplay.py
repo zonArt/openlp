@@ -29,7 +29,6 @@ The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
 import logging
-import os
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon

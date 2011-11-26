@@ -35,15 +35,14 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager, PluginStatus, \
-    SettingsManager
+    PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version, delete_file
+    get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui import ScreenList
@@ -503,7 +502,8 @@ class Ui_MainWindow(object):
         self.toolsFirstTimeWizard.setText(
             translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
-            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
+            'Re-run the First Time Wizard, importing songs, Bibles and '
+            'themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(

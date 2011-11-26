@@ -30,7 +30,6 @@ backend for the SongsUsage plugin
 """
 
 from sqlalchemy import Column, Table, types
-from migrate import changeset
 
 __version__ = 1
 
