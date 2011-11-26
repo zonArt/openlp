@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -63,10 +64,12 @@ class UiStrings(object):
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
         self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
+        self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
+        self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
         self.Edit = translate('OpenLP.Ui', '&Edit')
         self.EmptyField = translate('OpenLP.Ui', 'Empty Field')
         self.Error = translate('OpenLP.Ui', 'Error')
@@ -80,10 +83,8 @@ class UiStrings(object):
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-        self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
-        self.LivePanel = translate('OpenLP.Ui', 'Live Panel')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
         self.Load = translate('OpenLP.Ui', 'Load')
         self.Minutes = translate('OpenLP.Ui', 'm',
@@ -100,14 +101,15 @@ class UiStrings(object):
         self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
-        self.OpenService = translate('OpenLP.Ui', 'Open Service')
+        self.OpenService = translate('OpenLP.Ui', 'Open service.')
+        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
+        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
-        self.PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
-        self.PrintServiceOrder = translate('OpenLP.Ui', 'Print Service Order')
+        self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
-        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
         self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
-        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
         self.Seconds = translate('OpenLP.Ui', 's',
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
@@ -119,16 +121,24 @@ class UiStrings(object):
         self.Settings = translate('OpenLP.Ui', 'Settings')
         self.SaveService = translate('OpenLP.Ui', 'Save Service')
         self.Service = translate('OpenLP.Ui', 'Service')
+        self.Split = translate('OpenLP.Ui', '&Split')
+        self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
+            'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
+            'Stop Play Slides in Loop')
+        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
+            'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
         self.Top = translate('OpenLP.Ui', 'Top')
+        self.UnsupportedFile = translate('OpenLP.Ui', 'Unsupported File')
         self.VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
         self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
-        self.ViewMode = translate('OpenLP.Ui', 'View Model')
+        self.ViewMode = translate('OpenLP.Ui', 'View Mode')
 
 def add_welcome_page(parent, image):
     """
@@ -319,17 +329,18 @@ def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    action.setShortcuts(shortcuts)
-    action.setShortcutContext(context)
+    if shortcuts:
+        action.setShortcuts(shortcuts)
+        action.setShortcutContext(context)
     action_list = ActionList.get_instance()
     action_list.add_action(action, category)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
     return action
 
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WindowShortcut):
+    context=QtCore.Qt.WidgetShortcut):
     """
-    Utility method to help build context menus for plugins
+    Utility method to help build context menus.
 
     ``base``
         The parent menu to add this menu item to
@@ -348,7 +359,7 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
 
     ``category``
         The category the shortcut should be listed in the shortcut dialog. If
-        left to None, then the action will be hidden in the shortcut dialog.
+        left to ``None``, then the action will be hidden in the shortcut dialog.
 
     ``context``
         The context the shortcut is valid.
@@ -362,11 +373,12 @@ def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
         action.setShortcutContext(context)
         action_list = ActionList.get_instance()
         action_list.add_action(action)
+    base.addAction(action)
     return action
 
 def context_menu(base, icon, text):
     """
-    Utility method to help build context menus for plugins
+    Utility method to help build context menus.
 
     ``base``
         The parent object to add this menu to
@@ -390,6 +402,7 @@ def context_menu_separator(base):
     """
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)
+    base.addAction(action)
     return action
 
 def add_widget_completer(cache, widget):

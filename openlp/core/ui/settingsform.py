@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -28,7 +29,7 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
@@ -40,14 +41,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, screens, mainWindow, parent=None):
+    def __init__(self, mainWindow, parent=None):
         """
         Initialise the settings form
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.generalTab = GeneralTab(self, screens)
+        self.generalTab = GeneralTab(self)
         # Themes tab
         self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab
@@ -57,7 +58,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # load all the settings
         self.settingListWidget.clear()
         for tabIndex in range(0, self.stackedLayout.count() + 1):
-            # take at 0 and the rest shuffell up.
+            # take at 0 and the rest shuffle up.
             self.stackedLayout.takeAt(0)
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
         self.insertTab(self.themesTab, 1, PluginStatus.Active)

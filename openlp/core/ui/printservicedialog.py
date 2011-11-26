@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -40,11 +41,6 @@ class ZoomSize(object):
     Fifty = 4
     TwentyFive = 5
 
-    Sizes = [
-        translate('OpenLP.PrintServiceDialog', 'Fit Page'),
-        translate('OpenLP.PrintServiceDialog', 'Fit Width'),
-        u'100%', u'75%', u'50%', u'25%']
-
 
 class Ui_PrintServiceDialog(object):
     def setupUi(self, printServiceDialog):
@@ -58,18 +54,14 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.printButton = self.toolbar.addAction(
-            build_icon(u':/general/general_print.png'), 'Print')
+            build_icon(u':/general/general_print.png'),
+            translate('OpenLP.PrintServiceForm', 'Print'))
         self.optionsButton = QtGui.QToolButton(self.toolbar)
-        self.optionsButton.setText(translate('OpenLP.PrintServiceForm',
-            'Options'))
         self.optionsButton.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextBesideIcon)
         self.optionsButton.setIcon(build_icon(u':/system/system_configure.png'))
         self.optionsButton.setCheckable(True)
         self.toolbar.addWidget(self.optionsButton)
-        self.closeButton = self.toolbar.addAction(
-            build_icon(u':/system/system_close.png'),
-            translate('OpenLP.PrintServiceForm', 'Close'))
         self.toolbar.addSeparator()
         self.plainCopy = self.toolbar.addAction(
             build_icon(u':/system/system_edit_copy.png'),
@@ -80,24 +72,18 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.addSeparator()
         self.zoomInButton = QtGui.QToolButton(self.toolbar)
         self.zoomInButton.setIcon(build_icon(u':/general/general_zoom_in.png'))
-        self.zoomInButton.setToolTip(translate('OpenLP.PrintServiceForm',
-            'Zoom In'))
         self.zoomInButton.setObjectName(u'zoomInButton')
         self.zoomInButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomInButton)
         self.zoomOutButton = QtGui.QToolButton(self.toolbar)
         self.zoomOutButton.setIcon(
             build_icon(u':/general/general_zoom_out.png'))
-        self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm',
-            'Zoom Out'))
         self.zoomOutButton.setObjectName(u'zoomOutButton')
         self.zoomOutButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOutButton)
         self.zoomOriginalButton = QtGui.QToolButton(self.toolbar)
         self.zoomOriginalButton.setIcon(
             build_icon(u':/general/general_zoom_original.png'))
-        self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm',
-            'Zoom Original'))
         self.zoomOriginalButton.setObjectName(u'zoomOriginalButton')
         self.zoomOriginalButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOriginalButton)
@@ -115,20 +101,17 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout.setContentsMargins(8, 8, 8, 8)
         self.titleLabel = QtGui.QLabel(self.optionsWidget)
         self.titleLabel.setObjectName(u'titleLabel')
-        self.titleLabel.setText(u'Title:')
         self.optionsLayout.addWidget(self.titleLabel)
         self.titleLineEdit = QtGui.QLineEdit(self.optionsWidget)
         self.titleLineEdit.setObjectName(u'titleLineEdit')
         self.optionsLayout.addWidget(self.titleLineEdit)
         self.footerLabel = QtGui.QLabel(self.optionsWidget)
         self.footerLabel.setObjectName(u'footerLabel')
-        self.footerLabel.setText(u'Custom Footer Text:')
         self.optionsLayout.addWidget(self.footerLabel)
-        self.footerTextEdit = SpellTextEdit(self.optionsWidget)
+        self.footerTextEdit = SpellTextEdit(self.optionsWidget, False)
         self.footerTextEdit.setObjectName(u'footerTextEdit')
         self.optionsLayout.addWidget(self.footerTextEdit)
-        self.optionsGroupBox = QtGui.QGroupBox(
-            translate('OpenLP.PrintServiceForm','Other Options'))
+        self.optionsGroupBox = QtGui.QGroupBox()
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
@@ -148,20 +131,37 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(UiStrings().PrintServiceOrder)
+        printServiceDialog.setWindowTitle(UiStrings().PrintService)
+        self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom Out'))
+        self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom Original'))
+        self.zoomInButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom In'))
+        self.optionsButton.setText(translate('OpenLP.PrintServiceForm',
+            'Options'))
+        self.titleLabel.setText(translate('OpenLP.PrintServiceForm', 'Title:'))
+        self.footerLabel.setText(translate('OpenLP.PrintServiceForm',
+            'Custom Footer Text:'))
+        self.optionsGroupBox.setTitle(
+            translate('OpenLP.PrintServiceForm','Other Options'))
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm',
-            'Add page break before each text item.'))
+            'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include play length of media items'))
         self.titleLineEdit.setText(translate('OpenLP.PrintServiceForm',
-            'Service Order Sheet'))
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Page])
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Width])
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.OneHundred])
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
-        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+            'Service Sheet'))
+        # Do not change the order.
+        self.zoomComboBox.addItems([
+            translate('OpenLP.PrintServiceDialog', 'Fit Page'),
+            translate('OpenLP.PrintServiceDialog', 'Fit Width'),
+            u'100%',
+            u'75%',
+            u'50%',
+            u'25%']
+        )
+

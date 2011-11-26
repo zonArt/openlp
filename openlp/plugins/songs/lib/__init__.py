@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -30,6 +31,9 @@ from PyQt4 import QtGui
 from openlp.core.lib import translate
 from db import Author
 from ui import SongStrings
+
+WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
+APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
 
 class VerseType(object):
     """
@@ -180,10 +184,11 @@ class VerseType(object):
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
                 verse_index = VerseType.from_string(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_translated_tag(verse_name)
-        if verse_index is None:
-            verse_index = VerseType.from_tag(verse_name)
+        elif len(verse_name) == 1:
+            if verse_index is None:
+                verse_index = VerseType.from_translated_tag(verse_name)
+            if verse_index is None:
+                verse_index = VerseType.from_tag(verse_name)
         return verse_index
 
 def retrieve_windows_encoding(recommendation=None):
@@ -245,6 +250,12 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
+def clean_string(string):
+    """
+    Strips punctuation from the passed string to assist searching
+    """
+    return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
+
 def clean_song(manager, song):
     """
     Cleans the search title, rebuilds the search lyrics, adds a default author
@@ -257,56 +268,74 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
-    song.title = song.title.strip() if song.title else u''
+    if isinstance(song.title, buffer):
+        song.title = unicode(song.title)
+    if isinstance(song.alternate_title, buffer):
+        song.alternate_title = unicode(song.alternate_title)
+    if isinstance(song.lyrics, buffer):
+        song.lyrics = unicode(song.lyrics)
+    song.title = song.title.rstrip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
-    whitespace = re.compile(r'\W+', re.UNICODE)
-    song.search_title = (whitespace.sub(u' ', song.title).strip() + u'@' +
-        whitespace.sub(u' ', song.alternate_title).strip()).strip().lower()
-    # Remove the old "language" attribute from lyrics tag (prior to 1.9.5). This
-    # is not very important, but this keeps the database clean. This can be
-    # removed when everybody has cleaned his songs.
-    song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
-    verses = SongXML().get_verses(song.lyrics)
-    lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
-    song.search_lyrics = lyrics.lower()
-    # We need a new and clean SongXML instance.
-    sxml = SongXML()
-    # Rebuild the song's verses, to remove any wrong verse names (for example
-    # translated ones), which might have been added prior to 1.9.5.
-    # List for later comparison.
-    compare_order = []
-    for verse in verses:
-        verse_type = VerseType.Tags[VerseType.from_loose_input(
-            verse[0][u'type'])]
-        sxml.add_verse_to_lyrics(
-            verse_type,
-            verse[0][u'label'],
-            verse[1],
-            verse[0][u'lang'] if verse[0].has_key(u'lang') else None
-        )
-        compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
-            ).upper())
-        if verse[0][u'label'] == u'1':
-            compare_order.append(verse_type.upper())
-    song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-    # Rebuild the verse order, to convert translated verse tags, which might
-    # have been added prior to 1.9.5.
-    order = song.verse_order.strip().split()
-    new_order = []
-    for verse_def in order:
-        verse_type = VerseType.Tags[VerseType.from_loose_input(verse_def[0])]
-        if len(verse_def) > 1:
-            new_order.append((u'%s%s' % (verse_type, verse_def[1:])).upper())
+    song.search_title = clean_string(song.title) + u'@' + \
+        clean_string(song.alternate_title)
+    # Only do this, if we the song is a 1.9.4 song (or older).
+    if song.lyrics.find(u'<lyrics language="en">') != -1:
+        # Remove the old "language" attribute from lyrics tag (prior to 1.9.5).
+        # This is not very important, but this keeps the database clean. This
+        # can be removed when everybody has cleaned his songs.
+        song.lyrics = song.lyrics.replace(
+            u'<lyrics language="en">', u'<lyrics>')
+        verses = SongXML().get_verses(song.lyrics)
+        song.search_lyrics = u' '.join([clean_string(verse[1])
+            for verse in verses])
+        # We need a new and clean SongXML instance.
+        sxml = SongXML()
+        # Rebuild the song's verses, to remove any wrong verse names (for
+        # example translated ones), which might have been added prior to 1.9.5.
+        # List for later comparison.
+        compare_order = []
+        for verse in verses:
+            verse_type = VerseType.Tags[VerseType.from_loose_input(
+                verse[0][u'type'])]
+            sxml.add_verse_to_lyrics(
+                verse_type,
+                verse[0][u'label'],
+                verse[1],
+                verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+            )
+            compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
+                ).upper())
+            if verse[0][u'label'] == u'1':
+                compare_order.append(verse_type.upper())
+        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        # Rebuild the verse order, to convert translated verse tags, which might
+        # have been added prior to 1.9.5.
+        if song.verse_order:
+            order = song.verse_order.strip().split()
         else:
-            new_order.append(verse_type.upper())
-    song.verse_order = u' '.join(new_order)
-    # Check if the verse order contains tags for verses which do not exist.
-    for order in new_order:
-        if order not in compare_order:
-            song.verse_order = u''
-            break
+            order = []
+        new_order = []
+        for verse_def in order:
+            verse_type = VerseType.Tags[
+                VerseType.from_loose_input(verse_def[0])]
+            if len(verse_def) > 1:
+                new_order.append(
+                    (u'%s%s' % (verse_type, verse_def[1:])).upper())
+            else:
+                new_order.append(verse_type.upper())
+        song.verse_order = u' '.join(new_order)
+        # Check if the verse order contains tags for verses which do not exist.
+        for order in new_order:
+            if order not in compare_order:
+                song.verse_order = u''
+                break
+    else:
+        verses = SongXML().get_verses(song.lyrics)
+        song.search_lyrics = u' '.join([clean_string(verse[1])
+            for verse in verses])
+
     # The song does not have any author, add one.
     if not song.authors:
         name = SongStrings.AuthorUnknown

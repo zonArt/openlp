@@ -5,9 +5,10 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
@@ -67,7 +68,7 @@ class Controller(object):
         self.doc.slidenumber = slide_no
         if self.is_live:
             if hide_mode == HideMode.Screen:
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
                 self.blank(hide_mode)
@@ -75,7 +76,7 @@ class Controller(object):
                 self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
-                Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+                Receiver.send_message(u'live_display_hide', HideMode.Screen)
                 self.doc.slidenumber = 0
                 if slide_no > 1:
                     self.slide(slide_no)
@@ -94,6 +95,8 @@ class Controller(object):
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
+                if self.doc.slidenumber > self.doc.get_slide_count():
+                    self.doc.slidenumber = self.doc.get_slide_count()
                 self.doc.goto_slide(self.doc.slidenumber)
 
     def slide(self, slide):
@@ -149,6 +152,11 @@ class Controller(object):
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
             return
+        # The "End of slideshow" screen is after the last slide
+        # Note, we can't just stop on the last slide, since it may
+        # contain animations that need to be stepped through.
+        if self.doc.slidenumber > self.doc.get_slide_count():
+            return
         self.activate()
         self.doc.next_step()
         self.doc.poll_slidenumber(self.is_live)
@@ -188,7 +196,7 @@ class Controller(object):
         if not self.doc.is_active():
             return
         if hide_mode == HideMode.Theme:
-            Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
+            Receiver.send_message(u'live_display_hide', HideMode.Theme)
         self.doc.blank_screen()
 
     def stop(self):
@@ -216,7 +224,7 @@ class Controller(object):
             self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
-        Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+        Receiver.send_message(u'live_display_hide', HideMode.Screen)
 
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
