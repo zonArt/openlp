@@ -79,7 +79,7 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
-        self.accept_keypress = True
+        self.keypress_count = 0
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -579,16 +579,18 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
-        if self.accept_keypress:
-            self.accept_keypress = False
-            Receiver.send_message('servicemanager_previous_item')
-            self.accept_keypress = True             
+        self.keypress_count += 1
+        if self.keypress_count == 1:
+            while self.keypress_count != 0:
+                Receiver.send_message('servicemanager_previous_item')
+                self.keypress_count -= 1             
 
     def serviceNext(self):
-        if self.accept_keypress:
-            self.accept_keypress = False
-            Receiver.send_message('servicemanager_next_item')
-            self.accept_keypress = True            
+        self.keypress_count += 1
+        if self.keypress_count == 1:
+            while self.keypress_count != 0:
+                Receiver.send_message('servicemanager_next_item')
+                self.keypress_count -= 1            
      
 
     def screenSizeChanged(self):
