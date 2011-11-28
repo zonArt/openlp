@@ -26,9 +26,9 @@
 ###############################################################################
 
 import logging
-import os
 import time
 import copy
+from collections import deque
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -79,7 +79,6 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
-        self.keypress_count = 0
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -92,6 +91,7 @@ class SlideController(QtGui.QWidget):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
+            self.keypress_queue = deque()            
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -579,18 +579,31 @@ class SlideController(QtGui.QWidget):
         self.display.videoStop()
 
     def servicePrevious(self):
-        self.keypress_count += 1
-        if self.keypress_count == 1:
-            while self.keypress_count != 0:
-                Receiver.send_message('servicemanager_previous_item')
-                self.keypress_count -= 1             
+        """
+        Live event to select the previous service item from the service manager.
+        """
+        self.keypress_queue.append(u'previous')
+        self._process_queue()
+        
 
     def serviceNext(self):
-        self.keypress_count += 1
-        if self.keypress_count == 1:
-            while self.keypress_count != 0:
-                Receiver.send_message('servicemanager_next_item')
-                self.keypress_count -= 1            
+        """
+        Live event to select the next service item from the service manager.
+        """
+        self.keypress_queue.append(u'next')
+        self._process_queue()
+        
+    def _process_queue(self):
+        """
+        Process the service item request queue.  The key presses can arrive 
+        faster than the processing so implement a FIFO queue. 
+        """
+        if len(self.keypress_queue):
+            while len(self.keypress_queue):
+                if self.keypress_queue.popleft() == u'previous':
+                    Receiver.send_message('servicemanager_previous_item')                    
+                else:
+                    Receiver.send_message('servicemanager_next_item')
      
 
     def screenSizeChanged(self):
