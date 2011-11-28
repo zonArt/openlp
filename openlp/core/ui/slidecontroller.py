@@ -91,7 +91,8 @@ class SlideController(QtGui.QWidget):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
-            self.keypress_queue = deque()            
+            self.keypress_queue = deque() 
+            self.keypress_loop = False           
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -599,11 +600,13 @@ class SlideController(QtGui.QWidget):
         faster than the processing so implement a FIFO queue. 
         """
         if len(self.keypress_queue):
-            while len(self.keypress_queue):
+            while len(self.keypress_queue) and not self.keypress_loop:
+                self.keypress_loop = True                
                 if self.keypress_queue.popleft() == u'previous':
                     Receiver.send_message('servicemanager_previous_item')                    
                 else:
                     Receiver.send_message('servicemanager_next_item')
+            self.keypress_loop = False
      
 
     def screenSizeChanged(self):
