@@ -121,8 +121,8 @@ sup {
         }
         switch(state){
             case 'init':
-                vid.src = path;
-                vid2.src = path;
+                vid.src = 'file:///' + path;
+                vid2.src = 'file:///' + path;
                 if(loop == null) loop = false;
                 vid.looping = loop;
                 vid2.looping = loop;
