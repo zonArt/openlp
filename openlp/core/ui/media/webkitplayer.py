@@ -79,8 +79,8 @@ VIDEO_JS = u"""
         }
         switch(state){
             case 'init':
-                vid.src = path;
-                vid2.src = path;
+                vid.src = 'file:///' + path;
+                vid2.src = 'file:///' + path;
                 if(loop == null) loop = false;
                 vid.looping = loop;
                 vid2.looping = loop;
@@ -92,7 +92,6 @@ VIDEO_JS = u"""
                 break;
             case 'play':
                 vid.play();
-                //vid.style.visibility = 'visible';
                 if(vid.looping){
                     video_timer = setInterval(
                         function() {
@@ -109,6 +108,7 @@ VIDEO_JS = u"""
                 break;
             case 'stop':
                 show_video('pause');
+                vid.currentTime = 0;
                 break;
             case 'poll':
                 if(vid.ended||vid.currentTime+0.2>vid.duration)
@@ -313,7 +313,7 @@ class WebkitPlayer(MediaPlayer):
             js = u'show_flash("load","%s");' % \
                 (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "file:///%s", %s, %s);' % \
+            js = u'show_video("init", "%s", %s, %s);' % \
                 (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
@@ -351,6 +351,7 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_flash("stop");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
+        controller.seekSlider.setSliderPosition(0)
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):

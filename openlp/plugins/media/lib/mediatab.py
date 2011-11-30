@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 class MediaTab(SettingsTab):
     """
@@ -145,6 +145,11 @@ class MediaTab(SettingsTab):
         self.playerOrderlistWidget.clear()
         for player in self.usedPlayers:
             if player in self.PlayerCheckBoxes.keys():
+                if len(self.usedPlayers) == 1:
+                    # at least one media player have to stay active
+                    self.PlayerCheckBoxes[u'%s' % player].setEnabled(False)
+                else:
+                    self.PlayerCheckBoxes[u'%s' % player].setEnabled(True)
                 self.playerOrderlistWidget.addItem(player)
 
     def onOrderingUpButtonPressed(self):
@@ -199,4 +204,5 @@ class MediaTab(SettingsTab):
         if override_changed:
             Receiver.send_message(u'mediaitem_media_rebuild')
         if player_string_changed:
+            Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')

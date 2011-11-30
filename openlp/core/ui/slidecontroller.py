@@ -94,6 +94,10 @@ class SlideController(Controller):
         self.songEditList = [
             u'Edit Song',
         ]
+        self.nextPreviousList = [
+            u'Previous Slide', 
+            u'Next Slide'
+        ]
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -157,14 +161,14 @@ class SlideController(Controller):
             self.toolbar.sizePolicy().hasHeightForWidth())
         self.toolbar.setSizePolicy(sizeToolbarPolicy)
         self.previousItem = self.toolbar.addToolbarButton(
-            translate('OpenLP.SlideController', 'Previous Slide'),
+            u'Previous Slide',
             u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous.'),
             self.onSlideSelectedPrevious,
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextItem = self.toolbar.addToolbarButton(
-            translate('OpenLP.SlideController', 'Next Slide'),
+            u'Next Slide',
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next.'),
             self.onSlideSelectedNext,
@@ -685,13 +689,11 @@ class SlideController(Controller):
             self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
             self.mediabar.setVisible(True)
-            self.previousItem.setVisible(False)
-            self.nextItem.setVisible(False)
+            self.toolbar.makeWidgetsInvisible(self.nextPreviousList)
         else:
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
-            self.previousItem.setVisible(True)
-            self.nextItem.setVisible(True)
+            self.toolbar.makeWidgetsVisible(self.nextPreviousList)
         self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
@@ -707,13 +709,11 @@ class SlideController(Controller):
             self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
             self.mediabar.setVisible(True)
-            self.previousItem.setVisible(False)
-            self.nextItem.setVisible(False)
+            self.toolbar.makeWidgetsInvisible(self.nextPreviousList)
         if not item.is_media():
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
-            self.previousItem.setVisible(True)
-            self.nextItem.setVisible(True)
+            self.toolbar.makeWidgetsVisible(self.nextPreviousList)
         self.toolbar.show()
 
     def refreshServiceItem(self):

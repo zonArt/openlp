@@ -80,6 +80,8 @@ class Display(QtGui.QGraphicsView):
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
             self.webView.settings().setAttribute(
                 QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        QtCore.QObject.connect(self.webView,
+            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -90,6 +92,13 @@ class Display(QtGui.QGraphicsView):
     def resizeEvent(self, ev):
         self.webView.setGeometry(0, 0,
             self.width(), self.height())
+
+    def isWebLoaded(self):
+        """
+        Called by webView event to show display is fully loaded
+        """
+        log.debug(u'Webloaded')
+        self.webLoaded = True
 
 
 class MainDisplay(Display):

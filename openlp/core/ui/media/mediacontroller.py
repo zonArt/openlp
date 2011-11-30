@@ -87,9 +87,14 @@ class MediaController(object):
     def set_active_players(self):
         playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
+        if len(playerSettings) == 0:
+            playerSettings = u'webkit'
         savedPlayers = playerSettings.split(u',')
-        for player in savedPlayers:
-            self.mediaPlayers[player].isActive = True
+        for player in self.mediaPlayers.keys():
+            if player in savedPlayers:
+                self.mediaPlayers[player].isActive = True
+            else:
+                self.mediaPlayers[player].isActive = False
 
     def register_controllers(self, controller):
         """
@@ -255,6 +260,8 @@ class MediaController(object):
         """
         # clean up possible running old media files
         self.finalise()
+        # update player status
+        self.set_active_players()
         display.hasAudio = True
         if not self.withLivePreview and \
             display == self.parent.liveController.previewDisplay:
@@ -395,11 +402,11 @@ class MediaController(object):
                 if not self.curDisplayMediaPlayer[display].play(display):
                     return False
                 if status:
+                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
+                    self.curDisplayMediaPlayer[display].set_visible(display, True)
                     if controller.isLive:
                         if controller.hideMenu.defaultAction().isChecked():
                             controller.hideMenu.defaultAction().trigger()
-                    self.curDisplayMediaPlayer[display].set_visible(display, True)
-                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
