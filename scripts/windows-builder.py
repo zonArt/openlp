@@ -233,6 +233,19 @@ def copy_plugins():
                 copy(os.path.join(root, filename),
                     os.path.join(dest_path, filename))
 
+def copy_media_player():
+    print u'Copying media player...'
+    source = os.path.join(source_path, u'core', u'ui', u'media')
+    dest = os.path.join(dist_path, u'core', u'ui', u'media')
+    for root, dirs, files in os.walk(source):
+        for filename in files:
+            if not filename.endswith(u'.pyc'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                copy(os.path.join(root, filename),
+                    os.path.join(dest_path, filename))
+
 def copy_windows_files():
     print u'Copying extra files for Windows...'
     copy(os.path.join(winres_path, u'OpenLP.ico'),
@@ -355,6 +368,7 @@ def main():
     run_pyinstaller()
     write_version_file()
     copy_plugins()
+    copy_media_player()
     if os.path.exists(manual_path):
         run_sphinx()
         run_htmlhelp()
