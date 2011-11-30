@@ -242,7 +242,7 @@ class EasyWorshipSongImport(SongImport):
                 if self.stopImportFlag:
                     break
                 raw_record = db_file.read(record_size)
-                self.fields = self.record_struct.unpack(raw_record)
+                self.fields = self.recordStruct.unpack(raw_record)
                 self.setDefaults()
                 self.title = self.getField(fi_title)
                 # Get remaining fields.
@@ -321,11 +321,11 @@ class EasyWorshipSongImport(SongImport):
         db_file.close()
         self.memoFile.close()
 
-    def find_field(self, field_name):
+    def findField(self, field_name):
         return [i for i, x in enumerate(self.fieldDescs)
             if x.name == field_name][0]
 
-    def set_record_struct(self, field_descs):
+    def setRecordStruct(self, field_descs):
         # Begin with empty field struct list
         fsl = ['>']
         for field_desc in field_descs:
@@ -355,7 +355,7 @@ class EasyWorshipSongImport(SongImport):
         self.recordStruct = struct.Struct(''.join(fsl))
         self.fieldDescs = field_descs
 
-    def get_field(self, field_desc_index):
+    def getField(self, field_desc_index):
         field = self.fields[field_desc_index]
         field_desc = self.fieldDescs[field_desc_index]
         # Return None in case of 'blank' entries
