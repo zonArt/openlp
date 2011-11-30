@@ -26,4 +26,5 @@
 ###############################################################################
 
 hiddenimports = ['openlp.core.ui.media.phononplayer',
+                 'openlp.core.ui.media.vlcplayer',
                  'openlp.core.ui.media.webkitplayer']
