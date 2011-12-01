@@ -87,6 +87,8 @@ class MediaMediaItem(MediaManagerItem):
             self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -232,7 +234,11 @@ class MediaMediaItem(MediaManagerItem):
             'Videos (%s);;Audio (%s);;%s (*)')) % (
             u' '.join(self.plugin.video_extensions_list),
             u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
-        
+
+    def displaySetup(self):
+        self.plugin.mediaController.setup_display( \
+            self.mediaController.previewDisplay)
+
 
     def populateDisplayTypes(self):
         """

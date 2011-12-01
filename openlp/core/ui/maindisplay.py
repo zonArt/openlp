@@ -301,13 +301,6 @@ class MainDisplay(Display):
         # clear the cache
         self.override = {}
 
-    def isWebLoaded(self):
-        """
-        Called by webView event to show display is fully loaded
-        """
-        log.debug(u'Webloaded')
-        self.webLoaded = True
-
     def preview(self):
         """
         Generates a preview of the image displayed.

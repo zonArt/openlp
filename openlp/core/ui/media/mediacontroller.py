@@ -329,24 +329,20 @@ class MediaController(object):
             display.frame.evaluateJavaScript(u'show_video( \
             "setBackBoard", null, null, null,"visible");')
         # now start playing
-        if self.video_play([controller], False):
-            self.video_pause([controller])
-            self.video_seek([controller, [0]])
-            if controller.isLive and \
-                (QtCore.QSettings().value(u'general/auto unblank',
-                QtCore.QVariant(False)).toBool() or \
-                controller.media_info.is_background == True) or \
-                controller.isLive == False:
-                self.video_play([controller])
-            self.set_controls_visible(controller, True)
-            log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
-            return True
-        else:
-            critical_error_message_box(
-                translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem',
-                'Unsupported File')))
-        return False
+        if controller.isLive and \
+            (QtCore.QSettings().value(u'general/auto unblank',
+            QtCore.QVariant(False)).toBool() or \
+            controller.media_info.is_background == True) or \
+            controller.isLive == False:
+            if not self.video_play([controller]):
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                    unicode(translate('MediaPlugin.MediaItem',
+                    'Unsupported File')))
+                return False
+        self.set_controls_visible(controller, True)
+        log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
+        return True
 
     def check_file_type(self, controller, display):
         """
