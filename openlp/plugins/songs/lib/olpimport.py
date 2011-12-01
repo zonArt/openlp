@@ -124,7 +124,7 @@ class OpenLPSongImport(SongImport):
         if has_media_files:
             source_media_files_table = source_meta.tables[u'media_files']
             source_media_files_songs_table = \
-                source_meta.tables[u'media_files_songs']
+                source_meta.tables.get(u'media_files_songs')
             try:
                 class_mapper(OldMediaFile)
             except UnmappedClassError:
@@ -137,8 +137,13 @@ class OpenLPSongImport(SongImport):
             secondary=source_songs_topics_table)
         }
         if has_media_files:
-            song_props['media_files'] = relation(OldMediaFile, backref='songs',
-                secondary=source_media_files_songs_table)
+            if source_media_files_songs_table:
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs',
+                    secondary=source_media_files_songs_table)
+            else:
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs')
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
