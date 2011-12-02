@@ -297,11 +297,12 @@ class WebkitPlayer(MediaPlayer):
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        if display.hasAudio:
+        if display.hasAudio and not controller.media_info.is_background:
             volume = controller.media_info.volume
             vol = float(volume) / float(100)
         else:
             vol = 0
+        print vol
         path = controller.media_info.file_info.absoluteFilePath()
         if controller.media_info.is_background:
             loop = u'true'
