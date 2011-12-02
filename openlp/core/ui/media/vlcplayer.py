@@ -30,9 +30,8 @@ import sys, os
 from datetime import datetime
 try:
     import vlc
-    if vlc.get_default_instance():
-        vlc_available = True
-except:
+    vlc_available = bool(vlc.get_default_instance())
+except ImportError:
     vlc_available = False
 
 from PyQt4 import QtCore, QtGui
@@ -90,10 +89,14 @@ class VlcPlayer(MediaPlayer):
     def setup(self, display):
         display.vlcWidget = QtGui.QFrame(display)
         # creating a basic vlc instance
-        if display.hasAudio:
-            display.vlcInstance = vlc.Instance()
-        else:
-            display.vlcInstance = vlc.Instance('--no-audio')
+        command_line_options = u'--no-video-title-show'
+        if not display.hasAudio:
+            command_line_options += u' --no-audio --no-video-title-show'
+        if QtCore.QSettings().value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool() and \
+            display.controller.isLive:
+            command_line_options += u' --mouse-hide-timeout=0'
+        display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
@@ -135,14 +138,14 @@ class VlcPlayer(MediaPlayer):
     def media_state_wait(self, display, mediaState):
         """
         Wait for the video to change its state
-        Wait no longer than 5 seconds.
+        Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
         start = datetime.now()
         while not mediaState == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
             Receiver.send_message(u'openlp_process_events')
-            if (datetime.now() - start).seconds > 50:
+            if (datetime.now() - start).seconds > 60:
                 return False
         return True
 
@@ -157,10 +160,10 @@ class VlcPlayer(MediaPlayer):
         display.vlcMediaPlayer.play()
         if self.media_state_wait(display, vlc.State.Playing):
             if start_time > 0:
-                self.seek(display, controller.media_info.start_time*1000)
+                self.seek(display, controller.media_info.start_time * 1000)
             controller.media_info.length = \
-                int(display.vlcMediaPlayer.get_media().get_duration()/1000)
-            controller.seekSlider.setMaximum(controller.media_info.length*1000)
+                int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+            controller.seekSlider.setMaximum(controller.media_info.length * 1000)
             self.state = MediaState.Playing
             display.vlcWidget.raise_()
             return True
@@ -199,7 +202,7 @@ class VlcPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.end_time > 0:
             if display.vlcMediaPlayer.get_time() > \
-                controller.media_info.end_time*1000:
+                controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
