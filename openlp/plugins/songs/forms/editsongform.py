@@ -278,13 +278,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if len(verse_tag) > 1:
                     index = VerseType.from_translated_string(verse_tag)
                     if index is None:
-                        index = VerseType.from_string(verse_tag)
+                        index = VerseType.from_string(verse_tag, None)
                     else:
                         verse_tags_translated = True
                 if index is None:
                     index = VerseType.from_tag(verse_tag)
-                if index is None:
-                    index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
                 if verse[0][u'label'] == u'':
                     verse[0][u'label'] = u'1'
@@ -308,7 +306,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for verse_def in self.song.verse_order.split():
                 verse_index = None
                 if verse_tags_translated:
-                    verse_index = VerseType.from_translated_tag(verse_def[0])
+                    verse_index = VerseType.from_translated_tag(verse_def[0],
+                        None)
                 if verse_index is None:
                     verse_index = VerseType.from_tag(verse_def[0])
                 verse_tag = VerseType.TranslatedTags[verse_index].upper()
@@ -608,14 +607,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             order_names = unicode(self.verseOrderEdit.text()).split()
             for item in order_names:
                 if len(item) == 1:
-                    verse_index = VerseType.from_translated_tag(item)
+                    verse_index = VerseType.from_translated_tag(item, None)
                     if verse_index is not None:
                         order.append(VerseType.Tags[verse_index] + u'1')
                     else:
                         # it matches no verses anyway
                         order.append(u'')
                 else:
-                    verse_index = VerseType.from_translated_tag(item[0])
+                    verse_index = VerseType.from_translated_tag(item[0], None)
                     if verse_index is None:
                         # it matches no verses anyway
                         order.append(u'')
