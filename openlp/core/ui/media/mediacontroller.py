@@ -354,7 +354,7 @@ class MediaController(object):
         if QtCore.QSettings().value(u'media/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             if self.overridenPlayer != '':
-            usedPlayers = [self.overridenPlayer]
+                usedPlayers = [self.overridenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \
                 controller.media_info.file_info.suffix().toLower()
