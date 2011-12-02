@@ -205,3 +205,4 @@ class VlcPlayer(MediaPlayer):
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition( \
                 display.vlcMediaPlayer.get_time())
+
