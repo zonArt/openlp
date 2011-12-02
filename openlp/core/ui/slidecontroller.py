@@ -582,14 +582,14 @@ class SlideController(Controller):
 
     def _process_queue(self):
         """
-        Process the service item request queue.  The key presses can arrive 
-        faster than the processing so implement a FIFO queue. 
+        Process the service item request queue.  The key presses can arrive
+        faster than the processing so implement a FIFO queue.
         """
         if len(self.keypress_queue):
             while len(self.keypress_queue) and not self.keypress_loop:
-                self.keypress_loop = True                
+                self.keypress_loop = True
                 if self.keypress_queue.popleft() == u'previous':
-                    Receiver.send_message('servicemanager_previous_item')                    
+                    Receiver.send_message('servicemanager_previous_item')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
