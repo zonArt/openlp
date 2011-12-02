@@ -25,10 +25,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 import os
+import logging
 import time
 import copy
+from collections import deque
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -114,6 +115,8 @@ class SlideController(Controller):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
+            self.keypress_queue = deque() 
+            self.keypress_loop = False           
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -565,12 +568,34 @@ class SlideController(Controller):
         self.mediaController.video_stop([self])
 
     def servicePrevious(self):
-        time.sleep(0.1)
-        Receiver.send_message('servicemanager_previous_item')
+        """
+        Live event to select the previous service item from the service manager.
+        """
+        self.keypress_queue.append(u'previous')
+        self._process_queue()
+        
 
     def serviceNext(self):
-        time.sleep(0.1)
-        Receiver.send_message('servicemanager_next_item')
+        """
+        Live event to select the next service item from the service manager.
+        """
+        self.keypress_queue.append(u'next')
+        self._process_queue()
+        
+    def _process_queue(self):
+        """
+        Process the service item request queue.  The key presses can arrive 
+        faster than the processing so implement a FIFO queue. 
+        """
+        if len(self.keypress_queue):
+            while len(self.keypress_queue) and not self.keypress_loop:
+                self.keypress_loop = True                
+                if self.keypress_queue.popleft() == u'previous':
+                    Receiver.send_message('servicemanager_previous_item')                    
+                else:
+                    Receiver.send_message('servicemanager_next_item')
+            self.keypress_loop = False
+     
 
     def screenSizeChanged(self):
         """
@@ -773,7 +798,7 @@ class SlideController(Controller):
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         old_item = self.serviceItem
-        # take a copy not a link to the servicemeanager copy.
+        # take a copy not a link to the servicemanager copy.
         self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(
             ItemCapabilities.ProvidesOwnDisplay):
