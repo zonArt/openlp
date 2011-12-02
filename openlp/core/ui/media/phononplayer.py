@@ -29,7 +29,6 @@ import logging
 import mimetypes
 from datetime import datetime
 
-from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver

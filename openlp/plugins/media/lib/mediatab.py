@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import UiStrings
 
 class MediaTab(SettingsTab):
     """

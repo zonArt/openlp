@@ -65,7 +65,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.downloadCanceled = False
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
-        QtCore.QObject.connect(self.cancelButton,QtCore.SIGNAL('clicked()'),
+        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
         QtCore.QObject.connect(self.noInternetFinishButton,
             QtCore.SIGNAL('clicked()'), self.onNoInternetFinishButtonClicked)
