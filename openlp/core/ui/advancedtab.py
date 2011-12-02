@@ -243,7 +243,8 @@ class AdvancedTab(SettingsTab):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
             UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            UiStrings.OpenFile, '', file_filters)
+            translate('OpenLP.AdvancedTab', 'Open File'), '',
+            file_filters)
         if filename:
             self.defaultFileEdit.setText(filename)
         self.defaultFileEdit.setFocus()
