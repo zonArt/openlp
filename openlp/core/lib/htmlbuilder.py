@@ -53,8 +53,8 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: %spx;
-    height: %spx;
+    width: 100%%;
+    height: 100%%;
 }
 #black {
     z-index: 8;
@@ -66,12 +66,6 @@ body {
 }
 #image {
     z-index: 2;
-}
-#video1 {
-    z-index: 3;
-}
-#video2 {
-    z-index: 3;
 }
 %s
 #footer {
@@ -90,90 +84,9 @@ sup {
 </style>
 <script>
     var timer = null;
-    var video_timer = null;
-    var current_video = '1';
     var transition = %s;
-
-    function show_video(state, path, volume, loop){
-        // Note, the preferred method for looping would be to use the
-        // video tag loop attribute.
-        // But QtWebKit doesn't support this. Neither does it support the
-        // onended event, hence the setInterval()
-        // In addition, setting the currentTime attribute to zero to restart
-        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops
-        // slightly short of vid.duration and vid.ended is intermittent!
-        //
-        // Note, currently the background may go black between loops. Not
-        // desirable. Need to investigate using two <video>'s, and hiding/
-        // preloading one, and toggle between the two when looping.
-
-        if(current_video=='1'){
-            var vid = document.getElementById('video1');
-            var vid2 = document.getElementById('video2');
-        } else {
-            var vid = document.getElementById('video2');
-            var vid2 = document.getElementById('video1');
-        }
-        if(volume != null){
-            vid.volume = volume;
-            vid2.volume = volume;
-        }
-        switch(state){
-            case 'init':
-                vid.src = 'file:///' + path;
-                vid2.src = 'file:///' + path;
-                if(loop == null) loop = false;
-                vid.looping = loop;
-                vid2.looping = loop;
-                vid.load();
-                break;
-            case 'load':
-                vid2.style.visibility = 'hidden';
-                vid2.load();
-                break;
-            case 'play':
-                vid.play();
-                vid.style.visibility = 'visible';
-                if(vid.looping){
-                    video_timer = setInterval(
-                        function() {
-                            show_video('poll');
-                        }, 200);
-                }
-                break;
-            case 'pause':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                break;
-            case 'stop':
-                show_video('pause');
-                vid.style.visibility = 'hidden';
-                break;
-            case 'poll':
-                if(vid.ended||vid.currentTime+0.2>vid.duration)
-                    show_video('swap');
-                break;
-            case 'swap':
-                show_video('pause');
-                if(current_video=='1')
-                    current_video = '2';
-                else
-                    current_video = '1';
-                show_video('play');
-                show_video('load');
-                break;
-            case 'close':
-                show_video('stop');
-                vid.src = '';
-                vid2.src = '';
-                break;
-        }
-    }
     %s
+
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
@@ -186,18 +99,14 @@ sup {
     function show_blank(state){
         var black = 'none';
         var lyrics = '';
-        var pause = false;
         switch(state){
             case 'theme':
                 lyrics = 'hidden';
-                pause = true;
                 break;
             case 'black':
                 black = 'block';
-                pause = true;
                 break;
             case 'desktop':
-                pause = true;
                 break;
         }
         document.getElementById('black').style.display = black;
@@ -210,13 +119,6 @@ sup {
         if(shadow!=null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
-        var vid = document.getElementById('video');
-        if(vid.src != ''){
-            if(pause)
-                vid.pause();
-            else
-                vid.play();
-        }
     }
 
     function show_footer(footertext){
@@ -277,10 +179,6 @@ sup {
 <body>
 <img id="bgimage" class="size" %s />
 <img id="image" class="size" %s />
-<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-</video>
-<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-</video>
 %s
 %s
 <div id="footer" class="footer"></div>
@@ -336,7 +234,6 @@ def build_html(item, screen, islive, background, image=None,
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
-        width, height,
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
@@ -609,4 +506,3 @@ def build_footer_css(item, height):
         item.footer.width(), theme.font_footer_name,
         theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
-
