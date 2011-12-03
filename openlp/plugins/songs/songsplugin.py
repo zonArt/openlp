@@ -261,6 +261,9 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
+        # Remove temporary songs
+        self.manager.delete_all_objects(Song, Song.temporary == u'Y')
+        # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)

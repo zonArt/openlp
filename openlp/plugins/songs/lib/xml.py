@@ -372,13 +372,13 @@ class OpenLyrics(object):
         # Formatting tags are new in OpenLyrics 0.8
         if float(song_xml.get(u'version')) > 0.7:
             self._process_formatting_tags(song_xml, parse_and_not_save)
-        if parse_and_not_save:
-            return
         song = Song()
         # Values will be set when cleaning the song.
         song.search_lyrics = u''
         song.verse_order = u''
         song.search_title = u''
+        if parse_and_not_save:
+            song.temporary = u'Y'
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)

@@ -34,7 +34,9 @@ from sqlalchemy.sql.expression import func
 from migrate import changeset
 from migrate.changeset.constraint import ForeignKeyConstraint
 
-__version__ = 2
+from openlp.plugins.songs.lib.db import Song
+
+__version__ = 3
 
 def upgrade_setup(metadata):
     """
@@ -85,5 +87,14 @@ def upgrade_2(session, metadata, tables):
     Column(u'create_date', types.DateTime(), default=func.now())\
         .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
+        .create(table=tables[u'songs'])
+        
+def upgrade_3(session, metadata, tables):
+    """
+    Version 3 upgrade.
+
+    This upgrade adds a temporary song flag to the songs table
+    """
+    Column(u'temporary', types.Unicode(1), default=u'N')\
         .create(table=tables[u'songs'])
 

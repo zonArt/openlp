@@ -270,6 +270,9 @@ class SongMediaItem(MediaManagerItem):
         searchresults.sort(
             cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
+            # Do not display temporary songs
+            if song.temporary == u'Y':
+                break
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
@@ -286,6 +289,9 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
+                # Do not display temporary songs
+                if song.temporary == u'Y':
+                    break
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -561,7 +567,8 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextButtonClick()
         else:
             # Make sure we temporary import formatting tags.
-            self.openLyrics.xml_to_song(item.xml_version, True)
+            song = self.openLyrics.xml_to_song(item.xml_version, True)
+            #editId = song.id
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',

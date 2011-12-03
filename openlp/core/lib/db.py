@@ -361,6 +361,10 @@ class Manager(object):
 
         ``object_class``
             The type of object to delete
+            
+        ``filter_clause``
+            The filter governing selection of objects to return. Defaults to
+            None.            
         """
         try:
             query = self.session.query(object_class)
