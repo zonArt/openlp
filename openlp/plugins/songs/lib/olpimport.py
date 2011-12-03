@@ -121,6 +121,7 @@ class OpenLPSongImport(SongImport):
         source_topics_table = source_meta.tables[u'topics']
         source_authors_songs_table = source_meta.tables[u'authors_songs']
         source_songs_topics_table = source_meta.tables[u'songs_topics']
+        source_media_files_songs_table = None
         if has_media_files:
             source_media_files_table = source_meta.tables[u'media_files']
             source_media_files_songs_table = \
@@ -137,7 +138,7 @@ class OpenLPSongImport(SongImport):
             secondary=source_songs_topics_table)
         }
         if has_media_files:
-            if source_media_files_songs_table:
+            if source_media_files_songs_table is not None:
                 song_props['media_files'] = relation(OldMediaFile,
                     backref='songs',
                     secondary=source_media_files_songs_table)
