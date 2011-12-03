@@ -54,6 +54,9 @@ class SongUsagePlugin(Plugin):
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
         self.songUsageActive = False
 
+    def checkPreConditions(self):
+        return self.manager.session is not None
+
     def addToolsMenuItem(self, tools_menu):
         """
         Give the SongUsage plugin the opportunity to add items to the

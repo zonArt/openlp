@@ -182,6 +182,7 @@ class Manager(object):
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
+        self.session = None
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
