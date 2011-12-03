@@ -65,7 +65,7 @@ class SongsPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def checkPreConditions(self):
-        return not self.manager.session == None
+        return self.manager.session is not None
 
     def initialise(self):
         log.info(u'Songs Initialising')
