@@ -29,9 +29,6 @@ from PyQt4 import QtGui, QtCore
 
 from themelayoutdialog import Ui_ThemeLayoutDialog
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
-
 class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
     """
     The exception dialog

@@ -26,7 +26,6 @@
 ###############################################################################
 
 import logging
-import os
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
