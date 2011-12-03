@@ -76,7 +76,7 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, self.imageManager, False)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
 
     def update_display(self):
@@ -87,7 +87,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
@@ -250,7 +250,12 @@ class Renderer(object):
                         # render the first virtual slide.
                         text_contains_break = u'[---]' in text
                         if text_contains_break:
-                            text_to_render, text = text.split(u'\n[---]\n', 1)
+                            try:
+                                text_to_render, text = \
+                                    text.split(u'\n[---]\n', 1)
+                            except:
+                                text_to_render = text.split(u'\n[---]\n')[0]
+                                text = u''
                         else:
                             text_to_render = text
                             text = u''

@@ -42,6 +42,7 @@ from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
+from openlp.core.ui.media import MediaController
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version, delete_file
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -557,6 +558,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager = PluginManager(pluginpath)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
+        self.mediaController = MediaController(self)
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -644,6 +646,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginHelpers[u'toolbox'] = self.mediaDockManager
         self.pluginHelpers[u'pluginmanager'] = self.pluginManager
         self.pluginHelpers[u'formparent'] = self
+        self.pluginHelpers[u'mediacontroller'] = self.mediaController
         self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here

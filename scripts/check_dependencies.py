@@ -73,6 +73,7 @@ MODULES = [
     'BeautifulSoup',
     'mako',
     'migrate',
+    'uno',
 ]
 
 

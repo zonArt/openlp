@@ -48,10 +48,10 @@ Inno Setup 5
 
 Sphinx
     This is used to build the documentation.  The documentation trunk must be at
-    the same directory level as Openlp trunk and named "documentation"
+    the same directory level as Openlp trunk and named "documentation".
 
 HTML Help Workshop
-    This is used to create the help file
+    This is used to create the help file.
 
 PyInstaller
     PyInstaller should be a checkout of revision 1470 of trunk, and in a
@@ -65,10 +65,6 @@ PyInstaller
 
         http://svn.pyinstaller.org/trunk
 
-    Then you need to copy the two hook-*.py files from the "pyinstaller"
-    subdirectory in OpenLP's "resources" directory into PyInstaller's
-    "PyInstaller/hooks" directory.
-
 Bazaar
     You need the command line "bzr" client installed.
 
@@ -79,7 +75,7 @@ OpenLP
 
 Visual C++ 2008 Express Edition
     This is to build pptviewlib.dll, the library for controlling the
-    PowerPointViewer
+    PowerPointViewer.
 
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
@@ -88,15 +84,25 @@ psvince.dll
     This dll is used during the actual install of OpenLP to check if OpenLP is
     running on the users machine prior to the setup.  If OpenLP is running,
     the install will fail.  The dll can be obtained from here:
-    http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+        
+        http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+    
+    The dll is presently included in .\\resources\\windows
 
 Mako
     Mako Templates for Python.  This package is required for building the
     remote plugin.  It can be installed by going to your
     python_directory\scripts\.. and running "easy_install Mako".  If you do not
     have easy_install, the Mako package can be obtained here:
-    http://www.makotemplates.org/download.html
-
+        
+        http://www.makotemplates.org/download.html
+         
+Sqlalchemy Migrate
+    Required for the data-bases used in OpenLP.  The package can be
+    obtained here:
+    
+        http://code.google.com/p/sqlalchemy-migrate/
+    
 """
 
 import os
@@ -149,6 +155,7 @@ build_path = os.path.join(branch_path, u'build')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
+hooks_path = os.path.join(branch_path , u'resources', u'pyinstaller')
 
 def update_code():
     os.chdir(branch_path)
@@ -173,7 +180,8 @@ def run_pyinstaller():
     pyinstaller = Popen((python_exe, pyi_build,
         u'--noconfirm',
         u'--windowed',
-        u'--noupx', 
+        u'--noupx',
+        u'--additional-hooks-dir', hooks_path,
         u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,
@@ -216,6 +224,19 @@ def copy_plugins():
     print u'Copying plugins...'
     source = os.path.join(source_path, u'plugins')
     dest = os.path.join(dist_path, u'plugins')
+    for root, dirs, files in os.walk(source):
+        for filename in files:
+            if not filename.endswith(u'.pyc'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                copy(os.path.join(root, filename),
+                    os.path.join(dest_path, filename))
+
+def copy_media_player():
+    print u'Copying media player...'
+    source = os.path.join(source_path, u'core', u'ui', u'media')
+    dest = os.path.join(dist_path, u'core', u'ui', u'media')
     for root, dirs, files in os.walk(source):
         for filename in files:
             if not filename.endswith(u'.pyc'):
@@ -347,6 +368,7 @@ def main():
     run_pyinstaller()
     write_version_file()
     copy_plugins()
+    copy_media_player()
     if os.path.exists(manual_path):
         run_sphinx()
         run_htmlhelp()

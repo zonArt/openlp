@@ -71,11 +71,24 @@ JAVASCRIPT = """
 
     function update_css(align, font, size, color, bgcolor){
         var text = document.getElementById('alert');
-        text.style.verticalAlign = align;
         text.style.fontSize = size + "pt";
         text.style.fontFamily = font;
         text.style.color = color;
         text.style.backgroundColor = bgcolor;
+        switch(align)
+        {
+            case 'top':
+                text.style.top = '0px';
+                break;
+            case 'middle':
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                    + 'px';
+                break;
+            case 'bottom':
+                text.style.top = (window.innerHeight - text.clientHeight)
+                    + 'px';
+                break;
+        }
     }
 """
 CSS = """
