@@ -87,13 +87,13 @@ def upgrade_2(session, metadata, tables):
         .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
         .create(table=tables[u'songs'])
-        
+
 def upgrade_3(session, metadata, tables):
     """
     Version 3 upgrade.
 
     This upgrade adds a temporary song flag to the songs table
     """
-    Column(u'temporary', types.Unicode(1), default=u'N')\
+    Column(u'temporary', types.Boolean(), default=False)\
         .create(table=tables[u'songs'])
 

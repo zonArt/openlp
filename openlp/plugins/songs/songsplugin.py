@@ -265,7 +265,7 @@ class SongsPlugin(Plugin):
         """
         log.info(u'Songs Finalising')
         # Remove temporary songs
-        self.manager.delete_all_objects(Song, Song.temporary == u'Y')
+        self.manager.delete_all_objects(Song, Song.temporary == True)
         # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)

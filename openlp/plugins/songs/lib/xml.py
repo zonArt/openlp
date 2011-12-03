@@ -378,7 +378,7 @@ class OpenLyrics(object):
         song.verse_order = u''
         song.search_title = u''
         if parse_and_not_save:
-            song.temporary = u'Y'
+            song.temporary = True
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)

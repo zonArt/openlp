@@ -200,7 +200,7 @@ def init_schema(url):
         Column(u'create_date', types.DateTime(), default=func.now()),
         Column(u'last_modified', types.DateTime(), default=func.now(),
             onupdate=func.now()),
-        Column(u'temporary', types.Unicode(1), default=u'N')
+        Column(u'temporary', types.Boolean(), default=False)
     )
 
     # Definition of the "topics" table

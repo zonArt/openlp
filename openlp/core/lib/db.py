@@ -202,7 +202,6 @@ class Manager(object):
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
-            print db_ver, up_ver, db_ver > up_ver
             if db_ver > up_ver:
                 print "hello"
                 critical_error_message_box(

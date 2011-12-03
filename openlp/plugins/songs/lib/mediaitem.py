@@ -271,7 +271,7 @@ class SongMediaItem(MediaManagerItem):
             cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
             # Do not display temporary songs
-            if song.temporary == u'Y':
+            if song.temporary:
                 continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
@@ -290,7 +290,7 @@ class SongMediaItem(MediaManagerItem):
         for author in searchresults:
             for song in author.songs:
                 # Do not display temporary songs
-                if song.temporary == u'Y':
+                if song.temporary:
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
