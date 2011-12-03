@@ -188,7 +188,7 @@ class ActionList(object):
     actions or categories.
     """
     instance = None
-    action_map = {}
+    shortcut_map = {}
 
     def __init__(self):
         self.categories = CategoryList()
@@ -241,23 +241,23 @@ class ActionList(object):
         # alternate shortcut becomes the primary shortcut after removing the
         # (initial) primary shortcut due to confllicts.
         if len(shortcuts) == 2:
-            existing_actions = ActionList.action_map.get(shortcuts[1], [])
+            existing_actions = ActionList.shortcut_map.get(shortcuts[1], [])
             # Check for conflicts with other actions considering the shortcut
             # context.
             if self._shortcut_available(existing_actions, action):
-                actions = ActionList.action_map.get(shortcuts[1], [])
+                actions = ActionList.shortcut_map.get(shortcuts[1], [])
                 actions.append(action)
-                ActionList.action_map[shortcuts[1]] = actions
+                ActionList.shortcut_map[shortcuts[1]] = actions
             else:
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
-        existing_actions = ActionList.action_map.get(shortcuts[0], [])
+        existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
         # Check for conflicts with other actions considering the shortcut
         # context.
         if self._shortcut_available(existing_actions, action):
-            actions = ActionList.action_map.get(shortcuts[0], [])
+            actions = ActionList.shortcut_map.get(shortcuts[0], [])
             actions.append(action)
-            ActionList.action_map[shortcuts[0]] = actions
+            ActionList.shortcut_map[shortcuts[0]] = actions
         else:
             shortcuts.remove(shortcuts[0])
         action.setShortcuts(
@@ -269,7 +269,7 @@ class ActionList(object):
         automatically removed.
 
         ``action``
-            The QAction object to be removed.
+            The ``QAction`` object to be removed.
 
         ``category``
             The name (unicode string) of the category, which contains the
