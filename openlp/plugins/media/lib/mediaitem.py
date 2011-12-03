@@ -30,7 +30,6 @@ import os
 import locale
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.phonon import Phonon
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver, MediaType, \
@@ -139,7 +138,8 @@ class MediaMediaItem(MediaManagerItem):
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
         QtCore.QObject.connect(self.displayTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overridePlayerChanged)
+            QtCore.SIGNAL(u'currentIndexChanged (int)'),
+            self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
         Receiver.send_message(u'media_override_player', \
