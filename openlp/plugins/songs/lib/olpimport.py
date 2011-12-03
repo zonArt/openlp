@@ -39,7 +39,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from openlp.plugins.songs.lib.db import Author, Book, MediaFile, Song, Topic
 from songimport import SongImport
 
 log = logging.getLogger(__name__)

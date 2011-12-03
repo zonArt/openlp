@@ -31,7 +31,6 @@ backend for the Songs plugin
 
 from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
-from migrate import changeset
 from migrate.changeset.constraint import ForeignKeyConstraint
 
 from openlp.plugins.songs.lib.db import Song
