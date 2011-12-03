@@ -42,6 +42,13 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
+    @staticmethod
+    def get_instance():
+        """
+        Obtain a single instance of class.
+        """
+        return PluginManager.instance
+
     def __init__(self, plugin_dir):
         """
         The constructor for the plugin manager. Passes the controllers on to
@@ -51,6 +58,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
+        PluginManager.instance = self
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)
@@ -150,6 +158,8 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.settings_tab = plugin.getSettingsTab(settings_form)
+            else:
+                plugin.settings_tab = None
         settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):

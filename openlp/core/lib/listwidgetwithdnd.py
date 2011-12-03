@@ -104,7 +104,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
                 elif os.path.isdir(localFile):
                     listing = os.listdir(localFile)
                     for file in listing:
-                        files.append(os.path.join(localFile,file))
-            Receiver.send_message(u'%s_dnd' % self.mimeDataText,files)
+                        files.append(os.path.join(localFile, file))
+            Receiver.send_message(u'%s_dnd' % self.mimeDataText, files)
         else:
             event.ignore()

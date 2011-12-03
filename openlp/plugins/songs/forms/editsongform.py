@@ -278,13 +278,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if len(verse_tag) > 1:
                     index = VerseType.from_translated_string(verse_tag)
                     if index is None:
-                        index = VerseType.from_string(verse_tag)
+                        index = VerseType.from_string(verse_tag, None)
                     else:
                         verse_tags_translated = True
                 if index is None:
                     index = VerseType.from_tag(verse_tag)
-                if index is None:
-                    index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
                 if verse[0][u'label'] == u'':
                     verse[0][u'label'] = u'1'
@@ -308,7 +306,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for verse_def in self.song.verse_order.split():
                 verse_index = None
                 if verse_tags_translated:
-                    verse_index = VerseType.from_translated_tag(verse_def[0])
+                    verse_index = VerseType.from_translated_tag(verse_def[0],
+                        None)
                 if verse_index is None:
                     verse_index = VerseType.from_tag(verse_def[0])
                 verse_tag = VerseType.TranslatedTags[verse_index].upper()
@@ -331,8 +330,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.topicsListView.addItem(topic_name)
         self.audioListWidget.clear()
         for media in self.song.media_files:
-            media_file = QtGui.QListWidgetItem(os.path.split(media.file_name)[1])
-            media_file.setData(QtCore.Qt.UserRole, QtCore.QVariant(media.file_name))
+            media_file = QtGui.QListWidgetItem(
+                os.path.split(media.file_name)[1])
+            media_file.setData(QtCore.Qt.UserRole,
+                QtCore.QVariant(media.file_name))
             self.audioListWidget.addItem(media_file)
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # Hide or show the preview button.
@@ -606,14 +607,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             order_names = unicode(self.verseOrderEdit.text()).split()
             for item in order_names:
                 if len(item) == 1:
-                    verse_index = VerseType.from_translated_tag(item)
+                    verse_index = VerseType.from_translated_tag(item, None)
                     if verse_index is not None:
                         order.append(VerseType.Tags[verse_index] + u'1')
                     else:
                         # it matches no verses anyway
                         order.append(u'')
                 else:
-                    verse_index = VerseType.from_translated_tag(item[0])
+                    verse_index = VerseType.from_translated_tag(item[0], None)
                     if verse_index is None:
                         # it matches no verses anyway
                         order.append(u'')
@@ -721,7 +722,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         if self.mediaForm.exec_():
             for filename in self.mediaForm.getSelectedFiles():
-                item = QtGui.QListWidgetItem(os.path.split(unicode(filename))[1])
+                item = QtGui.QListWidgetItem(
+                    os.path.split(unicode(filename))[1])
                 item.setData(QtCore.Qt.UserRole, filename)
                 self.audioListWidget.addItem(item)
 
@@ -876,7 +878,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     os.remove(audio)
                 except:
                     log.exception('Could not remove file: %s', audio)
-                    pass
         if not files:
             try:
                 os.rmdir(save_path)

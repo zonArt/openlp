@@ -419,8 +419,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
-            new_song_id = self.openLyrics.xml_to_song(song_xml)
-            new_song = self.plugin.manager.get_object(Song, new_song_id)
+            new_song = self.openLyrics.xml_to_song(song_xml)
             new_song.title = u'%s <%s>' % (new_song.title,
                 translate('SongsPlugin.MediaItem', 'copy',
                 'For song cloning'))
@@ -458,7 +457,7 @@ class SongMediaItem(MediaManagerItem):
                         verse_index = \
                             VerseType.from_translated_string(verse_tag)
                         if verse_index is None:
-                            verse_index = VerseType.from_string(verse_tag)
+                            verse_index = VerseType.from_string(verse_tag, None)
                     if verse_index is None:
                         verse_index = VerseType.from_tag(verse_tag)
                     verse_tag = VerseType.TranslatedTags[verse_index].upper()
@@ -480,8 +479,6 @@ class SongMediaItem(MediaManagerItem):
                             else:
                                 verse_index = VerseType.from_tag(
                                     verse[0][u'type'])
-                            if verse_index is None:
-                                verse_index = VerseType.Other
                             verse_tag = VerseType.TranslatedTags[verse_index]
                             verse_def = u'%s%s' % (verse_tag,
                                 verse[0][u'label'])

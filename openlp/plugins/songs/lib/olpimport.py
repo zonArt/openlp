@@ -39,7 +39,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from openlp.plugins.songs.lib.db import Author, Book, MediaFile, Song, Topic
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -124,7 +124,7 @@ class OpenLPSongImport(SongImport):
         if has_media_files:
             source_media_files_table = source_meta.tables[u'media_files']
             source_media_files_songs_table = \
-                source_meta.tables[u'media_files_songs']
+                source_meta.tables.get(u'media_files_songs')
             try:
                 class_mapper(OldMediaFile)
             except UnmappedClassError:
@@ -137,8 +137,13 @@ class OpenLPSongImport(SongImport):
             secondary=source_songs_topics_table)
         }
         if has_media_files:
-            song_props['media_files'] = relation(OldMediaFile, backref='songs',
-                secondary=source_media_files_songs_table)
+            if source_media_files_songs_table:
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs',
+                    secondary=source_media_files_songs_table)
+            else:
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs')
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:

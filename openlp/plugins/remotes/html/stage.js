@@ -30,10 +30,11 @@ window.OpenLP = {
         $("#notes").html("");
         for (idx in data.results.items) {
           idx = parseInt(idx, 10);
-          if ((data.results.items[idx]["selected"]) &&
-            (data.results.items.length > idx + 1)) {
-            $("#notes").html(data.results.items[idx]["notes"]);
-            OpenLP.nextSong = data.results.items[idx + 1]["title"];
+          if (data.results.items[idx]["selected"]) {
+            $("#notes").html(data.results.items[idx]["notes"].replace(/\n/g, "<br />"));
+            if (data.results.items.length > idx + 1) {
+              OpenLP.nextSong = data.results.items[idx + 1]["title"];
+            }
             break;
           }
         }

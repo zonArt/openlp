@@ -31,7 +31,6 @@ backend for the Songs plugin
 
 from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
-from migrate import changeset
 from migrate.changeset.constraint import ForeignKeyConstraint
 
 __version__ = 2
@@ -68,9 +67,9 @@ def upgrade_1(session, metadata, tables):
     """
     Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
     Column(u'song_id', types.Integer(), default=None)\
-        .create(table=tables[u'media_files'], populate_default=True)
+        .create(table=tables[u'media_files'])
     Column(u'weight', types.Integer(), default=0)\
-        .create(table=tables[u'media_files'], populate_default=True)
+        .create(table=tables[u'media_files'])
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
@@ -83,6 +82,7 @@ def upgrade_2(session, metadata, tables):
     This upgrade adds a create_date and last_modified date to the songs table
     """
     Column(u'create_date', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'], populate_default=True)
+        .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'], populate_default=True)
+        .create(table=tables[u'songs'])
+
