@@ -144,8 +144,9 @@ class OpenLPSongImport(SongImport):
                     secondary=source_media_files_songs_table)
             else:
                 song_props['media_files'] = relation(OldMediaFile,
-                    backref='songs', primaryjoin=source_songs_table.c.id==OldMediaFile.song_id,
-                    foreign_keys=[source_media_files_table.c.song_id])
+                    backref='songs',
+                    primaryjoin=source_songs_table.c.id == \
+                        source_media_files_table.c.song_id)
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
