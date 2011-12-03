@@ -27,12 +27,10 @@
 
 import os
 import logging
-import time
 import copy
 from collections import deque
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
@@ -68,7 +66,8 @@ class Controller(QtGui.QWidget):
         created from within other plugins
         This function is needed to catch the current controller
         """
-        sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
+        sender = self.sender().objectName() if self.sender().objectName() \
+            else self.sender().text()
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 
@@ -573,7 +572,6 @@ class SlideController(Controller):
         """
         self.keypress_queue.append(u'previous')
         self._process_queue()
-        
 
     def serviceNext(self):
         """
@@ -581,21 +579,20 @@ class SlideController(Controller):
         """
         self.keypress_queue.append(u'next')
         self._process_queue()
-        
+
     def _process_queue(self):
         """
-        Process the service item request queue.  The key presses can arrive 
-        faster than the processing so implement a FIFO queue. 
+        Process the service item request queue.  The key presses can arrive
+        faster than the processing so implement a FIFO queue.
         """
         if len(self.keypress_queue):
             while len(self.keypress_queue) and not self.keypress_loop:
-                self.keypress_loop = True                
+                self.keypress_loop = True
                 if self.keypress_queue.popleft() == u'previous':
-                    Receiver.send_message('servicemanager_previous_item')                    
+                    Receiver.send_message('servicemanager_previous_item')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
-     
 
     def screenSizeChanged(self):
         """
@@ -640,11 +637,12 @@ class SlideController(Controller):
             self.previewFrame.height()):
             # We have to take the height as limit.
             max_height = self.previewFrame.height() - self.grid.margin() * 2
-            self.slidePreview.setFixedSize(QtCore.QSize(max_height * self.ratio,
-                max_height))
-            self.previewDisplay.setFixedSize(QtCore.QSize(max_height * self.ratio,
-                max_height))
-            self.previewDisplay.screen = {u'size':self.previewDisplay.geometry()}
+            self.slidePreview.setFixedSize(QtCore.QSize(
+                max_height * self.ratio, max_height))
+            self.previewDisplay.setFixedSize(QtCore.QSize(
+                max_height * self.ratio, max_height))
+            self.previewDisplay.screen = {
+                u'size': self.previewDisplay.geometry()}
         else:
             # We have to take the width as limit.
             max_width = self.previewFrame.width() - self.grid.margin() * 2
@@ -652,7 +650,8 @@ class SlideController(Controller):
                 max_width / self.ratio))
             self.previewDisplay.setFixedSize(QtCore.QSize(max_width,
                 max_width / self.ratio))
-            self.previewDisplay.screen = {u'size':self.previewDisplay.geometry()}
+            self.previewDisplay.screen = {
+                u'size': self.previewDisplay.geometry()}
         # Make sure that the frames have the correct size.
         self.previewListWidget.setColumnWidth(0,
             self.previewListWidget.viewport().size().width())
