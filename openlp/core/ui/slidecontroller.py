@@ -642,7 +642,7 @@ class SlideController(Controller):
             self.previewDisplay.setFixedSize(QtCore.QSize(
                 max_height * self.ratio, max_height))
             self.previewDisplay.screen = {
-                u'size':self.previewDisplay.geometry()}
+                u'size': self.previewDisplay.geometry()}
         else:
             # We have to take the width as limit.
             max_width = self.previewFrame.width() - self.grid.margin() * 2
@@ -651,7 +651,7 @@ class SlideController(Controller):
             self.previewDisplay.setFixedSize(QtCore.QSize(max_width,
                 max_width / self.ratio))
             self.previewDisplay.screen = {
-                u'size':self.previewDisplay.geometry()}
+                u'size': self.previewDisplay.geometry()}
         # Make sure that the frames have the correct size.
         self.previewListWidget.setColumnWidth(0,
             self.previewListWidget.viewport().size().width())
