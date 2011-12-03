@@ -201,7 +201,9 @@ class Manager(object):
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            print db_ver, up_ver, db_ver > up_ver
             if db_ver > up_ver:
+                print "hello"
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
                     unicode(translate('OpenLP.Manager', 'The database being '
@@ -361,10 +363,10 @@ class Manager(object):
 
         ``object_class``
             The type of object to delete
-            
+
         ``filter_clause``
             The filter governing selection of objects to return. Defaults to
-            None.            
+            None.
         """
         try:
             query = self.session.query(object_class)

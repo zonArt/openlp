@@ -272,7 +272,7 @@ class SongMediaItem(MediaManagerItem):
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary == u'Y':
-                break
+                continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
@@ -291,7 +291,7 @@ class SongMediaItem(MediaManagerItem):
             for song in author.songs:
                 # Do not display temporary songs
                 if song.temporary == u'Y':
-                    break
+                    continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -568,7 +568,7 @@ class SongMediaItem(MediaManagerItem):
         else:
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)
-            #editId = song.id
+            editId = song.id
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
