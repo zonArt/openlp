@@ -203,7 +203,6 @@ class Manager(object):
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
             if db_ver > up_ver:
-                print "hello"
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
                     unicode(translate('OpenLP.Manager', 'The database being '
