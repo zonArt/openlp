@@ -252,6 +252,9 @@ class SongExportForm(OpenLPWizard):
         songs = self.plugin.manager.get_all_objects(Song)
         songs.sort(cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in songs:
+            # No need to export temporary songs.
+            if song.temporary:
+                continue
             authors = u', '.join([author.display_name
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
