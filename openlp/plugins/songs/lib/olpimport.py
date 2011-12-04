@@ -145,6 +145,7 @@ class OpenLPSongImport(SongImport):
             else:
                 song_props['media_files'] = relation(OldMediaFile,
                     backref='songs',
+                    foreign_keys=[source_media_files_table.c.song_id],
                     primaryjoin=source_songs_table.c.id == \
                         source_media_files_table.c.song_id)
         try:
