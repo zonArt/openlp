@@ -720,7 +720,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             args = []
             for a in self.arguments:
                 args.extend([a])
-            self.serviceManagerContents.loadFile(unicode(args[0]))
+            self.serviceManagerContents.loadFile(unicode(args[0],
+                sys.getfilesystemencoding()))
         elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
@@ -1312,7 +1313,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             settings.value(u'preview splitter geometry').toByteArray())
         self.controlSplitter.restoreState(
             settings.value(u'mainwindow splitter geometry').toByteArray())
-
         settings.endGroup()
 
     def saveSettings(self):
@@ -1388,6 +1388,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
             QtCore.QVariant(20)).toInt()[0]
         if filename:
+            # Add some cleanup to reduce duplication in the recent file list
+            filename = os.path.abspath(filename)
+            # abspath() only capitalises the drive letter if it wasn't provided
+            # in the given filename which then causes duplication.
+            if filename[1:3] == ':\\':
+                filename = filename[0].upper() + filename[1:]
             position = self.recentFiles.indexOf(filename)
             if position != -1:
                 self.recentFiles.removeAt(position)
