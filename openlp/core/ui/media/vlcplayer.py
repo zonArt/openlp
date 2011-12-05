@@ -31,7 +31,7 @@ from datetime import datetime
 try:
     import vlc
     vlc_available = bool(vlc.get_default_instance())
-except ImportError:
+except (ImportError, WindowsError):
     vlc_available = False
 
 from PyQt4 import QtCore, QtGui
