@@ -26,13 +26,12 @@
 ###############################################################################
 
 import logging
-
-import sys, os,time
-from PyQt4 import QtCore, QtGui, QtWebKit
+import os
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
 from openlp.core.lib.mediaplayer import MediaPlayer
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType
 from openlp.core.utils import AppLocation
 
@@ -136,8 +135,9 @@ class MediaController(object):
             savedPlayers = playerSettings.split(u',')
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
                 if not mediaPlayer in self.mediaPlayers]
-            if len(invalidMediaPlayers)>0:
-                [savedPlayers.remove(invalidPlayer) for invalidPlayer in invalidMediaPlayers]
+            if len(invalidMediaPlayers) > 0:
+                for invalidPlayer in invalidMediaPlayers:
+                    savedPlayers.remove(invalidPlayer)
                 newPlayerSetting = u','.join(savedPlayers)
                 QtCore.QSettings().setValue(u'media/players',
                     QtCore.QVariant(newPlayerSetting))
@@ -206,15 +206,15 @@ class MediaController(object):
         controller.mediabar = OpenLPToolbar(controller)
         controller.mediabar.addToolbarButton(
             u'media_playback_play', u':/slides/media_playback_start.png',
-            translate('OpenLP.SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media.'),
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
             u'media_playback_pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Pause playing media'),
+            translate('OpenLP.SlideController', 'Pause playing media.'),
             controller.sendToPlugins)
         controller.mediabar.addToolbarButton(
             u'media_playback_stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Stop playing media'),
+            translate('OpenLP.SlideController', 'Stop playing media.'),
             controller.sendToPlugins)
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
@@ -223,7 +223,7 @@ class MediaController(object):
             'OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         controller.seekSlider.setObjectName(u'seek_slider')
-        controller.mediabar.addToolbarWidget(u'Seek Slider', 
+        controller.mediabar.addToolbarWidget(u'Seek Slider',
             controller.seekSlider)
         # Build the volumeSlider.
         controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
@@ -236,7 +236,7 @@ class MediaController(object):
         controller.volumeSlider.setValue(controller.media_info.volume)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volume_slider')
-        controller.mediabar.addToolbarWidget(u'Audio Volume', 
+        controller.mediabar.addToolbarWidget(u'Audio Volume',
             controller.volumeSlider)
         control_panel.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
@@ -255,7 +255,7 @@ class MediaController(object):
 
     def setup_display(self, display):
         """
-        After a new display is configured, all media related widget will be 
+        After a new display is configured, all media related widget will be
         created too
         """
         # clean up possible running old media files
@@ -276,13 +276,13 @@ class MediaController(object):
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
-        # Special controls: Here media type specific Controls will be enabled 
+        # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
 
     def resize(self, controller, display, player):
         """
-        After Mainwindow changes or Splitter moved all related media widgets 
+        After Mainwindow changes or Splitter moved all related media widgets
         have to be resized
         """
         player.resize(display)
@@ -346,7 +346,7 @@ class MediaController(object):
 
     def check_file_type(self, controller, display):
         """
-        Used to choose the right media Player type from the prioritized Player list
+        Select the correct media Player type from the prioritized Player list
         """
         playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
@@ -356,17 +356,19 @@ class MediaController(object):
             if self.overridenPlayer != '':
                 usedPlayers = [self.overridenPlayer]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % controller.media_info.file_info.suffix().toLower()
+            suffix = u'*.%s' % \
+                controller.media_info.file_info.suffix().toLower()
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or \
-                        controller.media_info.is_background and player.canBackground:
-                            self.resize(controller, display, player)
-                            if player.load(display):
-                                self.curDisplayMediaPlayer[display] = player
-                                controller.media_info.media_type = MediaType.Video
-                                return True
+                        controller.media_info.is_background and \
+                        player.canBackground:
+                        self.resize(controller, display, player)
+                        if player.load(display):
+                            self.curDisplayMediaPlayer[display] = player
+                            controller.media_info.media_type = MediaType.Video
+                            return True
                 if suffix in player.audio_extensions_list:
                     if player.load(display):
                         self.curDisplayMediaPlayer[display] = player
@@ -387,7 +389,7 @@ class MediaController(object):
     def video_play(self, msg, status=True):
         """
         Responds to the request to play a loaded video
-        
+
          ``msg``
             First element is the controller which should be used
         """
@@ -399,7 +401,8 @@ class MediaController(object):
                     return False
                 if status:
                     display.frame.evaluateJavaScript(u'show_blank("desktop");')
-                    self.curDisplayMediaPlayer[display].set_visible(display, True)
+                    self.curDisplayMediaPlayer[display].set_visible(display,
+                        True)
                     if controller.isLive:
                         if controller.hideMenu.defaultAction().isChecked():
                             controller.hideMenu.defaultAction().trigger()

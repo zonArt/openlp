@@ -35,8 +35,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager, PluginStatus, \
-    SettingsManager
+    PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -44,7 +43,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version, delete_file
+    get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui import ScreenList
@@ -504,7 +503,8 @@ class Ui_MainWindow(object):
         self.toolsFirstTimeWizard.setText(
             translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.toolsFirstTimeWizard.setStatusTip(translate('OpenLP.MainWindow',
-            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
+            'Re-run the First Time Wizard, importing songs, Bibles and '
+            'themes.'))
         self.updateThemeImages.setText(
             translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.updateThemeImages.setStatusTip(
@@ -720,7 +720,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             args = []
             for a in self.arguments:
                 args.extend([a])
-            self.serviceManagerContents.loadFile(unicode(args[0]))
+            self.serviceManagerContents.loadFile(unicode(args[0],
+                sys.getfilesystemencoding()))
         elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
@@ -1312,7 +1313,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             settings.value(u'preview splitter geometry').toByteArray())
         self.controlSplitter.restoreState(
             settings.value(u'mainwindow splitter geometry').toByteArray())
-
         settings.endGroup()
 
     def saveSettings(self):
@@ -1388,6 +1388,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
             QtCore.QVariant(20)).toInt()[0]
         if filename:
+            # Add some cleanup to reduce duplication in the recent file list
+            filename = os.path.abspath(filename)
+            # abspath() only capitalises the drive letter if it wasn't provided
+            # in the given filename which then causes duplication.
+            if filename[1:3] == ':\\':
+                filename = filename[0].upper() + filename[1:]
             position = self.recentFiles.indexOf(filename)
             if position != -1:
                 self.recentFiles.removeAt(position)
