@@ -311,12 +311,8 @@ class MediaController(object):
             isValid = self.check_file_type(controller, display)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
-            if not controller.media_info.is_background:
-                controller.media_info.start_time = display.serviceItem.start_time
-                controller.media_info.end_time = display.serviceItem.end_time
-            else:
-                controller.media_info.start_time = 0
-                controller.media_info.end_time = 0
+            controller.media_info.start_time = display.serviceItem.start_time
+            controller.media_info.end_time = display.serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
             isValid = self.check_file_type(controller, display)

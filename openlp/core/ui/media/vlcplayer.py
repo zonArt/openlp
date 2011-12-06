@@ -31,8 +31,16 @@ from datetime import datetime
 try:
     import vlc
     vlc_available = bool(vlc.get_default_instance())
-except (ImportError, WindowsError):
+except (ImportError, NameError):
     vlc_available = False
+except OSError, e:
+    if sys.platform.startswith('win'):
+        if isinstance(e, WindowsError) and e.winerror == 126:
+            vlc_available = False
+        else:
+            raise
+    else:
+        raise
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
