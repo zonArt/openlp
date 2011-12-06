@@ -149,7 +149,7 @@ class CategoryList(object):
         return self.__next__()
 
     def has_key(self, key):
-        if key != None and not isinstance(key, unicode):
+        if key and not isinstance(key, unicode):
             key = unicode(key)
         for category in self.categories:
             if category.name == key:
@@ -166,7 +166,7 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
-        if name != None and not isinstance(name, unicode):
+        if name and not isinstance(name, unicode):
             name = unicode(name)
         category = ActionCategory(name, weight)
         if actions:
@@ -274,7 +274,7 @@ class ActionList(object):
         ``weight``
             The category's weight (int).
         """
-        if name != None and not isinstance(name, unicode):
+        if name and not isinstance(name, unicode):
             name = unicode(name)
         if name in self.categories:
             # Only change the weight and resort the categories again.
