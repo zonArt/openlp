@@ -299,7 +299,6 @@ class WebkitPlayer(MediaPlayer):
             vol = float(volume) / float(100)
         else:
             vol = 0
-        print vol
         path = controller.media_info.file_info.absoluteFilePath()
         if controller.media_info.is_background:
             loop = u'true'
