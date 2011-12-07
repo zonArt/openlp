@@ -188,7 +188,6 @@ class ActionList(object):
     actions or categories.
     """
     instance = None
-    shortcut_map = {}
 
     def __init__(self):
         self.categories = CategoryList()
@@ -227,41 +226,17 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
+        if category is None:
+            # Stop here, as this action is not configurable.
+            return
         # Load the shortcut from the config.
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
         shortcuts = settings.value(action.objectName(),
             QtCore.QVariant(action.shortcuts())).toStringList()
-        settings.endGroup()
-        if not shortcuts:
-            action.setShortcuts([])
-            return
-        shortcuts = map(unicode, shortcuts)
-        # Check the alternate shortcut first, to avoid problems when the
-        # alternate shortcut becomes the primary shortcut after removing the
-        # (initial) primary shortcut due to confllicts.
-        if len(shortcuts) == 2:
-            existing_actions = ActionList.shortcut_map.get(shortcuts[1], [])
-            # Check for conflicts with other actions considering the shortcut
-            # context.
-            if self._shortcut_available(existing_actions, action):
-                actions = ActionList.shortcut_map.get(shortcuts[1], [])
-                actions.append(action)
-                ActionList.shortcut_map[shortcuts[1]] = actions
-            else:
-                shortcuts.remove(shortcuts[1])
-        # Check the primary shortcut.
-        existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
-        # Check for conflicts with other actions considering the shortcut
-        # context.
-        if self._shortcut_available(existing_actions, action):
-            actions = ActionList.shortcut_map.get(shortcuts[0], [])
-            actions.append(action)
-            ActionList.shortcut_map[shortcuts[0]] = actions
-        else:
-            shortcuts.remove(shortcuts[0])
         action.setShortcuts(
             [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
+        settings.endGroup()
 
     def remove_action(self, action, category=None):
         """
@@ -269,7 +244,7 @@ class ActionList(object):
         automatically removed.
 
         ``action``
-            The ``QAction`` object to be removed.
+            The QAction object to be removed.
 
         ``category``
             The name (unicode string) of the category, which contains the
@@ -303,30 +278,6 @@ class ActionList(object):
             self.categories.categories.sort(key=lambda cat: cat.weight)
             return
         self.categories.add(name, weight)
-
-    def _shortcut_available(self, existing_actions, action):
-        """
-        Checks if the given ``action`` may use its assigned shortcut(s) or not.
-        Returns ``True`` or ``False.
-
-        ``existing_actions``
-            A list of actions which already use a particular shortcut.
-
-        ``action``
-            The action which wants to use a particular shortcut.
-        """
-        for existing_action in existing_actions:
-            if action is existing_action:
-                continue
-            if existing_action.parent() is action.parent():
-               return False
-            if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut,
-                QtCore.Qt.ApplicationShortcut]:
-                return False
-            if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
-                QtCore.Qt.ApplicationShortcut]:
-                return False
-        return True
 
 
 class CategoryOrder(object):
