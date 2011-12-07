@@ -90,7 +90,7 @@ class PluginManager(object):
                     thisdepth = len(path.split(os.sep))
                     if thisdepth - startdepth > 2:
                         # skip anything lower down
-                        continue
+                        break
                     modulename = os.path.splitext(path)[0]
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
