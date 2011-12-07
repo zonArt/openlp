@@ -85,6 +85,7 @@ sup {
 <script>
     var timer = null;
     var transition = %s;
+    var webkitvers = %s;
     %s
 
     function show_image(src){
@@ -129,6 +130,20 @@ sup {
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
+        /* QtWebkit bug with outlines and justify causing outline alignment problems. (Bug 859950)
+           Surround each word with a <span> to workaround, but only in this scenario. */
+        if(webkitvers<=534.3){
+            var txt = document.getElementById('lyricsmain');
+            if(window.getComputedStyle(txt).textAlign=='justify'){
+                var outline = document.getElementById('lyricsoutline');
+                if(outline!=null)
+                    txt = outline;
+                if(window.getComputedStyle(txt).webkitTextStrokeWidth!="0px"){
+                    /* (\w+) and $1 preferable but qtwebkit doesn't seem to support capturing groups */
+                    newtext = '<span>' + newtext.replace(/[ ](?![^<]*>)/g, "</span> <span>") + '</span>';
+                }
+            }
+        }
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
         text_fade('lyricsshadow', newtext.replace(match, ""));
@@ -239,6 +254,7 @@ def build_html(item, screen, islive, background, image=None,
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
+        webkitvers,
         js_additions,
         bgimage_src, image_src,
         html_additions,
