@@ -57,7 +57,7 @@ class PresentationPlugin(Plugin):
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """
@@ -94,7 +94,7 @@ class PresentationPlugin(Plugin):
                 controller.kill()
         Plugin.finalise(self)
 
-    def getMediaManagerItem(self):
+    def createMediaManagerItem(self):
         """
         Create the Media Manager List
         """

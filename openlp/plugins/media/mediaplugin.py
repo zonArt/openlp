@@ -52,7 +52,7 @@ class MediaPlugin(Plugin):
         for ext in self.video_extensions_list:
             self.serviceManager.supportedSuffixes(ext[2:])
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """

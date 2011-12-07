@@ -91,8 +91,9 @@ class Plugin(QtCore.QObject):
     ``checkPreConditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``getMediaManagerItem()``
-        Returns an instance of MediaManagerItem to be used in the Media Manager.
+    ``createMediaManagerItem()``
+        Creates a new instance of MediaManagerItem to be used in the Media
+        Manager.
 
     ``addImportMenuItem(import_menu)``
         Add an item to the Import menu.
@@ -100,8 +101,8 @@ class Plugin(QtCore.QObject):
     ``addExportMenuItem(export_menu)``
         Add an item to the Export menu.
 
-    ``getSettingsTab()``
-        Returns an instance of SettingsTabItem to be used in the Settings
+    ``createSettingsTab()``
+        Creates a new instance of SettingsTabItem to be used in the Settings
         dialog.
 
     ``addToMenu(menubar)``
@@ -178,7 +179,7 @@ class Plugin(QtCore.QObject):
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
 
-        Returns True or False.
+        Returns ``True`` or ``False``.
         """
         return True
 
@@ -210,10 +211,10 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def getMediaManagerItem(self):
+    def createMediaManagerItem(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
-        you need, and return it for integration into openlp.org.
+        you need, and return it for integration into OpenLP.
         """
         if self.media_item_class:
             return self.media_item_class(self.mediadock.media_dock, self,
@@ -247,10 +248,10 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
-        Create a tab for the settings window to display the configurable
-        options for this plugin to the user.
+        Create a tab for the settings window to display the configurable options
+        for this plugin to the user.
         """
         if self.settings_tab_class:
             return self.settings_tab_class(parent, self.name,
