@@ -139,7 +139,6 @@ sup {
                 if(outline!=null)
                     txt = outline;
                 if(window.getComputedStyle(txt).webkitTextStrokeWidth!="0px"){
-                    /* (\w+) and $1 preferable but qtwebkit doesn't seem to support capturing groups */
                     newtext = '<span>' + newtext.replace(/[ ](?![^<]*>)/g, "</span> <span>") + '</span>';
                 }
             }
