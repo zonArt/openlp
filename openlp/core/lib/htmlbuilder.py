@@ -85,7 +85,6 @@ sup {
 <script>
     var timer = null;
     var transition = %s;
-    var webkitvers = %s;
     %s
 
     function show_image(src){
@@ -255,7 +254,6 @@ def build_html(item, screen, islive, background, image=None,
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
-        webkitvers,
         js_additions,
         bgimage_src, image_src,
         html_additions,
