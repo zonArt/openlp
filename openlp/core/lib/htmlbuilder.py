@@ -114,10 +114,10 @@ sup {
         document.getElementById('lyricsmain').style.visibility = lyrics;
         document.getElementById('image').style.visibility = lyrics;
         outline = document.getElementById('lyricsoutline')
-        if(outline!=null)
+        if(outline != null)
             outline.style.visibility = lyrics;
         shadow = document.getElementById('lyricsshadow')
-        if(shadow!=null)
+        if(shadow != null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
     }
@@ -130,23 +130,25 @@ sup {
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
-        /* QtWebkit bug with outlines and justify causing outline alignment problems. (Bug 859950)
-           Surround each word with a <span> to workaround, but only in this scenario. */
-        if(webkitvers<=534.3){
-            var txt = document.getElementById('lyricsmain');
-            if(window.getComputedStyle(txt).textAlign=='justify'){
-                var outline = document.getElementById('lyricsoutline');
-                if(outline!=null)
-                    txt = outline;
-                if(window.getComputedStyle(txt).webkitTextStrokeWidth!="0px"){
-                    newtext = '<span>' + newtext.replace(/[ ](?![^<]*>)/g, "</span> <span>") + '</span>';
-                }
+        /* 
+        QtWebkit bug with outlines and justify causing outline alignment 
+        problems. (Bug 859950) Surround each word with a <span> to workaround, 
+        but only in this scenario. 
+        */
+        var txt = document.getElementById('lyricsmain');
+        if(window.getComputedStyle(txt).textAlign == 'justify'){
+            var outline = document.getElementById('lyricsoutline');
+            if(outline != null)
+                txt = outline;
+            if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
+                newtext = '<span>' + newtext.replace(/[ ](?![^<]*>)/g, 
+                    '</span> <span>') + '</span>';
             }
         }
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext.replace(match, ""));
-        if(text_opacity()==1) return;
+        text_fade('lyricsshadow', newtext.replace(match, ''));
+        if(text_opacity() == 1) return;
         timer = setTimeout(function(){
             show_text(newtext);
         }, 100);
@@ -163,18 +165,18 @@ sup {
         slides) still looks pretty and is zippy.
         */
         var text = document.getElementById(id);
-        if(text==null) return;
+        if(text == null) return;
         if(!transition){
             text.innerHTML = newtext;
             return;
         }
-        if(newtext==text.innerHTML){
+        if(newtext == text.innerHTML){
             text.style.opacity = parseFloat(text.style.opacity) + 0.3;
-            if(text.style.opacity>0.7)
+            if(text.style.opacity > 0.7)
                 text.style.opacity = 1;
         } else {
             text.style.opacity = parseFloat(text.style.opacity) - 0.3;
-            if(text.style.opacity<=0.1){
+            if(text.style.opacity <= 0.1){
                 text.innerHTML = newtext;
             }
         }
@@ -186,7 +188,7 @@ sup {
     }
 
     function show_text_complete(){
-        return (text_opacity()==1);
+        return (text_opacity() == 1);
     }
 </script>
 </head>
