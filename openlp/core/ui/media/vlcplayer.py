@@ -116,12 +116,13 @@ class VlcPlayer(MediaPlayer):
         # this is platform specific!
         # you have to give the id of the QFrame (or similar object) to
         # vlc, different platforms have different functions for this
-        if sys.platform == "linux2": # for Linux using the X Server
-            display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
-        elif sys.platform == "win32": # for Windows
+        if sys.platform == "win32": # for Windows
             display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
         elif sys.platform == "darwin": # for MacOS
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
+        else: 
+            # for Linux using the X Server
+            display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
         self.hasOwnWidget = True
 
     def check_available(self):

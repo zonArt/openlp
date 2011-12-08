@@ -720,8 +720,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             args = []
             for a in self.arguments:
                 args.extend([a])
-            self.serviceManagerContents.loadFile(unicode(args[0],
-                sys.getfilesystemencoding()))
+            filename = args[0]
+            if not isinstance(filename, unicode):
+                filename = unicode(filename, sys.getfilesystemencoding())
+            self.serviceManagerContents.loadFile(filename)
         elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():

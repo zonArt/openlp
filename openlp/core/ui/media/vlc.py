@@ -56,7 +56,7 @@ _internal_guard = object()
 def find_lib():
     dll = None
     plugin_path = None
-    if sys.platform.startswith('linux'):
+    if sys.platform.startswith('linux') or sys.platform.startswith('freeBSD'):
         p = find_library('vlc')
         try:
             dll = ctypes.CDLL(p)
