@@ -253,7 +253,7 @@ class Plugin(QtCore.QObject):
         for this plugin to the user.
         """
         if self.settings_tab_class:
-            self.settings_tab  = self.settings_tab_class(parent, self.name,
+            self.settings_tab = self.settings_tab_class(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
                 self.icon_path)
 

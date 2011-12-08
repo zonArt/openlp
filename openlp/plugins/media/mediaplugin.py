@@ -57,7 +57,7 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return MediaTab(parent, self.name, visible_name[u'title'],
+        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
             self.mediaController.mediaPlayers, self.icon_path)
 
     def about(self):
