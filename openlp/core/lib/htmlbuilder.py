@@ -35,6 +35,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
+<!DOCTYPE html>
 <html>
 <head>
 <title>OpenLP Display</title>
@@ -52,132 +53,39 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: %spx;
-    height: %spx;
+    width: 100%%;
+    height: 100%%;
 }
 #black {
-    z-index:8;
+    z-index: 8;
     background-color: black;
     display: none;
 }
 #bgimage {
-    z-index:1;
+    z-index: 1;
 }
 #image {
-    z-index:2;
+    z-index: 2;
 }
-#video1 {
-    z-index:3;
-}
-#video2 {
-    z-index:3;
-}
-#alert {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index:10;
-    %s
-}
+%s
 #footer {
     position: absolute;
-    z-index:6;
+    z-index: 6;
     %s
 }
 /* lyric css */
 %s
 sup {
-    font-size:0.6em;
-    vertical-align:top;
-    position:relative;
-    top:-0.3em;
+    font-size: 0.6em;
+    vertical-align: top;
+    position: relative;
+    top: -0.3em;
 }
 </style>
-<script language="javascript">
+<script>
     var timer = null;
-    var video_timer = null;
-    var current_video = '1';
     var transition = %s;
-
-    function show_video(state, path, volume, loop){
-        // Note, the preferred method for looping would be to use the
-        // video tag loop attribute.
-        // But QtWebKit doesn't support this. Neither does it support the
-        // onended event, hence the setInterval()
-        // In addition, setting the currentTime attribute to zero to restart
-        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops
-        // slightly short of vid.duration and vid.ended is intermittent!
-        //
-        // Note, currently the background may go black between loops. Not
-        // desirable. Need to investigate using two <video>'s, and hiding/
-        // preloading one, and toggle between the two when looping.
-
-        if(current_video=='1'){
-            var vid = document.getElementById('video1');
-            var vid2 = document.getElementById('video2');
-        } else {
-            var vid = document.getElementById('video2');
-            var vid2 = document.getElementById('video1');
-        }
-        if(volume != null){
-            vid.volume = volume;
-            vid2.volume = volume;
-        }
-        switch(state){
-            case 'init':
-                vid.src = path;
-                vid2.src = path;
-                if(loop == null) loop = false;
-                vid.looping = loop;
-                vid2.looping = loop;
-                vid.load();
-                break;
-            case 'load':
-                vid2.style.visibility = 'hidden';
-                vid2.load();
-                break;
-            case 'play':
-                vid.play();
-                vid.style.visibility = 'visible';
-                if(vid.looping){
-                    video_timer = setInterval(
-                        function() {
-                            show_video('poll');
-                        }, 200);
-                }
-                break;
-            case 'pause':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                break;
-            case 'stop':
-                show_video('pause');
-                vid.style.visibility = 'hidden';
-                break;
-            case 'poll':
-                if(vid.ended||vid.currentTime+0.2>vid.duration)
-                    show_video('swap');
-                break;
-            case 'swap':
-                show_video('pause');
-                if(current_video=='1')
-                    current_video = '2';
-                else
-                    current_video = '1';
-                show_video('play');
-                show_video('load');
-                break;
-            case 'close':
-                show_video('stop');
-                vid.src = '';
-                vid2.src = '';
-                break;
-        }
-    }
+    %s
 
     function show_image(src){
         var img = document.getElementById('image');
@@ -191,18 +99,14 @@ sup {
     function show_blank(state){
         var black = 'none';
         var lyrics = '';
-        var pause = false;
         switch(state){
             case 'theme':
                 lyrics = 'hidden';
-                pause = true;
                 break;
             case 'black':
                 black = 'block';
-                pause = true;
                 break;
             case 'desktop':
-                pause = true;
                 break;
         }
         document.getElementById('black').style.display = black;
@@ -215,41 +119,6 @@ sup {
         if(shadow!=null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
-        var vid = document.getElementById('video');
-        if(vid.src != ''){
-            if(pause)
-                vid.pause();
-            else
-                vid.play();
-        }
-    }
-
-    function show_alert(alerttext, position){
-        var text = document.getElementById('alert');
-        text.innerHTML = alerttext;
-        if(alerttext == '') {
-            text.style.visibility = 'hidden';
-            return 0;
-        }
-        if(position == ''){
-            position = getComputedStyle(text, '').verticalAlign;
-        }
-        switch(position)
-        {
-            case 'top':
-                text.style.top = '0px';
-                break;
-            case 'middle':
-                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
-                    + 'px';
-                break;
-            case 'bottom':
-                text.style.top = (window.innerHeight - text.clientHeight)
-                    + 'px';
-                break;
-        }
-        text.style.visibility = 'visible';
-        return text.clientHeight;
     }
 
     function show_footer(footertext){
@@ -310,19 +179,16 @@ sup {
 <body>
 <img id="bgimage" class="size" %s />
 <img id="image" class="size" %s />
-<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-</video>
-<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-</video>
+%s
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
-<div id="alert" style="visibility:hidden;"></div>
 </body>
 </html>
-    """
+"""
 
-def build_html(item, screen, alert, islive, background, image=None):
+def build_html(item, screen, islive, background, image=None,
+    plugins=None):
     """
     Build the full web paged structure for display
 
@@ -332,9 +198,6 @@ def build_html(item, screen, alert, islive, background, image=None):
     ``screen``
         Current display information
 
-    ``alert``
-        Alert display display information
-
     ``islive``
         Item is going live, rather than preview/theme building
 
@@ -343,6 +206,9 @@ def build_html(item, screen, alert, islive, background, image=None):
 
     ``image``
         Image media item - bytes
+
+    ``plugins``
+        The List of available plugins
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
@@ -359,14 +225,23 @@ def build_html(item, screen, alert, islive, background, image=None):
         image_src = u'src="data:image/png;base64,%s"' % image
     else:
         image_src = u'style="display:none;"'
+    css_additions = u''
+    js_additions = u''
+    html_additions = u''
+    if plugins:
+        for plugin in plugins:
+            css_additions += plugin.getDisplayCss()
+            js_additions += plugin.getDisplayJavaScript()
+            html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (build_background_css(item, width, height),
-        width, height,
-        build_alert_css(alert, width),
+        css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
+        js_additions,
         bgimage_src, image_src,
+        html_additions,
         build_lyrics_html(item, webkitvers))
     return html
 
@@ -403,7 +278,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string( \
@@ -411,7 +286,7 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
@@ -419,20 +294,21 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s))' % (theme.background_start_color,
+                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
                     theme.background_end_color)
             elif theme.background_direction == \
                 BackgroundGradientType.to_string \
                 (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s))' % \
+                    u'right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_start_color, theme.background_end_color)
+                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
+                    width, theme.background_start_color,
+                    theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -446,15 +322,15 @@ def build_lyrics_css(item, webkitvers):
         The version of qtwebkit we're using
 
     """
-    style = """
+    style = u"""
 .lyricstable {
-    z-index:5;
+    z-index: 5;
     position: absolute;
     display: table;
     %s
 }
 .lyricscell {
-    display:table-cell;
+    display: table-cell;
     word-wrap: break-word;
     %s
 }
@@ -556,11 +432,15 @@ def build_lyrics_format_css(theme, width, height):
         left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
-    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
+    justify = u'white-space:pre-wrap;'
+    # fix tag incompatibilities
+    if theme.display_horizontal_align == HorizontalType.Justify:
+        justify = u''
+    lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
-        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_size,
+        'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
+        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
+        (justify, align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
@@ -608,7 +488,7 @@ def build_footer_css(item, height):
     ``item``
         Service Item to be processed.
     """
-    style = """
+    style = u"""
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -616,7 +496,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;
+    white-space: nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -626,25 +506,3 @@ def build_footer_css(item, height):
         item.footer.width(), theme.font_footer_name,
         theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
-
-def build_alert_css(alertTab, width):
-    """
-    Build the display of the footer
-
-    ``alertTab``
-        Details from the Alert tab for fonts etc
-    """
-    style = """
-    width: %spx;
-    vertical-align: %s;
-    font-family: %s;
-    font-size: %spt;
-    color: %s;
-    background-color: %s;
-    """
-    if not alertTab:
-        return u''
-    align = VerticalType.Names[alertTab.location]
-    alert = style % (width, align, alertTab.font_face, alertTab.font_size,
-        alertTab.font_color, alertTab.bg_color)
-    return alert

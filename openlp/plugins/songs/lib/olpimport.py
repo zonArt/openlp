@@ -30,7 +30,7 @@ song databases into the current installation database.
 """
 import logging
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, \
     sessionmaker
 from sqlalchemy.orm.exc import UnmappedClassError
@@ -39,45 +39,10 @@ from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from openlp.plugins.songs.lib.db import Author, Book, Song, Topic, MediaFile
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
-
-class OldAuthor(BaseModel):
-    """
-    Author model
-    """
-    pass
-
-
-class OldBook(BaseModel):
-    """
-    Book model
-    """
-    pass
-
-
-class OldMediaFile(BaseModel):
-    """
-    MediaFile model
-    """
-    pass
-
-
-class OldSong(BaseModel):
-    """
-    Song model
-    """
-    pass
-
-
-class OldTopic(BaseModel):
-    """
-    Topic model
-    """
-    pass
-
 
 class OpenLPSongImport(SongImport):
     """
@@ -95,22 +60,57 @@ class OpenLPSongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.source_session = None
+        self.sourceSession = None
 
-    def do_import(self):
+    def doImport(self):
         """
         Run the import for an OpenLP version 2 song database.
         """
-        if not self.import_source.endswith(u'.sqlite'):
-            self.log_error(self.import_source,
+        class OldAuthor(BaseModel):
+            """
+            Author model
+            """
+            pass
+
+
+        class OldBook(BaseModel):
+            """
+            Book model
+            """
+            pass
+
+
+        class OldMediaFile(BaseModel):
+            """
+            MediaFile model
+            """
+            pass
+
+
+        class OldSong(BaseModel):
+            """
+            Song model
+            """
+            pass
+
+
+        class OldTopic(BaseModel):
+            """
+            Topic model
+            """
+            pass
+
+
+        if not self.importSource.endswith(u'.sqlite'):
+            self.logError(self.importSource,
                 translate('SongsPlugin.OpenLPSongImport',
                 'Not a valid OpenLP 2.0 song database.'))
             return
-        self.import_source = u'sqlite:///%s' % self.import_source
-        engine = create_engine(self.import_source)
+        self.importSource = u'sqlite:///%s' % self.importSource
+        engine = create_engine(self.importSource)
         source_meta = MetaData()
         source_meta.reflect(engine)
-        self.source_session = scoped_session(sessionmaker(bind=engine))
+        self.sourceSession = scoped_session(sessionmaker(bind=engine))
         if u'media_files' in source_meta.tables.keys():
             has_media_files = True
         else:
@@ -121,10 +121,11 @@ class OpenLPSongImport(SongImport):
         source_topics_table = source_meta.tables[u'topics']
         source_authors_songs_table = source_meta.tables[u'authors_songs']
         source_songs_topics_table = source_meta.tables[u'songs_topics']
+        source_media_files_songs_table = None
         if has_media_files:
             source_media_files_table = source_meta.tables[u'media_files']
             source_media_files_songs_table = \
-                source_meta.tables[u'media_files_songs']
+                source_meta.tables.get(u'media_files_songs')
             try:
                 class_mapper(OldMediaFile)
             except UnmappedClassError:
@@ -137,8 +138,16 @@ class OpenLPSongImport(SongImport):
             secondary=source_songs_topics_table)
         }
         if has_media_files:
-            song_props['media_files'] = relation(OldMediaFile, backref='songs',
-                secondary=source_media_files_songs_table)
+            if isinstance(source_media_files_songs_table, Table):
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs',
+                    secondary=source_media_files_songs_table)
+            else:
+                song_props['media_files'] = relation(OldMediaFile,
+                    backref='songs',
+                    foreign_keys=[source_media_files_table.c.song_id],
+                    primaryjoin=source_songs_table.c.id == \
+                        source_media_files_table.c.song_id)
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
@@ -156,9 +165,9 @@ class OpenLPSongImport(SongImport):
         except UnmappedClassError:
             mapper(OldTopic, source_topics_table)
 
-        source_songs = self.source_session.query(OldSong).all()
-        if self.import_wizard:
-            self.import_wizard.progressBar.setMaximum(len(source_songs))
+        source_songs = self.sourceSession.query(OldSong).all()
+        if self.importWizard:
+            self.importWizard.progressBar.setMaximum(len(source_songs))
         for song in source_songs:
             new_song = Song()
             new_song.title = song.title
@@ -201,22 +210,22 @@ class OpenLPSongImport(SongImport):
                     if existing_topic is None:
                         existing_topic = Topic.populate(name=topic.name)
                     new_song.topics.append(existing_topic)
-#            if has_media_files:
-#                if song.media_files:
-#                    for media_file in song.media_files:
-#                        existing_media_file = \
-#                            self.manager.get_object_filtered(MediaFile,
-#                                MediaFile.file_name == media_file.file_name)
-#                        if existing_media_file:
-#                            new_song.media_files.append(existing_media_file)
-#                        else:
-#                            new_song.media_files.append(MediaFile.populate(
-#                                file_name=media_file.file_name))
+            if has_media_files:
+                if song.media_files:
+                    for media_file in song.media_files:
+                        existing_media_file = \
+                            self.manager.get_object_filtered(MediaFile,
+                                MediaFile.file_name == media_file.file_name)
+                        if existing_media_file:
+                            new_song.media_files.append(existing_media_file)
+                        else:
+                            new_song.media_files.append(MediaFile.populate(
+                                file_name=media_file.file_name))
             clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
-            if self.import_wizard:
-                self.import_wizard.incrementProgressBar(
+            if self.importWizard:
+                self.importWizard.incrementProgressBar(
                     WizardStrings.ImportingType % new_song.title)
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 break
         engine.dispose()

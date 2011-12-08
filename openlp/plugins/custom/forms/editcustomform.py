@@ -30,7 +30,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
+from openlp.core.lib.ui import critical_error_message_box, \
+    find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -93,7 +94,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setText(u'')
             self.creditEdit.setText(u'')
             self.themeComboBox.setCurrentIndex(0)
-            self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         else:
             self.customSlide = self.manager.get_object(CustomSlide, id)
             self.titleEdit.setText(self.customSlide.title)
@@ -104,10 +104,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
             find_and_set_in_combo_box(self.themeComboBox, theme)
+        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # If not preview hide the preview button.
-        self.previewButton.setVisible(False)
-        if preview:
-            self.previewButton.setVisible(True)
+        self.previewButton.setVisible(preview)
 
     def reject(self):
         Receiver.send_message(u'custom_edit_clear')
@@ -137,7 +136,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         success = self.manager.save_object(self.customSlide)
-        self.mediaitem.auto_select_id = self.customSlide.id
+        self.mediaitem.autoSelectId = self.customSlide.id
         return success
 
     def onUpButtonClicked(self):

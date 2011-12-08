@@ -32,6 +32,8 @@ openlp.org 1.x song databases into the current installation database.
 import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
+import sys
+import os
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import retrieve_windows_encoding
@@ -44,7 +46,7 @@ class OpenLP1SongImport(SongImport):
     The :class:`OpenLP1SongImport` class provides OpenLP with the ability to
     import song databases from installations of openlp.org 1.x.
     """
-    last_encoding = u'windows-1252'
+    lastEncoding = u'windows-1252'
 
     def __init__(self, manager, **kwargs):
         """
@@ -57,92 +59,117 @@ class OpenLP1SongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
+        self.availableThemes = \
+            kwargs[u'plugin'].formparent.themeManagerContents.getThemes()
 
-    def do_import(self):
+    def doImport(self):
         """
         Run the import for an openlp.org 1.x song database.
         """
-        if not self.import_source.endswith(u'.olp'):
-            self.log_error(self.import_source,
+        if not self.importSource.endswith(u'.olp'):
+            self.logError(self.importSource,
                 translate('SongsPlugin.OpenLP1SongImport',
                 'Not a valid openlp.org 1.x song database.'))
             return
-        encoding = self.get_encoding()
+        encoding = self.getEncoding()
         if not encoding:
             return
-        # Connect to the database
-        connection = sqlite.connect(self.import_source, mode=0444,
+        # Connect to the database.
+        connection = sqlite.connect(self.importSource, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()
-        # Determine if we're using a new or an old DB
+        # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
-        new_db = len(cursor.fetchall()) > 0
-        # "cache" our list of authors
+        db_has_tracks = len(cursor.fetchall()) > 0
+        # Determine if the db contains theme information.
+        cursor.execute(u'SELECT name FROM sqlite_master '
+            u'WHERE type = \'table\' AND name = \'settings\'')
+        db_has_themes = len(cursor.fetchall()) > 0
+        # "cache" our list of authors.
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
-        if new_db:
-            # "cache" our list of tracks
+        if db_has_tracks:
+            # "cache" our list of tracks.
             cursor.execute(u'-- types int, unicode')
             cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
             tracks = cursor.fetchall()
-        # Import the songs
+        if db_has_themes:
+            # "cache" our list of themes.
+            themes = {}
+            cursor.execute(u'-- types int, unicode')
+            cursor.execute(u'SELECT settingsid, settingsname FROM settings')
+            for theme_id, theme_name in cursor.fetchall():
+                if theme_name in self.availableThemes:
+                    themes[theme_id] = theme_name
+        # Import the songs.
         cursor.execute(u'-- types int, unicode, unicode, unicode')
-        cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
-            u'copyrightinfo FROM songs')
+        cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS ' \
+                u'lyrics, copyrightinfo FROM songs')
         songs = cursor.fetchall()
-        self.import_wizard.progressBar.setMaximum(len(songs))
+        self.importWizard.progressBar.setMaximum(len(songs))
         for song in songs:
-            self.set_defaults()
-            if self.stop_import_flag:
+            self.setDefaults()
+            if self.stopImportFlag:
                 break
             song_id = song[0]
             self.title = song[1]
             lyrics = song[2].replace(u'\r\n', u'\n')
-            self.add_copyright(song[3])
+            self.addCopyright(song[3])
+            if db_has_themes:
+                cursor.execute(u'-- types int')
+                cursor.execute(
+                    u'SELECT settingsid FROM songs WHERE songid = %s' % song_id)
+                theme_id = cursor.fetchone()[0]
+                if themes.has_key(theme_id):
+                    self.themeName = themes[theme_id]
             verses = lyrics.split(u'\n\n')
-            [self.add_verse(verse.strip()) for verse in verses if verse.strip()]
+            for verse in verses:
+                if verse.strip():
+                    self.addVerse(verse.strip())
             cursor.execute(u'-- types int')
             cursor.execute(u'SELECT authorid FROM songauthors '
                 u'WHERE songid = %s' % song_id)
             author_ids = cursor.fetchall()
             for author_id in author_ids:
-                if self.stop_import_flag:
+                if self.stopImportFlag:
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        self.parse_author(author[1])
+                        self.parseAuthor(author[1])
                         break
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 break
-            if new_db:
-                cursor.execute(u'-- types int')
-                cursor.execute(u'SELECT trackid FROM songtracks '
+            if db_has_tracks:
+                cursor.execute(u'-- types int, int')
+                cursor.execute(u'SELECT trackid, listindex '
+                    u'FROM songtracks '
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
-                for track_id in track_ids:
-                    if self.stop_import_flag:
+                for track_id, listindex in track_ids:
+                    if self.stopImportFlag:
                         break
                     for track in tracks:
-                        if track[0] == track_id[0]:
-                            self.add_media_file(track[1])
+                        if track[0] == track_id:
+                            media_file = self.expandMediaFile(track[1])
+                            self.addMediaFile(media_file, listindex)
                             break
-            if self.stop_import_flag:
+            if self.stopImportFlag:
                 break
             if not self.finish():
-                self.log_error(self.import_source)
+                self.logError(self.importSource)
 
-    def get_encoding(self):
+    def getEncoding(self):
         """
         Detect character encoding of an openlp.org 1.x song database.
         """
-        # Connect to the database
-        connection = sqlite.connect(self.import_source, mode=0444)
+        # Connect to the database.
+        connection = sqlite.connect(self.importSource, mode=0444)
         cursor = connection.cursor()
 
         detector = UniversalDetector()
-        # detect charset by authors
+        # Detect charset by authors.
         cursor.execute(u'SELECT authorname FROM authors')
         authors = cursor.fetchall()
         for author in authors:
@@ -150,7 +177,7 @@ class OpenLP1SongImport(SongImport):
             if detector.done:
                 detector.close()
                 return detector.result[u'encoding']
-        # detect charset by songs
+        # Detect charset by songs.
         cursor.execute(u'SELECT songtitle, copyrightinfo, '
             u'lyrics || \'\' AS lyrics FROM songs')
         songs = cursor.fetchall()
@@ -160,7 +187,7 @@ class OpenLP1SongImport(SongImport):
                 if detector.done:
                     detector.close()
                     return detector.result[u'encoding']
-        # detect charset by songs
+        # Detect charset by songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
         if len(cursor.fetchall()) > 0:
@@ -173,3 +200,22 @@ class OpenLP1SongImport(SongImport):
                     return detector.result[u'encoding']
         detector.close()
         return retrieve_windows_encoding(detector.result[u'encoding'])
+
+    def expandMediaFile(self, filename):
+        """
+        When you're on Windows, this function expands the file name to include
+        the path to OpenLP's application data directory. If you are not on
+        Windows, it returns the original file name.
+
+        ``filename``
+            The filename to expand.
+        """
+        if sys.platform != u'win32' and \
+            not os.environ.get(u'ALLUSERSPROFILE') and \
+            not os.environ.get(u'APPDATA'):
+            return filename
+        common_app_data = os.path.join(os.environ[u'ALLUSERSPROFILE'],
+            os.path.split(os.environ[u'APPDATA'])[1])
+        if not common_app_data:
+            return filename
+        return os.path.join(common_app_data, u'openlp.org', 'Audio', filename)

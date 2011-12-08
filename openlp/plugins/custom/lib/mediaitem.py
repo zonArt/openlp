@@ -132,7 +132,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
-        self.save_auto_select_id()
+        self.saveAutoSelectId()
         self.listView.clear()
         # Sort the customs by its title considering language specific
         # characters. lower() is needed for windows!
@@ -144,9 +144,9 @@ class CustomMediaItem(MediaManagerItem):
                 QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
             self.listView.addItem(custom_name)
             # Auto-select the custom.
-            if custom_slide.id == self.auto_select_id:
+            if custom_slide.id == self.autoSelectId:
                 self.listView.setCurrentItem(custom_name)
-        self.auto_select_id = -1
+        self.autoSelectId = -1
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
@@ -180,7 +180,7 @@ class CustomMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
-            self.auto_select_id = -1
+            self.autoSelectId = -1
             self.onSearchTextButtonClick()
 
     def onEditClick(self):
@@ -192,7 +192,7 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
-            self.auto_select_id = -1
+            self.autoSelectId = -1
             self.onSearchTextButtonClick()
 
     def onDeleteClick(self):
@@ -200,27 +200,38 @@ class CustomMediaItem(MediaManagerItem):
         Remove a custom item from the list and database
         """
         if check_item_selected(self.listView, UiStrings().SelectDelete):
+            items = self.listView.selectedIndexes()
+            if QtGui.QMessageBox.question(self,
+                UiStrings().ConfirmDelete,
+                translate('CustomPlugin.MediaItem',
+                'Are you sure you want to delete the %n selected custom'
+                ' slides(s)?', '',
+                QtCore.QCoreApplication.CodecForTr, len(items)),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+                return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
-            for row in row_list:
-                self.listView.takeItem(row)
+            self.onSearchTextButtonClick()
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         raw_footer = []
         slide = None
         theme = None
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
-        service_item.add_capability(ItemCapabilities.AllowsEdit)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
@@ -263,7 +274,7 @@ class CustomMediaItem(MediaManagerItem):
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
-        self.check_search_result()
+        self.checkSearchResult()
 
     def onSearchTextEditChanged(self, text):
         """

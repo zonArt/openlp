@@ -30,10 +30,11 @@ window.OpenLP = {
         $("#notes").html("");
         for (idx in data.results.items) {
           idx = parseInt(idx, 10);
-          if ((data.results.items[idx]["selected"]) &&
-            (data.results.items.length > idx + 1)) {
-            $("#notes").html(data.results.items[idx]["notes"]);
-            OpenLP.nextSong = data.results.items[idx + 1]["title"];
+          if (data.results.items[idx]["selected"]) {
+            $("#notes").html(data.results.items[idx]["notes"].replace(/\n/g, "<br />"));
+            if (data.results.items.length > idx + 1) {
+              OpenLP.nextSong = data.results.items[idx + 1]["title"];
+            }
             break;
           }
         }
@@ -121,11 +122,11 @@ window.OpenLP = {
       $("#nextslide").html(text);
     }
   },
-  updateClock: function() {
+  updateClock: function(data) {
     var div = $("#clock");
     var t = new Date();
     var h = t.getHours();
-    if (h > 12)
+    if (data.results.twelve && h > 12)
       h = h - 12;
     var m = t.getMinutes();
     if (m < 10)
@@ -136,7 +137,7 @@ window.OpenLP = {
     $.getJSON(
       "/api/poll",
       function (data, status) {
-        OpenLP.updateClock();
+        OpenLP.updateClock(data);
         if (OpenLP.currentItem != data.results.item) {
           OpenLP.currentItem = data.results.item;
           OpenLP.loadSlides();
