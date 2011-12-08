@@ -157,10 +157,10 @@ class Plugin(QtCore.QObject):
         self.icon = None
         self.media_item_class = media_item_class
         self.settings_tab_class = settings_tab_class
+        self.settings_tab = None
+        self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
-        # Set up logging
-        self.log = logging.getLogger(self.name)
         self.previewController = plugin_helpers[u'preview']
         self.liveController = plugin_helpers[u'live']
         self.renderer = plugin_helpers[u'renderer']
@@ -217,9 +217,8 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.media_item_class:
-            return self.media_item_class(self.mediadock.media_dock, self,
-                self.icon)
-        return None
+            self.mediaItem = self.media_item_class(self.mediadock.media_dock,
+                self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -254,10 +253,9 @@ class Plugin(QtCore.QObject):
         for this plugin to the user.
         """
         if self.settings_tab_class:
-            return self.settings_tab_class(parent, self.name,
+            self.settings_tab  = self.settings_tab_class(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
                 self.icon_path)
-        return None
 
     def addToMenu(self, menubar):
         """
