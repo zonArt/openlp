@@ -558,7 +558,7 @@ class SongMediaItem(MediaManagerItem):
                 # If there's any backing tracks, copy them over.
                 if len(item.background_audio) > 0:
                     self._updateBackgroundAudio(song, item)
-        if add_song:
+        if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
             if len(item.background_audio) > 0:
