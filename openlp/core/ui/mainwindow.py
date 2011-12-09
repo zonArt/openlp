@@ -176,7 +176,8 @@ class Ui_MainWindow(object):
             self.themeManagerDock)
         # Create the menu items
         action_list = ActionList.get_instance()
-        action_list.add_category(UiStrings().File, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().File),
+            CategoryOrder.standardMenu)
         self.fileNewItem = shortcut_action(mainWindow, u'fileNewItem',
             [QtGui.QKeySequence(u'Ctrl+N')],
             self.serviceManagerContents.onNewServiceClicked,
@@ -199,17 +200,20 @@ class Ui_MainWindow(object):
         self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
             u':/system/system_exit.png', category=UiStrings().File)
-        action_list.add_category(UiStrings().Import, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().Import),
+            CategoryOrder.standardMenu)
         self.importThemeItem = base_action(
             mainWindow, u'importThemeItem', UiStrings().Import)
         self.importLanguageItem = base_action(
             mainWindow, u'importLanguageItem')#, UiStrings().Import)
-        action_list.add_category(UiStrings().Export, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().Export),
+            CategoryOrder.standardMenu)
         self.exportThemeItem = base_action(
             mainWindow, u'exportThemeItem', UiStrings().Export)
         self.exportLanguageItem = base_action(
             mainWindow, u'exportLanguageItem')#, UiStrings().Export)
-        action_list.add_category(UiStrings().View, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().View),
+            CategoryOrder.standardMenu)
         self.viewMediaManagerItem = shortcut_action(mainWindow,
             u'viewMediaManagerItem', [QtGui.QKeySequence(u'F8')],
             self.toggleMediaManager, u':/system/system_mediamanager.png',
@@ -232,7 +236,7 @@ class Ui_MainWindow(object):
         self.lockPanel = shortcut_action(mainWindow, u'lockPanel',
             None, self.setLockPanel,
             checked=panelLocked, category=None)
-        action_list.add_category(UiStrings().ViewMode,
+        action_list.add_category(unicode(UiStrings().ViewMode),
             CategoryOrder.standardMenu)
         self.modeDefaultItem = checkable_action(
             mainWindow, u'modeDefaultItem', category=UiStrings().ViewMode)
@@ -245,7 +249,8 @@ class Ui_MainWindow(object):
         self.modeGroup.addAction(self.modeSetupItem)
         self.modeGroup.addAction(self.modeLiveItem)
         self.modeDefaultItem.setChecked(True)
-        action_list.add_category(UiStrings().Tools, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().Tools),
+            CategoryOrder.standardMenu)
         self.toolsAddToolItem = icon_action(mainWindow, u'toolsAddToolItem',
             u':/tools/tools_add.png', category=UiStrings().Tools)
         self.toolsOpenDataFolder = icon_action(mainWindow,
@@ -256,7 +261,7 @@ class Ui_MainWindow(object):
             category=UiStrings().Tools)
         self.updateThemeImages = base_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
-        action_list.add_category(UiStrings().Settings,
+        action_list.add_category(unicode(UiStrings().Settings),
             CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
@@ -290,7 +295,8 @@ class Ui_MainWindow(object):
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = base_action(mainWindow,
            u'settingsExportItem', category=UiStrings().Settings)
-        action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
+        action_list.add_category(unicode(UiStrings().Help),
+            CategoryOrder.standardMenu)
         self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
             u':/system/system_about.png', category=UiStrings().Help)

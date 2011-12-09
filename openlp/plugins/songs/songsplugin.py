@@ -269,7 +269,10 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem, UiStrings().Import)
-        action_list.remove_action(self.songExportItem, UiStrings().Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.songImportItem,
+            unicode(UiStrings().Import))
+        action_list.remove_action(self.songExportItem,
+            unicode(UiStrings().Export))
+        action_list.remove_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
         Plugin.finalise(self)

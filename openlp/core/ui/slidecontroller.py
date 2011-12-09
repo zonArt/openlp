@@ -540,7 +540,7 @@ class SlideController(Controller):
         self.nextItem.setObjectName(u'nextItemLive')
         action_list = ActionList.get_instance()
         action_list.add_category(
-            UiStrings().LiveToolbar, CategoryOrder.standardToolbar)
+            unicode(UiStrings().LiveToolbar), CategoryOrder.standardToolbar)
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
         self.previousService = shortcut_action(parent, u'previousService',

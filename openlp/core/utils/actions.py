@@ -149,8 +149,6 @@ class CategoryList(object):
         return self.__next__()
 
     def has_key(self, key):
-        if isinstance(key, QtCore.QString):
-            key = unicode(key)
         for category in self.categories:
             if category.name == key:
                 return True
@@ -166,8 +164,6 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
-        if name and isinstance(name, QtCore.QString):
-            name = unicode(name)
         category = ActionCategory(name, weight)
         if actions:
             for action in actions:
@@ -254,8 +250,6 @@ class ActionList(object):
             The name (unicode string) of the category, which contains the
             action. Defaults to None.
         """
-        if isinstance(category, QtCore.QString):
-            category = unicode(category)
         if category not in self.categories:
             return
         self.categories[category].actions.remove(action)
@@ -274,8 +268,6 @@ class ActionList(object):
         ``weight``
             The category's weight (int).
         """
-        if isinstance(name, QtCore.QString):
-            name = unicode(name)
         if name in self.categories:
             # Only change the weight and resort the categories again.
             for category in self.categories:

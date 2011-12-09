@@ -157,11 +157,11 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songUsageStatus,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageDelete,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageReport,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageActiveButton.hide()
         # stop any events being processed
         self.songUsageActive = False
