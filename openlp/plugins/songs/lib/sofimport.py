@@ -127,7 +127,7 @@ class SofImport(OooImport):
                 self.processParagraphText(text)
                 self.newSong()
                 text = u''
-            text += self.process_textportion(textportion)
+            text += self.processTextPortion(textportion)
             if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                 self.processParagraphText(text)
                 self.newSong()
@@ -202,8 +202,8 @@ class SofImport(OooImport):
             if boldtext.isdigit() and self.songNumber == '':
                 self.addSongNumber(boldtext)
                 return u''
+            text = self.uncapText(text)
             if self.title == u'':
-                text = self.uncap_text(text)
                 self.addTitle(text)
             return text
         if text.strip().startswith(u'('):
@@ -242,8 +242,12 @@ class SofImport(OooImport):
             self.songBook = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
             self.songBook = u'Songs of Fellowship 3'
-        else:
+        elif int(song_no) <= 2200:
             self.songBook = u'Songs of Fellowship 4'
+        elif int(song_no) <= 2710:
+            self.songBook = u'Songs of Fellowship 5'
+        else:
+            self.songBook = u'Songs of Fellowship Other'
 
     def addTitle(self, text):
         """
