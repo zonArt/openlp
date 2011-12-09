@@ -655,7 +655,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.hook_settings_tabs(self.settingsForm)
         # Find and insert media manager items
         log.info(u'hook media')
-        self.pluginManager.hook_media_manager(self.mediaDockManager)
+        self.pluginManager.hook_media_manager()
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
         self.pluginManager.hook_import_menu(self.fileImportMenu)
