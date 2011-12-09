@@ -140,8 +140,11 @@ sup {
             if(outline != null)
                 txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
-                newtext = '<span>' + newtext.replace(/[ ](?![^<]*>)/g, 
-                    '</span> <span>') + '</span>';
+                newtext = newtext.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                    function(match) { 
+                        return '</span>' + match + '<span>';
+                    });
+                newtext = '<span>' + newtext + '</span>';
             }
         }
         text_fade('lyricsmain', newtext);
