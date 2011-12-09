@@ -217,8 +217,6 @@ class ActionList(object):
             The weight specifies how important a category is. However, this only
             has an impact on the order the categories are displayed.
         """
-        if category:
-            category = unicode(category)
         if category not in self.categories:
             self.categories.append(category)
         action.defaultShortcuts = action.shortcuts()

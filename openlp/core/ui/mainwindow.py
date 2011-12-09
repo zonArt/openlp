@@ -181,69 +181,72 @@ class Ui_MainWindow(object):
         self.fileNewItem = shortcut_action(mainWindow, u'fileNewItem',
             [QtGui.QKeySequence(u'Ctrl+N')],
             self.serviceManagerContents.onNewServiceClicked,
-            u':/general/general_new.png', category=UiStrings().File)
+            u':/general/general_new.png', category=unicode(UiStrings().File))
         self.fileOpenItem = shortcut_action(mainWindow, u'fileOpenItem',
             [QtGui.QKeySequence(u'Ctrl+O')],
             self.serviceManagerContents.onLoadServiceClicked,
-            u':/general/general_open.png', category=UiStrings().File)
+            u':/general/general_open.png', category=unicode(UiStrings().File))
         self.fileSaveItem = shortcut_action(mainWindow, u'fileSaveItem',
             [QtGui.QKeySequence(u'Ctrl+S')],
             self.serviceManagerContents.saveFile,
-            u':/general/general_save.png', category=UiStrings().File)
+            u':/general/general_save.png', category=unicode(UiStrings().File))
         self.fileSaveAsItem = shortcut_action(mainWindow, u'fileSaveAsItem',
             [QtGui.QKeySequence(u'Ctrl+Shift+S')],
-            self.serviceManagerContents.saveFileAs, category=UiStrings().File)
+            self.serviceManagerContents.saveFileAs,
+            category=unicode(UiStrings().File))
         self.printServiceOrderItem = shortcut_action(mainWindow,
             u'printServiceItem', [QtGui.QKeySequence(u'Ctrl+P')],
             self.serviceManagerContents.printServiceOrder,
-            category=UiStrings().File)
+            category=unicode(UiStrings().File))
         self.fileExitItem = shortcut_action(mainWindow, u'fileExitItem',
             [QtGui.QKeySequence(u'Alt+F4')], mainWindow.close,
-            u':/system/system_exit.png', category=UiStrings().File)
+            u':/system/system_exit.png', category=unicode(UiStrings().File))
         action_list.add_category(unicode(UiStrings().Import),
             CategoryOrder.standardMenu)
         self.importThemeItem = base_action(
-            mainWindow, u'importThemeItem', UiStrings().Import)
+            mainWindow, u'importThemeItem', unicode(UiStrings().Import))
         self.importLanguageItem = base_action(
-            mainWindow, u'importLanguageItem')#, UiStrings().Import)
+            mainWindow, u'importLanguageItem')#, unicode(UiStrings().Import))
         action_list.add_category(unicode(UiStrings().Export),
             CategoryOrder.standardMenu)
         self.exportThemeItem = base_action(
-            mainWindow, u'exportThemeItem', UiStrings().Export)
+            mainWindow, u'exportThemeItem', unicode(UiStrings().Export))
         self.exportLanguageItem = base_action(
-            mainWindow, u'exportLanguageItem')#, UiStrings().Export)
+            mainWindow, u'exportLanguageItem')#, unicode(UiStrings().Export))
         action_list.add_category(unicode(UiStrings().View),
             CategoryOrder.standardMenu)
         self.viewMediaManagerItem = shortcut_action(mainWindow,
             u'viewMediaManagerItem', [QtGui.QKeySequence(u'F8')],
             self.toggleMediaManager, u':/system/system_mediamanager.png',
-            self.mediaManagerDock.isVisible(), UiStrings().View)
+            self.mediaManagerDock.isVisible(), unicode(UiStrings().View))
         self.viewThemeManagerItem = shortcut_action(mainWindow,
             u'viewThemeManagerItem', [QtGui.QKeySequence(u'F10')],
             self.toggleThemeManager, u':/system/system_thememanager.png',
-            self.themeManagerDock.isVisible(), UiStrings().View)
+            self.themeManagerDock.isVisible(), unicode(UiStrings().View))
         self.viewServiceManagerItem = shortcut_action(mainWindow,
             u'viewServiceManagerItem', [QtGui.QKeySequence(u'F9')],
             self.toggleServiceManager, u':/system/system_servicemanager.png',
-            self.serviceManagerDock.isVisible(), UiStrings().View)
+            self.serviceManagerDock.isVisible(), unicode(UiStrings().View))
         self.viewPreviewPanel = shortcut_action(mainWindow,
             u'viewPreviewPanel', [QtGui.QKeySequence(u'F11')],
             self.setPreviewPanelVisibility, checked=previewVisible,
-            category=UiStrings().View)
+            category=unicode(UiStrings().View))
         self.viewLivePanel = shortcut_action(mainWindow, u'viewLivePanel',
             [QtGui.QKeySequence(u'F12')], self.setLivePanelVisibility,
-            checked=liveVisible, category=UiStrings().View)
+            checked=liveVisible, category=unicode(UiStrings().View))
         self.lockPanel = shortcut_action(mainWindow, u'lockPanel',
             None, self.setLockPanel,
             checked=panelLocked, category=None)
         action_list.add_category(unicode(UiStrings().ViewMode),
             CategoryOrder.standardMenu)
         self.modeDefaultItem = checkable_action(
-            mainWindow, u'modeDefaultItem', category=UiStrings().ViewMode)
+            mainWindow, u'modeDefaultItem',
+            category=unicode(UiStrings().ViewMode))
         self.modeSetupItem = checkable_action(
-            mainWindow, u'modeSetupItem', category=UiStrings().ViewMode)
+            mainWindow, u'modeSetupItem',
+            category=unicode(UiStrings().ViewMode))
         self.modeLiveItem = checkable_action(
-            mainWindow, u'modeLiveItem', True, UiStrings().ViewMode)
+            mainWindow, u'modeLiveItem', True, unicode(UiStrings().ViewMode))
         self.modeGroup = QtGui.QActionGroup(mainWindow)
         self.modeGroup.addAction(self.modeDefaultItem)
         self.modeGroup.addAction(self.modeSetupItem)
@@ -252,21 +255,21 @@ class Ui_MainWindow(object):
         action_list.add_category(unicode(UiStrings().Tools),
             CategoryOrder.standardMenu)
         self.toolsAddToolItem = icon_action(mainWindow, u'toolsAddToolItem',
-            u':/tools/tools_add.png', category=UiStrings().Tools)
+            u':/tools/tools_add.png', category=unicode(UiStrings().Tools))
         self.toolsOpenDataFolder = icon_action(mainWindow,
             u'toolsOpenDataFolder', u':/general/general_open.png',
-            category=UiStrings().Tools)
+            category=unicode(UiStrings().Tools))
         self.toolsFirstTimeWizard = icon_action(mainWindow,
             u'toolsFirstTimeWizard', u':/general/general_revert.png',
-            category=UiStrings().Tools)
+            category=unicode(UiStrings().Tools))
         self.updateThemeImages = base_action(mainWindow,
-            u'updateThemeImages', category=UiStrings().Tools)
+            u'updateThemeImages', category=unicode(UiStrings().Tools))
         action_list.add_category(unicode(UiStrings().Settings),
             CategoryOrder.standardMenu)
         self.settingsPluginListItem = shortcut_action(mainWindow,
             u'settingsPluginListItem', [QtGui.QKeySequence(u'Alt+F7')],
             self.onPluginItemClicked, u':/system/settings_plugin_list.png',
-            category=UiStrings().Settings)
+            category=unicode(UiStrings().Settings))
         # i18n Language Items
         self.autoLanguageItem = checkable_action(mainWindow,
             u'autoLanguageItem', LanguageManager.auto_language)
@@ -283,36 +286,38 @@ class Ui_MainWindow(object):
         self.settingsShortcutsItem = icon_action(mainWindow,
             u'settingsShortcutsItem',
             u':/system/system_configure_shortcuts.png',
-            category=UiStrings().Settings)
+            category=unicode(UiStrings().Settings))
         # Formatting Tags were also known as display tags.
         self.formattingTagItem = icon_action(mainWindow,
             u'displayTagItem', u':/system/tag_editor.png',
-            category=UiStrings().Settings)
+            category=unicode(UiStrings().Settings))
         self.settingsConfigureItem = icon_action(mainWindow,
             u'settingsConfigureItem', u':/system/system_settings.png',
-            category=UiStrings().Settings)
+            category=unicode(UiStrings().Settings))
         self.settingsImportItem = base_action(mainWindow,
-           u'settingsImportItem', category=UiStrings().Settings)
+           u'settingsImportItem', category=unicode(UiStrings().Settings))
         self.settingsExportItem = base_action(mainWindow,
-           u'settingsExportItem', category=UiStrings().Settings)
+           u'settingsExportItem', category=unicode(UiStrings().Settings))
         action_list.add_category(unicode(UiStrings().Help),
             CategoryOrder.standardMenu)
         self.aboutItem = shortcut_action(mainWindow, u'aboutItem',
             [QtGui.QKeySequence(u'Ctrl+F1')], self.onAboutItemClicked,
-            u':/system/system_about.png', category=UiStrings().Help)
+            u':/system/system_about.png', category=unicode(UiStrings().Help))
         if os.name == u'nt':
             self.localHelpFile = os.path.join(
                 AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
             self.offlineHelpItem = shortcut_action(
                 mainWindow, u'offlineHelpItem', [QtGui.QKeySequence(u'F1')],
                 self.onOfflineHelpClicked,
-                u':/system/system_help_contents.png', category=UiStrings().Help)
+                u':/system/system_help_contents.png',
+                category=unicode(UiStrings().Help))
         self.onlineHelpItem = shortcut_action(
             mainWindow, u'onlineHelpItem',
             [QtGui.QKeySequence(u'Alt+F1')], self.onOnlineHelpClicked,
-            u':/system/system_online_help.png', category=UiStrings().Help)
+            u':/system/system_online_help.png',
+            category=unicode(UiStrings().Help))
         self.webSiteItem = base_action(
-            mainWindow, u'webSiteItem', category=UiStrings().Help)
+            mainWindow, u'webSiteItem', category=unicode(UiStrings().Help))
         add_actions(self.fileImportMenu, (self.settingsImportItem, None,
             self.importThemeItem, self.importLanguageItem))
         add_actions(self.fileExportMenu, (self.settingsExportItem, None,

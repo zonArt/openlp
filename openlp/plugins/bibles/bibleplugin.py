@@ -55,9 +55,11 @@ class BiblePlugin(Plugin):
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        action_list.add_action(self.importBibleItem,
+            unicode(UiStrings().Import))
         # Do not add the action to the list yet.
-        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
+        #action_list.add_action(self.exportBibleItem,
+        #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
         if len(self.manager.old_bible_databases):
