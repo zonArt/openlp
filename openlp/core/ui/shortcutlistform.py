@@ -344,7 +344,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             if category.name is None:
                 continue
             for action in category.actions:
-                if self.changedActions.has_key(action):
+                if action in self.changedActions:
                     old_shortcuts = map(unicode,
                         map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
@@ -455,7 +455,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         those shortcuts which are not saved yet but already assigned (as changes
         are applied when closing the dialog).
         """
-        if self.changedActions.has_key(action):
+        if action in self.changedActions:
             return self.changedActions[action]
         return action.shortcuts()
 
