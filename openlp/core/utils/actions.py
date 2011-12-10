@@ -217,8 +217,6 @@ class ActionList(object):
             The weight specifies how important a category is. However, this only
             has an impact on the order the categories are displayed.
         """
-        if category is not None:
-            category = unicode(category)
         if category not in self.categories:
             self.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
@@ -226,7 +224,7 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
-        if category is None:
+        if not category:
             # Stop here, as this action is not configurable.
             return
         # Load the shortcut from the config.
@@ -250,8 +248,6 @@ class ActionList(object):
             The name (unicode string) of the category, which contains the
             action. Defaults to None.
         """
-        if category is not None:
-            category = unicode(category)
         if category not in self.categories:
             return
         self.categories[category].actions.remove(action)
