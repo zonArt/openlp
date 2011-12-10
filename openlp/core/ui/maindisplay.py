@@ -45,7 +45,7 @@ log = logging.getLogger(__name__)
 
 class Display(QtGui.QGraphicsView):
     """
-    This is a general display screen class. Here the general display settings 
+    This is a general display screen class. Here the general display settings
    will done. It will be used as specialized classes by Main Display and
    Preview display.
     """
@@ -66,7 +66,7 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the screen base
         """
-        log.debug(u'Start Display base setup (live = %s)' % self.isLive)        
+        log.debug(u'Start Display base setup (live = %s)' % self.isLive)
         self.setGeometry(self.screen[u'size'])
         log.debug(u'Setup webView')
         self.webView = QtWebKit.QWebView(self)

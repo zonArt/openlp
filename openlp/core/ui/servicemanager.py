@@ -465,6 +465,7 @@ class ServiceManager(QtGui.QWidget):
         self.setModified(False)
         QtCore.QSettings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
+        Receiver.send_message(u'servicemanager_new_service')
 
     def saveFile(self):
         """
