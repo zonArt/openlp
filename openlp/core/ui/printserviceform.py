@@ -402,6 +402,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.endGroup()
 
     def update_song_usage(self):
+        # Only continue when we include the song's text.
+        if not self.slideTextCheckBox.isChecked():
+            return
         for index, item in enumerate(self.serviceManager.serviceItems):
             # Trigger Audit requests
             Receiver.send_message(u'print_service_started',

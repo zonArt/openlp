@@ -191,10 +191,10 @@ def validate_thumb(file_path, thumb_path):
     ``thumb_path``
         The path to the thumb.
     """
-    if not os.path.exists(unicode(thumb_path)):
+    if not os.path.exists(thumb_path):
         return False
-    image_date = os.stat(unicode(file_path)).st_mtime
-    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    image_date = os.stat(file_path).st_mtime
+    thumb_date = os.stat(thumb_path).st_mtime
     return image_date <= thumb_date
 
 def resize_image(image_path, width, height, background=u'#000000'):

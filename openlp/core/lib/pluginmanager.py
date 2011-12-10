@@ -90,7 +90,7 @@ class PluginManager(object):
                     thisdepth = len(path.split(os.sep))
                     if thisdepth - startdepth > 2:
                         # skip anything lower down
-                        continue
+                        break
                     modulename = os.path.splitext(path)[0]
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
@@ -128,7 +128,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.mediaItem = plugin.createMediaManagerItem()
+                plugin.createMediaManagerItem()
 
     def hook_settings_tabs(self, settings_form=None):
         """
@@ -141,7 +141,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.createSettingsTab(settings_form)
+                plugin.createSettingsTab(settings_form)
         settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
@@ -207,7 +207,7 @@ class PluginManager(object):
 
     def get_plugin_by_name(self, name):
         """
-        Return the plugin which has a name with value ``name``
+        Return the plugin which has a name with value ``name``.
         """
         for plugin in self.plugins:
             if plugin.name == name:
