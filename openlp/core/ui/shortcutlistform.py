@@ -344,8 +344,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             if category.name is None:
                 continue
             for action in category.actions:
-                if self.changedActions .has_key(action):
+                if self.changedActions.has_key(action):
+                    old_shortcuts = map(unicode,
+                        map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
+                    self.action_list.update_shortcut_map(action, old_shortcuts)
                 settings.setValue(
                     action.objectName(), QtCore.QVariant(action.shortcuts()))
         settings.endGroup()

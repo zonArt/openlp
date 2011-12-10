@@ -244,7 +244,7 @@ class ActionList(object):
             existing_actions = ActionList.shortcut_map.get(shortcuts[1], [])
             # Check for conflicts with other actions considering the shortcut
             # context.
-            if self._shortcut_available(existing_actions, action):
+            if self._is_shortcut_available(existing_actions, action):
                 actions = ActionList.shortcut_map.get(shortcuts[1], [])
                 actions.append(action)
                 ActionList.shortcut_map[shortcuts[1]] = actions
@@ -254,7 +254,7 @@ class ActionList(object):
         existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
         # Check for conflicts with other actions considering the shortcut
         # context.
-        if self._shortcut_available(existing_actions, action):
+        if self._is_shortcut_available(existing_actions, action):
             actions = ActionList.shortcut_map.get(shortcuts[0], [])
             actions.append(action)
             ActionList.shortcut_map[shortcuts[0]] = actions
@@ -304,7 +304,39 @@ class ActionList(object):
             return
         self.categories.add(name, weight)
 
-    def _shortcut_available(self, existing_actions, action):
+    def update_shortcut_map(self, action, old_shortcuts):
+        """
+        Remove the action for the given ``old_shortcuts`` from the
+        ``shortcut_map`` to ensure its up-to-dateness.
+
+        **Note**: The new action's shortcuts **must** be assigned to the given
+        ``action`` **before** calling this method.
+
+        ``action``
+            The action whose shortcuts are supposed to be updated in the
+            ``shortcut_map``.
+
+        ``old_shortcuts``
+            A list of unicode keysequences.
+        """
+        for old_shortcut in old_shortcuts:
+            # Should always be the case.
+            if old_shortcut in ActionList.shortcut_map:
+                # Remove action from the list of actions which are using this
+                # shortcut.
+                ActionList.shortcut_map[old_shortcut].remove(action)
+                # Remove empty entries.
+                if not ActionList.shortcut_map[old_shortcut]:
+                    del ActionList.shortcut_map[old_shortcut]
+        new_shortcuts = map(unicode,
+            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        # Add the new shortcut to the map.
+        for new_shortcut in new_shortcuts:
+            existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
+            existing_actions.append(action)
+            ActionList.shortcut_map[new_shortcut] = existing_actions
+
+    def _is_shortcut_available(self, existing_actions, action):
         """
         Checks if the given ``action`` may use its assigned shortcut(s) or not.
         Returns ``True`` or ``False.
