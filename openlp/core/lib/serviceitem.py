@@ -119,6 +119,7 @@ class ServiceItem(object):
         self.image_border = u'#000000'
         self.background_audio = []
         self.theme_overwritten = False
+        self.temporary_edit = False
         self._new_item()
 
     def _new_item(self):

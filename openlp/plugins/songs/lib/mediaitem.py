@@ -540,6 +540,7 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_title.asc())
         editId = 0
         add_song = True
+        temporary = False
         if search_results:
             for song in search_results:
                 author_list = item.data_string[u'authors']
@@ -565,17 +566,18 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
-        elif not self.addSongFromService:
+        elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)
             # If there's any backing tracks, copy them over.
             if len(item.background_audio) > 0:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
+            temporary = True
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
-                u'%s:%s' % (editId, item._uuid))
+                u'%s:%s:%s' % (editId, item._uuid, temporary))
 
     def search(self, string):
         """
