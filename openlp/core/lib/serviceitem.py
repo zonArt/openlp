@@ -366,6 +366,7 @@ class ServiceItem(object):
         """
         self._uuid = other._uuid
         self.notes = other.notes
+        self.temporary_edit = other.temporary_edit
         # Copy theme over if present.
         if other.theme is not None:
             self.theme = other.theme
