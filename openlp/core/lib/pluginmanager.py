@@ -90,7 +90,7 @@ class PluginManager(object):
                     thisdepth = len(path.split(os.sep))
                     if thisdepth - startdepth > 2:
                         # skip anything lower down
-                        continue
+                        break
                     modulename = os.path.splitext(path)[0]
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
@@ -113,7 +113,7 @@ class PluginManager(object):
                 plugin_objects.append(plugin)
             except TypeError:
                 log.exception(u'Failed to load plugin %s', unicode(p))
-        plugins_list = sorted(plugin_objects, self.order_by_weight)
+        plugins_list = sorted(plugin_objects, key=lambda plugin: plugin.weight)
         for plugin in plugins_list:
             if plugin.checkPreConditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
@@ -122,29 +122,13 @@ class PluginManager(object):
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
 
-    def order_by_weight(self, x, y):
+    def hook_media_manager(self):
         """
-        Sort two plugins and order them by their weight.
-
-        ``x``
-            The first plugin.
-
-        ``y``
-            The second plugin.
-        """
-        return cmp(x.weight, y.weight)
-
-    def hook_media_manager(self, mediadock):
-        """
-        Loop through all the plugins. If a plugin has a valid media manager
-        item, add it to the media manager.
-
-        ``mediatoolbox``
-            The Media Manager itself.
+        Create the plugins' media manager items.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.mediaItem = plugin.getMediaManagerItem()
+                plugin.createMediaManagerItem()
 
     def hook_settings_tabs(self, settings_form=None):
         """
@@ -152,14 +136,12 @@ class PluginManager(object):
         item, add it to the settings tab.
         Tabs are set for all plugins not just Active ones
 
-        ``settingsform``
+        ``settings_form``
             Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.getSettingsTab(settings_form)
-            else:
-                plugin.settings_tab = None
+                plugin.createSettingsTab(settings_form)
         settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
@@ -225,7 +207,7 @@ class PluginManager(object):
 
     def get_plugin_by_name(self, name):
         """
-        Return the plugin which has a name with value ``name``
+        Return the plugin which has a name with value ``name``.
         """
         for plugin in self.plugins:
             if plugin.name == name:
