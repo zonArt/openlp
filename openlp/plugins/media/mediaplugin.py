@@ -26,7 +26,6 @@
 ###############################################################################
 
 import logging
-import os
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
@@ -53,12 +52,12 @@ class MediaPlugin(Plugin):
         for ext in self.video_extensions_list:
             self.serviceManager.supportedSuffixes(ext[2:])
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return MediaTab(parent, self.name, visible_name[u'title'],
+        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
             self.mediaController.mediaPlayers, self.icon_path)
 
     def about(self):

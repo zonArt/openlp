@@ -192,7 +192,7 @@ class AlertsTab(SettingsTab):
         settings.setValue(u'location', QtCore.QVariant(self.location))
         settings.endGroup()
         if self.changed:
-             Receiver.send_message(u'update_display_css')
+            Receiver.send_message(u'update_display_css')
         self.changed = False
 
     def updateDisplay(self):

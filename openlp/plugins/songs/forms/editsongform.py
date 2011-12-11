@@ -181,7 +181,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(
-                    plugin.getMediaManagerItem().getList(MediaType.Audio))
+                    plugin.mediaItem.getList(MediaType.Audio))
                 break
 
     def newSong(self):
@@ -330,8 +330,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.topicsListView.addItem(topic_name)
         self.audioListWidget.clear()
         for media in self.song.media_files:
-            media_file = QtGui.QListWidgetItem(os.path.split(media.file_name)[1])
-            media_file.setData(QtCore.Qt.UserRole, QtCore.QVariant(media.file_name))
+            media_file = QtGui.QListWidgetItem(
+                os.path.split(media.file_name)[1])
+            media_file.setData(QtCore.Qt.UserRole,
+                QtCore.QVariant(media.file_name))
             self.audioListWidget.addItem(media_file)
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # Hide or show the preview button.
@@ -720,7 +722,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         if self.mediaForm.exec_():
             for filename in self.mediaForm.getSelectedFiles():
-                item = QtGui.QListWidgetItem(os.path.split(unicode(filename))[1])
+                item = QtGui.QListWidgetItem(
+                    os.path.split(unicode(filename))[1])
                 item.setData(QtCore.Qt.UserRole, filename)
                 self.audioListWidget.addItem(item)
 
@@ -875,7 +878,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     os.remove(audio)
                 except:
                     log.exception('Could not remove file: %s', audio)
-                    pass
         if not files:
             try:
                 os.rmdir(save_path)
