@@ -526,13 +526,11 @@ class ThemeManager(QtGui.QWidget):
             zip = zipfile.ZipFile(filename)
             themename = None
             for file in zip.namelist():
+                # Handle UTF-8 files
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    critical_error_message_box(
-                        message=translate('OpenLP.ThemeManager',
-                        'File is not a valid theme.\n'
-                        'The content encoding is not UTF-8.'))
-                    continue
+                    # Handle native Unicode files from Windows
+                    ucsfile = file
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
                 if osfile.endswith(os.path.sep):
@@ -620,7 +618,7 @@ class ThemeManager(QtGui.QWidget):
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
-        log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
+        log.debug(u'saveTheme %s %s', name, theme_pretty_xml.decode(u'utf-8'))
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
