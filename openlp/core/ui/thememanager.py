@@ -618,7 +618,7 @@ class ThemeManager(QtGui.QWidget):
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
-        log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
+        log.debug(u'saveTheme %s %s', name, theme_pretty_xml.decode(u'utf-8'))
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
