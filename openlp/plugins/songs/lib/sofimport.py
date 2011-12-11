@@ -345,7 +345,8 @@ class SofImport(OooImport):
                 u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS',
                 u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH',
                 u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S',
-                u'FATHER\'S', u'ELIJAH'):
+                u'FATHER\'S', u'ELIJAH' u'MARTHA', u'CHRISTMAS', u'ALPHA', 
+                u'OMEGA'):
                 textarr[i] = textarr[i].capitalize()
             else:
                 textarr[i] = textarr[i].lower()
