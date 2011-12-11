@@ -44,7 +44,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
-    get_filesystem_encoding
+    file_is_mbcs, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -528,11 +528,13 @@ class ThemeManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    critical_error_message_box(
-                        message=translate('OpenLP.ThemeManager',
-                        'File is not a valid theme.\n'
-                        'The content encoding is not UTF-8.'))
-                    continue
+                    ucsfile = file_is_mbcs(file)
+                    if not ucsfile:
+                        critical_error_message_box(
+                            message=translate('OpenLP.ThemeManager',
+                            'File is not a valid theme.\n'
+                            'The content encoding is not UTF-8.'))
+                        continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
                 if osfile.endswith(os.path.sep):

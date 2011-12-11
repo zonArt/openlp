@@ -475,6 +475,26 @@ def file_is_unicode(filename):
         return None
     return ucsfile
 
+def file_is_mbcs(filename):
+    """
+    Checks if a file is valid Windows file system encoded unicode and returns
+    the unicode decoded file or None.
+
+    ``filename``
+        File to check is valid Windows file system encoded.
+    """
+    if not filename:
+        return None
+    ucsfile = None
+    try:
+        ucsfile = filename.decode(u'mbcs')
+    except UnicodeDecodeError:
+        log.exception(u'Filename "%s" is not valid Windows encoded file' %
+            filename.decode(u'mbcs', u'replace'))
+    if not ucsfile:
+        return None
+    return ucsfile
+
 def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
