@@ -378,7 +378,7 @@ class PresentationController(object):
         self.name = name
         self.document_class = document_class
         self.settings_section = self.plugin.settingsSection
-        self.available = self.check_available()
+        self.available = None
         self.temp_folder = os.path.join(
             AppLocation.get_section_data_path(self.settings_section), name)
         self.thumbnail_folder = os.path.join(
@@ -392,13 +392,18 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if self.available:
-            return QtCore.QSettings().value(
-                self.settings_section + u'/' + self.name,
-                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
-                    QtCore.Qt.Checked
+        if QtCore.QSettings().value(
+            self.settings_section + u'/' + self.name,
+            QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
+                QtCore.Qt.Checked:
+            return self.is_available()
         else:
             return False
+
+    def is_available(self):
+        if self.available is None:
+            self.available = self.check_available()
+        return self.available
 
     def check_available(self):
         """

@@ -184,7 +184,15 @@ class ImpressController(PresentationController):
         if not desktop:
             return
         docs = desktop.getComponents()
+        cnt = 0
         if docs.hasElements():
+            list = docs.createEnumeration()
+            while list.hasMoreElements():
+                doc = list.nextElement()
+                if doc.getImplementationName() != \
+                    u'com.sun.star.comp.framework.BackingComp':
+                    cnt = cnt + 1
+        if cnt > 0:
             log.debug(u'OpenOffice not terminated as docs are still open')
         else:
             try:
