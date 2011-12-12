@@ -38,6 +38,8 @@ from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
+from openlp.core.utils import get_gnome_version
+
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
@@ -120,9 +122,11 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint |
-            QtCore.Qt.X11BypassWindowManagerHint)
+        gnome_vers = get_gnome_version()
+        if gnome_vers is None or gnome_vers < u'3.2':
+            self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
+                QtCore.Qt.WindowStaysOnTopHint |
+                QtCore.Qt.X11BypassWindowManagerHint)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
