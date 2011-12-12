@@ -664,14 +664,14 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
-                    self.loadItem_uuid = 0
+                    self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                     # if the item has been processed
-                    if serviceItem._uuid == self.loadItem_uuid:
-                        serviceItem.edit_id = int(self.loadItem_editId)
-                        serviceItem.temporary_edit = self.loadItem_temporary
+                    if serviceItem._uuid == self.load_item_uuid:
+                        serviceItem.edit_id = int(self.load_item_editId)
+                        serviceItem.temporary_edit = self.load_item_temporary
                     self.addServiceItem(serviceItem, repaint=False)
                 delete_file(p_file)
                 self.setFileName(fileName)
@@ -1145,9 +1145,9 @@ class ServiceManager(QtGui.QWidget):
         Triggered from plugins to update service items.
         Save the values as they will be used as part of the service load
         """
-        editId, self.loadItem_uuid, temporary = message.split(u':')
-        self.loadItem_editId = int(editId)
-        self.loadItem_temporary = str_to_bool(temporary)
+        editId, self.load_item_uuid, temporary = message.split(u':')
+        self.load_item_editId = int(editId)
+        self.load_item_temporary = str_to_bool(temporary)
 
     def replaceServiceItem(self, newItem):
         """
