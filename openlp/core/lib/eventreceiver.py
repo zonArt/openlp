@@ -115,7 +115,11 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display.
 
+
     **Servicemanager related signals**
+
+    ``servicemanager_new_service``
+        A new service is being loaded or created.
 
     ``servicemanager_previous_item``
         Display the previous item in the service.
