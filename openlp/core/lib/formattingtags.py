@@ -157,9 +157,9 @@ class FormattingTags(object):
                 # It is not needed to be saved.
                 if u'temporary' in tag:
                     del tag[u'temporary']
-                for e in tag:
-                    if isinstance(tag[e], unicode):
-                        tag[e] = tag[e].encode('utf8')
+                for element in tag:
+                    if isinstance(tag[element], unicode):
+                        tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
             QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
@@ -181,9 +181,9 @@ class FormattingTags(object):
         if user_expands_string:
             user_tags = cPickle.loads(user_expands_string)
             for tag in user_tags:
-                for e in tag:
-                    if isinstance(tag[e], str):
-                        tag[e] = tag[e].decode('utf8')
+                for element in tag:
+                    if isinstance(tag[element], str):
+                        tag[element] = tag[element].decode('utf8')
             # If we have some user ones added them as well
             FormattingTags.add_html_tags(user_tags)
 
