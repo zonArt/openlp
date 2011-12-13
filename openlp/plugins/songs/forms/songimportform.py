@@ -238,7 +238,8 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-        self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings().OLPV2)
+        self.formatComboBox.setItemText(SongFormat.OpenLP2,
+            translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 database'))
         self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings().OLPV1)
         self.formatComboBox.setItemText(SongFormat.OpenLyrics,
             translate('SongsPlugin.ImportWizardForm',

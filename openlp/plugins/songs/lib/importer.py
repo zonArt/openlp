@@ -68,19 +68,19 @@ class SongFormat(object):
     """
     _format_availability = {}
     Unknown = -1
-    OpenLP2 = 0
-    OpenLP1 = 1
-    OpenLyrics = 2
-    OpenSong = 3
-    WordsOfWorship = 4
-    CCLI = 5
-    SongsOfFellowship = 6
-    Generic = 7
-    EasiSlides = 8
-    EasyWorship = 9
-    SongBeamer = 10
-    SongShowPlus = 11
-    FoilPresenter = 12
+    OpenLyrics = 0
+    OpenLP2 = 1
+    OpenLP1 = 2
+    Generic = 3
+    CCLI = 4
+    EasiSlides = 5
+    EasyWorship = 6
+    FoilPresenter = 7
+    OpenSong = 8
+    SongBeamer = 9
+    SongShowPlus = 10
+    SongsOfFellowship = 11
+    WordsOfWorship = 12
     #CSV = 13
 
     @staticmethod
