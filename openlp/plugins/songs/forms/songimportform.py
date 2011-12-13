@@ -659,15 +659,12 @@ class SongImportForm(OpenLPWizard):
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        try:
-            last_import_type = int(QtCore.QSettings().value(
-                u'songs/last import type').toString())
-            if last_import_type >= self.formatComboBox.count() or \
-                last_import_type < 0:
-                last_import_type = 0
-            self.formatComboBox.setCurrentIndex(last_import_type)
-        except ValueError:
-            self.formatComboBox.setCurrentIndex(0)
+        last_import_type = QtCore.QSettings().value(
+            u'songs/last import type').toInt()[0]
+        if last_import_type < 0 or \
+            last_import_type >= self.formatComboBox.count():
+            last_import_type = 0
+        self.formatComboBox.setCurrentIndex(last_import_type)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
         self.openLyricsFileListWidget.clear()
