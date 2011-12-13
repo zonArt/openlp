@@ -132,12 +132,12 @@ class SongFormat(object):
             SongFormat.CCLI,
             SongFormat.EasiSlides,
             SongFormat.EasyWorship,            
-            SongFormat.FoilPresenter
+            SongFormat.FoilPresenter,
             SongFormat.OpenSong,
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
-            SongFormat.WordsOfWorship,
+            SongFormat.WordsOfWorship
         ]
 
     @staticmethod
