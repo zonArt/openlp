@@ -64,6 +64,9 @@ class SongsPlugin(Plugin):
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
 
+    def checkPreConditions(self):
+        return self.manager.session is not None
+
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
@@ -71,9 +74,14 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.songImportItem, UiStrings().Import)
-        action_list.add_action(self.songExportItem, UiStrings().Export)
-        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.add_action(self.songImportItem, unicode(UiStrings().Import))
+        action_list.add_action(self.songExportItem, unicode(UiStrings().Export))
+        action_list.add_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_new_service'),
+        self.clearTemporarySongs)
+
 
     def addImportMenuItem(self, import_menu):
         """
@@ -261,12 +269,23 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
+        self.clearTemporarySongs()
+        # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem, UiStrings().Import)
-        action_list.remove_action(self.songExportItem, UiStrings().Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.songImportItem,
+            unicode(UiStrings().Import))
+        action_list.remove_action(self.songExportItem,
+            unicode(UiStrings().Export))
+        action_list.remove_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
         Plugin.finalise(self)
+
+    def clearTemporarySongs(self):
+        # Remove temporary songs
+        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        for song in songs:
+            self.manager.delete_object(Song, song.id)

@@ -301,7 +301,6 @@ class ThemeManager(QtGui.QWidget):
             if self.checkIfThemeExists(newThemeName):
                 themeData = self.getThemeData(oldThemeName)
                 self.cloneThemeData(themeData, newThemeName)
-                self.loadThemes()
 
     def cloneThemeData(self, themeData, newThemeName):
         """
@@ -371,7 +370,7 @@ class ThemeManager(QtGui.QWidget):
 
     def onExportTheme(self):
         """
-        Save the theme in a zip file
+        Export the theme in a zip file
         """
         item = self.themeListWidget.currentItem()
         if item is None:
@@ -650,11 +649,11 @@ class ThemeManager(QtGui.QWidget):
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
-        log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
+        log.debug(u'saveTheme %s %s', name, theme_pretty_xml.decode(u'utf-8'))
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
-        if imageTo and self.oldBackgroundImage and \
+        if self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
             delete_file(self.oldBackgroundImage)
         outfile = None

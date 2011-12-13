@@ -25,21 +25,24 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import datetime
 import logging
 import os
 import locale
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.phonon import Phonon
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver, MediaType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+    SettingsManager, translate, check_item_selected, Receiver, MediaType, \
+    ServiceItem, build_html
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    media_item_combo_box
+from openlp.core.ui import Controller, Display
 
 log = logging.getLogger(__name__)
 
 CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
+#TODO: Add an appropriate Icon for DVDs, CDs, ...
+DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -51,16 +54,40 @@ class MediaMediaItem(MediaManagerItem):
         self.iconPath = u'images/image'
         self.background = False
         self.previewFunction = CLAPPERBOARD
+        self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
+        self.mediaController = Controller(parent)
+        self.mediaController.controllerLayout = QtGui.QVBoxLayout()
+        self.plugin.mediaController.add_controller_items(self.mediaController, \
+            self.mediaController.controllerLayout)
+        self.plugin.mediaController.set_controls_visible(self.mediaController, \
+            False)
+        self.mediaController.previewDisplay = Display(self.mediaController, \
+            False, self.mediaController)
+        self.mediaController.previewDisplay.setGeometry(
+            QtCore.QRect(0, 0, 300, 300))
+        self.mediaController.previewDisplay.screen = \
+            {u'size':self.mediaController.previewDisplay.geometry()}
+        self.mediaController.previewDisplay.setup()
+        serviceItem = ServiceItem()
+        self.mediaController.previewDisplay.webView.setHtml(build_html( \
+            serviceItem, self.mediaController.previewDisplay.screen, None, \
+            False, None))
+        self.mediaController.previewDisplay.setup()
+        self.plugin.mediaController.setup_display( \
+            self.mediaController.previewDisplay)
+        self.mediaController.previewDisplay.hide()
+
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_phonon_creation'),
-            self.createPhonon)
+            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -74,6 +101,10 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
+        self.Automatic = translate('MediaPlugin.MediaItem',
+            'Automatic')
+        self.displayTypeLabel.setText(
+            translate('MediaPlugin.MediaItem', 'Use Player:'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -92,13 +123,35 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction = self.addToolbarButton(u'', u'',
             u':/system/system_close.png', self.onResetClick, False)
         self.resetAction.setVisible(False)
+        self.mediaWidget = QtGui.QWidget(self)
+        self.mediaWidget.setObjectName(u'mediaWidget')
+        self.displayLayout = QtGui.QFormLayout(self.mediaWidget)
+        self.displayLayout.setMargin(self.displayLayout.spacing())
+        self.displayLayout.setObjectName(u'displayLayout')
+        self.displayTypeLabel = QtGui.QLabel(self.mediaWidget)
+        self.displayTypeLabel.setObjectName(u'displayTypeLabel')
+        self.displayTypeComboBox = media_item_combo_box(
+            self.mediaWidget, u'displayTypeComboBox')
+        self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
+        self.displayLayout.addRow(self.displayTypeLabel,
+            self.displayTypeComboBox)
+        # Add the Media widget to the page layout
+        self.pageLayout.addWidget(self.mediaWidget)
+        QtCore.QObject.connect(self.displayTypeComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged (int)'),
+            self.overridePlayerChanged)
+
+    def overridePlayerChanged(self, index):
+        Receiver.send_message(u'media_override_player', \
+            u'%s' % self.displayTypeComboBox.currentText())
 
     def onResetClick(self):
         """
-        Called to reset the Live backgound with the media selected.
+        Called to reset the Live background with the media selected,
         """
+        self.plugin.liveController.mediaController.video_reset( \
+            self.plugin.liveController)
         self.resetAction.setVisible(False)
-        self.plugin.liveController.display.resetVideo()
 
     def videobackgroundReplaced(self):
         """
@@ -108,7 +161,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onReplaceClick(self):
         """
-        Called to replace Live backgound with the media selected.
+        Called to replace Live background with the media selected.
         """
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
@@ -116,8 +169,8 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
-                if self.plugin.liveController.display.video(filename, 0, True):
+                if self.plugin.liveController.mediaController.video( \
+                    self.plugin.liveController, filename, True, True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
@@ -144,30 +197,18 @@ class MediaMediaItem(MediaManagerItem):
                         unicode(translate('MediaPlugin.MediaItem',
                             'The file %s no longer exists.')) % filename)
             return False
-        self.mediaObject.stop()
-        self.mediaObject.clearQueue()
-        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-        if not self.mediaStateWait(Phonon.StoppedState):
-            critical_error_message_box(UiStrings().UnsupportedFile,
-                    UiStrings().UnsupportedFile)
+        self.mediaLength = 0
+        if self.plugin.mediaController.video( \
+                    self.mediaController, filename, False, False):
+            self.mediaLength = self.mediaController.media_info.length
+            service_item.media_length = self.mediaLength
+            self.plugin.mediaController.video_reset(self.mediaController)
+            if self.mediaLength > 0:
+                service_item.add_capability(
+                    ItemCapabilities.HasVariableStartTime)
+        else:
             return False
-        # File too big for processing
-        if os.path.getsize(filename) <= 52428800: # 50MiB
-            self.mediaObject.play()
-            if not self.mediaStateWait(Phonon.PlayingState) \
-                or self.mediaObject.currentSource().type() \
-                == Phonon.MediaSource.Invalid:
-                self.mediaObject.stop()
-                critical_error_message_box(
-                    translate('MediaPlugin.MediaItem', 'File Too Big'),
-                    translate('MediaPlugin.MediaItem', 'The file you are '
-                        'trying to load is too big. Please reduce it to less '
-                        'than 50MiB.'))
-                return False
-            self.mediaObject.stop()
-            service_item.media_length = self.mediaObject.totalTime() / 1000
-            service_item.add_capability(
-                ItemCapabilities.HasVariableStartTime)
+        service_item.media_length = self.mediaLength
         service_item.title = unicode(self.plugin.nameStrings[u'singular'])
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
@@ -177,23 +218,49 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_from_command(path, name, frame)
         return True
 
-    def mediaStateWait(self, mediaState):
-        """
-        Wait for the video to change its state. Wait no longer than 5 seconds.
-        """
-        start = datetime.now()
-        while self.mediaObject.state() != mediaState:
-            if self.mediaObject.state() == Phonon.ErrorState:
-                return False
-            Receiver.send_message(u'openlp_process_events')
-            if (datetime.now() - start).seconds > 5:
-                return False
-        return True
-
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
+        self.populateDisplayTypes()
+
+    def rebuild(self):
+        """
+        Rebuild the tab in the media manager when changes are made in
+        the settings
+        """
+        self.populateDisplayTypes()
+        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;%s (*)')) % (
+            u' '.join(self.plugin.video_extensions_list),
+            u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
+
+    def displaySetup(self):
+        self.plugin.mediaController.setup_display( \
+            self.mediaController.previewDisplay)
+
+
+    def populateDisplayTypes(self):
+        """
+        Load the combobox with the enabled media players,
+        allowing user to select a specific player if settings allow
+        """
+        self.displayTypeComboBox.clear()
+        playerSettings = str(QtCore.QSettings().value(u'media/players',
+            QtCore.QVariant(u'webkit')).toString())
+        usedPlayers = playerSettings.split(u',')
+        for title in usedPlayers:
+            # load the drop down selection
+            self.displayTypeComboBox.addItem(title)
+        if self.displayTypeComboBox.count() > 1:
+            self.displayTypeComboBox.insertItem(0, self.Automatic)
+            self.displayTypeComboBox.setCurrentIndex(0)
+        if QtCore.QSettings().value(self.settingsSection + u'/override player',
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            self.mediaWidget.show()
+        else:
+            self.mediaWidget.hide()
+
 
     def onDeleteClick(self):
         """
@@ -214,10 +281,18 @@ class MediaMediaItem(MediaManagerItem):
         media.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
-            filename = os.path.split(unicode(track))[1]
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setIcon(build_icon(CLAPPERBOARD))
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            track_info = QtCore.QFileInfo(track)
+            if not track_info.isFile():
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(CLAPPERBOARD))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            else:
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                #TODO: add the appropriate Icon
+                #item_name.setIcon(build_icon(DVD_ICON))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
 
@@ -233,11 +308,6 @@ class MediaMediaItem(MediaManagerItem):
         ext = map(lambda x: x[1:], ext)
         media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
         return media
-
-    def createPhonon(self):
-        log.debug(u'CreatePhonon')
-        if not self.mediaObject:
-            self.mediaObject = Phonon.MediaObject(self)
 
     def search(self, string):
         files = SettingsManager.load_list(self.settingsSection, u'media')

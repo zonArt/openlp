@@ -28,7 +28,6 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
 
 
 class Ui_ThemeLayoutDialog(object):

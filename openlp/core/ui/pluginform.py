@@ -117,16 +117,17 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
         self.activePlugin = None
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.nameStrings[u'singular'] == plugin_name_singular:
-                self.activePlugin = plugin
-                break
+            if plugin.status != PluginStatus.Disabled:
+                if plugin.nameStrings[u'singular'] == plugin_name_singular:
+                    self.activePlugin = plugin
+                    break
         if self.activePlugin:
             self._setDetails()
         else:
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        if self.programaticChange:
+        if self.programaticChange or status == PluginStatus.Disabled:
             return
         if status == 0:
             Receiver.send_message(u'cursor_busy')

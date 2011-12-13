@@ -127,13 +127,13 @@ class ImageMediaItem(MediaManagerItem):
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
-            if not os.path.exists(imageFile):
+            if not os.path.exists(unicode(imageFile)):
                 icon = build_icon(u':/general/general_delete.png')
             else:
-                if validate_thumb(imageFile, thumb):
+                if validate_thumb(unicode(imageFile), thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = create_thumb(imageFile, thumb)
+                    icon = create_thumb(unicode(imageFile), thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)

@@ -270,6 +270,9 @@ class SongMediaItem(MediaManagerItem):
         searchresults.sort(
             cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
+            # Do not display temporary songs
+            if song.temporary:
+                continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
@@ -286,6 +289,9 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -534,6 +540,7 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_title.asc())
         editId = 0
         add_song = True
+        temporary = False
         if search_results:
             for song in search_results:
                 author_list = item.data_string[u'authors']
@@ -559,13 +566,18 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
-        else:
+        elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
-            self.openLyrics.xml_to_song(item.xml_version, True)
+            song = self.openLyrics.xml_to_song(item.xml_version, True)
+            # If there's any backing tracks, copy them over.
+            if len(item.background_audio) > 0:
+                self._updateBackgroundAudio(song, item)
+            editId = song.id
+            temporary = True
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
-                u'%s:%s' % (editId, item._uuid))
+                u'%s:%s:%s' % (editId, item._uuid, temporary))
 
     def search(self, string):
         """
