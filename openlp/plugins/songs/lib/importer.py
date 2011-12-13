@@ -125,19 +125,19 @@ class SongFormat(object):
         Return a list of the supported song formats.
         """
         return [
+            SongFormat.OpenLyrics,
             SongFormat.OpenLP2,
             SongFormat.OpenLP1,
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.WordsOfWorship,
-            SongFormat.CCLI,
-            SongFormat.SongsOfFellowship,
             SongFormat.Generic,
+            SongFormat.CCLI,
             SongFormat.EasiSlides,
-            SongFormat.EasyWorship,
+            SongFormat.EasyWorship,            
+            SongFormat.FoilPresenter
+            SongFormat.OpenSong,
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
-            SongFormat.FoilPresenter
+            SongFormat.SongsOfFellowship,
+            SongFormat.WordsOfWorship,
         ]
 
     @staticmethod
