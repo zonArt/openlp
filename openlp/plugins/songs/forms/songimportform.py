@@ -662,6 +662,9 @@ class SongImportForm(OpenLPWizard):
         try:
             last_import_type = int(QtCore.QSettings().value(
                 u'songs/last import type').toString())
+            if last_import_type >= self.formatComboBox.count() or \
+                last_import_type < 0:
+                last_import_type = 0
             self.formatComboBox.setCurrentIndex(last_import_type)
         except ValueError:
             self.formatComboBox.setCurrentIndex(0)
