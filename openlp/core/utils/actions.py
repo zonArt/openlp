@@ -234,10 +234,14 @@ class ActionList(object):
         if not shortcuts:
             action.setShortcuts([])
             return
-        shortcuts = map(unicode, shortcuts)
+        # We have to do this to ensure that the loaded shortcut list e. g.
+        # STRG+O (German) is converted to CTRL+O, which is only done when we
+        # convert the strings in this way (QKeySequence -> QString -> unicode).
+        shortcuts = map(QtGui.QKeySequence, shortcuts)
+        shortcuts = map(unicode, map(QtGui.QKeySequence.toString,  shortcuts))
         # Check the alternate shortcut first, to avoid problems when the
         # alternate shortcut becomes the primary shortcut after removing the
-        # (initial) primary shortcut due to confllicts.
+        # (initial) primary shortcut due to conflicts.
         if len(shortcuts) == 2:
             existing_actions = ActionList.shortcut_map.get(shortcuts[1], [])
             # Check for conflicts with other actions considering the shortcut
@@ -279,6 +283,15 @@ class ActionList(object):
         # Remove empty categories.
         if len(self.categories[category].actions) == 0:
             self.categories.remove(category)
+        shortcuts = map(unicode,
+            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        for shortcut in shortcuts:
+            # Remove action from the list of actions which are using this
+            # shortcut.
+            ActionList.shortcut_map[shortcut].remove(action)
+            # Remove empty entries.
+            if not ActionList.shortcut_map[shortcut]:
+                del ActionList.shortcut_map[shortcut]
 
     def add_category(self, name, weight):
         """
@@ -316,17 +329,15 @@ class ActionList(object):
             A list of unicode keysequences.
         """
         for old_shortcut in old_shortcuts:
-            # Should always be the case.
-            if old_shortcut in ActionList.shortcut_map:
-                # Remove action from the list of actions which are using this
-                # shortcut.
-                ActionList.shortcut_map[old_shortcut].remove(action)
-                # Remove empty entries.
-                if not ActionList.shortcut_map[old_shortcut]:
-                    del ActionList.shortcut_map[old_shortcut]
+            # Remove action from the list of actions which are using this
+            # shortcut.
+            ActionList.shortcut_map[old_shortcut].remove(action)
+            # Remove empty entries.
+            if not ActionList.shortcut_map[old_shortcut]:
+                del ActionList.shortcut_map[old_shortcut]
         new_shortcuts = map(unicode,
             map(QtGui.QKeySequence.toString, action.shortcuts()))
-        # Add the new shortcut to the map.
+        # Add the new shortcuts to the map.
         for new_shortcut in new_shortcuts:
             existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
             existing_actions.append(action)
