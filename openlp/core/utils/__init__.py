@@ -502,18 +502,6 @@ def get_uno_instance(resolver):
         return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
             + u'urp;StarOffice.ComponentContext')
 
-def get_gnome_version():
-    if sys.platform == u'win32' or sys.platform == u'darwin':
-        return None
-    if os.environ.get(u'DESKTOP_SESSION') != u'gnome':
-        return None
-    gnome = Popen((u'gnome-session', u'--version'), stdout=PIPE)
-    output, error = gnome.communicate()
-    code = gnome.wait()
-    if code != 1:
-        return None
-    return output.split(u' ')[1]
-
 from languagemanager import LanguageManager
 from actions import ActionList
 
