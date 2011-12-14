@@ -252,8 +252,8 @@ class HttpConnection(object):
             (r'^/api/display/(hide|show)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
-            (r'^/api/status$', self.status),
-            (r'^/api/changeStatus/(blank|theme|desktop)$', self.changeStatus),
+            (r'^/api/display-status$', self.status),
+            (r'^/api/display-status/(blank|theme|desktop)$', self.changeStatus),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
