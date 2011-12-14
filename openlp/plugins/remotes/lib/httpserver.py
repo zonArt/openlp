@@ -252,6 +252,8 @@ class HttpConnection(object):
             (r'^/api/display/(hide|show)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
+            (r'^/api/status$', self.status),
+            (r'^/api/changeStatus/(blank|theme|desktop)$', self.changeStatus),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
@@ -413,6 +415,31 @@ class HttpConnection(object):
         """
         event = u'live_display_%s' % action
         Receiver.send_message(event, HideMode.Blank)
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
+
+    def status(self):
+        """
+        Obtain the status of system.
+
+        """
+        result = {
+            u'blank': self.parent.plugin.liveController.blankScreen.\
+                isChecked(),
+            u'theme': self.parent.plugin.liveController.themeScreen.\
+                isChecked(),
+            u'display': self.parent.plugin.liveController.desktopScreen.\
+                isChecked()
+        }
+        return HttpResponse(json.dumps({u'results': result}),
+            {u'Content-Type': u'application/json'})
+
+    def changeStatus(self, action):
+        """
+        Toggle the display of the system including the status button.
+
+        """
+        Receiver.send_message(u'slidecontroller_toggle_display', action)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 

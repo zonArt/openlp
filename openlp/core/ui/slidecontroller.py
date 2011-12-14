@@ -95,7 +95,7 @@ class SlideController(Controller):
             u'Edit Song',
         ]
         self.nextPreviousList = [
-            u'Previous Slide', 
+            u'Previous Slide',
             u'Next Slide'
         ]
         self.timer_id = 0
@@ -114,8 +114,8 @@ class SlideController(Controller):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
-            self.keypress_queue = deque() 
-            self.keypress_loop = False           
+            self.keypress_queue = deque()
+            self.keypress_loop = False
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -187,7 +187,7 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
                 [QtCore.Qt.Key_Period], self.onBlankDisplay,
-                u':/slides/slide_blank.png', False, 
+                u':/slides/slide_blank.png', False,
                 unicode(UiStrings().LiveToolbar))
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
@@ -412,6 +412,9 @@ class SlideController(Controller):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'slidecontroller_toggle_display'),
+                self.toggleDisplay)
             self.toolbar.makeWidgetsInvisible(self.loopList)
         else:
             QtCore.QObject.connect(self.previewListWidget,
@@ -570,6 +573,19 @@ class SlideController(Controller):
         self.display.setVisible(False)
         self.mediaController.video_stop([self])
 
+    def toggleDisplay(self, action):
+        """
+        Toggle the display settings triggered from remote messages.
+        """
+        if action == u'blank':
+            self.onBlankDisplay(not self.blankScreen.isChecked())
+        elif action == u'theme':
+            self.onThemeDisplay(not self.themeScreen.isChecked())
+        if action == u'desktop':
+            self.onHideDisplay(not self.desktopScreen.isChecked())
+
+
+
     def servicePrevious(self):
         """
         Live event to select the previous service item from the service manager.
@@ -618,8 +634,8 @@ class SlideController(Controller):
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
-        self.previewDisplay.webView.setHtml(build_html(serviceItem, 
-            self.previewDisplay.screen, None, self.isLive, None, 
+        self.previewDisplay.webView.setHtml(build_html(serviceItem,
+            self.previewDisplay.screen, None, self.isLive, None,
             plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
