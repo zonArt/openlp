@@ -29,6 +29,9 @@ The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
 import logging
+import os
+import sys
+from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
@@ -37,8 +40,6 @@ from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate, PluginManager
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
-
-from openlp.core.utils import get_gnome_version
 
 log = logging.getLogger(__name__)
 
@@ -122,8 +123,7 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        gnome_vers = get_gnome_version()
-        if gnome_vers is None or gnome_vers < u'3.2':
+        if not self.checkGnomeShell32():
             self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
                 QtCore.Qt.WindowStaysOnTopHint |
                 QtCore.Qt.X11BypassWindowManagerHint)
@@ -444,6 +444,31 @@ class MainDisplay(Display):
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
+    def checkGnomeShell32(self):
+        if hasattr(MainDisplay, u'gnomeShell32'):
+            return MainDisplay.gnomeShell32
+        MainDisplay.gnomeShell32 = False
+        if sys.platform == u'win32' or sys.platform == u'darwin':
+            return False
+        if os.environ.get(u'DESKTOP_SESSION') != u'gnome':
+            return False
+        gnome = Popen((u'gnome-session', u'--version'), stdout=PIPE)
+        output, error = gnome.communicate()
+        code = gnome.wait()
+        if code != 1:
+            return False
+        version = output.split(u' ')[1][:-1].split(u'.')
+        if int(version[0]) < 3:
+            return False
+        if int(version[0]) == 3 and int(version[1]) < 2:
+            return False
+        ps = Popen((u'ps', u'-C' u'gnome-shell', u'-o', u'comm='), stdout=PIPE)
+        output, error = ps.communicate()
+        code = ps.wait()
+        if code != 0:
+            return False
+        MainDisplay.gnomeShell32 = True
+        return True
 
 class AudioPlayer(QtCore.QObject):
     """
