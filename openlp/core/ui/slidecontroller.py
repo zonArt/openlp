@@ -585,7 +585,6 @@ class SlideController(Controller):
             self.onHideDisplay(not self.desktopScreen.isChecked())
 
 
-
     def servicePrevious(self):
         """
         Live event to select the previous service item from the service manager.
