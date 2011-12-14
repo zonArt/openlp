@@ -78,6 +78,10 @@ class SongsPlugin(Plugin):
         action_list.add_action(self.songExportItem, unicode(UiStrings().Export))
         action_list.add_action(self.toolsReindexItem,
             unicode(UiStrings().Tools))
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_new_service'),
+        self.clearTemporarySongs)
+
 
     def addImportMenuItem(self, import_menu):
         """
@@ -265,6 +269,8 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
+        self.clearTemporarySongs()
+        # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
@@ -277,3 +283,9 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.toolsReindexItem,
             unicode(UiStrings().Tools))
         Plugin.finalise(self)
+
+    def clearTemporarySongs(self):
+        # Remove temporary songs
+        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        for song in songs:
+            self.manager.delete_object(Song, song.id)
