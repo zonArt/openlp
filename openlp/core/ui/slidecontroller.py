@@ -581,7 +581,7 @@ class SlideController(Controller):
             self.onBlankDisplay(not self.blankScreen.isChecked())
         elif action == u'theme':
             self.onThemeDisplay(not self.themeScreen.isChecked())
-        if action == u'desktop':
+        elif action == u'desktop':
             self.onHideDisplay(not self.desktopScreen.isChecked())
 
 
