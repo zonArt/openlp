@@ -315,7 +315,9 @@ class HttpConnection(object):
         """
         log.debug(u'ready to read socket')
         if self.socket.canReadLine():
-            data = unicode(self.socket.readLine()).encode(u'utf-8')
+            data = self.socket.readLine()
+            data = QtCore.QByteArray.fromPercentEncoding(data)
+            data = unicode(data, 'utf8')
             log.debug(u'received: ' + data)
             words = data.split(u' ')
             response = None
