@@ -252,8 +252,9 @@ class HttpConnection(object):
             (r'^/api/display/(hide|show)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
-            (r'^/api/display-status$', self.status),
-            (r'^/api/display-status/(blank|theme|desktop)$', self.changeStatus),
+            (r'^/api/display-status$', self.displayStatus),
+            (r'^/api/display-status/(blank|theme|desktop)$',
+                self.changeDisplayStatus),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
@@ -401,7 +402,13 @@ class HttpConnection(object):
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',
             u'twelve':QtCore.QSettings().value(
-            u'remotes/twelve hour', QtCore.QVariant(True)).toBool()
+            u'remotes/twelve hour', QtCore.QVariant(True)).toBool(),
+            u'blank': self.parent.plugin.liveController.blankScreen.\
+                isChecked(),
+            u'theme': self.parent.plugin.liveController.themeScreen.\
+                isChecked(),
+            u'display': self.parent.plugin.liveController.desktopScreen.\
+                isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
@@ -418,9 +425,9 @@ class HttpConnection(object):
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
-    def status(self):
+    def displayStatus(self):
         """
-        Obtain the status of system.
+        Obtain the display status of system.
 
         """
         result = {
@@ -434,7 +441,7 @@ class HttpConnection(object):
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
 
-    def changeStatus(self, action):
+    def changeDisplayStatus(self, action):
         """
         Toggle the display of the system including the status button.
 
