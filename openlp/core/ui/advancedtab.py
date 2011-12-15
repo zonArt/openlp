@@ -32,6 +32,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsTab, translate, build_icon
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter
+from datetime import datetime
+import re
 
 class AdvancedTab(SettingsTab):
     """
@@ -42,7 +44,14 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
+        advancedTranslated = translate(u'OpenLP.AdvancedTab', u'Advanced')
+        self.default_service_name = unicode(translate(u'OpenLP.AdvancedTab',
+            u'Service %Y-%m-%d'))
+        self.default_service_example = unicode(translate(u'OpenLP.AdvancedTab',
+            u'%Y-%m-%d',
+            u'This should be the date part of default service name.'))
+        self.wrong_characters_expression = \
+            re.compile(r'[\[\]/\;,><&*:%=+@!#^()|?^]+')
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
@@ -83,6 +92,40 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
+        self.defaultServiceGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.defaultServiceGroupBox.setObjectName(u'defaultServiceGroupBox')
+        self.defaultServiceLayout = QtGui.QFormLayout(
+            self.defaultServiceGroupBox)
+        self.defaultServiceLayout.setObjectName(u'defaultServiceLayout')
+        self.defaultServiceLabel = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceLabel.setObjectName(u'defaultServiceLabel')
+        self.defaultServiceEdit = QtGui.QLineEdit(self.defaultServiceGroupBox)
+        self.defaultServiceEdit.setObjectName(u'defaultServiceEdit')
+        self.defaultServiceRevertButton = QtGui.QToolButton(
+            self.defaultServiceGroupBox)
+        self.defaultServiceRevertButton.setObjectName(
+            u'defaultServiceRevertButton')
+        self.defaultServiceRevertButton.setIcon(
+            build_icon(u':/general/general_revert.png'))
+        self.defaultServiceHBox = QtGui.QHBoxLayout()
+        self.defaultServiceHBox.setObjectName(u'defaultServiceHBox')
+        self.defaultServiceHBox.addWidget(self.defaultServiceLabel)
+        self.defaultServiceHBox.addWidget(self.defaultServiceEdit)
+        self.defaultServiceHBox.addWidget(self.defaultServiceRevertButton)
+        self.defaultServiceLayout.addRow(self.defaultServiceHBox)
+        self.defaultServiceExampleLabel = QtGui.QLabel(
+            self.defaultServiceGroupBox)
+        self.defaultServiceExampleLabel.setObjectName(
+            u'defaultServiceExampleLabel')
+        self.defaultServiceExample = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceExample.setObjectName(u'defaultServiceExample')
+        self.defaultServiceLayout.addRow(self.defaultServiceExampleLabel,
+            self.defaultServiceExample)
+        self.defaultServiceNoteLabel = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceNoteLabel.setWordWrap(True)
+        self.defaultServiceNoteLabel.setObjectName(u'defaultServiceNoteLabel')
+        self.defaultServiceLayout.addRow(self.defaultServiceNoteLabel)
+        self.leftLayout.addWidget(self.defaultServiceGroupBox)
         self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.defaultImageGroupBox.setObjectName(u'defaultImageGroupBox')
@@ -124,6 +167,12 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.hideMouseGroupBox)
         self.rightLayout.addStretch()
 
+        QtCore.QObject.connect(self.defaultServiceEdit,
+            QtCore.SIGNAL(u'textChanged(QString)'),
+            self.onDefaultServiceUpdated)
+        QtCore.QObject.connect(self.defaultServiceRevertButton,
+            QtCore.SIGNAL(u'pressed()'),
+            self.onDefaultServiceRevertButtonPressed)
         QtCore.QObject.connect(self.defaultColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
         QtCore.QObject.connect(self.defaultBrowseButton,
@@ -151,6 +200,22 @@ class AdvancedTab(SettingsTab):
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Enable application exit confirmation'))
+        self.defaultServiceGroupBox.setTitle(
+            translate(u'OpenLP.AdvancedTab', u'Default Service'))
+        self.defaultServiceLabel.setText(
+            translate(u'OpenLP.AdvancedTab', u'Default service name:'))
+        self.defaultServiceRevertButton.setToolTip(unicode(
+            translate(u'OpenLP.AdvancedTab',
+            u'Revert to the default service name "%s".')) %
+            self.default_service_name)
+        self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
+            u'Example:'))
+        self.defaultServiceNoteLabel.setText(unicode(
+            translate(u'OpenLP.AdvancedTab', u'Default service name when '
+            'saving a new service. You can use date placeholders, e.g %s '
+            'results in %s. Leave it empty to use no default value.')) % 
+            (self.default_service_example,
+            datetime.now().strftime(self.default_service_example)))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
@@ -198,6 +263,9 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+        self.service_name = unicode(settings.value(u'default service name',
+            self.default_service_name).toString())
+        self.defaultServiceEdit.setText(self.service_name)
         self.default_color = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -211,8 +279,18 @@ class AdvancedTab(SettingsTab):
         """
         Save settings to disk.
         """
+        self.service_name = unicode(self.defaultServiceEdit.text())
+        preset_okay, name_example = self.generate_service_name_example(
+            self.service_name)
+        if not preset_okay:
+            # should alert or something
+            pass
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
+        if self.service_name == self.default_service_name:
+            settings.remove(u'default service name')
+        else:
+            settings.setValue(u'default service name', self.service_name)
         settings.setValue(u'recent file count',
             QtCore.QVariant(self.recentSpinBox.value()))
         settings.setValue(u'save current plugin',
@@ -230,6 +308,29 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
+
+    def generate_service_name_example(self, service_name_preset):
+        preset_okay = True
+        try:
+            service_name_example = datetime.now().strftime(
+                unicode(service_name_preset))
+            if self.wrong_characters_expression.search(service_name_example):
+                service_name_example = translate(u'OpenLP.AdvancedTab',
+                    u'Filename contains wrong characters.')
+                preset_okay = False
+        except ValueError:
+            service_name_example = translate(u'OpenLP.AdvancedTab',
+                u'Syntax error.')
+            preset_okay = False
+        return preset_okay, service_name_example
+
+    def onDefaultServiceUpdated(self, preset):
+        preset_okay, name_example = self.generate_service_name_example(preset)
+        self.defaultServiceExample.setText(name_example)
+
+    def onDefaultServiceRevertButtonPressed(self):
+        self.defaultServiceEdit.setText(self.default_service_name)
+        self.defaultServiceEdit.setFocus()
 
     def onDefaultColorButtonPressed(self):
         new_color = QtGui.QColorDialog.getColor(

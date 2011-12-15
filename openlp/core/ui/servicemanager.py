@@ -31,6 +31,7 @@ import os
 import shutil
 import zipfile
 from tempfile import mkstemp
+from datetime import datetime
 
 log = logging.getLogger(__name__)
 
@@ -610,10 +611,15 @@ class ServiceManager(QtGui.QWidget):
         Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
+        default_pattern = unicode(QtCore.QSettings().value(
+            u'advanced/default service name',
+            translate(u'OpenLP.AdvancedTab', u'Service %Y-%m-%d')).toString())
+        default_filename = datetime.now().strftime(default_pattern)
+        directory = unicode(SettingsManager.get_last_dir(
+            self.mainwindow.servicemanagerSettingsSection))
+        path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            UiStrings().SaveService,
-            SettingsManager.get_last_dir(
-            self.mainwindow.servicemanagerSettingsSection),
+            UiStrings().SaveService, path,
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
