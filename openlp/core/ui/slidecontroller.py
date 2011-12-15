@@ -577,17 +577,16 @@ class SlideController(Controller):
         """
         Toggle the display settings triggered from remote messages.
         """
-        if action == u'blank':
-            self.onBlankDisplay(not self.blankScreen.isChecked())
+        if action == u'blank' or action == u'hide':
+            self.onBlankDisplay(True)
         elif action == u'theme':
-            self.onThemeDisplay(not self.themeScreen.isChecked())
+            self.onThemeDisplay(True)
         elif action == u'desktop':
-            self.onHideDisplay(not self.desktopScreen.isChecked())
+            self.onHideDisplay(True)
         elif action == u'show':
             self.onBlankDisplay(False)
-        elif action == u'hide':
-            self.onBlankDisplay(True)
-
+            self.onThemeDisplay(False)
+            self.onHideDisplay(False)
 
     def servicePrevious(self):
         """
