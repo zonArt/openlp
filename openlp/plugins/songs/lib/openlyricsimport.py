@@ -70,6 +70,9 @@ class OpenLyricsImport(SongImport):
                 parsed_file = etree.parse(open(file_path, u'r'), parser)
                 xml = unicode(etree.tostring(parsed_file))
                 self.openLyrics.xml_to_song(xml)
-            except etree.XMLSyntaxError, AttributeError:
+            except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
+                self.logError(file_path, SongStrings.XMLSyntaxError)
+            except Exception as values:
+                log.exception(u'%s in file %s' % (values[0], file_path))
                 self.logError(file_path, SongStrings.XMLSyntaxError)

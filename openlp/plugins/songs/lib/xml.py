@@ -673,9 +673,16 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
-        lyrics = song_xml.lyrics
+        try:
+            lyrics = song_xml.lyrics
+        except AttributeError:
+            raise Exception('XML error, missing lyrics item')
+        try:
+            verses = lyrics.verse
+        except AttributeError:
+            raise Exception('XML error, missing verse item')
         # Loop over the "verse" elements.
-        for verse in lyrics.verse:
+        for verse in verses:
             text = u''
             # Loop over the "lines" elements.
             for lines in verse.lines:
