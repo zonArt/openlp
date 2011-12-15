@@ -238,7 +238,7 @@ class ActionList(object):
         # STRG+O (German) is converted to CTRL+O, which is only done when we
         # convert the strings in this way (QKeySequence -> QString -> unicode).
         shortcuts = map(QtGui.QKeySequence, shortcuts)
-        shortcuts = map(unicode, map(QtGui.QKeySequence.toString,  shortcuts))
+        shortcuts = map(unicode, map(QtGui.QKeySequence.toString, shortcuts))
         # Check the alternate shortcut first, to avoid problems when the
         # alternate shortcut becomes the primary shortcut after removing the
         # (initial) primary shortcut due to conflicts.
