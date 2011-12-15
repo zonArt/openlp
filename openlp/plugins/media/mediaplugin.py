@@ -126,19 +126,22 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
-        has_phonon = u'phonon' in self.mediaController.mediaPlayers.keys()
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')
+            players = self.mediaController.mediaPlayers.keys()
+            has_phonon = u'phonon' in players
             if settings.value(u'use phonon').toBool() and has_phonon:
                 log.debug(u'Converting old setting to new setting')
-                players = unicode(settings.value(u'players').toString())
                 new_players = []
                 if players:
-                    new_players = [player for player in players.split(u',') \
+                    new_players = [player for player in players \
                         if player != u'phonon']
                 new_players.insert(0, u'phonon')
+                self.mediaController.mediaPlayers[u'phonon'].isActive = True
                 settings.setValue(u'players', \
                     QtCore.QVariant(u','.join(new_players)))
+                self.settings_tab.load()
             settings.remove(u'use phonon')
+        settings.endGroup()
