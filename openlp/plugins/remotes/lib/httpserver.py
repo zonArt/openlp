@@ -249,12 +249,9 @@ class HttpConnection(object):
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
-            (r'^/api/display/(hide|show)$', self.display),
+            (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
-            (r'^/api/display-status$', self.displayStatus),
-            (r'^/api/display-status/(blank|theme|desktop)$',
-                self.changeDisplayStatus),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
@@ -419,32 +416,6 @@ class HttpConnection(object):
 
         ``action``
             This is the action, either ``hide`` or ``show``.
-        """
-        event = u'live_display_%s' % action
-        Receiver.send_message(event, HideMode.Blank)
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
-            {u'Content-Type': u'application/json'})
-
-    def displayStatus(self):
-        """
-        Obtain the display status of system.
-
-        """
-        result = {
-            u'blank': self.parent.plugin.liveController.blankScreen.\
-                isChecked(),
-            u'theme': self.parent.plugin.liveController.themeScreen.\
-                isChecked(),
-            u'display': self.parent.plugin.liveController.desktopScreen.\
-                isChecked()
-        }
-        return HttpResponse(json.dumps({u'results': result}),
-            {u'Content-Type': u'application/json'})
-
-    def changeDisplayStatus(self, action):
-        """
-        Toggle the display of the system including the status button.
-
         """
         Receiver.send_message(u'slidecontroller_toggle_display', action)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),

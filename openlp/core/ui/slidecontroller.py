@@ -583,6 +583,10 @@ class SlideController(Controller):
             self.onThemeDisplay(not self.themeScreen.isChecked())
         elif action == u'desktop':
             self.onHideDisplay(not self.desktopScreen.isChecked())
+        elif action == u'show':
+            self.onBlankDisplay(False)
+        elif action == u'hide':
+            self.onBlankDisplay(True)
 
 
     def servicePrevious(self):
