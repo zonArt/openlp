@@ -533,32 +533,8 @@ class ThemeManager(QtGui.QWidget):
             xml_tree = ElementTree(element=XML(zip.read(xmlfile[0]))).getroot()
             v1_background = xml_tree.find(u'BackgroundType')
             if v1_background is not None:
-                # openlp.org v1.x theme file
-                themename = xml_tree.find(u'Name').text.strip()
-                themename = self.bad_v1_name_chars.sub(u'', themename)
-                themedir = os.path.join(dir, themename)
-                check_directory_exists(themedir)
-                filexml = unicode(zip.read(xmlfile[0]), u'utf-8')
-                filexml = self._migrateVersion122(filexml)
-                outfile = open(os.path.join(themedir, themename + u'.xml'),
-                    u'w')
-                outfile.write(filexml.encode(u'utf-8'))
-                outfile.close()
-                if v1_background.text.strip() == u'2':
-                    imagename = xml_tree.find(u'BackgroundParameter1').text\
-                        .strip()
-                    # image file is in subfolder and has same extension
-                    imagefile = filter(lambda name: name.find(r'/') and
-                        os.path.splitext(name)[1].lower() == os.path.splitext(
-                        imagename)[1].lower(), zip.namelist())
-                    if len(imagefile) >= 1:
-                        outfile = open(os.path.join(themedir, imagename), u'wb')
-                        outfile.write(zip.read(imagefile[0]))
-                        outfile.close()
-                    else:
-                        log.exception(u'Theme file does not contain image file '
-                            u'"%s"' % imagename.decode(u'utf-8', u'replace'))
-                        raise Exception(u'validation')
+                (themename, filexml, outfile) = self.unzipVersion122(dir, zip,
+                    xmlfile[0], xml_tree, v1_background, outfile)
             else:
                 themename = xml_tree.find(u'name').text.strip()
                 for name in zip.namelist():
@@ -612,6 +588,36 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
+
+    def unzipVersion122(self, dir, zip, xmlfile, xml_tree, background, outfile):
+        """
+        Unzip openlp.org 1.2x theme file and upgrade the theme xml. When calling
+        this method, please keep in mind, that some parameters are redundant.
+        """
+        themename = xml_tree.find(u'Name').text.strip()
+        themename = self.bad_v1_name_chars.sub(u'', themename)
+        themedir = os.path.join(dir, themename)
+        check_directory_exists(themedir)
+        filexml = unicode(zip.read(xmlfile), u'utf-8')
+        filexml = self._migrateVersion122(filexml)
+        outfile = open(os.path.join(themedir, themename + u'.xml'), u'w')
+        outfile.write(filexml.encode(u'utf-8'))
+        outfile.close()
+        if background.text.strip() == u'2':
+            imagename = xml_tree.find(u'BackgroundParameter1').text.strip()
+            # image file has same extension and is in subfolder
+            imagefile = filter(lambda name: os.path.splitext(name)[1].lower()
+                == os.path.splitext(imagename)[1].lower() and name.find(r'/'),
+                zip.namelist())
+            if len(imagefile) >= 1:
+                outfile = open(os.path.join(themedir, imagename), u'wb')
+                outfile.write(zip.read(imagefile[0]))
+                outfile.close()
+            else:
+                log.exception(u'Theme file does not contain image file "%s"' %
+                    imagename.decode(u'utf-8', u'replace'))
+                raise Exception(u'validation')
+        return (themename, filexml, outfile)
 
     def checkIfThemeExists(self, themeName):
         """
