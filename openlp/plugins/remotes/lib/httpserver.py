@@ -249,7 +249,7 @@ class HttpConnection(object):
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
-            (r'^/api/display/(hide|show)$', self.display),
+            (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
             (r'^/api/(.*)/search$', self.search),
@@ -401,7 +401,13 @@ class HttpConnection(object):
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',
             u'twelve':QtCore.QSettings().value(
-            u'remotes/twelve hour', QtCore.QVariant(True)).toBool()
+            u'remotes/twelve hour', QtCore.QVariant(True)).toBool(),
+            u'blank': self.parent.plugin.liveController.blankScreen.\
+                isChecked(),
+            u'theme': self.parent.plugin.liveController.themeScreen.\
+                isChecked(),
+            u'display': self.parent.plugin.liveController.desktopScreen.\
+                isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
@@ -413,8 +419,7 @@ class HttpConnection(object):
         ``action``
             This is the action, either ``hide`` or ``show``.
         """
-        event = u'live_display_%s' % action
-        Receiver.send_message(event, HideMode.Blank)
+        Receiver.send_message(u'slidecontroller_toggle_display', action)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
