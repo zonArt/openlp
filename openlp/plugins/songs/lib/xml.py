@@ -676,11 +676,11 @@ class OpenLyrics(object):
         try:
             lyrics = song_xml.lyrics
         except AttributeError:
-            raise Exception('XML error, missing lyrics item')
+            raise OpenLyricsException('XML', 'missing lyrics item')
         try:
             verses = lyrics.verse
         except AttributeError:
-            raise Exception('XML error, missing verse item')
+            raise OpenLyricsException('XML', 'missing verse item')
         # Loop over the "verse" elements.
         for verse in verses:
             text = u''
@@ -798,3 +798,15 @@ class OpenLyrics(object):
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
+
+
+class OpenLyricsException(Exception):
+    """
+    By now raised only in case of missing lyrics or verse element in XML.
+    """
+    def __init__(self, exception_type, message):
+        self.type = exception_type
+        self.message = message
+
+    def __str__(self):
+        return "%s: %s" % (self.type, self.message)

@@ -38,6 +38,7 @@ from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib import OpenLyrics
+from openlp.plugins.songs.lib.xml import OpenLyricsException
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +74,10 @@ class OpenLyricsImport(SongImport):
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
                 self.logError(file_path, SongStrings.XMLSyntaxError)
-            except Exception as values:
-                log.exception(u'%s in file %s' % (values[0], file_path))
-                self.logError(file_path, SongStrings.XMLSyntaxError)
+            except OpenLyricsException as exception:
+                log.exception(u'OpenLyricsException of type %s: %s in file %s'
+                    % (exception.type, exception.message, file_path))
+                if exception.type is 'XML':
+                    self.logError(file_path, SongStrings.XMLSyntaxError)
+                else:
+                    self.logError(file_path, exception.message)
