@@ -676,11 +676,11 @@ class OpenLyrics(object):
         try:
             lyrics = song_xml.lyrics
         except AttributeError:
-            raise OpenLyricsException('XML', 'missing lyrics item')
+            raise OpenLyricsError('XML', 'missing lyrics item')
         try:
             verses = lyrics.verse
         except AttributeError:
-            raise OpenLyricsException('XML', 'missing verse item')
+            raise OpenLyricsError('XML', 'missing verse item')
         # Loop over the "verse" elements.
         for verse in verses:
             text = u''
@@ -800,7 +800,7 @@ class OpenLyrics(object):
             xml_declaration=True, pretty_print=True)
 
 
-class OpenLyricsException(Exception):
+class OpenLyricsError(Exception):
     """
     By now raised only in case of missing lyrics or verse element in XML.
     """
