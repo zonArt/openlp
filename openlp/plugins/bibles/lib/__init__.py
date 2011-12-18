@@ -30,26 +30,19 @@ plugin.
 import logging
 import re
 
-from openlp.core.lib import translate
-
 log = logging.getLogger(__name__)
 
 def get_reference_match(match_type):
-    local_separator = unicode(translate('BiblesPlugin',
-        ':;;\\s*[:vV]\\s*;;-;;\\s*-\\s*;;,;;\\s*,\\s*;;end',
-        'Seperators for parsing references. There are 7 values separated each '
-        'by two semicolons. Verse, range and list separators have each one '
-        'display symbol which appears on slides and in the GUI and a regular '
-        'expression for detecting this symbols.\n'
-        'Please ask a developer to double check your translation or make '
-        'yourself familar with regular experssions on: '
-        'http://docs.python.org/library/re.html')
-        ).split(u';;')
+    local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
+        ).split(u';;') # English
+    # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'
+    #   ).split(u';;') # German
     separators = {
         u'sep_v_display': local_separator[0], u'sep_v': local_separator[1],
         u'sep_r_display': local_separator[2], u'sep_r': local_separator[3],
         u'sep_l_display': local_separator[4], u'sep_l': local_separator[5],
         u'sep_e': local_separator[6]}
+
     # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
     range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
         r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
@@ -138,9 +131,6 @@ def parse_reference(reference):
     if match:
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
-        bookname_dict = get_system_bookname_dict()
-        if book.lower() in bookname_dict:
-            book = bookname_dict[book.lower()]
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)
         ref_list = []
@@ -200,94 +190,6 @@ def parse_reference(reference):
     else:
         log.debug(u'Invalid reference: %s' % reference)
         return None
-
-def get_local_bookname_dict():
-    raw_dict = get_raw_bookname_dict()
-    local_bookname_dict = {}
-    for key in raw_dict.keys():
-        local_bookname_dict[key] = raw_dict[key][0]
-    return local_bookname_dict
-
-def get_system_bookname_dict():
-    raw_dict = get_raw_bookname_dict()
-    system_bookname_dict = {}
-    for key in raw_dict.keys():
-        for alias in raw_dict[key]:
-            system_bookname_dict[alias.lower()] = key
-    return system_bookname_dict
-
-def get_raw_bookname_dict():
-    raw_bookname_dict = {u'Genesis': translate('BiblesPlugin', 'Genesis;;Gen'),
-        u'Exodus': translate('BiblesPlugin', 'Exodus;;Exod'),
-        u'Leviticus': translate('BiblesPlugin', 'Leviticus;;Lev'),
-        u'Numbers': translate('BiblesPlugin', 'Numbers;;Num'),
-        u'Deuteronomy': translate('BiblesPlugin', 'Deuteronomy;;Deut'),
-        u'Joshua': translate('BiblesPlugin', 'Joshua;;Josh'),
-        u'Judges': translate('BiblesPlugin', 'Judges;;Judg'),
-        u'Ruth': translate('BiblesPlugin', 'Ruth;;Ruth'),
-        u'1 Samuel': translate('BiblesPlugin', '1 Samuel;;1Sam'),
-        u'2 Samuel': translate('BiblesPlugin', '2 Samuel;;2Sam'),
-        u'1 Kings': translate('BiblesPlugin', '1 Kings;;1Kgs'),
-        u'2 Kings': translate('BiblesPlugin', '2 Kings;;2Kgs'),
-        u'1 Chronicles': translate('BiblesPlugin', '1 Chronicles;;1Chr'),
-        u'2 Chronicles': translate('BiblesPlugin', '2 Chronicles;;2Chr'),
-        u'Ezra': translate('BiblesPlugin', 'Ezra;;Ezra'),
-        u'Nehemiah': translate('BiblesPlugin', 'Nehemiah;;Neh'),
-        u'Esther': translate('BiblesPlugin', 'Esther;;Esth'),
-        u'Job': translate('BiblesPlugin', 'Job;;Job'),
-        u'Psalms': translate('BiblesPlugin', 'Psalms;;Ps'),
-        u'Proverbs': translate('BiblesPlugin', 'Proverbs;;Prov'),
-        u'Ecclesiastes': translate('BiblesPlugin', 'Ecclesiastes;;Eccl'),
-        u'Song of Songs': translate('BiblesPlugin', 'Song of Songs;;Song'),
-        u'Isaiah': translate('BiblesPlugin', 'Isaiah;;Isa'),
-        u'Jeremiah': translate('BiblesPlugin', 'Jeremiah;;Jer'),
-        u'Lamentations': translate('BiblesPlugin', 'Lamentations;;Lam'),
-        u'Ezekiel': translate('BiblesPlugin', 'Ezekiel;;Ezek'),
-        u'Daniel': translate('BiblesPlugin', 'Daniel;;Dan'),
-        u'Hosea': translate('BiblesPlugin', 'Hosea;;Hos'),
-        u'Joel': translate('BiblesPlugin', 'Joel;;Joel'),
-        u'Amos': translate('BiblesPlugin', 'Amos;;Amos'),
-        u'Obad': translate('BiblesPlugin', 'Obad;;Obad'),
-        u'Jonah': translate('BiblesPlugin', 'Jonah;;Jonah'),
-        u'Micah': translate('BiblesPlugin', 'Micah;;Mic'),
-        u'Naham': translate('BiblesPlugin', 'Naham;;Nah'),
-        u'Habakkuk': translate('BiblesPlugin', 'Habakkuk;;Hab'),
-        u'Zephaniah': translate('BiblesPlugin', 'Zephaniah;;Zeph'),
-        u'Haggai': translate('BiblesPlugin', 'Haggai;;Hag'),
-        u'Zechariah': translate('BiblesPlugin', 'Zechariah;;Zech'),
-        u'Malachi': translate('BiblesPlugin', 'Malachi;;Mal'),
-        u'Matthew': translate('BiblesPlugin', 'Matthew;;Matt'),
-        u'Mark': translate('BiblesPlugin', 'Mark;;Mark'),
-        u'Luke': translate('BiblesPlugin', 'Luke;;Luke'),
-        u'John': translate('BiblesPlugin', 'John;;John'),
-        u'Acts': translate('BiblesPlugin', 'Acts;;Acts'),
-        u'Romans': translate('BiblesPlugin', 'Romans;;Rom'),
-        u'1 Corinthians': translate('BiblesPlugin', '1 Corinthians;;1Cor'),
-        u'2 Corinthians': translate('BiblesPlugin', '2 Corinthians;;2Cor'),
-        u'Galatians': translate('BiblesPlugin', 'Galatians;;Gal'),
-        u'Ephesians': translate('BiblesPlugin', 'Ephesians;;Eph'),
-        u'Philippians': translate('BiblesPlugin', 'Philippians;;Phil'),
-        u'Colossians': translate('BiblesPlugin', 'Colossians;;Col'),
-        u'1 Thessalonians': translate('BiblesPlugin',
-            '1 Thessalonians;;1Thess'),
-        u'2 Thessalonians': translate('BiblesPlugin',
-            '2 Thessalonians;;2Thess'),
-        u'1 Timothy': translate('BiblesPlugin', '1 Timothy;;1Tim'),
-        u'2 Timothy': translate('BiblesPlugin', '2 Timothy;;2Tim'),
-        u'Titus': translate('BiblesPlugin', 'Titus;;Titus'),
-        u'Philemon': translate('BiblesPlugin', 'Philemon;;Phlm'),
-        u'Hebrews': translate('BiblesPlugin', 'Hebrews;;Heb'),
-        u'James': translate('BiblesPlugin', 'James;;Jas'),
-        u'1 Peter': translate('BiblesPlugin', '1 Peter;;1Pet'),
-        u'2 Peter': translate('BiblesPlugin', '2 Peter;;2Pet'),
-        u'1 John': translate('BiblesPlugin', '1 John;;1John'),
-        u'2 John': translate('BiblesPlugin', '2 John;;2John'),
-        u'3 John': translate('BiblesPlugin', '3 John;;3John'),
-        u'Jude': translate('BiblesPlugin', 'Jude;;Jude'),
-        u'Revelation': translate('BiblesPlugin', 'Revelation;;Rev')}
-    for key in raw_bookname_dict.keys():
-        raw_bookname_dict[key] = unicode(raw_bookname_dict[key]).split(u';;')
-    return raw_bookname_dict
 
 
 class SearchResults(object):

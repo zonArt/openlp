@@ -190,8 +190,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         if not isinstance(old_filename, unicode):
             old_filename = unicode(old_filename, u'utf-8')
-        old_filename = \
-            re.sub(r'[^\w]+', u'_', old_filename, re.UNICODE).strip(u'_')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'
 
     def register(self, wizard):

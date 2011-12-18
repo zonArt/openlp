@@ -257,14 +257,6 @@ class BibleManager(object):
                 - Genesis 1:1-10,2:1-10
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
-        if not bible:
-            QtGui.QMessageBox.information(self.parent.mediaItem,
-                translate('BiblesPlugin.BibleManager',
-                'No Bibles available'),
-                translate('BiblesPlugin.BibleManager',
-                'There are no Bibles currently installed. Please use the '
-                'Import Wizard to install one or more Bibles.'))
-            return None
         reflist = parse_reference(versetext)
         if reflist:
             return self.db_cache[bible].get_verses(reflist)
