@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,8 +26,6 @@
 ###############################################################################
 
 import logging
-
-from forms import EditCustomForm
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
@@ -47,27 +46,19 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'custom', plugin_helpers,
+            CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
-        self.edit_custom_form = EditCustomForm(self.manager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return CustomTab(self.name, visible_name[u'title'])
-
-    def getMediaManagerItem(self):
-        # Create the ManagerItem object
-        return CustomMediaItem(self, self, self.icon)
-
     def about(self):
-        about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
-            '<br />The custom plugin provides the ability to set up custom '
-            'text slides that can be displayed on the screen the same way '
-            'songs are. This plugin provides greater freedom over the songs '
-            'plugin.')
+        about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin'
+            '</strong><br />The custom slide plugin provides the ability to '
+            'set up custom text slides that can be displayed on the screen '
+            'the same way songs are. This plugin provides greater freedom '
+            'over the songs plugin.')
         return about_text
 
     def usesTheme(self, theme):
@@ -104,62 +95,33 @@ class CustomPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('CustomsPlugin', 'Custom', 'name singular'),
-            u'plural': translate('CustomsPlugin', 'Customs', 'name plural')
+            u'singular': translate('CustomPlugin', 'Custom Slide',
+                                   'name singular'),
+            u'plural': translate('CustomPlugin', 'Custom Slides',
+                                 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('CustomsPlugin', 'Custom', 'container title')
+            u'title': translate('CustomPlugin', 'Custom Slides',
+                'container title')
         }
         # Middle Header Bar
-        ## Import Action ##
-        self.textStrings[StringContent.Import] = {
-            u'title': translate('CustomsPlugin', 'Import'),
-            u'tooltip': translate('CustomsPlugin',
-                'Import a Custom')
+        tooltips = {
+            u'load': translate('CustomPlugin', 'Load a new custom slide.'),
+            u'import': translate('CustomPlugin', 'Import a custom slide.'),
+            u'new': translate('CustomPlugin', 'Add a new custom slide.'),
+            u'edit': translate('CustomPlugin',
+                'Edit the selected custom slide.'),
+            u'delete': translate('CustomPlugin',
+                'Delete the selected custom slide.'),
+            u'preview': translate('CustomPlugin',
+                'Preview the selected custom slide.'),
+            u'live': translate('CustomPlugin',
+                'Send the selected custom slide live.'),
+            u'service': translate('CustomPlugin',
+                'Add the selected custom slide to the service.')
         }
-        ## Load Action ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('CustomsPlugin', 'Load'),
-            u'tooltip': translate('CustomsPlugin',
-                'Load a new Custom')
-        }
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('CustomsPlugin', 'Add'),
-            u'tooltip': translate('CustomsPlugin',
-                'Add a new Custom')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('CustomsPlugin', 'Edit'),
-            u'tooltip': translate('CustomsPlugin',
-                'Edit the selected Custom')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('CustomsPlugin', 'Delete'),
-            u'tooltip': translate('CustomsPlugin',
-                'Delete the selected Custom')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('CustomsPlugin', 'Preview'),
-            u'tooltip': translate('CustomsPlugin',
-                'Preview the selected Custom')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('CustomsPlugin', 'Live'),
-            u'tooltip': translate('CustomsPlugin',
-                'Send the selected Custom live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('CustomsPlugin', 'Service'),
-            u'tooltip': translate('CustomsPlugin',
-                'Add the selected Custom to the service')
-        }
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """

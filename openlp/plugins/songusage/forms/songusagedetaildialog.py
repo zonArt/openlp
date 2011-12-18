@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,18 +28,21 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, songUsageDetailDialog):
         songUsageDetailDialog.setObjectName(u'songUsageDetailDialog')
         songUsageDetailDialog.resize(609, 413)
         self.verticalLayout = QtGui.QVBoxLayout(songUsageDetailDialog)
+        self.verticalLayout.setSpacing(8)
+        self.verticalLayout.setContentsMargins(8, 8, 8, 8)
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.dateRangeGroupBox = QtGui.QGroupBox(songUsageDetailDialog)
         self.dateRangeGroupBox.setObjectName(u'dateRangeGroupBox')
-        self.verticalLayout2 = QtGui.QVBoxLayout(self.dateRangeGroupBox)
-        self.verticalLayout2.setObjectName(u'verticalLayout2')
-        self.dateHorizontalLayout = QtGui.QHBoxLayout()
+        self.dateHorizontalLayout = QtGui.QHBoxLayout(self.dateRangeGroupBox)
+        self.dateHorizontalLayout.setSpacing(8)
+        self.dateHorizontalLayout.setContentsMargins(8, 8, 8, 8)
         self.dateHorizontalLayout.setObjectName(u'dateHorizontalLayout')
         self.fromDate = QtGui.QCalendarWidget(self.dateRangeGroupBox)
         self.fromDate.setObjectName(u'fromDate')
@@ -51,35 +55,29 @@ class Ui_SongUsageDetailDialog(object):
         self.toDate = QtGui.QCalendarWidget(self.dateRangeGroupBox)
         self.toDate.setObjectName(u'toDate')
         self.dateHorizontalLayout.addWidget(self.toDate)
-        self.verticalLayout2.addLayout(self.dateHorizontalLayout)
+        self.verticalLayout.addWidget(self.dateRangeGroupBox)
         self.fileGroupBox = QtGui.QGroupBox(self.dateRangeGroupBox)
         self.fileGroupBox.setObjectName(u'fileGroupBox')
-        self.verticalLayout4 = QtGui.QVBoxLayout(self.fileGroupBox)
-        self.verticalLayout4.setObjectName(u'verticalLayout4')
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
+        self.fileHorizontalLayout = QtGui.QHBoxLayout(self.fileGroupBox)
+        self.fileHorizontalLayout.setSpacing(8)
+        self.fileHorizontalLayout.setContentsMargins(8, 8, 8, 8)
+        self.fileHorizontalLayout.setObjectName(u'fileHorizontalLayout')
         self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
         self.fileLineEdit.setObjectName(u'fileLineEdit')
-        self.horizontalLayout.addWidget(self.fileLineEdit)
+        self.fileLineEdit.setReadOnly(True)
+        self.fileHorizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
+        self.saveFilePushButton.setMaximumWidth(
+            self.saveFilePushButton.size().height())
         self.saveFilePushButton.setIcon(
-            build_icon(u':/general/general_load.png'))
+            build_icon(u':/general/general_open.png'))
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
-        self.horizontalLayout.addWidget(self.saveFilePushButton)
-        self.verticalLayout4.addLayout(self.horizontalLayout)
-        self.verticalLayout2.addWidget(self.fileGroupBox)
-        self.verticalLayout.addWidget(self.dateRangeGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(songUsageDetailDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.fileHorizontalLayout.addWidget(self.saveFilePushButton)
+        self.verticalLayout.addWidget(self.fileGroupBox)
+        self.buttonBox = create_accept_reject_button_box(
+            songUsageDetailDialog, True)
         self.verticalLayout.addWidget(self.buttonBox)
-
         self.retranslateUi(songUsageDetailDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            songUsageDetailDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            songUsageDetailDialog.close)
         QtCore.QObject.connect(self.saveFilePushButton,
             QtCore.SIGNAL(u'pressed()'),
             songUsageDetailDialog.defineOutputLocation)

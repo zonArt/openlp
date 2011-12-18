@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,60 +28,47 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_AuthorsDialog(object):
-    def setupUi(self, AuthorsDialog):
-        AuthorsDialog.setObjectName(u'AuthorsDialog')
-        AuthorsDialog.resize(393, 147)
-        self.AuthorsLayout = QtGui.QFormLayout(AuthorsDialog)
-        self.AuthorsLayout.setMargin(8)
-        self.AuthorsLayout.setSpacing(8)
-        self.AuthorsLayout.setObjectName(u'AuthorsLayout')
-        self.FirstNameLabel = QtGui.QLabel(AuthorsDialog)
-        self.FirstNameLabel.setObjectName(u'FirstNameLabel')
-        self.AuthorsLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.FirstNameLabel)
-        self.FirstNameEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.FirstNameEdit.setObjectName(u'FirstNameEdit')
-        self.AuthorsLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.FirstNameEdit)
-        self.LastNameLabel = QtGui.QLabel(AuthorsDialog)
-        self.LastNameLabel.setObjectName(u'LastNameLabel')
-        self.AuthorsLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.LastNameLabel)
-        self.LastNameEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.LastNameEdit.setObjectName(u'LastNameEdit')
-        self.AuthorsLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.LastNameEdit)
-        self.DisplayLabel = QtGui.QLabel(AuthorsDialog)
-        self.DisplayLabel.setObjectName(u'DisplayLabel')
-        self.AuthorsLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.DisplayLabel)
-        self.DisplayEdit = QtGui.QLineEdit(AuthorsDialog)
-        self.DisplayEdit.setObjectName(u'DisplayEdit')
-        self.AuthorsLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.DisplayEdit)
-        self.AuthorButtonBox = QtGui.QDialogButtonBox(AuthorsDialog)
-        self.AuthorButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.AuthorButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
-        self.AuthorButtonBox.setObjectName(u'AuthorButtonBox')
-        self.AuthorsLayout.setWidget(3,
-            QtGui.QFormLayout.FieldRole, self.AuthorButtonBox)
+    def setupUi(self, authorsDialog):
+        authorsDialog.setObjectName(u'AuthorsDialog')
+        authorsDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QVBoxLayout(authorsDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.authorLayout = QtGui.QFormLayout()
+        self.authorLayout.setObjectName(u'authorLayout')
+        self.firstNameLabel = QtGui.QLabel(authorsDialog)
+        self.firstNameLabel.setObjectName(u'firstNameLabel')
+        self.firstNameEdit = QtGui.QLineEdit(authorsDialog)
+        self.firstNameEdit.setObjectName(u'firstNameEdit')
+        self.firstNameLabel.setBuddy(self.firstNameEdit)
+        self.authorLayout.addRow(self.firstNameLabel, self.firstNameEdit)
+        self.lastNameLabel = QtGui.QLabel(authorsDialog)
+        self.lastNameLabel.setObjectName(u'lastNameLabel')
+        self.lastNameEdit = QtGui.QLineEdit(authorsDialog)
+        self.lastNameEdit.setObjectName(u'lastNameEdit')
+        self.lastNameLabel.setBuddy(self.lastNameEdit)
+        self.authorLayout.addRow(self.lastNameLabel, self.lastNameEdit)
+        self.displayLabel = QtGui.QLabel(authorsDialog)
+        self.displayLabel.setObjectName(u'displayLabel')
+        self.displayEdit = QtGui.QLineEdit(authorsDialog)
+        self.displayEdit.setObjectName(u'displayEdit')
+        self.displayLabel.setBuddy(self.displayEdit)
+        self.authorLayout.addRow(self.displayLabel, self.displayEdit)
+        self.dialogLayout.addLayout(self.authorLayout)
+        self.dialogLayout.addWidget(
+            create_accept_reject_button_box(authorsDialog))
+        self.retranslateUi(authorsDialog)
+        authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(authorsDialog)
 
-        self.retranslateUi(AuthorsDialog)
-        QtCore.QObject.connect(self.AuthorButtonBox,
-            QtCore.SIGNAL(u'accepted()'), AuthorsDialog.accept)
-        QtCore.QObject.connect(self.AuthorButtonBox,
-            QtCore.SIGNAL(u'rejected()'), AuthorsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(AuthorsDialog)
-
-    def retranslateUi(self, AuthorsDialog):
-        AuthorsDialog.setWindowTitle(
+    def retranslateUi(self, authorsDialog):
+        authorsDialog.setWindowTitle(
             translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
-        self.DisplayLabel.setText(
+        self.displayLabel.setText(
             translate('SongsPlugin.AuthorsForm', 'Display name:'))
-        self.FirstNameLabel.setText(
+        self.firstNameLabel.setText(
             translate('SongsPlugin.AuthorsForm', 'First name:'))
-        self.LastNameLabel.setText(
+        self.lastNameLabel.setText(
             translate('SongsPlugin.AuthorsForm', 'Last name:'))

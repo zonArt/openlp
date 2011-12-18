@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,56 +28,181 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib.ui import UiStrings
 
 class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, parent, title, visible_title, media_players, icon_path):
+        self.mediaPlayers = media_players
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaLayout = QtGui.QFormLayout(self)
-        self.mediaLayout.setSpacing(8)
-        self.mediaLayout.setMargin(8)
-        self.mediaLayout.setObjectName(u'mediaLayout')
-        self.mediaModeGroupBox = QtGui.QGroupBox(self)
-        self.mediaModeGroupBox.setObjectName(u'mediaModeGroupBox')
-        self.mediaModeLayout = QtGui.QVBoxLayout(self.mediaModeGroupBox)
-        self.mediaModeLayout.setSpacing(8)
-        self.mediaModeLayout.setMargin(8)
-        self.mediaModeLayout.setObjectName(u'mediaModeLayout')
-        self.usePhononCheckBox = QtGui.QCheckBox(self.mediaModeGroupBox)
-        self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaModeLayout.addWidget(self.usePhononCheckBox)
-        self.mediaLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.mediaModeGroupBox)
-        QtCore.QObject.connect(self.usePhononCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onUsePhononCheckBoxChanged)
+        SettingsTab.setupUi(self)
+        self.mediaPlayerGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.mediaPlayerGroupBox.setObjectName(u'mediaPlayerGroupBox')
+        self.mediaPlayerLayout = QtGui.QVBoxLayout(self.mediaPlayerGroupBox)
+        self.mediaPlayerLayout.setObjectName(u'mediaPlayerLayout')
+        self.playerCheckBoxes = {}
+        for key, player in self.mediaPlayers.iteritems():
+            player = self.mediaPlayers[key]
+            checkbox = QtGui.QCheckBox(self.mediaPlayerGroupBox)
+            checkbox.setEnabled(player.available)
+            checkbox.setObjectName(player.name + u'CheckBox')
+            self.playerCheckBoxes[player.name] = checkbox
+            self.mediaPlayerLayout.addWidget(checkbox)
+        self.leftLayout.addWidget(self.mediaPlayerGroupBox)
+        self.playerOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
+        self.playerOrderLayout = QtGui.QVBoxLayout(self.playerOrderGroupBox)
+        self.playerOrderLayout.setObjectName(u'playerOrderLayout')
+        self.playerOrderlistWidget = QtGui.QListWidget( \
+            self.playerOrderGroupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.playerOrderlistWidget. \
+            sizePolicy().hasHeightForWidth())
+        self.playerOrderlistWidget.setSizePolicy(sizePolicy)
+        self.playerOrderlistWidget.setVerticalScrollBarPolicy( \
+            QtCore.Qt.ScrollBarAsNeeded)
+        self.playerOrderlistWidget.setHorizontalScrollBarPolicy( \
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.playerOrderlistWidget.setEditTriggers( \
+            QtGui.QAbstractItemView.NoEditTriggers)
+        self.playerOrderlistWidget.setObjectName(u'playerOrderlistWidget')
+        self.playerOrderLayout.addWidget(self.playerOrderlistWidget)
+        self.orderingButtonsWidget = QtGui.QWidget(self.playerOrderGroupBox)
+        self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
+        self.orderingButtonLayout = QtGui.QHBoxLayout( \
+            self.orderingButtonsWidget)
+        self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
+        self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
+        self.orderingDownButton.setObjectName(u'orderingDownButton')
+        self.orderingButtonLayout.addWidget(self.orderingDownButton)
+        self.orderingUpButton = QtGui.QPushButton(self.playerOrderGroupBox)
+        self.orderingUpButton.setObjectName(u'orderingUpButton')
+        self.orderingButtonLayout.addWidget(self.orderingUpButton)
+        self.playerOrderLayout.addWidget(self.orderingButtonsWidget)
+        self.leftLayout.addWidget(self.playerOrderGroupBox)
+        self.advancedGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.advancedGroupBox.setObjectName(u'advancedGroupBox')
+        self.advancedLayout = QtGui.QVBoxLayout(self.advancedGroupBox)
+        self.advancedLayout.setObjectName(u'advancedLayout')
+        self.overridePlayerCheckBox = QtGui.QCheckBox(self.advancedGroupBox)
+        self.overridePlayerCheckBox.setObjectName(u'overridePlayerCheckBox')
+        self.advancedLayout.addWidget(self.overridePlayerCheckBox)
+        self.leftLayout.addWidget(self.advancedGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
+        for key in self.mediaPlayers:
+            player = self.mediaPlayers[key]
+            checkbox = self.playerCheckBoxes[player.name]
+            QtCore.QObject.connect(checkbox,
+                QtCore.SIGNAL(u'stateChanged(int)'),
+                self.onPlayerCheckBoxChanged)
+        QtCore.QObject.connect(self.orderingUpButton,
+            QtCore.SIGNAL(u'pressed()'), self.onOrderingUpButtonPressed)
+        QtCore.QObject.connect(self.orderingDownButton,
+            QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
-        self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
-            'Media Display'))
-        self.usePhononCheckBox.setText(
-            translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
+        self.mediaPlayerGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Available Media Players'))
+        for key in self.mediaPlayers:
+            player = self.mediaPlayers[key]
+            checkbox = self.playerCheckBoxes[player.name]
+            if player.available:
+                checkbox.setText(player.name)
+            else:
+                checkbox.setText(
+                    unicode(translate('MediaPlugin.MediaTab',
+                    '%s (unavailable)')) % player.name)
+        self.playerOrderGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Player Order'))
+        self.orderingDownButton.setText(
+            translate('MediaPlugin.MediaTab', 'Down'))
+        self.orderingUpButton.setText(
+            translate('MediaPlugin.MediaTab', 'Up'))
+        self.advancedGroupBox.setTitle(UiStrings().Advanced)
+        self.overridePlayerCheckBox.setText(
+            translate('MediaPlugin.MediaTab',
+            'Allow media player to be overriden'))
 
-    def onUsePhononCheckBoxChanged(self, check_state):
-        self.usePhonon = (check_state == QtCore.Qt.Checked)
-        self.usePhononChanged = True
+    def onPlayerCheckBoxChanged(self, check_state):
+        player = self.sender().text()
+        if check_state == QtCore.Qt.Checked:
+            if player not in self.usedPlayers:
+                self.usedPlayers.append(player)
+        else:
+            self.usedPlayers.takeAt(self.usedPlayers.indexOf(player))
+        self.updatePlayerList()
+
+    def updatePlayerList(self):
+        self.playerOrderlistWidget.clear()
+        for player in self.usedPlayers:
+            if player in self.playerCheckBoxes.keys():
+                if len(self.usedPlayers) == 1:
+                    # at least one media player have to stay active
+                    self.playerCheckBoxes[u'%s' % player].setEnabled(False)
+                else:
+                    self.playerCheckBoxes[u'%s' % player].setEnabled(True)
+                self.playerOrderlistWidget.addItem(player)
+
+    def onOrderingUpButtonPressed(self):
+        currentRow = self.playerOrderlistWidget.currentRow()
+        if currentRow > 0:
+            item = self.playerOrderlistWidget.takeItem(currentRow)
+            self.playerOrderlistWidget.insertItem(currentRow - 1, item)
+            self.playerOrderlistWidget.setCurrentRow(currentRow - 1)
+            self.usedPlayers.move(currentRow, currentRow - 1)
+
+    def onOrderingDownButtonPressed(self):
+        currentRow = self.playerOrderlistWidget.currentRow()
+        if currentRow < self.playerOrderlistWidget.count() - 1:
+            item = self.playerOrderlistWidget.takeItem(currentRow)
+            self.playerOrderlistWidget.insertItem(currentRow + 1, item)
+            self.playerOrderlistWidget.setCurrentRow(currentRow + 1)
+            self.usedPlayers.move(currentRow, currentRow + 1)
 
     def load(self):
-        self.usePhonon = QtCore.QSettings().value(
-            self.settingsSection + u'/use phonon',
-            QtCore.QVariant(True)).toBool()
-        self.usePhononCheckBox.setChecked(self.usePhonon)
+        self.usedPlayers = QtCore.QSettings().value(
+            self.settingsSection + u'/players',
+            QtCore.QVariant(u'webkit')).toString().split(u',')
+        for key in self.mediaPlayers:
+            player = self.mediaPlayers[key]
+            checkbox = self.playerCheckBoxes[player.name]
+            if player.available and player.name in self.usedPlayers:
+                checkbox.setChecked(True)
+        self.updatePlayerList()
+        self.overridePlayerCheckBox.setChecked(QtCore.QSettings().value(
+            self.settingsSection + u'/override player',
+            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
-        oldUsePhonon = QtCore.QSettings().value(
-            u'media/use phonon', QtCore.QVariant(True)).toBool()
-        if oldUsePhonon != self.usePhonon:
-            QtCore.QSettings().setValue(self.settingsSection + u'/use phonon',
-                QtCore.QVariant(self.usePhonon))
+        override_changed = False
+        player_string_changed = False
+        old_players = QtCore.QSettings().value(
+            self.settingsSection + u'/players',
+            QtCore.QVariant(u'webkit')).toString()
+        new_players = self.usedPlayers.join(u',')
+        if old_players != new_players:
+            # clean old Media stuff
+            QtCore.QSettings().setValue(self.settingsSection + u'/players',
+                QtCore.QVariant(new_players))
+            player_string_changed = True
+            override_changed = True
+        setting_key = self.settingsSection + u'/override player'
+        if QtCore.QSettings().value(setting_key) != \
+            self.overridePlayerCheckBox.checkState():
+            QtCore.QSettings().setValue(setting_key,
+                QtCore.QVariant(self.overridePlayerCheckBox.checkState()))
+            override_changed = True
+        if override_changed:
+            Receiver.send_message(u'mediaitem_media_rebuild')
+        if player_string_changed:
+            Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')

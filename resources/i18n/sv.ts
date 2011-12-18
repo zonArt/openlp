@@ -1,114 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="sv">
-<context>
-    <name>AlertPlugin.AlertForm</name>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="174"/>
-        <source>No Parameter found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="174"/>
-        <source>You have not entered a parameter to be replaced.
-Do you want to continue anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="185"/>
-        <source>No Placeholder found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="185"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
-Do want to continue anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
+<!DOCTYPE TS><TS version="2.0" language="sv" sourcelanguage="">
 <context>
     <name>AlertsPlugin</name>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="72"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="138"/>
         <source>&amp;Alert</source>
-        <translation type="unfinished">&amp;Alarm</translation>
+        <translation>&amp;Meddelande</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="73"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="139"/>
         <source>Show an alert message.</source>
-        <translation>Visa ett larmmeddelande.</translation>
+        <translation>Visa ett publikt meddelande.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="106"/>
-        <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of nursery alerts on the display screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="117"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="186"/>
         <source>Alert</source>
-        <translation type="unfinished"></translation>
+        <comment>name singular</comment>
+        <translation>Meddelande</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="122"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="187"/>
         <source>Alerts</source>
-        <translation type="unfinished">Alarm</translation>
+        <comment>name plural</comment>
+        <translation>Meddelanden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="191"/>
+        <source>Alerts</source>
+        <comment>container title</comment>
+        <translation>Meddelanden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="175"/>
+        <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of nursery alerts on the display screen.</source>
+        <translation>&lt;strong&gt;Meddelandemodul&lt;/strong&gt;&lt;br /&gt;Meddelandemodulen kontrollerar visningen av publika meddelanden på visningsskärmen.</translation>
     </message>
 </context>
 <context>
     <name>AlertsPlugin.AlertForm</name>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="126"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="97"/>
         <source>Alert Message</source>
-        <translation type="unfinished">Larmmeddelande</translation>
+        <translation>Meddelande</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="128"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="99"/>
         <source>Alert &amp;text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Meddelande&amp;text:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="132"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="103"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Ny</translation>
+        <translation>&amp;Nytt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="134"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="105"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Spara</translation>
+        <translation>&amp;Spara</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="136"/>
-        <source>&amp;Delete</source>
-        <translation>&amp;Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="138"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="107"/>
         <source>Displ&amp;ay</source>
         <translation>&amp;Visa</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="140"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="109"/>
         <source>Display &amp;&amp; Cl&amp;ose</source>
         <translation>Visa &amp;&amp; stän&amp;g</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="142"/>
-        <source>&amp;Close</source>
-        <translation>Stä&amp;ng</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="105"/>
         <source>New Alert</source>
-        <translation>Nytt alarm</translation>
+        <translation>Nytt meddelande</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="103"/>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="105"/>
         <source>You haven&apos;t specified any text for your alert. Please type in some text before clicking New.</source>
-        <translation>Du har inte angivit någon text för ditt alarm. Vänligen ange en text innan du klickar på Ny.</translation>
+        <translation>Du har inte angivit någon text för ditt meddelande. Ange en text innan du klickar på Nytt.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="130"/>
+        <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="101"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Parameter:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
+        <source>No Parameter Found</source>
+        <translation>Parameter saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
+        <source>You have not entered a parameter to be replaced.
+Do you want to continue anyway?</source>
+        <translation>Du har inte angivit någon parameter.
+Vill du fortsätta ändå?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="189"/>
+        <source>No Placeholder Found</source>
+        <translation>Platshållare saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="189"/>
+        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+Do you want to continue anyway?</source>
+        <translation>Meddelandet innehåller inte &apos;&lt;&gt;&apos;.
+Vill du fortsätta ändå?</translation>
     </message>
 </context>
 <context>
@@ -116,210 +113,159 @@ Do want to continue anyway?</source>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="72"/>
         <source>Alert message created and displayed.</source>
-        <translation>Larmmeddelande skapat och visat.</translation>
+        <translation>Meddelande skapat och visat.</translation>
     </message>
 </context>
 <context>
     <name>AlertsPlugin.AlertsTab</name>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="190"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="104"/>
         <source>Font</source>
         <translation>Teckensnitt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="192"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="106"/>
         <source>Font name:</source>
-        <translation>Teckensnittsnamn:</translation>
+        <translation>Teckensnitt:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="194"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="108"/>
         <source>Font color:</source>
-        <translation>Teckensnittsfärg:</translation>
+        <translation>Teckenfärg:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="196"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="110"/>
         <source>Background color:</source>
         <translation>Bakgrundsfärg:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="198"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="112"/>
         <source>Font size:</source>
-        <translation>Teckensnittstorlek:</translation>
+        <translation>Teckenstorlek:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="200"/>
-        <source>pt</source>
-        <translation type="unfinished">pt</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="202"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="115"/>
         <source>Alert timeout:</source>
-        <translation type="unfinished">Alarm timeout:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="204"/>
-        <source>s</source>
-        <translation type="unfinished">s</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="206"/>
-        <source>Location:</source>
-        <translation type="unfinished">Placering:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="208"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="210"/>
-        <source>OpenLP 2.0</source>
-        <translation type="unfinished">OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="212"/>
-        <source>Top</source>
-        <translation type="unfinished">Topp</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="214"/>
-        <source>Middle</source>
-        <translation type="unfinished">Mitten</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="216"/>
-        <source>Bottom</source>
-        <translation>Botten</translation>
-    </message>
-</context>
-<context>
-    <name>BiblePlugin.MediaItem</name>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="628"/>
-        <source>Error</source>
-        <translation>Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="628"/>
-        <source>You cannot combine single and second bible verses. Do you want to delete your search results and start a new search?</source>
-        <translation type="unfinished"></translation>
+        <translation>Visningstid:</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="87"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="106"/>
         <source>&amp;Bible</source>
-        <translation type="unfinished">&amp;Bibel</translation>
+        <translation>&amp;Bibel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="95"/>
-        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display bible verses from different sources during the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="129"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="183"/>
         <source>Bible</source>
-        <translation type="unfinished"></translation>
+        <comment>name singular</comment>
+        <translation>Bibel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="134"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="184"/>
         <source>Bibles</source>
-        <translation type="unfinished">Biblar</translation>
+        <comment>name plural</comment>
+        <translation>Biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="139"/>
-        <source>Import</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="188"/>
+        <source>Bibles</source>
+        <comment>container title</comment>
+        <translation>Biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="140"/>
-        <source>Import a Bible</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="303"/>
+        <source>No Book Found</source>
+        <translation>Bok saknas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="303"/>
+        <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
+        <translation>Ingen bok hittades i vald bibel. Kontrollera stavningen av bokens namn.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="146"/>
-        <source>Add a new Bible</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="193"/>
+        <source>Import a Bible.</source>
+        <translation>Importera en bibelöversättning.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="151"/>
-        <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="194"/>
+        <source>Add a new Bible.</source>
+        <translation>Lägg till en ny bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="152"/>
-        <source>Edit the selected Bible</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="195"/>
+        <source>Edit the selected Bible.</source>
+        <translation>Redigera vald bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="157"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="196"/>
+        <source>Delete the selected Bible.</source>
+        <translation>Ta bort vald bibel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="158"/>
-        <source>Delete the selected Bible</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="197"/>
+        <source>Preview the selected Bible.</source>
+        <translation>Förhandsgranska bibeltexten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="163"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
+        <source>Send the selected Bible live.</source>
+        <translation>Visa bibeltexten live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="164"/>
-        <source>Preview the selected Bible</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="200"/>
+        <source>Add the selected Bible to the service.</source>
+        <translation>Lägg till bibeltexten i körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="169"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="148"/>
+        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
+        <translation>&lt;strong&gt;Bibelmodul&lt;/strong&gt;&lt;br /&gt;Bibelmodulen gör det möjligt att visa bibelverser från olika översättningar under gudstjänsten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="170"/>
-        <source>Send the selected Bible live</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="122"/>
+        <source>&amp;Upgrade older Bibles</source>
+        <translation>&amp;Uppgradera äldre biblar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="175"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="176"/>
-        <source>Add the selected Bible to the service</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>BiblesPlugin.BibleDB</name>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/db.py" line="357"/>
-        <source>Book not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/db.py" line="357"/>
-        <source>The book you requested could not be found in this Bible. Please check your spelling and that this is a complete Bible not just one testament.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="124"/>
+        <source>Upgrade the Bible databases to the latest format.</source>
+        <translation>Uppgradera bibeldatabasen till det senaste formatet.</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.BibleManager</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="310"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="369"/>
         <source>Scripture Reference Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Felaktig bibelreferens</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="264"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="359"/>
+        <source>Web Bible cannot be used</source>
+        <translation>Webb-bibel kan inte användas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="359"/>
+        <source>Text Search is not available with Web Bibles.</source>
+        <translation>Textsökning är inte tillgänglig för webb-biblar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="369"/>
+        <source>You did not enter a search keyword.
+You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
+        <translation>Du angav inget sökord.
+Du kan ange flera sökord avskilda med mellanslag för att söka på alla sökord och du kan avskilja sökorden med kommatecken för att söka efter ett av sökorden.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="343"/>
+        <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
+        <translation>Det finns inga biblar installerade. Använd guiden för bibelimport och installera en eller flera bibelöversättningar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="312"/>
         <source>Your scripture reference is either not supported by OpenLP or is invalid. Please make sure your reference conforms to one of the following patterns:
 
 Book Chapter
@@ -328,1273 +274,1163 @@ Book Chapter:Verse-Verse
 Book Chapter:Verse-Verse,Verse-Verse
 Book Chapter:Verse-Verse,Chapter:Verse-Verse
 Book Chapter:Verse-Chapter:Verse</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibelreferensen stöds antingen inte av OpenLP, eller är ogiltig. Kontrollera att bibelreferensen är given enligt något av följande mönster:
+
+Bok kapitel
+Bok kapitel-kapitel
+Bok kapitel:vers-vers
+Bok kapitel:vers-vers,vers-vers
+Bok kapitel:vers-vers,kapitel:vers-vers
+Bok kapitel:vers-kapitel:vers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="301"/>
-        <source>Web Bible cannot be used</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="301"/>
-        <source>Text Search is not available with Web Bibles.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="310"/>
-        <source>You did not enter a search keyword.
-You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="343"/>
+        <source>No Bibles Available</source>
+        <translation>Inga biblar tillgängliga</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.BiblesTab</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="117"/>
         <source>Verse Display</source>
-        <translation type="unfinished">Versvisning</translation>
+        <translation>Visning av bibeltext</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="154"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="119"/>
         <source>Only show new chapter numbers</source>
-        <translation type="unfinished">Visa bara nya kapitelnummer</translation>
+        <translation>Visa bara nummer för nya kapitel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="157"/>
-        <source>Layout style:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="159"/>
-        <source>Display style:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="161"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="124"/>
         <source>Bible theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibeltema:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="163"/>
-        <source>Verse Per Slide</source>
-        <translation>Verser per sida</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="165"/>
-        <source>Verse Per Line</source>
-        <translation>Verser per rad</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="167"/>
-        <source>Continuous</source>
-        <translation>Kontinuerlig</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="169"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="132"/>
         <source>No Brackets</source>
         <translation>Inga parenteser</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="171"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="134"/>
         <source>( And )</source>
         <translation>( och )</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="173"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="136"/>
         <source>{ And }</source>
         <translation>{ och }</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="175"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="138"/>
         <source>[ And ]</source>
         <translation>[ och ]</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="177"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="140"/>
         <source>Note:
 Changes do not affect verses already in the service.</source>
-        <translation>Notera:
-Ändringar kommer inte påverka verser som finns i planeringen.</translation>
+        <translation>Observera:
+Ändringar kommer inte att påverka verser som redan finns i körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="179"/>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="142"/>
         <source>Display second Bible verses</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa andra bibelns verser</translation>
     </message>
 </context>
 <context>
-    <name>BiblesPlugin.CSVImport</name>
+    <name>BiblesPlugin.BookNameDialog</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="95"/>
-        <source>Importing</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="98"/>
+        <source>Select Book Name</source>
+        <translation>Välj bok</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="100"/>
+        <source>The following book name cannot be matched up internally. Please select the corresponding English name from the list.</source>
+        <translation>Följande bok kunde inte identifieras. Välj motsvarande engelskt namn från listan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="103"/>
+        <source>Current name:</source>
+        <translation>Nuvarande namn:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="105"/>
+        <source>Corresponding name:</source>
+        <translation>Motsvarande namn:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="107"/>
+        <source>Show Books From</source>
+        <translation>Visa böcker från</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="109"/>
+        <source>Old Testament</source>
+        <translation>Gamla testamentet</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="111"/>
+        <source>New Testament</source>
+        <translation>Nya testamentet</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="113"/>
+        <source>Apocrypha</source>
+        <translation>Apokryferna</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.BookNameForm</name>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/booknameform.py" line="117"/>
+        <source>You need to select a book.</source>
+        <translation>Du måste välja en bok.</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.CSVBible</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="110"/>
+        <source>Importing books... %s</source>
+        <translation>Importerar böcker... %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="154"/>
+        <source>Importing verses from %s...</source>
+        <comment>Importing verses from &lt;book name&gt;...</comment>
+        <translation>Importerar verser från %s...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="163"/>
+        <source>Importing verses... done.</source>
+        <translation>Importerar verser... klart.</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.HTTPBible</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="392"/>
+        <source>Registering Bible and loading books...</source>
+        <translation>Registrerar bibel och laddar böcker...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="417"/>
+        <source>Registering Language...</source>
+        <translation>Registrerar språk...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="433"/>
+        <source>Importing %s...</source>
+        <comment>Importing &lt;book name&gt;...</comment>
+        <translation>Importerar %s...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
+        <source>Download Error</source>
+        <translation>Fel vid nedladdning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
+        <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
+        <translation>Det uppstod problem vid nedladdningen av versurvalet. Kontrollera Internetanslutningen och om problemet återkommer, överväg att rapportera det som en bugg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="607"/>
+        <source>Parse Error</source>
+        <translation>Fel vid tolkning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="607"/>
+        <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
+        <translation>Det uppstod problem vid extraherande av vers-urvalet. Om problemet uppstår igen, överväg att rapportera det som en bugg.</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="348"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="350"/>
         <source>Bible Import Wizard</source>
-        <translation>Bibelimportguide</translation>
+        <translation>Guiden för bibelimport</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="350"/>
-        <source>Welcome to the Bible Import Wizard</source>
-        <translation>Välkommen till guiden för bibelimport</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="354"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="354"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation type="unfinished">Den här guiden hjälper dig importera biblar från en mängd olika format. Klicka på Nästa för att börja proceduren genom att välja ett format att importera från.</translation>
+        <translation>Den här guiden hjälper dig importera biblar från en mängd olika format. Klicka på Nästa för att fortsätta med importen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="359"/>
-        <source>Select Import Source</source>
-        <translation type="unfinished">Välj importkälla</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="361"/>
-        <source>Select the import format, and where to import from.</source>
-        <translation>Välj format för importen och plats att importera från.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="364"/>
-        <source>Format:</source>
-        <translation type="unfinished">Format:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="366"/>
-        <source>OSIS</source>
-        <translation type="unfinished">OSIS</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="368"/>
-        <source>CSV</source>
-        <translation type="unfinished">CSV</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="370"/>
-        <source>OpenSong</source>
-        <translation type="unfinished">OpenSong</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="372"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="365"/>
         <source>Web Download</source>
-        <translation type="unfinished">Webbnedladdning</translation>
+        <translation>Nedladdning från Internet</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="378"/>
-        <source>File location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="380"/>
-        <source>Books location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="382"/>
-        <source>Verse location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="384"/>
-        <source>Bible filename:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="386"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="378"/>
         <source>Location:</source>
-        <translation>Placering:</translation>
+        <translation>Källa:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="388"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="380"/>
         <source>Crosswalk</source>
-        <translation type="unfinished">Crosswalk</translation>
+        <translation>Crosswalk</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="390"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="382"/>
         <source>BibleGateway</source>
-        <translation type="unfinished">BibleGateway</translation>
+        <translation>BibleGateway</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="394"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="386"/>
         <source>Bible:</source>
-        <translation type="unfinished">Bibel:</translation>
+        <translation>Bibel:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="396"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="388"/>
         <source>Download Options</source>
-        <translation type="unfinished">Alternativ för nedladdning</translation>
+        <translation>Alternativ för nedladdning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="399"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="391"/>
         <source>Server:</source>
-        <translation type="unfinished">Server:</translation>
+        <translation>Server:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="401"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="393"/>
         <source>Username:</source>
-        <translation type="unfinished">Användarnamn:</translation>
+        <translation>Användarnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="403"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="395"/>
         <source>Password:</source>
-        <translation type="unfinished">Lösenord:</translation>
+        <translation>Lösenord:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="405"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="397"/>
         <source>Proxy Server (Optional)</source>
-        <translation type="unfinished">Proxyserver (Frivilligt)</translation>
+        <translation>Proxyserver (frivilligt)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="409"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="401"/>
         <source>License Details</source>
-        <translation type="unfinished">Licensdetaljer</translation>
+        <translation>Licensuppgifter</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="411"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="403"/>
         <source>Set up the Bible&apos;s license details.</source>
-        <translation>Skriv in bibelns licensdetaljer.</translation>
+        <translation>Skriv in bibelns licensuppgifter.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="414"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="406"/>
         <source>Version name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn på bibelöversättningen:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="416"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="408"/>
         <source>Copyright:</source>
-        <translation type="unfinished">Copyright:</translation>
+        <translation>Copyright:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="420"/>
-        <source>Importing</source>
-        <translation type="unfinished">Importerar</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="422"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="413"/>
         <source>Please wait while your Bible is imported.</source>
-        <translation>Vänligen vänta medan din bibel importeras.</translation>
+        <translation>Vänta medan bibeln importeras.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="425"/>
-        <source>Ready.</source>
-        <translation>Klar.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="184"/>
-        <source>Invalid Bible Location</source>
-        <translation type="unfinished">Felaktig bibelplacering</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="184"/>
-        <source>You need to specify a file to import your Bible from.</source>
-        <translation>Du måste ange en fil att importera din bibel från.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="154"/>
-        <source>Invalid Books File</source>
-        <translation type="unfinished">Ogiltig bokfil</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="154"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="444"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
-        <translation type="unfinished">Du måste välja en fil med Bibelböcker att använda i importen.</translation>
+        <translation>Du måste välja en fil med bibelböcker att använda i importen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="163"/>
-        <source>Invalid Verse File</source>
-        <translation type="unfinished">Ogiltid versfil</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="163"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="451"/>
         <source>You need to specify a file of Bible verses to import.</source>
-        <translation type="unfinished">Du måste specificera en fil med Bibelverser att importera.</translation>
+        <translation>Du måste välja en fil med bibelverser att importera.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="174"/>
-        <source>Invalid OpenSong Bible</source>
-        <translation type="unfinished">Ogiltig OpenSong-bibel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="174"/>
-        <source>You need to specify an OpenSong Bible file to import.</source>
-        <translation type="unfinished">Du måste ange en OpenSong Bibel-fil att importera.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="199"/>
-        <source>Empty Version Name</source>
-        <translation type="unfinished">Tomt versionsnamn</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="199"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="482"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished">Du måste ange ett versionsnamn för din Bibel.</translation>
+        <translation>Du måste ange ett namn för bibeln.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="207"/>
-        <source>Empty Copyright</source>
-        <translation>Tom copyrightinformation</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="216"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="504"/>
         <source>Bible Exists</source>
-        <translation>Bibeln finns</translation>
+        <translation>Bibeln finns redan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="246"/>
-        <source>Open OSIS File</source>
-        <translation>Öppna OSIS-fil</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="254"/>
-        <source>Open Books CSV File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="263"/>
-        <source>Open Verses CSV File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="271"/>
-        <source>Open OpenSong Bible</source>
-        <translation>Öppna OpenSong-bibel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="457"/>
-        <source>Starting import...</source>
-        <translation type="unfinished">Påbörjar import...</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="530"/>
-        <source>Finished import.</source>
-        <translation type="unfinished">Importen är färdig.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="533"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="725"/>
         <source>Your Bible import failed.</source>
-        <translation>Din bibelimport misslyckades.</translation>
+        <translation>Bibelimporten misslyckades.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="207"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="488"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange en copyright-text för bibeln. Biblar i public domain måste anges som sådana.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="216"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="504"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibeln finns redan. Importera en annan Bibel eller radera den nuvarande.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="279"/>
-        <source>Open openlp.org 1.x Bible</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="453"/>
-        <source>Starting Registering bible...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="525"/>
-        <source>Registered bible. Please note, that verses will be downloaded on
-demand and thus an internet connection is required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="374"/>
-        <source>openlp.org 1.x</source>
-        <translation type="unfinished">openlp.org 1.x</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="418"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="410"/>
         <source>Permissions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillstånd:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="263"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="547"/>
         <source>CSV File</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-fil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="279"/>
-        <source>openlp.org 1.x bible</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="427"/>
-        <source>All Files</source>
-        <translation type="unfinished">Alla filer</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="392"/>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>Bibleserver</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibelserver</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="428"/>
-        <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="376"/>
+        <source>Bible file:</source>
+        <translation>Bibelfil:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="372"/>
+        <source>Books file:</source>
+        <translation>Bokfil:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="374"/>
+        <source>Verses file:</source>
+        <translation>Versfil:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="562"/>
+        <source>openlp.org 1.x Bible Files</source>
+        <translation>openlp.org 1.x bibelfiler</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="656"/>
+        <source>Registering Bible...</source>
+        <translation>Registrerar bibel...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="718"/>
+        <source>Registered Bible. Please note, that verses will be downloaded on
+demand and thus an internet connection is required.</source>
+        <translation>Bibeln registrerad. Observera att verser kommer att laddas ner
+vid behov, och därför behövs en Internetanslutning.</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.LanguageDialog</name>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="77"/>
+        <source>Select Language</source>
+        <translation>Välj språk</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="80"/>
+        <source>OpenLP is unable to determine the language of this translation of the Bible. Please select the language from the list below.</source>
+        <translation>OpenLP kan inte avgöra den här bibelöversättningens språk. Välj språk från listan nedan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="83"/>
+        <source>Language:</source>
+        <translation>Språk:</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.LanguageForm</name>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/languageform.py" line="65"/>
+        <source>You need to choose a language.</source>
+        <translation>Du måste välja ett språk.</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="60"/>
-        <source>Bible</source>
-        <translation type="unfinished">Bibel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="144"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="202"/>
         <source>Quick</source>
-        <translation type="unfinished">Snabb</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="229"/>
-        <source>Advanced</source>
-        <translation type="unfinished">Avancerat</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="305"/>
-        <source>Version:</source>
-        <translation type="unfinished">Version:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="297"/>
-        <source>Search type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
-        <source>Find:</source>
-        <translation type="unfinished">Hitta:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="321"/>
-        <source>Search</source>
-        <translation type="unfinished">Sök</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="319"/>
-        <source>Results:</source>
-        <translation type="unfinished">Resultat:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="309"/>
-        <source>Book:</source>
-        <translation type="unfinished">Bok:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
-        <source>Chapter:</source>
-        <translation type="unfinished">Kapitel:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="313"/>
-        <source>Verse:</source>
-        <translation type="unfinished">Vers:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="315"/>
-        <source>From:</source>
-        <translation type="unfinished">Från:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="317"/>
-        <source>To:</source>
-        <translation type="unfinished">Till:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="323"/>
-        <source>Verse Search</source>
-        <translation type="unfinished">Sök vers</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="325"/>
-        <source>Text Search</source>
-        <translation type="unfinished">Textsökning</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="331"/>
-        <source>Clear</source>
-        <translation>Rensa</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="333"/>
-        <source>Keep</source>
-        <translation type="unfinished">Behåll</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="364"/>
-        <source>No Book Found</source>
-        <translation type="unfinished">Ingen bok hittades</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="364"/>
-        <source>No matching book could be found in this Bible.</source>
-        <translation type="unfinished">Ingen matchande bok kunde hittas i den här Bibeln.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="436"/>
-        <source>Bible not fully loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelt</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
-        <source>Second:</source>
-        <translation type="unfinished"></translation>
+        <source>Find:</source>
+        <translation>Sök efter:</translation>
     </message>
-</context>
-<context>
-    <name>BiblesPlugin.OpenLP1Import</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/openlp1.py" line="76"/>
-        <source>Importing</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="322"/>
+        <source>Book:</source>
+        <translation>Bok:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="324"/>
+        <source>Chapter:</source>
+        <translation>Kapitel:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="326"/>
+        <source>Verse:</source>
+        <translation>Vers:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="328"/>
+        <source>From:</source>
+        <translation>Från:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="330"/>
+        <source>To:</source>
+        <translation>Till:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="354"/>
+        <source>Text Search</source>
+        <translation>Textsökning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="333"/>
+        <source>Second:</source>
+        <translation>Alternativ:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="354"/>
+        <source>Scripture Reference</source>
+        <translation>Bibelreferens</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="342"/>
+        <source>Toggle to keep or clear the previous results.</source>
+        <translation>Växla mellan att behålla eller rensa föregående sökresultat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="89"/>
+        <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
+        <translation>Du kan inte kombinera resultat från sökning i en bibel med resultat från sökning i två biblar. Vill du ta bort dina sökresultat och starta en ny sökning?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="443"/>
+        <source>Bible not fully loaded.</source>
+        <translation>Bibeln är inte helt laddad.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="700"/>
+        <source>Information</source>
+        <translation>Information</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="700"/>
+        <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
+        <translation>Den alternativa bibelöversättningen innehåller inte alla verser som finns i huvudöversättningen. Endast verser som finns i båda översättningar kommer att visas. %d verser har utelämnats.</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.Opensong</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/opensong.py" line="87"/>
-        <source>Importing</source>
-        <translation type="unfinished">Importerar</translation>
+        <location filename="openlp/plugins/bibles/lib/opensong.py" line="93"/>
+        <source>Importing %s %s...</source>
+        <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
+        <translation>Importerar %s %s...</translation>
     </message>
 </context>
 <context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="104"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="99"/>
         <source>Detecting encoding (this may take a few minutes)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyserar kodning (detta kan ta några minuter)...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="143"/>
-        <source>Importing</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="150"/>
+        <source>Importing %s %s...</source>
+        <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
+        <translation>Importerar %s %s...</translation>
+    </message>
+</context>
+<context>
+    <name>BiblesPlugin.UpgradeWizardForm</name>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="119"/>
+        <source>Select a Backup Directory</source>
+        <translation>Välj en backupmapp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="256"/>
+        <source>Bible Upgrade Wizard</source>
+        <translation>Bibeluppgraderingsguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="260"/>
+        <source>This wizard will help you to upgrade your existing Bibles from a prior version of OpenLP 2. Click the next button below to start the upgrade process.</source>
+        <translation>Den här guiden hjälper dig att uppgradera dina befintliga biblar från en tidigare version av OpenLP 2. Klicka på Nästa för att starta uppgraderingsprocessen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="265"/>
+        <source>Select Backup Directory</source>
+        <translation>Välj backupmapp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="268"/>
+        <source>Please select a backup directory for your Bibles</source>
+        <translation>Välj en mapp för backup av dina biblar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="271"/>
+        <source>Previous releases of OpenLP 2.0 are unable to use upgraded Bibles. This will create a backup of your current Bibles so that you can simply copy the files back to your OpenLP data directory if you need to revert to a previous release of OpenLP. Instructions on how to restore the files can be found in our &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</source>
+        <translation>Tidigare utgåvor av OpenLP 2.0 kan inte använda uppgraderade biblar. Nu skapas en backup av dina nuvarande biblar så att du enkelt kan kopiera tillbaks filerna till din OpenLP-datamapp om du skulle behöva återgå till en tidigare utgåva av OpenLP. Instruktioner om hur man återställer finns i vår &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;FAQ&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="278"/>
+        <source>Please select a backup location for your Bibles.</source>
+        <translation>Välj en mapp för backup av dina biblar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="280"/>
+        <source>Backup Directory:</source>
+        <translation>Backupmapp:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="282"/>
+        <source>There is no need to backup my Bibles</source>
+        <translation>Det är inte nödvändigt med backup av mina biblar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="285"/>
+        <source>Select Bibles</source>
+        <translation>Välj biblar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="288"/>
+        <source>Please select the Bibles to upgrade</source>
+        <translation>Välj biblar att uppgradera</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="291"/>
+        <source>Upgrading</source>
+        <translation>Uppgraderar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="293"/>
+        <source>Please wait while your Bibles are upgraded.</source>
+        <translation>Vänta medan biblarna uppgraderas.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="570"/>
+        <source>Upgrading Bible %s of %s: &quot;%s&quot;
+Failed</source>
+        <translation>Uppgraderar bibel %s av %s: &quot;%s&quot;
+Misslyckades</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="404"/>
+        <source>Upgrading Bible %s of %s: &quot;%s&quot;
+Upgrading ...</source>
+        <translation>Uppgraderar bibel %s av %s: &quot;%s&quot;
+Uppgraderar ...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="440"/>
+        <source>Download Error</source>
+        <translation>Fel vid nedladdning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="536"/>
+        <source>Upgrading Bible %s of %s: &quot;%s&quot;
+Upgrading %s ...</source>
+        <translation>Uppgraderar bibel %s av %s: &quot;%s&quot;
+Uppgraderar %s ...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="605"/>
+        <source>, %s failed</source>
+        <translation>, %s misslyckades</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="619"/>
+        <source>Upgrading Bible(s): %s successful%s</source>
+        <translation>Uppgradering av biblar: %s lyckades%s</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="624"/>
+        <source>Upgrade failed.</source>
+        <translation>Uppgradering misslyckades.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="317"/>
+        <source>The backup was not successful.
+To backup your Bibles you need permission to write to the given directory.</source>
+        <translation>Backuptagningen lyckades inte.
+För att kunna göra backup av dina biblar krävs skrivrättigheter i den givna mappen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="440"/>
+        <source>To upgrade your Web Bibles an Internet connection is required.</source>
+        <translation>För att uppgradera dina webb-biblar krävs en Internetanslutning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="578"/>
+        <source>Upgrading Bible %s of %s: &quot;%s&quot;
+Complete</source>
+        <translation>Uppgraderar bibel %s av %s: &quot;%s&quot;
+Färdig</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="612"/>
+        <source>Upgrading Bible(s): %s successful%s
+Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
+        <translation>Uppgradering av biblar: %s lyckades%s
+Observera att verser från webb-biblar kommer att laddas ner vid behov, och därför behövs en Internetanslutning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="309"/>
+        <source>You need to specify a backup directory for your Bibles.</source>
+        <translation>Du måste välja en backupmapp för dina biblar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="366"/>
+        <source>Starting upgrade...</source>
+        <translation>Startar uppgradering...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="377"/>
+        <source>There are no Bibles that need to be upgraded.</source>
+        <translation>Det finns inga biblar som behöver uppgraderas.</translation>
     </message>
 </context>
 <context>
     <name>CustomPlugin</name>
     <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="66"/>
-        <source>&lt;strong&gt;Custom Plugin&lt;/strong&gt;&lt;br /&gt;The custom plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/custom/customplugin.py" line="57"/>
+        <source>&lt;strong&gt;Custom Slide Plugin&lt;/strong&gt;&lt;br /&gt;The custom slide plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
+        <translation>&lt;strong&gt;Modul för anpassade sidor&lt;/strong&gt;&lt;br /&gt;Modulen för anpassade sidor ger möjlighet att skapa anpassade sidor med text som kan visas på skärmen på samma sätt som sånger. Modulen ger större frihet jämfört med sångmodulen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="98"/>
+        <source>Custom Slide</source>
+        <comment>name singular</comment>
+        <translation>Anpassad sida</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="100"/>
+        <source>Custom Slides</source>
+        <comment>name plural</comment>
+        <translation>Anpassad sida</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="105"/>
+        <source>Custom Slides</source>
+        <comment>container title</comment>
+        <translation>Anpassade sidor</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="110"/>
+        <source>Load a new custom slide.</source>
+        <translation>Ladda en ny uppsättning sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
+        <source>Import a custom slide.</source>
+        <translation>Importera en uppsättning sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
+        <source>Add a new custom slide.</source>
+        <translation>Lägg till en ny uppsättning sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="113"/>
+        <source>Edit the selected custom slide.</source>
+        <translation>Redigera den valda uppsättningen sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="115"/>
+        <source>Delete the selected custom slide.</source>
+        <translation>Ta bort den valda uppsättningen sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="117"/>
+        <source>Preview the selected custom slide.</source>
+        <translation>Förhandsgranska den valda uppsättningen sidor.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="119"/>
+        <source>Send the selected custom slide live.</source>
+        <translation>Visa den valda uppsättningen sidor live.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/custom/customplugin.py" line="121"/>
+        <source>Add the selected custom slide to the service.</source>
+        <translation>Lägg till den valda uppsättningen sidor i körschemat.</translation>
     </message>
 </context>
 <context>
     <name>CustomPlugin.CustomTab</name>
     <message>
-        <location filename="openlp/plugins/custom/lib/customtab.py" line="60"/>
+        <location filename="openlp/plugins/custom/lib/customtab.py" line="57"/>
         <source>Custom Display</source>
         <translation>Anpassad visning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/lib/customtab.py" line="62"/>
+        <location filename="openlp/plugins/custom/lib/customtab.py" line="59"/>
         <source>Display footer</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa sidfot</translation>
     </message>
 </context>
 <context>
     <name>CustomPlugin.EditCustomForm</name>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="122"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="107"/>
         <source>Edit Custom Slides</source>
         <translation>Redigera anpassade diabilder</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="124"/>
-        <source>Move slide up one position.</source>
-        <translation>Flytta upp diabilden en position.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="127"/>
-        <source>Move slide down one position.</source>
-        <translation>Flytta ner diabilden en position.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="130"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="109"/>
         <source>&amp;Title:</source>
         <translation>&amp;Titel:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="134"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="112"/>
         <source>Add a new slide at bottom.</source>
         <translation>Lägg till en ny diabild sist.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="139"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="116"/>
         <source>Edit the selected slide.</source>
         <translation>Redigera vald diabild.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="144"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="121"/>
         <source>Edit all the slides at once.</source>
         <translation>Redigera alla diabilder på en gång.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="149"/>
-        <source>Delete the selected slide.</source>
-        <translation>Ta bort vald diabild.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="55"/>
-        <source>Split Slide</source>
-        <translation>Dela diabilden</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="57"/>
+        <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="61"/>
         <source>Split a slide into two by inserting a slide splitter.</source>
         <translation>Dela diabilden i två genom att lägga till en diabild delare.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="152"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="124"/>
         <source>The&amp;me:</source>
         <translation>Te&amp;ma:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="154"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="126"/>
         <source>&amp;Credits:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Erkännande:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="82"/>
-        <source>Save &amp;&amp; Preview</source>
-        <translation type="unfinished">Spara &amp;&amp; förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="154"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="262"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="259"/>
         <source>You need to type in a title.</source>
         <translation>Du måste ange en titel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="266"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="265"/>
         <source>You need to add at least one slide</source>
         <translation>Du måste lägga till minst en diabild</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="132"/>
-        <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Lägg till</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="137"/>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="142"/>
+        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="119"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished"></translation>
+        <translation>Red&amp;igera alla</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="147"/>
-        <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Ta bort</translation>
+        <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="59"/>
+        <source>Insert Slide</source>
+        <translation>Infoga sida</translation>
     </message>
 </context>
 <context>
     <name>CustomPlugin.MediaItem</name>
-    <message>
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="122"/>
-        <source>You haven&apos;t selected an item to edit.</source>
-        <translation>Du har inte valt något objekt för redigering.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="135"/>
-        <source>You haven&apos;t selected an item to delete.</source>
-        <translation>Du har inte valt något objekt att ta bort.</translation>
-    </message>
-</context>
-<context>
-    <name>CustomsPlugin</name>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
-        <source>Custom</source>
-        <translation type="unfinished">Anpassad</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="108"/>
-        <source>Customs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="117"/>
-        <source>Import</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="118"/>
-        <source>Import a Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="123"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="124"/>
-        <source>Load a new Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="129"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="130"/>
-        <source>Add a new Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="135"/>
-        <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="136"/>
-        <source>Edit the selected Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="141"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="142"/>
-        <source>Delete the selected Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="147"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="148"/>
-        <source>Preview the selected Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="153"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="154"/>
-        <source>Send the selected Custom live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="159"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/custom/customplugin.py" line="160"/>
-        <source>Add the selected Custom to the service</source>
-        <translation type="unfinished"></translation>
+    <message numerus="yes">
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="204"/>
+        <source>Are you sure you want to delete the %n selected custom slides(s)?</source>
+        <translation>
+            <numerusform>Är du säker på att du vill ta bort den valda anpassade diabilden?</numerusform>
+            <numerusform>Är du säker på att du vill ta bort de %n valda anpassade diabilderna?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>ImagePlugin</name>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="48"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="51"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Bildmodul&lt;/strong&gt;&lt;br /&gt;Bildmodulen erbjuder visning av bilder.&lt;br /&gt;En av funktionerna i modulen är möjligheten att gruppera bilder i körschemat, vilket gör visning av flera bilder enklare. Modulen kan även använda OpenLP:s funktion för &quot;tidsstyrd bildväxling&quot; för att skapa ett bildspel som rullar automatiskt. Dessutom kan bilder från modulen användas för att ersätta det aktuella temats bakgrund, så att textbaserade sidor som till exempel sånger visas med den valda bilden som bakgrund i stället för temats bakgrund.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="67"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="70"/>
         <source>Image</source>
-        <translation type="unfinished">Bild</translation>
+        <comment>name singular</comment>
+        <translation>Bild</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="72"/>
+        <location filename="openlp/plugins/images/imageplugin.py" line="71"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <comment>name plural</comment>
+        <translation>Bilder</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="77"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/images/imageplugin.py" line="75"/>
+        <source>Images</source>
+        <comment>container title</comment>
+        <translation>Bilder</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="78"/>
-        <source>Load a new Image</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/images/imageplugin.py" line="79"/>
+        <source>Load a new image.</source>
+        <translation>Ladda en ny bild.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/imageplugin.py" line="81"/>
+        <source>Add a new image.</source>
+        <translation>Lägg till en ny bild.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/imageplugin.py" line="82"/>
+        <source>Edit the selected image.</source>
+        <translation>Redigera den valda bilden.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="83"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
+        <source>Delete the selected image.</source>
+        <translation>Ta bort den valda bilden.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="84"/>
-        <source>Add a new Image</source>
-        <translation type="unfinished"></translation>
+        <source>Preview the selected image.</source>
+        <translation>Förhandsgranska den valda bilden.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="89"/>
-        <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
+        <location filename="openlp/plugins/images/imageplugin.py" line="85"/>
+        <source>Send the selected image live.</source>
+        <translation>Visa den valda bilden live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="90"/>
-        <source>Edit the selected Image</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/images/imageplugin.py" line="86"/>
+        <source>Add the selected image to the service.</source>
+        <translation>Lägg till den valda bilden i körschemat.</translation>
     </message>
+</context>
+<context>
+    <name>ImagePlugin.ExceptionDialog</name>
     <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="95"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="96"/>
-        <source>Delete the selected Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="101"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="102"/>
-        <source>Preview the selected Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="107"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="108"/>
-        <source>Send the selected Image live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="113"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/imageplugin.py" line="114"/>
-        <source>Add the selected Image to the service</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/exceptionform.py" line="208"/>
+        <source>Select Attachment</source>
+        <translation>Välj bilaga</translation>
     </message>
 </context>
 <context>
     <name>ImagePlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="60"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="59"/>
         <source>Select Image(s)</source>
-        <translation type="unfinished">Välj bild(er)</translation>
+        <translation>Välj bild(er)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="63"/>
-        <source>All Files</source>
-        <translation>Alla filer</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="106"/>
-        <source>Replace Live Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="106"/>
-        <source>Replace Background</source>
-        <translation type="unfinished">Ersätt bakgrund</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="98"/>
-        <source>Reset Live Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="124"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="104"/>
         <source>You must select an image to delete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste välja en bild som skall tas bort.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="164"/>
-        <source>Image(s)</source>
-        <translation>Bild(er)</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="186"/>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="213"/>
         <source>You must select an image to replace the background with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste välja en bild att ersätta bakgrundsbilden med.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="111"/>
-        <source>You must select a media file to replace the background with.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="181"/>
+        <source>Missing Image(s)</source>
+        <translation>Bild(er) saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="174"/>
+        <source>The following image(s) no longer exist: %s</source>
+        <translation>Följande bild(er) finns inte längre: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="181"/>
+        <source>The following image(s) no longer exist: %s
+Do you want to add the other images anyway?</source>
+        <translation>Följande bild(er) finns inte längre: %s
+Vill du lägga till dom andra bilderna ändå?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="232"/>
+        <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
+        <translation>Det uppstod ett problem med att ersätta din bakgrund, bildfilen &quot;%s&quot; finns inte längre.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="228"/>
+        <source>There was no display item to amend.</source>
+        <translation>Det fanns ingen visningspost att ändra.</translation>
+    </message>
+</context>
+<context>
+    <name>ImagesPlugin.ImageTab</name>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="67"/>
+        <source>Background Color</source>
+        <translation>Bakgrundsfärg</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="69"/>
+        <source>Default Color:</source>
+        <translation>Standardfärg:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="71"/>
+        <source>Provides border where image is not the correct dimensions for the screen when resized.</source>
+        <translation>Visas som fyllning där bilden inte har rätt dimensioner för skärmen.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="64"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Mediamodul&lt;/strong&gt;&lt;br /&gt;Mediamodulen gör det möjligt att spela upp ljud och video.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="101"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="74"/>
         <source>Media</source>
-        <translation type="unfinished"></translation>
+        <comment>name singular</comment>
+        <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="75"/>
+        <source>Media</source>
+        <comment>name plural</comment>
+        <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="107"/>
-        <source>Load a new Media</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="79"/>
+        <source>Media</source>
+        <comment>container title</comment>
+        <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="112"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
+        <source>Load new media.</source>
+        <translation>Ladda en ny mediafil.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="113"/>
-        <source>Add a new Media</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
+        <source>Add new media.</source>
+        <translation>Lägg till media.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="118"/>
-        <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
+        <source>Edit the selected media.</source>
+        <translation>Redigera den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="119"/>
-        <source>Edit the selected Media</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
+        <source>Delete the selected media.</source>
+        <translation>Ta bort den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="124"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="88"/>
+        <source>Preview the selected media.</source>
+        <translation>Förhandsgranska den valda mediaposten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="125"/>
-        <source>Delete the selected Media</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="89"/>
+        <source>Send the selected media live.</source>
+        <translation>Visa den valda mediaposten live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="130"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="131"/>
-        <source>Preview the selected Media</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="136"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="137"/>
-        <source>Send the selected Media live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="142"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="143"/>
-        <source>Add the selected Media to the service</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="90"/>
+        <source>Add the selected media to the service.</source>
+        <translation>Lägg till den valda mediaposten i körschemat.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="125"/>
-        <source>Media</source>
-        <translation type="unfinished">Media</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="62"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="95"/>
         <source>Select Media</source>
-        <translation type="unfinished">Välj media</translation>
+        <translation>Välj media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
-        <source>Replace Live Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="93"/>
-        <source>Replace Background</source>
-        <translation>Ersätt bakgrund</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="146"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="269"/>
         <source>You must select a media file to delete.</source>
         <translation>Du måste välja en mediafil för borttagning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
+        <source>Missing Media File</source>
+        <translation>Mediafil saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
+        <source>The file %s no longer exists.</source>
+        <translation>Filen %s finns inte längre.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="166"/>
+        <source>You must select a media file to replace the background with.</source>
+        <translation>Du måste välja en mediafil att ersätta bakgrunden med.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="180"/>
+        <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
+        <translation>Det uppstod problem när bakgrunden skulle ersättas: mediafilen &quot;%s&quot; finns inte längre.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="233"/>
+        <source>Videos (%s);;Audio (%s);;%s (*)</source>
+        <translation>Videor (%s);;Ljud (%s);;%s (*)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="176"/>
+        <source>There was no display item to amend.</source>
+        <translation>Det fanns ingen visningspost att ändra.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="343"/>
+        <source>Unsupported File</source>
+        <translation type="unfinished">Okänd filtyp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="104"/>
+        <source>Automatic</source>
+        <translation type="unfinished">Automatiskt</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="106"/>
+        <source>Use Player:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin.MediaTab</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediatab.py" line="40"/>
-        <source>Media</source>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="113"/>
+        <source>Available Media Players</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediatab.py" line="61"/>
-        <source>Media Display</source>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="121"/>
+        <source>%s (unavailable)</source>
+        <translation type="unfinished">%s (inte tillgängligt)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="124"/>
+        <source>Player Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediatab.py" line="63"/>
-        <source>Use Phonon for video playback</source>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="126"/>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="128"/>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="131"/>
+        <source>Allow media player to be overriden</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP</name>
     <message>
-        <location filename="openlp/core/utils/__init__.py" line="274"/>
+        <location filename="openlp/core/utils/__init__.py" line="380"/>
         <source>Image Files</source>
         <translation>Bildfiler</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="87"/>
+        <source>Information</source>
+        <translation>Information</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="87"/>
+        <source>Bible format has changed.
+You have to upgrade your existing Bibles.
+Should OpenLP upgrade now?</source>
+        <translation>Bibelformatet har ändrats.
+Du måste uppgradera dina existerande biblar.
+Ska OpenLP uppgradera nu?</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.AboutForm</name>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="109"/>
-        <source>About OpenLP</source>
-        <translation type="unfinished">Om OpenLP</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="111"/>
-        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
-
-OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if OpenOffice.org, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
-
-Find out more about OpenLP: http://openlp.org/
-
-OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="127"/>
-        <source>About</source>
-        <translation type="unfinished">Om</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="181"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="225"/>
         <source>Credits</source>
-        <translation type="unfinished">Credits</translation>
+        <translation>Lista över medverkande</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="184"/>
-        <source>Copyright &#xa9; 2004-2010 Raoul Snyman
-Portions copyright &#xa9; 2004-2010 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten Tinggaard
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
-
-Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
-
-Preamble
-
-The licenses for most software are designed to take away your freedom to share and change it. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users. This General Public License applies to most of the Free Software Foundation&apos;s software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Lesser General Public License instead.) You can apply it to your programs, too.
-
-When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for this service if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs; and that you know you can do these things.
-
-To protect your rights, we need to make restrictions that forbid anyone to deny you these rights or to ask you to surrender the rights. These restrictions translate to certain responsibilities for you if you distribute copies of the software, or if you modify it.
-
-For example, if you distribute copies of such a program, whether gratis or for a fee, you must give the recipients all the rights that you have. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.
-
-We protect your rights with two steps: (1) copyright the software, and (2) offer you this license which gives you legal permission to copy, distribute and/or modify the software.
-
-Also, for each author&apos;s protection and ours, we want to make certain that everyone understands that there is no warranty for this free software. If the software is modified by someone else and passed on, we want its recipients to know that what they have is not the original, so that any problems introduced by others will not reflect on the original authors&apos; reputations.
-
-Finally, any free program is threatened constantly by software patents. We wish to avoid the danger that redistributors of a free program will individually obtain patent licenses, in effect making the program proprietary. To prevent this, we have made it clear that any patent must be licensed for everyone&apos;s free use or not licensed at all.
-
-The precise terms and conditions for copying, distribution and modification follow.
-
-GNU GENERAL PUBLIC LICENSE
-TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-0. This License applies to any program or other work which contains a notice placed by the copyright holder saying it may be distributed under the terms of this General Public License. The &quot;Program&quot;, below, refers to any such program or work, and a &quot;work based on the Program&quot; means either the Program or any derivative work under copyright law: that is to say, a work containing the Program or a portion of it, either verbatim or with modifications and/or translated into another language. (Hereinafter, translation is included without limitation in the term &quot;modification&quot;.) Each licensee is addressed as &quot;you&quot;.
-
-Activities other than copying, distribution and modification are not covered by this License; they are outside its scope. The act of running the Program is not restricted, and the output from the Program is covered only if its contents constitute a work based on the Program (independent of having been made by running the Program). Whether that is true depends on what the Program does.
-
-1. You may copy and distribute verbatim copies of the Program&apos;s source code as you receive it, in any medium, provided that you conspicuously and appropriately publish on each copy an appropriate copyright notice and disclaimer of warranty; keep intact all the notices that refer to this License and to the absence of any warranty; and give any other recipients of the Program a copy of this License along with the Program.
-
-You may charge a fee for the physical act of transferring a copy, and you may at your option offer warranty protection in exchange for a fee.
-
-2. You may modify your copy or copies of the Program or any portion of it, thus forming a work based on the Program, and copy and distribute such modifications or work under the terms of Section 1 above, provided that you also meet all of these conditions:
-
-a) You must cause the modified files to carry prominent notices stating that you changed the files and the date of any change.
-
-b) You must cause any work that you distribute or publish, that in whole or in part contains or is derived from the Program or any part thereof, to be licensed as a whole at no charge to all third parties under the terms of this License.
-
-c) If the modified program normally reads commands interactively when run, you must cause it, when started running for such interactive use in the most ordinary way, to print or display an announcement including an appropriate copyright notice and a notice that there is no warranty (or else, saying that you provide a warranty) and that users may redistribute the program under these conditions, and telling the user how to view a copy of this License. (Exception: if the Program itself is interactive but does not normally print such an announcement, your work based on the Program is not required to print an announcement.)
-
-These requirements apply to the modified work as a whole. If identifiable sections of that work are not derived from the Program, and can be reasonably considered independent and separate works in themselves, then this License, and its terms, do not apply to those sections when you distribute them as separate works. But when you distribute the same sections as part of a whole which is a work based on the Program, the distribution of the whole must be on the terms of this License, whose permissions for other licensees extend to the entire whole, and thus to each and every part regardless of who wrote it.
-
-Thus, it is not the intent of this section to claim rights or contest your rights to work written entirely by you; rather, the intent is to exercise the right to control the distribution of derivative or collective works based on the Program.
-
-In addition, mere aggregation of another work not based on the Program with the Program (or with a work based on the Program) on a volume of a storage or distribution medium does not bring the other work under the scope of this License.
-
-3. You may copy and distribute the Program (or a work based on it, under Section 2) in object code or executable form under the terms of Sections 1 and 2 above provided that you also do one of the following:
-
-a) Accompany it with the complete corresponding machine-readable source code, which must be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
-
-b) Accompany it with a written offer, valid for at least three years, to give any third party, for a charge no more than your cost of physically performing source distribution, a complete machine-readable copy of the corresponding source code, to be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
-
-c) Accompany it with the information you received as to the offer to distribute corresponding source code. (This alternative is allowed only for noncommercial distribution and only if you received the program in object code or executable form with such an offer, in accord with Subsection b above.)
-
-The source code for a work means the preferred form of the work for making modifications to it. For an executable work, complete source code means all the source code for all modules it contains, plus any associated interface definition files, plus the scripts used to control compilation and installation of the executable. However, as a special exception, the source code distributed need not include anything that is normally distributed (in either source or binary form) with the major components (compiler, kernel, and so on) of the operating system on which the executable runs, unless that component itself accompanies the executable.
-
-If distribution of executable or object code is made by offering access to copy from a designated place, then offering equivalent access to copy the source code from the same place counts as distribution of the source code, even though third parties are not compelled to copy the source along with the object code.
-
-4. You may not copy, modify, sublicense, or distribute the Program except as expressly provided under this License. Any attempt otherwise to copy, modify, sublicense or distribute the Program is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
-
-5. You are not required to accept this License, since you have not signed it. However, nothing else grants you permission to modify or distribute the Program or its derivative works. These actions are prohibited by law if you do not accept this License. Therefore, by modifying or distributing the Program (or any work based on the Program), you indicate your acceptance of this License to do so, and all its terms and conditions for copying, distributing or modifying the Program or works based on it.
-
-6. Each time you redistribute the Program (or any work based on the Program), the recipient automatically receives a license from the original licensor to copy, distribute or modify the Program subject to these terms and conditions. You may not impose any further restrictions on the recipients&apos; exercise of the rights granted herein. You are not responsible for enforcing compliance by third parties to this License.
-
-7. If, as a consequence of a court judgment or allegation of patent infringement or for any other reason (not limited to patent issues), conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not excuse you from the conditions of this License. If you cannot distribute so as to satisfy simultaneously your obligations under this License and any other pertinent obligations, then as a consequence you may not distribute the Program at all. For example, if a patent license would not permit royalty-free redistribution of the Program by all those who receive copies directly or indirectly through you, then the only way you could satisfy both it and this License would be to refrain entirely from distribution of the Program.
-
-If any portion of this section is held invalid or unenforceable under any particular circumstance, the balance of the section is intended to apply and the section as a whole is intended to apply in other circumstances.
-
-It is not the purpose of this section to induce you to infringe any patents or other property right claims or to contest validity of any such claims; this section has the sole purpose of protecting the integrity of the free software distribution system, which is implemented by public license practices. Many people have made generous contributions to the wide range of software distributed through that system in reliance on consistent application of that system; it is up to the author/donor to decide if he or she is willing to distribute software through any other system and a licensee cannot impose that choice.
-
-This section is intended to make thoroughly clear what is believed to be a consequence of the rest of this License.
-
-8. If the distribution and/or use of the Program is restricted in certain countries either by patents or by copyrighted interfaces, the original copyright holder who places the Program under this License may add an explicit geographical distribution limitation excluding those countries, so that distribution is permitted only in or among countries not thus excluded. In such case, this License incorporates the limitation as if written in the body of this License.
-
-9. The Free Software Foundation may publish revised and/or new versions of the General Public License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
-
-Each version is given a distinguishing version number. If the Program specifies a version number of this License which applies to it and &quot;any later version&quot;, you have the option of following the terms and conditions either of that version or of any later version published by the Free Software Foundation. If the Program does not specify a version number of this License, you may choose any version ever published by the Free Software Foundation.
-
-10. If you wish to incorporate parts of the Program into other free programs whose distribution conditions are different, write to the author to ask for permission. For software which is copyrighted by the Free Software Foundation, write to the Free Software Foundation; we sometimes make exceptions for this. Our decision will be guided by the two goals of preserving the free status of all derivatives of our free software and of promoting the sharing and reuse of software generally.
-
-NO WARRANTY
-
-11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
-
-12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-
-END OF TERMS AND CONDITIONS
-
-How to Apply These Terms to Your New Programs
-
-If you develop a new program, and you want it to be of the greatest possible use to the public, the best way to achieve this is to make it free software which everyone can redistribute and change under these terms.
-
-To do so, attach the following notices to the program. It is safest to attach them to the start of each source file to most effectively convey the exclusion of warranty; and each file should have at least the &quot;copyright&quot; line and a pointer to where the full notice is found.
-
-&lt;one line to give the program&apos;s name and a brief idea of what it does.&gt;
-Copyright (C) &lt;year&gt; &lt;name of author&gt;
-
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-Also add information on how to contact you by electronic and paper mail.
-
-If the program is interactive, make it output a short notice like this when it starts in an interactive mode:
-
-Gnomovision version 69, Copyright (C) year name of author
-Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type &quot;show w&quot;.
-This is free software, and you are welcome to redistribute it under certain conditions; type &quot;show c&quot; for details.
-
-The hypothetical commands &quot;show w&quot; and &quot;show c&quot; should show the appropriate parts of the General Public License. Of course, the commands you use may be called something other than &quot;show w&quot; and &quot;show c&quot;; they could even be mouse-clicks or menu items--whatever suits your program.
-
-You should also get your employer (if you work as a programmer) or your school, if any, to sign a &quot;copyright disclaimer&quot; for the program, if necessary. Here is a sample; alter the names:
-
-Yoyodyne, Inc., hereby disclaims all copyright interest in the program &quot;Gnomovision&quot; (which makes passes at compilers) written by James Hacker.
-
-&lt;signature of Ty Coon&gt;, 1 April 1989
-Ty Coon, President of Vice
-
-This General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Lesser General Public License instead of this License.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="573"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="620"/>
         <source>License</source>
-        <translation type="unfinished">Licens</translation>
+        <translation>Licens</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="576"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="623"/>
         <source>Contribute</source>
-        <translation type="unfinished">Bidra</translation>
+        <translation>Bidra</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="578"/>
-        <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/aboutform.py" line="48"/>
+        <location filename="openlp/core/ui/aboutform.py" line="50"/>
         <source> build %s</source>
-        <translation type="unfinished"></translation>
+        <translation> build %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="130"/>
+        <location filename="openlp/core/ui/aboutdialog.py" line="237"/>
+        <source>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.</source>
+        <translation>Det här programmet är fri mjukvara; du får sprida den vidare och/eller ändra i den under villkoren i GNU General Public License så som publicerade av Free Software Foundation; version 2 av licensen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="242"/>
+        <source>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below for more details.</source>
+        <translation>Det här programmet ges ut i hopp om att det kan vara användbart, men UTAN NÅGON GARANTI; inte ens någon underförstådd garanti vid köp eller lämplighet för ett särskilt ändamål. Se nedan för mer detaljer.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="149"/>
         <source>Project Lead
-    Raoul &quot;superfly&quot; Snyman
+    %s
 
 Developers
-    Tim &quot;TRB143&quot; Bentley
-    Jonathan &quot;gushie&quot; Corwin
-    Michael &quot;cocooncrash&quot; Gorven
-    Scott &quot;sguerrieri&quot; Guerrieri
-    Raoul &quot;superfly&quot; Snyman
-    Martin &quot;mijiti&quot; Thompson
-    Jon &quot;Meths&quot; Tibble
+    %s
 
 Contributors
-    Meinert &quot;m2j&quot; Jordan
-    Andreas &quot;googol&quot; Preikschat
-    Christian &quot;crichter&quot; Richter
-    Philip &quot;Phill&quot; Ridout
-    Maikel Stuivenberg
-    Carsten &quot;catini&quot; Tingaard
-    Frode &quot;frodus&quot; Woldsund
+    %s
 
 Testers
-    Philip &quot;Phill&quot; Ridout
-    Wesley &quot;wrst&quot; Stout (lead)
+    %s
 
 Packagers
-    Thomas &quot;tabthorpe&quot; Abthorpe (FreeBSD)
-    Tim &quot;TRB143&quot; Bentley (Fedora)
-    Michael &quot;cocooncrash&quot; Gorven (Ubuntu)
-    Matthias &quot;matthub&quot; Hub (Mac OS X)
-    Raoul &quot;superfly&quot; Snyman (Windows, Ubuntu)
+    %s
+
+Translators
+    Afrikaans (af)
+        %s
+    German (de)
+        %s
+    English, United Kingdom (en_GB)
+        %s
+    English, South Africa (en_ZA)
+        %s
+    Estonian (et)
+        %s
+    French (fr)
+        %s
+    Hungarian (hu)
+        %s
+    Japanese (ja)
+        %s
+    Norwegian Bokm&#xe5;l (nb)
+        %s
+    Dutch (nl)
+        %s
+    Portuguese, Brazil (pt_BR)
+        %s
+    Russian (ru)
+        %s
+
+Documentation
+    %s
 
 Built With
     Python: http://www.python.org/
@@ -1613,3235 +1449,4754 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektledning
+    %s
+
+Utvecklare
+    %s
+
+Med hjälp från
+    %s
+
+Testare
+    %s
+
+Packetering
+    %s
+
+Översättare
+    Afrikaans (af)
+        %s
+    Tyska (de)
+        %s
+    Engelska, brittisk (en_GB)
+        %s
+    Engelska, sydafrikansk (en_ZA)
+        %s
+    Estniska (et)
+        %s
+    Franska (fr)
+        %s
+    Ungerska (hu)
+        %s
+    Japanska (ja)
+        %s
+    Norska (bokmål) (nb)
+        %s
+    Nederländska (nl)
+        %s
+    Portugisiska, brasiliansk (pt_BR)
+        %s
+    Ryska (ru)
+        %s
+
+Dokumentation
+    %s
+
+Byggt med
+    Python: http://www.python.org/
+    Qt4: http://qt.nokia.com/
+    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Oxygen Icons: http://oxygen-icons.org/
+
+Slutligt tack
+    &quot;Så älskade Gud världen att han gav den
+    sin ende son, för att de som tror på honom
+    inte skall gå under utan ha evigt liv.&quot;
+      -- Joh 3:16
+
+    Och sist men inte minst, slutligt tack går till
+    Gud, vår far, för att han sände sin son för
+    att dö på korset och befria oss från synden.
+    Vi ger den här mjukvaran till dig fritt,
+    eftersom han har gjort oss fria.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="92"/>
+        <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
+
+OpenLP is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if Impress, PowerPoint or PowerPoint Viewer is installed) for church worship using a computer and a data projector.
+
+Find out more about OpenLP: http://openlp.org/
+
+OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
+        <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Öppen källkods-program för sångvisning
+
+OpenLP är fri mjukvara för kyrkpresentation eller sångvisning, gjord för att visa sångtexter, bibelverser, video, bilder och även presentationer (om Impress, PowerPoint eller PowerPoint Viewer är installerat) i gudstjänster med hjälp av dator och projektor.
+
+Läs mer om OpenLP: http://openlp.org/
+
+OpenLP utvecklas och underhålls av frivilliga. Om du vill se mer fri kristen mjukvara utvecklad, klicka gärna på knappen nedan för att se hur du kan bidra.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="228"/>
+        <source>Copyright &#xa9; 2004-2011 %s
+Portions copyright &#xa9; 2004-2011 %s</source>
+        <translation>Copyright © 2004-2011 %s
+Del-copyright © 2004-2011 %s</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.AdvancedTab</name>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="49"/>
-        <source>Advanced</source>
-        <translation type="unfinished">Avancerat</translation>
+        <location filename="openlp/core/ui/advancedtab.py" line="139"/>
+        <source>UI Settings</source>
+        <translation>Inställningar för användargränssnitt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="143"/>
-        <source>UI Settings</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/advancedtab.py" line="141"/>
+        <source>Number of recent files to display:</source>
+        <translation>Antal tidigare körscheman att visa:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="144"/>
-        <source>Number of recent files to display:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="147"/>
         <source>Remember active media manager tab on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Kom ihåg aktiv mediaflik vid start</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="149"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="146"/>
         <source>Double-click to send items straight to live</source>
-        <translation type="unfinished"></translation>
+        <translation>Dubbelklicka för att visa poster live</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="151"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="150"/>
         <source>Expand new service items on creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Expandera nya poster i körschemat vid skapandet</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="152"/>
+        <source>Enable application exit confirmation</source>
+        <translation>Bekräfta för att avsluta programmet</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="154"/>
+        <source>Mouse Cursor</source>
+        <translation>Muspekare</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="156"/>
+        <source>Hide mouse cursor when over display window</source>
+        <translation>Dölj muspekaren över visningsfönstret</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="158"/>
+        <source>Default Image</source>
+        <translation>Standardbild</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="160"/>
+        <source>Background color:</source>
+        <translation>Bakgrundsfärg:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="164"/>
+        <source>Image file:</source>
+        <translation>Bildfil:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="245"/>
+        <source>Open File</source>
+        <translation>Öppna fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="148"/>
+        <source>Preview items when clicked in Media Manager</source>
+        <translation>Förhandsgranska poster vid klick i mediahanteraren</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="45"/>
+        <source>Advanced</source>
+        <translation>Avancerat</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="162"/>
+        <source>Click to select a color.</source>
+        <translation>Klicka för att välja en färg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="166"/>
+        <source>Browse for an image file to display.</source>
+        <translation>Välj en bildfil att visa.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="168"/>
+        <source>Revert to the default OpenLP logo.</source>
+        <translation>Återställ till OpenLP:s standardlogotyp.</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="92"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="105"/>
         <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoppsan! OpenLP stötte på ett problem som inte hanterades. Texten i rutan nedan innehåller information som kan vara användbar för utvecklarna av OpenLP, så e-posta den gärna till bugs@openlp.org, tillsammans med en detaljerad beskrivning av vad du gjorde när problemet uppstod.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="90"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="100"/>
         <source>Error Occurred</source>
         <translation>Fel uppstod</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="98"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="111"/>
         <source>Send E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation>Skicka e-post</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="100"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="113"/>
         <source>Save to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara till fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
+        <source>Please enter a description of what you were doing to cause this error 
+(Minimum 20 characters)</source>
+        <translation>Skriv gärna en beskrivning av vad du gjorde för att få det här felet
+(minst 20 tecken)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="115"/>
+        <source>Attach File</source>
+        <translation>Lägg till fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptionform.py" line="203"/>
+        <source>Description characters to enter : %s</source>
+        <translation>Beskrivningstecken att ange: %s</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ExceptionForm</name>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="76"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="108"/>
         <source>Platform: %s
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Plattform: %s
+</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="99"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="141"/>
+        <source>Save Crash Report</source>
+        <translation>Spara kraschrapport</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptionform.py" line="141"/>
+        <source>Text files (*.txt *.log *.text)</source>
+        <translation>Textfiler (*.txt *.log *.text)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptionform.py" line="134"/>
         <source>**OpenLP Bug Report**
 Version: %s
 
---- Exception Traceback ---
+--- Details of the Exception. ---
+
+%s
+
+ --- Exception Traceback ---
 %s
 --- System information ---
 %s
 --- Library Versions ---
 %s
 </source>
-        <translation type="unfinished"></translation>
+        <translation>**OpenLP Bug Report**
+Version: %s
+
+--- Details of the Exception. ---
+
+%s
+
+ --- Exception Traceback ---
+%s
+--- System information ---
+%s
+--- Library Versions ---
+%s
+</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="105"/>
-        <source>Save Crash Report</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="105"/>
-        <source>Text files (*.txt *.log *.text)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="132"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="171"/>
         <source>*OpenLP Bug Report*
 Version: %s
 
---- Please enter the report below this line. ---
+--- Details of the Exception. ---
 
+%s
 
---- Exception Traceback ---
+ --- Exception Traceback ---
 %s
 --- System information ---
 %s
 --- Library Versions ---
 %s
 </source>
-        <translation type="unfinished"></translation>
+        <comment>Please add the information that bug reports are favoured written in English.</comment>
+        <translation>*OpenLP Bug Report*
+Version: %s
+
+--- Details of the Exception. ---
+
+%s
+
+ --- Exception Traceback ---
+%s
+--- System information ---
+%s
+--- Library Versions ---
+%s
+</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.FileRenameForm</name>
     <message>
-        <location filename="openlp/core/ui/filerenameform.py" line="53"/>
-        <source>File Rename</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/filerenamedialog.py" line="56"/>
-        <source>New File Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/filerenameform.py" line="50"/>
+        <source>File Rename</source>
+        <translation>Byt namn på fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/filerenamedialog.py" line="54"/>
+        <source>New File Name:</source>
+        <translation>Nytt filnamn:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/filerenameform.py" line="47"/>
         <source>File Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiera fil</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.FirstTimeLanguageForm</name>
+    <message>
+        <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="63"/>
+        <source>Select Translation</source>
+        <translation>Välj språk</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="65"/>
+        <source>Choose the translation you&apos;d like to use in OpenLP.</source>
+        <translation>Välj språk som du vill använda i OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="67"/>
+        <source>Translation:</source>
+        <translation>Språk:</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.FirstTimeWizard</name>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="66"/>
+        <source>Downloading %s...</source>
+        <translation>Hämtar %s...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="351"/>
+        <source>Download complete. Click the finish button to start OpenLP.</source>
+        <translation>Nedladdning färdig. Klicka på Slutför för att starta OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="372"/>
+        <source>Enabling selected plugins...</source>
+        <translation>Aktivera valda moduler...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="197"/>
+        <source>First Time Wizard</source>
+        <translation>Kom igång-guiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="199"/>
+        <source>Welcome to the First Time Wizard</source>
+        <translation>Välkommen till kom igång-guiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
+        <source>Activate required Plugins</source>
+        <translation>Aktivera önskade moduler</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <source>Select the Plugins you wish to use. </source>
+        <translation>Välj de moduler du vill använda. </translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <source>Songs</source>
+        <translation>Sånger</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <source>Bible</source>
+        <translation>Bibel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
+        <source>Images</source>
+        <translation>Bilder</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="216"/>
+        <source>Presentations</source>
+        <translation>Presentationer</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="220"/>
+        <source>Media (Audio and Video)</source>
+        <translation>Media (ljud och video)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="222"/>
+        <source>Allow remote access</source>
+        <translation>Tillåt fjärråtkomst</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="224"/>
+        <source>Monitor Song Usage</source>
+        <translation>Loggning av sånganvändning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
+        <source>Allow Alerts</source>
+        <translation>Tillåt meddelanden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <source>No Internet Connection</source>
+        <translation>Ingen Internetanslutning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="230"/>
+        <source>Unable to detect an Internet connection.</source>
+        <translation>Lyckades inte ansluta till Internet.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
+        <source>Sample Songs</source>
+        <translation>Fria sånger</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
+        <source>Select and download public domain songs.</source>
+        <translation>Välj och ladda ner sånger som är i public domain.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
+        <source>Sample Bibles</source>
+        <translation>Fria bibelöversättningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
+        <source>Select and download free Bibles.</source>
+        <translation>Välj och ladda ner fria bibelöversättningar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
+        <source>Sample Themes</source>
+        <translation>Fria teman</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
+        <source>Select and download sample themes.</source>
+        <translation>Välj och ladda ner färdiga teman.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
+        <source>Default Settings</source>
+        <translation>Standardinställningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
+        <source>Set up default settings to be used by OpenLP.</source>
+        <translation>Gör standardinställningar för OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
+        <source>Default output display:</source>
+        <translation>Standardskärm för visning:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="262"/>
+        <source>Select default theme:</source>
+        <translation>Välj standardtema:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="264"/>
+        <source>Starting configuration process...</source>
+        <translation>Startar konfigurationsprocess...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
+        <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start.</source>
+        <translation>Den här guiden hjälper dig att ställa in OpenLP före första användningen. Klicka på Nästa för att starta.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="329"/>
+        <source>Setting Up And Downloading</source>
+        <translation>Ställer in och laddar ner</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="331"/>
+        <source>Please wait while OpenLP is set up and your data is downloaded.</source>
+        <translation>Vänta medan OpenLP ställs in och din data laddas ner.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="336"/>
+        <source>Setting Up</source>
+        <translation>Ställer in</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="359"/>
+        <source>Click the finish button to start OpenLP.</source>
+        <translation>Klicka på Slutför för att starta OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <source>Custom Slides</source>
+        <translation>Anpassade sidor</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="347"/>
+        <source>Download complete. Click the finish button to return to OpenLP.</source>
+        <translation>Nedladdning färdig. Klicka på Slutför för att återvända till OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="356"/>
+        <source>Click the finish button to return to OpenLP.</source>
+        <translation>Klicka på Slutför för att återvända till OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
+        <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Press the Finish button now to start OpenLP with initial settings and no sample data.
+
+To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
+        <translation>Ingen Internetanslutning kunde hittas. Kom igång-guiden behöver en anslutning till Internet för att kunna ladda ner fria sånger, biblar och teman.  Klicka Slutför för att starta OpenLP med grundinställningar och utan hämtad data.
+
+För att köra kom igång-guiden och importera den här datan senare, kontrollera din Internetanslutning och kör den här guiden genom att välja &quot;Verktyg/Kör kom igång-guide&quot; från OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
+        <source>
+
+To cancel the First Time Wizard completely (and not start OpenLP), press the Cancel button now.</source>
+        <translation>
+
+För att avbryta kom igång-guiden helt (och inte starta OpenLP), klicka Avbryt nu.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="266"/>
+        <source>Finish</source>
+        <translation>Slutför</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.FormattingTagDialog</name>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="124"/>
+        <source>Configure Formatting Tags</source>
+        <translation>Konfigurera format-taggar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="126"/>
+        <source>Edit Selection</source>
+        <translation>Redigera val</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="128"/>
+        <source>Save</source>
+        <translation>Spara</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="139"/>
+        <source>Description</source>
+        <translation>Beskrivning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="132"/>
+        <source>Tag</source>
+        <translation>Tagg</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="133"/>
+        <source>Start tag</source>
+        <translation>Start-tagg</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="135"/>
+        <source>End tag</source>
+        <translation>Slut-tagg</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="141"/>
+        <source>Tag Id</source>
+        <translation>Tagg-id</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="143"/>
+        <source>Start HTML</source>
+        <translation>Start-HTML</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagdialog.py" line="145"/>
+        <source>End HTML</source>
+        <translation>Slut-HTML</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.FormattingTagForm</name>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="147"/>
+        <source>Update Error</source>
+        <translation>Fel vid uppdatering</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="104"/>
+        <source>Tag &quot;n&quot; already defined.</source>
+        <translation>Taggen &quot;n&quot; finns redan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="111"/>
+        <source>New Tag</source>
+        <translation>Ny tagg</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="113"/>
+        <source>&lt;HTML here&gt;</source>
+        <translation>&lt;HTML här&gt;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="115"/>
+        <source>&lt;/and here&gt;</source>
+        <translation>&lt;/och här&gt;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/formattingtagform.py" line="147"/>
+        <source>Tag %s already defined.</source>
+        <translation>Taggen %s finns redan.</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.FormattingTags</name>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="64"/>
+        <source>Red</source>
+        <translation>Röd</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="69"/>
+        <source>Black</source>
+        <translation>Svart</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="74"/>
+        <source>Blue</source>
+        <translation>Blå</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="79"/>
+        <source>Yellow</source>
+        <translation>Gul</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="84"/>
+        <source>Green</source>
+        <translation>Grön</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="89"/>
+        <source>Pink</source>
+        <translation>Rosa</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="94"/>
+        <source>Orange</source>
+        <translation>Orange</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="99"/>
+        <source>Purple</source>
+        <translation>Lila</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="104"/>
+        <source>White</source>
+        <translation>Vit</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="109"/>
+        <source>Superscript</source>
+        <translation>Upphöjt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="114"/>
+        <source>Subscript</source>
+        <translation>Nedsänkt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="119"/>
+        <source>Paragraph</source>
+        <translation>Stycke</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="124"/>
+        <source>Bold</source>
+        <translation>Fet</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="128"/>
+        <source>Italics</source>
+        <translation>Kursiv</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="132"/>
+        <source>Underline</source>
+        <translation>Understruken</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/formattingtags.py" line="138"/>
+        <source>Break</source>
+        <translation>Radbrytning</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.GeneralTab</name>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="88"/>
+        <location filename="openlp/core/ui/generaltab.py" line="209"/>
         <source>General</source>
-        <translation type="unfinished">Allmänt</translation>
+        <translation>Allmänt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="332"/>
+        <location filename="openlp/core/ui/generaltab.py" line="210"/>
         <source>Monitors</source>
-        <translation type="unfinished">Skärmar</translation>
+        <translation>Skärmar</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="334"/>
+        <location filename="openlp/core/ui/generaltab.py" line="212"/>
         <source>Select monitor for output display:</source>
-        <translation type="unfinished">Välj skärm för utsignal:</translation>
+        <translation>Välj skärm för bildvisning:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="336"/>
+        <location filename="openlp/core/ui/generaltab.py" line="214"/>
         <source>Display if a single screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa även på enkel skärm</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="338"/>
+        <location filename="openlp/core/ui/generaltab.py" line="216"/>
         <source>Application Startup</source>
-        <translation type="unfinished">Programstart</translation>
+        <translation>Programstart</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="340"/>
+        <location filename="openlp/core/ui/generaltab.py" line="218"/>
         <source>Show blank screen warning</source>
-        <translation type="unfinished">Visa varning vid tom skärm</translation>
+        <translation>Visa varning vid tom skärm</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="342"/>
+        <location filename="openlp/core/ui/generaltab.py" line="220"/>
         <source>Automatically open the last service</source>
-        <translation type="unfinished">Öppna automatiskt den senaste planeringen</translation>
+        <translation>Öppna det senaste körschemat automatiskt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="344"/>
+        <location filename="openlp/core/ui/generaltab.py" line="222"/>
         <source>Show the splash screen</source>
-        <translation type="unfinished">Visa startbilden</translation>
+        <translation>Visa startbilden</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="346"/>
+        <location filename="openlp/core/ui/generaltab.py" line="226"/>
         <source>Application Settings</source>
-        <translation type="unfinished">Programinställningar</translation>
+        <translation>Programinställningar</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="348"/>
+        <location filename="openlp/core/ui/generaltab.py" line="228"/>
         <source>Prompt to save before starting a new service</source>
-        <translation type="unfinished"></translation>
+        <translation>Fråga om att spara innan ett nytt körschema skapas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="350"/>
+        <location filename="openlp/core/ui/generaltab.py" line="232"/>
         <source>Automatically preview next item in service</source>
-        <translation>Automatiskt förhandsgranska nästa post i planeringen</translation>
+        <translation>Förhandsgranska nästa post i körschemat automatiskt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="352"/>
-        <source>Slide loop delay:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="354"/>
+        <location filename="openlp/core/ui/generaltab.py" line="238"/>
         <source> sec</source>
         <translation> sekunder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="356"/>
+        <location filename="openlp/core/ui/generaltab.py" line="239"/>
         <source>CCLI Details</source>
-        <translation type="unfinished">CCLI-detaljer</translation>
+        <translation>CCLI-detaljer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="358"/>
-        <source>CCLI number:</source>
-        <translation>CCLI-nummer</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="360"/>
+        <location filename="openlp/core/ui/generaltab.py" line="242"/>
         <source>SongSelect username:</source>
         <translation>SongSelect användarnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="362"/>
+        <location filename="openlp/core/ui/generaltab.py" line="244"/>
         <source>SongSelect password:</source>
         <translation>SongSelect lösenord:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="365"/>
+        <location filename="openlp/core/ui/generaltab.py" line="247"/>
         <source>Display Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildposition</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="379"/>
+        <location filename="openlp/core/ui/generaltab.py" line="251"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="380"/>
+        <location filename="openlp/core/ui/generaltab.py" line="252"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="381"/>
+        <location filename="openlp/core/ui/generaltab.py" line="253"/>
         <source>Height</source>
         <translation>Höjd</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="383"/>
+        <location filename="openlp/core/ui/generaltab.py" line="254"/>
         <source>Width</source>
         <translation>Bredd</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="377"/>
+        <location filename="openlp/core/ui/generaltab.py" line="249"/>
         <source>Override display position</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuell bildposition</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="392"/>
-        <source>Screen</source>
-        <translation type="unfinished">Skärm</translation>
+        <location filename="openlp/core/ui/generaltab.py" line="224"/>
+        <source>Check for updates to OpenLP</source>
+        <translation>Sök efter uppdateringar till OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="395"/>
-        <source>primary</source>
-        <translation type="unfinished">primär</translation>
+        <location filename="openlp/core/ui/generaltab.py" line="230"/>
+        <source>Unblank display when adding new live item</source>
+        <translation>Lägg ut bilden direkt när en ny live-bild läggs till</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="234"/>
+        <source>Enable slide wrap-around</source>
+        <translation>Börja om när sista sidan har visats</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="236"/>
+        <source>Timed slide interval:</source>
+        <translation>Tidsstyrd bildväxling:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="255"/>
+        <source>Background Audio</source>
+        <translation>Bakgrundsljud</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="257"/>
+        <source>Start background audio paused</source>
+        <translation>Starta bakgrundsljud pausat</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="120"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="140"/>
         <source>Language</source>
         <translation>Språk</translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="120"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="140"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation>Vänligen starta om OpenLP för att aktivera dina nya språkinställningar.</translation>
     </message>
 </context>
 <context>
+    <name>OpenLP.MainDisplay</name>
+    <message>
+        <location filename="openlp/core/ui/maindisplay.py" line="157"/>
+        <source>OpenLP Display</source>
+        <translation>OpenLP-visning</translation>
+    </message>
+</context>
+<context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
-        <source>OpenLP 2.0</source>
-        <translation type="unfinished">OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Fil</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="375"/>
-        <source>&amp;Import</source>
-        <translation type="unfinished">&amp;Importera</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
-        <source>&amp;Export</source>
-        <translation type="unfinished">&amp;Exportera</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="377"/>
-        <source>&amp;View</source>
-        <translation type="unfinished">&amp;Visa</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
-        <source>M&amp;ode</source>
-        <translation type="unfinished">&amp;Läge</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
-        <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Verktyg</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
-        <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Inställningar</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
-        <source>&amp;Language</source>
-        <translation type="unfinished">&amp;Språk</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="383"/>
-        <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Hjälp</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="384"/>
-        <source>Media Manager</source>
-        <translation type="unfinished">Mediahanterare</translation>
+        <translation>&amp;Arkiv</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="386"/>
-        <source>Service Manager</source>
-        <translation>Planeringshanterare</translation>
+        <source>&amp;Import</source>
+        <translation>&amp;Importera</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
-        <source>Theme Manager</source>
-        <translation type="unfinished">Temahanterare</translation>
+        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
+        <source>&amp;Export</source>
+        <translation>&amp;Exportera</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="390"/>
-        <source>&amp;New</source>
-        <translation type="unfinished">&amp;Ny</translation>
+        <source>&amp;View</source>
+        <translation>&amp;Visa</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="391"/>
-        <source>New Service</source>
-        <translation>Ny planering</translation>
+        <source>M&amp;ode</source>
+        <translation>&amp;Läge</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Verktyg</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="393"/>
-        <source>Create a new service.</source>
-        <translation>Skapa en ny planering.</translation>
+        <source>&amp;Settings</source>
+        <translation>&amp;Inställningar</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
-        <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <source>&amp;Language</source>
+        <translation>&amp;Språk</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="396"/>
-        <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Öppna</translation>
+        <source>&amp;Help</source>
+        <translation>&amp;Hjälp</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="397"/>
-        <source>Open Service</source>
-        <translation>Öppna planering</translation>
+        <source>Media Manager</source>
+        <translation>Mediahanterare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="399"/>
-        <source>Open an existing service.</source>
-        <translation>Öppna en befintlig planering.</translation>
+        <source>Service Manager</source>
+        <translation>Körschema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="401"/>
-        <source>Ctrl+O</source>
-        <translation type="unfinished">Ctrl+O</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
-        <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Spara</translation>
+        <source>Theme Manager</source>
+        <translation>Temahanterare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="403"/>
-        <source>Save Service</source>
-        <translation>Spara planering</translation>
+        <source>&amp;New</source>
+        <translation>&amp;Nytt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
-        <source>Save the current service to disk.</source>
-        <translation>Spara den aktuella planeringen till disk.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
-        <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <source>&amp;Open</source>
+        <translation>&amp;Öppna</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="408"/>
-        <source>Save &amp;As...</source>
-        <translation type="unfinished">S&amp;para som...</translation>
+        <source>Open an existing service.</source>
+        <translation>Öppna ett befintligt körschema.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="410"/>
-        <source>Save Service As</source>
-        <translation>Spara planering som</translation>
+        <source>&amp;Save</source>
+        <translation>&amp;Spara</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="412"/>
-        <source>Save the current service under a new name.</source>
-        <translation>Spara den aktuella planeringen under ett nytt namn.</translation>
+        <source>Save the current service to disk.</source>
+        <translation>Spara det nuvarande körschemat till disk.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="414"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <source>Save &amp;As...</source>
+        <translation>Spara s&amp;om...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="416"/>
-        <source>E&amp;xit</source>
-        <translation type="unfinished">&amp;Avsluta</translation>
+        <source>Save Service As</source>
+        <translation>Spara körschema som</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <source>Save the current service under a new name.</source>
+        <translation>Spara det nuvarande körschemat under ett nytt namn.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
+        <source>E&amp;xit</source>
+        <translation>A&amp;vsluta</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>Quit OpenLP</source>
         <translation>Avsluta OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
-        <source>Alt+F4</source>
-        <translation type="unfinished">Alt+F4</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished">&amp;Tema</translation>
+        <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="432"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
         <source>&amp;Configure OpenLP...</source>
         <translation>&amp;Konfigurera OpenLP...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
-        <source>&amp;Media Manager</source>
-        <translation type="unfinished">&amp;Mediahanterare</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="436"/>
-        <source>Toggle Media Manager</source>
-        <translation type="unfinished">Växla mediahanterare</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="438"/>
-        <source>Toggle the visibility of the media manager.</source>
-        <translation>Växla synligheten för mediahanteraren.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
-        <source>F8</source>
-        <translation type="unfinished">F8</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="442"/>
-        <source>&amp;Theme Manager</source>
-        <translation type="unfinished">&amp;Temahanterare</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
-        <source>Toggle Theme Manager</source>
-        <translation type="unfinished">Växla temahanteraren</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="446"/>
-        <source>Toggle the visibility of the theme manager.</source>
-        <translation>Växla synligheten för temahanteraren.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
-        <source>F10</source>
-        <translation type="unfinished">F10</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="450"/>
-        <source>&amp;Service Manager</source>
-        <translation>&amp;Planeringshanterare</translation>
+        <source>&amp;Media Manager</source>
+        <translation>&amp;Mediahanterare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="452"/>
-        <source>Toggle Service Manager</source>
-        <translation>Växla planeringshanterare</translation>
+        <source>Toggle Media Manager</source>
+        <translation>Växla mediahanterare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="454"/>
-        <source>Toggle the visibility of the service manager.</source>
-        <translation>Växla synligheten för planeringshanteraren.</translation>
+        <source>Toggle the visibility of the media manager.</source>
+        <translation>Växla visning av mediahanteraren.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="456"/>
-        <source>F9</source>
-        <translation type="unfinished">F9</translation>
+        <source>&amp;Theme Manager</source>
+        <translation>&amp;Temahanterare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="458"/>
-        <source>&amp;Preview Panel</source>
-        <translation type="unfinished">&amp;Förhandsgranskning</translation>
+        <source>Toggle Theme Manager</source>
+        <translation>Växla temahanteraren</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="460"/>
-        <source>Toggle Preview Panel</source>
-        <translation type="unfinished">Växla förhandsgranskningspanel</translation>
+        <source>Toggle the visibility of the theme manager.</source>
+        <translation>Växla visning av temahanteraren.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="462"/>
-        <source>Toggle the visibility of the preview panel.</source>
-        <translation>Växla synligheten för förhandsgranskningspanelen.</translation>
+        <source>&amp;Service Manager</source>
+        <translation>&amp;Körschema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="464"/>
-        <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <source>Toggle Service Manager</source>
+        <translation>Växla körschema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="466"/>
-        <source>&amp;Live Panel</source>
-        <translation type="unfinished"></translation>
+        <source>Toggle the visibility of the service manager.</source>
+        <translation>Växla visning av körschemat.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="468"/>
-        <source>Toggle Live Panel</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Preview Panel</source>
+        <translation>&amp;Förhandsgranskningpanel</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="470"/>
-        <source>Toggle the visibility of the live panel.</source>
-        <translation type="unfinished"></translation>
+        <source>Toggle Preview Panel</source>
+        <translation>Växla förhandsgranskning</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="472"/>
-        <source>F12</source>
-        <translation type="unfinished">F12</translation>
+        <source>Toggle the visibility of the preview panel.</source>
+        <translation>Växla visning av förhandsgranskning.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="474"/>
-        <source>&amp;Plugin List</source>
-        <translation type="unfinished">&amp;Pluginlista</translation>
+        <source>&amp;Live Panel</source>
+        <translation>Li&amp;ve</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="476"/>
-        <source>List the Plugins</source>
-        <translation>Lista pluginen</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
-        <source>Alt+F7</source>
-        <translation type="unfinished">Alt+F7</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
-        <source>&amp;User Guide</source>
-        <translation type="unfinished">&amp;Användarguide</translation>
+        <source>Toggle Live Panel</source>
+        <translation>Växla live-rutan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="482"/>
+        <source>Toggle the visibility of the live panel.</source>
+        <translation>Växla visning av live-rutan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
+        <source>&amp;Plugin List</source>
+        <translation>&amp;Modullista</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="486"/>
+        <source>List the Plugins</source>
+        <translation>Lista modulerna</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="492"/>
+        <source>&amp;User Guide</source>
+        <translation>&amp;Bruksanvisning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="488"/>
         <source>&amp;About</source>
-        <translation type="unfinished">&amp;Om</translation>
+        <translation>&amp;Om</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
         <source>More information about OpenLP</source>
-        <translation type="unfinished">Mer information om OpenLP</translation>
+        <translation>Mer information om OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
-        <source>Ctrl+F1</source>
-        <translation type="unfinished">Ctrl+F1</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="487"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="494"/>
         <source>&amp;Online Help</source>
         <translation>&amp;Hjälp online</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
         <source>&amp;Web Site</source>
-        <translation type="unfinished">&amp;Webbsida</translation>
+        <translation>&amp;Webbplats</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
-        <source>&amp;Auto Detect</source>
-        <translation>Välj &amp;automatiskt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="504"/>
         <source>Use the system language, if available.</source>
-        <translation>Använd systemspråket om möjligt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="498"/>
-        <source>Set the interface language to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd systemspråket om möjligt.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="500"/>
-        <source>Add &amp;Tool...</source>
-        <translation>Lägg till verktyg...</translation>
+        <source>Set the interface language to %s</source>
+        <translation>Sätt användargränssnittets språk till %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="502"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="506"/>
+        <source>Add &amp;Tool...</source>
+        <translation>Lägg till &amp;verktyg...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="508"/>
         <source>Add an application to the list of tools.</source>
         <translation>Lägg till en applikation i verktygslistan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="505"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
         <source>&amp;Default</source>
         <translation>&amp;Standard</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="507"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="526"/>
         <source>Set the view mode back to the default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ visningslayouten till standardinställningen.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="528"/>
         <source>&amp;Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Förberedelse</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="511"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="529"/>
         <source>Set the view mode to Setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ställ in visningslayouten förberedelseläge.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="531"/>
         <source>&amp;Live</source>
-        <translation type="unfinished">&amp;Live</translation>
+        <translation>&amp;Live</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="515"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="532"/>
         <source>Set the view mode to Live.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ställ in visningslayouten till live-läge.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="685"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="714"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
-        <translation type="unfinished"></translation>
+        <translation>Version %s av OpenLP är nu tillgänglig för hämtning (du kör för närvarande version %s). 
+
+Du kan ladda ner den senaste versionen från http://openlp.org/.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="689"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="718"/>
         <source>OpenLP Version Updated</source>
-        <translation>OpenLP-versionen uppdaterad</translation>
+        <translation>Ny version av OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="729"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
         <source>OpenLP Main Display Blanked</source>
-        <translation>OpenLPs huvuddisplay rensad</translation>
+        <translation>OpenLPs huvudbild släckt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="729"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
         <source>The Main Display has been blanked out</source>
-        <translation type="unfinished">Huvuddisplayen har rensats</translation>
+        <translation>Huvudbilden har släckts</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="821"/>
-        <source>Save Changes to Service?</source>
-        <translation>Spara ändringarna  till planeringen?</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="821"/>
-        <source>Your service has changed. Do you want to save those changes?</source>
-        <translation>Din planering har ändrats. Vill du spara dessa ändringar?</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="887"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1230"/>
         <source>Default Theme: %s</source>
         <translation>Standardtema: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="84"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="96"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
         <translation>Svenska</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Configure &amp;Shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurera &amp;genvägar...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <source>Close OpenLP</source>
+        <translation>Avsluta OpenLP</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
+        <source>Are you sure you want to close OpenLP?</source>
+        <translation>Är du säker på att du vill avsluta OpenLP?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
+        <source>Open &amp;Data Folder...</source>
+        <translation>Öppna &amp;datamapp...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
+        <source>Open the folder where songs, bibles and other data resides.</source>
+        <translation>Öppna mappen där sånger, biblar och annan data lagras.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="502"/>
+        <source>&amp;Autodetect</source>
+        <translation>Detektera &amp;automatiskt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="519"/>
+        <source>Update Theme Images</source>
+        <translation>Uppdatera temabilder</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="521"/>
+        <source>Update the preview images for all themes.</source>
+        <translation>Uppdatera förhandsgranskningsbilder för alla teman.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
+        <source>Print the current service.</source>
+        <translation>Skriv ut den nuvarande körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
+        <source>L&amp;ock Panels</source>
+        <translation>L&amp;ås paneler</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
+        <source>Prevent the panels being moved.</source>
+        <translation>Förhindra att panelerna flyttas.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
+        <source>Re-run First Time Wizard</source>
+        <translation>Kör kom igång-guiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
+        <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
+        <translation>Kör kom igång-guiden och importera sånger, biblar och teman.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
+        <source>Re-run First Time Wizard?</source>
+        <translation>Kör kom igång-guiden?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
+        <source>Are you sure you want to re-run the First Time Wizard?
+
+Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
+        <translation>Är du säker på att du vill köra kom igång-guiden?
+
+Om du kör den här guiden kan din nuvarande konfiguration av OpenLP komma att ändras, sånger eventuellt läggas till din befintliga sånglista, och standardtemat bytas.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <source>&amp;Recent Files</source>
+        <translation>Senaste &amp;körscheman</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1381"/>
+        <source>Clear List</source>
+        <comment>Clear List of recent files</comment>
+        <translation>Rensa listan</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1384"/>
+        <source>Clear the list of recent files.</source>
+        <translation>Rensa listan med senaste körscheman.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <source>Configure &amp;Formatting Tags...</source>
+        <translation>Konfigurera &amp;format-taggar...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <source>Export OpenLP settings to a specified *.config file</source>
+        <translation>Exportera OpenLP-inställningar till en given *.config-fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
+        <source>Settings</source>
+        <translation>Inställningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
+        <translation>Importera OpenLP-inställningar från en given *.config-fil som tidigare har exporterats på den här datorn eller någon annan</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="920"/>
+        <source>Import settings?</source>
+        <translation>Importera inställningar?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="920"/>
+        <source>Are you sure you want to import settings?
+
+Importing settings will make permanent changes to your current OpenLP configuration.
+
+Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.</source>
+        <translation>Är du säker på att du vill importera inställningar?
+
+Om du importerar inställningar görs ändringar i din nuvarande OpenLP-konfiguration.
+
+Att importera inställningar kan leda till oväntade beteenden eller att OpenLP avslutas onormalt.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="934"/>
+        <source>Open File</source>
+        <translation>Öppna fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="934"/>
+        <source>OpenLP Export Settings Files (*.conf)</source>
+        <translation>OpenLP-inställningsfiler (*.conf)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="997"/>
+        <source>Import settings</source>
+        <translation>Importera inställningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="997"/>
+        <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
+        <translation>OpenLP kommer nu att avslutas.  Importerade inställningar kommer att tillämpas nästa gång du startar OpenLP.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1012"/>
+        <source>Export Settings File</source>
+        <translation>Exportera inställningsfil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1012"/>
+        <source>OpenLP Export Settings File (*.conf)</source>
+        <translation>OpenLP-inställningsfiler (*.conf)</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.Manager</name>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="220"/>
+        <source>Database Error</source>
+        <translation>Databasfel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="206"/>
+        <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
+
+Database: %s</source>
+        <translation>Databasen som skulle laddas är skapad i en nyare version av OpenLP. Databasen har version %d, och OpenLP kräver version %d. Databasen kommer inte att laddas.
+
+Databas: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/db.py" line="220"/>
+        <source>OpenLP cannot load your database.
+
+Database: %s</source>
+        <translation>OpenLP kan inte ladda databasen.
+
+Databas: %s</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.MediaManagerItem</name>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="476"/>
+        <location filename="openlp/core/lib/__init__.py" line="261"/>
         <source>No Items Selected</source>
-        <translation>Inget objekt valt</translation>
+        <translation>Inga poster valda</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="284"/>
-        <source>&amp;Edit %s</source>
-        <translation>%Redigera %s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="292"/>
-        <source>&amp;Delete %s</source>
-        <translation>%Ta bort %s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="300"/>
-        <source>&amp;Preview %s</source>
-        <translation>&amp;Förhandsgranska %s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="306"/>
-        <source>&amp;Show Live</source>
-        <translation type="unfinished">&amp;Visa Live</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="311"/>
-        <source>&amp;Add to Service</source>
-        <translation>&amp;Lägg till i planeringen</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="317"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="286"/>
         <source>&amp;Add to selected Service Item</source>
-        <translation>&amp;Lägg till till vald planeringsobjekt</translation>
+        <translation>&amp;Lägg till i vald post i körschemat</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="443"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="486"/>
         <source>You must select one or more items to preview.</source>
-        <translation>Du måste välja ett eller flera objekt att förhandsgranska.</translation>
+        <translation>Du måste välja en eller flera poster att förhandsgranska.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="460"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="504"/>
         <source>You must select one or more items to send live.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste välja en eller flera poster att visa live.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="476"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="557"/>
         <source>You must select one or more items.</source>
-        <translation>Du måste välja ett eller flera objekt.</translation>
+        <translation>Du måste välja en eller flera poster.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="503"/>
-        <source>No items selected</source>
-        <translation>Inget objekt valt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="503"/>
-        <source>You must select one or more items</source>
-        <translation type="unfinished">Du måste välja ett eller flera objekt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="511"/>
-        <source>No Service Item Selected</source>
-        <translation>Ingen planering är vald</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="511"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="564"/>
         <source>You must select an existing service item to add to.</source>
-        <translation>Du måste välja en befintligt planeringsobjekt att lägga till till.</translation>
+        <translation>Du måste välja en befintlig post i körschemat att lägga till i.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="522"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="573"/>
         <source>Invalid Service Item</source>
-        <translation>Felaktigt planeringsobjekt</translation>
+        <translation>Ogiltig körschemapost</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="522"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="573"/>
         <source>You must select a %s service item.</source>
-        <translation>Du måste välja ett %s planeringsobjekt.</translation>
+        <translation>Du måste välja en post av typen %s i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="531"/>
+        <source>You must select one or more items to add.</source>
+        <translation>Du måste välja en eller flera poster att lägga till.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="603"/>
+        <source>No Search Results</source>
+        <translation>Inga sökresultat</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="153"/>
+        <source>&amp;Clone</source>
+        <translation>&amp;Klona</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="358"/>
+        <source>Invalid File Type</source>
+        <translation>Ogiltig filtyp</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="358"/>
+        <source>Invalid File %s.
+Suffix not supported</source>
+        <translation>Ogiltig fil %s.
+Filändelsen stöds ej</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="401"/>
+        <source>Duplicate files were found on import and were ignored.</source>
+        <translation>Dubblettfiler hittades vid importen och ignorerades.</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.PluginForm</name>
     <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="103"/>
+        <location filename="openlp/core/ui/plugindialog.py" line="78"/>
         <source>Plugin List</source>
-        <translation type="unfinished">Pluginlista</translation>
+        <translation>Modullista</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="105"/>
+        <location filename="openlp/core/ui/plugindialog.py" line="80"/>
         <source>Plugin Details</source>
-        <translation type="unfinished">Plugindetaljer</translation>
+        <translation>Moduldetaljer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="107"/>
-        <source>Version:</source>
-        <translation type="unfinished">Version:</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="109"/>
-        <source>About:</source>
-        <translation type="unfinished">Om:</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="111"/>
+        <location filename="openlp/core/ui/plugindialog.py" line="84"/>
         <source>Status:</source>
-        <translation type="unfinished">Status:</translation>
+        <translation>Status:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="113"/>
+        <location filename="openlp/core/ui/plugindialog.py" line="86"/>
         <source>Active</source>
-        <translation type="unfinished">Aktiv</translation>
+        <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/plugindialog.py" line="115"/>
+        <location filename="openlp/core/ui/plugindialog.py" line="88"/>
         <source>Inactive</source>
-        <translation type="unfinished">Inaktiv</translation>
+        <translation>Inaktiv</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="138"/>
+        <location filename="openlp/core/ui/pluginform.py" line="145"/>
         <source>%s (Inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (Inaktiv)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="135"/>
+        <location filename="openlp/core/ui/pluginform.py" line="142"/>
         <source>%s (Active)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (Aktiv)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="141"/>
+        <location filename="openlp/core/ui/pluginform.py" line="148"/>
         <source>%s (Disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (Ej valbar)</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.PrintServiceDialog</name>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="159"/>
+        <source>Fit Page</source>
+        <translation>Passa sidan</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="159"/>
+        <source>Fit Width</source>
+        <translation>Passa bredden</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.PrintServiceForm</name>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="141"/>
+        <source>Options</source>
+        <translation>Alternativ</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="66"/>
+        <source>Copy</source>
+        <translation>Kopiera</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="69"/>
+        <source>Copy as HTML</source>
+        <translation>Kopiera som HTML</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="139"/>
+        <source>Zoom In</source>
+        <translation>Zooma in</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="135"/>
+        <source>Zoom Out</source>
+        <translation>Zooma ut</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="137"/>
+        <source>Zoom Original</source>
+        <translation>Återställ zoom</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="146"/>
+        <source>Other Options</source>
+        <translation>Övriga alternativ</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="148"/>
+        <source>Include slide text if available</source>
+        <translation>Inkludera sidtext om tillgänglig</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="152"/>
+        <source>Include service item notes</source>
+        <translation>Inkludera anteckningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="154"/>
+        <source>Include play length of media items</source>
+        <translation>Inkludera spellängd för mediaposter</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="150"/>
+        <source>Add page break before each text item</source>
+        <translation>Lägg till sidbrytning före varje textpost</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="156"/>
+        <source>Service Sheet</source>
+        <translation>Körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="56"/>
+        <source>Print</source>
+        <translation>Skriv ut</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="143"/>
+        <source>Title:</source>
+        <translation>Titel:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printservicedialog.py" line="144"/>
+        <source>Custom Footer Text:</source>
+        <translation>Anpassad sidfot:</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.ScreenList</name>
+    <message>
+        <location filename="openlp/core/ui/screen.py" line="136"/>
+        <source>Screen</source>
+        <translation>Skärm</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/screen.py" line="139"/>
+        <source>primary</source>
+        <translation>primär</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.ServiceItem</name>
+    <message>
+        <location filename="openlp/core/lib/serviceitem.py" line="469"/>
+        <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
+        <translation>&lt;strong&gt;Start&lt;/strong&gt;: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/serviceitem.py" line="473"/>
+        <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
+        <translation>&lt;strong&gt;Längd&lt;/strong&gt;: %s</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ServiceItemEditForm</name>
     <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="82"/>
+        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="61"/>
         <source>Reorder Service Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="84"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <translation>Arrangera om körschemapost</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ServiceManager</name>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="122"/>
-        <source>New Service</source>
-        <translation type="unfinished">Ny planering</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="171"/>
+        <source>Move to &amp;top</source>
+        <translation>Lägg &amp;först</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="122"/>
-        <source>Create a new service</source>
-        <translation type="unfinished">Skapa en ny mötesplanering</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="171"/>
+        <source>Move item to the top of the service.</source>
+        <translation>Lägg posten först i körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="694"/>
-        <source>Open Service</source>
-        <translation type="unfinished">Öppna planering</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="183"/>
+        <source>Move &amp;up</source>
+        <translation>Flytta &amp;upp</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="183"/>
+        <source>Move item up one position in the service.</source>
+        <translation>Flytta upp posten ett steg i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="210"/>
+        <source>Move &amp;down</source>
+        <translation>Flytta &amp;ner</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="192"/>
+        <source>Move item down one position in the service.</source>
+        <translation>Flytta ner posten ett steg i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="201"/>
+        <source>Move to &amp;bottom</source>
+        <translation>Lägg &amp;sist</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="201"/>
+        <source>Move item to the end of the service.</source>
+        <translation>Lägg posten sist i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="323"/>
+        <source>&amp;Delete From Service</source>
+        <translation>&amp;Ta bort från körschemat</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="229"/>
+        <source>Delete the selected item from the service.</source>
+        <translation>Ta bort den valda posten från körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="300"/>
+        <source>&amp;Add New Item</source>
+        <translation>&amp;Lägg till ny post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="303"/>
+        <source>&amp;Add to Selected Item</source>
+        <translation>Lägg till i &amp;vald post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="308"/>
+        <source>&amp;Edit Item</source>
+        <translation>&amp;Redigera post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="311"/>
+        <source>&amp;Reorder Item</source>
+        <translation>Arrangera &amp;om post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="315"/>
+        <source>&amp;Notes</source>
+        <translation>&amp;Anteckningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="336"/>
+        <source>&amp;Change Item Theme</source>
+        <translation>&amp;Byt postens tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="641"/>
+        <source>File is not a valid service.
+The content encoding is not UTF-8.</source>
+        <translation>Filen är inte ett giltigt körschema.
+Innehållets teckenkodning är inte UTF-8.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="683"/>
+        <source>File is not a valid service.</source>
+        <translation>Filen är inte ett giltigt körschema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
+        <source>Missing Display Handler</source>
+        <translation>Visningsmodul saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="1225"/>
+        <source>Your item cannot be displayed as there is no handler to display it</source>
+        <translation>Posten kan inte visas eftersom det inte finns någon visningsmodul för att visa den</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
+        <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
+        <translation>Posten kan inte visas eftersom modulen som krävs för att visa den saknas eller är inaktiv</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="236"/>
+        <source>&amp;Expand all</source>
+        <translation>&amp;Expandera alla</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="236"/>
+        <source>Expand all the service items.</source>
+        <translation>Expandera alla poster i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="245"/>
+        <source>&amp;Collapse all</source>
+        <translation>&amp;Fäll ihop alla</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="245"/>
+        <source>Collapse all the service items.</source>
+        <translation>Fäll ihop alla poster i körschemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="430"/>
+        <source>Open File</source>
+        <translation>Öppna fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="613"/>
+        <source>OpenLP Service Files (*.osz)</source>
+        <translation>OpenLP körschemafiler (*.osz)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="210"/>
+        <source>Moves the selection down the window.</source>
+        <translation>Flyttar urvalet neråt i fönstret.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="219"/>
+        <source>Move up</source>
+        <translation>Flytta upp</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="219"/>
+        <source>Moves the selection up the window.</source>
+        <translation>Flyttar urvalet uppåt i fönstret.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="255"/>
+        <source>Go Live</source>
+        <translation>Lägg ut live-bilden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="255"/>
+        <source>Send the selected item to Live.</source>
+        <translation>Visa den valda posten live.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="447"/>
+        <source>Modified Service</source>
+        <translation>Körschemat ändrat</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="319"/>
+        <source>&amp;Start Time</source>
+        <translation>&amp;Starttid</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="328"/>
+        <source>Show &amp;Preview</source>
+        <translation>&amp;Förhandsgranska</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="332"/>
+        <source>Show &amp;Live</source>
+        <translation>Visa &amp;Live</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="447"/>
+        <source>The current service has been modified. Would you like to save this service?</source>
+        <translation>Det nuvarande körschemat har ändrats. Vill du spara körschemat?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="689"/>
+        <source>File could not be opened because it is corrupt.</source>
+        <translation>Filen kunde inte öppnas eftersom den är korrupt.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="695"/>
+        <source>Empty File</source>
+        <translation>Tom fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="695"/>
+        <source>This service file does not contain any data.</source>
+        <translation>Det här körschemat innehåller inte någon data.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
+        <source>Corrupt File</source>
+        <translation>Korrupt fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printserviceform.py" line="195"/>
+        <source>Custom Service Notes: </source>
+        <translation>Egna körschemaanteckningar: </translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printserviceform.py" line="242"/>
+        <source>Notes: </source>
+        <translation>Anteckningar: </translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/printserviceform.py" line="254"/>
+        <source>Playing time: </source>
+        <translation>Speltid: </translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="358"/>
+        <source>Untitled Service</source>
+        <translation>Nytt körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="123"/>
+        <source>Load an existing service.</source>
+        <translation>Ladda ett befintligt körschema.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="127"/>
-        <source>Load an existing service</source>
-        <translation type="unfinished">Ladda en planering</translation>
+        <source>Save this service.</source>
+        <translation>Spara körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="627"/>
-        <source>Save Service</source>
-        <translation type="unfinished">Spara planering</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="137"/>
+        <source>Select a theme for the service.</source>
+        <translation>Välj ett tema för körschemat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="132"/>
-        <source>Save this service</source>
-        <translation type="unfinished">Spara denna mötesplanering</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
+        <source>This file is either corrupt or it is not an OpenLP 2.0 service file.</source>
+        <translation>Filen är antingen korrupt eller inte en OpenLP 2.0 körschemafil.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="138"/>
-        <source>Theme:</source>
-        <translation type="unfinished">Tema:</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="1028"/>
+        <source>Slide theme</source>
+        <translation>Sidtema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="143"/>
-        <source>Select a theme for the service</source>
-        <translation type="unfinished">Välj ett tema för planeringen</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="1032"/>
+        <source>Notes</source>
+        <translation>Anteckningar</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="173"/>
-        <source>Move to &amp;top</source>
-        <translation type="unfinished">Flytta till &amp;toppen</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="529"/>
+        <source>Service File Missing</source>
+        <translation>Körschemafil saknas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="173"/>
-        <source>Move item to the top of the service.</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="1023"/>
+        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="179"/>
-        <source>Move &amp;up</source>
-        <translation type="unfinished">Flytta &amp;upp</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="179"/>
-        <source>Move item up one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="185"/>
-        <source>Move &amp;down</source>
-        <translation type="unfinished">Flytta &amp;ner</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="185"/>
-        <source>Move item down one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="191"/>
-        <source>Move to &amp;bottom</source>
-        <translation type="unfinished">Flytta längst &amp;ner</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="191"/>
-        <source>Move item to the end of the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="267"/>
-        <source>&amp;Delete From Service</source>
-        <translation type="unfinished">&amp;Ta bort från mötesplanering</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="198"/>
-        <source>Delete the selected item from the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="250"/>
-        <source>&amp;Add New Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="253"/>
-        <source>&amp;Add to Selected Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="258"/>
-        <source>&amp;Edit Item</source>
-        <translation type="unfinished">&amp;Redigera objekt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="261"/>
-        <source>&amp;Reorder Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="264"/>
-        <source>&amp;Notes</source>
-        <translation type="unfinished">&amp;Anteckningar</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="272"/>
-        <source>&amp;Preview Verse</source>
-        <translation type="unfinished">&amp;Förhandsgranska Vers</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="275"/>
-        <source>&amp;Live Verse</source>
-        <translation type="unfinished">&amp;Live-vers</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="280"/>
-        <source>&amp;Change Item Theme</source>
-        <translation type="unfinished">&amp;Byt objektets tema</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="708"/>
-        <source>Save Changes to Service?</source>
-        <translation type="unfinished">Spara ändringarna  till planeringen?</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="542"/>
-        <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="627"/>
-        <source>OpenLP Service Files (*.osz)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="708"/>
-        <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="776"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="737"/>
-        <source>File is not a valid service.
-The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="776"/>
-        <source>File is not a valid service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="973"/>
-        <source>Missing Display Handler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="939"/>
-        <source>Your item cannot be displayed as there is no handler to display it</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="973"/>
-        <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="205"/>
-        <source>&amp;Expand all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="205"/>
-        <source>Expand all the service items.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="211"/>
-        <source>&amp;Collapse all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="211"/>
-        <source>Collapse all the service items.</source>
+        <location filename="openlp/core/ui/servicemanager.py" line="1023"/>
+        <source>Service copy only</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ServiceNoteForm</name>
     <message>
-        <location filename="openlp/core/ui/servicenotedialog.py" line="52"/>
+        <location filename="openlp/core/ui/servicenoteform.py" line="62"/>
         <source>Service Item Notes</source>
-        <translation type="unfinished">Mötesanteckningar</translation>
+        <translation>Körschemaanteckningar</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.SettingsForm</name>
     <message>
-        <location filename="openlp/core/ui/settingsdialog.py" line="67"/>
+        <location filename="openlp/core/ui/settingsdialog.py" line="61"/>
         <source>Configure OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurera OpenLP</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ShortcutListDialog</name>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="102"/>
-        <source>Customize Shortcuts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="104"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Åtgärd</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="104"/>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Genväg</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="108"/>
-        <source>Default: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="110"/>
-        <source>Custom:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/shortcutlistdialog.py" line="112"/>
-        <source>None</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="76"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="440"/>
         <source>Duplicate Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Dubblett</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/shortcutlistform.py" line="76"/>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="440"/>
         <source>The shortcut &quot;%s&quot; is already assigned to another action, please use a different shortcut.</source>
-        <translation type="unfinished"></translation>
+        <translation>Genvägen &quot;%s&quot; är redan kopplad till en annan åtgärd; välj en annan genväg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="130"/>
+        <source>Alternate</source>
+        <translation>Alternativ</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="127"/>
+        <source>Select an action and click one of the buttons below to start capturing a new primary or alternate shortcut, respectively.</source>
+        <translation>Välj en åtgärd och använd knapparna nedan för att skapa en ny primär eller alternativ genväg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="134"/>
+        <source>Default</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="136"/>
+        <source>Custom</source>
+        <translation>Anpassad</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="140"/>
+        <source>Capture shortcut.</source>
+        <translation>Skapa genväg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="145"/>
+        <source>Restore the default shortcut of this action.</source>
+        <translation>Återställ till standardgenvägen för den här åtgärden.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="287"/>
+        <source>Restore Default Shortcuts</source>
+        <translation>Återställ till standardgenvägar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistform.py" line="287"/>
+        <source>Do you want to restore all shortcuts to their defaults?</source>
+        <translation>Vill du återställa alla genvägar till standardvärdena?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/shortcutlistdialog.py" line="125"/>
+        <source>Configure Shortcuts</source>
+        <translation>Konfigurera genvägar</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.SlideController</name>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="116"/>
-        <source>Live</source>
-        <translation type="unfinished">Live</translation>
+        <location filename="openlp/core/ui/slidecontroller.py" line="186"/>
+        <source>Hide</source>
+        <translation>Dölj</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="120"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
+        <location filename="openlp/core/ui/slidecontroller.py" line="272"/>
+        <source>Go To</source>
+        <translation>Gå till</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="192"/>
+        <source>Blank Screen</source>
+        <translation>Släck skärm</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="198"/>
+        <source>Blank to Theme</source>
+        <translation>Släck till tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="204"/>
+        <source>Show Desktop</source>
+        <translation>Visa skrivbord</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="554"/>
+        <source>Previous Service</source>
+        <translation>Föregående post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="560"/>
+        <source>Next Service</source>
+        <translation>Nästa post</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="566"/>
+        <source>Escape Item</source>
+        <translation>Avbryt post</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="165"/>
-        <source>Move to previous</source>
-        <translation type="unfinished">Flytta till föregående</translation>
+        <source>Move to previous.</source>
+        <translation>Flytta till föregående.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="169"/>
-        <source>Move to next</source>
-        <translation type="unfinished">Flytta till nästa</translation>
+        <location filename="openlp/core/ui/slidecontroller.py" line="172"/>
+        <source>Move to next.</source>
+        <translation>Flytta till nästa.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="179"/>
-        <source>Hide</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="218"/>
+        <source>Play Slides</source>
+        <translation>Sidvisning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="243"/>
+        <source>Delay between slides in seconds.</source>
+        <translation>Tid i sekunder mellan sidorna.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="246"/>
+        <source>Move to live.</source>
+        <translation>Visa live.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="251"/>
+        <source>Add to Service.</source>
+        <translation>Lägg till i körschema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="257"/>
+        <source>Edit and reload song preview.</source>
+        <translation>Redigera och uppdatera förhandsvisning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="207"/>
+        <source>Start playing media.</source>
+        <translation>Starta uppspelning.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="276"/>
+        <source>Pause audio.</source>
+        <translation>Pausa ljud.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="211"/>
+        <source>Pause playing media.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
-        <source>Move to live</source>
-        <translation type="unfinished">Flytta till live</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="222"/>
-        <source>Start continuous loop</source>
-        <translation type="unfinished">Börja oändlig loop</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
-        <source>Stop continuous loop</source>
-        <translation type="unfinished">Stoppa upprepad loop</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="235"/>
-        <source>s</source>
-        <translation type="unfinished">s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="237"/>
-        <source>Delay between slides in seconds</source>
-        <translation type="unfinished">Fördröjning mellan bilder, i sekunder</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="250"/>
-        <source>Start playing media</source>
-        <translation type="unfinished">Börja spela media</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="281"/>
-        <source>Go To</source>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="215"/>
+        <source>Stop playing media.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
-        <source>Edit and reload song preview</source>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="222"/>
+        <source>Video position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="181"/>
-        <source>Blank Screen</source>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="234"/>
+        <source>Audio Volume.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="188"/>
-        <source>Blank to Theme</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="329"/>
+        <source>Go to &quot;Verse&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="196"/>
-        <source>Show Desktop</source>
+        <location filename="openlp/core/ui/slidecontroller.py" line="365"/>
+        <source>Go to &quot;Chorus&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="371"/>
+        <source>Go to &quot;Bridge&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="377"/>
+        <source>Go to &quot;Pre-Chorus&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
+        <source>Go to &quot;Intro&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
+        <source>Go to &quot;Ending&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="395"/>
+        <source>Go to &quot;Other&quot;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OpenLP.SpellTextEdit</name>
     <message>
-        <location filename="openlp/core/lib/spelltextedit.py" line="78"/>
+        <location filename="openlp/core/lib/spelltextedit.py" line="106"/>
         <source>Spelling Suggestions</source>
-        <translation type="unfinished"></translation>
+        <translation>Stavningsförslag</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/spelltextedit.py" line="89"/>
+        <location filename="openlp/core/lib/spelltextedit.py" line="116"/>
         <source>Formatting Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Format-taggar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/spelltextedit.py" line="90"/>
+        <source>Language:</source>
+        <translation>Språk:</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.StartTimeForm</name>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="117"/>
+        <source>Hours:</source>
+        <translation>Timmar:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="118"/>
+        <source>Minutes:</source>
+        <translation>Minuter:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="119"/>
+        <source>Seconds:</source>
+        <translation>Sekunder:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="109"/>
+        <source>Item Start and Finish Time</source>
+        <translation>Start- och sluttid</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="120"/>
+        <source>Start</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="121"/>
+        <source>Finish</source>
+        <translation>Slut</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimedialog.py" line="122"/>
+        <source>Length</source>
+        <translation>Längd</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimeform.py" line="80"/>
+        <source>Time Validation Error</source>
+        <translation>Tidvalideringsfel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimeform.py" line="73"/>
+        <source>Finish time is set after the end of the media item</source>
+        <translation>Sluttiden är satt till efter mediapostens slut</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/starttimeform.py" line="80"/>
+        <source>Start time is after the finish time of the media item</source>
+        <translation>Starttiden är efter mediapostens slut</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="68"/>
+        <source>Theme Layout</source>
+        <translation>Temalayout</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="70"/>
+        <source>The blue box shows the main area.</source>
+        <translation>Den blåa rutan visar huvudytan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="72"/>
+        <source>The red box shows the footer.</source>
+        <translation>Den röda rutan visar sidfoten.</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ThemeForm</name>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="497"/>
-        <source>All Files</source>
-        <translation type="unfinished">Alla filer</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="499"/>
+        <location filename="openlp/core/ui/themeform.py" line="530"/>
         <source>Select Image</source>
-        <translation type="unfinished">Välj bild</translation>
+        <translation>Välj bild</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="586"/>
+        <location filename="openlp/core/ui/themeform.py" line="612"/>
         <source>Theme Name Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Temanamn saknas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="586"/>
+        <location filename="openlp/core/ui/themeform.py" line="612"/>
         <source>There is no name for this theme. Please enter one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Det finns inget namn på temat. Var vänlig att ange ett.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="595"/>
+        <location filename="openlp/core/ui/themeform.py" line="618"/>
         <source>Theme Name Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt temanamn</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="595"/>
+        <location filename="openlp/core/ui/themeform.py" line="618"/>
         <source>Invalid theme name. Please enter one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltigt temanamn. Ange ett giltigt namn.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="211"/>
+        <source>(approximately %d lines per slide)</source>
+        <translation>(ungefär %d rader per sida)</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ThemeManager</name>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="59"/>
-        <source>New Theme</source>
-        <translation type="unfinished">Nytt Tema</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="59"/>
+        <location filename="openlp/core/ui/thememanager.py" line="67"/>
         <source>Create a new theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa ett nytt tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="64"/>
+        <location filename="openlp/core/ui/thememanager.py" line="71"/>
         <source>Edit Theme</source>
-        <translation type="unfinished">Redigera tema</translation>
+        <translation>Redigera tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="64"/>
+        <location filename="openlp/core/ui/thememanager.py" line="71"/>
         <source>Edit a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera ett tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="69"/>
+        <location filename="openlp/core/ui/thememanager.py" line="76"/>
         <source>Delete Theme</source>
-        <translation type="unfinished">Ta bort tema</translation>
+        <translation>Ta bort tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="69"/>
+        <location filename="openlp/core/ui/thememanager.py" line="76"/>
         <source>Delete a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort ett tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="75"/>
+        <location filename="openlp/core/ui/thememanager.py" line="82"/>
         <source>Import Theme</source>
-        <translation type="unfinished">Importera tema</translation>
+        <translation>Importera tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="75"/>
+        <location filename="openlp/core/ui/thememanager.py" line="82"/>
         <source>Import a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="80"/>
+        <location filename="openlp/core/ui/thememanager.py" line="87"/>
         <source>Export Theme</source>
-        <translation type="unfinished">Exportera tema</translation>
+        <translation>Exportera tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="80"/>
+        <location filename="openlp/core/ui/thememanager.py" line="87"/>
         <source>Export a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportera tema.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="97"/>
+        <location filename="openlp/core/ui/thememanager.py" line="108"/>
         <source>&amp;Edit Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Redigera tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="106"/>
+        <location filename="openlp/core/ui/thememanager.py" line="118"/>
         <source>&amp;Delete Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ta bort tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="123"/>
+        <source>Set As &amp;Global Default</source>
+        <translation>Ange som &amp;globalt tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="469"/>
+        <source>%s (default)</source>
+        <translation>%s (standard)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="324"/>
+        <source>You must select a theme to edit.</source>
+        <translation>Du måste välja ett tema att redigera.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="745"/>
+        <source>You are unable to delete the default theme.</source>
+        <translation>Du kan inte ta bort standardtemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="376"/>
+        <source>You have not selected a theme.</source>
+        <translation>Du har inte valt ett tema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="380"/>
+        <source>Save Theme - (%s)</source>
+        <translation>Spara tema - (%s)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="398"/>
+        <source>Theme Exported</source>
+        <translation>Tema exporterat</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="398"/>
+        <source>Your theme has been successfully exported.</source>
+        <translation>Temat exporterades utan problem.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="404"/>
+        <source>Theme Export Failed</source>
+        <translation>Temaexport misslyckades</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="404"/>
+        <source>Your theme could not be exported due to an error.</source>
+        <translation>Ett fel inträffade när temat skulle exporteras.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <source>Select Theme Import File</source>
+        <translation>Välj temafil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="578"/>
+        <source>File is not a valid theme.</source>
+        <translation>Filen är inte ett giltigt tema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
+        <source>Theme %s is used in the %s plugin.</source>
+        <translation>Temat %s används i modulen %s.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="111"/>
-        <source>Set As &amp;Global Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="679"/>
-        <source>%s (default)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="271"/>
-        <source>You must select a theme to edit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="793"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="778"/>
-        <source>You are unable to delete the default theme.</source>
-        <translation type="unfinished">Du kan inte ta bort standardtemat.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="326"/>
-        <source>You have not selected a theme.</source>
-        <translation type="unfinished">Du har inte valt ett tema.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="332"/>
-        <source>Save Theme - (%s)</source>
-        <translation type="unfinished">Spara tema - (%s)</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="349"/>
-        <source>Theme Exported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="349"/>
-        <source>Your theme has been successfully exported.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="355"/>
-        <source>Theme Export Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="355"/>
-        <source>Your theme could not be exported due to an error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="369"/>
-        <source>Select Theme Import File</source>
-        <translation type="unfinished">Välj tema importfil</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="369"/>
-        <source>Theme (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="475"/>
-        <source>File is not a valid theme.
-The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="525"/>
-        <source>File is not a valid theme.</source>
-        <translation type="unfinished">Filen är inte ett giltigt tema.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="626"/>
-        <source>Theme Exists</source>
-        <translation type="unfinished">Temat finns</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="626"/>
-        <source>A theme with this name already exists. Would you like to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="786"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="793"/>
-        <source>Theme %s is used by the service manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="100"/>
         <source>&amp;Copy Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="103"/>
-        <source>&amp;Rename Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopiera tema</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="114"/>
+        <source>&amp;Rename Theme</source>
+        <translation>&amp;Byt namn på tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="127"/>
         <source>&amp;Export Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportera tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="226"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/thememanager.py" line="268"/>
+        <source>You must select a theme to rename.</source>
+        <translation>Du måste välja ett tema att byta namn på.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="291"/>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/thememanager.py" line="268"/>
+        <source>Rename Confirmation</source>
+        <translation>Bekräftelse av namnbyte</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="761"/>
-        <source>You must select a theme to %s.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/thememanager.py" line="268"/>
+        <source>Rename %s theme?</source>
+        <translation>Byt namn på temat %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="767"/>
-        <source>%s Confirmation</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
+        <source>You must select a theme to delete.</source>
+        <translation>Du måste välja ett tema att ta bort.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="767"/>
-        <source>%s %s theme?</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
+        <source>Delete Confirmation</source>
+        <translation>Borttagningsbekräftelse</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
+        <source>Delete %s theme?</source>
+        <translation>Ta bort temat %s?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
+        <source>Validation Error</source>
+        <translation>Valideringsfel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="594"/>
+        <source>A theme with this name already exists.</source>
+        <translation>Ett tema med det här namnet finns redan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <source>OpenLP Themes (*.theme *.otz)</source>
+        <translation>OpenLP-teman (*.theme *.otz)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="295"/>
+        <source>Copy of %s</source>
+        <comment>Copy of &lt;theme name&gt;</comment>
+        <translation>Kopia av %s</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ThemeWizard</name>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="623"/>
+        <location filename="openlp/core/ui/themewizard.py" line="413"/>
         <source>Theme Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Temaguiden</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="625"/>
+        <location filename="openlp/core/ui/themewizard.py" line="415"/>
         <source>Welcome to the Theme Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Välkommen till temaguiden</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="628"/>
-        <source>This wizard will help you to create and edit your themes . Click the next button below to start the process by setting up your background.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="632"/>
+        <location filename="openlp/core/ui/themewizard.py" line="422"/>
         <source>Set Up Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Ställ in bakgrund</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="634"/>
+        <location filename="openlp/core/ui/themewizard.py" line="424"/>
         <source>Set up your theme&apos;s background according to the parameters below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ställ in temats bakgrund enligt parametrarna nedan.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="637"/>
+        <location filename="openlp/core/ui/themewizard.py" line="427"/>
         <source>Background type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bakgrundstyp:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="639"/>
+        <location filename="openlp/core/ui/themewizard.py" line="429"/>
         <source>Solid Color</source>
-        <translation type="unfinished">Solid färg</translation>
+        <translation>Solid färg</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="641"/>
+        <location filename="openlp/core/ui/themewizard.py" line="431"/>
         <source>Gradient</source>
-        <translation type="unfinished">Stegvis</translation>
+        <translation>Gradient</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="643"/>
-        <source>Image</source>
-        <translation type="unfinished">Bild</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="695"/>
+        <location filename="openlp/core/ui/themewizard.py" line="483"/>
         <source>Color:</source>
-        <translation type="unfinished">Färg:</translation>
+        <translation>Färg:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="650"/>
+        <location filename="openlp/core/ui/themewizard.py" line="440"/>
         <source>Gradient:</source>
-        <translation type="unfinished">Stegvis:</translation>
+        <translation>Gradient:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="652"/>
+        <location filename="openlp/core/ui/themewizard.py" line="442"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horisontal</translation>
+        <translation>Horisontell</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="654"/>
+        <location filename="openlp/core/ui/themewizard.py" line="444"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="656"/>
+        <location filename="openlp/core/ui/themewizard.py" line="446"/>
         <source>Circular</source>
-        <translation type="unfinished">Cirkulär</translation>
+        <translation>Cirkulär</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="658"/>
+        <location filename="openlp/core/ui/themewizard.py" line="448"/>
         <source>Top Left - Bottom Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppe vänster - nere höger</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="660"/>
+        <location filename="openlp/core/ui/themewizard.py" line="450"/>
         <source>Bottom Left - Top Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Nere vänster - uppe höger</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="662"/>
-        <source>Image:</source>
-        <translation type="unfinished">Bild:</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="663"/>
+        <location filename="openlp/core/ui/themewizard.py" line="455"/>
         <source>Main Area Font Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Huvudytans tecken</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="665"/>
+        <location filename="openlp/core/ui/themewizard.py" line="457"/>
         <source>Define the font and display characteristics for the Display text</source>
-        <translation type="unfinished"></translation>
+        <translation>Definiera font och egenskaper för visningstexten</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="694"/>
+        <location filename="openlp/core/ui/themewizard.py" line="482"/>
         <source>Font:</source>
-        <translation type="unfinished">Typsnitt:</translation>
+        <translation>Teckensnitt:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="696"/>
+        <location filename="openlp/core/ui/themewizard.py" line="484"/>
         <source>Size:</source>
-        <translation type="unfinished">Storlek:</translation>
+        <translation>Storlek:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="697"/>
-        <source>pt</source>
-        <translation type="unfinished">pt</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="673"/>
-        <source>(%d lines per slide)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="675"/>
+        <location filename="openlp/core/ui/themewizard.py" line="464"/>
         <source>Line Spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radavstånd:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="678"/>
+        <location filename="openlp/core/ui/themewizard.py" line="467"/>
         <source>&amp;Outline:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kant:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="682"/>
+        <location filename="openlp/core/ui/themewizard.py" line="471"/>
         <source>&amp;Shadow:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sk&amp;ugga:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="685"/>
+        <location filename="openlp/core/ui/themewizard.py" line="474"/>
         <source>Bold</source>
-        <translation type="unfinished">Fetstil</translation>
+        <translation>Fetstil</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="687"/>
+        <location filename="openlp/core/ui/themewizard.py" line="475"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kursiv</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="689"/>
+        <location filename="openlp/core/ui/themewizard.py" line="477"/>
         <source>Footer Area Font Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Sidfotens tecken</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="691"/>
+        <location filename="openlp/core/ui/themewizard.py" line="479"/>
         <source>Define the font and display characteristics for the Footer text</source>
-        <translation type="unfinished"></translation>
+        <translation>Definiera font och egenskaper för sidfotstexten</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="698"/>
+        <location filename="openlp/core/ui/themewizard.py" line="486"/>
         <source>Text Formatting Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Textformatering</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="700"/>
+        <location filename="openlp/core/ui/themewizard.py" line="488"/>
         <source>Allows additional display formatting information to be defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Ytterligare inställningsmöjligheter för visningsformatet</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="703"/>
+        <location filename="openlp/core/ui/themewizard.py" line="491"/>
         <source>Horizontal Align:</source>
-        <translation type="unfinished"></translation>
+        <translation>Horisontell justering:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="705"/>
+        <location filename="openlp/core/ui/themewizard.py" line="493"/>
         <source>Left</source>
-        <translation type="unfinished">Vänster</translation>
+        <translation>Vänster</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="707"/>
+        <location filename="openlp/core/ui/themewizard.py" line="495"/>
         <source>Right</source>
-        <translation type="unfinished">Höger</translation>
+        <translation>Höger</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="709"/>
+        <location filename="openlp/core/ui/themewizard.py" line="497"/>
         <source>Center</source>
-        <translation type="unfinished">Centrera</translation>
+        <translation>Centrera</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="711"/>
-        <source>Vertical Align:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="713"/>
-        <source>Top</source>
-        <translation type="unfinished">Toppen</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="715"/>
-        <source>Middle</source>
-        <translation type="unfinished">Mitten</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="717"/>
-        <source>Bottom</source>
-        <translation type="unfinished">Botten</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="719"/>
-        <source>Transitions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="721"/>
+        <location filename="openlp/core/ui/themewizard.py" line="503"/>
         <source>Output Area Locations</source>
-        <translation type="unfinished"></translation>
+        <translation>Visningsytornas positioner</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="723"/>
+        <location filename="openlp/core/ui/themewizard.py" line="505"/>
         <source>Allows you to change and move the main and footer areas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Låter dig ändra och flytta huvud- och sidfotsytorna.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="726"/>
+        <location filename="openlp/core/ui/themewizard.py" line="508"/>
         <source>&amp;Main Area</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Huvudyta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="728"/>
+        <location filename="openlp/core/ui/themewizard.py" line="510"/>
         <source>&amp;Use default location</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd &amp;standardposition</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="741"/>
+        <location filename="openlp/core/ui/themewizard.py" line="523"/>
         <source>X position:</source>
-        <translation type="unfinished">X-position:</translation>
+        <translation>X-position:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="753"/>
+        <location filename="openlp/core/ui/themewizard.py" line="535"/>
         <source>px</source>
-        <translation type="unfinished">px</translation>
+        <translation>px</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="744"/>
+        <location filename="openlp/core/ui/themewizard.py" line="526"/>
         <source>Y position:</source>
-        <translation type="unfinished">Y-position:</translation>
+        <translation>Y-position:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="747"/>
+        <location filename="openlp/core/ui/themewizard.py" line="529"/>
         <source>Width:</source>
-        <translation type="unfinished">Bredd:</translation>
+        <translation>Bredd:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="751"/>
+        <location filename="openlp/core/ui/themewizard.py" line="533"/>
         <source>Height:</source>
-        <translation type="unfinished">Höjd:</translation>
+        <translation>Höjd:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="739"/>
-        <source>Footer Area</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themewizard.py" line="755"/>
+        <location filename="openlp/core/ui/themewizard.py" line="537"/>
         <source>Use default location</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd standardposition</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="757"/>
+        <location filename="openlp/core/ui/themewizard.py" line="542"/>
         <source>Save and Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara och förhandsgranska</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="759"/>
+        <location filename="openlp/core/ui/themewizard.py" line="544"/>
         <source>View the theme and save it replacing the current one or change the name to create a new theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa temat och spara det under samma namn för att ersätta det befintliga, eller under nytt namn för att skapa ett nytt tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themewizard.py" line="763"/>
+        <location filename="openlp/core/ui/themewizard.py" line="548"/>
         <source>Theme name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Temanamn:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="418"/>
+        <source>This wizard will help you to create and edit your themes. Click the next button below to start the process by setting up your background.</source>
+        <translation>Den här guiden hjälper dig att skapa och redigera dina teman. Klicka på Nästa för att börja processen med att ställa in bakgrund.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="501"/>
+        <source>Transitions:</source>
+        <translation>Övergångar:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="521"/>
+        <source>&amp;Footer Area</source>
+        <translation>&amp;Sidfotsyta</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="322"/>
+        <source>Edit Theme - %s</source>
+        <translation>Redigera tema - %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="436"/>
+        <source>Starting color:</source>
+        <translation>Startfärg:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="438"/>
+        <source>Ending color:</source>
+        <translation>Slutfärg:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="452"/>
+        <source>Background color:</source>
+        <translation>Bakgrundsfärg:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="499"/>
+        <source>Justify</source>
+        <translation>Marginaljustera</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themewizard.py" line="540"/>
+        <source>Layout Preview</source>
+        <translation>Förhandsgranskning av layout</translation>
     </message>
 </context>
 <context>
     <name>OpenLP.ThemesTab</name>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="41"/>
-        <source>Themes</source>
-        <translation type="unfinished">Teman</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="110"/>
+        <location filename="openlp/core/ui/themestab.py" line="107"/>
         <source>Global Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Globalt tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="112"/>
+        <location filename="openlp/core/ui/themestab.py" line="109"/>
         <source>Theme Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Temanivå</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="114"/>
+        <location filename="openlp/core/ui/themestab.py" line="111"/>
         <source>S&amp;ong Level</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sångnivå</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="116"/>
+        <location filename="openlp/core/ui/themestab.py" line="113"/>
         <source>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation type="unfinished">Använd temat för varje sång i databasen indviduellt. Om en sång inte har ett associerat tema, använd planeringens schema. Om planeringen inte har ett tema, använd globala temat.</translation>
+        <translation>Använd temat för varje sång i databasen indviduellt. Om en sång inte har ett associerat tema, använd körschemats tema. Om körschemat inte har ett tema, använd det globala temat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="121"/>
+        <location filename="openlp/core/ui/themestab.py" line="118"/>
         <source>&amp;Service Level</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Körschemanivå</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="123"/>
+        <location filename="openlp/core/ui/themestab.py" line="120"/>
         <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation type="unfinished">Använd temat för mötesplaneringen, och ignorera sångernas indviduella teman. Om mötesplaneringen inte har ett tema använd då det globala temat.</translation>
+        <translation>Använd temat för körschemat och ignorera sångernas individuella teman. Om körschemat inte har ett tema, använd det globala temat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="127"/>
+        <location filename="openlp/core/ui/themestab.py" line="124"/>
         <source>&amp;Global Level</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Global nivå</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themestab.py" line="129"/>
+        <location filename="openlp/core/ui/themestab.py" line="126"/>
         <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
-        <translation type="unfinished">Använd det globala temat, ignorerar teman associerade med mötesplaneringen eller sångerna.</translation>
+        <translation>Använd det globala temat och ignorera teman associerade med körschemat eller sångerna.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="40"/>
+        <source>Themes</source>
+        <translation>Teman</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.Ui</name>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="75"/>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="70"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Ta bort</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="251"/>
+        <source>Delete the selected item.</source>
+        <translation>Ta bort den valda posten.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="270"/>
+        <source>Move selection up one position.</source>
+        <translation>Flytta upp urvalet ett steg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="275"/>
+        <source>Move selection down one position.</source>
+        <translation>Flytta ner urvalet ett steg.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="59"/>
+        <source>&amp;Add</source>
+        <translation>&amp;Lägg till</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="60"/>
+        <source>Advanced</source>
+        <translation>Avancerat</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="61"/>
+        <source>All Files</source>
+        <translation>Alla filer</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="66"/>
+        <source>Create a new service.</source>
+        <translation>Skapa ett nytt körschema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="73"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Redigera</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="84"/>
+        <source>Import</source>
+        <translation>Importera</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="86"/>
+        <source>Live</source>
+        <translation>Live</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="89"/>
+        <source>Load</source>
+        <translation>Ladda</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="93"/>
+        <source>New</source>
+        <translation>Nytt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="94"/>
+        <source>New Service</source>
+        <translation>Nytt körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="101"/>
+        <source>OpenLP 2.0</source>
+        <translation>OpenLP 2.0</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="107"/>
+        <source>Preview</source>
+        <translation>Förhandsgranskning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="109"/>
+        <source>Replace Background</source>
+        <translation>Ersätt bakgrund</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="111"/>
+        <source>Reset Background</source>
+        <translation>Återställ bakgrund</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="122"/>
+        <source>Save Service</source>
+        <translation>Spara körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="123"/>
+        <source>Service</source>
+        <translation>Körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="127"/>
+        <source>Start %s</source>
+        <translation>Starta %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="438"/>
+        <source>&amp;Vertical Align:</source>
+        <translation>&amp;Vertikal justering:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="135"/>
+        <source>Top</source>
+        <translation>Toppen</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="92"/>
+        <source>Middle</source>
+        <translation>Mitten</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="62"/>
+        <source>Bottom</source>
+        <translation>Botten</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="58"/>
+        <source>About</source>
+        <translation>Om</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="63"/>
+        <source>Browse...</source>
+        <translation>Bläddra...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="64"/>
+        <source>Cancel</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="65"/>
+        <source>CCLI number:</source>
+        <translation>CCLI-nummer:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="74"/>
+        <source>Empty Field</source>
+        <translation>Tomt fält</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="76"/>
+        <source>Export</source>
+        <translation>Exportera</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="78"/>
+        <source>pt</source>
+        <comment>Abbreviated font pointsize unit</comment>
+        <translation>pt</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="83"/>
+        <source>Image</source>
+        <translation>Bild</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="87"/>
+        <source>Live Background Error</source>
+        <translation>Live-bakgrundsproblem</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="95"/>
+        <source>New Theme</source>
+        <translation>Nytt tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="96"/>
+        <source>No File Selected</source>
+        <comment>Singular</comment>
+        <translation>Ingen fil vald</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="97"/>
+        <source>No Files Selected</source>
+        <comment>Plural</comment>
+        <translation>Inga filer valda</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="98"/>
+        <source>No Item Selected</source>
+        <comment>Singular</comment>
+        <translation>Ingen post vald</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="99"/>
+        <source>No Items Selected</source>
+        <comment>Plural</comment>
+        <translation>Inga poster valda</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="100"/>
+        <source>openlp.org 1.x</source>
+        <translation>openlp.org 1.x</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="113"/>
+        <source>s</source>
+        <comment>The abbreviated unit for seconds</comment>
+        <translation>s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="115"/>
+        <source>Save &amp;&amp; Preview</source>
+        <translation>Spara &amp;&amp; förhandsgranska</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="116"/>
+        <source>Search</source>
+        <translation>Sök</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="117"/>
+        <source>You must select an item to delete.</source>
+        <translation>Du måste välja en post att ta bort.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="119"/>
+        <source>You must select an item to edit.</source>
+        <translation>Du måste välja en post att redigera.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="132"/>
+        <source>Theme</source>
+        <comment>Singular</comment>
+        <translation>Tema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="133"/>
+        <source>Themes</source>
+        <comment>Plural</comment>
+        <translation>Teman</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="139"/>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="60"/>
+        <source>Finished import.</source>
+        <translation>Importen är slutförd.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="61"/>
+        <source>Format:</source>
+        <translation>Format:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="63"/>
+        <source>Importing</source>
+        <translation>Importerar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="64"/>
+        <source>Importing &quot;%s&quot;...</source>
+        <translation>Importerar &quot;%s&quot;...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="65"/>
+        <source>Select Import Source</source>
+        <translation>Välj importkälla</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="66"/>
+        <source>Select the import format and the location to import from.</source>
+        <translation>Välj importformat och plats att importera från.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="68"/>
+        <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
+        <translation>openlp.org 1.x-import är inaktiverad på grund av en saknad Python-modul. Om du vill göra den här importen måste du installera modulen &quot;python-sqlite&quot;.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="72"/>
+        <source>Open %s File</source>
+        <translation>Öppna %s-fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="73"/>
+        <source>%p%</source>
+        <translation>%p %</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="74"/>
+        <source>Ready.</source>
+        <translation>Klar.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="254"/>
+        <source>Starting import...</source>
+        <translation>Startar import...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/wizard.py" line="76"/>
+        <source>You need to specify at least one %s file to import from.</source>
+        <comment>A file type e.g. OpenSong</comment>
+        <translation>Du måste ange åtminstone en %s-fil att importera från.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="352"/>
+        <source>Welcome to the Bible Import Wizard</source>
+        <translation>Välkommen till bibelimportguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="169"/>
+        <source>Welcome to the Song Export Wizard</source>
+        <translation>Välkommen till sångexportguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="231"/>
+        <source>Welcome to the Song Import Wizard</source>
+        <translation>Välkommen till sångimportguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="38"/>
+        <source>Author</source>
+        <comment>Singular</comment>
+        <translation>Författare</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="39"/>
+        <source>Authors</source>
+        <comment>Plural</comment>
+        <translation>Författare</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="41"/>
+        <source>&#xa9;</source>
+        <comment>Copyright symbol.</comment>
+        <translation>©</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="42"/>
+        <source>Song Book</source>
+        <comment>Singular</comment>
+        <translation>Sångbok</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="43"/>
+        <source>Song Books</source>
+        <comment>Plural</comment>
+        <translation>Sångböcker</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="45"/>
+        <source>Song Maintenance</source>
+        <translation>Sångunderhåll</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="46"/>
+        <source>Topic</source>
+        <comment>Singular</comment>
+        <translation>Ämne</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="47"/>
+        <source>Topics</source>
+        <comment>Plural</comment>
+        <translation>Ämnen</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="68"/>
+        <source>Continuous</source>
+        <translation>Kontinuerlig</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="69"/>
+        <source>Default</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="71"/>
+        <source>Display style:</source>
+        <translation>Visningsstil:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="77"/>
+        <source>File</source>
+        <translation>Fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="80"/>
+        <source>Help</source>
+        <translation>Hjälp</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="81"/>
+        <source>h</source>
+        <comment>The abbreviated unit for hours</comment>
+        <translation>h</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="85"/>
+        <source>Layout style:</source>
+        <translation>Layout:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="88"/>
+        <source>Live Toolbar</source>
+        <translation>Live-verktygsrad</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="90"/>
+        <source>m</source>
+        <comment>The abbreviated unit for minutes</comment>
+        <translation>min</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="102"/>
+        <source>OpenLP is already running. Do you wish to continue?</source>
+        <translation>OpenLP körs redan. Vill du fortsätta?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="121"/>
+        <source>Settings</source>
+        <translation>Inställningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="134"/>
+        <source>Tools</source>
+        <translation>Verktyg</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="137"/>
+        <source>Verse Per Slide</source>
+        <translation>En vers per sida</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="138"/>
+        <source>Verse Per Line</source>
+        <translation>En vers per rad</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="140"/>
+        <source>View</source>
+        <translation>Visa</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="72"/>
+        <source>Duplicate Error</source>
+        <translation>Dubblettfel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="136"/>
+        <source>Unsupported File</source>
+        <translation>Okänd filtyp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="44"/>
+        <source>Title and/or verses not found</source>
+        <translation>Titel och/eller verser hittades inte</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ui.py" line="48"/>
+        <source>XML syntax error</source>
+        <translation>XML-syntaxfel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="141"/>
+        <source>View Mode</source>
+        <translation>Visningsläge</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="258"/>
+        <source>Welcome to the Bible Upgrade Wizard</source>
+        <translation>Välkommen till bibeluppgraderingsguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="104"/>
+        <source>Open service.</source>
+        <translation>Öppna körschema.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="108"/>
+        <source>Print Service</source>
+        <translation>Skriv ut körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="110"/>
+        <source>Replace live background.</source>
+        <translation>Ersätt live-bakgrund.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="112"/>
+        <source>Reset live background.</source>
+        <translation>Återställ live-bakgrund.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="124"/>
+        <source>&amp;Split</source>
+        <translation>&amp;Dela</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="125"/>
+        <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
+        <translation>Dela en sida i två bara om den inte ryms som en sida på skärmen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="67"/>
+        <source>Confirm Delete</source>
+        <translation>Bekräfta borttagning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="105"/>
+        <source>Play Slides in Loop</source>
+        <translation>Kör visning i slinga</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="106"/>
+        <source>Play Slides to End</source>
+        <translation>Kör visning till slutet</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="128"/>
+        <source>Stop Play Slides in Loop</source>
+        <translation>Stoppa slingvisning</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="130"/>
+        <source>Stop Play Slides to End</source>
+        <translation>Stoppa visning till slutet</translation>
     </message>
 </context>
 <context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="142"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="146"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Presentationsmodul&lt;/strong&gt;&lt;br /&gt;Presentationsmodulen ger möjlighet att visa presentationer med en mängd olika program. Val av presentationsprogram görs av användaren i en flervalslista.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="155"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
         <source>Presentation</source>
-        <translation type="unfinished">Presentation</translation>
+        <comment>name singular</comment>
+        <translation>Presentation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="160"/>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="161"/>
         <source>Presentations</source>
-        <translation type="unfinished">Presentationer</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="165"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
+        <comment>name plural</comment>
+        <translation>Presentationer</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="166"/>
-        <source>Load a new Presentation</source>
-        <translation type="unfinished"></translation>
+        <source>Presentations</source>
+        <comment>container title</comment>
+        <translation>Presentationer</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="171"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
+        <source>Load a new presentation.</source>
+        <translation>Ladda en ny presentation.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="172"/>
-        <source>Delete the selected Presentation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="177"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="176"/>
+        <source>Delete the selected presentation.</source>
+        <translation>Ta bort den valda presentationen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="178"/>
-        <source>Preview the selected Presentation</source>
-        <translation type="unfinished"></translation>
+        <source>Preview the selected presentation.</source>
+        <translation>Förhandsgranska den valda presentationen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="183"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="180"/>
+        <source>Send the selected presentation live.</source>
+        <translation>Visa den valda presentationen live.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="184"/>
-        <source>Send the selected Presentation live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="189"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="190"/>
-        <source>Add the selected Presentation to the service</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="182"/>
+        <source>Add the selected presentation to the service.</source>
+        <translation>Lägg till den valda presentationen i körschemat.</translation>
     </message>
 </context>
 <context>
     <name>PresentationPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="75"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="70"/>
         <source>Select Presentation(s)</source>
-        <translation type="unfinished">Välj presentation(er)</translation>
+        <translation>Välj presentation(er)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="77"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="72"/>
         <source>Automatic</source>
-        <translation type="unfinished">Automatisk</translation>
+        <translation>Automatiskt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="126"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="74"/>
         <source>Present using:</source>
-        <translation type="unfinished">Presentera genom:</translation>
+        <translation>Presentera med:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="184"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="181"/>
         <source>File Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Fil finns redan</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="184"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="181"/>
         <source>A presentation with that filename already exists.</source>
-        <translation type="unfinished">En presentation med det namnet finns redan.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="208"/>
-        <source>Unsupported File</source>
-        <translation type="unfinished"></translation>
+        <translation>En presentation med det namnet finns redan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="208"/>
         <source>This type of presentation is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Den här presentationstypen stöds inte.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="223"/>
-        <source>You must select an item to delete.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="90"/>
+        <source>Presentations (%s)</source>
+        <translation>Presentationer (%s)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="295"/>
+        <source>Missing Presentation</source>
+        <translation>Presentation saknas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="295"/>
+        <source>The Presentation %s no longer exists.</source>
+        <translation>Presentationen %s finns inte längre.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="285"/>
+        <source>The Presentation %s is incomplete, please reload.</source>
+        <translation>Presentationen %s är inte komplett; ladda om den.</translation>
     </message>
 </context>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="110"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="77"/>
         <source>Available Controllers</source>
-        <translation type="unfinished">Tillgängliga Presentationsprogram</translation>
+        <translation>Tillgängliga presentationsprogram</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="117"/>
-        <source>Advanced</source>
-        <translation type="unfinished">Avancerat</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="120"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="85"/>
         <source>Allow presentation application to be overriden</source>
-        <translation type="unfinished"></translation>
+        <translation>Tillåt presentationsprogram att åsidosättas</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="93"/>
+        <source>%s (unavailable)</source>
+        <translation>%s (inte tillgängligt)</translation>
     </message>
 </context>
 <context>
     <name>RemotePlugin</name>
     <message>
-        <location filename="openlp/plugins/remotes/remoteplugin.py" line="75"/>
+        <location filename="openlp/plugins/remotes/remoteplugin.py" line="70"/>
         <source>&lt;strong&gt;Remote Plugin&lt;/strong&gt;&lt;br /&gt;The remote plugin provides the ability to send messages to a running version of OpenLP on a different computer via a web browser or through the remote API.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Fjärrstyrningsmodul&lt;/strong&gt;&lt;br /&gt;Fjärrstyrningsmodulen ger möjlighet att skicka meddelanden till OpenLP på en annan dator via en webbläsare eller via fjärrstyrnings-API:et.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/remoteplugin.py" line="92"/>
+        <location filename="openlp/plugins/remotes/remoteplugin.py" line="82"/>
         <source>Remote</source>
-        <translation type="unfinished"></translation>
+        <comment>name singular</comment>
+        <translation>Fjärrstyrning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/remoteplugin.py" line="88"/>
+        <location filename="openlp/plugins/remotes/remoteplugin.py" line="83"/>
         <source>Remotes</source>
-        <translation type="unfinished">Fjärrstyrningar</translation>
+        <comment>name plural</comment>
+        <translation>Fjärrstyrningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/remoteplugin.py" line="87"/>
+        <source>Remote</source>
+        <comment>container title</comment>
+        <translation>Fjärrstyrning</translation>
+    </message>
+</context>
+<context>
+    <name>RemotePlugin.Mobile</name>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="288"/>
+        <source>OpenLP 2.0 Remote</source>
+        <translation>OpenLP 2.0 fjärrstyrning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="289"/>
+        <source>OpenLP 2.0 Stage View</source>
+        <translation>OpenLP 2.0 scenvisning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="291"/>
+        <source>Service Manager</source>
+        <translation>Körschema</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="293"/>
+        <source>Slide Controller</source>
+        <translation>Visningskontroll</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="295"/>
+        <source>Alerts</source>
+        <translation>Meddelanden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="296"/>
+        <source>Search</source>
+        <translation>Sök</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="297"/>
+        <source>Back</source>
+        <translation>Tillbaka</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="298"/>
+        <source>Refresh</source>
+        <translation>Uppdatera</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="299"/>
+        <source>Blank</source>
+        <translation>Släck</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="300"/>
+        <source>Show</source>
+        <translation>Visa</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="301"/>
+        <source>Prev</source>
+        <translation>Förra</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="302"/>
+        <source>Next</source>
+        <translation>Nästa</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="303"/>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="304"/>
+        <source>Show Alert</source>
+        <translation>Visa meddelande</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="305"/>
+        <source>Go Live</source>
+        <translation>Lägg ut bilden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="308"/>
+        <source>No Results</source>
+        <translation>Inga resultat</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="309"/>
+        <source>Options</source>
+        <translation>Alternativ</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/httpserver.py" line="306"/>
+        <source>Add to Service</source>
+        <translation>Lägg till i körschema</translation>
     </message>
 </context>
 <context>
     <name>RemotePlugin.RemoteTab</name>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="53"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="93"/>
         <source>Serve on IP address:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör på IP-adress:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="59"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="95"/>
         <source>Port number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Portnummer:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="66"/>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="91"/>
         <source>Server Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Serverinställningar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="97"/>
+        <source>Remote URL:</source>
+        <translation>Fjärrstyrningsadress:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="99"/>
+        <source>Stage view URL:</source>
+        <translation>Scenvisningsadress:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/remotes/lib/remotetab.py" line="101"/>
+        <source>Display stage time in 12h format</source>
+        <translation>Visa scentiden i 12-timmarsformat</translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin</name>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="64"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="73"/>
         <source>&amp;Song Usage Tracking</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="68"/>
-        <source>&amp;Delete Tracking Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="70"/>
-        <source>Delete song usage data up to a specified date.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="75"/>
-        <source>&amp;Extract Tracking Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sångloggning</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="77"/>
+        <source>&amp;Delete Tracking Data</source>
+        <translation>&amp;Ta bort loggdata</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="79"/>
+        <source>Delete song usage data up to a specified date.</source>
+        <translation>Ta bort sånganvändningsdata fram till ett givet datum.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="83"/>
+        <source>&amp;Extract Tracking Data</source>
+        <translation>&amp;Extrahera loggdata</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="85"/>
         <source>Generate a report on song usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Generera en rapport över sånganvändning.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="84"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="90"/>
         <source>Toggle Tracking</source>
-        <translation type="unfinished"></translation>
+        <translation>Växla loggning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="86"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="104"/>
         <source>Toggle the tracking of song usage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Växla sångloggning på/av.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="167"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="238"/>
         <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Sånganvändningsmodul&lt;/strong&gt;&lt;br /&gt;Den här modulen loggar användning av sångerna som visas.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="183"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="249"/>
         <source>SongUsage</source>
-        <translation type="unfinished"></translation>
+        <comment>name singular</comment>
+        <translation>Sånganvändning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="251"/>
+        <source>SongUsage</source>
+        <comment>name plural</comment>
+        <translation>Sånganvändning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="256"/>
+        <source>SongUsage</source>
+        <comment>container title</comment>
+        <translation>Sånganvändning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="163"/>
+        <source>Song Usage</source>
+        <translation>Sånganvändning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="190"/>
+        <source>Song usage tracking is active.</source>
+        <translation>Sångloggning är aktiv.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="196"/>
+        <source>Song usage tracking is inactive.</source>
+        <translation>Sångloggning är inaktiv.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="206"/>
+        <source>display</source>
+        <translation>visa</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="213"/>
+        <source>printed</source>
+        <translation>utskriven</translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDeleteForm</name>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="62"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="58"/>
         <source>Delete Song Usage Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort sånganvändningsdata</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="46"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Delete Selected Song Usage Events?</source>
-        <translation type="unfinished">Ta bort valda sånganvändningsdata?</translation>
+        <translation>Ta bort vald sånganvändningsdata?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="46"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="51"/>
         <source>Are you sure you want to delete selected Song Usage data?</source>
-        <translation type="unfinished">Vill du verkligen ta bort vald sånganvändningsdata?</translation>
+        <translation>Vill du verkligen ta bort vald sånganvändningsdata?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="64"/>
+        <source>Deletion Successful</source>
+        <translation>Borttagning lyckades</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="64"/>
+        <source>All requested data has been deleted successfully. </source>
+        <translation>All vald data har tagits bort. </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
+        <source>Select the date up to which the song usage data should be deleted. All data recorded before this date will be permanently deleted.</source>
+        <translation>Välj datum fram till vilket sånganvändningsdatan ska tas bort. All data loggad före det datumet kommer att tas bort permanent.</translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDetailForm</name>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="89"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="87"/>
         <source>Song Usage Extraction</source>
-        <translation type="unfinished">Sånganvändningsutdrag</translation>
+        <translation>Sånganvändningsutdrag</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="92"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="90"/>
         <source>Select Date Range</source>
-        <translation type="unfinished">Välj datumspann</translation>
+        <translation>Välj datumspann</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
+        <source>to</source>
+        <translation>till</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
-        <source>to</source>
-        <translation type="unfinished">till</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="97"/>
         <source>Report Location</source>
-        <translation type="unfinished">Rapportera placering</translation>
+        <translation>Målmapp</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="65"/>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="77"/>
         <source>Output File Location</source>
-        <translation type="unfinished">Utfil sökväg</translation>
+        <translation>Lagringssökväg</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="102"/>
+        <source>usage_detail_%s_%s.txt</source>
+        <translation>användning_%s_%s.txt</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="126"/>
+        <source>Report Creation</source>
+        <translation>Rapportskapande</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="126"/>
+        <source>Report 
+%s 
+has been successfully created. </source>
+        <translation>Rapport
+%s
+skapades utan problem. </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="93"/>
+        <source>Output Path Not Selected</source>
+        <translation>Målmapp inte vald</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="93"/>
+        <source>You have not set a valid output location for your song usage report. Please select an existing path on your computer.</source>
+        <translation>Du måste välja en giltig målmapp för sångrapporten. Välj en befintlig sökväg på datorn.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin</name>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="91"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="116"/>
         <source>&amp;Song</source>
         <translation>&amp;Sång</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="93"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="98"/>
         <source>Import songs using the import wizard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importera sånger med importguiden.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="172"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="173"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Sångmodul&lt;/strong&gt;&lt;br /&gt;Sångmodulen ger möjlighet att visa och hantera sånger.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="125"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="136"/>
         <source>&amp;Re-index Songs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Indexera om sånger</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="127"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="138"/>
         <source>Re-index the songs database to improve searching and ordering.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indexera om sångdatabasen för att förbättra sökning och sortering.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="140"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="153"/>
         <source>Reindexing songs...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="140"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Indexerar om sånger...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="216"/>
         <source>Song</source>
-        <translation type="unfinished">Sång</translation>
+        <comment>name singular</comment>
+        <translation>Sång</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="217"/>
+        <source>Songs</source>
+        <comment>name plural</comment>
+        <translation>Sånger</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
         <source>Songs</source>
-        <translation type="unfinished">Sånger</translation>
+        <comment>container title</comment>
+        <translation>Sånger</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="226"/>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="217"/>
+        <source>Arabic (CP-1256)</source>
+        <translation>Arabiska (CP-1256)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="218"/>
+        <source>Baltic (CP-1257)</source>
+        <translation>Baltiska (CP-1257)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="219"/>
+        <source>Central European (CP-1250)</source>
+        <translation>Centraleuropeisk (CP-1250)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="220"/>
+        <source>Cyrillic (CP-1251)</source>
+        <translation>Kyrilliska (CP-1251)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="221"/>
+        <source>Greek (CP-1253)</source>
+        <translation>Grekiska (CP-1253)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="222"/>
+        <source>Hebrew (CP-1255)</source>
+        <translation>Hebreiska (CP-1255)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="223"/>
+        <source>Japanese (CP-932)</source>
+        <translation>Japanska (CP-932)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="224"/>
+        <source>Korean (CP-949)</source>
+        <translation>Koreanska (CP-949)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="225"/>
+        <source>Simplified Chinese (CP-936)</source>
+        <translation>Förenklad kinesiska (CP-936)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="226"/>
+        <source>Thai (CP-874)</source>
+        <translation>Thai (CP-874)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="227"/>
+        <source>Traditional Chinese (CP-950)</source>
+        <translation>Traditionell kinesiska (CP-950)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="228"/>
+        <source>Turkish (CP-1254)</source>
+        <translation>Turkiska (CP-1254)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="229"/>
+        <source>Vietnam (CP-1258)</source>
+        <translation>Vietnamesiska (CP-1258)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="230"/>
+        <source>Western European (CP-1252)</source>
+        <translation>Västeuropeisk (CP-1252)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="245"/>
+        <source>Character Encoding</source>
+        <translation>Teckenkodning</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="238"/>
+        <source>The codepage setting is responsible
+for the correct character representation.
+Usually you are fine with the preselected choice.</source>
+        <translation>Inställningen av teckenuppsättning ansvarar för
+rätt teckenrepresentation.
+Vanligtvis fungerar den förvalda inställningen bra.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="245"/>
+        <source>Please choose the character encoding.
+The encoding is responsible for the correct character representation.</source>
+        <translation>Välj teckenkodning.
+Teckenkodningen ansvarar för rätt teckenrepresentation.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="117"/>
+        <source>Exports songs using the export wizard.</source>
+        <translation>Exportera sånger med exportguiden.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="227"/>
-        <source>Add a new Song</source>
-        <translation type="unfinished"></translation>
+        <source>Add a new song.</source>
+        <translation>Lägg till en ny sång.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="228"/>
+        <source>Edit the selected song.</source>
+        <translation>Redigera den valda sången.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="229"/>
+        <source>Delete the selected song.</source>
+        <translation>Ta bort den valda sången.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="230"/>
+        <source>Preview the selected song.</source>
+        <translation>Förhandsgranska den valda sången.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="231"/>
+        <source>Send the selected song live.</source>
+        <translation>Visa den valda sången live.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="232"/>
-        <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="233"/>
-        <source>Edit the selected Song</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="238"/>
-        <source>Delete</source>
-        <translation type="unfinished">Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="239"/>
-        <source>Delete the selected Song</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="244"/>
-        <source>Preview</source>
-        <translation type="unfinished">Förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="245"/>
-        <source>Preview the selected Song</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="250"/>
-        <source>Live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="251"/>
-        <source>Send the selected Song live</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="256"/>
-        <source>Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="257"/>
-        <source>Add the selected Song to the service</source>
-        <translation type="unfinished"></translation>
+        <source>Add the selected song to the service.</source>
+        <translation>Lägg till den valda sången i körschemat.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.AuthorsForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="79"/>
+        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="67"/>
         <source>Author Maintenance</source>
-        <translation type="unfinished">Författare underhåll</translation>
+        <translation>Författarhantering</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="81"/>
+        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="69"/>
         <source>Display name:</source>
-        <translation type="unfinished">Visningsnamn:</translation>
+        <translation>Visningsnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="83"/>
+        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="71"/>
         <source>First name:</source>
-        <translation type="unfinished">Förnamn:</translation>
+        <translation>Förnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="85"/>
+        <location filename="openlp/plugins/songs/forms/authorsdialog.py" line="73"/>
         <source>Last name:</source>
-        <translation type="unfinished">Efternamn:</translation>
+        <translation>Efternamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="96"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="82"/>
+        <location filename="openlp/plugins/songs/forms/authorsform.py" line="84"/>
         <source>You need to type in the first name of the author.</source>
-        <translation type="unfinished">Du måste ange låtskrivarens förnamn.</translation>
+        <translation>Du måste ange författarens förnamn.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/authorsform.py" line="89"/>
+        <location filename="openlp/plugins/songs/forms/authorsform.py" line="90"/>
         <source>You need to type in the last name of the author.</source>
-        <translation type="unfinished">Du måste ange författarens efternamn.</translation>
+        <translation>Du måste ange författarens efternamn.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/authorsform.py" line="96"/>
         <source>You have not set a display name for the author, combine the first and last names?</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte angett ett visningsnamn för författaren; kombinera för- och efternamn?</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.CCLIFileImport</name>
+    <message>
+        <location filename="openlp/plugins/songs/lib/cclifileimport.py" line="93"/>
+        <source>The file does not have a valid extension.</source>
+        <translation>Filen saknar giltig filändelse.</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.EasyWorshipSongImport</name>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ewimport.py" line="261"/>
+        <source>Administered by %s</source>
+        <translation>Administrerad av %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ewimport.py" line="313"/>
+        <source>
+[above are Song Tags with notes imported from 
+                        EasyWorship]</source>
+        <translation>
+[ovan är sångtaggar med noter importerade från 
+                        EasyWorship]</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.EditSongForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="413"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="289"/>
         <source>Song Editor</source>
-        <translation type="unfinished">Sångredigerare</translation>
+        <translation>Sångredigering</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="415"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="291"/>
         <source>&amp;Title:</source>
-        <translation type="unfinished">&amp;Titel:</translation>
+        <translation>&amp;Titel:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="417"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="293"/>
         <source>Alt&amp;ernate title:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Alternativ titel:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="419"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="295"/>
         <source>&amp;Lyrics:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sångtext:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="421"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="297"/>
         <source>&amp;Verse order:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Versordning:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="423"/>
-        <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Lägg till</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="425"/>
-        <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Redigera</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="427"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="301"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished"></translation>
+        <translation>Red&amp;igera alla</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="429"/>
-        <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="431"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="304"/>
         <source>Title &amp;&amp; Lyrics</source>
-        <translation type="unfinished">Titel &amp;&amp; Sångtexter</translation>
+        <translation>Titel &amp;&amp; sångtext</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="434"/>
-        <source>Authors</source>
-        <translation type="unfinished">Författare</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="436"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="308"/>
         <source>&amp;Add to Song</source>
-        <translation type="unfinished">&amp;Lägg till i sång</translation>
+        <translation>&amp;Lägg till för sång</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="438"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="348"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Ta bort</translation>
+        <translation>&amp;Ta bort</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="440"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="312"/>
         <source>&amp;Manage Authors, Topics, Song Books</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hantera författare, ämnen, sångböcker</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="442"/>
-        <source>Topic</source>
-        <translation type="unfinished">Ämne</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="444"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="315"/>
         <source>A&amp;dd to Song</source>
-        <translation>Lä&amp;gg till i sång</translation>
+        <translation>Lä&amp;gg till för sång</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="446"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="317"/>
         <source>R&amp;emove</source>
-        <translation type="unfinished">Ta &amp;bort</translation>
+        <translation>Ta &amp;bort</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="448"/>
-        <source>Song Book</source>
-        <translation type="unfinished">Sångbok</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="450"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="320"/>
         <source>Book:</source>
-        <translation type="unfinished">Bok:</translation>
+        <translation>Bok:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="452"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="322"/>
         <source>Number:</source>
         <translation>Nummer:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="454"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="324"/>
         <source>Authors, Topics &amp;&amp; Song Book</source>
-        <translation type="unfinished"></translation>
+        <translation>Författare, ämnen &amp;&amp; sångböcker</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="458"/>
-        <source>Theme</source>
-        <translation type="unfinished">Tema</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="460"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="329"/>
         <source>New &amp;Theme</source>
         <translation>Nytt &amp;tema</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="462"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="331"/>
         <source>Copyright Information</source>
         <translation>Copyrightinformation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="464"/>
-        <source>&#xa9;</source>
-        <translation>©</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="466"/>
-        <source>CCLI number:</source>
-        <translation>CCLI nummer:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="468"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="335"/>
         <source>Comments</source>
-        <translation type="unfinished">Kommentarer</translation>
+        <translation>Kommentarer</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="470"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="337"/>
         <source>Theme, Copyright Info &amp;&amp; Comments</source>
         <translation>Tema, copyrightinfo &amp;&amp; kommentarer</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="96"/>
-        <source>Save &amp;&amp; Preview</source>
-        <translation type="unfinished">Spara &amp;&amp; förhandsgranska</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="320"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="362"/>
         <source>Add Author</source>
-        <translation>Lägg till föfattare</translation>
+        <translation>Lägg till författare</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="320"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="362"/>
         <source>This author does not exist, do you want to add them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Författaren finns inte; vill du lägga till den?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editverseform.py" line="170"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="347"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="385"/>
         <source>This author is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Författaren finns redan i listan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="359"/>
-        <source>No Author Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="359"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="392"/>
         <source>You have not selected a valid author. Either select an author from the list, or type in a new author and click the &quot;Add Author to Song&quot; button to add the new author.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte valt en giltig författare. Välj antingen en författare från listan, eller skriv in en ny författare och klicka &quot;Lägg till för sång&quot; för att lägga till den nya författaren.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="380"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="420"/>
         <source>Add Topic</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ämne</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="380"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="420"/>
         <source>This topic does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ämnet finns inte; vill du skapa det?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="401"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="441"/>
         <source>This topic is already in the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ämnet finns redan i listan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="412"/>
-        <source>No Topic Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="412"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="451"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte valt ett giltigt ämne. Välj antingen ett ämne från listan, eller skriv in ett nytt ämne och klicka &quot;Lägg till för sång&quot; för att lägga till det nya ämnet.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="534"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="587"/>
         <source>You need to type in a song title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange en sångtitel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="542"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="594"/>
         <source>You need to type in at least one verse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange åtminstone en vers.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="590"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="647"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varning</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="579"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="637"/>
         <source>The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Versordningen är ogiltig. Det finns ingen vers motsvarande %s. Giltiga värden är %s.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="590"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="647"/>
         <source>You have not used %s anywhere in the verse order. Are you sure you want to save the song like this?</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har inte använt %s någonstans i versordningen. Är du säker på att du vill spara sången så här?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="663"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="659"/>
         <source>Add Book</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till bok</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="663"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="659"/>
         <source>This song book does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Boken finns inte; vill du skapa den?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="550"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="601"/>
         <source>You need to have an author for this song.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange en författare för sången.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editverseform.py" line="170"/>
+        <location filename="openlp/plugins/songs/forms/editverseform.py" line="198"/>
         <source>You need to type some text in to the verse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste skriva någon text i versen.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="341"/>
+        <source>Linked Audio</source>
+        <translation>Länkat ljud</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="344"/>
+        <source>Add &amp;File(s)</source>
+        <translation>Lägg till &amp;fil(er)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="346"/>
+        <source>Add &amp;Media</source>
+        <translation>Lägg till &amp;media</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="350"/>
+        <source>Remove &amp;All</source>
+        <translation>&amp;Ta bort alla</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="711"/>
+        <source>Open File(s)</source>
+        <translation>Öppna fil(er)</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.EditVerseForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="88"/>
+        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="74"/>
         <source>Edit Verse</source>
-        <translation type="unfinished">Redigera vers</translation>
+        <translation>Redigera vers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="90"/>
+        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="76"/>
         <source>&amp;Verse type:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verstyp:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="106"/>
+        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="94"/>
         <source>&amp;Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Infoga</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editversedialog.py" line="96"/>
+        <source>Split a slide into two by inserting a verse splitter.</source>
+        <translation>Dela en sida i två genom att infoga en versdelare.</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.ExportWizardForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="167"/>
+        <source>Song Export Wizard</source>
+        <translation>Sångexportguiden</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="175"/>
+        <source>Select Songs</source>
+        <translation>Välj sånger</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="181"/>
+        <source>Uncheck All</source>
+        <translation>Kryssa ingen</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="183"/>
+        <source>Check All</source>
+        <translation>Kryssa alla</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="185"/>
+        <source>Select Directory</source>
+        <translation>Välj mapp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="190"/>
+        <source>Directory:</source>
+        <translation>Mapp:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="192"/>
+        <source>Exporting</source>
+        <translation>Exporterar</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="194"/>
+        <source>Please wait while your songs are exported.</source>
+        <translation>Vänta medan sångerna exporteras.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="212"/>
+        <source>You need to add at least one Song to export.</source>
+        <translation>Du måste lägga till minst en sång att exportera.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="227"/>
+        <source>No Save Location specified</source>
+        <translation>Ingen målmapp angiven</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="274"/>
+        <source>Starting export...</source>
+        <translation>Startar export...</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="177"/>
+        <source>Check the songs you want to export.</source>
+        <translation>Kryssa för sångerna du vill exportera.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="227"/>
+        <source>You need to specify a directory.</source>
+        <translation>Du måste ange en mapp.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="365"/>
+        <source>Select Destination Folder</source>
+        <translation>Välj målmapp</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="187"/>
+        <source>Select the directory where you want the songs to be saved.</source>
+        <translation>Välj mappen där du vill att sångerna sparas.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="171"/>
+        <source>This wizard will help to export your songs to the open and free &lt;strong&gt;OpenLyrics&lt;/strong&gt; worship song format.</source>
+        <translation>Den här guiden hjälper dig att exportera dina sånger till det öppna och fria lovsångsformatet &lt;strong&gt;OpenLyrics&lt;/strong&gt;.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="153"/>
-        <source>No OpenLP 2.0 Song Database Selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="585"/>
+        <source>Select Document/Presentation Files</source>
+        <translation>Välj dokument/presentation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="153"/>
-        <source>You need to select an OpenLP 2.0 song database file to import from.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="229"/>
+        <source>Song Import Wizard</source>
+        <translation>Sångimportguiden</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="163"/>
-        <source>No openlp.org 1.x Song Database Selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="233"/>
+        <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
+        <translation>Den här guiden hjälper dig att importera sånger från en mängd olika format. Klicka på Nästa för att börja processen med att välja ett format att importera från.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="163"/>
-        <source>You need to select an openlp.org 1.x song database file to import from.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="246"/>
+        <source>Generic Document/Presentation</source>
+        <translation>Vanligt dokument/presentation</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="184"/>
-        <source>No OpenSong Files Selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="313"/>
+        <source>Filename:</source>
+        <translation>Filnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="184"/>
-        <source>You need to add at least one OpenSong song file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="194"/>
-        <source>No Words of Worship Files Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="194"/>
-        <source>You need to add at least one Words of Worship file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="204"/>
-        <source>No CCLI Files Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="204"/>
-        <source>You need to add at least one CCLI file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="214"/>
-        <source>No Songs of Fellowship File Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="214"/>
-        <source>You need to add at least one Songs of Fellowship file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="224"/>
-        <source>No Document/Presentation Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="224"/>
-        <source>You need to add at least one document or presentation file to import from.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="324"/>
+        <source>Add Files...</source>
+        <translation>Lägg till filer...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="326"/>
-        <source>Select OpenLP 2.0 Database File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="335"/>
-        <source>Select openlp.org 1.x Database File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="354"/>
-        <source>Select Open Song Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="364"/>
-        <source>Select Words of Worship Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="376"/>
-        <source>Select CCLI Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="386"/>
-        <source>Select Songs of Fellowship Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="398"/>
-        <source>Select Document/Presentation Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="465"/>
-        <source>Starting import...</source>
-        <translation type="unfinished">Påbörjar import...</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="148"/>
-        <source>Song Import Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="150"/>
-        <source>Welcome to the Song Import Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="154"/>
-        <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="159"/>
-        <source>Select Import Source</source>
-        <translation type="unfinished">Välj importkälla</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="161"/>
-        <source>Select the import format, and where to import from.</source>
-        <translation type="unfinished">Välj format för import, och plats att importera från.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="164"/>
-        <source>Format:</source>
-        <translation type="unfinished">Format:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="166"/>
-        <source>OpenLP 2.0</source>
-        <translation type="unfinished">OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="168"/>
-        <source>openlp.org 1.x</source>
-        <translation>openlp.org 1.x</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="170"/>
-        <source>OpenLyrics</source>
-        <translation>OpenLyrics</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="172"/>
-        <source>OpenSong</source>
-        <translation type="unfinished">OpenSong</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="174"/>
-        <source>Words of Worship</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="176"/>
-        <source>CCLI/SongSelect</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="178"/>
-        <source>Songs of Fellowship</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="180"/>
-        <source>Generic Document/Presentation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="239"/>
-        <source>Filename:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="241"/>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="197"/>
-        <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="243"/>
-        <source>Add Files...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="245"/>
         <source>Remove File(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta bort fil(er)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="227"/>
-        <source>The Songs of Fellowship importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="235"/>
-        <source>The generic document/presentation importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="251"/>
-        <source>Importing</source>
-        <translation type="unfinished">Importerar</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="253"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="332"/>
         <source>Please wait while your songs are imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänta medan sångerna importeras.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="256"/>
-        <source>Ready.</source>
-        <translation type="unfinished">Redo.</translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="277"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
+        <translation>Import av OpenLyrics är ännu inte utvecklat, men som du ser avser vi fortfarande att göra det. Förhoppningsvis finns det i nästa utgåva.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="258"/>
-        <source>%p%</source>
-        <translation>%p%</translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="493"/>
+        <source>OpenLP 2.0 Databases</source>
+        <translation>OpenLP 2.0-databas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="106"/>
-        <source>Importing &quot;%s&quot;...</source>
-        <translation>Importerar &quot;%s&quot;...</translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="503"/>
+        <source>openlp.org v1.x Databases</source>
+        <translation>openlp.org v1.x-databas</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/opensongimport.py" line="163"/>
-        <source>Importing %s...</source>
-        <translation>Importerar %s...</translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="540"/>
+        <source>Words Of Worship Song Files</source>
+        <translation>Words of Worship-sångfiler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="234"/>
-        <source>No EasyWorship Song Database Selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="569"/>
+        <source>Songs Of Fellowship Song Files</source>
+        <translation>Songs of Fellowship-sångfiler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="234"/>
-        <source>You need to select an EasyWorship song database file to import from.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="612"/>
+        <source>SongBeamer Files</source>
+        <translation>SongBeamer-filer</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="627"/>
+        <source>SongShow Plus Song Files</source>
+        <translation>SongShow Plus-sångfiler</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="408"/>
-        <source>Select EasyWorship Database File</source>
-        <translation type="unfinished"></translation>
+        <source>You need to specify at least one document or presentation file to import from.</source>
+        <translation>Du måste ange minst ett dokument eller en presentation att importera från.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="183"/>
-        <source>EasyWorship</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="643"/>
+        <source>Foilpresenter Song Files</source>
+        <translation>Foilpresenter-sångfiler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="206"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="337"/>
+        <source>Copy</source>
+        <translation>Kopiera</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/ewimport.py" line="246"/>
-        <source>Administered by %s</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Save to File</source>
+        <translation>Spara till fil</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="244"/>
-        <source>No SongBeamer File Selected</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="298"/>
+        <source>The Songs of Fellowship importer has been disabled because OpenLP cannot access OpenOffice or LibreOffice.</source>
+        <translation>Import av Songs of Fellowship har inaktiverats eftersom OpenLP inte kan hitta OpenOffice eller LibreOffice.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="244"/>
-        <source>You need to add at least one SongBeamer file to import from.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="306"/>
+        <source>The generic document/presentation importer has been disabled because OpenLP cannot access OpenOffice or LibreOffice.</source>
+        <translation>Import av vanliga dokument/presentationer har inaktiverats eftersom OpenLP inte hittar OpenOffice eller LibreOffice.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="303"/>
-        <source>All Files</source>
-        <translation type="unfinished">Alla filer</translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="241"/>
+        <source>OpenLyrics or OpenLP 2.0 Exported Song</source>
+        <translation>OpenLyrics eller sång exporterad från OpenLP 2.0</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="326"/>
-        <source>OpenLP 2.0 Databases</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="513"/>
+        <source>OpenLyrics Files</source>
+        <translation>OpenLyrics-filer</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.MediaFilesForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/mediafilesdialog.py" line="69"/>
+        <source>Select Media File(s)</source>
+        <translation>Välj mediafil(er)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="335"/>
-        <source>openlp.org v1.x Databases</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="364"/>
-        <source>Words Of Worship Song Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="386"/>
-        <source>Songs Of Felloship Song Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="415"/>
-        <source>Select SongBeamer Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="185"/>
-        <source>SongBeamer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="415"/>
-        <source>SongBeamer files</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/forms/mediafilesdialog.py" line="71"/>
+        <source>Select one or more audio files from the list below, and click OK to import them into this song.</source>
+        <translation>Välj en eller flera ljudfiler från listan nedan, och klicka OK för att importera dem till sången.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="75"/>
-        <source>Song Maintenance</source>
-        <translation type="unfinished">Sångunderhåll</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="75"/>
-        <source>Maintain the lists of authors, topics and books</source>
-        <translation type="unfinished">Hantera listorna över författare, ämnen och böcker</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="155"/>
-        <source>Search:</source>
-        <translation type="unfinished">Sök:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="157"/>
-        <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="159"/>
-        <source>Clear</source>
-        <translation>Rensa</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="161"/>
-        <source>Search</source>
-        <translation type="unfinished">Sök</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="165"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
         <source>Titles</source>
-        <translation type="unfinished">Titlar</translation>
+        <translation>Titel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="167"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
         <source>Lyrics</source>
-        <translation type="unfinished">Sångtexter</translation>
+        <translation>Sångtext</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="169"/>
-        <source>Authors</source>
-        <translation>Författare</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="302"/>
-        <source>You must select an item to edit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="314"/>
-        <source>You must select an item to delete.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="319"/>
-        <source>Are you sure you want to delete the selected song?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="322"/>
-        <source>Are you sure you want to delete the %d selected songs?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="325"/>
-        <source>Delete Song(s)?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="397"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
         <source>CCLI License: </source>
-        <translation type="unfinished"></translation>
+        <translation>CCLI-licens: </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="180"/>
+        <source>Entire Song</source>
+        <translation>Hela sången</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="389"/>
+        <source>Are you sure you want to delete the %n selected song(s)?</source>
+        <translation>
+            <numerusform>Är du säker på att du vill ta bort den valda sången?</numerusform>
+            <numerusform>Är du säker på att du vill ta bort de %n valda sångerna?</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="176"/>
+        <source>Maintain the lists of authors, topics and books.</source>
+        <translation>Underhåll listan över författare, ämnen och böcker.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="429"/>
+        <source>copy</source>
+        <comment>For song cloning</comment>
+        <translation>kopia</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.OpenLP1SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="204"/>
-        <source>Arabic (CP-1256)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="206"/>
-        <source>Baltic (CP-1257)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="208"/>
-        <source>Central European (CP-1250)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="210"/>
-        <source>Cyrillic (CP-1251)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="212"/>
-        <source>Greek (CP-1253)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="214"/>
-        <source>Hebrew (CP-1255)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="216"/>
-        <source>Japanese (CP-932)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="218"/>
-        <source>Korean (CP-949)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="220"/>
-        <source>Simplified Chinese (CP-936)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="222"/>
-        <source>Thai (CP-874)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="224"/>
-        <source>Traditional Chinese (CP-950)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="226"/>
-        <source>Turkish (CP-1254)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="228"/>
-        <source>Vietnam (CP-1258)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="230"/>
-        <source>Western European (CP-1252)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="237"/>
-        <source>Database Character Encoding</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/olp1import.py" line="237"/>
-        <source>The codepage setting is responsible
-for the correct character representation.
-Usually you are fine with the preselected choise.</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/lib/olp1import.py" line="70"/>
+        <source>Not a valid openlp.org 1.x song database.</source>
+        <translation>Inte en giltig openlp.org 1.x-sångdatabas.</translation>
     </message>
 </context>
 <context>
-    <name>SongsPlugin.SongBeamerImport</name>
+    <name>SongsPlugin.OpenLPSongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songbeamerimport.py" line="133"/>
-        <source>Importing</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/lib/olpimport.py" line="105"/>
+        <source>Not a valid OpenLP 2.0 song database.</source>
+        <translation>Inte en giltig OpenLP 2.0-sångdatabas.</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.OpenLyricsExport</name>
+    <message>
+        <location filename="openlp/plugins/songs/lib/openlyricsexport.py" line="68"/>
+        <source>Exporting &quot;%s&quot;...</source>
+        <translation>Exporterar &quot;%s&quot;...</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongBookForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="73"/>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="61"/>
         <source>Song Book Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Sångboksunderhåll</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="75"/>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="63"/>
         <source>&amp;Name:</source>
         <translation>&amp;Namn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="76"/>
+        <location filename="openlp/plugins/songs/forms/songbookdialog.py" line="64"/>
         <source>&amp;Publisher:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Utgivare:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songbookform.py" line="52"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songbookform.py" line="52"/>
+        <location filename="openlp/plugins/songs/forms/songbookform.py" line="54"/>
         <source>You need to type in a name for the book.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange ett namn på boken.</translation>
+    </message>
+</context>
+<context>
+    <name>SongsPlugin.SongExportForm</name>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="295"/>
+        <source>Your song export failed.</source>
+        <translation>Sångexporten misslyckades.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="290"/>
+        <source>Finished export. To import these files use the &lt;strong&gt;OpenLyrics&lt;/strong&gt; importer.</source>
+        <translation>Exporten är slutförd. För att importera filerna, använd importen &lt;strong&gt;OpenLyrics&lt;/strong&gt;.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="81"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="100"/>
         <source>copyright</source>
         <translation>copyright</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="83"/>
-        <source>&#xa9;</source>
-        <translation>©</translation>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="120"/>
+        <source>The following songs could not be imported:</source>
+        <translation>De följande sångerna kunde inte importeras:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="257"/>
-        <source>Author unknown</source>
-        <translation type="unfinished"></translation>
+        <location filename="openlp/plugins/songs/lib/oooimport.py" line="87"/>
+        <source>Unable to open file</source>
+        <translation>Kan inte öppna fil</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/oooimport.py" line="91"/>
+        <source>File not found</source>
+        <translation>Fil hittas inte</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/oooimport.py" line="70"/>
+        <source>Cannot access OpenOffice or LibreOffice</source>
+        <translation>Kan inte hitta OpenOffice eller LibreOffice</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="532"/>
-        <source>Finished import.</source>
-        <translation type="unfinished">Importen är färdig.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="535"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="773"/>
         <source>Your song import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sångimporten misslyckades.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongMaintenanceForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="214"/>
-        <source>Song Maintenance</source>
-        <translation type="unfinished">Sångunderhåll</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="216"/>
-        <source>Authors</source>
-        <translation>Författare</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="218"/>
-        <source>Topics</source>
-        <translation type="unfinished">Ämnen</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="220"/>
-        <source>Song Books</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="234"/>
-        <source>&amp;Add</source>
-        <translation>&amp;Lägg till</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="236"/>
-        <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Redigera</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="238"/>
-        <source>&amp;Delete</source>
-        <translation>&amp;Ta bort</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="390"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="232"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="218"/>
         <source>Could not add your author.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte lägga till författaren.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="222"/>
+        <source>This author already exists.</source>
+        <translation>Författaren finns redan.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="233"/>
+        <source>Could not add your topic.</source>
+        <translation>Kunde inte lägga till ämnet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="237"/>
-        <source>This author already exists.</source>
-        <translation type="unfinished"></translation>
+        <source>This topic already exists.</source>
+        <translation>Ämnet finns redan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="249"/>
-        <source>Could not add your topic.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="254"/>
-        <source>This topic already exists.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="267"/>
         <source>Could not add your book.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte lägga till boken.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="272"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="253"/>
         <source>This book already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boken finns redan.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="385"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="354"/>
         <source>Could not save your changes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara ändringarna.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="360"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="329"/>
         <source>Could not save your modified topic, because it already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara det ändrade ämnet eftersom det redan finns.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="468"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="450"/>
         <source>Delete Author</source>
         <translation>Ta bort författare</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="468"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="450"/>
         <source>Are you sure you want to delete the selected author?</source>
-        <translation>Är du säker på att du vill ta bort den valda författare?</translation>
+        <translation>Är du säker på att du vill ta bort den valda författaren?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="468"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="450"/>
         <source>This author cannot be deleted, they are currently assigned to at least one song.</source>
-        <translation type="unfinished"></translation>
+        <translation>Författaren kan inte tas bort; den används för närvarande av minst en sång.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="468"/>
-        <source>No author selected!</source>
-        <translation type="unfinished">Ingen författare vald!</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="481"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="461"/>
         <source>Delete Topic</source>
-        <translation type="unfinished">Ta bort ämne</translation>
+        <translation>Ta bort ämne</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="481"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="461"/>
         <source>Are you sure you want to delete the selected topic?</source>
-        <translation type="unfinished">Är du säker på att du vill ta bort valt ämne?</translation>
+        <translation>Är du säker på att du vill ta bort det valda ämnet?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="481"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="461"/>
         <source>This topic cannot be deleted, it is currently assigned to at least one song.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ämnet kan inte tas bort; det används för närvarande av minst en sång.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="481"/>
-        <source>No topic selected!</source>
-        <translation type="unfinished">Inget ämne valt!</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="494"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="472"/>
         <source>Delete Book</source>
-        <translation type="unfinished">Ta bort bok</translation>
+        <translation>Ta bort bok</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="494"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="472"/>
         <source>Are you sure you want to delete the selected book?</source>
-        <translation type="unfinished">Är du säker på att du vill ta bort vald bok?</translation>
+        <translation>Är du säker på att du vill ta bort den valda boken?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="494"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="472"/>
         <source>This book cannot be deleted, it is currently assigned to at least one song.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boken kan inte tas bort; den används för närvarande av minst en sång.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="494"/>
-        <source>No book selected!</source>
-        <translation type="unfinished">Ingen bok vald!</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="323"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="297"/>
         <source>Could not save your modified author, because the author already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara den ändrade författaren eftersom den redan finns.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="283"/>
+        <source>The author %s already exists. Would you like to make songs with author %s use the existing author %s?</source>
+        <translation>Författaren %s finns redan. Vill du låta sånger med författaren %s använda den befintliga författaren %s?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="319"/>
+        <source>The topic %s already exists. Would you like to make songs with topic %s use the existing topic %s?</source>
+        <translation>Ämnet %s finns redan. Vill du låta sånger med ämnet %s använda det befintliga ämnet %s?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="357"/>
+        <source>The book %s already exists. Would you like to make songs with book %s use the existing book %s?</source>
+        <translation>Boken %s finns redan. Vill du låta sånger med boken %s använda den befintliga boken %s?</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.SongsTab</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="80"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="77"/>
         <source>Songs Mode</source>
-        <translation type="unfinished">Sångläge</translation>
+        <translation>Sångläge</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="82"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="79"/>
         <source>Enable search as you type</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök när du skriver</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="84"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="81"/>
         <source>Display verses on live tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa verser i live-verktygsraden</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="86"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="83"/>
         <source>Update service from song edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera körschemat från sångredigeringen</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songstab.py" line="88"/>
+        <location filename="openlp/plugins/songs/lib/songstab.py" line="85"/>
         <source>Add missing songs when opening service</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till saknade sånger vid öppning av körschema</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.TopicsForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="65"/>
+        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="55"/>
         <source>Topic Maintenance</source>
-        <translation type="unfinished">Ämnesunderhåll</translation>
+        <translation>Ämnesunderhåll</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="67"/>
+        <location filename="openlp/plugins/songs/forms/topicsdialog.py" line="57"/>
         <source>Topic name:</source>
-        <translation type="unfinished">Ämnesnamn:</translation>
+        <translation>Ämnesnamn:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/topicsform.py" line="51"/>
-        <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/topicsform.py" line="51"/>
+        <location filename="openlp/plugins/songs/forms/topicsform.py" line="53"/>
         <source>You need to type in a topic name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste ange ett ämnesnamn.</translation>
     </message>
 </context>
 <context>
     <name>SongsPlugin.VerseType</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="76"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="62"/>
         <source>Verse</source>
-        <translation type="unfinished">Vers</translation>
+        <translation>Vers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="79"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="63"/>
         <source>Chorus</source>
-        <translation type="unfinished">Refräng</translation>
+        <translation>Refräng</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="82"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="64"/>
         <source>Bridge</source>
-        <translation type="unfinished">Brygga</translation>
+        <translation>Stick</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="57"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="65"/>
         <source>Pre-Chorus</source>
-        <translation type="unfinished">Brygga</translation>
+        <translation>Brygga</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="88"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="66"/>
         <source>Intro</source>
-        <translation type="unfinished">Intro</translation>
+        <translation>Intro</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="91"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="67"/>
         <source>Ending</source>
-        <translation type="unfinished">Ending</translation>
+        <translation>Slut</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="94"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="68"/>
         <source>Other</source>
-        <translation type="unfinished">Övrigt</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="85"/>
-        <source>PreChorus</source>
-        <translation type="unfinished"></translation>
+        <translation>Övrigt</translation>
     </message>
 </context>
 </TS>

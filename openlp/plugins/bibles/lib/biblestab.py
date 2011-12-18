@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
+from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle
+from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
 log = logging.getLogger(__name__)
 
@@ -38,155 +41,115 @@ class BiblesTab(SettingsTab):
     """
     log.info(u'Bible Tab loaded')
 
-    def __init__(self, title, visible_title):
+    def __init__(self, parent, title, visible_title, icon_path):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        SettingsTab.__init__(self, title, visible_title)
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.BibleLayout = QtGui.QHBoxLayout(self)
-        self.BibleLayout.setSpacing(8)
-        self.BibleLayout.setMargin(8)
-        self.BibleLayout.setObjectName(u'BibleLayout')
-        self.BibleLeftWidget = QtGui.QWidget(self)
-        self.BibleLeftWidget.setObjectName(u'BibleLeftWidget')
-        self.BibleLeftLayout = QtGui.QVBoxLayout(self.BibleLeftWidget)
-        self.BibleLeftLayout.setObjectName(u'BibleLeftLayout')
-        self.BibleLeftLayout.setSpacing(8)
-        self.BibleLeftLayout.setMargin(0)
-        self.VerseDisplayGroupBox = QtGui.QGroupBox(self)
-        self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
-        self.VerseDisplayLayout = QtGui.QGridLayout(self.VerseDisplayGroupBox)
-        self.VerseDisplayLayout.setMargin(8)
-        self.VerseDisplayLayout.setObjectName(u'VerseDisplayLayout')
-        self.NewChaptersCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.NewChaptersCheckBox.setObjectName(u'NewChaptersCheckBox')
-        self.VerseDisplayLayout.addWidget(self.NewChaptersCheckBox, 0, 0, 1, 1)
-        self.DisplayStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.DisplayStyleWidget.setObjectName(u'DisplayStyleWidget')
-        self.DisplayStyleLayout = QtGui.QHBoxLayout(self.DisplayStyleWidget)
-        self.DisplayStyleLayout.setSpacing(8)
-        self.DisplayStyleLayout.setMargin(0)
-        self.DisplayStyleLayout.setObjectName(u'DisplayStyleLayout')
-        self.DisplayStyleLabel = QtGui.QLabel(self.DisplayStyleWidget)
-        self.DisplayStyleLabel.setObjectName(u'DisplayStyleLabel')
-        self.DisplayStyleLayout.addWidget(self.DisplayStyleLabel)
-        self.DisplayStyleComboBox = QtGui.QComboBox(self.DisplayStyleWidget)
-        self.DisplayStyleComboBox.setObjectName(u'DisplayStyleComboBox')
-        self.DisplayStyleComboBox.addItem(QtCore.QString())
-        self.DisplayStyleComboBox.addItem(QtCore.QString())
-        self.DisplayStyleComboBox.addItem(QtCore.QString())
-        self.DisplayStyleComboBox.addItem(QtCore.QString())
-        self.DisplayStyleLayout.addWidget(self.DisplayStyleComboBox)
-        self.VerseDisplayLayout.addWidget(self.DisplayStyleWidget, 1, 0, 1, 1)
-        self.LayoutStyleWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.LayoutStyleWidget.setObjectName(u'LayoutStyleWidget')
-        self.LayoutStyleLayout = QtGui.QHBoxLayout(self.LayoutStyleWidget)
-        self.LayoutStyleLayout.setSpacing(8)
-        self.LayoutStyleLayout.setMargin(0)
-        self.LayoutStyleLayout.setObjectName(u'LayoutStyleLayout')
-        self.LayoutStyleLabel = QtGui.QLabel(self.LayoutStyleWidget)
-        self.LayoutStyleLabel.setObjectName(u'LayoutStyleLabel')
-        self.LayoutStyleLayout.addWidget(self.LayoutStyleLabel)
-        self.LayoutStyleComboBox = QtGui.QComboBox(self.LayoutStyleWidget)
-        self.LayoutStyleComboBox.setObjectName(u'LayoutStyleComboBox')
-        self.LayoutStyleComboBox.addItem(QtCore.QString())
-        self.LayoutStyleComboBox.addItem(QtCore.QString())
-        self.LayoutStyleComboBox.addItem(QtCore.QString())
-        self.LayoutStyleLayout.addWidget(self.LayoutStyleComboBox)
-        self.VerseDisplayLayout.addWidget(self.LayoutStyleWidget, 2, 0, 1, 1)
-        self.BibleThemeWidget = QtGui.QWidget(self.VerseDisplayGroupBox)
-        self.BibleThemeWidget.setObjectName(u'BibleThemeWidget')
-        self.BibleThemeLayout = QtGui.QHBoxLayout(self.BibleThemeWidget)
-        self.BibleThemeLayout.setSpacing(8)
-        self.BibleThemeLayout.setMargin(0)
-        self.BibleThemeLayout.setObjectName(u'BibleThemeLayout')
-        self.BibleThemeLabel = QtGui.QLabel(self.BibleThemeWidget)
-        self.BibleThemeLabel.setObjectName(u'BibleThemeLabel')
-        self.BibleThemeLayout.addWidget(self.BibleThemeLabel)
-        self.BibleThemeComboBox = QtGui.QComboBox(self.BibleThemeWidget)
-        self.BibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
-        self.BibleThemeComboBox.addItem(QtCore.QString())
-        self.BibleThemeLayout.addWidget(self.BibleThemeComboBox)
-        self.BibleSecondCheckBox = QtGui.QCheckBox(self.VerseDisplayGroupBox)
-        self.BibleSecondCheckBox.setObjectName(u'BibleSecondCheckBox')
-        self.VerseDisplayLayout.addWidget(self.BibleSecondCheckBox, 3, 0, 1, 1)
-        self.VerseDisplayLayout.addWidget(self.BibleThemeWidget, 4, 0, 1, 1)
-        self.ChangeNoteLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
-        self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
-        self.VerseDisplayLayout.addWidget(self.ChangeNoteLabel, 5, 0, 1, 1)
-        self.BibleLeftLayout.addWidget(self.VerseDisplayGroupBox)
-        self.BibleLeftSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.BibleLeftLayout.addItem(self.BibleLeftSpacer)
-        self.BibleLayout.addWidget(self.BibleLeftWidget)
-        self.BibleRightWidget = QtGui.QWidget(self)
-        self.BibleRightWidget.setObjectName(u'BibleRightWidget')
-        self.BibleRightLayout = QtGui.QVBoxLayout(self.BibleRightWidget)
-        self.BibleRightLayout.setObjectName(u'BibleRightLayout')
-        self.BibleRightLayout.setSpacing(8)
-        self.BibleRightLayout.setMargin(0)
-        self.BibleLayout.addWidget(self.BibleRightWidget)
+        SettingsTab.setupUi(self)
+        self.verseDisplayGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.verseDisplayGroupBox.setObjectName(u'verseDisplayGroupBox')
+        self.verseDisplayLayout = QtGui.QFormLayout(self.verseDisplayGroupBox)
+        self.verseDisplayLayout.setObjectName(u'verseDisplayLayout')
+        self.newChaptersCheckBox = QtGui.QCheckBox(self.verseDisplayGroupBox)
+        self.newChaptersCheckBox.setObjectName(u'newChaptersCheckBox')
+        self.verseDisplayLayout.addRow(self.newChaptersCheckBox)
+        self.displayStyleLabel = QtGui.QLabel(self.verseDisplayGroupBox)
+        self.displayStyleLabel.setObjectName(u'displayStyleLabel')
+        self.displayStyleComboBox = QtGui.QComboBox(self.verseDisplayGroupBox)
+        self.displayStyleComboBox.addItems([u'', u'', u'', u''])
+        self.displayStyleComboBox.setObjectName(u'displayStyleComboBox')
+        self.verseDisplayLayout.addRow(self.displayStyleLabel,
+            self.displayStyleComboBox)
+        self.layoutStyleLabel = QtGui.QLabel(self.verseDisplayGroupBox)
+        self.layoutStyleLabel.setObjectName(u'layoutStyleLabel')
+        self.layoutStyleComboBox = QtGui.QComboBox(self.verseDisplayGroupBox)
+        self.layoutStyleComboBox.setObjectName(u'layoutStyleComboBox')
+        self.layoutStyleComboBox.addItems([u'', u'', u''])
+        self.verseDisplayLayout.addRow(self.layoutStyleLabel,
+            self.layoutStyleComboBox)
+        self.bibleSecondCheckBox = QtGui.QCheckBox(self.verseDisplayGroupBox)
+        self.bibleSecondCheckBox.setObjectName(u'bibleSecondCheckBox')
+        self.verseDisplayLayout.addRow(self.bibleSecondCheckBox)
+        self.bibleThemeLabel = QtGui.QLabel(self.verseDisplayGroupBox)
+        self.bibleThemeLabel.setObjectName(u'BibleThemeLabel')
+        self.bibleThemeComboBox = QtGui.QComboBox(self.verseDisplayGroupBox)
+        self.bibleThemeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.bibleThemeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        self.bibleThemeComboBox.addItem(u'')
+        self.bibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
+        self.verseDisplayLayout.addRow(self.bibleThemeLabel,
+            self.bibleThemeComboBox)
+        self.changeNoteLabel = QtGui.QLabel(self.verseDisplayGroupBox)
+        self.changeNoteLabel.setWordWrap(True)
+        self.changeNoteLabel.setObjectName(u'changeNoteLabel')
+        self.verseDisplayLayout.addRow(self.changeNoteLabel)
+        self.leftLayout.addWidget(self.verseDisplayGroupBox)
+        self.leftLayout.addStretch()
+        self.rightColumn.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(
-            self.NewChaptersCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
+            self.newChaptersCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onNewChaptersCheckBoxChanged)
         QtCore.QObject.connect(
-            self.DisplayStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
+            self.displayStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
             self.onDisplayStyleComboBoxChanged)
         QtCore.QObject.connect(
-            self.BibleThemeComboBox, QtCore.SIGNAL(u'activated(int)'),
+            self.bibleThemeComboBox, QtCore.SIGNAL(u'activated(int)'),
             self.onBibleThemeComboBoxChanged)
         QtCore.QObject.connect(
-            self.LayoutStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
+            self.layoutStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
             self.onLayoutStyleComboBoxChanged)
         QtCore.QObject.connect(
-            self.BibleSecondCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
+            self.bibleSecondCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onBibleSecondCheckBox)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.VerseDisplayGroupBox.setTitle(
+        self.verseDisplayGroupBox.setTitle(
             translate('BiblesPlugin.BiblesTab', 'Verse Display'))
-        self.NewChaptersCheckBox.setText(
+        self.newChaptersCheckBox.setText(
             translate('BiblesPlugin.BiblesTab',
             'Only show new chapter numbers'))
-        self.LayoutStyleLabel.setText(
-            translate('BiblesPlugin.BiblesTab', 'Layout style:'))
-        self.DisplayStyleLabel.setText(
-            translate('BiblesPlugin.BiblesTab', 'Display style:'))
-        self.BibleThemeLabel.setText(
+        self.layoutStyleLabel.setText(UiStrings().LayoutStyle)
+        self.displayStyleLabel.setText(UiStrings().DisplayStyle)
+        self.bibleThemeLabel.setText(
             translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
-        self.LayoutStyleComboBox.setItemText(0,
-            translate('BiblesPlugin.BiblesTab', 'Verse Per Slide'))
-        self.LayoutStyleComboBox.setItemText(1,
-            translate('BiblesPlugin.BiblesTab', 'Verse Per Line'))
-        self.LayoutStyleComboBox.setItemText(2,
-            translate('BiblesPlugin.BiblesTab', 'Continuous'))
-        self.DisplayStyleComboBox.setItemText(0,
+        self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerSlide,
+            UiStrings().VersePerSlide)
+        self.layoutStyleComboBox.setItemText(LayoutStyle.VersePerLine,
+            UiStrings().VersePerLine)
+        self.layoutStyleComboBox.setItemText(LayoutStyle.Continuous,
+            UiStrings().Continuous)
+        self.displayStyleComboBox.setItemText(DisplayStyle.NoBrackets,
             translate('BiblesPlugin.BiblesTab', 'No Brackets'))
-        self.DisplayStyleComboBox.setItemText(1,
+        self.displayStyleComboBox.setItemText(DisplayStyle.Round,
             translate('BiblesPlugin.BiblesTab', '( And )'))
-        self.DisplayStyleComboBox.setItemText(2,
+        self.displayStyleComboBox.setItemText(DisplayStyle.Curly,
             translate('BiblesPlugin.BiblesTab', '{ And }'))
-        self.DisplayStyleComboBox.setItemText(3,
+        self.displayStyleComboBox.setItemText(DisplayStyle.Square,
             translate('BiblesPlugin.BiblesTab', '[ And ]'))
-        self.ChangeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
+        self.changeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
             'Note:\nChanges do not affect verses already in the service.'))
-        self.BibleSecondCheckBox.setText(
+        self.bibleSecondCheckBox.setText(
             translate('BiblesPlugin.BiblesTab', 'Display second Bible verses'))
 
     def onBibleThemeComboBoxChanged(self):
-        self.bible_theme = self.BibleThemeComboBox.currentText()
+        self.bible_theme = self.bibleThemeComboBox.currentText()
 
     def onDisplayStyleComboBoxChanged(self):
-        self.display_style = self.DisplayStyleComboBox.currentIndex()
+        self.display_style = self.displayStyleComboBox.currentIndex()
 
     def onLayoutStyleComboBoxChanged(self):
-        self.layout_style = self.LayoutStyleComboBox.currentIndex()
+        self.layout_style = self.layoutStyleComboBox.currentIndex()
 
     def onNewChaptersCheckBoxChanged(self, check_state):
         self.show_new_chapters = False
@@ -213,10 +176,10 @@ class BiblesTab(SettingsTab):
             settings.value(u'bible theme', QtCore.QVariant(u'')).toString())
         self.second_bibles = settings.value(
             u'second bibles', QtCore.QVariant(True)).toBool()
-        self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
-        self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
-        self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
-        self.BibleSecondCheckBox.setChecked(self.second_bibles)
+        self.newChaptersCheckBox.setChecked(self.show_new_chapters)
+        self.displayStyleComboBox.setCurrentIndex(self.display_style)
+        self.layoutStyleComboBox.setCurrentIndex(self.layout_style)
+        self.bibleSecondCheckBox.setChecked(self.second_bibles)
         settings.endGroup()
 
     def save(self):
@@ -241,14 +204,8 @@ class BiblesTab(SettingsTab):
 
                 [u'Bible Theme', u'Song Theme']
         """
-        self.BibleThemeComboBox.clear()
-        self.BibleThemeComboBox.addItem(u'')
+        self.bibleThemeComboBox.clear()
+        self.bibleThemeComboBox.addItem(u'')
         for theme in theme_list:
-            self.BibleThemeComboBox.addItem(theme)
-        index = self.BibleThemeComboBox.findText(
-            unicode(self.bible_theme), QtCore.Qt.MatchExactly)
-        if index == -1:
-            # Not Found.
-            index = 0
-            self.bible_theme = u''
-        self.BibleThemeComboBox.setCurrentIndex(index)
+            self.bibleThemeComboBox.addItem(theme)
+        find_and_set_in_combo_box(self.bibleThemeComboBox, self.bible_theme)

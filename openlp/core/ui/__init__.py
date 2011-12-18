@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,24 +27,60 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    This is an enumeration class which specifies the different modes of hiding
+    the display.
+
+    ``Blank``
+        This mode is used to hide all output, specifically by covering the
+        display with a black screen.
+
+    ``Theme``
+        This mode is used to hide all output, but covers the display with the
+        current theme background, as opposed to black.
+
+    ``Desktop``
+        This mode hides all output by minimising the display, leaving the user's
+        desktop showing.
     """
     Blank = 1
     Theme = 2
     Screen = 3
 
+class AlertLocation(object):
+    """
+    This is an enumeration class which controls where Alerts are placed on the
+    screen.
+
+    ``Top``
+        Place the text at the top of the screen.
+
+    ``Middle``
+        Place the text in the middle of the screen.
+
+    ``Bottom``
+        Place the text at the bottom of the screen.
+    """
+    Top = 0
+    Middle = 1
+    Bottom = 2
+
+from firsttimeform import FirstTimeForm
+from firsttimelanguageform import FirstTimeLanguageForm
+from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
-from maindisplay import MainDisplay
+from starttimeform import StartTimeForm
+from screen import ScreenList
+from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
+from slidecontroller import SlideController, Controller
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
@@ -51,11 +88,12 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
+from formattingtagform import FormattingTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'ServiceItemEditForm', u'FirstTimeForm']

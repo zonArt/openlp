@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,10 +25,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Receiver
+from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
 
@@ -35,14 +39,13 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
+            ImageTab)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object.
-        return ImageMediaItem(self, self, self.icon)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'image_updated'), self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -72,45 +75,25 @@ class ImagePlugin(Plugin):
             u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('ImagePlugin', 'Load'),
-            u'tooltip': translate('ImagePlugin',
-                'Load a new Image')
+        tooltips = {
+            u'load': translate('ImagePlugin', 'Load a new image.'),
+            u'import': u'',
+            u'new': translate('ImagePlugin', 'Add a new image.'),
+            u'edit': translate('ImagePlugin', 'Edit the selected image.'),
+            u'delete': translate('ImagePlugin', 'Delete the selected image.'),
+            u'preview': translate('ImagePlugin', 'Preview the selected image.'),
+            u'live': translate('ImagePlugin', 'Send the selected image live.'),
+            u'service': translate('ImagePlugin',
+                'Add the selected image to the service.')
         }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('ImagePlugin', 'Add'),
-            u'tooltip': translate('ImagePlugin',
-                'Add a new Image')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('ImagePlugin', 'Edit'),
-            u'tooltip': translate('ImagePlugin',
-                'Edit the selected Image')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('ImagePlugin', 'Delete'),
-            u'tooltip': translate('ImagePlugin',
-                'Delete the selected Image')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('ImagePlugin', 'Preview'),
-            u'tooltip': translate('ImagePlugin',
-                'Preview the selected Image')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('ImagePlugin', 'Live'),
-            u'tooltip': translate('ImagePlugin',
-                'Send the selected Image live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('ImagePlugin', 'Service'),
-            u'tooltip': translate('ImagePlugin',
-                'Add the selected Image to the service')
-        }
+        self.setPluginUiTextStrings(tooltips)
+
+    def image_updated(self):
+        """
+        Triggered by saving and changing the image border.  Sets the images in
+        image manager to require updates.  Actual update is triggered by the
+        last part of saving the config.
+        """
+        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+            + u'/background color', QtCore.QVariant(u'#000000')))
+        self.liveController.imageManager.update_images(u'image', background)

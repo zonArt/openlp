@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -48,10 +49,10 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
-        log.debug(u'Init done')
+        log.debug(u'Init done for %s' % parent.__class__.__name__)
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        checkable=False):
+        checkable=False, shortcuts=None, context=QtCore.Qt.WidgetShortcut):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -60,7 +61,7 @@ class OpenLPToolbar(QtGui.QToolBar):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``tooltip``
@@ -69,30 +70,39 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``slot``
             The method to run when this button is clicked.
 
-        ``objectname``
-            The name of the object, as used in `<button>.setObjectName()`.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
+
+        ``shortcuts``
+            The list of shortcuts for this action
+
+        ``context``
+            Specify the context in which this shortcut is valid
         """
-        toolbarButton = None
         if icon:
-            buttonIcon = build_icon(icon)
+            actionIcon = build_icon(icon)
             if slot and not checkable:
-                toolbarButton = self.addAction(buttonIcon, title, slot)
+                newAction = self.addAction(actionIcon, title, slot)
             else:
-                toolbarButton = self.addAction(buttonIcon, title)
-            self.icons[title] = buttonIcon
+                newAction = self.addAction(actionIcon, title)
+            self.icons[title] = actionIcon
         else:
-            toolbarButton = QtGui.QAction(title, toolbarButton)
-            self.addAction(toolbarButton)
-            QtCore.QObject.connect(toolbarButton,
+            newAction = QtGui.QAction(title, self)
+            self.addAction(newAction)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)
         if tooltip:
-            toolbarButton.setToolTip(tooltip)
+            newAction.setToolTip(tooltip)
         if checkable:
-            toolbarButton.setCheckable(True)
-            QtCore.QObject.connect(toolbarButton,
+            newAction.setCheckable(True)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = toolbarButton
-        return toolbarButton
+        self.actions[title] = newAction
+        if shortcuts is not None:
+            newAction.setShortcuts(shortcuts)
+            newAction.setShortcutContext(context)
+        return newAction
 
     def addToolbarSeparator(self, handle):
         """

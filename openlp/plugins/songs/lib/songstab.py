@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,20 +33,15 @@ class SongsTab(SettingsTab):
     """
     SongsTab is the Songs settings tab in the settings dialog.
     """
-    def __init__(self, title, visible_title):
-        SettingsTab.__init__(self, title, visible_title)
+    def __init__(self, parent, title, visible_title, icon_path):
+        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.SongsLayout = QtGui.QFormLayout(self)
-        self.SongsLayout.setSpacing(8)
-        self.SongsLayout.setMargin(8)
-        self.SongsLayout.setObjectName(u'SongsLayout')
-        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.SongsModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
         self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
-        self.SongsModeLayout.setSpacing(8)
-        self.SongsModeLayout.setMargin(8)
         self.SongsModeLayout.setObjectName(u'SongsModeLayout')
         self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
@@ -61,8 +57,9 @@ class SongsTab(SettingsTab):
         self.SongAddFromServiceCheckBox.setObjectName(
             u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
-        self.SongsLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        self.leftLayout.addWidget(self.SongsModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)

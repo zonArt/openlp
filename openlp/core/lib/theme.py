@@ -5,10 +5,11 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -43,6 +44,7 @@ BLANK_THEME_XML = \
    <name> </name>
    <background type="image">
       <filename></filename>
+      <borderColor>#000000</borderColor>
    </background>
    <background type="gradient">
       <startColor>#000000</startColor>
@@ -90,22 +92,32 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+
 class BackgroundType(object):
+    """
+    Type enumeration for backgrounds.
+    """
     Solid = 0
     Gradient = 1
     Image = 2
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundType.Solid:
+    def to_string(background_type):
+        """
+        Return a string representation of a background type.
+        """
+        if background_type == BackgroundType.Solid:
             return u'solid'
-        elif type == BackgroundType.Gradient:
+        elif background_type == BackgroundType.Gradient:
             return u'gradient'
-        elif type == BackgroundType.Image:
+        elif background_type == BackgroundType.Image:
             return u'image'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background type for the given string.
+        """
         if type_string == u'solid':
             return BackgroundType.Solid
         elif type_string == u'gradient':
@@ -113,7 +125,11 @@ class BackgroundType(object):
         elif type_string == u'image':
             return BackgroundType.Image
 
+
 class BackgroundGradientType(object):
+    """
+    Type enumeration for background gradients.
+    """
     Horizontal = 0
     Vertical = 1
     Circular = 2
@@ -121,20 +137,26 @@ class BackgroundGradientType(object):
     LeftBottom = 4
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundGradientType.Horizontal:
+    def to_string(gradient_type):
+        """
+        Return a string representation of a background gradient type.
+        """
+        if gradient_type == BackgroundGradientType.Horizontal:
             return u'horizontal'
-        elif type == BackgroundGradientType.Vertical:
+        elif gradient_type == BackgroundGradientType.Vertical:
             return u'vertical'
-        elif type == BackgroundGradientType.Circular:
+        elif gradient_type == BackgroundGradientType.Circular:
             return u'circular'
-        elif type == BackgroundGradientType.LeftTop:
+        elif gradient_type == BackgroundGradientType.LeftTop:
             return u'leftTop'
-        elif type == BackgroundGradientType.LeftBottom:
+        elif gradient_type == BackgroundGradientType.LeftBottom:
             return u'leftBottom'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background gradient type for the given string.
+        """
         if type_string == u'horizontal':
             return BackgroundGradientType.Horizontal
         elif type_string == u'vertical':
@@ -146,27 +168,44 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
+    """
+    Type enumeration for horizontal alignment.
+    """
     Left = 0
-    Center = 1
-    Right = 2
+    Right = 1
+    Center = 2
+    Justify = 3
+
+    Names = [u'left', u'right', u'center', u'justify']
+
 
 class VerticalType(object):
+    """
+    Type enumeration for vertical alignment.
+    """
     Top = 0
     Middle = 1
     Bottom = 2
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow',
+    Names = [u'top', u'middle', u'bottom']
+
+
+BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
-integer_list = [u'size', u'line_adjustment', u'x', u'height', u'y',
+INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
+
 
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
+    FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
+    SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
     def __init__(self):
         """
         Initialise the theme object.
@@ -245,7 +284,7 @@ class ThemeXML(object):
         # Create direction element
         self.child_element(background, u'direction', unicode(direction))
 
-    def add_background_image(self, filename):
+    def add_background_image(self, filename, borderColor):
         """
         Add a image background.
 
@@ -257,11 +296,13 @@ class ThemeXML(object):
         self.theme.appendChild(background)
         # Create Filename element
         self.child_element(background, u'filename', filename)
+        # Create endColor element
+        self.child_element(background, u'borderColor', unicode(borderColor))
 
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
         xpos=0, ypos=0, width=0, height=0 , outline=u'False',
-        outline_color=u'#ffffff', outline_pixel=2,  shadow=u'False',
+        outline_color=u'#ffffff', outline_pixel=2, shadow=u'False',
         shadow_color=u'#ffffff', shadow_pixel=5):
         """
         Add a Font.
@@ -514,9 +555,9 @@ class ThemeXML(object):
             return
         field = self._de_hump(element)
         tag = master + u'_' + field
-        if field in boolean_list:
+        if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
-        elif field in integer_list:
+        elif field in INTEGER_LIST:
             setattr(self, tag, int(value))
         else:
             # make string value unicode
@@ -541,8 +582,8 @@ class ThemeXML(object):
         """
         Change Camel Case string to python string
         """
-        sub_name = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', sub_name).lower()
+        sub_name = ThemeXML.FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
+        return ThemeXML.SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """
@@ -559,9 +600,8 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
-            self.add_background_image(filename)
+            filename = os.path.split(self.background_filename)[1]
+            self.add_background_image(filename, self.background_border_color)
         self.add_font(self.font_main_name,
             self.font_main_color,
             self.font_main_size,

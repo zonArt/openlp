@@ -43,8 +43,8 @@ Luke,Luke,Luke
 John,John,John
 Acts,Acts,Acts
 Rom,Romans,Rom
-1Cor,1 Corinthans,1Cor
-2Cor,2 Corinthans,2Cor
+1Cor,1 Corinthians,1Cor
+2Cor,2 Corinthians,2Cor
 Gal,Galatians,Gal
 Eph,Ephesians,Eph
 Phil,Philippians,Phil
@@ -64,3 +64,13 @@ Jas,James,Jas
 3John,3 John,3John
 Jude,Jude,Jude
 Rev,Revelation,Rev
+Jdt,Judith,Jdt
+Wis,Wisdom,Wis
+Tob,Tobit,Tob
+Sir,Sirach,Sir
+Bar,Baruch,Bar
+1Macc,1 Maccabees,1Macc
+2Macc,2 Maccabees,2Macc
+AddDan,Rest of Daniel,AddDan
+AddEsth,Rest of Esther,AddEsth
+PrMan,Prayer of Manasses,PrMan

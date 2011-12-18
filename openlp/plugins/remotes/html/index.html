@@ -1,57 +1,163 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>OpenLP Remote Controller</title>
-    <script type="text/javascript" src="/files/jquery.js"></script>
-    <script type='text/javascript' src="/files/openlp.js"></script>
-    <script type='text/javascript' src="/files/init.js"></script>
-    <link rel="stylesheet" href="/files/style.css" type="text/css" />
+<!DOCTYPE html>
+<html>
+<!--
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
+# Woldsund                                                                    #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+-->
+<head>
+  <meta charset="utf-8" />
+  <title>${app_title}</title>
+  <link rel="stylesheet" href="/files/jquery.mobile.css" />
+  <link rel="stylesheet" href="/files/openlp.css" />
+  <script type="text/javascript" src="/files/jquery.js"></script>
+  <script type="text/javascript" src="/files/openlp.js"></script>
+  <script type="text/javascript" src="/files/jquery.mobile.js"></script>
+  <script type="text/javascript">
+  translationStrings = {
+    "go_live": "${go_live}",
+    "add_to_service": "${add_to_service}",
+    "no_results": "${no_results}",
+    "back": "${back}"
+  }
+  </script>
 </head>
 <body>
-    <h1>OpenLP Controller</h1>
-    <p>Quick Links: <a href="#service-manager">Service Manager</a> | <a href="#slide-controller">Slide Controller</a> | <a href="#miscellaneous">Miscellaneous</a></p>
-    <h2 id="service-manager">Service Manager</h2>
-    <div id="service"></div>
-    <p><em>(Click service item to go live.)</em></p>
-    <fieldset>
-        <legend>Controls</legend>
-        <div id="service-buttons">
-            <input type="button" value="Refresh Service" id="servicemanager_list_request" />
-        </div>
-        <div id="item-buttons">
-            <input type="button" value="&lt;- Previous Item" id="servicemanager_previous_item" />
-            <input type="button" value="Next Item -&gt;" id="servicemanager_next_item" />
-        </div>
-    </fieldset>
-    <hr>
-    <h2 id="slide-controller">Slide Controller</h2>
-    <div id="current-item"></div>
-    <p><em>(Click verse to display.)</em></p>
-    <fieldset>
-        <legend>Controls</legend>
-        <div id="item-buttons">
-            <input type="button" value="Refresh Item" id="slidecontroller_live_text_request" />
-        </div>
-        <div id="slide-buttons">
-            <input type="button" value="&lt;- Previous Slide" id="slidecontroller_live_previous" />
-            <input type="button" value="Next Slide -&gt;" id="slidecontroller_live_next" />
-        </div>
-    </fieldset>
-    <hr>
-    <h2 id="miscellaneous">Miscellaneous</h2>
-    <div id="display-buttons">
-        <input type="button" value="Blank" id="slidecontroller_live_blank" />
-        <input type="button" value="Unblank" id="slidecontroller_live_unblank" />
+<div data-role="page" id="home">
+  <div data-role="header">
+    <h1>${app_title}</h1>
+  </div>
+  <div data-role="content">
+    <div data-role="controlgroup">
+      <a href="#service-manager" data-role="button" data-icon="arrow-r" data-iconpos="right">${service_manager}</a>
+      <a href="#slide-controller" data-role="button" data-icon="arrow-r" data-iconpos="right">${slide_controller}</a>
+      <a href="#alerts" data-role="button" data-icon="arrow-r" data-iconpos="right">${alerts}</a>
+      <a href="#search" data-role="button" data-icon="arrow-r" data-iconpos="right">${search}</a>
     </div>
-    <div id="alert-details">
-        <label for="alert-text">Alert text:</label>
-        <input type="text" id="alert-text" />
-        <input type="button" value="Send" id="alert-send" />
+  </div>
+</div>
+<div data-role="page" id="service-manager">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <h1>${service_manager}</h1>
+    <a href="#" id="service-refresh" data-role="button" data-icon="refresh">${refresh}</a>
+  </div>
+  <div class="ui-bar ui-bar-b">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-top-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="service-top-unblank" data-role="button" data-icon="unblank">${show}</a>
     </div>
-    <hr>
-    <a href="http://openlp.org/">OpenLP website</a>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-top-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="service-top-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+    </ul>
+  </div>
+  <div data-role="footer" data-theme="b" class="ui-bar">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-btm-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="service-btm-unblank" data-role="button" data-icon="unblank">${show}</a>
+    </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-btm-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="service-btm-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
+  </div>
+</div>
+<div data-role="page" id="slide-controller">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <h1>${slide_controller}</h1>
+    <a href="#" id="controller-refresh" data-role="button" data-icon="refresh">${refresh}</a>
+  </div>
+  <div class="ui-bar ui-bar-b">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-top-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="controller-top-unblank" data-role="button" data-icon="unblank">${show}</a>
+    </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-top-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="controller-top-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+    </ul>
+  </div>
+  <div data-role="footer" data-theme="b" class="ui-bar">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-btm-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="controller-btm-unblank" data-role="button" data-icon="unblank">${show}</a>
+    </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-btm-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="controller-btm-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
+  </div>
+</div>
+<div data-role="page" id="alerts">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <h1>${alerts}</h1>
+  </div>
+  <div data-role="content">
+    <div data-role="fieldcontain">
+      <label for="alert-text">${text}:</label>
+      <input type="text" name="alert-text" id="alert-text" value="" />
+    </div>
+    <a href="#" id="alert-submit" data-role="button">${show_alert}</a>
+  </div>
+</div>
+<div data-role="page" id="search">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <h1>${search}</h1>
+  </div>
+  <div data-role="content">
+    <div data-role="fieldcontain">
+      <label for="search-plugin">${search}:</label>
+      <select name="search-plugin" id="search-plugin" data-native-menu="false"></select>
+    </div>
+    <div data-role="fieldcontain">
+      <label for="search-text">${text}:</label>
+      <input type="search" name="search-text" id="search-text" value="" />
+    </div>
+    <a href="#" id="search-submit" data-role="button">${search}</a>
+    <ul data-role="listview" data-inset="true">
+  </div>
+</div>
+<div data-role="page" id="options">
+  <div data-role="header" data-position="inline" data-theme="b">
+    <h1>${options}</h1>
+  </div>
+  <div data-role="content">
+    <input type="hidden" id="selected-item" value="" />
+    <a href="#" id="go-live" data-role="button">${go_live}</a>
+    <a href="#" id="add-to-service" data-role="button">${add_to_service}</a>
+  </div>
+</div>
 </body>
 </html>
-
