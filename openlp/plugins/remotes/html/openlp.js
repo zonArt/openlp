@@ -99,7 +99,10 @@ window.OpenLP = {
     event.preventDefault();
     var item = OpenLP.getElement(event);
     var id = item.attr("value");
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/service/set",
       {"data": text},
@@ -118,7 +121,10 @@ window.OpenLP = {
     event.preventDefault();
     var slide = OpenLP.getElement(event);
     var id = slide.attr("value");
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/controller/live/set",
       {"data": text},
@@ -202,7 +208,7 @@ window.OpenLP = {
   },
   showAlert: function (event) {
     event.preventDefault();
-    var text = JSON.stringify({"request": {"text": $("#alert-text").val()}});
+    var text = "{\"request\": {\"text\": " + $("#alert-text").val() + "}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
@@ -237,10 +243,9 @@ window.OpenLP = {
     );
   },
   showOptions: function (event) {
-    //event.preventDefault();
+    event.preventDefault();
     var element = OpenLP.getElement(event);
     $("#selected-item").val(element.attr("value"));
-    //alert('Selected item!');
   },
   goLive: function (event) {
     event.preventDefault();
@@ -258,7 +263,10 @@ window.OpenLP = {
   addToService: function (event) {
     event.preventDefault();
     var id = $("#selected-item").val();
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text},
