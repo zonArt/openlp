@@ -55,7 +55,7 @@ class Ui_SettingsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
         QtCore.QObject.connect(self.settingListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.stackedLayout.setCurrentIndex)
+            self.tabChanged)
 
     def retranslateUi(self, settingsDialog):
         settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',

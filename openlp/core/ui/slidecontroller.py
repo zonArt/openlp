@@ -95,7 +95,7 @@ class SlideController(Controller):
             u'Edit Song',
         ]
         self.nextPreviousList = [
-            u'Previous Slide', 
+            u'Previous Slide',
             u'Next Slide'
         ]
         self.timer_id = 0
@@ -114,8 +114,8 @@ class SlideController(Controller):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
-            self.keypress_queue = deque() 
-            self.keypress_loop = False           
+            self.keypress_queue = deque()
+            self.keypress_loop = False
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -187,18 +187,20 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
                 [QtCore.Qt.Key_Period], self.onBlankDisplay,
-                u':/slides/slide_blank.png', False, UiStrings().LiveToolbar)
+                u':/slides/slide_blank.png', False,
+                unicode(UiStrings().LiveToolbar))
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
             self.themeScreen = shortcut_action(self.hideMenu, u'themeScreen',
                 [QtGui.QKeySequence(u'T')], self.onThemeDisplay,
-                u':/slides/slide_theme.png', False, UiStrings().LiveToolbar)
+                u':/slides/slide_theme.png', False,
+                unicode(UiStrings().LiveToolbar))
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
             self.desktopScreen = shortcut_action(self.hideMenu,
                 u'desktopScreen', [QtGui.QKeySequence(u'D')],
                 self.onHideDisplay, u':/slides/slide_desktop.png', False,
-                UiStrings().LiveToolbar)
+                unicode(UiStrings().LiveToolbar))
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
@@ -218,11 +220,13 @@ class SlideController(Controller):
                 self.toolbar))
             self.playSlidesLoop = shortcut_action(self.playSlidesMenu,
                 u'playSlidesLoop', [], self.onPlaySlidesLoop,
-                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+                u':/media/media_time.png', False,
+                unicode(UiStrings().LiveToolbar))
             self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
             self.playSlidesOnce = shortcut_action(self.playSlidesMenu,
                 u'playSlidesOnce', [], self.onPlaySlidesOnce,
-                u':/media/media_time.png', False, UiStrings().LiveToolbar)
+                u':/media/media_time.png', False,
+                unicode(UiStrings().LiveToolbar))
             self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
             if QtCore.QSettings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
@@ -320,7 +324,7 @@ class SlideController(Controller):
             self.shortcutTimer.setSingleShot(True)
             self.verseShortcut = shortcut_action(self, u'verseShortcut',
                 [QtGui.QKeySequence(u'V')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.verseShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Verse"'))
@@ -356,37 +360,37 @@ class SlideController(Controller):
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.chorusShortcut = shortcut_action(self, u'chorusShortcut',
                 [QtGui.QKeySequence(u'C')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.chorusShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Chorus"'))
             self.bridgeShortcut = shortcut_action(self, u'bridgeShortcut',
                 [QtGui.QKeySequence(u'B')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.bridgeShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Bridge"'))
             self.preChorusShortcut = shortcut_action(self, u'preChorusShortcut',
                 [QtGui.QKeySequence(u'P')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.preChorusShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Pre-Chorus"'))
             self.introShortcut = shortcut_action(self, u'introShortcut',
                 [QtGui.QKeySequence(u'I')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.introShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Intro"'))
             self.endingShortcut = shortcut_action(self, u'endingShortcut',
                 [QtGui.QKeySequence(u'E')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.endingShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Ending"'))
             self.otherShortcut = shortcut_action(self, u'otherShortcut',
                 [QtGui.QKeySequence(u'O')], self.slideShortcutActivated,
-                category=UiStrings().LiveToolbar,
+                category=unicode(UiStrings().LiveToolbar),
                 context=QtCore.Qt.WidgetWithChildrenShortcut)
             self.otherShortcut.setText(translate(
                 'OpenLP.SlideController', 'Go to "Other"'))
@@ -408,6 +412,9 @@ class SlideController(Controller):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'slidecontroller_toggle_display'),
+                self.toggleDisplay)
             self.toolbar.makeWidgetsInvisible(self.loopList)
         else:
             QtCore.QObject.connect(self.previewListWidget,
@@ -540,24 +547,24 @@ class SlideController(Controller):
         self.nextItem.setObjectName(u'nextItemLive')
         action_list = ActionList.get_instance()
         action_list.add_category(
-            UiStrings().LiveToolbar, CategoryOrder.standardToolbar)
+            unicode(UiStrings().LiveToolbar), CategoryOrder.standardToolbar)
         action_list.add_action(self.previousItem)
         action_list.add_action(self.nextItem)
         self.previousService = shortcut_action(parent, u'previousService',
             [QtCore.Qt.Key_Left], self.servicePrevious,
-            category=UiStrings().LiveToolbar,
+            category=unicode(UiStrings().LiveToolbar),
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.previousService.setText(
             translate('OpenLP.SlideController', 'Previous Service'))
         self.nextService = shortcut_action(parent, 'nextService',
             [QtCore.Qt.Key_Right], self.serviceNext,
-            category=UiStrings().LiveToolbar,
+            category=unicode(UiStrings().LiveToolbar),
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.nextService.setText(
             translate('OpenLP.SlideController', 'Next Service'))
         self.escapeItem = shortcut_action(parent, 'escapeItem',
             [QtCore.Qt.Key_Escape], self.liveEscape,
-            category=UiStrings().LiveToolbar,
+            category=unicode(UiStrings().LiveToolbar),
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.escapeItem.setText(
             translate('OpenLP.SlideController', 'Escape Item'))
@@ -565,6 +572,21 @@ class SlideController(Controller):
     def liveEscape(self):
         self.display.setVisible(False)
         self.mediaController.video_stop([self])
+
+    def toggleDisplay(self, action):
+        """
+        Toggle the display settings triggered from remote messages.
+        """
+        if action == u'blank' or action == u'hide':
+            self.onBlankDisplay(True)
+        elif action == u'theme':
+            self.onThemeDisplay(True)
+        elif action == u'desktop':
+            self.onHideDisplay(True)
+        elif action == u'show':
+            self.onBlankDisplay(False)
+            self.onThemeDisplay(False)
+            self.onHideDisplay(False)
 
     def servicePrevious(self):
         """
@@ -614,8 +636,8 @@ class SlideController(Controller):
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
-        self.previewDisplay.webView.setHtml(build_html(serviceItem, 
-            self.previewDisplay.screen, None, self.isLive, None, 
+        self.previewDisplay.webView.setHtml(build_html(serviceItem,
+            self.previewDisplay.screen, None, self.isLive, None,
             plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:

@@ -30,7 +30,7 @@ song databases into the current installation database.
 """
 import logging
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, \
     sessionmaker
 from sqlalchemy.orm.exc import UnmappedClassError
@@ -43,41 +43,6 @@ from openlp.plugins.songs.lib.db import Author, Book, Song, Topic, MediaFile
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
-
-class OldAuthor(BaseModel):
-    """
-    Author model
-    """
-    pass
-
-
-class OldBook(BaseModel):
-    """
-    Book model
-    """
-    pass
-
-
-class OldMediaFile(BaseModel):
-    """
-    MediaFile model
-    """
-    pass
-
-
-class OldSong(BaseModel):
-    """
-    Song model
-    """
-    pass
-
-
-class OldTopic(BaseModel):
-    """
-    Topic model
-    """
-    pass
-
 
 class OpenLPSongImport(SongImport):
     """
@@ -101,6 +66,41 @@ class OpenLPSongImport(SongImport):
         """
         Run the import for an OpenLP version 2 song database.
         """
+        class OldAuthor(BaseModel):
+            """
+            Author model
+            """
+            pass
+
+
+        class OldBook(BaseModel):
+            """
+            Book model
+            """
+            pass
+
+
+        class OldMediaFile(BaseModel):
+            """
+            MediaFile model
+            """
+            pass
+
+
+        class OldSong(BaseModel):
+            """
+            Song model
+            """
+            pass
+
+
+        class OldTopic(BaseModel):
+            """
+            Topic model
+            """
+            pass
+
+
         if not self.importSource.endswith(u'.sqlite'):
             self.logError(self.importSource,
                 translate('SongsPlugin.OpenLPSongImport',
@@ -138,13 +138,14 @@ class OpenLPSongImport(SongImport):
             secondary=source_songs_topics_table)
         }
         if has_media_files:
-            if source_media_files_songs_table is not None:
+            if isinstance(source_media_files_songs_table, Table):
                 song_props['media_files'] = relation(OldMediaFile,
                     backref='songs',
                     secondary=source_media_files_songs_table)
             else:
                 song_props['media_files'] = relation(OldMediaFile,
                     backref='songs',
+                    foreign_keys=[source_media_files_table.c.song_id],
                     primaryjoin=source_songs_table.c.id == \
                         source_media_files_table.c.song_id)
         try:

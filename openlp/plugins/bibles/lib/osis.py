@@ -78,8 +78,7 @@ class OSISBible(BibleDB):
             fbibles = open(filepath, u'r')
             for line in fbibles:
                 book = line.split(u',')
-                self.books[book[0]] = (book[1].lstrip().rstrip(),
-                    book[2].lstrip().rstrip())
+                self.books[book[0]] = (book[1].strip(), book[2].strip())
         except IOError:
             log.exception(u'OSIS bible import failed')
         finally:
