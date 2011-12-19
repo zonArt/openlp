@@ -27,7 +27,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -37,6 +36,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.core.ui import Controller, Display
+from openlp.core.utils import get_local_collator
 
 log = logging.getLogger(__name__)
 
@@ -278,7 +278,7 @@ class MediaMediaItem(MediaManagerItem):
     def loadList(self, media):
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        media.sort(cmp=locale.strcoll,
+        media.sort(cmp=get_local_collator,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
             track_info = QtCore.QFileInfo(track)
@@ -298,7 +298,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def getList(self, type=MediaType.Audio):
         media = SettingsManager.load_list(self.settingsSection, u'media')
-        media.sort(cmp=locale.strcoll,
+        media.sort(cmp=get_local_collator,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         ext = []
         if type == MediaType.Audio:

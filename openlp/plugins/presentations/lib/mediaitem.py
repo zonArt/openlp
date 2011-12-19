@@ -27,7 +27,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -36,6 +35,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
+from openlp.core.utils import get_local_collator
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -168,7 +168,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.plugin.formparent.displayProgressBar(len(files))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
-        files.sort(cmp=locale.strcoll,
+        files.sort(cmp=get_local_collator,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in files:
             if not initialLoad:

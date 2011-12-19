@@ -26,7 +26,6 @@
 ###############################################################################
 
 import logging
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -36,6 +35,7 @@ from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, \
     find_and_set_in_combo_box, build_icon
+from openlp.core.utils import get_local_collator
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -373,7 +373,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
         bibles = self.plugin.manager.get_bibles().keys()
-        bibles.sort(cmp=locale.strcoll)
+        bibles.sort(cmp=get_local_collator)
         # Load the bibles into the combo boxes.
         for bible in bibles:
             if bible:
@@ -481,7 +481,7 @@ class BibleMediaItem(MediaManagerItem):
                                 book_data_temp.append(book)
                     book_data = book_data_temp
                 books = [book.name + u' ' for book in book_data]
-                books.sort(cmp=locale.strcoll)
+                books.sort(cmp=get_local_collator)
         add_widget_completer(books, self.quickSearchEdit)
 
     def onQuickVersionComboBox(self):
