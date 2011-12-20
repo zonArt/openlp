@@ -285,6 +285,8 @@ $("#controller-top-unblank, #controller-btm-unblank").live("click", OpenLP.unbla
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
+$("#search-text").live("keypress", function(event){
+    if (event.which == 13) { OpenLP.search(event); }});
 $("#go-live").live("click", OpenLP.goLive);
 $("#add-to-service").live("click", OpenLP.addToService);
 // Poll the server twice a second to get any updates.
