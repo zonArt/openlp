@@ -75,7 +75,7 @@ class CCLIFileImport(SongImport):
                     details = chardet.detect(detect_content)
                 detect_file.close()
                 infile = codecs.open(filename, u'r', details['encoding'])
-                if not infile.read(3) == '\xEF\xBB\xBF':
+                if not infile.read(1) == u'\ufeff':
                     # not UTF or no BOM was found
                     infile.seek(0)
                 lines = infile.readlines()
