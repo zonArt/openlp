@@ -92,6 +92,15 @@ class BGExtract(object):
         if headings:
             for heading in headings:
                 heading.extract()
+        chapter_notes = soup.findAll('div', 'footnotes')
+        if chapter_notes:
+            log.debug('Found chapter notes')
+            for note in chapter_notes:
+                note.extract()
+        note_comments = soup.findAll(text=u'end of footnotes')
+        if note_comments:
+            for comment in note_comments:
+                comment.extract()
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         verse_list = {}
