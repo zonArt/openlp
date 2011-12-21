@@ -74,12 +74,9 @@ class OpenLP1Bible(BibleDB):
                 u'SELECT id, testament_id, name, abbreviation FROM book')
         except sqlite.DatabaseError as error:
             log.exception(u'DatabaseError: %s' % error)
-            if error == 'no such table: book':
-                # Please add an user error here!
-                # This file is not an openlp.org 1.x bible database.
-                return False
-            else:
-                raise sqlite.DatabaseError(error)
+            # Please add an user error here!
+            # This file is not an openlp.org 1.x bible database.
+            return False
         books = cursor.fetchall()
         self.wizard.progressBar.setMaximum(len(books) + 1)
         for book in books:
