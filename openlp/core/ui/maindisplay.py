@@ -127,6 +127,9 @@ class MainDisplay(Display):
             self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
                 QtCore.Qt.WindowStaysOnTopHint |
                 QtCore.Qt.X11BypassWindowManagerHint)
+        else:
+            self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
+                QtCore.Qt.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
