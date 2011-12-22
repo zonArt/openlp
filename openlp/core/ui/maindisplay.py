@@ -30,8 +30,6 @@ and play multimedia within OpenLP.
 """
 import logging
 import os
-import sys
-from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
