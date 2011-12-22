@@ -123,13 +123,11 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        if not self.checkGnomeShell32():
-            self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-                QtCore.Qt.WindowStaysOnTopHint |
-                QtCore.Qt.X11BypassWindowManagerHint)
-        else:
-            self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-                QtCore.Qt.WindowStaysOnTopHint)
+        windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
+                QtCore.Qt.WindowStaysOnTopHint
+        if os.environ.get(u'XDG_CURRENT_DESKTOP') == u'Unity':
+            windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+        self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -447,31 +445,6 @@ class MainDisplay(Display):
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
-    def checkGnomeShell32(self):
-        if hasattr(MainDisplay, u'gnomeShell32'):
-            return MainDisplay.gnomeShell32
-        MainDisplay.gnomeShell32 = False
-        if sys.platform == u'win32' or sys.platform == u'darwin':
-            return False
-        if os.environ.get(u'DESKTOP_SESSION') != u'gnome':
-            return False
-        gnome = Popen((u'gnome-session', u'--version'), stdout=PIPE)
-        output, error = gnome.communicate()
-        code = gnome.wait()
-        if code != 1:
-            return False
-        version = output.split(u' ')[1][:-1].split(u'.')
-        if int(version[0]) < 3:
-            return False
-        if int(version[0]) == 3 and int(version[1]) < 2:
-            return False
-        ps = Popen((u'ps', u'-C' u'gnome-shell', u'-o', u'comm='), stdout=PIPE)
-        output, error = ps.communicate()
-        code = ps.wait()
-        if code != 0:
-            return False
-        MainDisplay.gnomeShell32 = True
-        return True
 
 class AudioPlayer(QtCore.QObject):
     """
