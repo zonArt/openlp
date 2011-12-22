@@ -131,6 +131,11 @@ class MainDisplay(Display):
                 QtCore.Qt.WindowStaysOnTopHint
         if os.environ.get(u'XDG_CURRENT_DESKTOP') == u'Unity':
             windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
+        # stay always on top on Mac OS X. For details see bug 906926.
+        # It needs more investigation to fix it properly.
+        if sys.platform == 'darwin':
+            windowFlags = windowFlags | QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
