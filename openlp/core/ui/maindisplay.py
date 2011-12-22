@@ -30,6 +30,7 @@ and play multimedia within OpenLP.
 """
 import logging
 import os
+import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
@@ -61,7 +62,12 @@ class Display(QtGui.QGraphicsView):
         self.controller = controller
         self.screen = {}
         self.plugins = PluginManager.get_instance().plugins
-        self.setViewport(QtOpenGL.QGLWidget())
+        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
+        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
+        # time. We need to investigate more how to use OpenGL properly on Mac OS
+        # X.
+        if sys.platform != 'darwin':
+            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
