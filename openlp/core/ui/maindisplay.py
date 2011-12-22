@@ -29,6 +29,7 @@ The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
@@ -120,9 +121,11 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint |
-            QtCore.Qt.X11BypassWindowManagerHint)
+        windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
+                QtCore.Qt.WindowStaysOnTopHint
+        if os.environ.get(u'XDG_CURRENT_DESKTOP') == u'Unity':
+            windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+        self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
