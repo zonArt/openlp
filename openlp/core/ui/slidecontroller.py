@@ -967,7 +967,7 @@ class SlideController(Controller):
             else:
                 Receiver.send_message(u'live_display_show')
         else:
-            Receiver.send_message(u'live_display_hide', HideMode.Screen)
+            self.liveEscape()
 
     def onSlideBlank(self):
         """
