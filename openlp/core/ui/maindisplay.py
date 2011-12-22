@@ -61,12 +61,7 @@ class Display(QtGui.QGraphicsView):
         self.controller = controller
         self.screen = {}
         self.plugins = PluginManager.get_instance().plugins
-        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
-        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
-        # time. We need to investigate more how to use OpenGL properly on Mac OS
-        # X.
-        if platform.system() != 'Darwin':
-            self.setViewport(QtOpenGL.QGLWidget())
+        self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
