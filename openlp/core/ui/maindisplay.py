@@ -29,6 +29,7 @@ The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
 import logging
+import platform
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
@@ -60,7 +61,12 @@ class Display(QtGui.QGraphicsView):
         self.controller = controller
         self.screen = {}
         self.plugins = PluginManager.get_instance().plugins
-        self.setViewport(QtOpenGL.QGLWidget())
+        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
+        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
+        # time. We need to investigate more how to use OpenGL properly on Mac OS
+        # X.
+        if platform.system() != 'Darwin':
+            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -120,9 +126,15 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint |
-            QtCore.Qt.X11BypassWindowManagerHint)
+        windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
+                QtCore.Qt.WindowStaysOnTopHint | \
+                QtCore.Qt.X11BypassWindowManagerHint
+        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
+        # stay always on top on Mac OS X. For details see bug 906926.
+        # It needs more investigation to fix it properly.
+        if platform.system() == 'Darwin':
+            windowFlags = windowFlags | QtCore.Qt.SplashScreen
+        self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
