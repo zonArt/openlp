@@ -29,7 +29,8 @@ The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
 import logging
-import platform
+import os
+import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
@@ -122,12 +123,13 @@ class MainDisplay(Display):
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-                QtCore.Qt.WindowStaysOnTopHint | \
-                QtCore.Qt.X11BypassWindowManagerHint
+                QtCore.Qt.WindowStaysOnTopHint
+        if os.environ.get(u'XDG_CURRENT_DESKTOP') == u'Unity':
+            windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
         # stay always on top on Mac OS X. For details see bug 906926.
         # It needs more investigation to fix it properly.
-        if platform.system() == 'Darwin':
+        if sys.platform == 'darwin':
             windowFlags = windowFlags | QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
