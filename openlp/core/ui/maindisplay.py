@@ -240,12 +240,14 @@ class MainDisplay(Display):
             not self.isVisible():
             shrink = True
             js = u'show_alert("%s", "%s")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
+                .replace(u'<', u'&lt;').replace(u'>', u'&gt;'),
                 u'top')
         else:
             shrink = False
             js = u'show_alert("%s", "")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
+                .replace(u'<', u'&lt;').replace(u'>', u'&gt;'))
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
