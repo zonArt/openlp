@@ -224,8 +224,10 @@ class ScreenList(object):
 
     def which_screen(self, window):
         """
-        Return the Screen number that the centre of the passed window is in
-        Window is a QWidget
+        Return the screen number that the centre of the passed window is in.
+
+        ``window``
+            A QWidget we are finding the location of.
         """
         x = window.x() + (window.width() / 2)
         y = window.y() + (window.height() / 2)
@@ -234,7 +236,6 @@ class ScreenList(object):
             if x >= size.x() and x <= (size.x() + size.width()) \
                 and y >= size.y() and y <= (size.y() + size.height()):
                 return screen[u'number']
-        return None
 
     def _load_screen_settings(self):
         """
