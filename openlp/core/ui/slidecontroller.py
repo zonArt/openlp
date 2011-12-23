@@ -956,7 +956,8 @@ class SlideController(Controller):
         display_type = QtCore.QSettings().value(
             self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
-        if not self.display.primary:
+        if self.screens.which_screen(self.window()) != \
+            self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
                 self.onThemeDisplay(True)
