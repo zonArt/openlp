@@ -208,7 +208,7 @@ window.OpenLP = {
   },
   showAlert: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": " + $("#alert-text").val() + "}}";
+    var text = "{\"request\": {\"text\": \"" + $("#alert-text").val() + "\"}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
