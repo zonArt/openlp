@@ -332,12 +332,7 @@ class HttpConnection(object):
                         args = []
                         for param in match.groups():
                             args.append(param)
-                        try:
-                            response = func(*args)
-                        except ValueError as error:
-                            log.exception(u'Error while decoding JSON message '
-                                'from remote browser.')
-                            return False
+                        response = func(*args)
                         break
             if response:
                 self.send_response(response)
