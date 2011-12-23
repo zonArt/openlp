@@ -222,6 +222,20 @@ class ScreenList(object):
         log.debug(u'reset_current_display')
         self.set_current_display(self.current[u'number'])
 
+    def which_screen(self, window):
+        """
+        Return the Screen number that the centre of the passed window is in
+        Window is a QWidget
+        """
+        x = window.x() + (window.width() / 2)
+        y = window.y() + (window.height() / 2)
+        for screen in self.screen_list:
+            size = screen[u'size']
+            if x >= size.x() and x <= (size.x() + size.width()) \
+                and y >= size.y() and y <= (size.y() + size.height()):
+                return screen[u'number']
+        return None
+
     def _load_screen_settings(self):
         """
         Loads the screen size and the monitor number from the settings.
