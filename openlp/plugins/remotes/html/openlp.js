@@ -222,7 +222,7 @@ window.OpenLP = {
   search: function (event) {
     event.preventDefault();
     var text = "{\"request\": {\"text\": \"" +
-        $("#search-text").val().replace("\\", "\\\\").replace("\"", "\\\"") +
+        $("#search-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
         "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
