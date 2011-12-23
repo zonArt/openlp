@@ -209,7 +209,7 @@ window.OpenLP = {
   showAlert: function (event) {
     event.preventDefault();
     var text = "{\"request\": {\"text\": \"" +
-        $("#alert-text").val().replace("\\", "\\\\").replace("\"", "\\\"") +
+        $("#alert-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
         "\"}}";
     $.getJSON(
       "/api/alert",
