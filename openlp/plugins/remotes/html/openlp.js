@@ -208,7 +208,9 @@ window.OpenLP = {
   },
   showAlert: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" + $("#alert-text").val() + "\"}}";
+    var text = "{\"request\": {\"text\": \"" +
+        $("#alert-text").val().replace("\\", "\\\\").replace("\"", "\\\"") +
+        "\"}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
@@ -219,7 +221,9 @@ window.OpenLP = {
   },
   search: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" + $("#search-text").val() + "\"}}";
+    var text = "{\"request\": {\"text\": \"" +
+        $("#search-text").val().replace("\\", "\\\\").replace("\"", "\\\"") +
+        "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
