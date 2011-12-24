@@ -125,3 +125,9 @@ class SettingsTab(QtGui.QWidget):
 
         """
         pass
+
+    def tabVisible(self):
+        """
+        Tab has just been made visible to the user
+        """
+        pass

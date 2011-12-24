@@ -116,3 +116,10 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for plugin in self.plugins:
             if plugin.settings_tab:
                 plugin.settings_tab.postSetUp()
+
+    def tabChanged(self, tabIndex):
+        """
+        A different settings tab is selected
+        """
+        self.stackedLayout.setCurrentIndex(tabIndex)
+        self.stackedLayout.currentWidget().tabVisible()
