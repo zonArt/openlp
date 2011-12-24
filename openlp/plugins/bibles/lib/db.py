@@ -638,14 +638,14 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         chapters = BiblesResourcesDB.run_sql(u'SELECT id, book_reference_id, '
             u'chapter, verse_count FROM chapters WHERE book_reference_id = ?',
             (book_id,))
-        if chapters:
+        try:
             return {
                 u'id': chapters[chapter-1][0],
                 u'book_reference_id': chapters[chapter-1][1],
                 u'chapter': chapters[chapter-1][2],
                 u'verse_count': chapters[chapter-1][3]
             }
-        else:
+        except (IndexError, TypeError):
             return None
 
     @staticmethod
@@ -753,7 +753,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             u'language_id, download_source_id FROM webbibles WHERE '
             u'download_source_id = ? AND abbreviation = ?', (source[u'id'],
             abbreviation))
-        if bible:
+        try:
             return {
                 u'id': bible[0][0],
                 u'name': bible[0][1],
@@ -761,7 +761,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'language_id': bible[0][3],
                 u'download_source_id': bible[0][4]
                 }
-        else:
+        except (IndexError, TypeError):
             return None
 
     @staticmethod

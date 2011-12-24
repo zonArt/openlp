@@ -54,6 +54,9 @@ class SongUsagePlugin(Plugin):
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
         self.songUsageActive = False
 
+    def checkPreConditions(self):
+        return self.manager.session is not None
+
     def addToolsMenuItem(self, tools_menu):
         """
         Give the SongUsage plugin the opportunity to add items to the
@@ -133,11 +136,11 @@ class SongUsagePlugin(Plugin):
         self.setButtonState()
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageStatus,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.add_action(self.songUsageDelete,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.add_action(self.songUsageReport,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
@@ -154,11 +157,11 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songUsageStatus,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageDelete,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageReport,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageActiveButton.hide()
         # stop any events being processed
         self.songUsageActive = False

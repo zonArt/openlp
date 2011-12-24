@@ -25,28 +25,41 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui, QtCore
-
-from themelayoutdialog import Ui_ThemeLayoutDialog
-
-class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
+class MediaState(object):
     """
-    The exception dialog
+    An enumeration for possible States of the Media Player (copied partially 
+    from Phonon::State)
     """
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
+    Loading = 0
+    Stopped = 1
+    Playing = 2
+    Paused = 4
+    Off = 6
 
-    def exec_(self, image):
-        """
-        Run the Dialog with correct heading.
-        """
-        pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
-        self.themeDisplayLabel.setPixmap(image)
-        displayAspectRatio = float(image.width()) / image.height()
-        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio )
-        return QtGui.QDialog.exec_(self)
 
-    def accept(self):
-        return QtGui.QDialog.accept(self)
+class MediaType(object):
+    """
+    An enumeration of possibible Media Types
+    """
+    Unused = 0
+    Audio = 1
+    Video = 2
+    CD = 3
+    DVD = 4
+    Folder = 5
 
+
+class MediaInfo(object):
+    """
+    This class hold the media related infos
+    """
+    file_info = None
+    volume = 100
+    is_flash = False
+    is_background = False
+    length = 0
+    start_time = 0
+    end_time = 0
+    media_type = MediaType()
+
+from mediacontroller import MediaController

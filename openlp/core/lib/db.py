@@ -182,6 +182,7 @@ class Manager(object):
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
+        self.session = None
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
@@ -357,10 +358,17 @@ class Manager(object):
 
     def delete_all_objects(self, object_class, filter_clause=None):
         """
-        Delete all object records
+        Delete all object records.
+        This method should only be used for simple tables and not ones with
+        relationships.  The relationships are not deleted from the database and
+        this will lead to database corruptions.
 
         ``object_class``
             The type of object to delete
+
+        ``filter_clause``
+            The filter governing selection of objects to return. Defaults to
+            None.
         """
         try:
             query = self.session.query(object_class)

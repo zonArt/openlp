@@ -165,7 +165,8 @@ class OpenLP1SongImport(SongImport):
         Detect character encoding of an openlp.org 1.x song database.
         """
         # Connect to the database.
-        connection = sqlite.connect(self.importSource, mode=0444)
+        connection = sqlite.connect(self.importSource.encode(
+            sys.getfilesystemencoding()), mode=0444)
         cursor = connection.cursor()
 
         detector = UniversalDetector()

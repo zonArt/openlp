@@ -69,7 +69,7 @@ class VerseType(object):
     TranslatedTags = [name[0].lower() for name in TranslatedNames]
 
     @staticmethod
-    def translated_tag(verse_tag, strict=False):
+    def translated_tag(verse_tag, default=Other):
         """
         Return the translated UPPERCASE tag for a given tag,
         used to show translated verse tags in UI
@@ -77,86 +77,84 @@ class VerseType(object):
         ``verse_tag``
             The string to return a VerseType for
 
-        ``strict``
-            Determines if the default Other or None should be returned
+        ``default``
+            Default return value if no matching tag is found
         """
-        if strict:
-            not_found_value = None
-        else:
-            not_found_value = VerseType.TranslatedTags[VerseType.Other].upper()
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedTags[num].upper()
-        return not_found_value
+        if default in VerseType.TranslatedTags:
+            return VerseType.TranslatedTags[default].upper()
 
     @staticmethod
-    def translated_name(verse_tag, strict=False):
+    def translated_name(verse_tag, default=Other):
         """
         Return the translated name for a given tag
 
         ``verse_tag``
             The string to return a VerseType for
 
-        ``strict``
-            Determines if the default Other or None should be returned
+        ``default``
+            Default return value if no matching tag is found
         """
-        if strict:
-            not_found_value = None
-        else:
-            not_found_value = VerseType.TranslatedNames[VerseType.Other]
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedNames[num]
-        return not_found_value
+        if default in VerseType.TranslatedNames:
+            return VerseType.TranslatedNames[default]
 
     @staticmethod
-    def from_tag(verse_tag, strict=False):
+    def from_tag(verse_tag, default=Other):
         """
         Return the VerseType for a given tag
 
         ``verse_tag``
             The string to return a VerseType for
 
-        ``strict``
-            Determines if the default Other or None should be returned
+        ``default``
+            Default return value if no matching tag is found
         """
-        if strict:
-            no_return_value = None
-        else:
-            no_return_value = VerseType.Other
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return num
-        return no_return_value
+        return default
 
     @staticmethod
-    def from_translated_tag(verse_tag):
+    def from_translated_tag(verse_tag, default=Other):
         """
         Return the VerseType for a given tag
 
         ``verse_tag``
             The string to return a VerseType for
+
+        ``default``
+            Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.TranslatedTags):
             if verse_tag == tag:
                 return num
+        return default
 
     @staticmethod
-    def from_string(verse_name):
+    def from_string(verse_name, default=Other):
         """
         Return the VerseType for a given string
 
         ``verse_name``
             The string to return a VerseType for
+
+        ``default``
+            Default return value if no matching tag is found
         """
         verse_name = verse_name.lower()
         for num, name in enumerate(VerseType.Names):
             if verse_name == name.lower():
                 return num
+        return default
 
     @staticmethod
     def from_translated_string(verse_name):
@@ -172,23 +170,26 @@ class VerseType(object):
                 return num
 
     @staticmethod
-    def from_loose_input(verse_name):
+    def from_loose_input(verse_name, default=Other):
         """
-        Return the VerseType for a given string, Other if not found
+        Return the VerseType for a given string
 
         ``verse_name``
             The string to return a VerseType for
+
+        ``default``
+            Default return value if no matching tag is found
         """
-        verse_index = None
         if len(verse_name) > 1:
             verse_index = VerseType.from_translated_string(verse_name)
             if verse_index is None:
-                verse_index = VerseType.from_string(verse_name)
+                verse_index = VerseType.from_string(verse_name, default)
         elif len(verse_name) == 1:
+            verse_index = VerseType.from_translated_tag(verse_name, None)
             if verse_index is None:
-                verse_index = VerseType.from_translated_tag(verse_name)
-            if verse_index is None:
-                verse_index = VerseType.from_tag(verse_name)
+                verse_index = VerseType.from_tag(verse_name, default)
+        else:
+            return default
         return verse_index
 
 def retrieve_windows_encoding(recommendation=None):

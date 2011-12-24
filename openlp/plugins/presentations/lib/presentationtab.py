@@ -55,7 +55,6 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = QtGui.QCheckBox(self.ControllersGroupBox)
-            checkbox.setEnabled(controller.available)
             checkbox.setObjectName(controller.name + u'CheckBox')
             self.PresenterCheckboxes[controller.name] = checkbox
             self.ControllersLayout.addWidget(checkbox)
@@ -81,16 +80,19 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            if controller.available:
-                checkbox.setText(controller.name)
-            else:
-                checkbox.setText(
-                    unicode(translate('PresentationPlugin.PresentationTab',
-                    '%s (unavailable)')) % controller.name)
+            self.setControllerText(checkbox, controller)
         self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
             'Allow presentation application to be overriden'))
+
+    def setControllerText(self, checkbox, controller):
+        if checkbox.isEnabled():
+            checkbox.setText(controller.name)
+        else:
+            checkbox.setText(
+                unicode(translate('PresentationPlugin.PresentationTab',
+                '%s (unavailable)')) % controller.name)
 
     def load(self):
         """
@@ -113,7 +115,7 @@ class PresentationTab(SettingsTab):
         changed = False
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.available:
+            if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
                 if QtCore.QSettings().value(setting_key) != \
@@ -133,3 +135,13 @@ class PresentationTab(SettingsTab):
             changed = True
         if changed:
             Receiver.send_message(u'mediaitem_presentation_rebuild')
+
+    def tabVisible(self):
+        """
+        Tab has just been made visible to the user
+        """
+        for key in self.controllers:
+            controller = self.controllers[key]
+            checkbox = self.PresenterCheckboxes[controller.name]
+            checkbox.setEnabled(controller.is_available())
+            self.setControllerText(checkbox, controller)

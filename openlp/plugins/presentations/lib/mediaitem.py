@@ -285,7 +285,8 @@ class PresentationMediaItem(MediaManagerItem):
                             critical_error_message_box(
                                 translate('PresentationPlugin.MediaItem',
                                 'Missing Presentation'),
-                                unicode(translate('PresentationPlugin.MediaItem',
+                                unicode(translate(
+                                'PresentationPlugin.MediaItem',
                                 'The Presentation %s is incomplete,'
                                 ' please reload.')) % filename)
                         return False
