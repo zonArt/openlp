@@ -86,13 +86,16 @@ import platform
 import re
 import subprocess as subp
 
+from shutil import copy
+
 # set the script name
 script_name = "build"
+
 
 def build_application(settings, app_name_lower, app_dir):
     logging.info('[%s] now building the app with pyinstaller at "%s"...',
         script_name, settings['pyinstaller_basedir'])
-    result = os.system('%s %s/pyinstaller.py openlp.spec' \
+    result = os.system('arch -i386 %s %s/pyinstaller.py openlp.spec' \
               % ( sys.executable,
                 settings['pyinstaller_basedir']) )
     if (result != 0):
@@ -152,7 +155,7 @@ def build_application(settings, app_name_lower, app_dir):
         sys.exit(1)
 
     logging.info('[%s] copying the translations...', script_name)
-    os.mkdir(app_dir + '/Contents/MacOS/i18n')
+    os.makedirs(app_dir + '/Contents/MacOS/i18n')
     for ts_file in glob.glob(os.path.join(settings['openlp_basedir']
         + '/resources/i18n/', '*ts')):
         result = os.system('lconvert -i %(ts_file)s \
@@ -163,6 +166,22 @@ def build_application(settings, app_name_lower, app_dir):
             logging.error('[%s] could not copy the translations, dmg \
                 creation failed!', script_name)
             sys.exit(1)
+
+    # Backported from windows build script.
+    logging.info('[%s] copying the media player...', script_name)
+    os.makedirs(os.path.join(app_dir, 'Contents/MacOS/core/ui/media'))
+    source = os.path.join(settings['openlp_basedir'], u'openlp', u'core', u'ui', u'media')
+    dest = os.path.join(app_dir, u'Contents/MacOS/core/ui/media')
+    for root, dirs, files in os.walk(source):
+        for filename in files:
+            print filename
+            if not filename.endswith(u'.pyc'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                copy(os.path.join(root, filename),
+                    os.path.join(dest_path, filename))
+
 
 def create_dmg(settings):
     logging.info('[%s] creating the dmg...', script_name)
@@ -405,4 +424,3 @@ if __name__ == '__main__':
     if (do_compress_dmg is True):
         logging.info('[%s] finished creating dmg file, resulting file is "%s"',
             script_name, dmg_file)
-
