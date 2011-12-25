@@ -126,7 +126,8 @@ class Ui_AboutDialog(object):
             u'Tim "TRB143" Bentley (Fedora and Android)',
             u'Matthias "matthub" Hub (Mac OS X)',
             u'Stevan "ElderP" Pettit (Windows)',
-            u'Raoul "superfly" Snyman (Ubuntu)']
+            u'Raoul "superfly" Snyman (Ubuntu)',
+            u'Garrett "floft" Wilson (Arch Linux)']
         translators = {
             u'af': [u'Johan "nuvolari" Mynhardt'],
             u'de': [u'Patrick "madmuffin" Br\xfcckner',
