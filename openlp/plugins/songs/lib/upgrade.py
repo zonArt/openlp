@@ -33,8 +33,6 @@ from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
 from migrate.changeset.constraint import ForeignKeyConstraint
 
-from openlp.plugins.songs.lib.db import Song
-
 __version__ = 3
 
 def upgrade_setup(metadata):

@@ -125,7 +125,6 @@ from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
 from openlp.core.lib import Receiver, PluginStatus, StringContent
-from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
