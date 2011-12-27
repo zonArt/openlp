@@ -416,6 +416,11 @@ class MainDisplay(Display):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -436,6 +441,11 @@ class MainDisplay(Display):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)

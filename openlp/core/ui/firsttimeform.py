@@ -421,6 +421,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
                 QtCore.QVariant(self.displayComboBox.currentIndex()))
+            self.screens.set_current_display(
+                 self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',
