@@ -173,7 +173,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
             # Build the screenshot icons, as this can not be done in the thread.
-            self._buildThemeScreenshot()
+            self._buildThemeScreenshots()
             Receiver.send_message(u'cursor_normal')
             return FirstTimePage.Defaults
         else:
@@ -284,7 +284,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.downloadCanceled:
             os.remove(fpath)
 
-    def _buildThemeScreenshot(self):
+    def _buildThemeScreenshots(self):
         """
         This method builds the theme screenshots' icons for all items in the
         ``self.themesListWidget``.
