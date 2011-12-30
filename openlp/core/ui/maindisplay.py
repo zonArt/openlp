@@ -28,6 +28,7 @@
 The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
+import cgi
 import logging
 import os
 import sys
@@ -239,15 +240,13 @@ class MainDisplay(Display):
         if self.height() != self.screen[u'size'].height() or \
             not self.isVisible():
             shrink = True
-            js = u'show_alert("%s", "%s")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
-                .replace(u'<', u'&lt;').replace(u'>', u'&gt;'),
+            js = u'show_alert("%s", "%s")' % (cgi.escape(
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')),
                 u'top')
         else:
             shrink = False
-            js = u'show_alert("%s", "")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
-                .replace(u'<', u'&lt;').replace(u'>', u'&gt;'))
+            js = u'show_alert("%s", "")' % (cgi.escape(
+                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')))
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
