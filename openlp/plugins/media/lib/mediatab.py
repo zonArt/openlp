@@ -36,6 +36,7 @@ class MediaTab(SettingsTab):
     """
     def __init__(self, parent, title, visible_title, media_players, icon_path):
         self.mediaPlayers = media_players
+        self.savedUsedPlayers = None
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
@@ -138,7 +139,8 @@ class MediaTab(SettingsTab):
             if player not in self.usedPlayers:
                 self.usedPlayers.append(player)
         else:
-            self.usedPlayers.takeAt(self.usedPlayers.indexOf(player))
+            if player in self.usedPlayers:
+                self.usedPlayers.takeAt(self.usedPlayers.indexOf(player))
         self.updatePlayerList()
 
     def updatePlayerList(self):
@@ -146,7 +148,7 @@ class MediaTab(SettingsTab):
         for player in self.usedPlayers:
             if player in self.playerCheckBoxes.keys():
                 if len(self.usedPlayers) == 1:
-                    # at least one media player have to stay active
+                    # At least one media player has to stay active
                     self.playerCheckBoxes[u'%s' % player].setEnabled(False)
                 else:
                     self.playerCheckBoxes[u'%s' % player].setEnabled(True)
@@ -169,14 +171,20 @@ class MediaTab(SettingsTab):
             self.usedPlayers.move(currentRow, currentRow + 1)
 
     def load(self):
+        if self.savedUsedPlayers:
+            self.usedPlayers = self.savedUsedPlayers
+            self.savedUsedPlayers = None
         self.usedPlayers = QtCore.QSettings().value(
             self.settingsSection + u'/players',
             QtCore.QVariant(u'webkit')).toString().split(u',')
+        self.savedUsedPlayers = self.usedPlayers
         for key in self.mediaPlayers:
             player = self.mediaPlayers[key]
             checkbox = self.playerCheckBoxes[player.name]
             if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)
+            else:
+                checkbox.setChecked(False)
         self.updatePlayerList()
         self.overridePlayerCheckBox.setChecked(QtCore.QSettings().value(
             self.settingsSection + u'/override player',

@@ -358,7 +358,7 @@ class ActionList(object):
             if action is existing_action:
                 continue
             if existing_action.parent() is action.parent():
-               return False
+                return False
             if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut,
                 QtCore.Qt.ApplicationShortcut]:
                 return False
