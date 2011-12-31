@@ -47,7 +47,7 @@ class WizardStrings(object):
     CCLI = u'CCLI/SongSelect'
     CSV = u'CSV'
     EW = u'EasyWorship'
-    ES = u'EasiSlides'
+    ES = u'EasySlides'
     FP = u'Foilpresenter'
     OL = u'OpenLyrics'
     OS = u'OpenSong'
