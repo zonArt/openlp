@@ -318,7 +318,8 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = display.serviceItem.start_time
+                controller.media_info.start_time = \
+                    display.serviceItem.start_time
                 controller.media_info.end_time = display.serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
