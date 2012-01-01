@@ -598,7 +598,7 @@ class ServiceManager(QtGui.QWidget):
             try:
                 shutil.copy(temp_file_name, path_file_name)
             except:
-                self.saveFileAs()
+                return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         try:
