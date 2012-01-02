@@ -37,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager
+    translate, PluginManager, expand_tags
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -237,16 +237,17 @@ class MainDisplay(Display):
             The text to be displayed.
         """
         log.debug(u'alert to display')
+        # First we convert <>& marks to html variants, then apply
+        # formattingtags, finally we double all backslashes for JavaScript.
+        text_prepared = expand_tags(cgi.escape(text)) \
+            .replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
         if self.height() != self.screen[u'size'].height() or \
             not self.isVisible():
             shrink = True
-            js = u'show_alert("%s", "%s")' % (cgi.escape(
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')),
-                u'top')
+            js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
             shrink = False
-            js = u'show_alert("%s", "")' % (cgi.escape(
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')))
+            js = u'show_alert("%s", "")' % text_prepared
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
