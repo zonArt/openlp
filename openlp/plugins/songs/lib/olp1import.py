@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -165,7 +165,8 @@ class OpenLP1SongImport(SongImport):
         Detect character encoding of an openlp.org 1.x song database.
         """
         # Connect to the database.
-        connection = sqlite.connect(self.importSource, mode=0444)
+        connection = sqlite.connect(self.importSource.encode(
+            sys.getfilesystemencoding()), mode=0444)
         cursor = connection.cursor()
 
         detector = UniversalDetector()

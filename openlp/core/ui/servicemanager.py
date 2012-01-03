@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -44,8 +44,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     context_menu_action, context_menu_separator, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
-    split_filename
+from openlp.core.utils import AppLocation, delete_file, split_filename
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -642,8 +641,11 @@ class ServiceManager(QtGui.QWidget):
         try:
             zip = zipfile.ZipFile(fileName)
             for zipinfo in zip.infolist():
-                ucsfile = file_is_unicode(zipinfo.filename)
-                if not ucsfile:
+                try:
+                    ucsfile = zipinfo.filename.decode(u'utf-8')
+                except UnicodeDecodeError:
+                    log.exception(u'Filename "%s" is not valid UTF-8' %
+                        zipinfo.filename.decode(u'utf-8', u'replace'))
                     critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n'

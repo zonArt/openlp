@@ -219,6 +219,7 @@ class MediaController(object):
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.seekSlider.setMaximum(1000)
+        controller.seekSlider.setTracking(False)
         controller.seekSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
@@ -231,6 +232,7 @@ class MediaController(object):
         controller.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
         controller.volumeSlider.setMinimum(0)
         controller.volumeSlider.setMaximum(100)
+        controller.volumeSlider.setTracking(True)
         controller.volumeSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
@@ -242,9 +244,9 @@ class MediaController(object):
         controller.mediabar.setVisible(False)
         # Signals
         QtCore.QObject.connect(controller.seekSlider,
-            QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
+            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
         QtCore.QObject.connect(controller.volumeSlider,
-            QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
+            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
     def setup_special_controls(self, controller, control_panel):
         """
@@ -316,7 +318,8 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = display.serviceItem.start_time
+                controller.media_info.start_time = \
+                    display.serviceItem.start_time
                 controller.media_info.end_time = display.serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
