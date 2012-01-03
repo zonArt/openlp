@@ -613,7 +613,7 @@ class ServiceManager(QtGui.QWidget):
         """
         default_pattern = unicode(QtCore.QSettings().value(
             u'advanced/default service name',
-            translate(u'OpenLP.AdvancedTab', u'Service %Y-%m-%d')).toString())
+            translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d')).toString())
         default_filename = datetime.now().strftime(default_pattern)
         directory = unicode(SettingsManager.get_last_dir(
             self.mainwindow.servicemanagerSettingsSection))

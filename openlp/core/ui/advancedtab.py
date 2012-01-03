@@ -44,12 +44,12 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        advancedTranslated = translate(u'OpenLP.AdvancedTab', u'Advanced')
-        self.default_service_name = unicode(translate(u'OpenLP.AdvancedTab',
-            u'Service %Y-%m-%d'))
-        self.default_service_example = unicode(translate(u'OpenLP.AdvancedTab',
-            u'%Y-%m-%d',
-            u'This should be the date part of default service name.'))
+        advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
+        self.default_service_name = unicode(translate('OpenLP.AdvancedTab',
+            'Service %Y-%m-%d'))
+        self.default_service_example = unicode(translate('OpenLP.AdvancedTab',
+            '%Y-%m-%d',
+            'This should be the date part of default service name.'))
         self.wrong_characters_expression = \
             re.compile(r'[\[\]/\;,><&*:%=+@!#^()|?^]+')
         self.default_image = u':/graphics/openlp-splash-screen.png'
@@ -201,17 +201,17 @@ class AdvancedTab(SettingsTab):
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Enable application exit confirmation'))
         self.defaultServiceGroupBox.setTitle(
-            translate(u'OpenLP.AdvancedTab', u'Default Service'))
+            translate('OpenLP.AdvancedTab', 'Default Service'))
         self.defaultServiceLabel.setText(
-            translate(u'OpenLP.AdvancedTab', u'Default service name:'))
+            translate('OpenLP.AdvancedTab', 'Default service name:'))
         self.defaultServiceRevertButton.setToolTip(unicode(
-            translate(u'OpenLP.AdvancedTab',
-            u'Revert to the default service name "%s".')) %
+            translate('OpenLP.AdvancedTab',
+            'Revert to the default service name "%s".')) %
             self.default_service_name)
         self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
-            u'Example:'))
+            'Example:'))
         self.defaultServiceNoteLabel.setText(unicode(
-            translate(u'OpenLP.AdvancedTab', u'Default service name when '
+            translate('OpenLP.AdvancedTab', 'Default service name when '
             'saving a new service. You can use date placeholders, e.g %s '
             'results in %s. Leave it empty to use no default value.')) % 
             (self.default_service_example,
@@ -283,8 +283,7 @@ class AdvancedTab(SettingsTab):
         preset_okay, name_example = self.generate_service_name_example(
             self.service_name)
         if not preset_okay:
-            # should alert or something
-            pass
+            self.service_name = self.default_service_name
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         if self.service_name == self.default_service_name:
@@ -315,12 +314,12 @@ class AdvancedTab(SettingsTab):
             service_name_example = datetime.now().strftime(
                 unicode(service_name_preset))
             if self.wrong_characters_expression.search(service_name_example):
-                service_name_example = translate(u'OpenLP.AdvancedTab',
-                    u'Filename contains wrong characters.')
+                service_name_example = translate('OpenLP.AdvancedTab',
+                    'Filename contains wrong characters.')
                 preset_okay = False
         except ValueError:
-            service_name_example = translate(u'OpenLP.AdvancedTab',
-                u'Syntax error.')
+            service_name_example = translate('OpenLP.AdvancedTab',
+                'Syntax error.')
             preset_okay = False
         return preset_okay, service_name_example
 
