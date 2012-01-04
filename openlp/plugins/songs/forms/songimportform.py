@@ -141,9 +141,9 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.genericRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericRemoveButtonClicked)
-        QtCore.QObject.connect(self.easiSlidesBrowseButton,
+        QtCore.QObject.connect(self.easySlidesBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onEasiSlidesBrowseButtonClicked)
+            self.onEasySlidesBrowseButtonClicked)
         QtCore.QObject.connect(self.ewBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onEWBrowseButtonClicked)
@@ -201,8 +201,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'generic', None, True)
         # CCLI File import
         self.addFileSelectItem(u'ccli')
-        # EasiSlides
-        self.addFileSelectItem(u'easiSlides', single_select=True)
+        # EasySlides
+        self.addFileSelectItem(u'easySlides', single_select=True)
         # EasyWorship
         self.addFileSelectItem(u'ew', single_select=True)
         # Foilpresenter
@@ -248,7 +248,7 @@ class SongImportForm(OpenLPWizard):
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(SongFormat.CCLI, WizardStrings.CCLI)
         self.formatComboBox.setItemText(
-            SongFormat.EasiSlides, WizardStrings.ES)
+            SongFormat.EasySlides, WizardStrings.ES)
         self.formatComboBox.setItemText(
             SongFormat.EasyWorship, WizardStrings.EW)
         self.formatComboBox.setItemText(
@@ -307,9 +307,9 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'access OpenOffice or LibreOffice.'))
-        self.easiSlidesFilenameLabel.setText(
+        self.easySlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.easiSlidesBrowseButton.setText(UiStrings().Browse)
+        self.easySlidesBrowseButton.setText(UiStrings().Browse)
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(UiStrings().Browse)
@@ -411,11 +411,11 @@ class SongImportForm(OpenLPWizard):
                         'presentation file to import from.'))
                     self.genericAddButton.setFocus()
                     return False
-            elif source_format == SongFormat.EasiSlides:
-                if self.easiSlidesFilenameEdit.text().isEmpty():
+            elif source_format == SongFormat.EasySlides:
+                if self.easySlidesFilenameEdit.text().isEmpty():
                     critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.ES)
-                    self.easiSlidesBrowseButton.setFocus()
+                    self.easySlidesBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
@@ -594,9 +594,9 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.genericFileListWidget)
 
-    def onEasiSlidesBrowseButtonClicked(self):
+    def onEasySlidesBrowseButtonClicked(self):
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.ES,
-            self.easiSlidesFilenameEdit)
+            self.easySlidesFilenameEdit)
 
     def onEWBrowseButtonClicked(self):
         """
@@ -673,7 +673,7 @@ class SongImportForm(OpenLPWizard):
         self.ccliFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
-        self.easiSlidesFilenameEdit.setText(u'')
+        self.easySlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
         self.songShowPlusFileListWidget.clear()
@@ -743,10 +743,10 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
             )
-        elif source_format == SongFormat.EasiSlides:
-            # Import an EasiSlides export file
-            importer = self.plugin.importSongs(SongFormat.EasiSlides,
-                filename=unicode(self.easiSlidesFilenameEdit.text())
+        elif source_format == SongFormat.EasySlides:
+            # Import an EasySlides export file
+            importer = self.plugin.importSongs(SongFormat.EasySlides,
+                filename=unicode(self.easySlidesFilenameEdit.text())
             )
         elif source_format == SongFormat.EasyWorship:
             # Import an EasyWorship database

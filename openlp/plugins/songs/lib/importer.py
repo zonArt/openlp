@@ -30,7 +30,7 @@ The :mod:`importer` modules provides the general song import functionality.
 import logging
 
 from opensongimport import OpenSongImport
-from easislidesimport import EasiSlidesImport
+from easyslidesimport import EasySlidesImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
@@ -73,7 +73,7 @@ class SongFormat(object):
     OpenLP1 = 2
     Generic = 3
     CCLI = 4
-    EasiSlides = 5
+    EasySlides = 5
     EasyWorship = 6
     FoilPresenter = 7
     OpenSong = 8
@@ -107,8 +107,8 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
-        elif format == SongFormat.EasiSlides:
-            return EasiSlidesImport
+        elif format == SongFormat.EasySlides:
+            return EasySlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
@@ -130,7 +130,7 @@ class SongFormat(object):
             SongFormat.OpenLP1,
             SongFormat.Generic,
             SongFormat.CCLI,
-            SongFormat.EasiSlides,
+            SongFormat.EasySlides,
             SongFormat.EasyWorship,            
             SongFormat.FoilPresenter,
             SongFormat.OpenSong,
