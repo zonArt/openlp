@@ -81,6 +81,10 @@ class Display(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
+        palette = self.webView.palette()
+        palette.setBrush(QtGui.QPalette.Base, QtCore.Qt.transparent)
+        self.webView.page().setPalette(palette)
+        self.webView.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
@@ -138,6 +142,7 @@ class MainDisplay(Display):
             windowFlags = windowFlags | QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
