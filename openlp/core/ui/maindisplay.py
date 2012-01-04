@@ -351,13 +351,7 @@ class MainDisplay(Display):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        preview = QtGui.QPixmap(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
-        painter = QtGui.QPainter(preview)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        self.frame.render(painter)
-        painter.end()
-        return preview
+        return QtGui.QPixmap.grabWidget(self)
 
     def buildHtml(self, serviceItem, image=None):
         """
