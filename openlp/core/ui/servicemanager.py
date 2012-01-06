@@ -595,7 +595,10 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
         if success:
-            shutil.copy(temp_file_name, path_file_name)
+            try:
+                shutil.copy(temp_file_name, path_file_name)
+            except:
+                return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         try:
