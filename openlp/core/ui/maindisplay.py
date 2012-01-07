@@ -134,7 +134,7 @@ class MainDisplay(Display):
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
                 QtCore.Qt.WindowStaysOnTopHint
-        if QtCore.QSettings().value(u'x11 bypass wm',
+        if QtCore.QSettings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
