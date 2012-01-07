@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -37,14 +37,13 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
-    ItemCapabilities, SettingsManager, translate
+    ItemCapabilities, SettingsManager, translate, str_to_bool
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     context_menu_action, context_menu_separator, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
-    split_filename
+from openlp.core.utils import AppLocation, delete_file, split_filename
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -465,6 +464,7 @@ class ServiceManager(QtGui.QWidget):
         self.setModified(False)
         QtCore.QSettings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
+        Receiver.send_message(u'servicemanager_new_service')
 
     def saveFile(self):
         """
@@ -595,7 +595,10 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
         if success:
-            shutil.copy(temp_file_name, path_file_name)
+            try:
+                shutil.copy(temp_file_name, path_file_name)
+            except:
+                return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         try:
@@ -635,8 +638,11 @@ class ServiceManager(QtGui.QWidget):
         try:
             zip = zipfile.ZipFile(fileName)
             for zipinfo in zip.infolist():
-                ucsfile = file_is_unicode(zipinfo.filename)
-                if not ucsfile:
+                try:
+                    ucsfile = zipinfo.filename.decode(u'utf-8')
+                except UnicodeDecodeError:
+                    log.exception(u'Filename "%s" is not valid UTF-8' %
+                        zipinfo.filename.decode(u'utf-8', u'replace'))
                     critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n'
@@ -663,13 +669,14 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
-                    self.loadItem_uuid = 0
+                    self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                     # if the item has been processed
-                    if serviceItem._uuid == self.loadItem_uuid:
-                        serviceItem.edit_id = int(self.loadItem_editId)
+                    if serviceItem._uuid == self.load_item_uuid:
+                        serviceItem.edit_id = int(self.load_item_edit_id)
+                        serviceItem.temporary_edit = self.load_item_temporary
                     self.addServiceItem(serviceItem, repaint=False)
                 delete_file(p_file)
                 self.setFileName(fileName)
@@ -999,6 +1006,17 @@ class ServiceManager(QtGui.QWidget):
                     painter.drawImage(0, 0, overlay)
                     painter.end()
                     treewidgetitem.setIcon(0, build_icon(icon))
+                elif serviceitem.temporary_edit:
+                    icon = QtGui.QImage(serviceitem.icon)
+                    icon = icon.scaled(80, 80, QtCore.Qt.KeepAspectRatio,
+                        QtCore.Qt.SmoothTransformation)
+                    overlay = QtGui.QImage(':/general/general_export.png')
+                    overlay = overlay.scaled(40, 40, QtCore.Qt.KeepAspectRatio,
+                        QtCore.Qt.SmoothTransformation)
+                    painter = QtGui.QPainter(icon)
+                    painter.drawImage(40, 0, overlay)
+                    painter.end()
+                    treewidgetitem.setIcon(0, build_icon(icon))
                 else:
                     treewidgetitem.setIcon(0, serviceitem.iconic_representation)
             else:
@@ -1006,6 +1024,11 @@ class ServiceManager(QtGui.QWidget):
                     build_icon(u':/general/general_delete.png'))
             treewidgetitem.setText(0, serviceitem.get_display_title())
             tips = []
+            if serviceitem.temporary_edit:
+                tips.append(u'<strong>%s:</strong> <em>%s</em>' %
+                    (unicode(translate('OpenLP.ServiceManager', 'Edit')),
+                    (unicode(translate('OpenLP.ServiceManager',
+                    'Service copy only')))))
             if serviceitem.theme and serviceitem.theme != -1:
                 tips.append(u'<strong>%s:</strong> <em>%s</em>' %
                     (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
@@ -1127,8 +1150,9 @@ class ServiceManager(QtGui.QWidget):
         Triggered from plugins to update service items.
         Save the values as they will be used as part of the service load
         """
-        editId, self.loadItem_uuid = message.split(u':')
-        self.loadItem_editId = int(editId)
+        edit_id, self.load_item_uuid, temporary = message.split(u':')
+        self.load_item_edit_id = int(edit_id)
+        self.load_item_temporary = str_to_bool(temporary)
 
     def replaceServiceItem(self, newItem):
         """

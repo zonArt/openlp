@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -54,7 +54,7 @@ class Ui_ThemeWizard(object):
         self.backgroundLabel = QtGui.QLabel(self.backgroundPage)
         self.backgroundLabel.setObjectName(u'BackgroundLabel')
         self.backgroundComboBox = QtGui.QComboBox(self.backgroundPage)
-        self.backgroundComboBox.addItems([u'', u'', u''])
+        self.backgroundComboBox.addItems([u'', u'', u'', u''])
         self.backgroundComboBox.setObjectName(u'BackgroundComboBox')
         self.backgroundTypeLayout.addRow(self.backgroundLabel,
             self.backgroundComboBox)
@@ -126,6 +126,12 @@ class Ui_ThemeWizard(object):
         self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
         self.imageLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.imageWidget)
+        self.transparentWidget = QtGui.QWidget(self.backgroundPage)
+        self.transparentWidget.setObjectName(u'TransparentWidget')
+        self.transparentLayout = QtGui.QFormLayout(self.transparentWidget)
+        self.transparentLayout.setMargin(0)
+        self.transparentLayout.setObjectName(u'TransparentLayout')
+        self.backgroundStack.addWidget(self.transparentWidget)
         self.backgroundLayout.addLayout(self.backgroundStack)
         themeWizard.addPage(self.backgroundPage)
         # Main Area Page
@@ -432,6 +438,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Gradient'))
         self.backgroundComboBox.setItemText(
             BackgroundType.Image, UiStrings().Image)
+        self.backgroundComboBox.setItemText(BackgroundType.Transparent,
+            translate('OpenLP.ThemeWizard', 'Transparent'))
         self.colorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.gradientStartLabel.setText(
             translate(u'OpenLP.ThemeWizard', 'Starting color:'))

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -358,10 +358,17 @@ class Manager(object):
 
     def delete_all_objects(self, object_class, filter_clause=None):
         """
-        Delete all object records
+        Delete all object records.
+        This method should only be used for simple tables and not ones with
+        relationships.  The relationships are not deleted from the database and
+        this will lead to database corruptions.
 
         ``object_class``
             The type of object to delete
+
+        ``filter_clause``
+            The filter governing selection of objects to return. Defaults to
+            None.
         """
         try:
             query = self.session.query(object_class)

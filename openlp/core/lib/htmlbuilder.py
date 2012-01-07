@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -129,10 +129,10 @@ sup {
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
-        /* 
-        QtWebkit bug with outlines and justify causing outline alignment 
-        problems. (Bug 859950) Surround each word with a <span> to workaround, 
-        but only in this scenario. 
+        /*
+        QtWebkit bug with outlines and justify causing outline alignment
+        problems. (Bug 859950) Surround each word with a <span> to workaround,
+        but only in this scenario.
         */
         var txt = document.getElementById('lyricsmain');
         if(window.getComputedStyle(txt).textAlign == 'justify'){
@@ -141,7 +141,7 @@ sup {
                 txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
                 newtext = newtext.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
-                    function(match) { 
+                    function(match) {
                         return '</span>' + match + '<span>';
                     });
                 newtext = '<span>' + newtext + '</span>';
@@ -288,6 +288,9 @@ def build_background_css(item, width, height):
     background = u'background-color: black'
     if theme:
         if theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Transparent):
+            background = u''
+        elif theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
             background = u'background-color: %s' % theme.background_color
         else:

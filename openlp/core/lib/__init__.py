@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -80,6 +80,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
+        if not file_handle.read(3) == '\xEF\xBB\xBF':
+            # no BOM was found
+            file_handle.seek(0)
         content = file_handle.read()
         content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):

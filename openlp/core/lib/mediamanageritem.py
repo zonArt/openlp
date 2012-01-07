@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
     StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator, critical_error_message_box
 
@@ -300,6 +301,40 @@ class MediaManagerItem(QtGui.QWidget):
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
+
+    def addSearchToToolBar(self):
+        """
+        Creates a search field with button and related signal handling.
+        """
+        self.searchWidget = QtGui.QWidget(self)
+        self.searchWidget.setObjectName(u'searchWidget')
+        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
+        self.searchLayout.setObjectName(u'searchLayout')
+        self.searchTextLayout = QtGui.QFormLayout()
+        self.searchTextLayout.setObjectName(u'searchTextLayout')
+        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
+        self.searchTextLabel.setObjectName(u'searchTextLabel')
+        self.searchTextEdit = SearchEdit(self.searchWidget)
+        self.searchTextEdit.setObjectName(u'searchTextEdit')
+        self.searchTextLabel.setBuddy(self.searchTextEdit)
+        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
+        self.searchLayout.addLayout(self.searchTextLayout)
+        self.searchButtonLayout = QtGui.QHBoxLayout()
+        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
+        self.searchButtonLayout.addStretch()
+        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
+        self.searchTextButton.setObjectName(u'searchTextButton')
+        self.searchButtonLayout.addWidget(self.searchTextButton)
+        self.searchLayout.addLayout(self.searchButtonLayout)
+        self.pageLayout.addWidget(self.searchWidget)
+        # Signals and slots
+        QtCore.QObject.connect(self.searchTextEdit,
+            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.searchTextButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.searchTextEdit,
+            QtCore.SIGNAL(u'textChanged(const QString&)'),
+            self.onSearchTextEditChanged)
 
     def addCustomContextActions(self):
         """

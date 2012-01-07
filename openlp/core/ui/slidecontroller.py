@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -95,7 +95,7 @@ class SlideController(Controller):
             u'Edit Song',
         ]
         self.nextPreviousList = [
-            u'Previous Slide', 
+            u'Previous Slide',
             u'Next Slide'
         ]
         self.timer_id = 0
@@ -114,8 +114,8 @@ class SlideController(Controller):
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
-            self.keypress_queue = deque() 
-            self.keypress_loop = False           
+            self.keypress_queue = deque()
+            self.keypress_loop = False
         else:
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
@@ -187,7 +187,7 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.blankScreen = shortcut_action(self.hideMenu, u'blankScreen',
                 [QtCore.Qt.Key_Period], self.onBlankDisplay,
-                u':/slides/slide_blank.png', False, 
+                u':/slides/slide_blank.png', False,
                 unicode(UiStrings().LiveToolbar))
             self.blankScreen.setText(
                 translate('OpenLP.SlideController', 'Blank Screen'))
@@ -412,6 +412,9 @@ class SlideController(Controller):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'slidecontroller_toggle_display'),
+                self.toggleDisplay)
             self.toolbar.makeWidgetsInvisible(self.loopList)
         else:
             QtCore.QObject.connect(self.previewListWidget,
@@ -570,6 +573,21 @@ class SlideController(Controller):
         self.display.setVisible(False)
         self.mediaController.video_stop([self])
 
+    def toggleDisplay(self, action):
+        """
+        Toggle the display settings triggered from remote messages.
+        """
+        if action == u'blank' or action == u'hide':
+            self.onBlankDisplay(True)
+        elif action == u'theme':
+            self.onThemeDisplay(True)
+        elif action == u'desktop':
+            self.onHideDisplay(True)
+        elif action == u'show':
+            self.onBlankDisplay(False)
+            self.onThemeDisplay(False)
+            self.onHideDisplay(False)
+
     def servicePrevious(self):
         """
         Live event to select the previous service item from the service manager.
@@ -618,8 +636,8 @@ class SlideController(Controller):
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
-        self.previewDisplay.webView.setHtml(build_html(serviceItem, 
-            self.previewDisplay.screen, None, self.isLive, None, 
+        self.previewDisplay.webView.setHtml(build_html(serviceItem,
+            self.previewDisplay.screen, None, self.isLive, None,
             plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
@@ -938,7 +956,8 @@ class SlideController(Controller):
         display_type = QtCore.QSettings().value(
             self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
-        if not self.display.primary:
+        if self.screens.which_screen(self.window()) != \
+            self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
                 self.onThemeDisplay(True)
@@ -949,7 +968,7 @@ class SlideController(Controller):
             else:
                 Receiver.send_message(u'live_display_show')
         else:
-            Receiver.send_message(u'live_display_hide', HideMode.Screen)
+            self.liveEscape()
 
     def onSlideBlank(self):
         """

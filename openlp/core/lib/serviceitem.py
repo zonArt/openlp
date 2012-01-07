@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -119,6 +119,7 @@ class ServiceItem(object):
         self.image_border = u'#000000'
         self.background_audio = []
         self.theme_overwritten = False
+        self.temporary_edit = False
         self._new_item()
 
     def _new_item(self):
@@ -365,6 +366,7 @@ class ServiceItem(object):
         """
         self._uuid = other._uuid
         self.notes = other.notes
+        self.temporary_edit = other.temporary_edit
         # Copy theme over if present.
         if other.theme is not None:
             self.theme = other.theme

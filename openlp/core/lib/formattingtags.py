@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -149,11 +149,17 @@ class FormattingTags(object):
         tags = []
         for tag in FormattingTags.html_expands:
             if not tag[u'protected'] and not tag.get(u'temporary'):
-                tags.append(tag)
-        # Remove key 'temporary' from tags. It is not needed to be saved.
-        for tag in tags:
-            if u'temporary' in tag:
-                del tag[u'temporary']
+                # Using dict ensures that copy is made and encoding of values
+                # a little later does not affect tags in the original list
+                tags.append(dict(tag))
+                tag = tags[-1]
+                # Remove key 'temporary' from tags.
+                # It is not needed to be saved.
+                if u'temporary' in tag:
+                    del tag[u'temporary']
+                for element in tag:
+                    if isinstance(tag[element], unicode):
+                        tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
         QtCore.QSettings().setValue(u'displayTags/html_tags',
             QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
@@ -171,9 +177,13 @@ class FormattingTags(object):
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
         # cPickle only accepts str not unicode strings
-        user_expands_string = str(unicode(user_expands).encode(u'utf8'))
+        user_expands_string = str(user_expands)
         if user_expands_string:
             user_tags = cPickle.loads(user_expands_string)
+            for tag in user_tags:
+                for element in tag:
+                    if isinstance(tag[element], str):
+                        tag[element] = tag[element].decode('utf8')
             # If we have some user ones added them as well
             FormattingTags.add_html_tags(user_tags)
 
