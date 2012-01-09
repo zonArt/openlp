@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -26,6 +26,8 @@
 ###############################################################################
 
 import logging
+
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
@@ -52,12 +54,12 @@ class MediaPlugin(Plugin):
         for ext in self.video_extensions_list:
             self.serviceManager.supportedSuffixes(ext[2:])
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return MediaTab(parent, self.name, visible_name[u'title'],
+        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
             self.mediaController.mediaPlayers, self.icon_path)
 
     def about(self):
@@ -117,3 +119,29 @@ class MediaPlugin(Plugin):
         Add html code to htmlbuilder
         """
         return self.mediaController.get_media_display_html()
+
+    def appStartup(self):
+        """
+        Do a couple of things when the app starts up. In this particular case
+        we want to check if we have the old "Use Phonon" setting, and convert
+        it to "enable Phonon" and "make it the first one in the list".
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        if settings.contains(u'use phonon'):
+            log.info(u'Found old Phonon setting')
+            players = self.mediaController.mediaPlayers.keys()
+            has_phonon = u'phonon' in players
+            if settings.value(u'use phonon').toBool() and has_phonon:
+                log.debug(u'Converting old setting to new setting')
+                new_players = []
+                if players:
+                    new_players = [player for player in players \
+                        if player != u'phonon']
+                new_players.insert(0, u'phonon')
+                self.mediaController.mediaPlayers[u'phonon'].isActive = True
+                settings.setValue(u'players', \
+                    QtCore.QVariant(u','.join(new_players)))
+                self.settings_tab.load()
+            settings.remove(u'use phonon')
+        settings.endGroup()

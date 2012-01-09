@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -136,11 +136,11 @@ class SongUsagePlugin(Plugin):
         self.setButtonState()
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageStatus,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.add_action(self.songUsageDelete,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.add_action(self.songUsageReport,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
@@ -157,11 +157,11 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songUsageStatus,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageDelete,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         action_list.remove_action(self.songUsageReport,
-            translate('SongUsagePlugin', 'Song Usage'))
+            unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageActiveButton.hide()
         # stop any events being processed
         self.songUsageActive = False

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -54,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
         self.iconPath = u'images/image'
         self.background = False
         self.previewFunction = CLAPPERBOARD
-        self.Automatic = u''
+        self.automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
@@ -101,7 +101,7 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
-        self.Automatic = translate('MediaPlugin.MediaItem',
+        self.automatic = translate('MediaPlugin.MediaItem',
             'Automatic')
         self.displayTypeLabel.setText(
             translate('MediaPlugin.MediaItem', 'Use Player:'))
@@ -253,7 +253,7 @@ class MediaMediaItem(MediaManagerItem):
             # load the drop down selection
             self.displayTypeComboBox.addItem(title)
         if self.displayTypeComboBox.count() > 1:
-            self.displayTypeComboBox.insertItem(0, self.Automatic)
+            self.displayTypeComboBox.insertItem(0, self.automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
         if QtCore.QSettings().value(self.settingsSection + u'/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:

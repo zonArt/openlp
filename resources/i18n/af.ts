@@ -1,37 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="af" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="af" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="67"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="138"/>
         <source>&amp;Alert</source>
         <translation>W&amp;aarskuwing</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="68"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="139"/>
         <source>Show an alert message.</source>
         <translation>Vertoon &apos;n waarskuwing boodskap.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="116"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="186"/>
         <source>Alert</source>
         <comment>name singular</comment>
         <translation>Waarskuwing</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="117"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="187"/>
         <source>Alerts</source>
         <comment>name plural</comment>
         <translation>Waarskuwings</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="121"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="191"/>
         <source>Alerts</source>
         <comment>container title</comment>
         <translation>Waarskuwings</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="105"/>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="175"/>
         <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of nursery alerts on the display screen.</source>
         <translation>&lt;strong&gt;Waarskuwing Mini-program&lt;/strong&gt;&lt;br/&gt;Die waarskuwing mini-program beheer die vertoning van moederskamer inligting op die vertoon skerm.</translation>
     </message>
@@ -92,7 +91,7 @@
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="178"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
-        <translation>Daar is nie &apos;n parameter gegee om te vervang nie.
+        <translation>Daar is nie 'n parameter gegee om te vervang nie.
 Gaan steeds voort?</translation>
     </message>
     <message>
@@ -102,9 +101,9 @@ Gaan steeds voort?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="189"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
-        <translation>Die attent-teks bevat nie &apos;&lt;&gt;&apos; nie.
+        <translation>Die attent-teks bevat nie '&lt;&gt;' nie.
 Gaan steeds voort?</translation>
     </message>
 </context>
@@ -119,32 +118,32 @@ Gaan steeds voort?</translation>
 <context>
     <name>AlertsPlugin.AlertsTab</name>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="103"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="104"/>
         <source>Font</source>
         <translation>Skrif</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="105"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="106"/>
         <source>Font name:</source>
         <translation>Skrif naam:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="107"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="108"/>
         <source>Font color:</source>
         <translation>Skrif kleur:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="109"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="110"/>
         <source>Background color:</source>
         <translation>Agtergrond kleur:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="111"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="112"/>
         <source>Font size:</source>
         <translation>Skrif grootte:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="114"/>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="115"/>
         <source>Alert timeout:</source>
         <translation>Waarskuwing verstreke-tyd:</translation>
     </message>
@@ -152,24 +151,24 @@ Gaan steeds voort?</translation>
 <context>
     <name>BiblesPlugin</name>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="103"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="106"/>
         <source>&amp;Bible</source>
         <translation>&amp;Bybel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="180"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="183"/>
         <source>Bible</source>
         <comment>name singular</comment>
         <translation>Bybel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="181"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="184"/>
         <source>Bibles</source>
         <comment>name plural</comment>
         <translation>Bybels</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="185"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="188"/>
         <source>Bibles</source>
         <comment>container title</comment>
         <translation>Bybels</translation>
@@ -185,52 +184,52 @@ Gaan steeds voort?</translation>
         <translation>Geen passende boek kon in hierdie Bybel gevind word nie. Gaan na dat die naam van die boek korrek gespel is.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="190"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="193"/>
         <source>Import a Bible.</source>
         <translation>Voer &apos;n Bybel in.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="191"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="194"/>
         <source>Add a new Bible.</source>
         <translation>Voeg &apos;n nuwe Bybel by.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="192"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="195"/>
         <source>Edit the selected Bible.</source>
         <translation>Redigeer geselekteerde Bybel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="193"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="196"/>
         <source>Delete the selected Bible.</source>
         <translation>Wis die geselekteerde Bybel uit.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="194"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="197"/>
         <source>Preview the selected Bible.</source>
         <translation>Voorskou die geselekteerde Bybel.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="196"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
         <source>Send the selected Bible live.</source>
         <translation>Stuur die geselekteerde Bybel regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="197"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="200"/>
         <source>Add the selected Bible to the service.</source>
         <translation>Voeg die geselekteerde Bybel by die diens.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="145"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="148"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
         <translation>&lt;strong&gt;Bybel Mini-program&lt;/strong&lt;br /&gt;Die Bybel mini-program verskaf die vermoë om Bybelverse vanaf verskillende bronne te vertoon tydens die diens.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="119"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="122"/>
         <source>&amp;Upgrade older Bibles</source>
         <translation>&amp;Opgradeer ouer Bybels</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="121"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="124"/>
         <source>Upgrade the Bible databases to the latest format.</source>
         <translation>Opgradeer die Bybel databasisse na die nuutste formaat.</translation>
     </message>
@@ -256,7 +255,7 @@ Gaan steeds voort?</translation>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="369"/>
         <source>You did not enter a search keyword.
 You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
-        <translation>Daar is nie &apos;n soek sleutelwoord ingevoer nie.
+        <translation>Daar is nie 'n soek sleutelwoord ingevoer nie.
 Vir &apos;n soektog wat alle sleutelwoorde bevat, skei die woorde deur middel van &apos;n spasie. Vir &apos;n soektog wat een van die sleutelwoorde bevat, skei die woorde deur middel van &apos;n komma.</translation>
     </message>
     <message>
@@ -393,18 +392,18 @@ Veranderinge affekteer nie verse wat reeds in die diens is nie.</translation>
 <context>
     <name>BiblesPlugin.CSVBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="117"/>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="110"/>
         <source>Importing books... %s</source>
         <translation>Boek invoer... %s</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="158"/>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="154"/>
         <source>Importing verses from %s...</source>
         <comment>Importing verses from &lt;book name&gt;...</comment>
         <translation>Vers invoer vanaf %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="167"/>
+        <location filename="openlp/plugins/bibles/lib/csvbible.py" line="163"/>
         <source>Importing verses... done.</source>
         <translation>Vers invoer... voltooi.</translation>
     </message>
@@ -551,19 +550,14 @@ Veranderinge affekteer nie verse wat reeds in die diens is nie.</translation>
         <translation>&apos;n Weergawe naam moet vir die Bybel gespesifiseer word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="504"/>
-        <source>Bible Exists</source>
-        <translation>Bybel Bestaan reeds</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="725"/>
-        <source>Your Bible import failed.</source>
-        <translation>Die Bybel invoer het misluk.</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="488"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation>Die Bybel benodig &apos;n kopiereg. Bybels in die Publieke Domein moet daarvolgens gemerk word.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="504"/>
+        <source>Bible Exists</source>
+        <translation>Bybel Bestaan reeds</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="504"/>
@@ -571,9 +565,9 @@ Veranderinge affekteer nie verse wat reeds in die diens is nie.</translation>
         <translation>Hierdie Bybel bestaan reeds. Voer asseblief &apos;n ander Bybel in of wis eers die bestaande een uit.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="410"/>
-        <source>Permissions:</source>
-        <translation>Toestemming:</translation>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="725"/>
+        <source>Your Bible import failed.</source>
+        <translation>Die Bybel invoer het misluk.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="547"/>
@@ -584,6 +578,11 @@ Veranderinge affekteer nie verse wat reeds in die diens is nie.</translation>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="384"/>
         <source>Bibleserver</source>
         <translation>Bybelbediener</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="410"/>
+        <source>Permissions:</source>
+        <translation>Toestemming:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="376"/>
@@ -734,12 +733,12 @@ vraag afgelaai word en dus is &apos;n internet konneksie nodig.</translation>
 <context>
     <name>BiblesPlugin.OsisImport</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="100"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="99"/>
         <source>Detecting encoding (this may take a few minutes)...</source>
         <translation>Bepaal enkodering (dit mag &apos;n paar minuute neem)...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/osis.py" line="151"/>
+        <location filename="openlp/plugins/bibles/lib/osis.py" line="150"/>
         <source>Importing %s %s...</source>
         <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
         <translation>Invoer %s %s...</translation>
@@ -813,6 +812,13 @@ vraag afgelaai word en dus is &apos;n internet konneksie nodig.</translation>
         <translation>Wag asseblief terwyl die Bybels opgradeer word.</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="317"/>
+        <source>The backup was not successful.
+To backup your Bibles you need permission to write to the given directory.</source>
+        <translation>Die rugsteun was nie suksesvol nie.
+Om die Bybels op te gradeer word skryf-toestemming benodig vir die gegewe lêer.</translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="570"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Failed</source>
@@ -832,6 +838,11 @@ Opgradeer ...</translation>
         <translation>Aflaai Fout</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="440"/>
+        <source>To upgrade your Web Bibles an Internet connection is required.</source>
+        <translation>Om die Web Bybels op te gradeer is &apos;n Internet verbinding nodig.</translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="536"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Upgrading %s ...</source>
@@ -839,9 +850,24 @@ Upgrading %s ...</source>
 Opgradering %s...</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="578"/>
+        <source>Upgrading Bible %s of %s: &quot;%s&quot;
+Complete</source>
+        <translation>Opgradeer Bybel %s van %s: &quot;%s&quot;
+Volledig</translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="605"/>
         <source>, %s failed</source>
         <translation>, %s het gevaal</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="612"/>
+        <source>Upgrading Bible(s): %s successful%s
+Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
+        <translation>Opgradeer Bybel(s): %s suksesvol %s
+Neem kennis dat verse van Web Bybels op aanvraag afgelaai
+word en dus is &apos;n Internet verbinding nodig.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="619"/>
@@ -852,33 +878,6 @@ Opgradering %s...</translation>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="624"/>
         <source>Upgrade failed.</source>
         <translation>Opgradeer het gevaal.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="317"/>
-        <source>The backup was not successful.
-To backup your Bibles you need permission to write to the given directory.</source>
-        <translation>Die rugsteun was nie suksesvol nie.
-Om die Bybels op te gradeer word skryf-toestemming benodig vir die gegewe lêer.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="440"/>
-        <source>To upgrade your Web Bibles an Internet connection is required.</source>
-        <translation>Om die Web Bybels op te gradeer is &apos;n Internet verbinding nodig.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="578"/>
-        <source>Upgrading Bible %s of %s: &quot;%s&quot;
-Complete</source>
-        <translation>Opgradeer Bybel %s van %s: &quot;%s&quot;
-Volledig</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="612"/>
-        <source>Upgrading Bible(s): %s successful%s
-Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
-        <translation>Opgradeer Bybel(s): %s suksesvol %s
-Neem kennis dat verse van Web Bybels op aanvraag afgelaai
-word en dus is &apos;n Internet verbinding nodig.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="309"/>
@@ -1018,12 +1017,12 @@ word en dus is &apos;n Internet verbinding nodig.</translation>
         <translation>&amp;Krediete:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="258"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="259"/>
         <source>You need to type in a title.</source>
         <translation>&apos;n Titel word benodig.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="264"/>
+        <location filename="openlp/plugins/custom/forms/editcustomform.py" line="265"/>
         <source>You need to add at least one slide</source>
         <translation>Ten minste een skyfie moet bygevoeg word</translation>
     </message>
@@ -1043,10 +1042,7 @@ word en dus is &apos;n Internet verbinding nodig.</translation>
     <message numerus="yes">
         <location filename="openlp/plugins/custom/lib/mediaitem.py" line="204"/>
         <source>Are you sure you want to delete the %n selected custom slides(s)?</source>
-        <translation>
-            <numerusform>Wis regtig die geselekteerde aangepasde skyfie uit?</numerusform>
-            <numerusform>Wis regtig die %n geselekteerde aangepasde skyfies uit?</numerusform>
-        </translation>
+        <translation><numerusform>Wis regtig die geselekteerde aangepasde skyfie uit?</numerusform><numerusform>Wis regtig die %n geselekteerde aangepasde skyfies uit?</numerusform></translation>
     </message>
 </context>
 <context>
@@ -1113,7 +1109,7 @@ word en dus is &apos;n Internet verbinding nodig.</translation>
 <context>
     <name>ImagePlugin.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="180"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="208"/>
         <source>Select Attachment</source>
         <translation>Selekteer Aanhangsel</translation>
     </message>
@@ -1184,60 +1180,60 @@ Voeg steeds die ander beelde by?</translation>
 <context>
     <name>MediaPlugin</name>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="96"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="64"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
         <translation>&lt;strong&gt;Media Mini-program&lt;/strong&gt;&lt;br/&gt;Die media mini-program verskaf speel funksies van audio en video.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="74"/>
         <source>Media</source>
         <comment>name singular</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="107"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="75"/>
         <source>Media</source>
         <comment>name plural</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="111"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="79"/>
         <source>Media</source>
         <comment>container title</comment>
         <translation>Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="115"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
         <source>Load new media.</source>
         <translation>Laai nuwe media.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="117"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
         <source>Add new media.</source>
         <translation>Voeg nuwe media by.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="118"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="86"/>
         <source>Edit the selected media.</source>
         <translation>Redigeer di geselekteerde media.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="119"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
         <source>Delete the selected media.</source>
         <translation>Wis die giselekteerde media uit.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="120"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="88"/>
         <source>Preview the selected media.</source>
         <translation>Skou die geselekteerde media.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="121"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="89"/>
         <source>Send the selected media live.</source>
         <translation>Stuur die geselekteerde media regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/mediaplugin.py" line="122"/>
+        <location filename="openlp/plugins/media/mediaplugin.py" line="90"/>
         <source>Add the selected media to the service.</source>
         <translation>Voeg die geselekteerde media by die diens.</translation>
     </message>
@@ -1245,67 +1241,92 @@ Voeg steeds die ander beelde by?</translation>
 <context>
     <name>MediaPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="68"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="95"/>
         <source>Select Media</source>
         <translation>Selekteer Media</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="202"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="269"/>
         <source>You must select a media file to delete.</source>
         <translation>&apos;n Media lêer om uit te wis moet geselekteer word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="142"/>
-        <source>Missing Media File</source>
-        <translation>Vermisde Media Lêer</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="142"/>
-        <source>The file %s no longer exists.</source>
-        <translation>Die lêer %s bestaan nie meer nie.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="113"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="166"/>
         <source>You must select a media file to replace the background with.</source>
         <translation>&apos;n Media lêer wat die agtergrond vervang moet gekies word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="127"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="180"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
         <translation>Daar was &apos;n probleem om die agtergrond te vervang. Die media lêer &quot;%s&quot; bestaan nie meer nie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="69"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
+        <source>Missing Media File</source>
+        <translation>Vermisde Media Lêer</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="195"/>
+        <source>The file %s no longer exists.</source>
+        <translation>Die lêer %s bestaan nie meer nie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="233"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
         <translation>Videos (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="123"/>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="176"/>
         <source>There was no display item to amend.</source>
         <translation>Daar was geen vertoon item om by te voeg nie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="161"/>
-        <source>File Too Big</source>
-        <translation>Lêer Te Groot</translation>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="343"/>
+        <source>Unsupported File</source>
+        <translation>Lêer nie Ondersteun nie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediaitem.py" line="161"/>
-        <source>The file you are trying to load is too big. Please reduce it to less than 50MiB.</source>
-        <translation>Die lêer wat gelaai word is te groot. Maak dit asseblief kleiner sodat dit minder as 50MiB is.</translation>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="104"/>
+        <source>Automatic</source>
+        <translation>Automaties</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediaitem.py" line="106"/>
+        <source>Use Player:</source>
+        <translation>Gebruik Speler:</translation>
     </message>
 </context>
 <context>
     <name>MediaPlugin.MediaTab</name>
     <message>
-        <location filename="openlp/plugins/media/lib/mediatab.py" line="57"/>
-        <source>Media Display</source>
-        <translation>Media Vertoning</translation>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="113"/>
+        <source>Available Media Players</source>
+        <translation>Beskikbare Media Spelers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/media/lib/mediatab.py" line="59"/>
-        <source>Use Phonon for video playback</source>
-        <translation>Gebruik Phonon om Video terug te speel</translation>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="121"/>
+        <source>%s (unavailable)</source>
+        <translation>%s (onbeskikbaar)</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="124"/>
+        <source>Player Order</source>
+        <translation>Speler Orde</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="126"/>
+        <source>Down</source>
+        <translation>Af</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="128"/>
+        <source>Up</source>
+        <translation>Op</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/media/lib/mediatab.py" line="131"/>
+        <source>Allow media player to be overriden</source>
+        <translation>Laat toe dat media speler oorheers word</translation>
     </message>
 </context>
 <context>
@@ -1316,12 +1337,12 @@ Voeg steeds die ander beelde by?</translation>
         <translation>Beeld Lêers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="84"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="87"/>
         <source>Information</source>
         <translation>Informasie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/bibleplugin.py" line="84"/>
+        <location filename="openlp/plugins/bibles/bibleplugin.py" line="87"/>
         <source>Bible format has changed.
 You have to upgrade your existing Bibles.
 Should OpenLP upgrade now?</source>
@@ -1394,7 +1415,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokm&#xe5;l (nb)
+    Norwegian Bokmål (nb)
         %s
     Dutch (nl)
         %s
@@ -1497,7 +1518,7 @@ Find out more about OpenLP: http://openlp.org/
 OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
         <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
-OpenLP is gratis kerk aanbieding sagteware of lirieke projeksie sagteware wat gebruik word vir die vertoning van liedere, Bybel verse, video&apos;s, beelde tot ook aanbiedings (as Impress, PowerPoint of PowerPoint Viewer geïnstalleer is) vir kerklike aanbidding deur middel van &apos;n rekenaar en &apos;n data projektor.
+OpenLP is gratis kerk aanbieding sagteware of lirieke projeksie sagteware wat gebruik word vir die vertoning van liedere, Bybel verse, video's, beelde tot ook aanbiedings (as Impress, PowerPoint of PowerPoint Viewer geïnstalleer is) vir kerklike aanbidding deur middel van 'n rekenaar en 'n data projektor.
 
 Vind meer uit oor OpenLP: http://openlp.org/
 
@@ -1505,8 +1526,8 @@ OpenLP is geskryf en word onderhou deur vrywilligers. As u graag wil sien dat me
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="228"/>
-        <source>Copyright &#xa9; 2004-2011 %s
-Portions copyright &#xa9; 2004-2011 %s</source>
+        <source>Copyright © 2004-2011 %s
+Portions copyright © 2004-2011 %s</source>
         <translation>Kopiereg © 2004-2011%s
 Gedeeltelike kopiereg © 2004-2011 %s</translation>
     </message>
@@ -1574,14 +1595,14 @@ Gedeeltelike kopiereg © 2004-2011 %s</translation>
         <translation>Maak Lêer oop</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="148"/>
-        <source>Preview items when clicked in Media Manager</source>
-        <translation>Skou items wanneer gekliek word in die Media Bestuurder</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/advancedtab.py" line="45"/>
         <source>Advanced</source>
         <translation>Gevorderd</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="148"/>
+        <source>Preview items when clicked in Media Manager</source>
+        <translation>Skou items wanneer gekliek word in die Media Bestuurder</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="162"/>
@@ -1602,39 +1623,39 @@ Gedeeltelike kopiereg © 2004-2011 %s</translation>
 <context>
     <name>OpenLP.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="103"/>
-        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
-        <translation>Oeps! OpenLP het &apos;n probleem ondervind en kon nie daarvanaf herstel nie. Die teks in die boks hieronder bevat inligting wat van hulp kan wees aan die OpenLP ontwikkelaars, so stuur dit asseblief per e-pos na bugs@openlp.org saam met &apos;n gedetaileerde beskrywing van wat gedoen was toe die probleem plaasgevind het.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="98"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="100"/>
         <source>Error Occurred</source>
         <translation>&apos;n Fout het opgeduik</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="109"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="105"/>
+        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
+        <translation>Oeps! OpenLP het &apos;n probleem ondervind en kon nie daarvanaf herstel nie. Die teks in die boks hieronder bevat inligting wat van hulp kan wees aan die OpenLP ontwikkelaars, so stuur dit asseblief per e-pos na bugs@openlp.org saam met &apos;n gedetaileerde beskrywing van wat gedoen was toe die probleem plaasgevind het.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="111"/>
         <source>Send E-Mail</source>
         <translation>Stuur E-pos</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="111"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="113"/>
         <source>Save to File</source>
         <translation>Stoor na Lêer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="100"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="102"/>
         <source>Please enter a description of what you were doing to cause this error 
 (Minimum 20 characters)</source>
-        <translation>Voer asseblief &apos;n beskrywing in van waarmee jy besig was toe de probleem ontstaan het 
+        <translation>Voer asseblief 'n beskrywing in van waarmee jy besig was toe de probleem ontstaan het 
 (Mimimum 20 karrakters)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="113"/>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="115"/>
         <source>Attach File</source>
         <translation>Heg &apos;n Lêer aan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="175"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="203"/>
         <source>Description characters to enter : %s</source>
         <translation>Beskrywende karakters om in te voer: %s</translation>
     </message>
@@ -1642,24 +1663,24 @@ Gedeeltelike kopiereg © 2004-2011 %s</translation>
 <context>
     <name>OpenLP.ExceptionForm</name>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="85"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="108"/>
         <source>Platform: %s
 </source>
         <translation>Platvorm: %s
 </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="115"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="141"/>
         <source>Save Crash Report</source>
         <translation>Stoor Bots Verslag</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="115"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="141"/>
         <source>Text files (*.txt *.log *.text)</source>
         <translation>Teks lêers (*.txt *.log *.text)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="108"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="134"/>
         <source>**OpenLP Bug Report**
 Version: %s
 
@@ -1690,7 +1711,7 @@ Version: %s
 </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptionform.py" line="145"/>
+        <location filename="openlp/core/ui/exceptionform.py" line="171"/>
         <source>*OpenLP Bug Report*
 Version: %s
 
@@ -1761,19 +1782,9 @@ Version: %s
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="66"/>
-        <source>Downloading %s...</source>
-        <translation>Aflaai %s...</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="351"/>
-        <source>Download complete. Click the finish button to start OpenLP.</source>
-        <translation>Aflaai voltooi. Klik op die klaar knoppie om OpenLP te begin.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="372"/>
-        <source>Enabling selected plugins...</source>
-        <translation>Skakel geselekteerde miniprogramme aan...</translation>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <source>Songs</source>
+        <translation>Liedere</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="197"/>
@@ -1794,11 +1805,6 @@ Version: %s
         <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>Kies die Miniprogramme wat gebruik moet word.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
-        <source>Songs</source>
-        <translation>Liedere</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
@@ -1834,6 +1840,26 @@ Version: %s
         <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>Allow Alerts</source>
         <translation>Laat Waarskuwings Toe</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
+        <source>Default Settings</source>
+        <translation>Verstek Instellings</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="66"/>
+        <source>Downloading %s...</source>
+        <translation>Aflaai %s...</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="351"/>
+        <source>Download complete. Click the finish button to start OpenLP.</source>
+        <translation>Aflaai voltooi. Klik op die klaar knoppie om OpenLP te begin.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/firsttimeform.py" line="372"/>
+        <source>Enabling selected plugins...</source>
+        <translation>Skakel geselekteerde miniprogramme aan...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
@@ -1874,11 +1900,6 @@ Version: %s
         <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Select and download sample themes.</source>
         <translation>Kies en laai voorbeeld temas af.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
-        <source>Default Settings</source>
-        <translation>Verstek Instellings</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
@@ -1926,11 +1947,6 @@ Version: %s
         <translation>Kliek die voltooi knoppie om OpenLP te begin.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
-        <source>Custom Slides</source>
-        <translation>Aangepasde Skyfies</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="347"/>
         <source>Download complete. Click the finish button to return to OpenLP.</source>
         <translation>Aflaai voltooi. Klik op die klaar knoppie om na OpenLP terug te keer.</translation>
@@ -1941,11 +1957,16 @@ Version: %s
         <translation>Kliek die voltooi knoppie om na OpenLP terug te keer.</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <source>Custom Slides</source>
+        <translation>Aangepasde Skyfies</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="233"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Press the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
-        <translation>Geen Internet verbinding was gevind nie. Die Eerste Keer Gids benodig &apos;n Internet verbinding sodat voorbeeld liedere, Bybels en temas afgelaai kan word.  Druk die Klaar knoppie om OpenLP nou te begin met verstek instellings en geen voorbeeld data.
+        <translation>Geen Internet verbinding was gevind nie. Die Eerste Keer Gids benodig 'n Internet verbinding sodat voorbeeld liedere, Bybels en temas afgelaai kan word.  Druk die Klaar knoppie om OpenLP nou te begin met verstek instellings en geen voorbeeld data.
 
 Om die Eerste-gebruik Gids later te gebruik om hierde data in te trek, gaan die Internet verbinding na en begin weer hierdie gids deur die volgende te kies: &quot;Gereedskap/Her-gebruik Eerste Keer Gids&quot; vanaf OpenLP.</translation>
     </message>
@@ -2287,7 +2308,7 @@ Om die Eerste Keer Gids in geheel te kanselleer (en OpenLP nie te begin nie), dr
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="88"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="157"/>
         <source>OpenLP Display</source>
         <translation>OpenLP Vertooning</translation>
     </message>
@@ -2295,287 +2316,287 @@ Om die Eerste Keer Gids in geheel te kanselleer (en OpenLP nie te begin nie), dr
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
         <source>&amp;File</source>
         <translation>&amp;Lêer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="375"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
         <source>&amp;Import</source>
         <translation>&amp;Invoer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
         <source>&amp;Export</source>
         <translation>Uitvo&amp;er</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="379"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
         <source>&amp;View</source>
         <translation>&amp;Bekyk</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
         <source>M&amp;ode</source>
         <translation>M&amp;odus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="381"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;Tools</source>
         <translation>&amp;Gereedskap</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
         <source>&amp;Settings</source>
         <translation>Ver&amp;stellings</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
         <source>&amp;Language</source>
         <translation>Taa&amp;l</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="385"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
         <source>&amp;Help</source>
         <translation>&amp;Hulp</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
         <source>Media Manager</source>
         <translation>Media Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>Service Manager</source>
         <translation>Diens Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>Theme Manager</source>
         <translation>Tema Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
         <source>&amp;New</source>
         <translation>&amp;Nuwe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
         <source>&amp;Open</source>
         <translation>Maak &amp;Oop</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>Open an existing service.</source>
         <translation>Maak &apos;n bestaande diens oop.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
         <source>&amp;Save</source>
         <translation>&amp;Stoor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>Save the current service to disk.</source>
         <translation>Stoor die huidige diens na skyf.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
         <source>Save &amp;As...</source>
         <translation>Stoor &amp;As...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
         <source>Save Service As</source>
         <translation>Stoor Diens As</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
         <source>Save the current service under a new name.</source>
         <translation>Stoor die huidige diens onder &apos;n nuwe naam.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
         <source>E&amp;xit</source>
         <translation>&amp;Uitgang</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>Quit OpenLP</source>
         <translation>Sluit OpenLP Af</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
         <source>&amp;Theme</source>
         <translation>&amp;Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
         <source>&amp;Configure OpenLP...</source>
         <translation>&amp;Konfigureer OpenLP...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
         <source>&amp;Media Manager</source>
         <translation>&amp;Media Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
         <source>Toggle Media Manager</source>
         <translation>Wissel Media Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="454"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation>Wissel sigbaarheid van die media bestuurder.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="456"/>
         <source>&amp;Theme Manager</source>
         <translation>&amp;Tema Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="458"/>
         <source>Toggle Theme Manager</source>
         <translation>Wissel Tema Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="460"/>
         <source>Toggle the visibility of the theme manager.</source>
         <translation>Wissel sigbaarheid van die tema bestuurder.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
         <source>&amp;Service Manager</source>
         <translation>&amp;Diens Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="464"/>
         <source>Toggle Service Manager</source>
         <translation>Wissel Diens Bestuurder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="466"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation>Wissel sigbaarheid van die diens bestuurder.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="468"/>
         <source>&amp;Preview Panel</source>
         <translation>Voorskou &amp;Paneel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="470"/>
         <source>Toggle Preview Panel</source>
         <translation>Wissel Voorskou Paneel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="472"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation>Wissel sigbaarheid van die voorskou paneel.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="463"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="474"/>
         <source>&amp;Live Panel</source>
         <translation>Regstreekse Panee&amp;l</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="476"/>
         <source>Toggle Live Panel</source>
         <translation>Wissel Regstreekse Paneel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="471"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="482"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation>Wissel sigbaarheid van die regstreekse paneel.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
         <source>&amp;Plugin List</source>
         <translation>Mini-&amp;program Lys</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="486"/>
         <source>List the Plugins</source>
         <translation>Lys die Mini-programme</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="492"/>
         <source>&amp;User Guide</source>
         <translation>Gebr&amp;uikers Gids</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="488"/>
         <source>&amp;About</source>
         <translation>&amp;Aangaande</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
         <source>More information about OpenLP</source>
         <translation>Meer inligting aangaande OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="494"/>
         <source>&amp;Online Help</source>
         <translation>&amp;Aanlyn Hulp</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
         <source>&amp;Web Site</source>
         <translation>&amp;Web Tuiste</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="504"/>
         <source>Use the system language, if available.</source>
         <translation>Gebruik die sisteem se taal as dit beskikbaar is.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="500"/>
         <source>Set the interface language to %s</source>
         <translation>Verstel die koppelvlak taal na %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="495"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="506"/>
         <source>Add &amp;Tool...</source>
         <translation>Voeg Gereedskaps&amp;tuk by...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="497"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="508"/>
         <source>Add an application to the list of tools.</source>
         <translation>Voeg &apos;n applikasie by die lys van gereedskapstukke.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
         <source>&amp;Default</source>
         <translation>&amp;Verstek</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="526"/>
         <source>Set the view mode back to the default.</source>
         <translation>Verstel skou modus terug na verstek modus.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="528"/>
         <source>&amp;Setup</source>
         <translation>Op&amp;stel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="517"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="529"/>
         <source>Set the view mode to Setup.</source>
         <translation>Verstel die skou modus na Opstel modus.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="519"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="531"/>
         <source>&amp;Live</source>
         <translation>&amp;Regstreeks</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="520"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="532"/>
         <source>Set the view mode to Live.</source>
         <translation>Verstel die skou modus na Regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="700"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="714"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -2584,22 +2605,22 @@ You can download the latest version from http://openlp.org/.</source>
 Die nuutste weergawe kan afgelaai word vanaf http://openlp.org/.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="704"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="718"/>
         <source>OpenLP Version Updated</source>
         <translation>OpenLP Weergawe is Opdateer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="809"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>OpenLP Hoof Vertoning Blanko</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="809"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="826"/>
         <source>The Main Display has been blanked out</source>
         <translation>Die Hoof Skerm is afgeskakel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1213"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1230"/>
         <source>Default Theme: %s</source>
         <translation>Verstek Tema: %s</translation>
     </message>
@@ -2610,77 +2631,82 @@ Die nuutste weergawe kan afgelaai word vanaf http://openlp.org/.</translation>
         <translation>Afrikaans</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation>Konfigureer Kor&amp;tpaaie...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1135"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
         <source>Close OpenLP</source>
         <translation>Mook OpenLP toe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1135"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1152"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Maak OpenLP sekerlik toe?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="499"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
         <source>Open &amp;Data Folder...</source>
         <translation>Maak &amp;Data Lêer oop...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="501"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>Maak die lêer waar liedere, bybels en ander data is, oop.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="502"/>
         <source>&amp;Autodetect</source>
         <translation>Spoor outom&amp;aties op</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="507"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="519"/>
         <source>Update Theme Images</source>
         <translation>Opdateer Tema Beelde</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="509"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="521"/>
         <source>Update the preview images for all themes.</source>
         <translation>Opdateer die voorskou beelde vir alle temas.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
         <source>Print the current service.</source>
         <translation>Druk die huidige diens.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <source>&amp;Recent Files</source>
+        <translation>Onlangse Lêe&amp;rs</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
         <source>L&amp;ock Panels</source>
         <translation>Sl&amp;uit Panele</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
         <source>Prevent the panels being moved.</source>
         <translation>Voorkom dat die panele rondgeskuif word.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
         <source>Re-run First Time Wizard</source>
         <translation>Her-gebruik Eerste Keer Gids</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="505"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
         <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
         <translation>Her-gebruik die Eerste Keer Gids om liedere, Bybels en tema&apos;s in te voer.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="764"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
         <source>Re-run First Time Wizard?</source>
         <translation>Her-gebruik Eerste Keer Gids?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="764"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="781"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
@@ -2689,48 +2715,43 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 Her-gebruik van hierdie gids mag veranderinge aan die huidige OpenLP konfigurasie aanbring en kan moontlik liedere byvoeg by die bestaande liedere lys en kan ook die verstek tema verander.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="377"/>
-        <source>&amp;Recent Files</source>
-        <translation>Onlangse Lêe&amp;rs</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1365"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1381"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Maak Lys Skoon</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1368"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1384"/>
         <source>Clear the list of recent files.</source>
         <translation>Maak die lys van onlangse lêers skoon.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
         <source>Configure &amp;Formatting Tags...</source>
         <translation>Konfigureer &amp;Formattering Etikette...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
         <source>Export OpenLP settings to a specified *.config file</source>
         <translation>Voer OpenLP verstellings uit na &apos;n spesifieke *.config lêer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
         <source>Settings</source>
         <translation>Verstellings</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
         <translation>Voer OpenLP verstellings in vanaf &apos;n gespesifiseerde *.config lêer wat voorheen op hierdie of &apos;n ander masjien uitgevoer is</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="920"/>
         <source>Import settings?</source>
         <translation>Voer verstellings in?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="903"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="920"/>
         <source>Are you sure you want to import settings?
 
 Importing settings will make permanent changes to your current OpenLP configuration.
@@ -2743,32 +2764,32 @@ Deur verstellings in te voer, sal permanente veranderinge aan die huidige OpenLP
 As verkeerde verstellings ingevoer word, mag dit onvoorspelbare optrede tot gevolg hê, of OpenLP kan abnormaal termineer.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="917"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="934"/>
         <source>Open File</source>
         <translation>Maak Lêer oop</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="917"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="934"/>
         <source>OpenLP Export Settings Files (*.conf)</source>
         <translation>OpenLP Uitvoer Verstelling Lêers (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="980"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="997"/>
         <source>Import settings</source>
         <translation>Voer verstellings in</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="980"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="997"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>OpenLP sal nou toe maak.  Ingevoerde verstellings sal toegepas word die volgende keer as OpenLP begin word.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="995"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1012"/>
         <source>Export Settings File</source>
         <translation>Voer Verstellings Lêer Uit</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="995"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1012"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>OpenLP Uitvoer Verstellings Lêer (*.conf)</translation>
     </message>
@@ -2776,21 +2797,21 @@ As verkeerde verstellings ingevoer word, mag dit onvoorspelbare optrede tot gevo
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="218"/>
+        <location filename="openlp/core/lib/db.py" line="220"/>
         <source>Database Error</source>
         <translation>Databasis Fout</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="204"/>
+        <location filename="openlp/core/lib/db.py" line="206"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
-        <translation>Die databasis wat gelaai is, was geskep in &apos;n meer onlangse weergawe van OpenLP. Die databasis is weergawe %d, terwyl OpenLP weergawe %d verwag. Die databasis sal nie gelaai word nie.
+        <translation>Die databasis wat gelaai is, was geskep in 'n meer onlangse weergawe van OpenLP. Die databasis is weergawe %d, terwyl OpenLP weergawe %d verwag. Die databasis sal nie gelaai word nie.
 
 Databasis: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="218"/>
+        <location filename="openlp/core/lib/db.py" line="220"/>
         <source>OpenLP cannot load your database.
 
 Database: %s</source>
@@ -2802,7 +2823,7 @@ Databasis: %s</translation>
 <context>
     <name>OpenLP.MediaManagerItem</name>
     <message>
-        <location filename="openlp/core/lib/__init__.py" line="258"/>
+        <location filename="openlp/core/lib/__init__.py" line="261"/>
         <source>No Items Selected</source>
         <translation>Geen item geselekteer nie</translation>
     </message>
@@ -2852,11 +2873,6 @@ Databasis: %s</translation>
         <translation>Geen Soek Resultate</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="153"/>
-        <source>&amp;Clone</source>
-        <translation>&amp;Kloon</translation>
-    </message>
-    <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="358"/>
         <source>Invalid File Type</source>
         <translation>Ongeldige Lêer Tipe</translation>
@@ -2866,6 +2882,11 @@ Databasis: %s</translation>
         <source>Invalid File %s.
 Suffix not supported</source>
         <translation>Ongeldige Lêer %s. Agtervoegsel nie ondersteun nie</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="153"/>
+        <source>&amp;Clone</source>
+        <translation>&amp;Kloon</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="401"/>
@@ -2901,17 +2922,17 @@ Suffix not supported</source>
         <translation>Onaktief</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="144"/>
+        <location filename="openlp/core/ui/pluginform.py" line="145"/>
         <source>%s (Inactive)</source>
         <translation>%s (Onaktief)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="141"/>
+        <location filename="openlp/core/ui/pluginform.py" line="142"/>
         <source>%s (Active)</source>
         <translation>%s (Aktief)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/pluginform.py" line="147"/>
+        <location filename="openlp/core/ui/pluginform.py" line="148"/>
         <source>%s (Disabled)</source>
         <translation>%s (Onaktief)</translation>
     </message>
@@ -3023,12 +3044,12 @@ Suffix not supported</source>
 <context>
     <name>OpenLP.ServiceItem</name>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="464"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="469"/>
         <source>&lt;strong&gt;Start&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Begin&lt;/strong&gt;: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/serviceitem.py" line="468"/>
+        <location filename="openlp/core/lib/serviceitem.py" line="473"/>
         <source>&lt;strong&gt;Length&lt;/strong&gt;: %s</source>
         <translation>&lt;strong&gt;Durasie&lt;/strong&gt;: %s</translation>
     </message>
@@ -3124,29 +3145,34 @@ Suffix not supported</source>
         <translation>&amp;Verander Item Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="640"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="613"/>
+        <source>OpenLP Service Files (*.osz)</source>
+        <translation>OpenLP Diens Lêers (*.osz)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="641"/>
         <source>File is not a valid service.
 The content encoding is not UTF-8.</source>
-        <translation>Lêer is nie &apos;n geldige diens nie.
+        <translation>Lêer is nie 'n geldige diens nie.
 Die inhoud enkodering is nie UTF-8 nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="681"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="683"/>
         <source>File is not a valid service.</source>
         <translation>Lêer is nie &apos;n geldige diens nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1258"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
         <source>Missing Display Handler</source>
         <translation>Vermisde Vertoon Hanteerder</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1206"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1225"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>Die item kan nie vertoon word nie omdat daar nie &apos;n hanteerder is om dit te vertoon nie</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1258"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1277"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>Die item kan nie vertoon word nie omdat die mini-program wat dit moet vertoon vermis of onaktief is</translation>
     </message>
@@ -3176,11 +3202,6 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Maak Lêer oop</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="612"/>
-        <source>OpenLP Service Files (*.osz)</source>
-        <translation>OpenLP Diens Lêers (*.osz)</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="210"/>
         <source>Moves the selection down the window.</source>
         <translation>Skuif die geselekteerde afwaarts in die venster.</translation>
@@ -3206,11 +3227,6 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Stuur die geselekteerde item Regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="447"/>
-        <source>Modified Service</source>
-        <translation>Redigeer Diens</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="319"/>
         <source>&amp;Start Time</source>
         <translation>&amp;Begin Tyd</translation>
@@ -3227,28 +3243,13 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="447"/>
+        <source>Modified Service</source>
+        <translation>Redigeer Diens</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="447"/>
         <source>The current service has been modified. Would you like to save this service?</source>
         <translation>Die huidige diens was verander. Stoor hierdie diens?</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="687"/>
-        <source>File could not be opened because it is corrupt.</source>
-        <translation>Lêer kon nie oopgemaak word nie omdat dit korrup is.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="693"/>
-        <source>Empty File</source>
-        <translation>Leë Lêer</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="693"/>
-        <source>This service file does not contain any data.</source>
-        <translation>Die diens lêer het geen data inhoud nie.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="700"/>
-        <source>Corrupt File</source>
-        <translation>Korrupte Lêer</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/printserviceform.py" line="195"/>
@@ -3271,6 +3272,26 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Ongetitelde Diens</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="689"/>
+        <source>File could not be opened because it is corrupt.</source>
+        <translation>Lêer kon nie oopgemaak word nie omdat dit korrup is.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="695"/>
+        <source>Empty File</source>
+        <translation>Leë Lêer</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="695"/>
+        <source>This service file does not contain any data.</source>
+        <translation>Die diens lêer het geen data inhoud nie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
+        <source>Corrupt File</source>
+        <translation>Korrupte Lêer</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="123"/>
         <source>Load an existing service.</source>
         <translation>Laai &apos;n bestaande diens.</translation>
@@ -3286,24 +3307,34 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Kies &apos;n tema vir die diens.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="700"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
         <source>This file is either corrupt or it is not an OpenLP 2.0 service file.</source>
         <translation>Die lêer is óf korrup óf is nie &apos;n OpenLP 2.0 diens lêer nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1010"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="529"/>
+        <source>Service File Missing</source>
+        <translation>Diens Lêer Vermis</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="1028"/>
         <source>Slide theme</source>
         <translation>Skyfie tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1014"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1032"/>
         <source>Notes</source>
         <translation>Notas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="528"/>
-        <source>Service File Missing</source>
-        <translation>Diens Lêer Vermis</translation>
+        <location filename="openlp/core/ui/servicemanager.py" line="1023"/>
+        <source>Edit</source>
+        <translation>Redigeer</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="1023"/>
+        <source>Service copy only</source>
+        <translation>Slegs diens kopie.</translation>
     </message>
 </context>
 <context>
@@ -3393,99 +3424,144 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
 <context>
     <name>OpenLP.SlideController</name>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="162"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="186"/>
         <source>Hide</source>
         <translation>Verskuil</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="256"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="272"/>
         <source>Go To</source>
         <translation>Gaan Na</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="167"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="192"/>
         <source>Blank Screen</source>
         <translation>Blanko Skerm</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="172"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="198"/>
         <source>Blank to Theme</source>
         <translation>Blanko na Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="178"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="204"/>
         <source>Show Desktop</source>
         <translation>Wys Werkskerm</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="141"/>
-        <source>Previous Slide</source>
-        <translation>Vorige Skyfie</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="148"/>
-        <source>Next Slide</source>
-        <translation>Volgende Skyfie</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="390"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="554"/>
         <source>Previous Service</source>
         <translation>Vorige Diens</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="396"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="560"/>
         <source>Next Service</source>
         <translation>Volgende Diens</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="402"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="566"/>
         <source>Escape Item</source>
         <translation>Ontsnap Item</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="141"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="165"/>
         <source>Move to previous.</source>
         <translation>Skuif terug.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="148"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="172"/>
         <source>Move to next.</source>
         <translation>Skuif volgende.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="192"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="218"/>
         <source>Play Slides</source>
         <translation>Speel Skyfies</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="243"/>
         <source>Delay between slides in seconds.</source>
         <translation>Vertraging tussen skyfies in sekondes.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="218"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="246"/>
         <source>Move to live.</source>
         <translation>Skuif na regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="223"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="251"/>
         <source>Add to Service.</source>
         <translation>Voeg by Diens.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="229"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="257"/>
         <source>Edit and reload song preview.</source>
         <translation>Redigeer en herlaai lied voorskou.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="246"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="207"/>
         <source>Start playing media.</source>
         <translation>Begin media speel.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="260"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="276"/>
         <source>Pause audio.</source>
         <translation>Stop oudio.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="211"/>
+        <source>Pause playing media.</source>
+        <translation>Halt spelende media.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="215"/>
+        <source>Stop playing media.</source>
+        <translation>Stop spelende media.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="222"/>
+        <source>Video position.</source>
+        <translation>Video posisie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="234"/>
+        <source>Audio Volume.</source>
+        <translation>Oudio Volume.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="329"/>
+        <source>Go to &quot;Verse&quot;</source>
+        <translation>Gaan na &quot;Vers&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="365"/>
+        <source>Go to &quot;Chorus&quot;</source>
+        <translation>Gaan na &quot;Koor&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="371"/>
+        <source>Go to &quot;Bridge&quot;</source>
+        <translation>Gaan na &quot;Brug&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="377"/>
+        <source>Go to &quot;Pre-Chorus&quot;</source>
+        <translation>Gaan na &quot;Pre-Koor&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="383"/>
+        <source>Go to &quot;Intro&quot;</source>
+        <translation>Gaan na &quot;Inleiding&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="389"/>
+        <source>Go to &quot;Ending&quot;</source>
+        <translation>Gaan na &quot;Einde&quot;</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="395"/>
+        <source>Go to &quot;Other&quot;</source>
+        <translation>Gaan na &quot;Ander&quot;</translation>
     </message>
 </context>
 <context>
@@ -3559,19 +3635,19 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Begin tyd is na die eind tyd van die media item</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themelayoutdialog.py" line="69"/>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="68"/>
         <source>Theme Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema Uitleg</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themelayoutdialog.py" line="71"/>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="70"/>
         <source>The blue box shows the main area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die blou boks wys die hoof area.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themelayoutdialog.py" line="73"/>
+        <location filename="openlp/core/ui/themelayoutdialog.py" line="72"/>
         <source>The red box shows the footer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die rooi boks wys die voet area.</translation>
     </message>
 </context>
 <context>
@@ -3670,71 +3746,64 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Stel in As &amp;Globale Standaard</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="470"/>
+        <location filename="openlp/core/ui/thememanager.py" line="469"/>
         <source>%s (default)</source>
         <translation>%s (standaard)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="325"/>
+        <location filename="openlp/core/ui/thememanager.py" line="324"/>
         <source>You must select a theme to edit.</source>
         <translation>Kies &apos;n tema om te redigeer.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="748"/>
+        <location filename="openlp/core/ui/thememanager.py" line="745"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Die standaard tema kan nie uitgewis word nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="377"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
+        <source>Theme %s is used in the %s plugin.</source>
+        <translation>Tema %s is in gebruik deur die %s mini-program.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="376"/>
         <source>You have not selected a theme.</source>
         <translation>Geen tema is geselekteer nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="381"/>
+        <location filename="openlp/core/ui/thememanager.py" line="380"/>
         <source>Save Theme - (%s)</source>
         <translation>Stoor Tema - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="399"/>
+        <location filename="openlp/core/ui/thememanager.py" line="398"/>
         <source>Theme Exported</source>
         <translation>Tema Uitvoer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="399"/>
+        <location filename="openlp/core/ui/thememanager.py" line="398"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Die tema was suksesvol uitgevoer.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="404"/>
         <source>Theme Export Failed</source>
         <translation>Tema Uitvoer het Misluk</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="405"/>
+        <location filename="openlp/core/ui/thememanager.py" line="404"/>
         <source>Your theme could not be exported due to an error.</source>
         <translation>Die tema kon nie uitgevoer word nie weens &apos;n fout.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="420"/>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>Select Theme Import File</source>
         <translation>Kies Tema Invoer Lêer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="532"/>
-        <source>File is not a valid theme.
-The content encoding is not UTF-8.</source>
-        <translation>Lêer is nie &apos;n geldige tema nie.
-Die inhoud enkodering is nie UTF-8 nie.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="581"/>
+        <location filename="openlp/core/ui/thememanager.py" line="578"/>
         <source>File is not a valid theme.</source>
         <translation>Lêer is nie &apos;n geldige tema nie.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation>Tema %s is in gebruik deur die %s mini-program.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="111"/>
@@ -3767,32 +3836,32 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Hernoem %s tema?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="341"/>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
         <source>You must select a theme to delete.</source>
         <translation>Kies &apos;n tema om uit te wis.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="341"/>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
         <source>Delete Confirmation</source>
         <translation>Uitwis Bevestiging</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="341"/>
+        <location filename="openlp/core/ui/thememanager.py" line="340"/>
         <source>Delete %s theme?</source>
         <translation>Wis %s tema uit?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="756"/>
+        <location filename="openlp/core/ui/thememanager.py" line="753"/>
         <source>Validation Error</source>
         <translation>Validerings Fout</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="597"/>
+        <location filename="openlp/core/ui/thememanager.py" line="594"/>
         <source>A theme with this name already exists.</source>
         <translation>&apos;n Tema met hierdie naam bestaan alreeds.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="420"/>
+        <location filename="openlp/core/ui/thememanager.py" line="419"/>
         <source>OpenLP Themes (*.theme *.otz)</source>
         <translation>OpenLP Temas (*.theme *.otz)</translation>
     </message>
@@ -4026,6 +4095,11 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Tema naam:</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/themeform.py" line="322"/>
+        <source>Edit Theme - %s</source>
+        <translation>Redigeer Tema - %s</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/themewizard.py" line="418"/>
         <source>This wizard will help you to create and edit your themes. Click the next button below to start the process by setting up your background.</source>
         <translation>Hierdie gids sal help om temas te skep en te redigeer. Klik die volgende knoppie hieronder om die proses te begin deur jou agtergrond op te stel.</translation>
@@ -4039,11 +4113,6 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <location filename="openlp/core/ui/themewizard.py" line="521"/>
         <source>&amp;Footer Area</source>
         <translation>&amp;Voetskrif Area</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="322"/>
-        <source>Edit Theme - %s</source>
-        <translation>Redigeer Tema - %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="436"/>
@@ -4063,12 +4132,12 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="499"/>
         <source>Justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitsgespan</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="540"/>
         <source>Layout Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitleg Voorskou</translation>
     </message>
 </context>
 <context>
@@ -4127,24 +4196,9 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Fout</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="70"/>
-        <source>&amp;Delete</source>
-        <translation>&amp;Wis Uit</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="251"/>
-        <source>Delete the selected item.</source>
-        <translation>Wis die geselekteerde item uit.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="270"/>
-        <source>Move selection up one position.</source>
-        <translation>Skuif die seleksie een posisie op.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="275"/>
-        <source>Move selection down one position.</source>
-        <translation>Skuif die seleksie een posisie af.</translation>
+        <location filename="openlp/core/lib/ui.py" line="58"/>
+        <source>About</source>
+        <translation>Aangaande</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="59"/>
@@ -4162,99 +4216,9 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Alle Lêers</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="66"/>
-        <source>Create a new service.</source>
-        <translation>Skep &apos;n nuwe diens.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="73"/>
-        <source>&amp;Edit</source>
-        <translation>R&amp;edigeer</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="84"/>
-        <source>Import</source>
-        <translation>Voer in</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="86"/>
-        <source>Live</source>
-        <translation>Regstreeks</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="89"/>
-        <source>Load</source>
-        <translation>Laai</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="93"/>
-        <source>New</source>
-        <translation>Nuwe</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="94"/>
-        <source>New Service</source>
-        <translation>Nuwe Diens</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="101"/>
-        <source>OpenLP 2.0</source>
-        <translation>OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="107"/>
-        <source>Preview</source>
-        <translation>Voorskou</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="109"/>
-        <source>Replace Background</source>
-        <translation>Vervang Agtergrond</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="111"/>
-        <source>Reset Background</source>
-        <translation>Herstel Agtergrond</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="122"/>
-        <source>Save Service</source>
-        <translation>Stoor Diens</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="123"/>
-        <source>Service</source>
-        <translation>Diens</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="127"/>
-        <source>Start %s</source>
-        <translation>Begin %s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="438"/>
-        <source>&amp;Vertical Align:</source>
-        <translation>&amp;Vertikale Sporing:</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="135"/>
-        <source>Top</source>
-        <translation>Bo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="92"/>
-        <source>Middle</source>
-        <translation>Middel</translation>
-    </message>
-    <message>
         <location filename="openlp/core/lib/ui.py" line="62"/>
         <source>Bottom</source>
         <translation>Onder</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="58"/>
-        <source>About</source>
-        <translation>Aangaande</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="63"/>
@@ -4270,6 +4234,21 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <location filename="openlp/core/lib/ui.py" line="65"/>
         <source>CCLI number:</source>
         <translation>CCLI nommer:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="66"/>
+        <source>Create a new service.</source>
+        <translation>Skep &apos;n nuwe diens.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="70"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Wis Uit</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="73"/>
+        <source>&amp;Edit</source>
+        <translation>R&amp;edigeer</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="74"/>
@@ -4293,9 +4272,39 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Beeld</translation>
     </message>
     <message>
+        <location filename="openlp/core/lib/ui.py" line="84"/>
+        <source>Import</source>
+        <translation>Voer in</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="86"/>
+        <source>Live</source>
+        <translation>Regstreeks</translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/ui.py" line="87"/>
         <source>Live Background Error</source>
         <translation>Regstreekse Agtergrond Fout</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="89"/>
+        <source>Load</source>
+        <translation>Laai</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="92"/>
+        <source>Middle</source>
+        <translation>Middel</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="93"/>
+        <source>New</source>
+        <translation>Nuwe</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="94"/>
+        <source>New Service</source>
+        <translation>Nuwe Diens</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="95"/>
@@ -4332,6 +4341,26 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>openlp.org 1.x</translation>
     </message>
     <message>
+        <location filename="openlp/core/lib/ui.py" line="101"/>
+        <source>OpenLP 2.0</source>
+        <translation>OpenLP 2.0</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="107"/>
+        <source>Preview</source>
+        <translation>Voorskou</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="109"/>
+        <source>Replace Background</source>
+        <translation>Vervang Agtergrond</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="111"/>
+        <source>Reset Background</source>
+        <translation>Herstel Agtergrond</translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/ui.py" line="113"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
@@ -4358,6 +4387,21 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Selekteer &apos;n item om te regideer.</translation>
     </message>
     <message>
+        <location filename="openlp/core/lib/ui.py" line="122"/>
+        <source>Save Service</source>
+        <translation>Stoor Diens</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="123"/>
+        <source>Service</source>
+        <translation>Diens</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="127"/>
+        <source>Start %s</source>
+        <translation>Begin %s</translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/ui.py" line="132"/>
         <source>Theme</source>
         <comment>Singular</comment>
@@ -4370,9 +4414,34 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Temas</translation>
     </message>
     <message>
+        <location filename="openlp/core/lib/ui.py" line="135"/>
+        <source>Top</source>
+        <translation>Bo</translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/ui.py" line="139"/>
         <source>Version</source>
         <translation>Weergawe</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="251"/>
+        <source>Delete the selected item.</source>
+        <translation>Wis die geselekteerde item uit.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="270"/>
+        <source>Move selection up one position.</source>
+        <translation>Skuif die seleksie een posisie op.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="275"/>
+        <source>Move selection down one position.</source>
+        <translation>Skuif die seleksie een posisie af.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="438"/>
+        <source>&amp;Vertical Align:</source>
+        <translation>&amp;Vertikale Sporing:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="60"/>
@@ -4425,7 +4494,7 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Gereed.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="246"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="254"/>
         <source>Starting import...</source>
         <translation>Invoer begin...</translation>
     </message>
@@ -4464,7 +4533,7 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="41"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -4511,6 +4580,11 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <location filename="openlp/core/lib/ui.py" line="71"/>
         <source>Display style:</source>
         <translation>Vertoon styl:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="72"/>
+        <source>Duplicate Error</source>
+        <translation>Dupliseer Fout</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="77"/>
@@ -4560,6 +4634,11 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Gereedskap</translation>
     </message>
     <message>
+        <location filename="openlp/core/lib/ui.py" line="136"/>
+        <source>Unsupported File</source>
+        <translation>Lêer nie Ondersteun nie</translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/ui.py" line="137"/>
         <source>Verse Per Slide</source>
         <translation>Vers Per Skyfie</translation>
@@ -4575,16 +4654,6 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Vertoon</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="72"/>
-        <source>Duplicate Error</source>
-        <translation>Dupliseer Fout</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/ui.py" line="136"/>
-        <source>Unsupported File</source>
-        <translation>Lêer nie Ondersteun nie</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="44"/>
         <source>Title and/or verses not found</source>
         <translation>Titel en/of verse nie gevind</translation>
@@ -4598,11 +4667,6 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <location filename="openlp/core/lib/ui.py" line="141"/>
         <source>View Mode</source>
         <translation>Vertoon Modus</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="258"/>
-        <source>Welcome to the Bible Upgrade Wizard</source>
-        <translation>Welkom by die Bybel Opgradeer Gids</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="104"/>
@@ -4633,6 +4697,11 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <location filename="openlp/core/lib/ui.py" line="125"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation>Verdeel &apos;n skyfie slegs in twee wanneer dit nie op die skerm as &apos;n enkele skyfie sal pas nie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="258"/>
+        <source>Welcome to the Bible Upgrade Wizard</source>
+        <translation>Welkom by die Bybel Opgradeer Gids</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="67"/>
@@ -4749,12 +4818,12 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
         <translation>Aanbiedinge (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="294"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="295"/>
         <source>Missing Presentation</source>
         <translation>Vermisde Aanbieding</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="294"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="295"/>
         <source>The Presentation %s no longer exists.</source>
         <translation>Die Aanbieding %s bestaan nie meer nie.</translation>
     </message>
@@ -4767,17 +4836,17 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
 <context>
     <name>PresentationPlugin.PresentationTab</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="78"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="77"/>
         <source>Available Controllers</source>
         <translation>Beskikbare Beheerders</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="91"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="85"/>
         <source>Allow presentation application to be overriden</source>
         <translation>Laat toe dat aanbieding program oorheers word</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="87"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="93"/>
         <source>%s (unavailable)</source>
         <translation>%s (nie beskikbaar nie)</translation>
     </message>
@@ -4931,91 +5000,91 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="101"/>
         <source>Display stage time in 12h format</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertoon verhoog tyd in 12 uur formaat</translation>
     </message>
 </context>
 <context>
     <name>SongUsagePlugin</name>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="70"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="73"/>
         <source>&amp;Song Usage Tracking</source>
         <translation>&amp;Volg Lied Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="74"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="77"/>
         <source>&amp;Delete Tracking Data</source>
         <translation>Wis Volg &amp;Data Uit</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="76"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="79"/>
         <source>Delete song usage data up to a specified date.</source>
         <translation>Wis lied volg data uit tot en met &apos;n spesifieke datum.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="80"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="83"/>
         <source>&amp;Extract Tracking Data</source>
         <translation>Onttr&amp;ek Volg Data</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="82"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="85"/>
         <source>Generate a report on song usage.</source>
         <translation>Genereer &apos;n verslag oor lied-gebruik.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="87"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="90"/>
         <source>Toggle Tracking</source>
         <translation>Wissel Volging</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="101"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="104"/>
         <source>Toggle the tracking of song usage.</source>
         <translation>Wissel lied-gebruik volging.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="235"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="238"/>
         <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
         <translation>&lt;strong&gt;LiedGebruik Mini-program&lt;/strong&gt;&lt;br/&gt;Die mini-program volg die gebruik van liedere in dienste.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="246"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="249"/>
         <source>SongUsage</source>
         <comment>name singular</comment>
         <translation>Lied Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="248"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="251"/>
         <source>SongUsage</source>
         <comment>name plural</comment>
         <translation>Lied Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="253"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="256"/>
         <source>SongUsage</source>
         <comment>container title</comment>
         <translation>Lied Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="160"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="163"/>
         <source>Song Usage</source>
         <translation>Lied Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="187"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="190"/>
         <source>Song usage tracking is active.</source>
         <translation>Lied gebruik volging is aktief.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="193"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="196"/>
         <source>Song usage tracking is inactive.</source>
         <translation>Lied gebruik volging is onaktief.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="203"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="206"/>
         <source>display</source>
         <translation>vertoon</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="210"/>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="213"/>
         <source>printed</source>
         <translation>gedruk</translation>
     </message>
@@ -5113,130 +5182,112 @@ was suksesvol geskep.</translation>
 <context>
     <name>SongsPlugin</name>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="108"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="116"/>
         <source>&amp;Song</source>
         <translation>&amp;Lied</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="90"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="98"/>
         <source>Import songs using the import wizard.</source>
         <translation>Voer liedere in deur van die invoer helper gebruik te maak.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="165"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="173"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
         <translation>&lt;strong&gt;Liedere Mini-program&lt;/strong&gt;&lt;br/&gt;Die liedere mini-program verskaf die vermoë om liedere te vertoon en te bestuur.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="128"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="136"/>
         <source>&amp;Re-index Songs</source>
         <translation>He&amp;r-indeks Liedere</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="130"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="138"/>
         <source>Re-index the songs database to improve searching and ordering.</source>
         <translation>Her-indeks die liedere databasis om lied-soektogte en organisering te verbeter.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="145"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="153"/>
         <source>Reindexing songs...</source>
         <translation>Besig om liedere indek te herskep...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="208"/>
-        <source>Song</source>
-        <comment>name singular</comment>
-        <translation>Lied</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="209"/>
-        <source>Songs</source>
-        <comment>name plural</comment>
-        <translation>Liedere</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="213"/>
-        <source>Songs</source>
-        <comment>container title</comment>
-        <translation>Liedere</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="216"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="217"/>
         <source>Arabic (CP-1256)</source>
         <translation>Arabies (CP-1256)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="217"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="218"/>
         <source>Baltic (CP-1257)</source>
         <translation>Balties (CP-1257)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="218"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="219"/>
         <source>Central European (CP-1250)</source>
         <translation>Sentraal Europees (CP-1250)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="219"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="220"/>
         <source>Cyrillic (CP-1251)</source>
         <translation>Cyrillies (CP-1251)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="220"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="221"/>
         <source>Greek (CP-1253)</source>
         <translation>Grieks (CP-1253)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="221"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="222"/>
         <source>Hebrew (CP-1255)</source>
         <translation>Hebreeus (CP-1255)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="222"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="223"/>
         <source>Japanese (CP-932)</source>
         <translation>Japanees (CP-932)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="223"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="224"/>
         <source>Korean (CP-949)</source>
         <translation>Koreaans (CP-949)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="224"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="225"/>
         <source>Simplified Chinese (CP-936)</source>
         <translation>Vereenvoudigde Chinees (CP-936)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="225"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="226"/>
         <source>Thai (CP-874)</source>
         <translation>Thai (CP-874)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="226"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="227"/>
         <source>Traditional Chinese (CP-950)</source>
         <translation>Tradisionele Chinees (CP-950)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="227"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="228"/>
         <source>Turkish (CP-1254)</source>
         <translation>Turks (CP-1254)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="228"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="229"/>
         <source>Vietnam (CP-1258)</source>
         <translation>Viëtnamees (CP-1258)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="229"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="230"/>
         <source>Western European (CP-1252)</source>
         <translation>Wes-Europees (CP-1252)</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="244"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="245"/>
         <source>Character Encoding</source>
         <translation>Karrakter Enkodering</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="237"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="238"/>
         <source>The codepage setting is responsible
 for the correct character representation.
 Usually you are fine with the preselected choice.</source>
@@ -5246,44 +5297,62 @@ Gewoonlik is die reeds-geselekteerde
 keuse voldoende.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/__init__.py" line="244"/>
+        <location filename="openlp/plugins/songs/lib/__init__.py" line="245"/>
         <source>Please choose the character encoding.
 The encoding is responsible for the correct character representation.</source>
         <translation>Kies asseblief die karrakter enkodering.
 Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="109"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="216"/>
+        <source>Song</source>
+        <comment>name singular</comment>
+        <translation>Lied</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="217"/>
+        <source>Songs</source>
+        <comment>name plural</comment>
+        <translation>Liedere</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
+        <source>Songs</source>
+        <comment>container title</comment>
+        <translation>Liedere</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="117"/>
         <source>Exports songs using the export wizard.</source>
         <translation>Voer liedere uit deur gebruik te maak van die uitvoer gids.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="219"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="227"/>
         <source>Add a new song.</source>
         <translation>Voeg &apos;n nuwe lied by.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="220"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="228"/>
         <source>Edit the selected song.</source>
         <translation>Redigeer die geselekteerde lied.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="221"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="229"/>
         <source>Delete the selected song.</source>
         <translation>Wis die geselekteerde lied uit.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="230"/>
         <source>Preview the selected song.</source>
         <translation>Skou die geselekteerde lied.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="223"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="231"/>
         <source>Send the selected song live.</source>
         <translation>Stuur die geselekteerde lied regstreeks.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="232"/>
         <source>Add the selected song to the service.</source>
         <translation>Voeg die geselekteerde lied by die diens.</translation>
     </message>
@@ -5329,7 +5398,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
 <context>
     <name>SongsPlugin.CCLIFileImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/cclifileimport.py" line="90"/>
+        <location filename="openlp/plugins/songs/lib/cclifileimport.py" line="93"/>
         <source>The file does not have a valid extension.</source>
         <translation>Die lêer het nie &apos;n geldige verlening nie.</translation>
     </message>
@@ -5449,82 +5518,82 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Tema, Kopiereg Informasie &amp;&amp; Kommentaar</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="361"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="362"/>
         <source>Add Author</source>
         <translation>Voeg Skrywer By</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="361"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="362"/>
         <source>This author does not exist, do you want to add them?</source>
         <translation>Hierdie skrywer bestaan nie, moet die skrywer bygevoeg word?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="384"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="385"/>
         <source>This author is already in the list.</source>
         <translation>Hierdie skrywer is alreeds in die lys.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="391"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="392"/>
         <source>You have not selected a valid author. Either select an author from the list, or type in a new author and click the &quot;Add Author to Song&quot; button to add the new author.</source>
         <translation>Die geselekteerde skrywer is ongeldig. Kies &apos;n skrywer vanaf die lys of voer &apos;n nuwe skrywer in en kliek op die &quot;Voeg Skrywer by Lied&quot; knoppie om die skrywer by te voeg.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="419"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="420"/>
         <source>Add Topic</source>
         <translation>Voeg Onderwerp by</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="419"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="420"/>
         <source>This topic does not exist, do you want to add it?</source>
         <translation>Die onderwerp bestaan nie. Voeg dit by?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="440"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="441"/>
         <source>This topic is already in the list.</source>
         <translation>Die onderwerp is reeds in die lys.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="450"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="451"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
         <translation>Geselekteerde onderwerp is ongeldig. Kies &apos;n onderwerp vanaf die lys of voer &apos;n nuwe onderwerp in en kliek die &quot;Voeg Onderwerp by Lied&quot; knoppie om die onderwerp by te voeg.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="586"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="587"/>
         <source>You need to type in a song title.</source>
         <translation>Tik &apos;n lied titel in.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="593"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="594"/>
         <source>You need to type in at least one verse.</source>
         <translation>Ten minste een vers moet ingevoer word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="646"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="647"/>
         <source>Warning</source>
         <translation>Waarskuwing</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="636"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="637"/>
         <source>The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.</source>
         <translation>Die vers orde is ongeldig. Daar is geen vers wat ooreenstem met %s nie. Geldige opsies is %s.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="646"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="647"/>
         <source>You have not used %s anywhere in the verse order. Are you sure you want to save the song like this?</source>
         <translation>In die vers orde is %s nie gebruik nie. Kan die lied so gestoor word?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="658"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="659"/>
         <source>Add Book</source>
         <translation>Voeg Boek by</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="658"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="659"/>
         <source>This song book does not exist, do you want to add it?</source>
         <translation>Die lied boek bestaan nie. Voeg dit by?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="600"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="601"/>
         <source>You need to have an author for this song.</source>
         <translation>Daar word &apos;n outeur benodig vir hierdie lied.</translation>
     </message>
@@ -5554,7 +5623,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Verwyder &amp;Alles</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="710"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="711"/>
         <source>Open File(s)</source>
         <translation>Maak Lêer(s) Oop</translation>
     </message>
@@ -5593,6 +5662,11 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="175"/>
         <source>Select Songs</source>
         <translation>Kies Liedere</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="177"/>
+        <source>Check the songs you want to export.</source>
+        <translation>Merk die liediere wat uitgevoer moet vord.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="181"/>
@@ -5635,14 +5709,9 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Geen Stoor Ligging gespesifiseer nie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="271"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="274"/>
         <source>Starting export...</source>
         <translation>Uitvoer begin...</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="177"/>
-        <source>Check the songs you want to export.</source>
-        <translation>Merk die liediere wat uitgevoer moet vord.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="227"/>
@@ -5650,7 +5719,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>&apos;n Lêer gids moet gespesifiseer word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="362"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="365"/>
         <source>Select Destination Folder</source>
         <translation>Kies Bestemming Lêer gids</translation>
     </message>
@@ -5668,7 +5737,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="583"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="585"/>
         <source>Select Document/Presentation Files</source>
         <translation>Selekteer Dokument/Aanbieding Lêers</translation>
     </message>
@@ -5683,7 +5752,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Hierdie gids help met die invoer van liedere in verskillende formate. Kliek die volgende knoppie hieronder om die proses te begin deur &apos;n formaat te kies wat gebruik moet word vir invoer.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="252"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="246"/>
         <source>Generic Document/Presentation</source>
         <translation>Generiese Dokumentasie/Aanbieding</translation>
     </message>
@@ -5691,6 +5760,11 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="313"/>
         <source>Filename:</source>
         <translation>Lêernaam:</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="277"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
+        <translation>Die OpenLyrics invoerder is nog nie ontwikkel nie, maar soos gesien kan word is ons van mening om dit te doen. Hopelik sal dit in die volgende vrystelling wees.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="324"/>
@@ -5708,47 +5782,42 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Wag asseblief terwyl die liedere ingevoer word.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="277"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
-        <translation>Die OpenLyrics invoerder is nog nie ontwikkel nie, maar soos gesien kan word is ons van mening om dit te doen. Hopelik sal dit in die volgende vrystelling wees.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="491"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="493"/>
         <source>OpenLP 2.0 Databases</source>
         <translation>OpenLP 2.0 Databasisse</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="501"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="503"/>
         <source>openlp.org v1.x Databases</source>
         <translation>openlp.org v1.x Databasisse</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="538"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="540"/>
         <source>Words Of Worship Song Files</source>
         <translation>Words Of Worship Lied Lêers</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="567"/>
-        <source>Songs Of Fellowship Song Files</source>
-        <translation>Songs Of Fellowship Lied Lêers</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="610"/>
-        <source>SongBeamer Files</source>
-        <translation>SongBeamer Lêers</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="625"/>
-        <source>SongShow Plus Song Files</source>
-        <translation>SongShow Plus Lied Lêers</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="406"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="408"/>
         <source>You need to specify at least one document or presentation file to import from.</source>
         <translation>Ten minste een document of aanbieding moet gespesifiseer word om vanaf in te voer.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="641"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="569"/>
+        <source>Songs Of Fellowship Song Files</source>
+        <translation>Songs Of Fellowship Lied Lêers</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="612"/>
+        <source>SongBeamer Files</source>
+        <translation>SongBeamer Lêers</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="627"/>
+        <source>SongShow Plus Song Files</source>
+        <translation>SongShow Plus Lied Lêers</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="643"/>
         <source>Foilpresenter Song Files</source>
         <translation>Foilpresenter Lied Lêers</translation>
     </message>
@@ -5773,14 +5842,14 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Die generiese dokument/aanbieding invoerder is onaktief gestel omdat OpenLP nie toegang tot OpenOffice of LibreOffice het nie.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="243"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="241"/>
         <source>OpenLyrics or OpenLP 2.0 Exported Song</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLyrics of OpenLP 2.0 Uitgevoerde Lied</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="511"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="513"/>
         <source>OpenLyrics Files</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLyrics Lêers</translation>
     </message>
 </context>
 <context>
@@ -5809,7 +5878,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Lirieke</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="501"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="504"/>
         <source>CCLI License: </source>
         <translation>CCLI Lisensie:</translation>
     </message>
@@ -5819,12 +5888,9 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Volledige Lied</translation>
     </message>
     <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="383"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="389"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation>
-            <numerusform>Wis regtig die %n geselekteerde lied uit?</numerusform>
-            <numerusform>Wis regtig die %n geselekteerde liedere uit?</numerusform>
-        </translation>
+        <translation><numerusform>Wis regtig die %n geselekteerde lied uit?</numerusform><numerusform>Wis regtig die %n geselekteerde liedere uit?</numerusform></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="176"/>
@@ -5832,7 +5898,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Onderhou die lys van skrywers, onderwerpe en boeke.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="424"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="429"/>
         <source>copy</source>
         <comment>For song cloning</comment>
         <translation>kopieër</translation>
@@ -5888,12 +5954,12 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
 <context>
     <name>SongsPlugin.SongExportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="292"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="295"/>
         <source>Your song export failed.</source>
         <translation>Die lied uitvoer het misluk.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songexportform.py" line="287"/>
+        <location filename="openlp/plugins/songs/forms/songexportform.py" line="290"/>
         <source>Finished export. To import these files use the &lt;strong&gt;OpenLyrics&lt;/strong&gt; importer.</source>
         <translation>Uitvoer voltooi. Om hierdie lêers in te voer, gebruik die &lt;strong&gt;OpenLyrics&lt;/strong&gt; invoerder.</translation>
     </message>
@@ -5911,6 +5977,11 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <translation>Die volgende liedere kon nie ingevoer word nie:</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/lib/oooimport.py" line="70"/>
+        <source>Cannot access OpenOffice or LibreOffice</source>
+        <translation>Het nie toegang tot OpenOffice of LibreOffice nie</translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/lib/oooimport.py" line="87"/>
         <source>Unable to open file</source>
         <translation>Kan nie lêer oopmaak nie</translation>
@@ -5920,16 +5991,11 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <source>File not found</source>
         <translation>Lêer nie gevind nie</translation>
     </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/oooimport.py" line="70"/>
-        <source>Cannot access OpenOffice or LibreOffice</source>
-        <translation>Het nie toegang tot OpenOffice of LibreOffice nie</translation>
-    </message>
 </context>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="766"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="773"/>
         <source>Your song import failed.</source>
         <translation>Lied invoer het misluk.</translation>
     </message>
@@ -5970,6 +6036,11 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="354"/>
         <source>Could not save your changes.</source>
         <translation>Veranderinge kon nie gestoor word nie.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="297"/>
+        <source>Could not save your modified author, because the author already exists.</source>
+        <translation>Geredigeerde skrywer kon nie gestoor word nie, omdat die skrywer reeds bestaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="329"/>
@@ -6020,11 +6091,6 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="472"/>
         <source>This book cannot be deleted, it is currently assigned to at least one song.</source>
         <translation>Die boek kan nie uitgewis word nie, omdat dit aan ten minste een lied toegeken is.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="297"/>
-        <source>Could not save your modified author, because the author already exists.</source>
-        <translation>Geredigeerde skrywer kon nie gestoor word nie, omdat die skrywer reeds bestaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="283"/>

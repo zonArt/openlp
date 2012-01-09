@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,7 +33,7 @@ from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
 from migrate.changeset.constraint import ForeignKeyConstraint
 
-__version__ = 2
+__version__ = 3
 
 def upgrade_setup(metadata):
     """
@@ -84,5 +84,14 @@ def upgrade_2(session, metadata, tables):
     Column(u'create_date', types.DateTime(), default=func.now())\
         .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
+        .create(table=tables[u'songs'])
+
+def upgrade_3(session, metadata, tables):
+    """
+    Version 3 upgrade.
+
+    This upgrade adds a temporary song flag to the songs table
+    """
+    Column(u'temporary', types.Boolean(), default=False)\
         .create(table=tables[u'songs'])
 

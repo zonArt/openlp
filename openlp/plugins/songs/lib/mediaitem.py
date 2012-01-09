@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -36,7 +36,6 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus
-from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
 from openlp.core.utils import AppLocation
@@ -103,35 +102,8 @@ class SongMediaItem(MediaManagerItem):
         ## Song Maintenance Button ##
         self.maintenanceAction = self.addToolbarButton(u'', u'',
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.searchWidget = QtGui.QWidget(self)
-        self.searchWidget.setObjectName(u'searchWidget')
-        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
-        self.searchLayout.setObjectName(u'searchLayout')
-        self.searchTextLayout = QtGui.QFormLayout()
-        self.searchTextLayout.setObjectName(u'searchTextLayout')
-        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
-        self.searchTextLabel.setObjectName(u'searchTextLabel')
-        self.searchTextEdit = SearchEdit(self.searchWidget)
-        self.searchTextEdit.setObjectName(u'searchTextEdit')
-        self.searchTextLabel.setBuddy(self.searchTextEdit)
-        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
-        self.searchLayout.addLayout(self.searchTextLayout)
-        self.searchButtonLayout = QtGui.QHBoxLayout()
-        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
-        self.searchButtonLayout.addStretch()
-        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
-        self.searchTextButton.setObjectName(u'searchTextButton')
-        self.searchButtonLayout.addWidget(self.searchTextButton)
-        self.searchLayout.addLayout(self.searchButtonLayout)
-        self.pageLayout.addWidget(self.searchWidget)
+        self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -270,6 +242,9 @@ class SongMediaItem(MediaManagerItem):
         searchresults.sort(
             cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in searchresults:
+            # Do not display temporary songs
+            if song.temporary:
+                continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
@@ -286,6 +261,9 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -534,6 +512,7 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_title.asc())
         editId = 0
         add_song = True
+        temporary = False
         if search_results:
             for song in search_results:
                 author_list = item.data_string[u'authors']
@@ -559,13 +538,18 @@ class SongMediaItem(MediaManagerItem):
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClick()
-        else:
+        elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
-            self.openLyrics.xml_to_song(item.xml_version, True)
+            song = self.openLyrics.xml_to_song(item.xml_version, True)
+            # If there's any backing tracks, copy them over.
+            if len(item.background_audio) > 0:
+                self._updateBackgroundAudio(song, item)
+            editId = song.id
+            temporary = True
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',
-                u'%s:%s' % (editId, item._uuid))
+                u'%s:%s:%s' % (editId, item._uuid, temporary))
 
     def search(self, string):
         """

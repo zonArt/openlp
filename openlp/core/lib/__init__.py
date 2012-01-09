@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -80,6 +80,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
+        if not file_handle.read(3) == '\xEF\xBB\xBF':
+            # no BOM was found
+            file_handle.seek(0)
         content = file_handle.read()
         content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):
@@ -191,10 +194,10 @@ def validate_thumb(file_path, thumb_path):
     ``thumb_path``
         The path to the thumb.
     """
-    if not os.path.exists(unicode(thumb_path)):
+    if not os.path.exists(thumb_path):
         return False
-    image_date = os.stat(unicode(file_path)).st_mtime
-    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    image_date = os.stat(file_path).st_mtime
+    thumb_date = os.stat(thumb_path).st_mtime
     return image_date <= thumb_date
 
 def resize_image(image_path, width, height, background=u'#000000'):

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -127,7 +127,7 @@ class SofImport(OooImport):
                 self.processParagraphText(text)
                 self.newSong()
                 text = u''
-            text += self.process_textportion(textportion)
+            text += self.processTextPortion(textportion)
             if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                 self.processParagraphText(text)
                 self.newSong()
@@ -202,8 +202,8 @@ class SofImport(OooImport):
             if boldtext.isdigit() and self.songNumber == '':
                 self.addSongNumber(boldtext)
                 return u''
+            text = self.uncapText(text)
             if self.title == u'':
-                text = self.uncap_text(text)
                 self.addTitle(text)
             return text
         if text.strip().startswith(u'('):
@@ -242,8 +242,12 @@ class SofImport(OooImport):
             self.songBook = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
             self.songBook = u'Songs of Fellowship 3'
-        else:
+        elif int(song_no) <= 2200:
             self.songBook = u'Songs of Fellowship 4'
+        elif int(song_no) <= 2710:
+            self.songBook = u'Songs of Fellowship 5'
+        else:
+            self.songBook = u'Songs of Fellowship Other'
 
     def addTitle(self, text):
         """
@@ -341,7 +345,8 @@ class SofImport(OooImport):
                 u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS',
                 u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH',
                 u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S',
-                u'FATHER\'S', u'ELIJAH'):
+                u'FATHER\'S', u'ELIJAH' u'MARTHA', u'CHRISTMAS', u'ALPHA', 
+                u'OMEGA'):
                 textarr[i] = textarr[i].capitalize()
             else:
                 textarr[i] = textarr[i].lower()
