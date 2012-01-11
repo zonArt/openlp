@@ -278,10 +278,21 @@ class MediaController(object):
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
+        if controller.isLive and self.curDisplayMediaPlayer:
+            self.set_transparent_mode(controller, value)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
 
+    def set_transparent_mode(self, controller, value):
+        if value:
+            if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
+                controller.display.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+        else:
+            print "on"
+            controller.display.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+            controller.display.setAttribute(QtCore.Qt.WA_NoSystemBackground, True)
+        
     def resize(self, controller, display, player):
         """
         After Mainwindow changes or Splitter moved all related media widgets
@@ -481,6 +492,7 @@ class MediaController(object):
         Responds to the request to reset a loaded video
         """
         log.debug(u'video_reset')
+        self.set_controls_visible(controller, False)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.override = {}
@@ -489,7 +501,6 @@ class MediaController(object):
                 display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"hidden");')
                 del self.curDisplayMediaPlayer[display]
-        self.set_controls_visible(controller, False)
 
     def video_hide(self, msg):
         """
