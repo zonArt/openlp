@@ -30,6 +30,8 @@ import mimetypes
 from datetime import datetime
 
 from PyQt4.phonon import Phonon
+from PyQt4 import QtCore
+import sys
 
 from openlp.core.lib import Receiver
 from openlp.core.lib.mediaplayer import MediaPlayer
@@ -63,6 +65,7 @@ class PhononPlayer(MediaPlayer):
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'phonon')
         self.parent = parent
+        self.canBackground = True
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
@@ -93,7 +96,23 @@ class PhononPlayer(MediaPlayer):
                 u' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
-        display.phononWidget = Phonon.VideoWidget(display)
+        if display.isLive:
+            display.phononWidget = Phonon.VideoWidget()
+            windowFlags = QtCore.Qt.FramelessWindowHint
+            if QtCore.QSettings().value(u'advanced/x11 bypass wm',
+                QtCore.QVariant(True)).toBool():
+                windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+            # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
+            # stay always on top on Mac OS X. For details see bug 906926.
+            # It needs more investigation to fix it properly.
+            if sys.platform == 'darwin':
+                windowFlags = windowFlags | QtCore.Qt.SplashScreen
+            windowFlags = windowFlags | QtCore.Qt.Window
+            display.phononWidget.setWindowFlags(windowFlags)
+            display.phononWidget.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            display.phononWidget.setGeometry(display.geometry())#1280,0,1280,1024)
+        else:
+            display.phononWidget = Phonon.VideoWidget(display)
         display.phononWidget.resize(display.size())
         display.mediaObject = Phonon.MediaObject(display)
         Phonon.createPath(display.mediaObject, display.phononWidget)
@@ -153,7 +172,10 @@ class PhononPlayer(MediaPlayer):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            display.phononWidget.raise_()            
+            if not controller.media_info.is_background:
+                display.phononWidget.raise_()
+            else:
+                display.raise_()
             return True
         else:
             return False
