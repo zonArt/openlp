@@ -47,6 +47,14 @@ class ServiceItemType(object):
     Image = 2
     Command = 3
 
+class SlideAdvance(object):
+    """
+    Provides an enumeration for the service item slide advance by up/down
+    arrow keys
+    """
+    End = 1
+    Wrap = 2
+    Next = 3
 
 class ItemCapabilities(object):
     """

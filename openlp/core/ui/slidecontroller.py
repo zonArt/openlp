@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
+from openlp.core.lib.serviceitem import SlideAdvance
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -1163,7 +1164,7 @@ class SlideController(Controller):
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNext(self, wrap=None):
+    def onSlideSelectedNext(self, slide_advance=None):
         """
         Go to the next slide.
         """
@@ -1176,18 +1177,21 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if wrap is None:
-                    wrap = QtCore.QSettings().value(
-                        self.parent().generalSettingsSection +
-                        u'/enable slide loop', QtCore.QVariant(True)).toBool()
-                if wrap:
-                    row = 0
+                if slide_advance is None:
+		    slide_advance = QtCore.QSettings().value(
+			self.parent().generalSettingsSection + u'/slide advance',
+			QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+                if slide_advance == SlideAdvance.Wrap:
+		    row = 0
+		elif slide_advance == SlideAdvance.Next:
+		    self.serviceNext()
+		    return
                 else:
                     row = self.previewListWidget.rowCount() - 1
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
 
-    def onSlideSelectedPrevious(self):
+    def onSlideSelectedPrevious(self, slide_advance=None):
         """
         Go to the previous slide.
         """
@@ -1200,9 +1204,15 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if QtCore.QSettings().value(self.parent().generalSettingsSection
-                    + u'/enable slide loop', QtCore.QVariant(True)).toBool():
-                    row = self.previewListWidget.rowCount() - 1
+		if slide_advance is None:
+		    slide_advance = QtCore.QSettings().value(
+			self.parent().generalSettingsSection + u'/slide advance',
+			QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+                if slide_advance == SlideAdvance.Wrap:
+		    row = self.previewListWidget.rowCount() - 1
+		elif slide_advance == SlideAdvance.Next:
+		    self.servicePrevious()
+		    return
                 else:
                     row = 0
             self.__checkUpdateSelectedSlide(row)

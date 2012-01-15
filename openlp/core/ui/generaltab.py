@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.serviceitem import SlideAdvance
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -97,9 +98,6 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
         self.settingsLayout.addRow(self.autoPreviewCheckBox)
-        self.enableLoopCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
-        self.enableLoopCheckBox.setObjectName(u'enableLoopCheckBox')
-        self.settingsLayout.addRow(self.enableLoopCheckBox)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
         self.timeoutLabel.setObjectName(u'timeoutLabel')
@@ -180,6 +178,38 @@ class GeneralTab(SettingsTab):
         self.audioLayout.addWidget(self.startPausedCheckBox)
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
+        # Service Item Slide Advance
+        self.SlideGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.SlideGroupBox.setObjectName(u'SlideGroupBox')
+        self.SlideLayout = QtGui.QFormLayout(self.SlideGroupBox)
+        self.SlideLayout.setLabelAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.SlideLayout.setFormAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.SlideLayout.setObjectName(u'SlideLayout')
+        self.EndSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
+        self.EndSlideRadioButton.setObjectName(u'EndSlideRadioButton')
+        self.EndSlideLabel = QtGui.QLabel(self.SlideGroupBox)
+        self.EndSlideLabel.setWordWrap(True)
+        self.EndSlideLabel.setObjectName(u'EndSlideLabel')
+        self.SlideLayout.addRow(self.EndSlideRadioButton, self.EndSlideLabel)
+        self.WrapSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
+        self.WrapSlideRadioButton.setObjectName(u'WrapSlideRadioButton')
+        self.WrapSlideLabel = QtGui.QLabel(self.SlideGroupBox)
+        self.WrapSlideLabel.setWordWrap(True)
+        self.WrapSlideLabel.setObjectName(u'WrapSlideLabel')
+        self.SlideLayout.addRow(self.WrapSlideRadioButton,
+            self.WrapSlideLabel)
+        self.NextSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
+        self.NextSlideRadioButton.setChecked(True)
+        self.NextSlideRadioButton.setObjectName(u'NextSlideRadioButton')
+        self.NextSlideLabel = QtGui.QLabel(self.SlideGroupBox)
+        self.NextSlideLabel.setWordWrap(True)
+        self.NextSlideLabel.setObjectName(u'NextSlideLabel')
+        self.SlideLayout.addRow(self.NextSlideRadioButton,
+            self.NextSlideLabel)
+        self.rightLayout.addWidget(self.SlideGroupBox)
+        self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
@@ -196,6 +226,12 @@ class GeneralTab(SettingsTab):
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
+        QtCore.QObject.connect(self.EndSlideRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
+        QtCore.QObject.connect(self.WrapSlideRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
+        QtCore.QObject.connect(self.NextSlideRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onNextSlideButtonPressed)
         # Remove for now
         self.usernameLabel.setVisible(False)
         self.usernameEdit.setVisible(False)
@@ -231,8 +267,6 @@ class GeneralTab(SettingsTab):
             'Unblank display when adding new live item'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
-        self.enableLoopCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Enable slide wrap-around'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Timed slide interval:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
@@ -256,6 +290,25 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Background Audio'))
         self.startPausedCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Start background audio paused'))
+        # Slide Advance
+        self.SlideGroupBox.setTitle(
+            translate('OpenLP.GeneralTab', 'Service Item Slide Advance'))
+        self.EndSlideRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&End Slide'))
+        self.EndSlideLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'stop at the top and bottom slides of each Service Item.  '))
+        self.WrapSlideRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&Wrap Slide'))
+        self.WrapSlideLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'wrap around at the top and bottom slides of each Service Item.  '))
+        self.NextSlideRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&Next Slide'))
+        self.NextSlideLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'advance to the the next or previous Service Item from the '
+            'top and bottom slides of each Service Item.  '))
 
     def load(self):
         """
@@ -289,8 +342,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
-        self.enableLoopCheckBox.setChecked(settings.value(u'enable slide loop',
-            QtCore.QVariant(True)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
         self.overrideCheckBox.setChecked(settings.value(u'override position',
@@ -311,6 +362,16 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.display_changed = False
+        settings.beginGroup(self.settingsSection)
+        self.slide_advance = settings.value(
+            u'slide advance', QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+        settings.endGroup()
+        if self.slide_advance == SlideAdvance.End:
+            self.EndSlideRadioButton.setChecked(True)
+        elif self.slide_advance == SlideAdvance.Wrap:
+            self.WrapSlideRadioButton.setChecked(True)
+        else:
+            self.NextSlideRadioButton.setChecked(True)
 
     def save(self):
         """
@@ -336,8 +397,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'enable slide loop',
-            QtCore.QVariant(self.enableLoopCheckBox.isChecked()))
         settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
         settings.setValue(u'ccli number',
@@ -358,7 +417,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.endGroup()
+        settings.setValue(u'slide advance', QtCore.QVariant(self.slide_advance))
+        settings.endGroup()        
         # On save update the screens as well
         self.postSetUp(True)
 
@@ -405,3 +465,12 @@ class GeneralTab(SettingsTab):
         Called when the width, height, x position or y position has changed.
         """
         self.display_changed = True
+        
+    def onEndSlideButtonPressed(self):
+        self.slide_advance = SlideAdvance.End
+
+    def onWrapSlideButtonPressed(self):
+        self.slide_advance = SlideAdvance.Wrap
+
+    def onNextSlideButtonPressed(self):
+        self.slide_advance = SlideAdvance.Next
