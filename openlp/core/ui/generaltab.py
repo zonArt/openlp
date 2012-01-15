@@ -179,36 +179,36 @@ class GeneralTab(SettingsTab):
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
         # Service Item Slide Advance
-        self.SlideGroupBox = QtGui.QGroupBox(self.rightColumn)
-        self.SlideGroupBox.setObjectName(u'SlideGroupBox')
-        self.SlideLayout = QtGui.QFormLayout(self.SlideGroupBox)
-        self.SlideLayout.setLabelAlignment(
+        self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.slideGroupBox.setObjectName(u'slideGroupBox')
+        self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
+        self.slideLayout.setLabelAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.SlideLayout.setFormAlignment(
+        self.slideLayout.setFormAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.SlideLayout.setObjectName(u'SlideLayout')
-        self.EndSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
-        self.EndSlideRadioButton.setObjectName(u'EndSlideRadioButton')
-        self.EndSlideLabel = QtGui.QLabel(self.SlideGroupBox)
-        self.EndSlideLabel.setWordWrap(True)
-        self.EndSlideLabel.setObjectName(u'EndSlideLabel')
-        self.SlideLayout.addRow(self.EndSlideRadioButton, self.EndSlideLabel)
-        self.WrapSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
-        self.WrapSlideRadioButton.setObjectName(u'WrapSlideRadioButton')
-        self.WrapSlideLabel = QtGui.QLabel(self.SlideGroupBox)
-        self.WrapSlideLabel.setWordWrap(True)
-        self.WrapSlideLabel.setObjectName(u'WrapSlideLabel')
-        self.SlideLayout.addRow(self.WrapSlideRadioButton,
-            self.WrapSlideLabel)
-        self.NextSlideRadioButton = QtGui.QRadioButton(self.SlideGroupBox)
-        self.NextSlideRadioButton.setChecked(True)
-        self.NextSlideRadioButton.setObjectName(u'NextSlideRadioButton')
-        self.NextSlideLabel = QtGui.QLabel(self.SlideGroupBox)
-        self.NextSlideLabel.setWordWrap(True)
-        self.NextSlideLabel.setObjectName(u'NextSlideLabel')
-        self.SlideLayout.addRow(self.NextSlideRadioButton,
-            self.NextSlideLabel)
-        self.rightLayout.addWidget(self.SlideGroupBox)
+        self.slideLayout.setObjectName(u'slideLayout')
+        self.endSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.endSlideRadioButton.setObjectName(u'endSlideRadioButton')
+        self.endSlideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.endSlideLabel.setWordWrap(True)
+        self.endSlideLabel.setObjectName(u'endSlideLabel')
+        self.slideLayout.addRow(self.endSlideRadioButton, self.endSlideLabel)
+        self.wrapSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.wrapSlideRadioButton.setObjectName(u'wrapSlideRadioButton')
+        self.wrapSlideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.wrapSlideLabel.setWordWrap(True)
+        self.wrapSlideLabel.setObjectName(u'wrapSlideLabel')
+        self.slideLayout.addRow(self.wrapSlideRadioButton,
+            self.wrapSlideLabel)
+        self.nextSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.nextSlideRadioButton.setChecked(True)
+        self.nextSlideRadioButton.setObjectName(u'nextSlideRadioButton')
+        self.nextSlideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.nextSlideLabel.setWordWrap(True)
+        self.nextSlideLabel.setObjectName(u'nextSlideLabel')
+        self.slideLayout.addRow(self.nextSlideRadioButton,
+            self.nextSlideLabel)
+        self.rightLayout.addWidget(self.slideGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
@@ -226,11 +226,11 @@ class GeneralTab(SettingsTab):
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
-        QtCore.QObject.connect(self.EndSlideRadioButton,
+        QtCore.QObject.connect(self.endSlideRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
-        QtCore.QObject.connect(self.WrapSlideRadioButton,
+        QtCore.QObject.connect(self.wrapSlideRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
-        QtCore.QObject.connect(self.NextSlideRadioButton,
+        QtCore.QObject.connect(self.nextSlideRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onNextSlideButtonPressed)
         # Remove for now
         self.usernameLabel.setVisible(False)
@@ -291,24 +291,24 @@ class GeneralTab(SettingsTab):
         self.startPausedCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Start background audio paused'))
         # Slide Advance
-        self.SlideGroupBox.setTitle(
+        self.slideGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Service Item Slide Advance'))
-        self.EndSlideRadioButton.setText(
+        self.endSlideRadioButton.setText(
             translate('OpenLP.GeneralTab', '&End Slide'))
-        self.EndSlideLabel.setText(
+        self.endSlideLabel.setText(
             translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'stop at the top and bottom slides of each Service Item.  '))
-        self.WrapSlideRadioButton.setText(
+            'stop at the top and bottom slides of each Service Item.'))
+        self.wrapSlideRadioButton.setText(
             translate('OpenLP.GeneralTab', '&Wrap Slide'))
-        self.WrapSlideLabel.setText(
+        self.wrapSlideLabel.setText(
             translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'wrap around at the top and bottom slides of each Service Item.  '))
-        self.NextSlideRadioButton.setText(
+            'wrap around at the top and bottom slides of each Service Item.'))
+        self.nextSlideRadioButton.setText(
             translate('OpenLP.GeneralTab', '&Next Slide'))
-        self.NextSlideLabel.setText(
+        self.nextSlideLabel.setText(
             translate('OpenLP.GeneralTab', 'Up and down arrow keys '
             'advance to the the next or previous Service Item from the '
-            'top and bottom slides of each Service Item.  '))
+            'top and bottom slides of each Service Item.'))
 
     def load(self):
         """
@@ -367,11 +367,11 @@ class GeneralTab(SettingsTab):
             u'slide advance', QtCore.QVariant(SlideAdvance.End)).toInt()[0]
         settings.endGroup()
         if self.slide_advance == SlideAdvance.End:
-            self.EndSlideRadioButton.setChecked(True)
+            self.endSlideRadioButton.setChecked(True)
         elif self.slide_advance == SlideAdvance.Wrap:
-            self.WrapSlideRadioButton.setChecked(True)
+            self.wrapSlideRadioButton.setChecked(True)
         else:
-            self.NextSlideRadioButton.setChecked(True)
+            self.nextSlideRadioButton.setChecked(True)
 
     def save(self):
         """

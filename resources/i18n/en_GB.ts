@@ -2321,18 +2321,18 @@ To cancel the First Time Wizard completely (and not start OpenLP), press the Can
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="298"/>
-        <source>Up and down arrow keys stop at the top and bottom slides of each Service Item.  </source>
-        <translation>Up and down arrow keys stop at the top and bottom slides of each Service Item.  </translation>
+        <source>Up and down arrow keys stop at the top and bottom slides of each Service Item.</source>
+        <translation>Up and down arrow keys stop at the top and bottom slides of each Service Item.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="303"/>
-        <source>Up and down arrow keys wrap around at the top and bottom slides of each Service Item.  </source>
-        <translation>Up and down arrow keys wrap around at the top and bottom slides of each Service Item.  </translation>
+        <source>Up and down arrow keys wrap around at the top and bottom slides of each Service Item.</source>
+        <translation>Up and down arrow keys wrap around at the top and bottom slides of each Service Item.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="308"/>
-        <source>Up and down arrow keys advance to the the next or previous Service Item from the top and bottom slides of each Service Item.  </source>
-        <translation>Up and down arrow keys advance to the the next or previous Service Item from the top and bottom slides of each Service Item.  </translation>
+        <source>Up and down arrow keys advance to the the next or previous Service Item from the top and bottom slides of each Service Item.</source>
+        <translation>Up and down arrow keys advance to the the next or previous Service Item from the top and bottom slides of each Service Item.</translation>
     </message>
 </context>
 <context>

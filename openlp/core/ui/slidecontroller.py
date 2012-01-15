@@ -1164,7 +1164,7 @@ class SlideController(Controller):
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNext(self):
+    def onSlideSelectedNext(self, wrap=None):
         """
         Go to the next slide.
         """
@@ -1177,17 +1177,24 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
-                if QtCore.QSettings().value(
-		    self.parent().generalSettingsSection + u'/slide advance',
-		    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-		    == SlideAdvance.Wrap:
-		    row = 0
-		elif QtCore.QSettings().value(
-		    self.parent().generalSettingsSection + u'/slide advance',
-		    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-		    == SlideAdvance.Next:
-		    self.serviceNext()
-		    return
+                if wrap is None:
+                    if QtCore.QSettings().value(
+                        self.parent().generalSettingsSection + 
+                        u'/slide advance',
+                        QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
+                        == SlideAdvance.Wrap:
+                        row = 0
+                    elif QtCore.QSettings().value(
+                        self.parent().generalSettingsSection + 
+                        u'/slide advance',
+                        QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
+                        == SlideAdvance.Next:
+                        self.serviceNext()
+                        return
+                    else:
+                        row = self.previewListWidget.rowCount() - 1
+                elif wrap:
+                    row = 0
                 else:
                     row = self.previewListWidget.rowCount() - 1
             self.__checkUpdateSelectedSlide(row)
@@ -1207,16 +1214,16 @@ class SlideController(Controller):
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
                 if QtCore.QSettings().value(
-		    self.parent().generalSettingsSection + u'/slide advance',
-		    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-		    == SlideAdvance.Wrap:
-		    row = self.previewListWidget.rowCount() - 1
-		elif QtCore.QSettings().value(
-		    self.parent().generalSettingsSection + u'/slide advance',
-		    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-		    == SlideAdvance.Next:
-		    self.servicePrevious()
-		    return
+                    self.parent().generalSettingsSection + u'/slide advance',
+                    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
+                    == SlideAdvance.Wrap:
+                    row = self.previewListWidget.rowCount() - 1
+                elif QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + u'/slide advance',
+                    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
+                    == SlideAdvance.Next:
+                    self.servicePrevious()
+                    return
                 else:
                     row = 0
             self.__checkUpdateSelectedSlide(row)

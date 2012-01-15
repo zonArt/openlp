@@ -1310,16 +1310,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Loading QSettings')
        # Migrate Wrap Settings to Slide Advance Settings
         if QtCore.QSettings().contains(self.generalSettingsSection + 
-	    u'/enable slide loop'):
-	    if QtCore.QSettings().value(self.generalSettingsSection +
+            u'/enable slide loop'):
+            if QtCore.QSettings().value(self.generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
-		slide_advance = SlideAdvance.Wrap
-	    else:
-		slide_advance = SlideAdvance.End
-	    QtCore.QSettings().setValue(self.generalSettingsSection +
-		u'/slide advance', QtCore.QVariant(slide_advance))
-	    QtCore.QSettings().remove(self.generalSettingsSection + 
-		u'/enable slide loop')
+                QtCore.QSettings().setValue(self.generalSettingsSection +
+                    u'/slide advance', QtCore.QVariant(SlideAdvance.Wrap))
+            else:
+                QtCore.QSettings().setValue(self.generalSettingsSection +
+                    u'/slide advance', QtCore.QVariant(SlideAdvance.End))
+            QtCore.QSettings().remove(self.generalSettingsSection + 
+                u'/enable slide loop')
         settings = QtCore.QSettings()
         # Remove obsolete entries.
         settings.remove(u'custom slide')
