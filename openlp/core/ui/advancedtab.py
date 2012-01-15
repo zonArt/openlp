@@ -29,7 +29,7 @@ The :mod:`advancedtab` provides an advanced settings facility.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, build_icon
+from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter
 from datetime import datetime, timedelta
@@ -44,6 +44,7 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
+        self.display_changed = False
         advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
         # 7 stands for now, 0 to 6 is Monday to Sunday.
         self.default_service_day = 0
@@ -186,6 +187,14 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
         self.rightLayout.addWidget(self.hideMouseGroupBox)
+        self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.x11GroupBox.setObjectName(u'x11GroupBox')
+        self.x11Layout = QtGui.QVBoxLayout(self.x11GroupBox)
+        self.x11Layout.setObjectName(u'x11Layout')
+        self.x11BypassCheckBox = QtGui.QCheckBox(self.x11GroupBox)
+        self.x11BypassCheckBox.setObjectName(u'x11BypassCheckBox')
+        self.x11Layout.addWidget(self.x11BypassCheckBox)
+        self.rightLayout.addWidget(self.x11GroupBox)
         self.rightLayout.addStretch()
 
         QtCore.QObject.connect(self.defaultServiceDay,
@@ -206,6 +215,8 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
         QtCore.QObject.connect(self.defaultRevertButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultRevertButtonPressed)
+        QtCore.QObject.connect(self.x11BypassCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
 
     def retranslateUi(self):
         """
@@ -279,6 +290,10 @@ class AdvancedTab(SettingsTab):
             'Browse for an image file to display.'))
         self.defaultRevertButton.setToolTip(translate('OpenLP.AdvancedTab',
             'Revert to the default OpenLP logo.'))
+        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab',
+            'X11'))
+        self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Bypass X11 Window Manager'))
 
     def load(self):
         """
@@ -322,6 +337,8 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceTime.setTime(
             QtCore.QTime(self.service_hour, self.service_minute))
         self.defaultServiceName.setText(self.service_name)
+        self.x11BypassCheckBox.setChecked(
+            settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
         self.default_color = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -364,9 +381,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.setValue(u'hide mouse',
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
+        settings.setValue(u'x11 bypass wm',
+            QtCore.QVariant(self.x11BypassCheckBox.isChecked()))
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
+        if self.display_changed:
+            Receiver.send_message(u'config_screen_changed')
+            self.display_changed = False
 
     def generate_service_name_example(self):
         preset_is_valid = True
@@ -430,3 +452,12 @@ class AdvancedTab(SettingsTab):
     def onDefaultRevertButtonPressed(self):
         self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
         self.defaultFileEdit.setFocus()
+
+    def onX11BypassCheckBoxToggled(self, checked):
+        """
+        Toggle X11 bypass flag on maindisplay depending on check box state.
+
+        ``checked``
+            The state of the check box (boolean).
+        """
+        self.display_changed = True

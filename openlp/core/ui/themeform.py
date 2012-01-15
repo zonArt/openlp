@@ -359,11 +359,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.gradientEndButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_end_color)
             self.setField(u'background_type', QtCore.QVariant(1))
-        else:
+        elif self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
             self.imageColorButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
             self.setField(u'background_type', QtCore.QVariant(2))
+        elif self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Transparent):
+            self.setField(u'background_type', QtCore.QVariant(3))
         if self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
             self.setField(u'gradient', QtCore.QVariant(0))
