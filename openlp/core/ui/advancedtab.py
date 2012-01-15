@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsTab, translate, build_icon
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 class AdvancedTab(SettingsTab):
@@ -45,13 +45,16 @@ class AdvancedTab(SettingsTab):
         Initialise the settings tab
         """
         advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
+        # 7 stands for now, 0 to 6 is Monday to Sunday.
+        self.default_service_day = 0
+        # 11 o'clock is the most popular time for morning service.
+        self.default_service_hour = 11
+        self.default_service_minute = 0
         self.default_service_name = unicode(translate('OpenLP.AdvancedTab',
-            'Service %Y-%m-%d'))
+            'Service %Y-%m-%d-%H-%M'))
         self.default_service_example = unicode(translate('OpenLP.AdvancedTab',
-            '%Y-%m-%d',
+            '%Y-%m-%d-%H-%M',
             'This should be the date part of default service name.'))
-        self.wrong_characters_expression = \
-            re.compile(r'[\[\]/\;,><&*:%=+@!#^()|?^]+')
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
@@ -97,10 +100,28 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceLayout = QtGui.QFormLayout(
             self.defaultServiceGroupBox)
         self.defaultServiceLayout.setObjectName(u'defaultServiceLayout')
+        self.defaultServiceDayLabel = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceDayLabel.setObjectName(u'defaultServiceDayLabel')
+        self.defaultServiceDay = QtGui.QComboBox(
+            self.defaultServiceGroupBox)
+        self.defaultServiceDay.addItems(
+            [u'', u'', u'', u'', u'', u'', u'', u''])
+        self.defaultServiceDay.setObjectName(
+            u'defaultServiceDay')
+        self.defaultServiceTime = QtGui.QTimeEdit(self.defaultServiceGroupBox)
+        self.defaultServiceTime.setObjectName(u'defaultServiceTime')
+        self.defaultServiceTimeHBox = QtGui.QHBoxLayout()
+        self.defaultServiceTimeHBox.setObjectName(u'defaultServiceTimeHBox')
+        self.defaultServiceTimeHBox.addWidget(self.defaultServiceDayLabel)
+        self.defaultServiceTimeHBox.addWidget(self.defaultServiceDay)
+        self.defaultServiceTimeHBox.addWidget(self.defaultServiceTime)
+        self.defaultServiceLayout.addRow(self.defaultServiceTimeHBox)
         self.defaultServiceLabel = QtGui.QLabel(self.defaultServiceGroupBox)
         self.defaultServiceLabel.setObjectName(u'defaultServiceLabel')
-        self.defaultServiceEdit = QtGui.QLineEdit(self.defaultServiceGroupBox)
-        self.defaultServiceEdit.setObjectName(u'defaultServiceEdit')
+        self.defaultServiceName = QtGui.QLineEdit(self.defaultServiceGroupBox)
+        self.defaultServiceName.setObjectName(u'defaultServiceName')
+        self.defaultServiceName.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":+]+'), self))
         self.defaultServiceRevertButton = QtGui.QToolButton(
             self.defaultServiceGroupBox)
         self.defaultServiceRevertButton.setObjectName(
@@ -110,7 +131,7 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceHBox = QtGui.QHBoxLayout()
         self.defaultServiceHBox.setObjectName(u'defaultServiceHBox')
         self.defaultServiceHBox.addWidget(self.defaultServiceLabel)
-        self.defaultServiceHBox.addWidget(self.defaultServiceEdit)
+        self.defaultServiceHBox.addWidget(self.defaultServiceName)
         self.defaultServiceHBox.addWidget(self.defaultServiceRevertButton)
         self.defaultServiceLayout.addRow(self.defaultServiceHBox)
         self.defaultServiceExampleLabel = QtGui.QLabel(
@@ -167,9 +188,15 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.hideMouseGroupBox)
         self.rightLayout.addStretch()
 
-        QtCore.QObject.connect(self.defaultServiceEdit,
+        QtCore.QObject.connect(self.defaultServiceDay,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onDefaultServiceDayChanged)
+        QtCore.QObject.connect(self.defaultServiceTime,
+            QtCore.SIGNAL(u'timeChanged(QTime)'),
+            self.onDefaultServiceTimeChanged)
+        QtCore.QObject.connect(self.defaultServiceName,
             QtCore.SIGNAL(u'textChanged(QString)'),
-            self.onDefaultServiceUpdated)
+            self.onDefaultServiceNameChanged)
         QtCore.QObject.connect(self.defaultServiceRevertButton,
             QtCore.SIGNAL(u'pressed()'),
             self.onDefaultServiceRevertButtonPressed)
@@ -202,6 +229,26 @@ class AdvancedTab(SettingsTab):
             'Enable application exit confirmation'))
         self.defaultServiceGroupBox.setTitle(
             translate('OpenLP.AdvancedTab', 'Default Service'))
+        self.defaultServiceDayLabel.setText(
+            translate('OpenLP.AdvancedTab', 'Service name refers to:'))
+        self.defaultServiceDay.setItemText(0,
+            translate('OpenLP.AdvancedTab', 'Monday'))
+        self.defaultServiceDay.setItemText(1,
+            translate('OpenLP.AdvancedTab', 'Tuesday'))
+        self.defaultServiceDay.setItemText(2,
+            translate('OpenLP.AdvancedTab', 'Wednesday'))
+        self.defaultServiceDay.setItemText(3,
+            translate('OpenLP.AdvancedTab', 'Thurdsday'))
+        self.defaultServiceDay.setItemText(4,
+            translate('OpenLP.AdvancedTab', 'Friday'))
+        self.defaultServiceDay.setItemText(5,
+            translate('OpenLP.AdvancedTab', 'Saturday'))
+        self.defaultServiceDay.setItemText(6,
+            translate('OpenLP.AdvancedTab', 'Sunday'))
+        self.defaultServiceDay.setItemText(7,
+            translate('OpenLP.AdvancedTab', 'Now'))
+        self.defaultServiceTime.setToolTip(translate('OpenLP.AdvancedTab',
+            'Time when usual service starts.'))
         self.defaultServiceLabel.setText(
             translate('OpenLP.AdvancedTab', 'Default service name:'))
         self.defaultServiceRevertButton.setToolTip(unicode(
@@ -263,9 +310,18 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+        self.service_day, ok = settings.value(u'default service day',
+            QtCore.QVariant(self.default_service_day)).toInt()
+        self.service_hour, ok = settings.value(u'default service hour',
+            self.default_service_hour).toInt()
+        self.service_minute, ok = settings.value(u'default service minute',
+            self.default_service_minute).toInt()
         self.service_name = unicode(settings.value(u'default service name',
             self.default_service_name).toString())
-        self.defaultServiceEdit.setText(self.service_name)
+        self.defaultServiceDay.setCurrentIndex(self.service_day)
+        self.defaultServiceTime.setTime(
+            QtCore.QTime(self.service_hour, self.service_minute))
+        self.defaultServiceName.setText(self.service_name)
         self.default_color = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -279,10 +335,8 @@ class AdvancedTab(SettingsTab):
         """
         Save settings to disk.
         """
-        self.service_name = unicode(self.defaultServiceEdit.text())
-        preset_okay, name_example = self.generate_service_name_example(
-            self.service_name)
-        if not preset_okay:
+        preset_is_valid, name_example = self.generate_service_name_example()
+        if not preset_is_valid:
             self.service_name = self.default_service_name
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
@@ -290,6 +344,12 @@ class AdvancedTab(SettingsTab):
             settings.remove(u'default service name')
         else:
             settings.setValue(u'default service name', self.service_name)
+        settings.setValue(u'default service day',
+            self.defaultServiceDay.currentIndex())
+        settings.setValue(u'default service hour',
+            self.defaultServiceTime.time().hour())
+        settings.setValue(u'default service minute',
+            self.defaultServiceTime.time().minute())
         settings.setValue(u'recent file count',
             QtCore.QVariant(self.recentSpinBox.value()))
         settings.setValue(u'save current plugin',
@@ -308,28 +368,46 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
 
-    def generate_service_name_example(self, service_name_preset):
-        preset_okay = True
+    def generate_service_name_example(self):
+        preset_is_valid = True
+        if self.service_day == 7:
+            time = datetime.now()
+        else:
+            now = datetime.now()
+            day_delta = self.service_day - now.weekday()
+            if day_delta < 0:
+                day_delta += 7
+            time = now + timedelta(days=day_delta)
+            time = time.replace(hour = self.service_hour,
+                minute = self.service_minute)
         try:
-            service_name_example = datetime.now().strftime(
-                unicode(service_name_preset))
-            if self.wrong_characters_expression.search(service_name_example):
-                service_name_example = translate('OpenLP.AdvancedTab',
-                    'Filename contains wrong characters.')
-                preset_okay = False
+            service_name_example = time.strftime(unicode(self.service_name))
         except ValueError:
             service_name_example = translate('OpenLP.AdvancedTab',
                 'Syntax error.')
-            preset_okay = False
-        return preset_okay, service_name_example
+            preset_is_valid = False
+        return preset_is_valid, service_name_example
 
-    def onDefaultServiceUpdated(self, preset):
-        preset_okay, name_example = self.generate_service_name_example(preset)
+    def updateServiceNameExample(self):
+        preset_is_valid, name_example = self.generate_service_name_example()
         self.defaultServiceExample.setText(name_example)
 
+    def onDefaultServiceDayChanged(self, index):
+        self.service_day = index
+        self.updateServiceNameExample()
+
+    def onDefaultServiceTimeChanged(self, time):
+        self.service_hour = time.hour()
+        self.service_minute = time.minute()
+        self.updateServiceNameExample()
+
+    def onDefaultServiceNameChanged(self, name):
+        self.service_name = name
+        self.updateServiceNameExample()
+
     def onDefaultServiceRevertButtonPressed(self):
-        self.defaultServiceEdit.setText(self.default_service_name)
-        self.defaultServiceEdit.setFocus()
+        self.defaultServiceName.setText(self.default_service_name)
+        self.defaultServiceName.setFocus()
 
     def onDefaultColorButtonPressed(self):
         new_color = QtGui.QColorDialog.getColor(
