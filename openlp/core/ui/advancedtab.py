@@ -416,6 +416,7 @@ class AdvancedTab(SettingsTab):
 
     def onDefaultServiceDayChanged(self, index):
         self.service_day = index
+        self.defaultServiceTime.setReadOnly(self.service_day == 7)
         self.updateServiceNameExample()
 
     def onDefaultServiceTimeChanged(self, time):
