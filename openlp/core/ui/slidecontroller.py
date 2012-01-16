@@ -1178,17 +1178,13 @@ class SlideController(Controller):
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
                 if wrap is None:
-                    if QtCore.QSettings().value(
+                    slide_advance = QtCore.QSettings().value(
                         self.parent().generalSettingsSection + 
                         u'/slide advance',
-                        QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-                        == SlideAdvance.Wrap:
+                        QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+                    if slide_advance == SlideAdvance.Wrap:
                         row = 0
-                    elif QtCore.QSettings().value(
-                        self.parent().generalSettingsSection + 
-                        u'/slide advance',
-                        QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-                        == SlideAdvance.Next:
+                    elif slide_advance == SlideAdvance.Next:
                         self.serviceNext()
                         return
                     else:
@@ -1213,15 +1209,12 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if QtCore.QSettings().value(
+                slide_advance = QtCore.QSettings().value(
                     self.parent().generalSettingsSection + u'/slide advance',
-                    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-                    == SlideAdvance.Wrap:
+                    QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+                if slide_advance == SlideAdvance.Wrap:
                     row = self.previewListWidget.rowCount() - 1
-                elif QtCore.QSettings().value(
-                    self.parent().generalSettingsSection + u'/slide advance',
-                    QtCore.QVariant(SlideAdvance.End)).toInt()[0] \
-                    == SlideAdvance.Next:
+                elif slide_advance == SlideAdvance.Next:
                     self.servicePrevious()
                     return
                 else:
