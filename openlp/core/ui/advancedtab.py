@@ -47,15 +47,12 @@ class AdvancedTab(SettingsTab):
         self.display_changed = False
         advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
         # 7 stands for now, 0 to 6 is Monday to Sunday.
-        self.default_service_day = 0
+        self.default_service_day = 7
         # 11 o'clock is the most popular time for morning service.
         self.default_service_hour = 11
         self.default_service_minute = 0
         self.default_service_name = unicode(translate('OpenLP.AdvancedTab',
-            'Service %Y-%m-%d-%H-%M'))
-        self.default_service_example = unicode(translate('OpenLP.AdvancedTab',
-            '%Y-%m-%d-%H-%M',
-            'This should be the date part of default service name.'))
+            'Service %Y-%m-%d %H-%M'))
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
