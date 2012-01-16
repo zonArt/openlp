@@ -143,10 +143,6 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceExample.setObjectName(u'defaultServiceExample')
         self.defaultServiceLayout.addRow(self.defaultServiceExampleLabel,
             self.defaultServiceExample)
-        self.defaultServiceNoteLabel = QtGui.QLabel(self.defaultServiceGroupBox)
-        self.defaultServiceNoteLabel.setWordWrap(True)
-        self.defaultServiceNoteLabel.setObjectName(u'defaultServiceNoteLabel')
-        self.defaultServiceLayout.addRow(self.defaultServiceNoteLabel)
         self.leftLayout.addWidget(self.defaultServiceGroupBox)
         self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -239,9 +235,9 @@ class AdvancedTab(SettingsTab):
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Enable application exit confirmation'))
         self.defaultServiceGroupBox.setTitle(
-            translate('OpenLP.AdvancedTab', 'Default Service'))
+            translate('OpenLP.AdvancedTab', 'Default Service Name'))
         self.defaultServiceDayLabel.setText(
-            translate('OpenLP.AdvancedTab', 'Service name refers to:'))
+            translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.defaultServiceDay.setItemText(0,
             translate('OpenLP.AdvancedTab', 'Monday'))
         self.defaultServiceDay.setItemText(1,
@@ -261,19 +257,13 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceTime.setToolTip(translate('OpenLP.AdvancedTab',
             'Time when usual service starts.'))
         self.defaultServiceLabel.setText(
-            translate('OpenLP.AdvancedTab', 'Default service name:'))
+            translate('OpenLP.AdvancedTab', 'Name:'))
         self.defaultServiceRevertButton.setToolTip(unicode(
             translate('OpenLP.AdvancedTab',
             'Revert to the default service name "%s".')) %
             self.default_service_name)
         self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
-        self.defaultServiceNoteLabel.setText(unicode(
-            translate('OpenLP.AdvancedTab', 'Default service name when '
-            'saving a new service. You can use date placeholders, e.g %s '
-            'results in %s. Leave it empty to use no default value.')) % 
-            (self.default_service_example,
-            datetime.now().strftime(self.default_service_example)))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
