@@ -182,7 +182,7 @@ def run_pyinstaller():
         u'--windowed',
         u'--noupx',
         u'--additional-hooks-dir', hooks_path,
-		u'--log-level=ERROR',
+        u'--log-level=ERROR',
         u'-o', branch_path,
         u'-i', win32_icon,
         u'-p', branch_path,
