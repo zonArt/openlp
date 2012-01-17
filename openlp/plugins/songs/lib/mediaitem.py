@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,7 +35,6 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus
-from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
 from openlp.core.utils import AppLocation, get_local_collator
@@ -102,35 +101,8 @@ class SongMediaItem(MediaManagerItem):
         ## Song Maintenance Button ##
         self.maintenanceAction = self.addToolbarButton(u'', u'',
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.searchWidget = QtGui.QWidget(self)
-        self.searchWidget.setObjectName(u'searchWidget')
-        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
-        self.searchLayout.setObjectName(u'searchLayout')
-        self.searchTextLayout = QtGui.QFormLayout()
-        self.searchTextLayout.setObjectName(u'searchTextLayout')
-        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
-        self.searchTextLabel.setObjectName(u'searchTextLabel')
-        self.searchTextEdit = SearchEdit(self.searchWidget)
-        self.searchTextEdit.setObjectName(u'searchTextEdit')
-        self.searchTextLabel.setBuddy(self.searchTextEdit)
-        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
-        self.searchLayout.addLayout(self.searchTextLayout)
-        self.searchButtonLayout = QtGui.QHBoxLayout()
-        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
-        self.searchButtonLayout.addStretch()
-        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
-        self.searchTextButton.setObjectName(u'searchTextButton')
-        self.searchButtonLayout.addWidget(self.searchTextButton)
-        self.searchLayout.addLayout(self.searchButtonLayout)
-        self.pageLayout.addWidget(self.searchWidget)
+        self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
         QtCore.QObject.connect(Receiver.get_receiver(),

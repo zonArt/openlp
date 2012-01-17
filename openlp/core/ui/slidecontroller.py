@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -956,7 +956,8 @@ class SlideController(Controller):
         display_type = QtCore.QSettings().value(
             self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
-        if not self.display.primary:
+        if self.screens.which_screen(self.window()) != \
+            self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
                 self.onThemeDisplay(True)
@@ -967,7 +968,7 @@ class SlideController(Controller):
             else:
                 Receiver.send_message(u'live_display_show')
         else:
-            Receiver.send_message(u'live_display_hide', HideMode.Screen)
+            self.liveEscape()
 
     def onSlideBlank(self):
         """

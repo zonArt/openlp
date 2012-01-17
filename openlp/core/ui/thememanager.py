@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,6 +29,7 @@ import os
 import zipfile
 import shutil
 import logging
+import re
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
@@ -42,7 +43,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     context_menu_action, context_menu_separator
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
+from openlp.core.utils import AppLocation, delete_file, \
     get_filesystem_encoding, get_local_collator
 
 log = logging.getLogger(__name__)
@@ -146,6 +147,7 @@ class ThemeManager(QtGui.QWidget):
         check_directory_exists(self.thumbPath)
         self.themeForm.path = self.path
         self.oldBackgroundImage = None
+        self.bad_v1_name_chars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
         self.configUpdated()
 
@@ -523,44 +525,50 @@ class ThemeManager(QtGui.QWidget):
         filexml = None
         try:
             zip = zipfile.ZipFile(filename)
-            themename = None
-            for file in zip.namelist():
-                # Handle UTF-8 files
-                ucsfile = file_is_unicode(file)
-                if not ucsfile:
-                    # Handle native Unicode files from Windows
-                    ucsfile = file
-                osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
-                theme_dir = None
-                if osfile.endswith(os.path.sep):
-                    theme_dir = os.path.join(dir, osfile)
-                    check_directory_exists(theme_dir)
-                else:
-                    fullpath = os.path.join(dir, osfile)
-                    names = osfile.split(os.path.sep)
-                    if len(names) > 1:
-                        # not preview file
-                        if themename is None:
-                            themename = names[0]
-                        if theme_dir is None:
-                            theme_dir = os.path.join(dir, names[0])
-                            check_directory_exists(theme_dir)
-                        if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
-                            xml_data = zip.read(file)
-                            xml_data = file_is_unicode(xml_data)
-                            if not xml_data:
-                                break
-                            filexml = self._checkVersionAndConvert(xml_data)
-                            outfile = open(fullpath, u'w')
-                            outfile.write(filexml.encode(u'utf-8'))
-                        else:
-                            outfile = open(fullpath, u'wb')
-                            outfile.write(zip.read(file))
-        except (IOError, NameError, zipfile.BadZipfile):
-            critical_error_message_box(
-                translate('OpenLP.ThemeManager', 'Validation Error'),
-                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            xmlfile = filter(lambda name:
+                os.path.splitext(name)[1].lower() == u'.xml', zip.namelist())
+            if len(xmlfile) != 1:
+                log.exception(u'Theme contains "%s" XML files' % len(xmlfile))
+                raise Exception(u'validation')
+            xml_tree = ElementTree(element=XML(zip.read(xmlfile[0]))).getroot()
+            v1_background = xml_tree.find(u'BackgroundType')
+            if v1_background is not None:
+                (themename, filexml, outfile) = self.unzipVersion122(dir, zip,
+                    xmlfile[0], xml_tree, v1_background, outfile)
+            else:
+                themename = xml_tree.find(u'name').text.strip()
+                for name in zip.namelist():
+                    try:
+                        uname = unicode(name, u'utf-8')
+                    except UnicodeDecodeError:
+                        log.exception(u'Theme file contains non utf-8 filename'
+                            u' "%s"' % name.decode(u'utf-8', u'replace'))
+                        raise Exception(u'validation')
+                    uname = unicode(QtCore.QDir.toNativeSeparators(uname))
+                    splitname = uname.split(os.path.sep)
+                    if splitname[-1] == u'' or len(splitname) == 1:
+                        # is directory or preview file
+                        continue
+                    fullname = os.path.join(dir, uname)
+                    check_directory_exists(os.path.dirname(fullname))
+                    if os.path.splitext(uname)[1].lower() == u'.xml':
+                        filexml = unicode(zip.read(name), u'utf-8')
+                        outfile = open(fullname, u'w')
+                        outfile.write(filexml.encode(u'utf-8'))
+                    else:
+                        outfile = open(fullname, u'wb')
+                        outfile.write(zip.read(name))
+                    outfile.close()
+        except (IOError, zipfile.BadZipfile):
             log.exception(u'Importing theme from zip failed %s' % filename)
+            raise Exception(u'validation')
+        except Exception as info:
+            if unicode(info) == u'validation':
+                critical_error_message_box(translate('OpenLP.ThemeManager',
+                    'Validation Error'), translate('OpenLP.ThemeManager',
+                    'File is not a valid theme.'))
+            else:
+                raise
         finally:
             # Close the files, to be able to continue creating the theme.
             if zip:
@@ -580,6 +588,36 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
+
+    def unzipVersion122(self, dir, zip, xmlfile, xml_tree, background, outfile):
+        """
+        Unzip openlp.org 1.2x theme file and upgrade the theme xml. When calling
+        this method, please keep in mind, that some parameters are redundant.
+        """
+        themename = xml_tree.find(u'Name').text.strip()
+        themename = self.bad_v1_name_chars.sub(u'', themename)
+        themedir = os.path.join(dir, themename)
+        check_directory_exists(themedir)
+        filexml = unicode(zip.read(xmlfile), u'utf-8')
+        filexml = self._migrateVersion122(filexml)
+        outfile = open(os.path.join(themedir, themename + u'.xml'), u'w')
+        outfile.write(filexml.encode(u'utf-8'))
+        outfile.close()
+        if background.text.strip() == u'2':
+            imagename = xml_tree.find(u'BackgroundParameter1').text.strip()
+            # image file has same extension and is in subfolder
+            imagefile = filter(lambda name: os.path.splitext(name)[1].lower()
+                == os.path.splitext(imagename)[1].lower() and name.find(r'/'),
+                zip.namelist())
+            if len(imagefile) >= 1:
+                outfile = open(os.path.join(themedir, imagename), u'wb')
+                outfile.write(zip.read(imagefile[0]))
+                outfile.close()
+            else:
+                log.exception(u'Theme file does not contain image file "%s"' %
+                    imagename.decode(u'utf-8', u'replace'))
+                raise Exception(u'validation')
+        return (themename, filexml, outfile)
 
     def checkIfThemeExists(self, themeName):
         """
@@ -691,22 +729,6 @@ class ThemeManager(QtGui.QWidget):
         image = os.path.join(self.path, theme + u'.png')
         return image
 
-    def _checkVersionAndConvert(self, xml_data):
-        """
-        Check if a theme is from OpenLP version 1
-
-        ``xml_data``
-            Theme XML to check the version of
-        """
-        log.debug(u'checkVersion1 ')
-        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
-        tree = ElementTree(element=XML(theme)).getroot()
-        # look for old version 1 tags
-        if tree.find(u'BackgroundType') is None:
-            return xml_data
-        else:
-            return self._migrateVersion122(xml_data)
-
     def _createThemeFromXml(self, themeXml, path):
         """
         Return a theme object using information parsed from XML
@@ -771,7 +793,7 @@ class ThemeManager(QtGui.QWidget):
         """
         theme = Theme(xml_data)
         newtheme = ThemeXML()
-        newtheme.theme_name = theme.Name
+        newtheme.theme_name = self.bad_v1_name_chars.sub(u'', theme.Name)
         if theme.BackgroundType == 0:
             newtheme.background_type = \
                 BackgroundType.to_string(BackgroundType.Solid)
@@ -791,10 +813,13 @@ class ThemeManager(QtGui.QWidget):
                 unicode(theme.BackgroundParameter1.name())
             newtheme.background_end_color = \
                 unicode(theme.BackgroundParameter2.name())
-        else:
+        elif theme.BackgroundType == 2:
             newtheme.background_type = \
                 BackgroundType.to_string(BackgroundType.Image)
             newtheme.background_filename = unicode(theme.BackgroundParameter1)
+        elif theme.BackgroundType == 3:
+            newtheme.background_type = \
+                BackgroundType.to_string(BackgroundType.Transparent)
         newtheme.font_main_name = theme.FontName
         newtheme.font_main_color = unicode(theme.FontColor.name())
         newtheme.font_main_size = theme.FontProportion * 3

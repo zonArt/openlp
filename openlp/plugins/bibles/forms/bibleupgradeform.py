@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
