@@ -31,6 +31,8 @@ plugin.
 import logging
 import re
 
+from openlp.core.lib import translate
+
 log = logging.getLogger(__name__)
 
 class LayoutStyle(object):
@@ -60,28 +62,40 @@ def get_reference_match(match_type):
     ``match_type``
         The type of reference information trying to be extracted in this call.
     """
-    local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
-        ).split(u';;') # English
-    # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'
-    #   ).split(u';;') # German
+    local_separator = unicode(translate('BiblesPlugin',
+        ':;;:|v|V;;-;;-;;,;;,;;end',
+        'Seperators for parsing references. There are 7 values separated each '
+        'by two semicolons. Verse, range and list separators have each one '
+        'display symbol which appears on slides and in the GUI and a regular '
+        'expression for detecting this symbols.\n'
+        'Please ask a developer to double check your translation or make '
+        'yourself familar with regular experssions on: '
+        'http://docs.python.org/library/re.html')
+        ).split(u';;')
     separators = {
-        u'sep_v_display': local_separator[0], u'sep_v': local_separator[1],
-        u'sep_r_display': local_separator[2], u'sep_r': local_separator[3],
-        u'sep_l_display': local_separator[4], u'sep_l': local_separator[5],
-        u'sep_e': local_separator[6]}
-
+        u'sep_v_display': local_separator[0],
+        u'sep_v': u'\s*(?:' + local_separator[1] + u')\s*',
+        u'sep_r_display': local_separator[2],
+        u'sep_r': u'\s*(?:' + local_separator[3] + u')\s*',
+        u'sep_l_display': local_separator[4],
+        u'sep_l': u'\s*(?:' + local_separator[5] + u')\s*',
+        u'sep_e': u'\s*(?:' + local_separator[6] + u')\s*'}
+    for role in [u'sep_v', u'sep_r', u'sep_l', u'sep_e']:
+        separators[role] = separators[role].replace(u'-',
+            u'(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
+        separators[role] = separators[role].replace(u',', u'(?:[,\u201A])')
     # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
-    range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
-        r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
-        r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
+    range_string = unicode(u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
+        u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>'
+        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
     if match_type == u'range':
-        return re.compile(r'^\s*' + range_string + r'\s*$', re.UNICODE)
+        return re.compile(u'^\s*' + range_string + u'\s*$', re.UNICODE)
     elif match_type == u'range_separator':
-        return re.compile(separators[u'sep_l'])
+        return re.compile(separators[u'sep_l'], re.UNICODE)
     elif match_type == u'full':
         # full reference match: <book>(<range>(,|(?=$)))+
-        return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-            r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
+        return re.compile(unicode(u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+            u'(?P<ranges>(?:' + range_string + u'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
                 % separators, re.UNICODE)
     else:
         return separators[match_type]
