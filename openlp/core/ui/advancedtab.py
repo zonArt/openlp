@@ -98,8 +98,8 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceLayout = QtGui.QFormLayout(
             self.defaultServiceGroupBox)
         self.defaultServiceLayout.setObjectName(u'defaultServiceLayout')
-        self.defaultServiceDayLabel = QtGui.QLabel(self.defaultServiceGroupBox)
-        self.defaultServiceDayLabel.setObjectName(u'defaultServiceDayLabel')
+        self.defaultServiceTimeLabel = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceTimeLabel.setObjectName(u'defaultServiceTimeLabel')
         self.defaultServiceDay = QtGui.QComboBox(
             self.defaultServiceGroupBox)
         self.defaultServiceDay.addItems(
@@ -110,10 +110,10 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceTime.setObjectName(u'defaultServiceTime')
         self.defaultServiceTimeHBox = QtGui.QHBoxLayout()
         self.defaultServiceTimeHBox.setObjectName(u'defaultServiceTimeHBox')
-        self.defaultServiceTimeHBox.addWidget(self.defaultServiceDayLabel)
         self.defaultServiceTimeHBox.addWidget(self.defaultServiceDay)
         self.defaultServiceTimeHBox.addWidget(self.defaultServiceTime)
-        self.defaultServiceLayout.addRow(self.defaultServiceTimeHBox)
+        self.defaultServiceLayout.addRow(self.defaultServiceTimeLabel,
+            self.defaultServiceTimeHBox)
         self.defaultServiceLabel = QtGui.QLabel(self.defaultServiceGroupBox)
         self.defaultServiceLabel.setObjectName(u'defaultServiceLabel')
         self.defaultServiceName = QtGui.QLineEdit(self.defaultServiceGroupBox)
@@ -128,10 +128,10 @@ class AdvancedTab(SettingsTab):
             build_icon(u':/general/general_revert.png'))
         self.defaultServiceHBox = QtGui.QHBoxLayout()
         self.defaultServiceHBox.setObjectName(u'defaultServiceHBox')
-        self.defaultServiceHBox.addWidget(self.defaultServiceLabel)
         self.defaultServiceHBox.addWidget(self.defaultServiceName)
         self.defaultServiceHBox.addWidget(self.defaultServiceRevertButton)
-        self.defaultServiceLayout.addRow(self.defaultServiceHBox)
+        self.defaultServiceLayout.addRow(self.defaultServiceLabel,
+            self.defaultServiceHBox)
         self.defaultServiceExampleLabel = QtGui.QLabel(
             self.defaultServiceGroupBox)
         self.defaultServiceExampleLabel.setObjectName(
@@ -140,6 +140,10 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceExample.setObjectName(u'defaultServiceExample')
         self.defaultServiceLayout.addRow(self.defaultServiceExampleLabel,
             self.defaultServiceExample)
+        self.defaultServiceNote = QtGui.QLabel(self.defaultServiceGroupBox)
+        self.defaultServiceNote.setWordWrap(True)
+        self.defaultServiceNote.setObjectName(u'defaultServiceNote')
+        self.defaultServiceLayout.addRow(self.defaultServiceNote)
         self.leftLayout.addWidget(self.defaultServiceGroupBox)
         self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -233,7 +237,7 @@ class AdvancedTab(SettingsTab):
             'Enable application exit confirmation'))
         self.defaultServiceGroupBox.setTitle(
             translate('OpenLP.AdvancedTab', 'Default Service Name'))
-        self.defaultServiceDayLabel.setText(
+        self.defaultServiceTimeLabel.setText(
             translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.defaultServiceDay.setItemText(0,
             translate('OpenLP.AdvancedTab', 'Monday'))
@@ -261,6 +265,10 @@ class AdvancedTab(SettingsTab):
             self.default_service_name)
         self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
+        self.defaultServiceNote.setText(
+            translate('OpenLP.AdvancedTab', 'Note: Leave Name field blank to '
+            'have no prefilled name in Save As dialog. '
+            'Consult manual for special symbols usage.'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
