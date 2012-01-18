@@ -33,7 +33,6 @@ from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter
 from datetime import datetime, timedelta
-import re
 
 class AdvancedTab(SettingsTab):
     """
@@ -350,6 +349,7 @@ class AdvancedTab(SettingsTab):
         preset_is_valid, name_example = self.generate_service_name_example()
         if not preset_is_valid:
             self.service_name = self.default_service_name
+            self.defaultServiceName.setText(self.service_name)
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         if self.service_name == self.default_service_name:
@@ -399,10 +399,14 @@ class AdvancedTab(SettingsTab):
                 minute = self.service_minute)
         try:
             service_name_example = time.strftime(unicode(self.service_name))
+            print service_name_example
+            if service_name_example.find('%') != -1:
+                preset_is_valid = False
         except ValueError:
+            preset_is_valid = False
+        if not preset_is_valid:
             service_name_example = translate('OpenLP.AdvancedTab',
                 'Syntax error.')
-            preset_is_valid = False
         return preset_is_valid, service_name_example
 
     def updateServiceNameExample(self):
