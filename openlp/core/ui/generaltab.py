@@ -446,6 +446,7 @@ class GeneralTab(SettingsTab):
         if self.display_changed:
             Receiver.send_message(u'config_screen_changed')
         self.display_changed = False
+        Receiver.send_message(u'slidecontroller_update_slide_advance')
 
     def onOverrideCheckBoxToggled(self, checked):
         """

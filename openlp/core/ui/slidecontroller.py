@@ -103,6 +103,8 @@ class SlideController(Controller):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
+        self.slide_advance = None
+        self.updateSlideAdvance()
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -451,6 +453,9 @@ class SlideController(Controller):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_update_slide_advance'),
+            self.updateSlideAdvance)
 
     def slideShortcutActivated(self):
         """
@@ -700,6 +705,14 @@ class SlideController(Controller):
         Adjusts the value of the ``delaySpinBox`` to the given one.
         """
         self.delaySpinBox.setValue(int(value))
+    
+    def updateSlideAdvance(self):
+        """
+        Updates the Slide Advance variable from the settings.
+        """
+        self.slide_advance = QtCore.QSettings().value(
+            self.parent().generalSettingsSection + u'/slide advance',
+            QtCore.QVariant(SlideAdvance.End)).toInt()[0]
 
     def enableToolBar(self, item):
         """
@@ -1178,13 +1191,9 @@ class SlideController(Controller):
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
                 if wrap is None:
-                    slide_advance = QtCore.QSettings().value(
-                        self.parent().generalSettingsSection + 
-                        u'/slide advance',
-                        QtCore.QVariant(SlideAdvance.End)).toInt()[0]
-                    if slide_advance == SlideAdvance.Wrap:
+                    if self.slide_advance == SlideAdvance.Wrap:
                         row = 0
-                    elif slide_advance == SlideAdvance.Next:
+                    elif self.slide_advance == SlideAdvance.Next:
                         self.serviceNext()
                         return
                     else:
@@ -1209,12 +1218,9 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                slide_advance = QtCore.QSettings().value(
-                    self.parent().generalSettingsSection + u'/slide advance',
-                    QtCore.QVariant(SlideAdvance.End)).toInt()[0]
-                if slide_advance == SlideAdvance.Wrap:
+                if self.slide_advance == SlideAdvance.Wrap:
                     row = self.previewListWidget.rowCount() - 1
-                elif slide_advance == SlideAdvance.Next:
+                elif self.slide_advance == SlideAdvance.Next:
                     self.servicePrevious()
                     return
                 else:
