@@ -406,12 +406,8 @@ class AdvancedTab(SettingsTab):
                 minute = self.service_minute)
         try:
             service_name_example = time.strftime(unicode(self.service_name))
-            print service_name_example
-            if service_name_example.find('%') != -1:
-                preset_is_valid = False
         except ValueError:
             preset_is_valid = False
-        if not preset_is_valid:
             service_name_example = translate('OpenLP.AdvancedTab',
                 'Syntax error.')
         return preset_is_valid, service_name_example
