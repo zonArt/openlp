@@ -38,7 +38,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    VerseReferenceList, get_reference_match
+    VerseReferenceList, get_reference_separator
 
 log = logging.getLogger(__name__)
 
@@ -634,8 +634,8 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = self.advancedToChapter.currentText()
         verse_from = self.advancedFromVerse.currentText()
         verse_to = self.advancedToVerse.currentText()
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
+        range_separator = get_reference_separator(u'sep_r_display')
         verse_range = chapter_from + verse_separator + verse_from + \
             range_separator + chapter_to + verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
@@ -737,7 +737,7 @@ class BibleMediaItem(MediaManagerItem):
         Displays the search results in the media manager. All data needed for
         further action is saved for/in each row.
         """
-        verse_separator = get_reference_match(u'sep_v_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
         version = self.plugin.manager.get_meta_data(bible, u'Version').value
         copyright = self.plugin.manager.get_meta_data(bible, u'Copyright').value
         permissions = \
@@ -890,8 +890,8 @@ class BibleMediaItem(MediaManagerItem):
         ``old_item``
             The last item of a range.
         """
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
+        range_separator = get_reference_separator(u'sep_r_display')
         old_chapter = self._decodeQtObject(old_bitem, 'chapter')
         old_verse = self._decodeQtObject(old_bitem, 'verse')
         start_book = self._decodeQtObject(start_bitem, 'book')
@@ -971,7 +971,7 @@ class BibleMediaItem(MediaManagerItem):
         ``verse``
             The verse number (int).
         """
-        verse_separator = get_reference_match(u'sep_v_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
         if not self.settings.show_new_chapters or old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:

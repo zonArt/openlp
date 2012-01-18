@@ -31,9 +31,14 @@ plugin.
 import logging
 import re
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
+
+REFERENCE_MATCHES = {}
+REFERENCE_SEPARATORS = {}
 
 class LayoutStyle(object):
     """
@@ -54,51 +59,86 @@ class DisplayStyle(object):
     Square = 3
 
 
+def update_reference_separators():
+    """
+    Updates separators and matches for parsing and formating scripture
+    references.
+    """
+    default_separators = unicode(translate('BiblesPlugin',
+        ':|v|V|verse;;-|to;;,|and;;end',
+        'This are 4 values seperated each by two semicolons representing the '
+        'seperators for parsing references. This values are verse separators, '
+        'range separators, list separators and end mark. Alternative values '
+        'to be seperated by a vertical bar "|". In this case the first value '
+        'is the default and used for the display format.')).split(u';;')
+    settings = QtCore.QSettings()
+    settings.beginGroup(u'bibles') # FIXME: get the name from somewere else
+    custom_separators = [
+        unicode(settings.value(u'verse separator',
+            QtCore.QVariant(u'')).toString()),
+        unicode(settings.value(u'range separator',
+            QtCore.QVariant(u'')).toString()),
+        unicode(settings.value(u'list separator',
+            QtCore.QVariant(u'')).toString()),
+        unicode(settings.value(u'end separator',
+            QtCore.QVariant(u'')).toString())]
+    settings.endGroup()
+    for index, role in enumerate([u'v', u'r', u'l', u'e']):
+        if custom_separators[index].strip(u'|') == u'':
+            source_string = default_separators[index].strip(u'|')
+        else:
+            source_string = custom_separators[index].strip(u'|')
+        while u'||' in source_string:
+            source_string = source_string.replace(u'||', u'|')
+        if role != u'e':
+            REFERENCE_SEPARATORS[u'sep_%s_display' % role] =  \
+                source_string.split(u'|')[0]
+        # escape reserved characters
+        for character in u'\\.^$*+?{}[]()':
+            source_string = source_string.replace(character, u'\\' + character)
+        # add various unicode alternatives
+        source_string = source_string.replace(u'-',
+            u'(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
+        source_string = source_string.replace(u',', u'(?:[,\u201A])')
+        REFERENCE_SEPARATORS[u'sep_%s' % role] = u'\s*(?:%s)\s*' % source_string
+        REFERENCE_SEPARATORS[u'sep_%s_default' % role] = \
+            default_separators[index]
+    # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
+    range_string = u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
+        u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>' \
+        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % \
+        REFERENCE_SEPARATORS
+    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_string,
+        re.UNICODE)
+    REFERENCE_MATCHES[u'range_separator'] = re.compile(
+        REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
+    # full reference match: <book>(<range>(,|(?=$)))+
+    REFERENCE_MATCHES[u'full'] = re.compile(u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)'
+        u'(?<!\s)\s*(?P<ranges>(?:%(range)s(?:%(sep_l)s|(?=\s*$)))+)\s*$' % \
+        dict(REFERENCE_SEPARATORS.items() + [(u'range', range_string)]),
+        re.UNICODE)
+
+def get_reference_separator(separator_type):
+    """
+    Provides separators for parsing and formatting scripture references.
+
+    ``separator_type``
+        The role and format of the separator.
+    """
+    if len(REFERENCE_SEPARATORS) == 0:
+        update_reference_separators()
+    return REFERENCE_SEPARATORS[separator_type]
+
 def get_reference_match(match_type):
     """
-    Provides the regexes and matches to use while parsing strings for bible
-    references.
+    Provides matches for parsing scripture references strings.
 
     ``match_type``
-        The type of reference information trying to be extracted in this call.
+        The type of match is ``range_separator``, ``range`` or ``full``.
     """
-    local_separator = unicode(translate('BiblesPlugin',
-        ':;;:|v|V;;-;;-;;,;;,;;end',
-        'Seperators for parsing references. There are 7 values separated each '
-        'by two semicolons. Verse, range and list separators have each one '
-        'display symbol which appears on slides and in the GUI and a regular '
-        'expression for detecting this symbols.\n'
-        'Please ask a developer to double check your translation or make '
-        'yourself familar with regular experssions on: '
-        'http://docs.python.org/library/re.html')
-        ).split(u';;')
-    separators = {
-        u'sep_v_display': local_separator[0],
-        u'sep_v': u'\s*(?:' + local_separator[1] + u')\s*',
-        u'sep_r_display': local_separator[2],
-        u'sep_r': u'\s*(?:' + local_separator[3] + u')\s*',
-        u'sep_l_display': local_separator[4],
-        u'sep_l': u'\s*(?:' + local_separator[5] + u')\s*',
-        u'sep_e': u'\s*(?:' + local_separator[6] + u')\s*'}
-    for role in [u'sep_v', u'sep_r', u'sep_l', u'sep_e']:
-        separators[role] = separators[role].replace(u'-',
-            u'(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
-        separators[role] = separators[role].replace(u',', u'(?:[,\u201A])')
-    # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
-    range_string = unicode(u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
-        u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>'
-        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
-    if match_type == u'range':
-        return re.compile(u'^\s*' + range_string + u'\s*$', re.UNICODE)
-    elif match_type == u'range_separator':
-        return re.compile(separators[u'sep_l'], re.UNICODE)
-    elif match_type == u'full':
-        # full reference match: <book>(<range>(,|(?=$)))+
-        return re.compile(unicode(u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-            u'(?P<ranges>(?:' + range_string + u'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
-                % separators, re.UNICODE)
-    else:
-        return separators[match_type]
+    if len(REFERENCE_MATCHES) == 0:
+        update_reference_separators()
+    return REFERENCE_MATCHES[match_type]
 
 def parse_reference(reference):
     """
