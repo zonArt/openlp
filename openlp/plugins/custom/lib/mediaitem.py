@@ -26,6 +26,7 @@
 ###############################################################################
 
 import logging
+import locale
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
@@ -33,7 +34,6 @@ from sqlalchemy.sql import or_, func
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_item_selected, translate
 from openlp.core.lib.ui import UiStrings
-from oprnlp.core.utils import get_local_collator
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -109,7 +109,7 @@ class CustomMediaItem(MediaManagerItem):
         # Sort the customs by its title considering language specific
         # characters. lower() is needed for windows!
         custom_slides.sort(
-            cmp=get_local_collator, key=lambda custom: custom.title.lower())
+            cmp=locale.strcoll, key=lambda custom: custom.title.lower())
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(

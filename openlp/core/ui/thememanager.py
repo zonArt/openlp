@@ -29,6 +29,7 @@ import os
 import zipfile
 import shutil
 import logging
+import locale
 import re
 
 from xml.etree.ElementTree import ElementTree, XML
@@ -43,8 +44,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     context_menu_action, context_menu_separator
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, \
-    get_filesystem_encoding, get_local_collator
+from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -459,7 +459,7 @@ class ThemeManager(QtGui.QWidget):
         # Sort the themes by its name considering language specific characters.
         # lower() is needed for windows!
         files.sort(key=lambda filename: unicode(filename).lower(),
-           cmp=get_local_collator)
+           cmp=locale.strcoll)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory

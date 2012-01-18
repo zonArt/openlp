@@ -81,11 +81,6 @@ try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = u'-'
-try:
-    import icu
-    ICU_VERSION = u'OK'
-except ImportError:
-    ICU_VERSION = u'-'
 
 
 from openlp.core.lib import translate, SettingsManager
@@ -130,8 +125,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
             u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
-            u'pyUNO bridge: %s\n' % UNO_VERSION + \
-            u'PyICU: %s\n' % ICU_VERSION
+            u'pyUNO bridge: %s\n' % UNO_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'

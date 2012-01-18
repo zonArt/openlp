@@ -33,7 +33,6 @@ import re
 import sys
 import time
 import urllib2
-import locale
 from datetime import datetime
 from subprocess import Popen, PIPE
 
@@ -45,18 +44,6 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
         XDG_BASE_AVAILABLE = True
     except ImportError:
         XDG_BASE_AVAILABLE = False
-
-LOCALE_COLLATOR = locale.strcoll
-if sys.platform == u'win32':
-    try:
-        import icu
-        try:
-            icu_locale = icu.Locale(locale.getlocale()[0])
-            LOCALE_COLLATOR = icu.Collator.createInstance(icu_locale).compare
-        except icu.InvalidArgsError:
-            pass
-    except ImportError:
-        pass
 
 import openlp
 from openlp.core.lib import Receiver, translate, check_directory_exists
@@ -495,16 +482,10 @@ def get_uno_instance(resolver):
         return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
             + u'urp;StarOffice.ComponentContext')
 
-def get_local_collator(string1, string2):
-    """
-    Returns a collator for locale aware string sorting.
-    """
-    return LOCALE_COLLATOR(string1, string2)
-
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'get_local_collator', u'delete_file', u'clean_filename']
+    u'delete_file', u'clean_filename']
