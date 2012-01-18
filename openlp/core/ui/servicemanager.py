@@ -631,7 +631,14 @@ class ServiceManager(QtGui.QWidget):
         default_pattern = unicode(QtCore.QSettings().value(
             u'advanced/default service name',
             translate('OpenLP.AdvancedTab',
-            'Service %Y-%m-%d %H-%M')).toString())
+            'Service %Y-%m-%d %H-%M',
+            'This is the default default service name template, which can be '
+            'found in Advanced tab under Tools, Settings. Please do not '
+            'include any of the following characters: /\\?*|<>\[\]":+\n'
+            'You can use any of the directives as shown on page '
+            'http://docs.python.org/library/datetime.html'
+            '#strftime-strptime-behavior , but if possible, please keep '
+            'the resulting string sortable by name.')).toString())
         default_filename = time.strftime(default_pattern)
         directory = unicode(SettingsManager.get_last_dir(
             self.mainwindow.servicemanagerSettingsSection))
