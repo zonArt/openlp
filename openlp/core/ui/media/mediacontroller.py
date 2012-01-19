@@ -278,15 +278,15 @@ class MediaController(object):
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
+        if controller.isLive and controller.display:
+            if self.curDisplayMediaPlayer and value:
+                if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
+                    controller.display.setTransparency(False)
+            else:
+                controller.display.setTransparency(True)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
-        # if controller.isLive and controller.display:
-            # if self.curDisplayMediaPlayer and value:
-                # if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
-                    # controller.display.setTransparency(False)
-            # else:
-                # controller.display.setTransparency(True)
 
     def resize(self, controller, display, player):
         """

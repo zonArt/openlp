@@ -91,28 +91,11 @@ class VlcPlayer(MediaPlayer):
         MediaPlayer.__init__(self, parent, u'vlc')
         self.parent = parent
         self.canFolder = True
-        self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
     def setup(self, display):
-        if display.isLive:
-            display.vlcWidget = QtGui.QFrame()
-            windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool
-            if QtCore.QSettings().value(u'advanced/x11 bypass wm',
-                QtCore.QVariant(True)).toBool():
-                windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
-            # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
-            # stay always on top on Mac OS X. For details see bug 906926.
-            # It needs more investigation to fix it properly.
-            if sys.platform == 'darwin':
-                windowFlags = windowFlags | QtCore.Qt.SplashScreen
-            windowFlags = windowFlags | QtCore.Qt.Window
-            display.vlcWidget.setWindowFlags(windowFlags)
-            display.vlcWidget.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-            display.vlcWidget.setGeometry(display.geometry())
-        else:
-            display.vlcWidget = QtGui.QFrame(display)
+        display.vlcWidget = QtGui.QFrame(display)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
@@ -125,7 +108,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
-        #display.vlcWidget.resize(display.size())
+        display.vlcWidget.resize(display.size())
         display.vlcWidget.raise_()
         display.vlcWidget.hide()
         # the media player has to be 'connected' to the QFrame
@@ -177,7 +160,7 @@ class VlcPlayer(MediaPlayer):
 
     def resize(self, display):
         display.vlcWidget.resize(display.size())
-        
+
     def play(self, display):
         controller = display.controller
         start_time = 0
@@ -191,10 +174,7 @@ class VlcPlayer(MediaPlayer):
                 int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
             controller.seekSlider.setMaximum(controller.media_info.length * 1000)
             self.state = MediaState.Playing
-            if not controller.media_info.is_background:
-                display.vlcWidget.raise_()
-            else:
-                display.raise_()
+            display.vlcWidget.raise_()
             return True
         else:
             return False

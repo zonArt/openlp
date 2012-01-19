@@ -144,7 +144,7 @@ class MainDisplay(Display):
             windowFlags = windowFlags | QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
+        self.setTransparency(True)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
@@ -154,6 +154,14 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def setTransparency(self, enabled):
+        if enabled:
+            self.setAutoFillBackground(False)
+        else:
+            self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
+        self.repaint()
 
     def cssChanged(self):
         """
