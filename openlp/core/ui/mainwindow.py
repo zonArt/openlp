@@ -29,13 +29,16 @@ import logging
 import os
 import sys
 import shutil
+from distutils import dir_util
+from distutils.errors import DistutilsFileError
 from tempfile import gettempdir
 from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager, PluginStatus
+    PluginManager, Receiver, translate, ImageManager, PluginStatus, \
+    SettingsManager
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -629,6 +632,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cleanup'), self.cleanUp)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox,
             QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -1181,6 +1186,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.finalise_plugins()
         # Save settings
         self.saveSettings()
+        # Check if we need to change the data directory
+        if QtCore.QSettings().value(u'advanced/new data path',
+                QtCore.QVariant(u'none')).toString() != u'none':
+            self.changeDataDirectory()
         # Close down the display
         self.liveController.display.close()
 
@@ -1445,3 +1454,48 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.timer_id = 0
             self.loadProgressBar.hide()
             Receiver.send_message(u'openlp_process_events')
+
+    def changeDataDirectory(self):
+        old_data_path = str(AppLocation.get_data_path())
+        settings = QtCore.QSettings()
+        new_data_path = str(settings.value(u'advanced/new data path', 
+                QtCore.QVariant(u'none')).toString())
+        settings.remove(u'advanced/new data path')
+        # Copy OpenLP data to new location if requested.
+        if settings.value(u'advanced/copy data', 
+                QtCore.QVariant(u'none')).toBool():
+            try:
+                Receiver.send_message(u'openlp_process_events')
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.MainWindow', 'Copy Data Directory'),
+                    translate('OpenLP.MainWindow',
+                    'OpenLP will now copy your data files from \n\n %s \n\n'
+                    'to \n\n %s' % (old_data_path, new_data_path)),
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Ok))
+                Receiver.send_message(u'cursor_busy')
+                dir_util.copy_tree(old_data_path, new_data_path)
+            except (IOError, os.error, DistutilsFileError),  why:
+                Receiver.send_message(u'cursor_normal')
+                QtGui.QMessageBox.critical(self,
+                    translate('OpenLP.MainWindow', 'New data directory error'),
+                    translate('OpenLP.MainWindow',
+                    'OpenLP Data directory copy failed \n\n %s' % str(why)),
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Ok))
+                return False
+        settings.remove(u'advanced/copy data')
+        Receiver.send_message(u'cursor_normal')
+        # Change the location of data directory in config file.
+        settings.setValue(u'advanced/data path', new_data_path)
+        QtGui.QMessageBox.information(self,
+            translate('OpenLP.MainWindow', 'New data directory'),
+            translate('OpenLP.MainWindow',
+            'OpenLP Data directory successfully changed to:\n\n %s \n\n'
+            'The new data directory location will be used '
+            'the next time you start OpenLP.' % new_data_path),
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Ok))
+        # Check if the new data path is our default.
+        if new_data_path == AppLocation.get_directory(AppLocation.DataDir):
+            settings.remove(u'advanced/data path')

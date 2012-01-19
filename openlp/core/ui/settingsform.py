@@ -29,7 +29,7 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
@@ -102,6 +102,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
+        # Dialog was cancelled, remove any pending data move
+        QtCore.QSettings().remove(u'advanced/new data path')
         for tabIndex in range(0, self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
