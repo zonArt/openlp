@@ -65,14 +65,16 @@ def update_reference_separators():
     references.
     """
     default_separators = unicode(translate('BiblesPlugin',
-        ':|v|V|verse;;-|to;;,|and;;end',
+        ':|v|V|verse|verses;;-|to;;,|and;;end',
         'This are 4 values seperated each by two semicolons representing the '
         'seperators for parsing references. This values are verse separators, '
         'range separators, list separators and end mark. Alternative values '
         'to be seperated by a vertical bar "|". In this case the first value '
-        'is the default and used for the display format.')).split(u';;')
+        'is the default and used for the display format. If a semicolon should '
+        'be used you have to give an alternative separator afterwards to allow '
+        'OpenLP correct splitting of the translation.')).split(u';;')
     settings = QtCore.QSettings()
-    settings.beginGroup(u'bibles') # FIXME: get the name from somewere else
+    settings.beginGroup(u'bibles')
     custom_separators = [
         unicode(settings.value(u'verse separator',
             QtCore.QVariant(u'')).toString()),
@@ -104,18 +106,19 @@ def update_reference_separators():
         REFERENCE_SEPARATORS[u'sep_%s_default' % role] = \
             default_separators[index]
     # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
-    range_string = u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
+    range_regex = u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
         u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>' \
         u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % \
         REFERENCE_SEPARATORS
-    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_string,
+    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_regex,
         re.UNICODE)
     REFERENCE_MATCHES[u'range_separator'] = re.compile(
         REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
     # full reference match: <book>(<range>(,|(?=$)))+
-    REFERENCE_MATCHES[u'full'] = re.compile(u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)'
-        u'(?<!\s)\s*(?P<ranges>(?:%(range)s(?:%(sep_l)s|(?=\s*$)))+)\s*$' % \
-        dict(REFERENCE_SEPARATORS.items() + [(u'range', range_string)]),
+    REFERENCE_MATCHES[u'full'] = re.compile(
+        u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+        u'(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
+        % dict(REFERENCE_SEPARATORS.items() + [(u'range_regex', range_regex)]),
         re.UNICODE)
 
 def get_reference_separator(separator_type):
@@ -194,7 +197,7 @@ def parse_reference(reference):
     If there is a range separator without further verse declaration the last
     refered chapter is addressed until the end.
 
-    ``range_string`` is a regular expression which matches for verse range
+    ``range_regex`` is a regular expression which matches for verse range
     declarations:
 
     ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?``
@@ -223,9 +226,9 @@ def parse_reference(reference):
         are optional leading digits followed by non-digits. The group ends
         before the whitspace in front of the next digit.
 
-    ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
+    ``(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$``
         The second group contains all ``ranges``. This can be multiple
-        declarations of a range_string separated by a list separator.
+        declarations of range_regex separated by a list separator.
 
     """
     log.debug(u'parse_reference("%s")', reference)

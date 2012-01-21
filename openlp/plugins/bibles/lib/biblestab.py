@@ -236,17 +236,17 @@ class BiblesTab(SettingsTab):
             translate('BiblesPlugin.BiblesTab', 'End Mark:'))
         self.verseSeparatorLineEdit.setToolTip(
             translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'separators may be defined.\nThey have to be separated '
+                'verse separators may be defined.\nThey have to be separated '
                 'by a vertical bar "|".\nPlease clear this edit line to use '
                 'the default value.'))
         self.rangeSeparatorLineEdit.setToolTip(
             translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'separators may be defined.\nThey have to be separated '
+                'range separators may be defined.\nThey have to be separated '
                 'by a vertical bar "|".\nPlease clear this edit line to use '
                 'the default value.'))
         self.listSeparatorLineEdit.setToolTip(
             translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'separators may be defined.\nThey have to be separated '
+                'list separators may be defined.\nThey have to be separated '
                 'by a vertical bar "|".\nPlease clear this edit line to use '
                 'the default value.'))
         self.endSeparatorLineEdit.setToolTip(
