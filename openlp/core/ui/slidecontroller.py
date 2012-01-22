@@ -616,8 +616,12 @@ class SlideController(Controller):
         if len(self.keypress_queue):
             while len(self.keypress_queue) and not self.keypress_loop:
                 self.keypress_loop = True
-                if self.keypress_queue.popleft() == u'previous':
-                    Receiver.send_message('servicemanager_previous_item')
+                keypressCommand = self.keypress_queue.popleft()
+                if keypressCommand == u'previous':
+                    Receiver.send_message('servicemanager_previous_item', None)
+                elif keypressCommand == u'previous last slide':
+                    # Go to the last slide of the previous item
+                    Receiver.send_message('servicemanager_previous_item', 'last slide')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
@@ -1221,7 +1225,9 @@ class SlideController(Controller):
                 if self.slide_advance == SlideAdvance.Wrap:
                     row = self.previewListWidget.rowCount() - 1
                 elif self.slide_advance == SlideAdvance.Next:
-                    self.servicePrevious()
+                    # self.servicePrevious()
+                    self.keypress_queue.append(u'previous last slide')
+                    self._process_queue()
                     return
                 else:
                     row = 0
