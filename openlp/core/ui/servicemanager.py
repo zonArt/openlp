@@ -858,7 +858,7 @@ class ServiceManager(QtGui.QWidget):
 
     def onSetItem(self, message):
         """
-        Called by a signal to select a specific item.signal
+        Called by a signal to select a specific item.
         """
         self.setItem(int(message))
 
