@@ -1225,7 +1225,6 @@ class SlideController(Controller):
                 if self.slide_advance == SlideAdvance.Wrap:
                     row = self.previewListWidget.rowCount() - 1
                 elif self.slide_advance == SlideAdvance.Next:
-                    # self.servicePrevious()
                     self.keypress_queue.append(u'previous last slide')
                     self._process_queue()
                     return

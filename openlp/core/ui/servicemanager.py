@@ -838,7 +838,7 @@ class ServiceManager(QtGui.QWidget):
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         while serviceIterator.value():
             if serviceIterator.value() == selected:
-                if message == 'last slide' and prevItemLastSlide:
+                if message == u'last slide' and prevItemLastSlide:
                     pos = prevItem.data(0, QtCore.Qt.UserRole).toInt()[0]
                     check_expanded = self.serviceItems[pos - 1][u'expanded']
                     self.serviceManagerList.setCurrentItem(prevItemLastSlide)
