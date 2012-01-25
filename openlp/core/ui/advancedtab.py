@@ -103,7 +103,11 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceGroupBox.setObjectName(u'defaultServiceGroupBox')
         self.defaultServiceLayout = QtGui.QFormLayout(
             self.defaultServiceGroupBox)
+        self.defaultServiceCheckBox = QtGui.QCheckBox(
+            self.defaultServiceGroupBox)
+        self.defaultServiceCheckBox.setObjectName(u'defaultServiceCheckBox')
         self.defaultServiceLayout.setObjectName(u'defaultServiceLayout')
+        self.defaultServiceLayout.addRow(self.defaultServiceCheckBox)
         self.defaultServiceTimeLabel = QtGui.QLabel(self.defaultServiceGroupBox)
         self.defaultServiceTimeLabel.setObjectName(u'defaultServiceTimeLabel')
         self.defaultServiceDay = QtGui.QComboBox(
@@ -200,6 +204,8 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.x11GroupBox)
         self.rightLayout.addStretch()
 
+        QtCore.QObject.connect(self.defaultServiceCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.defaultServiceCheckBoxToggled)
         QtCore.QObject.connect(self.defaultServiceDay,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onDefaultServiceDayChanged)
@@ -243,6 +249,9 @@ class AdvancedTab(SettingsTab):
             'Enable application exit confirmation'))
         self.defaultServiceGroupBox.setTitle(
             translate('OpenLP.AdvancedTab', 'Default Service Name'))
+        self.defaultServiceCheckBox.setText(
+            translate('OpenLP.AdvancedTab',
+            'Save As dialog has prefilled service name'))
         self.defaultServiceTimeLabel.setText(
             translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.defaultServiceDay.setItemText(0,
@@ -272,9 +281,8 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
         self.defaultServiceNote.setText(
-            translate('OpenLP.AdvancedTab', 'Note: Leave Name field blank to '
-            'have no prefilled name in Save As dialog. '
-            'Consult manual for special symbols usage.'))
+            translate('OpenLP.AdvancedTab', 'Note: '
+            'Consult OpenLP manual for special symbols usage.'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
@@ -326,6 +334,9 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+        default_service_enabled = settings.value(u'default service enabled',
+            QtCore.QVariant(True)).toBool()
+        self.defaultServiceCheckBox.setChecked(default_service_enabled)
         self.service_day, ok = settings.value(u'default service day',
             QtCore.QVariant(self.default_service_day)).toInt()
         self.service_hour, ok = settings.value(u'default service hour',
@@ -338,6 +349,7 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceTime.setTime(
             QtCore.QTime(self.service_hour, self.service_minute))
         self.defaultServiceName.setText(self.service_name)
+        self.defaultServiceCheckBoxToggled(default_service_enabled)
         self.x11BypassCheckBox.setChecked(
             settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
         self.default_color = settings.value(u'default color',
@@ -359,6 +371,8 @@ class AdvancedTab(SettingsTab):
             self.defaultServiceName.setText(self.service_name)
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
+        settings.setValue(u'default service enabled',
+            self.defaultServiceCheckBox.isChecked())
         if self.service_name == self.default_service_name:
             settings.remove(u'default service name')
         else:
@@ -392,6 +406,13 @@ class AdvancedTab(SettingsTab):
             Receiver.send_message(u'config_screen_changed')
             self.display_changed = False
 
+    def defaultServiceCheckBoxToggled(self, default_service_enabled):
+        self.defaultServiceDay.setEnabled(default_service_enabled)
+        time_enabled = default_service_enabled and self.service_day is not 7
+        self.defaultServiceTime.setEnabled(time_enabled)
+        self.defaultServiceName.setEnabled(default_service_enabled)
+        self.defaultServiceRevertButton.setEnabled(default_service_enabled)
+
     def generate_service_name_example(self):
         preset_is_valid = True
         if self.service_day == 7:
@@ -418,7 +439,7 @@ class AdvancedTab(SettingsTab):
 
     def onDefaultServiceDayChanged(self, index):
         self.service_day = index
-        self.defaultServiceTime.setReadOnly(self.service_day == 7)
+        self.defaultServiceTime.setEnabled(self.service_day is not 7)
         self.updateServiceNameExample()
 
     def onDefaultServiceTimeChanged(self, time):
