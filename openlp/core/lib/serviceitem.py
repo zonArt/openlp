@@ -56,15 +56,6 @@ class SlideAdvance(object):
     Wrap = 2
     Next = 3
 
-class ServiceItemAdvance(object):
-    """
-    Provides an enumeration for the service item advance by left/right
-    arrow keys
-    """
-    Previous = 1
-    PreviousLastSlide = 2
-    Next = 3
-
 class ItemCapabilities(object):
     """
     Provides an enumeration of a serviceitem's capabilities

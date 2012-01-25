@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
-from openlp.core.lib.serviceitem import SlideAdvance, ServiceItemAdvance
+from openlp.core.lib.serviceitem import SlideAdvance
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -48,6 +48,15 @@ class SlideList(QtGui.QTableWidget):
     """
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
+        
+class ServiceItemAdvance(object):
+    """
+    Provides an enumeration for the service item advance by left/right
+    arrow keys
+    """
+    Previous = 1
+    PreviousLastSlide = 2
+    Next = 3
 
 class Controller(QtGui.QWidget):
     """
