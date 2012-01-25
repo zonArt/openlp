@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
-from openlp.core.lib.serviceitem import SlideAdvance
+from openlp.core.lib.serviceitem import SlideAdvance, ServiceItemAdvance
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -598,14 +598,14 @@ class SlideController(Controller):
         """
         Live event to select the previous service item from the service manager.
         """
-        self.keypress_queue.append(u'previous')
+        self.keypress_queue.append(ServiceItemAdvance.Previous)
         self._process_queue()
 
     def serviceNext(self):
         """
         Live event to select the next service item from the service manager.
         """
-        self.keypress_queue.append(u'next')
+        self.keypress_queue.append(ServiceItemAdvance.Next)
         self._process_queue()
 
     def _process_queue(self):
@@ -617,9 +617,9 @@ class SlideController(Controller):
             while len(self.keypress_queue) and not self.keypress_loop:
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
-                if keypressCommand == u'previous':
+                if keypressCommand == ServiceItemAdvance.Previous:
                     Receiver.send_message('servicemanager_previous_item', None)
-                elif keypressCommand == u'previous last slide':
+                elif keypressCommand == ServiceItemAdvance.PreviousLastSlide:
                     # Go to the last slide of the previous item
                     Receiver.send_message('servicemanager_previous_item', 'last slide')
                 else:
@@ -1225,7 +1225,7 @@ class SlideController(Controller):
                 if self.slide_advance == SlideAdvance.Wrap:
                     row = self.previewListWidget.rowCount() - 1
                 elif self.slide_advance == SlideAdvance.Next:
-                    self.keypress_queue.append(u'previous last slide')
+                    self.keypress_queue.append(ServiceItemAdvance.PreviousLastSlide)
                     self._process_queue()
                     return
                 else:
