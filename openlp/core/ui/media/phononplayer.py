@@ -90,7 +90,6 @@ class PhononPlayer(MediaPlayer):
                 ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
-                    print ext
             log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
                 u' '.join(self.additional_extensions[mimetype])))
 
