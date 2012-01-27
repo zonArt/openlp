@@ -53,7 +53,7 @@ class AdvancedTab(SettingsTab):
         self.default_service_name = unicode(translate('OpenLP.AdvancedTab',
             'Service %Y-%m-%d %H-%M',
             'This is the default default service name template, which can be '
-            'found in Advanced tab under Tools, Settings. Please do not '
+            'found under Advanced in Settings, Configure OpenLP. Please do not '
             'include any of the following characters: /\\?*|<>\[\]":+\n'
             'You can use any of the directives as shown on page '
             'http://docs.python.org/library/datetime.html'
@@ -250,8 +250,7 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceGroupBox.setTitle(
             translate('OpenLP.AdvancedTab', 'Default Service Name'))
         self.defaultServiceCheckBox.setText(
-            translate('OpenLP.AdvancedTab',
-            'Save As dialog has prefilled service name'))
+            translate('OpenLP.AdvancedTab', 'Enable default service name'))
         self.defaultServiceTimeLabel.setText(
             translate('OpenLP.AdvancedTab', 'Date and Time:'))
         self.defaultServiceDay.setItemText(0,
@@ -282,7 +281,7 @@ class AdvancedTab(SettingsTab):
             'Example:'))
         self.defaultServiceNote.setText(
             translate('OpenLP.AdvancedTab', 'Note: '
-            'Consult OpenLP manual for special symbols usage.'))
+            'Consult the OpenLP manual for usage.'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
