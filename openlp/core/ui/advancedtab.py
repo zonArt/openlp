@@ -335,7 +335,6 @@ class AdvancedTab(SettingsTab):
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
         default_service_enabled = settings.value(u'default service enabled',
             QtCore.QVariant(True)).toBool()
-        self.defaultServiceCheckBox.setChecked(default_service_enabled)
         self.service_day, ok = settings.value(u'default service day',
             QtCore.QVariant(self.default_service_day)).toInt()
         self.service_hour, ok = settings.value(u'default service hour',
@@ -348,6 +347,7 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceTime.setTime(
             QtCore.QTime(self.service_hour, self.service_minute))
         self.defaultServiceName.setText(self.service_name)
+        self.defaultServiceCheckBox.setChecked(default_service_enabled)
         self.defaultServiceCheckBoxToggled(default_service_enabled)
         self.x11BypassCheckBox.setChecked(
             settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
