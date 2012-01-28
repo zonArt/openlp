@@ -51,6 +51,7 @@ ADDITIONAL_EXT = {
             u'video/x-matroska': [u'.mpv', u'.mkv'],
             u'video/x-wmv': [u'.wmv'],
             u'video/x-mpg': [u'.mpg'],
+            u'video/mpeg' : [u'.mp4', u'.mts'],
             u'video/x-ms-wmv': [u'.wmv']}
 
 
