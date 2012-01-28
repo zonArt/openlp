@@ -112,8 +112,8 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay.
         
-    ``slidecontroller_update_slide_advance``
-        Updates the slide_advance variable from the saved settings.
+    ``slidecontroller_update_slide_limits``
+        Updates the slide_limits variable from the saved settings.
 
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display.

@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
-from openlp.core.lib.serviceitem import SlideAdvance
+from openlp.core.lib import SlideLimits
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -178,7 +178,7 @@ class GeneralTab(SettingsTab):
         self.audioLayout.addWidget(self.startPausedCheckBox)
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
-        # Service Item Slide Advance
+        # Service Item Slide Limits
         self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.slideGroupBox.setObjectName(u'slideGroupBox')
         self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
@@ -290,9 +290,9 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Background Audio'))
         self.startPausedCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Start background audio paused'))
-        # Slide Advance
+        # Slide Limits
         self.slideGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Service Item Slide Advance'))
+            translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.endSlideRadioButton.setText(
             translate('OpenLP.GeneralTab', '&End Slide'))
         self.endSlideLabel.setText(
@@ -363,12 +363,12 @@ class GeneralTab(SettingsTab):
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.display_changed = False
         settings.beginGroup(self.settingsSection)
-        self.slide_advance = settings.value(
-            u'slide advance', QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+        self.slide_limits = settings.value(
+            u'slide limits', QtCore.QVariant(SlideLimits.End)).toInt()[0]
         settings.endGroup()
-        if self.slide_advance == SlideAdvance.End:
+        if self.slide_limits == SlideLimits.End:
             self.endSlideRadioButton.setChecked(True)
-        elif self.slide_advance == SlideAdvance.Wrap:
+        elif self.slide_limits == SlideLimits.Wrap:
             self.wrapSlideRadioButton.setChecked(True)
         else:
             self.nextSlideRadioButton.setChecked(True)
@@ -417,7 +417,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.setValue(u'slide advance', QtCore.QVariant(self.slide_advance))
+        settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
         settings.endGroup()        
         # On save update the screens as well
         self.postSetUp(True)
@@ -446,7 +446,7 @@ class GeneralTab(SettingsTab):
         if self.display_changed:
             Receiver.send_message(u'config_screen_changed')
         self.display_changed = False
-        Receiver.send_message(u'slidecontroller_update_slide_advance')
+        Receiver.send_message(u'slidecontroller_update_slide_limits')
 
     def onOverrideCheckBoxToggled(self, checked):
         """
@@ -468,10 +468,10 @@ class GeneralTab(SettingsTab):
         self.display_changed = True
         
     def onEndSlideButtonPressed(self):
-        self.slide_advance = SlideAdvance.End
+        self.slide_limits = SlideLimits.End
 
     def onWrapSlideButtonPressed(self):
-        self.slide_advance = SlideAdvance.Wrap
+        self.slide_limits = SlideLimits.Wrap
 
     def onNextSlideButtonPressed(self):
-        self.slide_advance = SlideAdvance.Next
+        self.slide_limits = SlideLimits.Next

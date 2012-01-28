@@ -42,6 +42,24 @@ class MediaType(object):
     """
     Audio = 1
     Video = 2
+    
+class SlideLimits(object):
+    """
+    Provides an enumeration for behaviour of OpenLP at the end limits of each
+    service item when pressing the up/down arrow keys
+    """
+    End = 1
+    Wrap = 2
+    Next = 3
+    
+class ServiceItemAction(object):
+    """
+    Provides an enumeration for the required action moving between service 
+    items by left/right arrow keys
+    """
+    Previous = 1
+    PreviousLastSlide = 2
+    Next = 3
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,

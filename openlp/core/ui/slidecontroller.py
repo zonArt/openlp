@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
-from openlp.core.lib.serviceitem import SlideAdvance
+from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -48,15 +48,6 @@ class SlideList(QtGui.QTableWidget):
     """
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
-        
-class ServiceItemAdvance(object):
-    """
-    Provides an enumeration for the service item advance by left/right
-    arrow keys
-    """
-    Previous = 1
-    PreviousLastSlide = 2
-    Next = 3
 
 class Controller(QtGui.QWidget):
     """
@@ -112,8 +103,8 @@ class SlideController(Controller):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
-        self.slide_advance = None
-        self.updateSlideAdvance()
+        self.slide_limits = None
+        self.updateSlideLimits()
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -463,8 +454,8 @@ class SlideController(Controller):
             QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_update_slide_advance'),
-            self.updateSlideAdvance)
+            QtCore.SIGNAL(u'slidecontroller_update_slide_limits'),
+            self.updateSlideLimits)
 
     def slideShortcutActivated(self):
         """
@@ -607,14 +598,14 @@ class SlideController(Controller):
         """
         Live event to select the previous service item from the service manager.
         """
-        self.keypress_queue.append(ServiceItemAdvance.Previous)
+        self.keypress_queue.append(ServiceItemAction.Previous)
         self._process_queue()
 
     def serviceNext(self):
         """
         Live event to select the next service item from the service manager.
         """
-        self.keypress_queue.append(ServiceItemAdvance.Next)
+        self.keypress_queue.append(ServiceItemAction.Next)
         self._process_queue()
 
     def _process_queue(self):
@@ -626,9 +617,9 @@ class SlideController(Controller):
             while len(self.keypress_queue) and not self.keypress_loop:
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
-                if keypressCommand == ServiceItemAdvance.Previous:
+                if keypressCommand == ServiceItemAction.Previous:
                     Receiver.send_message('servicemanager_previous_item', None)
-                elif keypressCommand == ServiceItemAdvance.PreviousLastSlide:
+                elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
                     Receiver.send_message('servicemanager_previous_item', 'last slide')
                 else:
@@ -719,13 +710,13 @@ class SlideController(Controller):
         """
         self.delaySpinBox.setValue(int(value))
     
-    def updateSlideAdvance(self):
+    def updateSlideLimits(self):
         """
-        Updates the Slide Advance variable from the settings.
+        Updates the Slide Limits variable from the settings.
         """
-        self.slide_advance = QtCore.QSettings().value(
-            self.parent().generalSettingsSection + u'/slide advance',
-            QtCore.QVariant(SlideAdvance.End)).toInt()[0]
+        self.slide_limits = QtCore.QSettings().value(
+            self.parent().generalSettingsSection + u'/slide limits',
+            QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
     def enableToolBar(self, item):
         """
@@ -1204,9 +1195,9 @@ class SlideController(Controller):
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
                 if wrap is None:
-                    if self.slide_advance == SlideAdvance.Wrap:
+                    if self.slide_limits == SlideLimits.Wrap:
                         row = 0
-                    elif self.slide_advance == SlideAdvance.Next:
+                    elif self.slide_limits == SlideLimits.Next:
                         self.serviceNext()
                         return
                     else:
@@ -1231,10 +1222,10 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if self.slide_advance == SlideAdvance.Wrap:
+                if self.slide_limits == SlideLimits.Wrap:
                     row = self.previewListWidget.rowCount() - 1
-                elif self.slide_advance == SlideAdvance.Next:
-                    self.keypress_queue.append(ServiceItemAdvance.PreviousLastSlide)
+                elif self.slide_limits == SlideLimits.Next:
+                    self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
                     self._process_queue()
                     return
                 else:

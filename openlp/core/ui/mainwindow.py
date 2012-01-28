@@ -38,7 +38,7 @@ from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
-from openlp.core.lib.serviceitem import SlideAdvance
+from openlp.core.lib import SlideLimits
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
@@ -1314,10 +1314,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if QtCore.QSettings().value(self.generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 QtCore.QSettings().setValue(self.generalSettingsSection +
-                    u'/slide advance', QtCore.QVariant(SlideAdvance.Wrap))
+                    u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
             else:
                 QtCore.QSettings().setValue(self.generalSettingsSection +
-                    u'/slide advance', QtCore.QVariant(SlideAdvance.End))
+                    u'/slide limits', QtCore.QVariant(SlideLimits.End))
             QtCore.QSettings().remove(self.generalSettingsSection + 
                 u'/enable slide loop')
         settings = QtCore.QSettings()
