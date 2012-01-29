@@ -1,4 +1,26 @@
 <RCC>
+  <qresource prefix="songs">
+    <file>song_search_all.png</file>
+    <file>song_search_author.png</file>
+    <file>song_search_lyrics.png</file>
+    <file>song_search_title.png</file>
+    <file>topic_edit.png</file>
+    <file>author_add.png</file>
+    <file>author_delete.png</file>
+    <file>book_add.png</file>
+    <file>song_maintenance.png</file>
+    <file>topic_add.png</file>
+    <file>book_delete.png</file>
+    <file>book_edit.png</file>
+    <file>author_edit.png</file>
+    <file>topic_delete.png</file>
+    <file>book_maintenance.png</file>
+    <file>author_maintenance.png</file>
+    <file>topic_maintenance.png</file>
+    <file>song_author_edit.png</file>
+    <file>song_topic_edit.png</file>
+    <file>song_book_edit.png</file>
+  </qresource>
   <qresource prefix="bibles">
     <file>bibles_search_text.png</file>
     <file>bibles_search_reference.png</file>
