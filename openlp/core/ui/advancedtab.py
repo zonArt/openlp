@@ -209,10 +209,10 @@ class AdvancedTab(SettingsTab):
             self.onDefaultServiceDayChanged)
         QtCore.QObject.connect(self.defaultServiceTime,
             QtCore.SIGNAL(u'timeChanged(QTime)'),
-            self.onDefaultServiceTimeChanged)
+            self.updateServiceNameExample)
         QtCore.QObject.connect(self.defaultServiceName,
             QtCore.SIGNAL(u'textChanged(QString)'),
-            self.onDefaultServiceNameChanged)
+            self.updateServiceNameExample)
         QtCore.QObject.connect(self.defaultServiceRevertButton,
             QtCore.SIGNAL(u'pressed()'),
             self.onDefaultServiceRevertButtonPressed)
@@ -330,22 +330,20 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+        self.defaultServiceDay.setCurrentIndex(
+            settings.value(u'default service day',
+            QtCore.QVariant(self.default_service_day)).toInt()[0])
+        self.defaultServiceTime.setTime(QtCore.QTime(
+            settings.value(u'default service hour',
+            self.default_service_hour).toInt()[0],
+            settings.value(u'default service minute',
+            self.default_service_minute).toInt()[0]))
+        self.updateDefaultServiceExample = True
+        self.defaultServiceName.setText(settings.value(u'default service name',
+            self.default_service_name).toString())
         default_service_enabled = settings.value(u'default service enabled',
             QtCore.QVariant(True)).toBool()
-        self.service_day, ok = settings.value(u'default service day',
-            QtCore.QVariant(self.default_service_day)).toInt()
-        self.service_hour, ok = settings.value(u'default service hour',
-            self.default_service_hour).toInt()
-        self.service_minute, ok = settings.value(u'default service minute',
-            self.default_service_minute).toInt()
-        self.service_name = unicode(settings.value(u'default service name',
-            self.default_service_name).toString())
-        self.defaultServiceDay.setCurrentIndex(self.service_day)
-        self.defaultServiceTime.setTime(
-            QtCore.QTime(self.service_hour, self.service_minute))
-        self.defaultServiceName.setText(self.service_name)
         self.defaultServiceCheckBox.setChecked(default_service_enabled)
-        self.updateDefaultServiceExample = True
         self.defaultServiceCheckBoxToggled(default_service_enabled)
         self.x11BypassCheckBox.setChecked(
             settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
@@ -362,18 +360,19 @@ class AdvancedTab(SettingsTab):
         """
         Save settings to disk.
         """
-        preset_is_valid, name_example = self.generate_service_name_example()
+        preset_is_valid = self.generate_service_name_example()[0]
+        service_name = unicode(self.defaultServiceName.text())
         if not preset_is_valid:
-            self.service_name = self.default_service_name
-            self.defaultServiceName.setText(self.service_name)
+            service_name = self.default_service_name
+            self.defaultServiceName.setText(service_name)
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'default service enabled',
             self.defaultServiceCheckBox.isChecked())
-        if self.service_name == self.default_service_name:
+        if service_name == self.default_service_name:
             settings.remove(u'default service name')
         else:
-            settings.setValue(u'default service name', self.service_name)
+            settings.setValue(u'default service name', service_name)
         settings.setValue(u'default service day',
             self.defaultServiceDay.currentIndex())
         settings.setValue(u'default service hour',
@@ -404,57 +403,43 @@ class AdvancedTab(SettingsTab):
             self.display_changed = False
 
     def defaultServiceCheckBoxToggled(self, default_service_enabled):
-        if not self.updateDefaultServiceExample:
-            return
         self.defaultServiceDay.setEnabled(default_service_enabled)
-        time_enabled = default_service_enabled and self.service_day is not 7
+        time_enabled = default_service_enabled and \
+            self.defaultServiceDay.currentIndex() is not 7
         self.defaultServiceTime.setEnabled(time_enabled)
         self.defaultServiceName.setEnabled(default_service_enabled)
         self.defaultServiceRevertButton.setEnabled(default_service_enabled)
 
     def generate_service_name_example(self):
         preset_is_valid = True
-        if self.service_day == 7:
+        if self.defaultServiceDay.currentIndex() == 7:
             time = datetime.now()
         else:
             now = datetime.now()
-            day_delta = self.service_day - now.weekday()
+            day_delta = self.defaultServiceDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.service_hour,
-                minute = self.service_minute)
+            time = time.replace(hour = self.defaultServiceTime.time().hour(),
+                minute = self.defaultServiceTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(self.service_name))
+            service_name_example = time.strftime(unicode(
+                self.defaultServiceName.text()))
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
                 'Syntax error.')
         return preset_is_valid, service_name_example
 
-    def updateServiceNameExample(self):
-        preset_is_valid, name_example = self.generate_service_name_example()
+    def updateServiceNameExample(self, returned_value):
+        if not self.updateDefaultServiceExample:
+            return
+        name_example = self.generate_service_name_example()[1]
         self.defaultServiceExample.setText(name_example)
 
-    def onDefaultServiceDayChanged(self, index):
-        if not self.updateDefaultServiceExample:
-            return
-        self.service_day = index
-        self.defaultServiceTime.setEnabled(self.service_day is not 7)
-        self.updateServiceNameExample()
-
-    def onDefaultServiceTimeChanged(self, time):
-        if not self.updateDefaultServiceExample:
-            return
-        self.service_hour = time.hour()
-        self.service_minute = time.minute()
-        self.updateServiceNameExample()
-
-    def onDefaultServiceNameChanged(self, name):
-        if not self.updateDefaultServiceExample:
-            return
-        self.service_name = name
-        self.updateServiceNameExample()
+    def onDefaultServiceDayChanged(self, service_day):
+        self.defaultServiceTime.setEnabled(service_day is not 7)
+        self.updateServiceNameExample(None)
 
     def onDefaultServiceRevertButtonPressed(self):
         self.defaultServiceName.setText(self.default_service_name)
