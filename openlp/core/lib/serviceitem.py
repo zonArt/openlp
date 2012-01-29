@@ -47,6 +47,7 @@ class ServiceItemType(object):
     Image = 2
     Command = 3
 
+    
 class ItemCapabilities(object):
     """
     Provides an enumeration of a serviceitem's capabilities

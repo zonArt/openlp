@@ -621,7 +621,7 @@ class SlideController(Controller):
                     Receiver.send_message('servicemanager_previous_item', None)
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
-                    Receiver.send_message('servicemanager_previous_item', 'last slide')
+                    Receiver.send_message('servicemanager_previous_item', u'last slide')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
