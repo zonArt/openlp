@@ -201,6 +201,7 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.x11GroupBox)
         self.rightLayout.addStretch()
 
+        self.updateDefaultServiceExample = False
         QtCore.QObject.connect(self.defaultServiceCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.defaultServiceCheckBoxToggled)
         QtCore.QObject.connect(self.defaultServiceDay,
@@ -344,6 +345,7 @@ class AdvancedTab(SettingsTab):
             QtCore.QTime(self.service_hour, self.service_minute))
         self.defaultServiceName.setText(self.service_name)
         self.defaultServiceCheckBox.setChecked(default_service_enabled)
+        self.updateDefaultServiceExample = True
         self.defaultServiceCheckBoxToggled(default_service_enabled)
         self.x11BypassCheckBox.setChecked(
             settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
@@ -402,6 +404,8 @@ class AdvancedTab(SettingsTab):
             self.display_changed = False
 
     def defaultServiceCheckBoxToggled(self, default_service_enabled):
+        if not self.updateDefaultServiceExample:
+            return
         self.defaultServiceDay.setEnabled(default_service_enabled)
         time_enabled = default_service_enabled and self.service_day is not 7
         self.defaultServiceTime.setEnabled(time_enabled)
@@ -433,16 +437,22 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceExample.setText(name_example)
 
     def onDefaultServiceDayChanged(self, index):
+        if not self.updateDefaultServiceExample:
+            return
         self.service_day = index
         self.defaultServiceTime.setEnabled(self.service_day is not 7)
         self.updateServiceNameExample()
 
     def onDefaultServiceTimeChanged(self, time):
+        if not self.updateDefaultServiceExample:
+            return
         self.service_hour = time.hour()
         self.service_minute = time.minute()
         self.updateServiceNameExample()
 
     def onDefaultServiceNameChanged(self, name):
+        if not self.updateDefaultServiceExample:
+            return
         self.service_name = name
         self.updateServiceNameExample()
 
