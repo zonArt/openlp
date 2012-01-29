@@ -42,8 +42,8 @@ class MediaType(object):
     """
     Audio = 1
     Video = 2
-    
-    
+
+
 class SlideLimits(object):
     """
     Provides an enumeration for behaviour of OpenLP at the end limits of each
@@ -52,8 +52,8 @@ class SlideLimits(object):
     End = 1
     Wrap = 2
     Next = 3
-    
-    
+
+
 class ServiceItemAction(object):
     """
     Provides an enumeration for the required action moving between service 
