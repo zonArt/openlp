@@ -27,12 +27,13 @@
 """
 The :mod:`advancedtab` provides an advanced settings facility.
 """
+from datetime import datetime, timedelta
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter
-from datetime import datetime, timedelta
 
 class AdvancedTab(SettingsTab):
     """
@@ -150,10 +151,6 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceExample.setObjectName(u'defaultServiceExample')
         self.defaultServiceLayout.addRow(self.defaultServiceExampleLabel,
             self.defaultServiceExample)
-        self.defaultServiceNote = QtGui.QLabel(self.defaultServiceGroupBox)
-        self.defaultServiceNote.setWordWrap(True)
-        self.defaultServiceNote.setObjectName(u'defaultServiceNote')
-        self.defaultServiceLayout.addRow(self.defaultServiceNote)
         self.leftLayout.addWidget(self.defaultServiceGroupBox)
         self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -273,15 +270,14 @@ class AdvancedTab(SettingsTab):
             'Time when usual service starts.'))
         self.defaultServiceLabel.setText(
             translate('OpenLP.AdvancedTab', 'Name:'))
+        self.defaultServiceName.setToolTip(translate('OpenLP.AdvancedTab',
+            'Consult the OpenLP manual for usage.'))
         self.defaultServiceRevertButton.setToolTip(unicode(
             translate('OpenLP.AdvancedTab',
             'Revert to the default service name "%s".')) %
             self.default_service_name)
         self.defaultServiceExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
-        self.defaultServiceNote.setText(
-            translate('OpenLP.AdvancedTab', 'Note: '
-            'Consult the OpenLP manual for usage.'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
