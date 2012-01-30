@@ -94,6 +94,7 @@ class RemoteTab(SettingsTab):
         self.qrDescriptionLabel = QtGui.QLabel(self.androidAppGroupBox)
         self.qrDescriptionLabel.setObjectName(u'qrDescriptionLabel')
         self.qrDescriptionLabel.setOpenExternalLinks(True)
+        self.qrDescriptionLabel.setWordWrap(True)
         self.qrLayout.addWidget(self.qrDescriptionLabel)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
