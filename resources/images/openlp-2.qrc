@@ -149,4 +149,7 @@
     <file>theme_new.png</file>
     <file>theme_edit.png</file>
   </qresource>
+  <qresource prefix="remotes">
+    <file>android_app_qr.png</file>
+  </qresource>
 </RCC>
