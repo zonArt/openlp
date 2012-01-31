@@ -1059,7 +1059,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
-            section, key = section_key.split(u'/')
             key_value = settings.value(section_key)
             export_settings.setValue(section_key, key_value)
         export_settings.sync()
