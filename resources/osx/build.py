@@ -31,8 +31,8 @@ Mac OS X Build Script
 This script is used to build the OS X binary and the accompanying installer.
 For this script to work out of the box, it depends on a number of things:
 
-Python 2.6
-    This build script only works with Python 2.6.
+Python 2.6/2.7
+    This build script only works with Python 2.6/2.7
 
 PyQt4
     You should already have this installed, OpenLP doesn't work without it.
@@ -76,7 +76,6 @@ build process you can specify different make targets
     make bundle -- compresses the dmg file and sets the dmg file icon
 """
 
-import time
 import os
 import ConfigParser
 import logging
@@ -87,29 +86,23 @@ import platform
 import re
 import subprocess as subp
 
+from shutil import copy
+
 # set the script name
 script_name = "build"
+
 
 def build_application(settings, app_name_lower, app_dir):
     logging.info('[%s] now building the app with pyinstaller at "%s"...',
         script_name, settings['pyinstaller_basedir'])
-    result = os.system('python %s/pyinstaller.py openlp.spec' \
-              % settings['pyinstaller_basedir'])
+    result = os.system('arch -i386 %s %s/pyinstaller.py openlp.spec' \
+              % ( sys.executable,
+                settings['pyinstaller_basedir']) )
     if (result != 0):
         logging.error('[%s] The pyinstaller build reported an error, cannot \
             continue!', script_name)
         sys.exit(1)
 
-    logging.info('[%s] copying the qt_menu files...', script_name)
-    # see http://www.pyinstaller.org/ticket/157
-    result = os.system('cp -R %(qt_menu_directory)s \
-        %(application_directory)s/Contents/Resources' \
-        % { 'qt_menu_directory' : settings['qt_menu_basedir'],
-            'application_directory' : app_dir })
-    if (result != 0):
-        logging.error('[%s] could not copy the qt_menu files, cannot \
-            continue!', script_name)
-        sys.exit(1)
 
     dist_folder = os.getcwd() + '/dist/' + app_name_lower
 
@@ -162,7 +155,7 @@ def build_application(settings, app_name_lower, app_dir):
         sys.exit(1)
 
     logging.info('[%s] copying the translations...', script_name)
-    os.mkdir(app_dir + '/Contents/MacOS/i18n')
+    os.makedirs(app_dir + '/Contents/MacOS/i18n')
     for ts_file in glob.glob(os.path.join(settings['openlp_basedir']
         + '/resources/i18n/', '*ts')):
         result = os.system('lconvert -i %(ts_file)s \
@@ -174,14 +167,21 @@ def build_application(settings, app_name_lower, app_dir):
                 creation failed!', script_name)
             sys.exit(1)
 
-def deploy_qt(settings):
-    logging.info('[%s] running mac deploy qt on %s.app...', script_name,
-        settings['openlp_appname']);
+    # Backported from windows build script.
+    logging.info('[%s] copying the media player...', script_name)
+    os.makedirs(os.path.join(app_dir, 'Contents/MacOS/core/ui/media'))
+    source = os.path.join(settings['openlp_basedir'], u'openlp', u'core', u'ui', u'media')
+    dest = os.path.join(app_dir, u'Contents/MacOS/core/ui/media')
+    for root, dirs, files in os.walk(source):
+        for filename in files:
+            print filename
+            if not filename.endswith(u'.pyc'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                copy(os.path.join(root, filename),
+                    os.path.join(dest_path, filename))
 
-    result = os.system('macdeployqt %s.app' % settings['openlp_appname']);
-    if (result != 0):
-        logging.error('[%s] could not create dmg file!', script_name)
-        sys.exit(1)
 
 def create_dmg(settings):
     logging.info('[%s] creating the dmg...', script_name)
@@ -219,10 +219,10 @@ def create_dmg(settings):
         sys.exit(1)
 
     logging.info('[%s] copying the background image...', script_name)
-    # os.mkdir(volume_basedir + '/.background')
+    os.mkdir(volume_basedir + '/.background')
     result = os.system('CpMac %s %s'
         % (settings['installer_backgroundimage_file'],
-           volume_basedir + '/.installer-background.png'))
+           volume_basedir + '/.background/installer-background.png'))
     if (result != 0):
         logging.error('[%s] could not copy the background image, dmg creation\
             failed!', script_name)
@@ -304,7 +304,6 @@ if __name__ == '__main__':
     do_package_view = True
     do_create_dmg = True
     do_compress_dmg = True
-    do_deploy_qt = True
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest='config', help='config file',
@@ -331,7 +330,6 @@ if __name__ == '__main__':
     if (options.package_view is True or options.compress_view is True
         or options.package is True or options.compress is True):
         do_build = False
-        do_deploy_qt = False
         do_package_view = options.package_view
         do_compress_view = options.compress_view
         do_create_dmg = options.package
@@ -362,7 +360,7 @@ if __name__ == '__main__':
 
     version = platform.mac_ver()[0]
     # we only need the differenciation between leopard and snow leopard
-    if version.startswith("10.6"):
+    if version.startswith("10.6") or version.startswith("10.7"):
         SNOWLEOPARD = True
         logging.info('[%s] using snow leopard scripts (version = %s)',
             script_name, version)
@@ -404,9 +402,6 @@ if __name__ == '__main__':
     if (do_build is True):
         build_application(settings, app_name_lower, app_dir)
 
-    if (do_deploy_qt is True):
-        deploy_qt(settings)
-
     if (do_create_dmg is True):
         (volume_basedir, dmg_file) = create_dmg(settings)
     else:
@@ -429,4 +424,3 @@ if __name__ == '__main__':
     if (do_compress_dmg is True):
         logging.info('[%s] finished creating dmg file, resulting file is "%s"',
             script_name, dmg_file)
-

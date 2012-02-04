@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +35,13 @@ import types
 from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
+
+class MediaType(object):
+    """
+    An enumeration class for types of media.
+    """
+    Audio = 1
+    Video = 2
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -73,6 +80,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
+        if not file_handle.read(3) == '\xEF\xBB\xBF':
+            # no BOM was found
+            file_handle.seek(0)
         content = file_handle.read()
         content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):
@@ -137,7 +147,60 @@ def image_to_byte(image):
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
-def resize_image(image_path, width, height, background=QtCore.Qt.black):
+def create_thumb(image_path, thumb_path, return_icon=True, size=None):
+    """
+    Create a thumbnail from the given image path and depending on
+    ``return_icon`` it returns an icon from this thumb.
+
+    ``image_path``
+        The image file to create the icon from.
+
+    ``thumb_path``
+        The filename to save the thumbnail to.
+
+    ``return_icon``
+        States if an icon should be build and returned from the thumb. Defaults
+        to ``True``.
+
+    ``size``
+        Allows to state a own size to use. Defaults to ``None``, which means
+        that a default height of 88 is used.
+    """
+    ext = os.path.splitext(thumb_path)[1].lower()
+    reader = QtGui.QImageReader(image_path)
+    if size is None:
+        ratio = float(reader.size().width()) / float(reader.size().height())
+        reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
+    else:
+        reader.setScaledSize(size)
+    thumb = reader.read()
+    thumb.save(thumb_path, ext[1:])
+    if not return_icon:
+        return
+    if os.path.exists(thumb_path):
+        return build_icon(unicode(thumb_path))
+    # Fallback for files with animation support.
+    return build_icon(unicode(image_path))
+
+def validate_thumb(file_path, thumb_path):
+    """
+    Validates whether an file's thumb still exists and if is up to date.
+    **Note**, you must **not** call this function, before checking the
+    existence of the file.
+
+    ``file_path``
+        The path to the file. The file **must** exist!
+
+    ``thumb_path``
+        The path to the thumb.
+    """
+    if not os.path.exists(thumb_path):
+        return False
+    image_date = os.stat(file_path).st_mtime
+    thumb_date = os.stat(thumb_path).st_mtime
+    return image_date <= thumb_date
+
+def resize_image(image_path, width, height, background=u'#000000'):
     """
     Resize an image to fit on the current screen.
 
@@ -151,7 +214,9 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
         The new image height.
 
     ``background``
-        The background colour defaults to black.
+        The background colour. Defaults to black.
+
+    DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
@@ -178,7 +243,7 @@ def resize_image(image_path, width, height, background=QtCore.Qt.black):
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
-    painter.fillRect(new_image.rect(), background)
+    painter.fillRect(new_image.rect(), QtGui.QColor(background))
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
@@ -205,7 +270,7 @@ def clean_tags(text):
     text = text.replace(u'<br>', u'\n')
     text = text.replace(u'{br}', u'\n')
     text = text.replace(u'&nbsp;', u' ')
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
     return text
@@ -214,7 +279,7 @@ def expand_tags(text):
     """
     Expand tags HTML for display
     """
-    for tag in DisplayTags.get_html_tags():
+    for tag in FormattingTags.get_html_tags():
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
@@ -233,17 +298,15 @@ def check_directory_exists(dir):
     except IOError:
         pass
 
-from listwidgetwithdnd import ListWidgetWithDnD
-from displaytags import DisplayTags
 from eventreceiver import Receiver
+from listwidgetwithdnd import ListWidgetWithDnD
+from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from serviceitem import ServiceItem
-from serviceitem import ServiceItemType
-from serviceitem import ItemCapabilities
+from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
 from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar

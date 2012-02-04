@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,6 +37,8 @@ from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
+VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
+
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.
@@ -60,7 +62,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
@@ -105,14 +106,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_tag = match.group(1)
             try:
                 verse_num = int(match.group(2))
             except ValueError:
                 verse_num = 1
-            verse_type_index = VerseType.from_loose_input(verse_tag)
+            verse_type_index = VerseType.from_loose_input(verse_tag, None)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_num)
 
@@ -136,10 +137,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_type = match.group(1)
-            verse_type_index = VerseType.from_loose_input(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type, None)
             try:
                 verse_number = int(match.group(2))
             except ValueError:
@@ -152,7 +153,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
         self.hasSingleVerse = single
         if single:
-            verse_type_index = VerseType.from_tag(tag[0])
+            verse_type_index = VerseType.from_tag(tag[0], None)
             verse_number = tag[1:]
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
@@ -185,7 +186,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if self.hasSingleVerse:
             value = unicode(self.getVerse()[0])
         else:
-            value = self.getVerse()[0].split(u'\n')[1]
+            log.debug(unicode(self.getVerse()[0]).split(u'\n'))
+            value = unicode(self.getVerse()[0]).split(u'\n')[1]
+            if len(value) == 0:
+                lines = unicode(self.getVerse()[0]).split(u'\n')
+                index = 2
+                while index < len(lines) and len(value) == 0:
+                    value = lines[index]
+                    index += 1
         if len(value) == 0:
             critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',

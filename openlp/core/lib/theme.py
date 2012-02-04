@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,8 +34,7 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool, translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import str_to_bool
 
 log = logging.getLogger(__name__)
 
@@ -45,6 +44,7 @@ BLANK_THEME_XML = \
    <name> </name>
    <background type="image">
       <filename></filename>
+      <borderColor>#000000</borderColor>
    </background>
    <background type="gradient">
       <startColor>#000000</startColor>
@@ -100,6 +100,7 @@ class BackgroundType(object):
     Solid = 0
     Gradient = 1
     Image = 2
+    Transparent = 3
 
     @staticmethod
     def to_string(background_type):
@@ -112,6 +113,8 @@ class BackgroundType(object):
             return u'gradient'
         elif background_type == BackgroundType.Image:
             return u'image'
+        elif background_type == BackgroundType.Transparent:
+            return u'transparent'
 
     @staticmethod
     def from_string(type_string):
@@ -124,6 +127,8 @@ class BackgroundType(object):
             return BackgroundType.Gradient
         elif type_string == u'image':
             return BackgroundType.Image
+        elif type_string == u'transparent':
+            return BackgroundType.Transparent
 
 
 class BackgroundGradientType(object):
@@ -176,12 +181,9 @@ class HorizontalType(object):
     Left = 0
     Right = 1
     Center = 2
+    Justify = 3
 
-    Names = [u'left', u'right', u'center']
-    TranslatedNames = [
-        translate('OpenLP.ThemeWizard', 'Left'),
-        translate('OpenLP.ThemeWizard', 'Right'),
-        translate('OpenLP.ThemeWizard', 'Center')]
+    Names = [u'left', u'right', u'center', u'justify']
 
 
 class VerticalType(object):
@@ -193,7 +195,6 @@ class VerticalType(object):
     Bottom = 2
 
     Names = [u'top', u'middle', u'bottom']
-    TranslatedNames = [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
@@ -250,7 +251,7 @@ class ThemeXML(object):
         Add a transparent background.
         """
         background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'mode', u'transparent')
+        background.setAttribute(u'type', u'transparent')
         self.theme.appendChild(background)
 
     def add_background_solid(self, bkcolor):
@@ -288,7 +289,7 @@ class ThemeXML(object):
         # Create direction element
         self.child_element(background, u'direction', unicode(direction))
 
-    def add_background_image(self, filename):
+    def add_background_image(self, filename, borderColor):
         """
         Add a image background.
 
@@ -300,6 +301,8 @@ class ThemeXML(object):
         self.theme.appendChild(background)
         # Create Filename element
         self.child_element(background, u'filename', filename)
+        # Create endColor element
+        self.child_element(background, u'borderColor', unicode(borderColor))
 
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
@@ -489,25 +492,25 @@ class ThemeXML(object):
             return
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
-            parent = element.getparent()
             master = u''
+            if element.tag == u'background':
+                if element.attrib:
+                    for attr in element.attrib:
+                        self._create_attr(element.tag, attr, \
+                        element.attrib[attr])
+            parent = element.getparent()
             if parent is not None:
-                if element.getparent().tag == u'font':
-                    master = element.getparent().tag + u'_' + \
-                    element.getparent().attrib[u'type']
+                if parent.tag == u'font':
+                    master = parent.tag + u'_' + parent.attrib[u'type']
                 # set up Outline and Shadow Tags and move to font_main
-                if element.getparent().tag == u'display':
+                if parent.tag == u'display':
                     if element.tag.startswith(u'shadow') or \
                         element.tag.startswith(u'outline'):
                         self._create_attr(u'font_main', element.tag,
                             element.text)
-                    master = element.getparent().tag
-                if element.getparent().tag == u'background':
-                    master = element.getparent().tag
-                    if element.getparent().attrib:
-                        for attr in element.getparent().attrib:
-                            self._create_attr(master, attr, \
-                            element.getparent().attrib[attr])
+                    master = parent.tag
+                if parent.tag == u'background':
+                    master = parent.tag
             if master:
                 self._create_attr(master, element.tag, element.text)
                 if element.attrib:
@@ -601,9 +604,13 @@ class ThemeXML(object):
                 self.background_start_color,
                 self.background_end_color,
                 self.background_direction)
-        else:
+        elif self.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
             filename = os.path.split(self.background_filename)[1]
-            self.add_background_image(filename)
+            self.add_background_image(filename, self.background_border_color)
+        elif self.background_type == \
+            BackgroundType.to_string(BackgroundType.Transparent):
+            self.add_background_transparent()
         self.add_font(self.font_main_name,
             self.font_main_color,
             self.font_main_size,

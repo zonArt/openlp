@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +36,8 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, base_action, icon_action
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
+    SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
@@ -57,11 +58,14 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
+        self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
-        self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
+
+    def checkPreConditions(self):
+        return self.manager.session is not None
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -70,9 +74,14 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.songImportItem, UiStrings().Import)
-        action_list.add_action(self.songExportItem, UiStrings().Export)
-        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.add_action(self.songImportItem, unicode(UiStrings().Import))
+        action_list.add_action(self.songExportItem, unicode(UiStrings().Export))
+        action_list.add_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_new_service'),
+        self.clearTemporarySongs)
+
 
     def addImportMenuItem(self, import_menu):
         """
@@ -195,7 +204,7 @@ class SongsPlugin(Plugin):
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get_class(format)
         importer = class_(self.manager, **kwargs)
-        importer.register(self.mediaItem.import_wizard)
+        importer.register(self.mediaItem.importWizard)
         return importer
 
     def setPluginTextStrings(self):
@@ -215,13 +224,13 @@ class SongsPlugin(Plugin):
         tooltips = {
             u'load': u'',
             u'import': u'',
-            u'new': translate('SongsPlugin', 'Add a new Song.'),
-            u'edit': translate('SongsPlugin', 'Edit the selected Song.'),
-            u'delete': translate('SongsPlugin', 'Delete the selected Song.'),
-            u'preview': translate('SongsPlugin', 'Preview the selected Song.'),
-            u'live': translate('SongsPlugin', 'Send the selected Song live.'),
+            u'new': translate('SongsPlugin', 'Add a new song.'),
+            u'edit': translate('SongsPlugin', 'Edit the selected song.'),
+            u'delete': translate('SongsPlugin', 'Delete the selected song.'),
+            u'preview': translate('SongsPlugin', 'Preview the selected song.'),
+            u'live': translate('SongsPlugin', 'Send the selected song live.'),
             u'service': translate('SongsPlugin',
-                'Add the selected Song to the service.')
+                'Add the selected song to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
@@ -251,7 +260,7 @@ class SongsPlugin(Plugin):
             progress.setValue(idx)
             Receiver.send_message(u'openlp_process_events')
             importer = OpenLPSongImport(self.manager, filename=db)
-            importer.do_import()
+            importer.doImport()
         progress.setValue(len(song_dbs))
         self.mediaItem.onSearchTextButtonClick()
 
@@ -260,12 +269,23 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
+        self.clearTemporarySongs()
+        # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem, UiStrings().Import)
-        action_list.remove_action(self.songExportItem, UiStrings().Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.songImportItem,
+            unicode(UiStrings().Import))
+        action_list.remove_action(self.songExportItem,
+            unicode(UiStrings().Export))
+        action_list.remove_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
         Plugin.finalise(self)
+
+    def clearTemporarySongs(self):
+        # Remove temporary songs
+        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        for song in songs:
+            self.manager.delete_object(Song, song.id)

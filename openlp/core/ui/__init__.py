@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -52,16 +52,35 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+class AlertLocation(object):
+    """
+    This is an enumeration class which controls where Alerts are placed on the
+    screen.
+
+    ``Top``
+        Place the text at the top of the screen.
+
+    ``Middle``
+        Place the text in the middle of the screen.
+
+    ``Bottom``
+        Place the text at the bottom of the screen.
+    """
+    Top = 0
+    Middle = 1
+    Bottom = 2
+
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
+from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
 from screen import ScreenList
-from maindisplay import MainDisplay
+from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController
+from slidecontroller import SlideController, Controller
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
@@ -69,7 +88,7 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
-from displaytagform import DisplayTagForm
+from formattingtagform import FormattingTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager

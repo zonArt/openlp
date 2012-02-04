@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,6 @@
 """
 The bible import functions for OpenLP
 """
-import csv
 import logging
 import os
 import os.path
@@ -39,7 +38,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, string_is_unicode
+from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 
@@ -462,6 +461,11 @@ class BibleImportForm(OpenLPWizard):
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
+            elif self.field(u'source_format').toInt()[0] == \
+                BibleFormat.WebDownload:
+                self.versionNameEdit.setText(
+                    self.webTranslationComboBox.currentText())
+                return True
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
                     critical_error_message_box(UiStrings().NFSs,
@@ -675,7 +679,7 @@ class BibleImportForm(OpenLPWizard):
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
-                name=license_version, 
+                name=license_version,
                 booksfile=unicode(self.field(u'csv_booksfile').toString()),
                 versefile=unicode(self.field(u'csv_versefile').toString())
             )

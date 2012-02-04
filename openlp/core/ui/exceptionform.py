@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,13 +32,18 @@ import platform
 import sqlalchemy
 import BeautifulSoup
 from lxml import etree
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
 try:
     from PyQt4.phonon import Phonon
     PHONON_VERSION = Phonon.phononVersion()
 except ImportError:
     PHONON_VERSION = u'-'
+try:
+    import migrate
+    MIGRATE_VERSION = getattr(migrate, u'__version__', u'< 0.7')
+except ImportError:
+    MIGRATE_VERSION = u'-'
 try:
     import chardet
     CHARDET_VERSION = chardet.__version__
@@ -54,9 +59,31 @@ try:
     SQLITE_VERSION = sqlite.version
 except ImportError:
     SQLITE_VERSION = u'-'
+try:
+    import mako
+    MAKO_VERSION = mako.__version__
+except ImportError:
+    MAKO_VERSION = u'-'
+try:
+    import uno
+    arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
+    arg.Name = u'nodepath'
+    arg.Value = u'/org.openoffice.Setup/Product'
+    context = uno.getComponentContext()
+    provider = context.ServiceManager.createInstance(
+        u'com.sun.star.configuration.ConfigurationProvider')
+    node = provider.createInstanceWithArguments(
+        u'com.sun.star.configuration.ConfigurationAccess', (arg,))
+    UNO_VERSION = node.getByName(u'ooSetupVersion')
+except ImportError:
+    UNO_VERSION = u'-'
+try:
+    WEBKIT_VERSION = QtWebKit.qWebKitVersion()
+except AttributeError:
+    WEBKIT_VERSION = u'-'
+
 
 from openlp.core.lib import translate, SettingsManager
-from openlp.core.lib.mailto import mailto
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -89,12 +116,16 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'Qt4: %s\n' % Qt.qVersion() + \
             u'Phonon: %s\n' % PHONON_VERSION + \
             u'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
+            u'QtWebkit: %s\n' % WEBKIT_VERSION + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
+            u'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
             u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            u'PySQLite: %s\n' % SQLITE_VERSION
+            u'PySQLite: %s\n' % SQLITE_VERSION + \
+            u'Mako: %s\n' % MAKO_VERSION + \
+            u'pyUNO bridge: %s\n' % UNO_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'
@@ -153,18 +184,20 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Please add the information that bug reports are favoured written '
             'in English.'))
         content = self._createReport()
+        source = u''
+        exception = u''
         for line in content[2].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
+        mailto_url = QtCore.QUrl(u'mailto:bugs@openlp.org')
+        mailto_url.addQueryItem(u'subject', subject)
+        mailto_url.addQueryItem(u'body', body % content)
         if self.fileAttachment:
-            mailto(address=u'bugs@openlp.org', subject=subject,
-                body=body % content, attach=self.fileAttachment)
-        else:
-            mailto(address=u'bugs@openlp.org', subject=subject,
-                body=body % content)
+            mailto_url.addQueryItem(u'attach', self.fileAttachment)
+        QtGui.QDesktopServices.openUrl(mailto_url)
 
     def onDescriptionUpdated(self):
         count = int(20 - len(self.descriptionTextEdit.toPlainText()))

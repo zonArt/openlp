@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,9 +29,7 @@ The :mod:`http` module enables OpenLP to retrieve scripture from bible
 websites.
 """
 import logging
-import os
 import re
-import sqlite3
 import socket
 import urllib
 from HTMLParser import HTMLParseError
@@ -40,7 +38,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation, get_web_page
+from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
     Book
@@ -69,10 +67,10 @@ class BGExtract(object):
         ``chapter``
             Chapter number.
         """
-        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, 
+        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version,
             bookname, chapter)
         urlbookname = urllib.quote(bookname.encode("utf-8"))
-        url_params = u'search=%s+%s&version=%s' % (urlbookname, chapter, 
+        url_params = u'search=%s+%s&version=%s' % (urlbookname, chapter,
             version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
@@ -84,13 +82,25 @@ class BGExtract(object):
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
         if footnotes:
-            [footnote.extract() for footnote in footnotes]
+            for footnote in footnotes:
+                footnote.extract()
         crossrefs = soup.findAll(u'sup', u'xref')
         if crossrefs:
-            [crossref.extract() for crossref in crossrefs]
+            for crossref in crossrefs:
+                crossref.extract()
         headings = soup.findAll(u'h5')
         if headings:
-            [heading.extract() for heading in headings]
+            for heading in headings:
+                heading.extract()
+        chapter_notes = soup.findAll('div', 'footnotes')
+        if chapter_notes:
+            log.debug('Found chapter notes')
+            for note in chapter_notes:
+                note.extract()
+        note_comments = soup.findAll(text=u'end of footnotes')
+        if note_comments:
+            for comment in note_comments:
+                comment.extract()
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         verse_list = {}
@@ -147,7 +157,10 @@ class BGExtract(object):
             send_error_message(u'download')
             return None
         page_source = page.read()
-        page_source = unicode(page_source, 'utf8')
+        try:
+            page_source = unicode(page_source, u'utf8')
+        except UnicodeDecodeError:
+            page_source = unicode(page_source, u'cp1251')
         page_source_temp = re.search(u'<table .*?class="infotable".*?>.*?'\
             u'</table>', page_source, re.DOTALL)
         if page_source_temp:
@@ -200,7 +213,7 @@ class BSExtract(object):
         ``chapter``
             Chapter number
         """
-        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version, 
+        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version,
             bookname, chapter)
         urlversion = urllib.quote(version.encode("utf-8"))
         urlbookname = urllib.quote(bookname.encode("utf-8"))
@@ -217,7 +230,7 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.find(u'div').findAll(u'div')
-        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')
@@ -227,7 +240,7 @@ class BSExtract(object):
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a Bible contains from Bibleserver mobile 
+        Load a list of all books a Bible contains from Bibleserver mobile
         website.
 
         ``version``
@@ -273,7 +286,7 @@ class CWExtract(object):
         ``chapter``
             Chapter number
         """
-        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version, 
+        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version,
             bookname, chapter)
         urlbookname = bookname.replace(u' ', u'-')
         urlbookname = urlbookname.lower()
@@ -386,7 +399,7 @@ class HTTPBible(BibleDB):
         """
         self.wizard.progressBar.setMaximum(68)
         self.wizard.incrementProgressBar(unicode(translate(
-            'BiblesPlugin.HTTPBible', 
+            'BiblesPlugin.HTTPBible',
             'Registering Bible and loading books...')))
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
@@ -412,7 +425,7 @@ class HTTPBible(BibleDB):
         self.wizard.progressBar.setMaximum(len(books)+2)
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible', 'Registering Language...')))
-        bible = BiblesResourcesDB.get_webbible(self.download_name, 
+        bible = BiblesResourcesDB.get_webbible(self.download_name,
                 self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
@@ -429,14 +442,14 @@ class HTTPBible(BibleDB):
             self.wizard.incrementProgressBar(unicode(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...',
                 'Importing <book name>...')) % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, len(books), 
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books),
                 language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source,  self.download_name))
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
+            log.debug(u'Book details: Name:%s; id:%s; testament_id:%s',
                 book, book_ref_id, book_details[u'testament_id'])
             self.create_book(book, book_ref_id, book_details[u'testament_id'])
         if self.stop_import_flag:
@@ -521,7 +534,7 @@ class HTTPBible(BibleDB):
     def get_chapter_count(self, book):
         """
         Return the number of chapters in a particular book.
-        
+
         ``book``
         The book object to get the chapter count for.
         """
@@ -594,14 +607,14 @@ def send_error_message(error_type):
     """
     if error_type == u'download':
         critical_error_message_box(
-            translate('BiblePlugin.HTTPBible', 'Download Error'),
-            translate('BiblePlugin.HTTPBible', 'There was a '
+            translate('BiblesPlugin.HTTPBible', 'Download Error'),
+            translate('BiblesPlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
             'please consider reporting a bug.'))
     elif error_type == u'parse':
         critical_error_message_box(
-            translate('BiblePlugin.HTTPBible', 'Parse Error'),
-            translate('BiblePlugin.HTTPBible', 'There was a '
+            translate('BiblesPlugin.HTTPBible', 'Parse Error'),
+            translate('BiblesPlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '
             'to occur please consider reporting a bug.'))

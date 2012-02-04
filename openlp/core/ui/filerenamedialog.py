@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,7 +41,7 @@ class Ui_FileRenameDialog(object):
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
         self.fileNameEdit = QtGui.QLineEdit(fileRenameDialog)
         self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
-            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
         self.buttonBox = create_accept_reject_button_box(fileRenameDialog, True)

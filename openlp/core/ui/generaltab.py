@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -44,7 +44,7 @@ class GeneralTab(SettingsTab):
         """
         self.screens = ScreenList.get_instance()
         self.icon_path = u':/icon/openlp-logo-16x16.png'
-        generalTranslated = translate('GeneralTab', 'General')
+        generalTranslated = translate('OpenLP.GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
 
     def setupUi(self):
@@ -170,6 +170,15 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setMaximum(9999)
         self.displayLayout.addWidget(self.customHeightValueEdit, 4, 3)
         self.rightLayout.addWidget(self.displayGroupBox)
+        # Background audio
+        self.audioGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.audioGroupBox.setObjectName(u'audioGroupBox')
+        self.audioLayout = QtGui.QVBoxLayout(self.audioGroupBox)
+        self.audioLayout.setObjectName(u'audioLayout')
+        self.startPausedCheckBox = QtGui.QCheckBox(self.audioGroupBox)
+        self.startPausedCheckBox.setObjectName(u'startPausedCheckBox')
+        self.audioLayout.addWidget(self.startPausedCheckBox)
+        self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
@@ -243,6 +252,10 @@ class GeneralTab(SettingsTab):
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
+        self.audioGroupBox.setTitle(
+            translate('OpenLP.GeneralTab', 'Background Audio'))
+        self.startPausedCheckBox.setText(
+            translate('OpenLP.GeneralTab', 'Start background audio paused'))
 
     def load(self):
         """
@@ -290,6 +303,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.screens.current[u'size'].height())).toInt()[0])
         self.customWidthValueEdit.setValue(settings.value(u'width',
             QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
+        self.startPausedCheckBox.setChecked(settings.value(
+            u'audio start paused', QtCore.QVariant(True)).toBool())
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
@@ -341,6 +356,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.customWidthValueEdit.value()))
         settings.setValue(u'override position',
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
+        settings.setValue(u'audio start paused',
+            QtCore.QVariant(self.startPausedCheckBox.isChecked()))
         settings.endGroup()
         # On save update the screens as well
         self.postSetUp(True)

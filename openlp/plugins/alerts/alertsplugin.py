@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,11 +27,12 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import icon_action, UiStrings
+from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -39,11 +40,81 @@ from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
 
+JAVASCRIPT = """
+    function show_alert(alerttext, position){
+        var text = document.getElementById('alert');
+        text.innerHTML = alerttext;
+        if(alerttext == '') {
+            text.style.visibility = 'hidden';
+            return 0;
+        }
+        if(position == ''){
+            position = getComputedStyle(text, '').verticalAlign;
+        }
+        switch(position)
+        {
+            case 'top':
+                text.style.top = '0px';
+                break;
+            case 'middle':
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                    + 'px';
+                break;
+            case 'bottom':
+                text.style.top = (window.innerHeight - text.clientHeight)
+                    + 'px';
+                break;
+        }
+        text.style.visibility = 'visible';
+        return text.clientHeight;
+    }
+
+    function update_css(align, font, size, color, bgcolor){
+        var text = document.getElementById('alert');
+        text.style.fontSize = size + "pt";
+        text.style.fontFamily = font;
+        text.style.color = color;
+        text.style.backgroundColor = bgcolor;
+        switch(align)
+        {
+            case 'top':
+                text.style.top = '0px';
+                break;
+            case 'middle':
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                    + 'px';
+                break;
+            case 'bottom':
+                text.style.top = (window.innerHeight - text.clientHeight)
+                    + 'px';
+                break;
+        }
+    }
+"""
+CSS = """
+    #alert {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 10;
+        width: 100%%;
+        vertical-align: %s;
+        font-family: %s;
+        font-size: %spt;
+        color: %s;
+        background-color: %s;
+    }
+"""
+
+HTML = """
+    <div id="alert" style="visibility:hidden"></div>
+"""
+
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', plugin_helpers,
+        Plugin.__init__(self, u'alerts', plugin_helpers,
             settings_tab_class=AlertsTab)
         self.weight = -3
         self.icon_path = u':/plugins/plugin_alerts.png'
@@ -78,8 +149,7 @@ class AlertsPlugin(Plugin):
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
-        self.liveController.alertTab = self.settings_tab
+        action_list.add_action(self.toolsAlertItem, unicode(UiStrings().Tools))
 
     def finalise(self):
         """
@@ -104,7 +174,7 @@ class AlertsPlugin(Plugin):
     def about(self):
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
             '<br />The alert plugin controls the displaying of nursery alerts '
-            'on the display screen')
+            'on the display screen.')
         return about_text
 
     def setPluginTextStrings(self):
@@ -121,3 +191,35 @@ class AlertsPlugin(Plugin):
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
+    def getDisplayJavaScript(self):
+        """
+        Add Javascript to the main display.
+        """
+        return JAVASCRIPT
+
+    def getDisplayCss(self):
+        """
+        Add CSS to the main display.
+        """
+        align = VerticalType.Names[self.settings_tab.location]
+        return CSS % (align, self.settings_tab.font_face,
+            self.settings_tab.font_size, self.settings_tab.font_color,
+            self.settings_tab.bg_color)
+
+    def getDisplayHtml(self):
+        """
+        Add HTML to the main display.
+        """
+        return HTML
+
+    def refreshCss(self, frame):
+        """
+        Trigger an update of the CSS in the maindisplay.
+
+        ``frame``
+            The Web frame holding the page.
+        """
+        align = VerticalType.Names[self.settings_tab.location]
+        frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
+            (align, self.settings_tab.font_face, self.settings_tab.font_size,
+            self.settings_tab.font_color, self.settings_tab.bg_color))

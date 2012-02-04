@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
@@ -58,7 +58,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # load all the settings
         self.settingListWidget.clear()
         for tabIndex in range(0, self.stackedLayout.count() + 1):
-            # take at 0 and the rest shuffell up.
+            # take at 0 and the rest shuffle up.
             self.stackedLayout.takeAt(0)
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
         self.insertTab(self.themesTab, 1, PluginStatus.Active)
@@ -116,3 +116,10 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for plugin in self.plugins:
             if plugin.settings_tab:
                 plugin.settings_tab.postSetUp()
+
+    def tabChanged(self, tabIndex):
+        """
+        A different settings tab is selected
+        """
+        self.stackedLayout.setCurrentIndex(tabIndex)
+        self.stackedLayout.currentWidget().tabVisible()

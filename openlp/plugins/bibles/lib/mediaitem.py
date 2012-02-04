@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,8 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
-    media_item_combo_box, critical_error_message_box, find_and_set_in_combo_box
+    media_item_combo_box, critical_error_message_box, \
+    find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_match
@@ -57,8 +58,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.lockIcon = QtGui.QIcon(u':/bibles/bibles_search_lock.png')
-        self.unlockIcon = QtGui.QIcon(u':/bibles/bibles_search_unlock.png')
+        self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
+        self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
@@ -66,7 +67,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.search_results = {}
         self.second_search_results = {}
-        self.check_search_result()
+        self.checkSearchResult()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -86,7 +87,7 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
-            message=translate('BiblePlugin.MediaItem',
+            message=translate('BiblesPlugin.MediaItem',
             'You cannot combine single and dual Bible verse search results. '
             'Do you want to delete your search results and start a new '
             'search?'),
@@ -390,10 +391,14 @@ class BibleMediaItem(MediaManagerItem):
         elif len(bibles):
             self.initialiseAdvancedBible(bibles[0])
 
-    def reloadBibles(self):
+    def reloadBibles(self, process=False):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
+        # If called from first time wizard re-run, process any new bibles.
+        if process:
+            self.plugin.appStartup()
+        self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible):
         """
@@ -436,7 +441,7 @@ class BibleMediaItem(MediaManagerItem):
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
-                message=translate('BiblePlugin.MediaItem',
+                message=translate('BiblesPlugin.MediaItem',
                 'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
@@ -611,7 +616,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
+        combo.addItems(map(unicode, range(range_from, range_to + 1)))
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -646,7 +651,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
-        self.check_search_result()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -693,8 +698,8 @@ class BibleMediaItem(MediaManagerItem):
                         verse.verse, verse.verse))
                 if passage_not_found:
                     QtGui.QMessageBox.information(self,
-                        translate('BiblePlugin.MediaItem', 'Information'),
-                        unicode(translate('BiblePlugin.MediaItem',
+                        translate('BiblesPlugin.MediaItem', 'Information'),
+                        unicode(translate('BiblesPlugin.MediaItem',
                         'The second Bible does not contain all the verses '
                         'that are in the main Bible. Only verses found in both '
                         'Bibles will be shown. %d verses have not been '
@@ -710,7 +715,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
-        self.check_search_result()
+        self.checkSearchResult()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
@@ -783,7 +788,8 @@ class BibleMediaItem(MediaManagerItem):
             items.append(bible_verse)
         return items
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.
@@ -858,9 +864,9 @@ class BibleMediaItem(MediaManagerItem):
             not second_bible:
             # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsWordSplit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanWordSplit)
         # Service Item: Title
         service_item.title = u', '.join(raw_title)
         # Service Item: Theme
@@ -983,7 +989,8 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False,
+            False)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]

@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,16 +53,16 @@ class OpenLyricsImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
         self.openLyrics = OpenLyrics(self.manager)
 
-    def do_import(self):
+    def doImport(self):
         """
         Imports the songs.
         """
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
+        self.importWizard.progressBar.setMaximum(len(self.importSource))
         parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.import_source:
-            if self.stop_import_flag:
+        for file_path in self.importSource:
+            if self.stopImportFlag:
                 return
-            self.import_wizard.incrementProgressBar(
+            self.importWizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 # Pass a file object, because lxml does not cope with some
@@ -72,4 +72,4 @@ class OpenLyricsImport(SongImport):
                 self.openLyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
-                self.log_error(file_path, SongStrings.XMLSyntaxError)
+                self.logError(file_path, SongStrings.XMLSyntaxError)

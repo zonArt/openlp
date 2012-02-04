@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 
 import logging
 import sqlite
+import sys
 
 from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
@@ -53,9 +54,14 @@ class OpenLP1Bible(BibleDB):
         connection = None
         cursor = None
         try:
-            connection = sqlite.connect(self.filename)
+            connection = sqlite.connect(
+                self.filename.encode(sys.getfilesystemencoding()))
             cursor = connection.cursor()
-        except:
+        except sqlite.DatabaseError:
+            log.exception(u'File "%s" is encrypted or not a sqlite database, '
+            'therefore not an openlp.org 1.x database either' % self.filename)
+            # Please add an user error here!
+            # This file is not an openlp.org 1.x bible database.
             return False
         #Create the bible language
         language_id = self.get_language(bible_name)
@@ -63,7 +69,14 @@ class OpenLP1Bible(BibleDB):
             log.exception(u'Importing books from "%s" failed' % self.filename)
             return False
         # Create all books.
-        cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
+        try:
+            cursor.execute(
+                u'SELECT id, testament_id, name, abbreviation FROM book')
+        except sqlite.DatabaseError as error:
+            log.exception(u'DatabaseError: %s' % error)
+            # Please add an user error here!
+            # This file is not an openlp.org 1.x bible database.
+            return False
         books = cursor.fetchall()
         self.wizard.progressBar.setMaximum(len(books) + 1)
         for book in books:

@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -98,6 +98,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & QtCore.Qt.ShiftModifier == \
             QtCore.Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
+        if event.modifiers() & QtCore.Qt.MetaModifier == \
+            QtCore.Qt.MetaModifier:
+            key_string = u'Meta+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
@@ -244,7 +247,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     alternate_label_text = action.defaultShortcuts[1].toString()
             shortcuts = self._actionShortcuts(action)
             # We do not want to loose pending changes, that is why we have to
-            # keep the text when, this function has not been triggered by a signal.
+            # keep the text when, this function has not been triggered by a
+            # signal.
             if item is None:
                 primary_text = self.primaryPushButton.text()
                 alternate_text = self.alternatePushButton.text()
@@ -277,7 +281,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Restores all default shortcuts.
         """
-        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+        if self.buttonBox.buttonRole(button) != \
+            QtGui.QDialogButtonBox.ResetRole:
             return
         if QtGui.QMessageBox.question(self,
             translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
@@ -339,8 +344,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             if category.name is None:
                 continue
             for action in category.actions:
-                if self.changedActions .has_key(action):
+                if action in self.changedActions:
+                    old_shortcuts = map(unicode,
+                        map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
+                    self.action_list.update_shortcut_map(action, old_shortcuts)
                 settings.setValue(
                     action.objectName(), QtCore.QVariant(action.shortcuts()))
         settings.endGroup()
@@ -447,7 +455,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         those shortcuts which are not saved yet but already assigned (as changes
         are applied when closing the dialog).
         """
-        if self.changedActions.has_key(action):
+        if action in self.changedActions:
             return self.changedActions[action]
         return action.shortcuts()
 

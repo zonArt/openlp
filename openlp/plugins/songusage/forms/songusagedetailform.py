@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -117,9 +117,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         try:
             fileHandle = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
-                    instance.usagedate, instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number, instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
+                    u'\"%s\",\"%s\"\n' % ( instance.usagedate,
+                    instance.usagetime, instance.title, instance.copyright,
+                    instance.ccl_number, instance.authors,
+                    instance.plugin_name, instance.source)
                 fileHandle.write(record.encode(u'utf-8'))
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDetailForm',

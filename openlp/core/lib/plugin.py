@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -91,8 +91,9 @@ class Plugin(QtCore.QObject):
     ``checkPreConditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``getMediaManagerItem()``
-        Returns an instance of MediaManagerItem to be used in the Media Manager.
+    ``createMediaManagerItem()``
+        Creates a new instance of MediaManagerItem to be used in the Media
+        Manager.
 
     ``addImportMenuItem(import_menu)``
         Add an item to the Import menu.
@@ -100,8 +101,8 @@ class Plugin(QtCore.QObject):
     ``addExportMenuItem(export_menu)``
         Add an item to the Export menu.
 
-    ``getSettingsTab()``
-        Returns an instance of SettingsTabItem to be used in the Settings
+    ``createSettingsTab()``
+        Creates a new instance of SettingsTabItem to be used in the Settings
         dialog.
 
     ``addToMenu(menubar)``
@@ -152,14 +153,14 @@ class Plugin(QtCore.QObject):
             self.version = version
         else:
             self.version = get_application_version()[u'version']
-        self.settingsSection = self.name.lower()
+        self.settingsSection = self.name
         self.icon = None
         self.media_item_class = media_item_class
         self.settings_tab_class = settings_tab_class
+        self.settings_tab = None
+        self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
-        # Set up logging
-        self.log = logging.getLogger(self.name)
         self.previewController = plugin_helpers[u'preview']
         self.liveController = plugin_helpers[u'live']
         self.renderer = plugin_helpers[u'renderer']
@@ -168,6 +169,7 @@ class Plugin(QtCore.QObject):
         self.mediadock = plugin_helpers[u'toolbox']
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formparent = plugin_helpers[u'formparent']
+        self.mediaController = plugin_helpers[u'mediacontroller']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -177,7 +179,7 @@ class Plugin(QtCore.QObject):
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
 
-        Returns True or False.
+        Returns ``True`` or ``False``.
         """
         return True
 
@@ -209,15 +211,14 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def getMediaManagerItem(self):
+    def createMediaManagerItem(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
-        you need, and return it for integration into openlp.org.
+        you need, and return it for integration into OpenLP.
         """
         if self.media_item_class:
-            return self.media_item_class(self.mediadock.media_dock, self,
-                self.icon)
-        return None
+            self.mediaItem = self.media_item_class(self.mediadock.media_dock,
+                self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -246,16 +247,15 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
-        Create a tab for the settings window to display the configurable
-        options for this plugin to the user.
+        Create a tab for the settings window to display the configurable options
+        for this plugin to the user.
         """
         if self.settings_tab_class:
-            return self.settings_tab_class(parent, self.name,
+            self.settings_tab = self.settings_tab_class(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
                 self.icon_path)
-        return None
 
     def addToMenu(self, menubar):
         """
@@ -368,3 +368,30 @@ class Plugin(QtCore.QObject):
         after this has been set.
         """
         self.textStrings[name] = {u'title': title, u'tooltip': tooltip}
+
+    def getDisplayCss(self):
+        """
+        Add css style sheets to htmlbuilder.
+        """
+        return u''
+
+    def getDisplayJavaScript(self):
+        """
+        Add javascript functions to htmlbuilder.
+        """
+        return u''
+
+    def refreshCss(self, frame):
+        """
+        Allow plugins to refresh javascript on displayed screen.
+
+        ``frame``
+            The Web frame holding the page.
+        """
+        return u''
+
+    def getDisplayHtml(self):
+        """
+        Add html code to htmlbuilder.
+        """
+        return u''

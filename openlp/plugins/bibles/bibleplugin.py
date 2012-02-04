@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,7 +41,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', plugin_helpers,
+        Plugin.__init__(self, u'bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -55,9 +55,11 @@ class BiblePlugin(Plugin):
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        action_list.add_action(self.importBibleItem,
+            unicode(UiStrings().Import))
         # Do not add the action to the list yet.
-        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
+        #action_list.add_action(self.exportBibleItem,
+        #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
         if len(self.manager.old_bible_databases):
@@ -71,7 +73,8 @@ class BiblePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.importBibleItem, UiStrings().Import)
+        action_list.remove_action(self.importBibleItem,
+            unicode(UiStrings().Import))
         self.importBibleItem.setVisible(False)
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
@@ -117,9 +120,9 @@ class BiblePlugin(Plugin):
         self.toolsUpgradeItem = QtGui.QAction(tools_menu)
         self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
         self.toolsUpgradeItem.setText(
-            translate('BiblePlugin', '&Upgrade older Bibles'))
+            translate('BiblesPlugin', '&Upgrade older Bibles'))
         self.toolsUpgradeItem.setStatusTip(
-            translate('BiblePlugin', 'Upgrade the Bible databases to the '
+            translate('BiblesPlugin', 'Upgrade the Bible databases to the '
             'latest format.'))
         tools_menu.addAction(self.toolsUpgradeItem)
         QtCore.QObject.connect(self.toolsUpgradeItem,

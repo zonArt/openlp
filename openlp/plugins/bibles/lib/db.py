@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Jeffrey Smith, Maikel            #
-# Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund                    #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,6 @@
 import logging
 import chardet
 import os
-import re
 import sqlite3
 
 from PyQt4 import QtCore
@@ -36,10 +35,10 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, clean_filename
 
 log = logging.getLogger(__name__)
 
@@ -62,19 +61,6 @@ class Verse(BaseModel):
     Topic model
     """
     pass
-
-def clean_filename(filename):
-    """
-    Clean up the version name of the Bible and convert it into a valid
-    file name.
-
-    ``filename``
-        The "dirty" file name or version name.
-    """
-    if not isinstance(filename, unicode):
-        filename = unicode(filename, u'utf-8')
-    filename = re.sub(r'[^\w]+', u'_', filename).strip(u'_')
-    return filename + u'.sqlite'
 
 def init_schema(url):
     """
@@ -158,7 +144,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
                 self.name = unicode(self.name, u'utf-8')
-            self.file = clean_filename(self.name)
+            self.file = clean_filename(self.name) + u'.sqlite'
         if u'file' in kwargs:
             self.file = kwargs[u'file']
         Manager.__init__(self, u'bibles', init_schema, self.file)
@@ -210,7 +196,7 @@ class BibleDB(QtCore.QObject, Manager):
             The book_reference_id from bibles_resources.sqlite of the book.
 
         ``testament``
-            *Defaults to 1.* The testament_reference_id from 
+            *Defaults to 1.* The testament_reference_id from
             bibles_resources.sqlite of the testament this book belongs to.
         """
         log.debug(u'BibleDB.create_book("%s", "%s")', name, bk_ref_id)
@@ -329,7 +315,7 @@ class BibleDB(QtCore.QObject, Manager):
         return self.get_object_filtered(Book, Book.book_reference_id.like(id))
 
     def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
-        log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book, 
+        log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book,
             language_id)
         if BiblesResourcesDB.get_book(book, True):
             book_temp = BiblesResourcesDB.get_book(book, True)
@@ -471,7 +457,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_language(self, bible_name=None):
         """
-        If no language is given it calls a dialog window where the user could 
+        If no language is given it calls a dialog window where the user could
         select the bible language.
         Return the language id of a bible.
 
@@ -521,9 +507,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     some resources which are used in the Bibles plugin.
     A wrapper class around a small SQLite database which contains the download
     resources, a biblelist from the different download resources, the books,
-    chapter counts and verse counts for the web download Bibles, a language 
-    reference, the testament reference and some alternative book names. This 
-    class contains a singleton "cursor" so that only one connection to the 
+    chapter counts and verse counts for the web download Bibles, a language
+    reference, the testament reference and some alternative book names. This
+    class contains a singleton "cursor" so that only one connection to the
     SQLite database is ever used.
     """
     cursor = None
@@ -582,7 +568,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         ``name``
             The name or abbreviation of the book.
-        
+
         ``lower``
             True if the comparsion should be only lowercase
         """
@@ -592,7 +578,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         if lower:
             books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
                     u'abbreviation, chapters FROM book_reference WHERE '
-                    u'LOWER(name) = ? OR LOWER(abbreviation) = ?', 
+                    u'LOWER(name) = ? OR LOWER(abbreviation) = ?',
                     (name.lower(), name.lower()))
         else:
             books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
@@ -621,7 +607,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         if not isinstance(id, int):
             id = int(id)
         books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
-                u'abbreviation, chapters FROM book_reference WHERE id = ?', 
+                u'abbreviation, chapters FROM book_reference WHERE id = ?',
                 (id, ))
         if books:
             return {
@@ -645,21 +631,21 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ``chapter``
             The chapter number.
         """
-        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_id, 
+        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_id,
             chapter)
         if not isinstance(chapter, int):
             chapter = int(chapter)
         chapters = BiblesResourcesDB.run_sql(u'SELECT id, book_reference_id, '
-            u'chapter, verse_count FROM chapters WHERE book_reference_id = ?', 
+            u'chapter, verse_count FROM chapters WHERE book_reference_id = ?',
             (book_id,))
-        if chapters:
+        try:
             return {
                 u'id': chapters[chapter-1][0],
                 u'book_reference_id': chapters[chapter-1][1],
                 u'chapter': chapters[chapter-1][2],
                 u'verse_count': chapters[chapter-1][3]
             }
-        else:
+        except (IndexError, TypeError):
             return None
 
     @staticmethod
@@ -687,7 +673,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ``chapter``
             The number of the chapter.
         """
-        log.debug(u'BiblesResourcesDB.get_verse_count("%s", "%s")', book_id,  
+        log.debug(u'BiblesResourcesDB.get_verse_count("%s", "%s")', book_id,
             chapter)
         details = BiblesResourcesDB.get_chapter(book_id, chapter)
         if details:
@@ -715,7 +701,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             }
         else:
             return None
-    
+
     @staticmethod
     def get_webbibles(source):
         """
@@ -737,7 +723,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'id': bible[0],
                 u'name': bible[1],
                 u'abbreviation': bible[2],
-                u'language_id': bible[3], 
+                u'language_id': bible[3],
                 u'download_source_id': bible[4]
                 }
                 for bible in bibles
@@ -752,11 +738,11 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         ``abbreviation``
             The abbreviation of the webbible.
-            
+
         ``source``
             The source of the webbible.
         """
-        log.debug(u'BiblesResourcesDB.get_webbibles("%s", "%s")', abbreviation, 
+        log.debug(u'BiblesResourcesDB.get_webbibles("%s", "%s")', abbreviation,
             source)
         if not isinstance(abbreviation, unicode):
             abbreviation = unicode(abbreviation)
@@ -765,17 +751,17 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         source = BiblesResourcesDB.get_download_source(source)
         bible = BiblesResourcesDB.run_sql(u'SELECT id, name, abbreviation, '
             u'language_id, download_source_id FROM webbibles WHERE '
-            u'download_source_id = ? AND abbreviation = ?', (source[u'id'], 
+            u'download_source_id = ? AND abbreviation = ?', (source[u'id'],
             abbreviation))
-        if bible:
+        try:
             return {
                 u'id': bible[0][0],
                 u'name': bible[0][1],
                 u'abbreviation': bible[0][2],
-                u'language_id': bible[0][3], 
+                u'language_id': bible[0][3],
                 u'download_source_id': bible[0][4]
                 }
-        else:
+        except (IndexError, TypeError):
             return None
 
     @staticmethod
@@ -785,11 +771,11 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
         ``name``
             The name to search the id.
-            
+
         ``language_id``
             The language_id for which language should be searched
         """
-        log.debug(u'BiblesResourcesDB.get_alternative_book_name("%s", "%s")', 
+        log.debug(u'BiblesResourcesDB.get_alternative_book_name("%s", "%s")',
             name, language_id)
         if language_id:
             books = BiblesResourcesDB.run_sql(u'SELECT book_reference_id, name '
@@ -806,7 +792,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     @staticmethod
     def get_language(name):
         """
-        Return a dict containing the language id, name and code by name or 
+        Return a dict containing the language id, name and code by name or
         abbreviation.
 
         ``name``
@@ -865,7 +851,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
 
 class AlternativeBookNamesDB(QtCore.QObject, Manager):
     """
-    This class represents a database-bound alternative book names system. 
+    This class represents a database-bound alternative book names system.
     """
     cursor = None
     conn = None
@@ -874,7 +860,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
     def get_cursor():
         """
         Return the cursor object. Instantiate one if it doesn't exist yet.
-        If necessary loads up the database and creates the tables if the 
+        If necessary loads up the database and creates the tables if the
         database doesn't exist.
         """
         if AlternativeBookNamesDB.cursor is None:
@@ -904,7 +890,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
 
         ``parameters``
             Any variable parameters to add to the query
-        
+
         ``commit``
             If a commit statement is necessary this should be True.
         """
@@ -921,11 +907,11 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
 
         ``name``
             The name to search the id.
-            
+
         ``language_id``
             The language_id for which language should be searched
         """
-        log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s", "%s")', 
+        log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s", "%s")',
             name, language_id)
         if language_id:
             books = AlternativeBookNamesDB.run_sql(u'SELECT book_reference_id, '
@@ -962,11 +948,11 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
 
 class OldBibleDB(QtCore.QObject, Manager):
     """
-    This class conects to the old bible databases to reimport them to the new 
+    This class conects to the old bible databases to reimport them to the new
     database scheme.
     """
     cursor = None
-    
+
     def __init__(self, parent, **kwargs):
         """
         The constructor loads up the database and creates and initialises the
