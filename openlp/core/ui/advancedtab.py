@@ -201,12 +201,12 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.x11GroupBox)
         self.rightLayout.addStretch()
 
-        self.updateserviceNameExample = False
+        self.shouldUpdateServiceNameExample = False
         QtCore.QObject.connect(self.serviceNameCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.serviceNameCheckBoxToggled)
         QtCore.QObject.connect(self.serviceNameDay,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onserviceNameDayChanged)
+            self.onServiceNameDayChanged)
         QtCore.QObject.connect(self.serviceNameTime,
             QtCore.SIGNAL(u'timeChanged(QTime)'),
             self.updateServiceNameExample)
@@ -215,7 +215,7 @@ class AdvancedTab(SettingsTab):
             self.updateServiceNameExample)
         QtCore.QObject.connect(self.serviceNameRevertButton,
             QtCore.SIGNAL(u'pressed()'),
-            self.onserviceNameRevertButtonPressed)
+            self.onServiceNameRevertButtonPressed)
         QtCore.QObject.connect(self.defaultColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
         QtCore.QObject.connect(self.defaultBrowseButton,
@@ -338,7 +338,7 @@ class AdvancedTab(SettingsTab):
             self.defaultServiceHour).toInt()[0],
             settings.value(u'default service minute',
             self.defaultServiceMinute).toInt()[0]))
-        self.updateserviceNameExample = True
+        self.shouldUpdateServiceNameExample = True
         self.serviceNameEdit.setText(settings.value(u'default service name',
             self.defaultServiceName).toString())
         default_service_enabled = settings.value(u'default service enabled',
@@ -430,16 +430,16 @@ class AdvancedTab(SettingsTab):
         return preset_is_valid, service_name_example
 
     def updateServiceNameExample(self, returned_value):
-        if not self.updateserviceNameExample:
+        if not self.shouldUpdateServiceNameExample:
             return
         name_example = self.generateServiceNameExample()[1]
         self.serviceNameExample.setText(name_example)
 
-    def onserviceNameDayChanged(self, service_day):
+    def onServiceNameDayChanged(self, service_day):
         self.serviceNameTime.setEnabled(service_day is not 7)
         self.updateServiceNameExample(None)
 
-    def onserviceNameRevertButtonPressed(self):
+    def onServiceNameRevertButtonPressed(self):
         self.serviceNameEdit.setText(self.defaultServiceName)
         self.serviceNameEdit.setFocus()
 
