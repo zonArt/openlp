@@ -82,8 +82,11 @@ class SlideController(Controller):
         """
         Controller.__init__(self, parent, isLive)
         self.screens = ScreenList.get_instance()
-        self.ratio = float(self.screens.current[u'size'].width()) / \
-            float(self.screens.current[u'size'].height())
+        try:
+            self.ratio = float(self.screens.current[u'size'].width()) / \
+                float(self.screens.current[u'size'].height())
+        except ZeroDivisionError:
+            self.ratio = 1
         self.imageManager = self.parent().imageManager
         self.mediaController = self.parent().mediaController
         self.loopList = [
@@ -630,8 +633,11 @@ class SlideController(Controller):
         if self.isLive:
             self.__addActionsToWidget(self.display)
         # The SlidePreview's ratio.
-        self.ratio = float(self.screens.current[u'size'].width()) / \
-            float(self.screens.current[u'size'].height())
+        try:
+            self.ratio = float(self.screens.current[u'size'].width()) / \
+                float(self.screens.current[u'size'].height())
+        except ZeroDivisionError:
+            self.ratio = 1
         self.mediaController.setup_display(self.display)
         self.previewSizeChanged()
         self.previewDisplay.setup()
