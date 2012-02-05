@@ -103,6 +103,7 @@ class BiblesTab(SettingsTab):
             0)
         self.verseSeparatorLineEdit = QtGui.QLineEdit(
             self.scriptureReferenceGroupBox)
+#        self.verseSeparatorLineEdit.setPalette
         self.verseSeparatorLineEdit.setObjectName(u'verseSeparatorLineEdit')
         self.scriptureReferenceLayout.addWidget(self.verseSeparatorLineEdit, 0,
             1)
@@ -134,6 +135,8 @@ class BiblesTab(SettingsTab):
         self.endSeparatorLineEdit = QtGui.QLineEdit(
             self.scriptureReferenceGroupBox)
         self.endSeparatorLineEdit.setObjectName(u'endSeparatorLineEdit')
+        self.endSeparatorLineEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^0-9]*'), self.endSeparatorLineEdit))
         self.scriptureReferenceLayout.addWidget(self.endSeparatorLineEdit, 3,
             1)
         self.leftLayout.addWidget(self.scriptureReferenceGroupBox)
@@ -159,7 +162,7 @@ class BiblesTab(SettingsTab):
             self.onBibleSecondCheckBox)
         QtCore.QObject.connect(
             self.verseSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onVerseSeparatorCheckBoxToggled)
+            self.onVerseSeparatorCheckBoxClicked)
         QtCore.QObject.connect(
             self.verseSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onVerseSeparatorLineEditEdited)
@@ -168,7 +171,7 @@ class BiblesTab(SettingsTab):
             self.onVerseSeparatorLineEditFinished)
         QtCore.QObject.connect(
             self.rangeSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onRangeSeparatorCheckBoxToggled)
+            self.onRangeSeparatorCheckBoxClicked)
         QtCore.QObject.connect(
             self.rangeSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onRangeSeparatorLineEditEdited)
@@ -177,7 +180,7 @@ class BiblesTab(SettingsTab):
             self.onRangeSeparatorLineEditFinished)
         QtCore.QObject.connect(
             self.listSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onListSeparatorCheckBoxToggled)
+            self.onListSeparatorCheckBoxClicked)
         QtCore.QObject.connect(
             self.listSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onListSeparatorLineEditEdited)
@@ -186,7 +189,7 @@ class BiblesTab(SettingsTab):
             self.onListSeparatorLineEditFinished)
         QtCore.QObject.connect(
             self.endSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onEndSeparatorCheckBoxToggled)
+            self.onEndSeparatorCheckBoxClicked)
         QtCore.QObject.connect(
             self.endSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onEndSeparatorLineEditEdited)
@@ -276,65 +279,105 @@ class BiblesTab(SettingsTab):
         if check_state == QtCore.Qt.Checked:
             self.second_bibles = True
 
-    def onVerseSeparatorCheckBoxToggled(self, checked):
-        if not checked:
-            self.verseSeparatorLineEdit.clear()
-        elif self.verseSeparatorCheckBox.hasFocus():
+    def onVerseSeparatorCheckBoxClicked(self, checked):
+        if checked:
             self.verseSeparatorLineEdit.setFocus()
+        else:
+            self.verseSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_v_default'))
+        self.verseSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(not checked))
 
     def onVerseSeparatorLineEditEdited(self, text):
         self.verseSeparatorCheckBox.setChecked(True)
+        self.verseSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(False))
 
     def onVerseSeparatorLineEditFinished(self):
-        if self.verseSeparatorLineEdit.text().remove(u'|').isEmpty() and \
-            not self.verseSeparatorCheckBox.hasFocus():
-            self.verseSeparatorCheckBox.setChecked(False)
-            self.verseSeparatorLineEdit.clear()
+        if self.verseSeparatorLineEdit.isModified():
+            text = self.verseSeparatorLineEdit.text()
+            if text == get_reference_separator(u'sep_v_default') or \
+                text.remove(u'|').isEmpty():
+                self.verseSeparatorCheckBox.setChecked(False)
+                self.verseSeparatorLineEdit.setText(
+                    get_reference_separator(u'sep_v_default'))
+                self.verseSeparatorLineEdit.setPalette(
+                    self.getGreyTextPalette(True))
 
-    def onRangeSeparatorCheckBoxToggled(self, checked):
-        if not checked:
-            self.rangeSeparatorLineEdit.clear()
-        elif self.rangeSeparatorCheckBox.hasFocus():
+    def onRangeSeparatorCheckBoxClicked(self, checked):
+        if checked:
             self.rangeSeparatorLineEdit.setFocus()
+        else:
+            self.rangeSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_r_default'))
+        self.rangeSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(not checked))
 
     def onRangeSeparatorLineEditEdited(self, text):
         self.rangeSeparatorCheckBox.setChecked(True)
+        self.rangeSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(False))
 
     def onRangeSeparatorLineEditFinished(self):
-        if self.rangeSeparatorLineEdit.text().remove(u'|').isEmpty() and \
-            not self.rangeSeparatorCheckBox.hasFocus():
-            self.rangeSeparatorCheckBox.setChecked(False)
-            self.rangeSeparatorLineEdit.clear()
+        if self.rangeSeparatorLineEdit.isModified():
+            text = self.rangeSeparatorLineEdit.text()
+            if text == get_reference_separator(u'sep_r_default') or \
+                text.remove(u'|').isEmpty():
+                self.rangeSeparatorCheckBox.setChecked(False)
+                self.rangeSeparatorLineEdit.setText(
+                    get_reference_separator(u'sep_r_default'))
+                self.rangeSeparatorLineEdit.setPalette(
+                    self.getGreyTextPalette(True))
 
-    def onListSeparatorCheckBoxToggled(self, checked):
-        if not checked:
-            self.listSeparatorLineEdit.clear()
-        elif self.listSeparatorCheckBox.hasFocus():
+    def onListSeparatorCheckBoxClicked(self, checked):
+        if checked:
             self.listSeparatorLineEdit.setFocus()
+        else:
+            self.listSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_l_default'))
+        self.listSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(not checked))
 
     def onListSeparatorLineEditEdited(self, text):
         self.listSeparatorCheckBox.setChecked(True)
+        self.listSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(False))
 
     def onListSeparatorLineEditFinished(self):
-        if self.listSeparatorLineEdit.text().remove(u'|').isEmpty() and \
-            not self.listSeparatorCheckBox.hasFocus():
-            self.listSeparatorCheckBox.setChecked(False)
-            self.listSeparatorLineEdit.clear()
+        if self.listSeparatorLineEdit.isModified():
+            text = self.listSeparatorLineEdit.text()
+            if text == get_reference_separator(u'sep_l_default') or \
+                text.remove(u'|').isEmpty():
+                self.listSeparatorCheckBox.setChecked(False)
+                self.listSeparatorLineEdit.setText(
+                    get_reference_separator(u'sep_l_default'))
+                self.listSeparatorLineEdit.setPalette(
+                    self.getGreyTextPalette(True))
 
-    def onEndSeparatorCheckBoxToggled(self, checked):
-        if not checked:
-            self.endSeparatorLineEdit.clear()
-        elif self.endSeparatorCheckBox.hasFocus():
+    def onEndSeparatorCheckBoxClicked(self, checked):
+        if checked:
             self.endSeparatorLineEdit.setFocus()
+        else:
+            self.endSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_e_default'))
+        self.endSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(not checked))
 
     def onEndSeparatorLineEditEdited(self, text):
         self.endSeparatorCheckBox.setChecked(True)
+        self.endSeparatorLineEdit.setPalette(
+            self.getGreyTextPalette(False))
 
     def onEndSeparatorLineEditFinished(self):
-        if self.endSeparatorLineEdit.text().remove(u'|').isEmpty() and \
-            not self.endSeparatorCheckBox.hasFocus():
-            self.endSeparatorCheckBox.setChecked(False)
-            self.endSeparatorLineEdit.clear()
+        if self.endSeparatorLineEdit.isModified():
+            text = self.endSeparatorLineEdit.text()
+            if text == get_reference_separator(u'sep_e_default') or \
+                text.remove(u'|').isEmpty():
+                self.endSeparatorCheckBox.setChecked(False)
+                self.endSeparatorLineEdit.setText(
+                    get_reference_separator(u'sep_e_default'))
+                self.endSeparatorLineEdit.setPalette(
+                    self.getGreyTextPalette(True))
 
     def load(self):
         settings = QtCore.QSettings()
@@ -353,30 +396,58 @@ class BiblesTab(SettingsTab):
         self.displayStyleComboBox.setCurrentIndex(self.display_style)
         self.layoutStyleComboBox.setCurrentIndex(self.layout_style)
         self.bibleSecondCheckBox.setChecked(self.second_bibles)
-        self.verseSeparatorLineEdit.setPlaceholderText(
-            get_reference_separator(u'sep_v_default'))
-        self.verseSeparatorLineEdit.setText(settings.value(u'verse separator',
-            QtCore.QVariant(u'')).toString())
-        self.verseSeparatorCheckBox.setChecked(
-            self.verseSeparatorLineEdit.text() != u'')
-        self.rangeSeparatorLineEdit.setPlaceholderText(
-            get_reference_separator(u'sep_r_default'))
-        self.rangeSeparatorLineEdit.setText(settings.value(u'range separator',
-            QtCore.QVariant(u'')).toString())
-        self.rangeSeparatorCheckBox.setChecked(
-            self.rangeSeparatorLineEdit.text() != u'')
-        self.listSeparatorLineEdit.setPlaceholderText(
-            get_reference_separator(u'sep_l_default'))
-        self.listSeparatorLineEdit.setText(settings.value(u'list separator',
-            QtCore.QVariant(u'')).toString())
-        self.listSeparatorCheckBox.setChecked(
-            self.listSeparatorLineEdit.text() != u'')
-        self.endSeparatorLineEdit.setPlaceholderText(
-            get_reference_separator(u'sep_e_default'))
-        self.endSeparatorLineEdit.setText(settings.value(u'end separator',
-            QtCore.QVariant(u'')).toString())
-        self.endSeparatorCheckBox.setChecked(
-            self.endSeparatorLineEdit.text() != u'')
+        verse_separator = unicode(settings.value(u'verse separator').toString())
+        if (verse_separator.strip(u'|') == u'') or \
+            (verse_separator == get_reference_separator(u'sep_v_default')):
+            self.verseSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_v_default'))
+            self.verseSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(True))
+            self.verseSeparatorCheckBox.setChecked(False)
+        else:
+            self.verseSeparatorLineEdit.setText(verse_separator)
+            self.verseSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(False))
+            self.verseSeparatorCheckBox.setChecked(True)
+        range_separator = unicode(settings.value(u'range separator').toString())
+        if (range_separator.strip(u'|') == u'') or \
+            (range_separator == get_reference_separator(u'sep_r_default')):
+            self.rangeSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_r_default'))
+            self.rangeSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(True))
+            self.rangeSeparatorCheckBox.setChecked(False)
+        else:
+            self.rangeSeparatorLineEdit.setText(range_separator)
+            self.rangeSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(False))
+            self.rangeSeparatorCheckBox.setChecked(True)
+        list_separator = unicode(settings.value(u'list separator').toString())
+        if (list_separator.strip(u'|') == u'') or \
+            (list_separator == get_reference_separator(u'sep_l_default')):
+            self.listSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_l_default'))
+            self.listSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(True))
+            self.listSeparatorCheckBox.setChecked(False)
+        else:
+            self.listSeparatorLineEdit.setText(list_separator)
+            self.listSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(False))
+            self.listSeparatorCheckBox.setChecked(True)
+        end_separator = unicode(settings.value(u'end separator').toString())
+        if (end_separator.strip(u'|') == u'') or \
+            (end_separator == get_reference_separator(u'sep_e_default')):
+            self.endSeparatorLineEdit.setText(
+                get_reference_separator(u'sep_e_default'))
+            self.endSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(True))
+            self.endSeparatorCheckBox.setChecked(False)
+        else:
+            self.endSeparatorLineEdit.setText(end_separator)
+            self.endSeparatorLineEdit.setPalette(
+                self.getGreyTextPalette(False))
+            self.endSeparatorCheckBox.setChecked(True)
         settings.endGroup()
 
     def save(self):
@@ -390,14 +461,26 @@ class BiblesTab(SettingsTab):
             QtCore.QVariant(self.layout_style))
         settings.setValue(u'second bibles', QtCore.QVariant(self.second_bibles))
         settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))
-        settings.setValue(u'verse separator',
-            QtCore.QVariant(self.verseSeparatorLineEdit.text()))
-        settings.setValue(u'range separator',
-            QtCore.QVariant(self.rangeSeparatorLineEdit.text()))
-        settings.setValue(u'list separator',
-            QtCore.QVariant(self.listSeparatorLineEdit.text()))
-        settings.setValue(u'end separator',
-            QtCore.QVariant(self.endSeparatorLineEdit.text()))
+        if self.verseSeparatorCheckBox.isChecked():
+            settings.setValue(u'verse separator',
+                self.verseSeparatorLineEdit.text())
+        else:
+            settings.remove(u'verse separator')
+        if self.rangeSeparatorCheckBox.isChecked():
+            settings.setValue(u'range separator',
+                self.rangeSeparatorLineEdit.text())
+        else:
+            settings.remove(u'range separator')
+        if self.listSeparatorCheckBox.isChecked():
+            settings.setValue(u'list separator',
+                self.listSeparatorLineEdit.text())
+        else:
+            settings.remove(u'list separator')
+        if self.endSeparatorCheckBox.isChecked():
+            settings.setValue(u'end separator',
+                self.endSeparatorLineEdit.text())
+        else:
+            settings.remove(u'end separator')
         update_reference_separators()
         settings.endGroup()
 
@@ -415,3 +498,15 @@ class BiblesTab(SettingsTab):
         for theme in theme_list:
             self.bibleThemeComboBox.addItem(theme)
         find_and_set_in_combo_box(self.bibleThemeComboBox, self.bible_theme)
+
+    def getGreyTextPalette(self, greyed):
+        """
+        Returns a QPalette with greyed out text as used for placeholderText.
+        """
+        palette = QtGui.QPalette()
+        color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Text)
+        if greyed:
+            color.setAlpha(128)
+        palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Text, color)
+        return palette
+

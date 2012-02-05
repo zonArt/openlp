@@ -76,14 +76,10 @@ def update_reference_separators():
     settings = QtCore.QSettings()
     settings.beginGroup(u'bibles')
     custom_separators = [
-        unicode(settings.value(u'verse separator',
-            QtCore.QVariant(u'')).toString()),
-        unicode(settings.value(u'range separator',
-            QtCore.QVariant(u'')).toString()),
-        unicode(settings.value(u'list separator',
-            QtCore.QVariant(u'')).toString()),
-        unicode(settings.value(u'end separator',
-            QtCore.QVariant(u'')).toString())]
+        unicode(settings.value(u'verse separator').toString()),
+        unicode(settings.value(u'range separator').toString()),
+        unicode(settings.value(u'list separator').toString()),
+        unicode(settings.value(u'end separator').toString())]
     settings.endGroup()
     for index, role in enumerate([u'v', u'r', u'l', u'e']):
         if custom_separators[index].strip(u'|') == u'':
@@ -114,7 +110,7 @@ def update_reference_separators():
         re.UNICODE)
     REFERENCE_MATCHES[u'range_separator'] = re.compile(
         REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
-    # full reference match: <book>(<range>(,|(?=$)))+
+    # full reference match: <book>(<range>(,(?!$)|(?=$)))+
     REFERENCE_MATCHES[u'full'] = re.compile(
         u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
         u'(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
