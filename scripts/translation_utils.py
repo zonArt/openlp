@@ -28,22 +28,22 @@
 
 """
 This script is used to maintain the translation files in OpenLP. It downloads
-the latest translation files from the Pootle translation server, updates the
-local translation files from both the source code and the files from Pootle,
+the latest translation files from the Transifex translation server, updates the
+local translation files from both the source code and the files from Transifex,
 and can also generate the compiled translation files.
 
 Create New Language
 -------------------
 
-To create a new language, simply run this script with the ``-a`` command line
+To create a new language, simply run this script with the ``-c`` command line
 option::
 
-    @:~$ ./translation_utils.py -a
+    @:~$ ./translation_utils.py -c
 
 Update Translation Files
 ------------------------
 
-The best way to update the translations is to download the files from Pootle,
+The best way to update the translations is to download the files from Transifex,
 and then update the local files using both the downloaded files and the source.
 This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 
@@ -261,7 +261,7 @@ def prepare_project():
 def update_translations():
     print_quiet(u'Update the translation files')
     if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print u'You have no generated a project file yet, please run this ' + \
+        print u'You have not generated a project file yet, please run this ' + \
             u'script with the -p option.'
         return
     else:
@@ -283,12 +283,10 @@ def generate_binaries():
         print_quiet(u'   Done.')
 
 
-def create_translation(language):
+def create_translation():
     """
-    This method creates a new translation file.
-
-    ``language``
-        The language file to create.
+    This method opens a browser to the OpenLP project page at Transifex so
+    that the user can request a new language.
     """
     print_quiet(u'Please request a new language at the OpenLP project on '
         'Transifex.')
@@ -317,8 +315,7 @@ def process_stack(command_stack):
             elif command == Command.Generate:
                 generate_binaries()
             elif command == Command.Create:
-                arguments = command_stack.arguments()
-                create_translation(*arguments)
+                create_translation()
         print_quiet(u'Finished processing commands.')
     else:
         print_quiet(u'No commands to process.')
@@ -335,9 +332,9 @@ def main():
     parser.add_option('-P', '--password', dest='password', metavar='PASSWORD',
         help='Transifex password, used for authentication')
     parser.add_option('-d', '--download-ts', dest='download',
-        action='store_true', help='download language files from Pootle')
-    parser.add_option('-c', '--create', dest='create', metavar='LANG',
-        help='create a new translation file for language LANG, e.g. "en_GB"')
+        action='store_true', help='download language files from Transifex')
+    parser.add_option('-c', '--create', dest='create', action='store_true',
+        help='go to Transifex to request a new translation file')
     parser.add_option('-p', '--prepare', dest='prepare', action='store_true',
         help='generate a project file, used to update the translations')
     parser.add_option('-u', '--update', action='store_true', dest='update',
