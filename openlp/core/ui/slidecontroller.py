@@ -715,7 +715,7 @@ class SlideController(Controller):
         Updates the Slide Limits variable from the settings.
         """
         self.slide_limits = QtCore.QSettings().value(
-            self.parent().generalSettingsSection + u'/slide limits',
+            self.parent().advancedlSettingsSection + u'/slide limits',
             QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
     def enableToolBar(self, item):

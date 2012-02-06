@@ -30,7 +30,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
-from openlp.core.lib import SlideLimits
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -178,38 +177,6 @@ class GeneralTab(SettingsTab):
         self.audioLayout.addWidget(self.startPausedCheckBox)
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
-        # Service Item Slide Limits
-        self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
-        self.slideGroupBox.setObjectName(u'slideGroupBox')
-        self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
-        self.slideLayout.setLabelAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.slideLayout.setFormAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.slideLayout.setObjectName(u'slideLayout')
-        self.endSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
-        self.endSlideRadioButton.setObjectName(u'endSlideRadioButton')
-        self.endSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.endSlideLabel.setWordWrap(True)
-        self.endSlideLabel.setObjectName(u'endSlideLabel')
-        self.slideLayout.addRow(self.endSlideRadioButton, self.endSlideLabel)
-        self.wrapSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
-        self.wrapSlideRadioButton.setObjectName(u'wrapSlideRadioButton')
-        self.wrapSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.wrapSlideLabel.setWordWrap(True)
-        self.wrapSlideLabel.setObjectName(u'wrapSlideLabel')
-        self.slideLayout.addRow(self.wrapSlideRadioButton,
-            self.wrapSlideLabel)
-        self.nextSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
-        self.nextSlideRadioButton.setChecked(True)
-        self.nextSlideRadioButton.setObjectName(u'nextSlideRadioButton')
-        self.nextSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.nextSlideLabel.setWordWrap(True)
-        self.nextSlideLabel.setObjectName(u'nextSlideLabel')
-        self.slideLayout.addRow(self.nextSlideRadioButton,
-            self.nextSlideLabel)
-        self.rightLayout.addWidget(self.slideGroupBox)
-        self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
@@ -226,12 +193,6 @@ class GeneralTab(SettingsTab):
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
-        QtCore.QObject.connect(self.endSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
-        QtCore.QObject.connect(self.wrapSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
-        QtCore.QObject.connect(self.nextSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onNextSlideButtonPressed)
         # Remove for now
         self.usernameLabel.setVisible(False)
         self.usernameEdit.setVisible(False)
@@ -290,25 +251,6 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Background Audio'))
         self.startPausedCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Start background audio paused'))
-        # Slide Limits
-        self.slideGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
-        self.endSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&End Slide'))
-        self.endSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'stop at the top and bottom slides of each Service Item.'))
-        self.wrapSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Wrap Slide'))
-        self.wrapSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'wrap around at the top and bottom slides of each Service Item.'))
-        self.nextSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Next Slide'))
-        self.nextSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'advance to the the next or previous Service Item from the '
-            'top and bottom slides of each Service Item.'))
 
     def load(self):
         """
@@ -363,15 +305,6 @@ class GeneralTab(SettingsTab):
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.display_changed = False
         settings.beginGroup(self.settingsSection)
-        self.slide_limits = settings.value(
-            u'slide limits', QtCore.QVariant(SlideLimits.End)).toInt()[0]
-        settings.endGroup()
-        if self.slide_limits == SlideLimits.End:
-            self.endSlideRadioButton.setChecked(True)
-        elif self.slide_limits == SlideLimits.Wrap:
-            self.wrapSlideRadioButton.setChecked(True)
-        else:
-            self.nextSlideRadioButton.setChecked(True)
 
     def save(self):
         """
@@ -417,7 +350,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
         settings.endGroup()        
         # On save update the screens as well
         self.postSetUp(True)
@@ -446,7 +378,6 @@ class GeneralTab(SettingsTab):
         if self.display_changed:
             Receiver.send_message(u'config_screen_changed')
         self.display_changed = False
-        Receiver.send_message(u'slidecontroller_update_slide_limits')
 
     def onOverrideCheckBoxToggled(self, checked):
         """
@@ -466,12 +397,3 @@ class GeneralTab(SettingsTab):
         Called when the width, height, x position or y position has changed.
         """
         self.display_changed = True
-        
-    def onEndSlideButtonPressed(self):
-        self.slide_limits = SlideLimits.End
-
-    def onWrapSlideButtonPressed(self):
-        self.slide_limits = SlideLimits.Wrap
-
-    def onNextSlideButtonPressed(self):
-        self.slide_limits = SlideLimits.Next
