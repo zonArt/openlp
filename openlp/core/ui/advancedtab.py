@@ -44,8 +44,7 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.display_changed = False
-        advancedTranslated = translate('OpenLP.AdvancedTab', 'Advanced')
+        self.displayChanged = False
         # 7 stands for now, 0 to 6 is Monday to Sunday.
         self.defaultServiceDay = 7
         # 11 o'clock is the most popular time for morning service.
@@ -60,10 +59,11 @@ class AdvancedTab(SettingsTab):
             'http://docs.python.org/library/datetime.html'
             '#strftime-strptime-behavior , but if possible, please keep '
             'the resulting string sortable by name.'))
-        self.default_image = u':/graphics/openlp-splash-screen.png'
-        self.default_color = u'#ffffff'
+        self.defaultImage = u':/graphics/openlp-splash-screen.png'
+        self.defaultColor = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
-        SettingsTab.__init__(self, parent, u'Advanced', advancedTranslated)
+        advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
+        SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
 
     def setupUi(self):
         """
@@ -347,14 +347,14 @@ class AdvancedTab(SettingsTab):
         self.serviceNameCheckBoxToggled(default_service_enabled)
         self.x11BypassCheckBox.setChecked(
             settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
-        self.default_color = settings.value(u'default color',
+        self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
             QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
             .toString())
         settings.endGroup()
         self.defaultColorButton.setStyleSheet(
-            u'background-color: %s' % self.default_color)
+            u'background-color: %s' % self.defaultColor)
 
     def save(self):
         """
@@ -393,12 +393,12 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
         settings.setValue(u'x11 bypass wm',
             QtCore.QVariant(self.x11BypassCheckBox.isChecked()))
-        settings.setValue(u'default color', self.default_color)
+        settings.setValue(u'default color', self.defaultColor)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
-        if self.display_changed:
+        if self.displayChanged:
             Receiver.send_message(u'config_screen_changed')
-            self.display_changed = False
+            self.displayChanged = False
 
     def serviceNameCheckBoxToggled(self, default_service_enabled):
         self.serviceNameDay.setEnabled(default_service_enabled)
@@ -445,11 +445,11 @@ class AdvancedTab(SettingsTab):
 
     def onDefaultColorButtonPressed(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.default_color), self)
+            QtGui.QColor(self.defaultColor), self)
         if new_color.isValid():
-            self.default_color = new_color.name()
+            self.defaultColor = new_color.name()
             self.defaultColorButton.setStyleSheet(
-                u'background-color: %s' % self.default_color)
+                u'background-color: %s' % self.defaultColor)
 
     def onDefaultBrowseButtonPressed(self):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
@@ -472,4 +472,4 @@ class AdvancedTab(SettingsTab):
         ``checked``
             The state of the check box (boolean).
         """
-        self.display_changed = True
+        self.displayChanged = True
