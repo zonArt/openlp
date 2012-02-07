@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
+from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -82,8 +83,11 @@ class SlideController(Controller):
         """
         Controller.__init__(self, parent, isLive)
         self.screens = ScreenList.get_instance()
-        self.ratio = float(self.screens.current[u'size'].width()) / \
-            float(self.screens.current[u'size'].height())
+        try:
+            self.ratio = float(self.screens.current[u'size'].width()) / \
+                float(self.screens.current[u'size'].height())
+        except ZeroDivisionError:
+            self.ratio = 1
         self.imageManager = self.parent().imageManager
         self.mediaController = self.parent().mediaController
         self.loopList = [
@@ -102,6 +106,8 @@ class SlideController(Controller):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
+        self.slide_limits = None
+        self.updateSlideLimits()
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -450,6 +456,9 @@ class SlideController(Controller):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix),
             self.onSlideUnblank)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'slidecontroller_update_slide_limits'),
+            self.updateSlideLimits)
 
     def slideShortcutActivated(self):
         """
@@ -592,14 +601,14 @@ class SlideController(Controller):
         """
         Live event to select the previous service item from the service manager.
         """
-        self.keypress_queue.append(u'previous')
+        self.keypress_queue.append(ServiceItemAction.Previous)
         self._process_queue()
 
     def serviceNext(self):
         """
         Live event to select the next service item from the service manager.
         """
-        self.keypress_queue.append(u'next')
+        self.keypress_queue.append(ServiceItemAction.Next)
         self._process_queue()
 
     def _process_queue(self):
@@ -610,8 +619,12 @@ class SlideController(Controller):
         if len(self.keypress_queue):
             while len(self.keypress_queue) and not self.keypress_loop:
                 self.keypress_loop = True
-                if self.keypress_queue.popleft() == u'previous':
-                    Receiver.send_message('servicemanager_previous_item')
+                keypressCommand = self.keypress_queue.popleft()
+                if keypressCommand == ServiceItemAction.Previous:
+                    Receiver.send_message('servicemanager_previous_item', None)
+                elif keypressCommand == ServiceItemAction.PreviousLastSlide:
+                    # Go to the last slide of the previous item
+                    Receiver.send_message('servicemanager_previous_item', u'last slide')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
@@ -630,8 +643,11 @@ class SlideController(Controller):
         if self.isLive:
             self.__addActionsToWidget(self.display)
         # The SlidePreview's ratio.
-        self.ratio = float(self.screens.current[u'size'].width()) / \
-            float(self.screens.current[u'size'].height())
+        try:
+            self.ratio = float(self.screens.current[u'size'].width()) / \
+                float(self.screens.current[u'size'].height())
+        except ZeroDivisionError:
+            self.ratio = 1
         self.mediaController.setup_display(self.display)
         self.previewSizeChanged()
         self.previewDisplay.setup()
@@ -699,6 +715,14 @@ class SlideController(Controller):
         Adjusts the value of the ``delaySpinBox`` to the given one.
         """
         self.delaySpinBox.setValue(int(value))
+    
+    def updateSlideLimits(self):
+        """
+        Updates the Slide Limits variable from the settings.
+        """
+        self.slide_limits = QtCore.QSettings().value(
+            self.parent().advancedlSettingsSection + u'/slide limits',
+            QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
     def enableToolBar(self, item):
         """
@@ -1177,10 +1201,14 @@ class SlideController(Controller):
             row = self.previewListWidget.currentRow() + 1
             if row == self.previewListWidget.rowCount():
                 if wrap is None:
-                    wrap = QtCore.QSettings().value(
-                        self.parent().generalSettingsSection +
-                        u'/enable slide loop', QtCore.QVariant(True)).toBool()
-                if wrap:
+                    if self.slide_limits == SlideLimits.Wrap:
+                        row = 0
+                    elif self.slide_limits == SlideLimits.Next:
+                        self.serviceNext()
+                        return
+                    else:
+                        row = self.previewListWidget.rowCount() - 1
+                elif wrap:
                     row = 0
                 else:
                     row = self.previewListWidget.rowCount() - 1
@@ -1200,9 +1228,12 @@ class SlideController(Controller):
         else:
             row = self.previewListWidget.currentRow() - 1
             if row == -1:
-                if QtCore.QSettings().value(self.parent().generalSettingsSection
-                    + u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                if self.slide_limits == SlideLimits.Wrap:
                     row = self.previewListWidget.rowCount() - 1
+                elif self.slide_limits == SlideLimits.Next:
+                    self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
+                    self._process_queue()
+                    return
                 else:
                     row = 0
             self.__checkUpdateSelectedSlide(row)

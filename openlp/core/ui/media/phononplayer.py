@@ -154,7 +154,7 @@ class PhononPlayer(MediaPlayer):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            display.phononWidget.raise_()            
+            display.phononWidget.raise_()
             return True
         else:
             return False
