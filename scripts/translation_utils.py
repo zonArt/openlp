@@ -181,12 +181,14 @@ def run(command):
 def download_translations():
     """
     This method downloads the translation files from the Pootle server.
+
+    **Note:** URLs and headers need to remain strings, not unicode.
     """
     global username, password
     if not username:
-        username = raw_input('Transifex username: ')
+        username = raw_input(u'Transifex username: ')
     if not password:
-        password = getpass('Transifex password: ')
+        password = getpass(u'Transifex password: ')
     print_quiet(u'Download translation files from Transifex')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
@@ -195,19 +197,19 @@ def download_translations():
     auth_header =  'Basic %s' % base64string
     request = urllib2.Request(url + '?details')
     request.add_header('Authorization', auth_header)
-    print_verbose('Downloading list of languages from: %s' % url)
+    print_verbose(u'Downloading list of languages from: %s' % url)
     json_response = urllib2.urlopen(request)
     json_dict = json.loads(json_response.read())
-    languages = [lang['code'] for lang in json_dict['available_languages']]
+    languages = [lang[u'code'] for lang in json_dict[u'available_languages']]
     for language in languages:
         lang_url = url + 'translation/%s/?file' % language
         request = urllib2.Request(lang_url)
         request.add_header('Authorization', auth_header)
         filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
-            language + '.ts')
+            language + u'.ts')
         print_verbose(u'Get Translation File: %s' % filename)
         response = urllib2.urlopen(request)
-        fd = open(filename, 'w')
+        fd = open(filename, u'w')
         fd.write(response.read())
         fd.close()
     print_quiet(u'   Done.')
