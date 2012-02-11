@@ -826,7 +826,7 @@ class ServiceManager(QtGui.QWidget):
                 lookFor = 1
             serviceIterator += 1
 
-    def previousItem(self):
+    def previousItem(self, message):
         """
         Called by the SlideController to select the previous service item.
         """
@@ -834,15 +834,26 @@ class ServiceManager(QtGui.QWidget):
             return
         selected = self.serviceManagerList.selectedItems()[0]
         prevItem = None
+        prevItemLastSlide = None
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         while serviceIterator.value():
             if serviceIterator.value() == selected:
-                if prevItem:
+                if message == u'last slide' and prevItemLastSlide:
+                    pos = prevItem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    check_expanded = self.serviceItems[pos - 1][u'expanded']
+                    self.serviceManagerList.setCurrentItem(prevItemLastSlide)
+                    if not check_expanded:
+                        self.serviceManagerList.collapseItem(prevItem)
+                    self.makeLive()
+                    self.serviceManagerList.setCurrentItem(prevItem)
+                elif prevItem:
                     self.serviceManagerList.setCurrentItem(prevItem)
                     self.makeLive()
                 return
             if serviceIterator.value().parent() is None:
                 prevItem = serviceIterator.value()
+            if serviceIterator.value().parent() is prevItem:
+                prevItemLastSlide = serviceIterator.value()
             serviceIterator += 1
 
     def onSetItem(self, message):

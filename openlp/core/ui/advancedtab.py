@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SlideLimits
 from openlp.core.utils import get_images_filter
 
 class AdvancedTab(SettingsTab):
@@ -84,7 +85,6 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
-        self.leftLayout.addStretch()
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.defaultImageGroupBox.setObjectName(u'defaultImageGroupBox')
         self.defaultImageLayout = QtGui.QFormLayout(self.defaultImageGroupBox)
@@ -114,7 +114,7 @@ class AdvancedTab(SettingsTab):
         self.defaultFileLayout.addWidget(self.defaultRevertButton)
         self.defaultImageLayout.addRow(self.defaultFileLabel,
             self.defaultFileLayout)
-        self.rightLayout.addWidget(self.defaultImageGroupBox)
+        self.leftLayout.addWidget(self.defaultImageGroupBox)
         self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
         self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
@@ -122,7 +122,39 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
-        self.rightLayout.addWidget(self.hideMouseGroupBox)
+        self.leftLayout.addWidget(self.hideMouseGroupBox)
+        self.leftLayout.addStretch()
+        # Service Item Slide Limits
+        self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.slideGroupBox.setObjectName(u'slideGroupBox')
+        self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
+        self.slideLayout.setLabelAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.slideLayout.setFormAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.slideLayout.setObjectName(u'slideLayout')
+        self.endSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.endSlideRadioButton.setObjectName(u'endSlideRadioButton')
+        self.endSlideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.endSlideLabel.setWordWrap(True)
+        self.endSlideLabel.setObjectName(u'endSlideLabel')
+        self.slideLayout.addRow(self.endSlideRadioButton, self.endSlideLabel)
+        self.wrapSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.wrapSlideRadioButton.setObjectName(u'wrapSlideRadioButton')
+        self.wrapSlideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.wrapSlideLabel.setWordWrap(True)
+        self.wrapSlideLabel.setObjectName(u'wrapSlideLabel')
+        self.slideLayout.addRow(self.wrapSlideRadioButton,
+            self.wrapSlideLabel)
+        self.nextItemRadioButton = QtGui.QRadioButton(self.slideGroupBox)
+        self.nextItemRadioButton.setChecked(True)
+        self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
+        self.nextItemLabel = QtGui.QLabel(self.slideGroupBox)
+        self.nextItemLabel.setWordWrap(True)
+        self.nextItemLabel.setObjectName(u'nextItemLabel')
+        self.slideLayout.addRow(self.nextItemRadioButton,
+            self.nextItemLabel)
+        self.rightLayout.addWidget(self.slideGroupBox)
         self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
         self.x11GroupBox.setObjectName(u'x11GroupBox')
         self.x11Layout = QtGui.QVBoxLayout(self.x11GroupBox)
@@ -141,6 +173,12 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onDefaultRevertButtonPressed)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
+        QtCore.QObject.connect(self.endSlideRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
+        QtCore.QObject.connect(self.wrapSlideRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
+        QtCore.QObject.connect(self.nextItemRadioButton,
+            QtCore.SIGNAL(u'pressed()'), self.onnextItemButtonPressed)
 
     def retranslateUi(self):
         """
@@ -182,6 +220,25 @@ class AdvancedTab(SettingsTab):
             'X11'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Bypass X11 Window Manager'))
+        # Slide Limits
+        self.slideGroupBox.setTitle(
+            translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
+        self.endSlideRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&End Slide'))
+        self.endSlideLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'stop at the top and bottom slides of each Service Item.'))
+        self.wrapSlideRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&Wrap Slide'))
+        self.wrapSlideLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'wrap around at the top and bottom slides of each Service Item.'))
+        self.nextItemRadioButton.setText(
+            translate('OpenLP.GeneralTab', '&Next Item'))
+        self.nextItemLabel.setText(
+            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
+            'advance to the the next or previous Service Item from the '
+            'top and bottom slides of each Service Item.'))
 
     def load(self):
         """
@@ -220,6 +277,14 @@ class AdvancedTab(SettingsTab):
         self.defaultFileEdit.setText(settings.value(u'default image',
             QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
             .toString())
+        self.slide_limits = settings.value(
+            u'slide limits', QtCore.QVariant(SlideLimits.End)).toInt()[0]
+        if self.slide_limits == SlideLimits.End:
+            self.endSlideRadioButton.setChecked(True)
+        elif self.slide_limits == SlideLimits.Wrap:
+            self.wrapSlideRadioButton.setChecked(True)
+        else:
+            self.nextItemRadioButton.setChecked(True)
         settings.endGroup()
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.default_color)
@@ -248,10 +313,12 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.x11BypassCheckBox.isChecked()))
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.defaultFileEdit.text())
+        settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
         settings.endGroup()
         if self.display_changed:
             Receiver.send_message(u'config_screen_changed')
             self.display_changed = False
+        Receiver.send_message(u'slidecontroller_update_slide_limits')
 
     def onDefaultColorButtonPressed(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -283,3 +350,12 @@ class AdvancedTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.display_changed = True
+
+    def onEndSlideButtonPressed(self):
+        self.slide_limits = SlideLimits.End
+
+    def onWrapSlideButtonPressed(self):
+        self.slide_limits = SlideLimits.Wrap
+
+    def onnextItemButtonPressed(self):
+        self.slide_limits = SlideLimits.Next

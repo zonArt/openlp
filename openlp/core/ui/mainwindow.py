@@ -38,6 +38,7 @@ from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
+from openlp.core.lib import SlideLimits
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
@@ -1306,6 +1307,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Load the main window settings.
         """
         log.debug(u'Loading QSettings')
+       # Migrate Wrap Settings to Slide Limits Settings
+        if QtCore.QSettings().contains(self.generalSettingsSection + 
+            u'/enable slide loop'):
+            if QtCore.QSettings().value(self.generalSettingsSection +
+                u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                    u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
+            else:
+                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                    u'/slide limits', QtCore.QVariant(SlideLimits.End))
+            QtCore.QSettings().remove(self.generalSettingsSection + 
+                u'/enable slide loop')
+            Receiver.send_message(u'slidecontroller_update_slide_limits')
         settings = QtCore.QSettings()
         # Remove obsolete entries.
         settings.remove(u'custom slide')
