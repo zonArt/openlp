@@ -101,6 +101,7 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
+        # Default service name
         self.serviceNameGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.serviceNameGroupBox.setObjectName(u'serviceNameGroupBox')
         self.serviceNameLayout = QtGui.QFormLayout(
@@ -154,6 +155,7 @@ class AdvancedTab(SettingsTab):
             self.serviceNameExample)
         self.leftLayout.addWidget(self.serviceNameGroupBox)
         self.leftLayout.addStretch()
+        # Default Image
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.defaultImageGroupBox.setObjectName(u'defaultImageGroupBox')
         self.defaultImageLayout = QtGui.QFormLayout(self.defaultImageGroupBox)
@@ -183,16 +185,16 @@ class AdvancedTab(SettingsTab):
         self.defaultFileLayout.addWidget(self.defaultRevertButton)
         self.defaultImageLayout.addRow(self.defaultFileLabel,
             self.defaultFileLayout)
-        self.leftLayout.addWidget(self.defaultImageGroupBox)
-        self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.rightLayout.addWidget(self.defaultImageGroupBox)
+        # Hide mouse
+        self.hideMouseGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
         self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
         self.hideMouseLayout.setObjectName(u'hideMouseLayout')
         self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
-        self.leftLayout.addWidget(self.hideMouseGroupBox)
-        self.leftLayout.addStretch()
+        self.rightLayout.addWidget(self.hideMouseGroupBox)
         # Service Item Slide Limits
         self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.slideGroupBox.setObjectName(u'slideGroupBox')
