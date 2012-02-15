@@ -107,10 +107,11 @@ Sqlalchemy Migrate
 
 import os
 import sys
-from shutil import copy
-from shutil import rmtree
+from shutil import copy, rmtree
 from subprocess import Popen, PIPE
+from ConfigParser import SafeConfigParser as ConfigParser
 
+# Executable paths
 python_exe = sys.executable
 innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
     u'ISCC.exe')
@@ -156,6 +157,10 @@ dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
 hooks_path = os.path.join(branch_path , u'resources', u'pyinstaller')
+
+# Transifex details -- will be read in from the file.
+transifex_filename = os.path.abspath(os.path.join(branch_path, '..',
+    'transifex.conf'))
 
 def update_code():
     os.chdir(branch_path)
@@ -264,8 +269,22 @@ def copy_windows_files():
 
 def update_translations():
     print u'Updating translations...'
+    if not os.path.exists(transifex_filename):
+        raise Exception(u'Could not find Transifex credentials file: %s' \
+            % transifex_filename)
+    config = ConfigParser()
+    config.read(transifex_filename)
+    if not config.has_section('transifex'):
+        raise Exception(u'No section named "transifex" found.')
+    if not config.has_option('transifex', 'username'):
+        raise Exception(u'No option named "username" found.')
+    if not config.has_option('transifex', 'password'):
+        raise Exception(u'No option named "password" found.')
+    username = config.get('transifex', 'username')
+    password = config.get('transifex', 'password')
     os.chdir(script_path)
-    translation_utils = Popen((python_exe, i18n_utils, u'-qdpu'))
+    translation_utils = Popen([python_exe, i18n_utils, u'-qdpu', '-U',
+        username, '-P', password])
     code = translation_utils.wait()
     if code != 0:
         raise Exception(u'Error running translation_utils.py')
