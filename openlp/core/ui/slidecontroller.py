@@ -1203,7 +1203,7 @@ class SlideController(Controller):
                 if wrap is None:
                     if self.slide_limits == SlideLimits.Wrap:
                         row = 0
-                    elif self.slide_limits == SlideLimits.Next:
+                    elif self.isLive and self.slide_limits == SlideLimits.Next:
                         self.serviceNext()
                         return
                     else:
@@ -1230,7 +1230,7 @@ class SlideController(Controller):
             if row == -1:
                 if self.slide_limits == SlideLimits.Wrap:
                     row = self.previewListWidget.rowCount() - 1
-                elif self.slide_limits == SlideLimits.Next:
+                elif self.isLive and self.slide_limits == SlideLimits.Next:
                     self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
                     self._process_queue()
                     return
