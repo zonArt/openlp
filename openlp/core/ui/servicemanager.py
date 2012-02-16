@@ -31,6 +31,7 @@ import os
 import shutil
 import zipfile
 from tempfile import mkstemp
+from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
@@ -612,10 +613,44 @@ class ServiceManager(QtGui.QWidget):
         Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
+        default_service_enabled = QtCore.QSettings().value(
+            u'advanced/default service enabled', QtCore.QVariant(True)).toBool()
+        if default_service_enabled:
+            service_day = QtCore.QSettings().value(
+                u'advanced/default service day', 7).toInt()[0]
+            if service_day == 7:
+                time = datetime.now()
+            else:
+                service_hour = QtCore.QSettings().value(
+                    u'advanced/default service hour', 11).toInt()[0]
+                service_minute = QtCore.QSettings().value(
+                    u'advanced/default service minute', 0).toInt()[0]
+                now = datetime.now()
+                day_delta = service_day - now.weekday()
+                if day_delta < 0:
+                    day_delta += 7
+                time = now + timedelta(days=day_delta)
+                time = time.replace(hour=service_hour, minute=service_minute)
+            default_pattern = unicode(QtCore.QSettings().value(
+                u'advanced/default service name',
+                translate('OpenLP.AdvancedTab',
+                'Service %Y-%m-%d %H-%M',
+                'This is the default default service name template, which can '
+                'be found under Advanced in Settings, Configure OpenLP. '
+                'Please do not include any of the following characters: '
+                '/\\?*|<>\[\]":+\n'
+                'You can use any of the directives as shown on page '
+                'http://docs.python.org/library/datetime.html'
+                '#strftime-strptime-behavior , but if possible, please keep '
+                'the resulting string sortable by name.')).toString())
+            default_filename = time.strftime(default_pattern)
+        else:
+            default_filename = u''
+        directory = unicode(SettingsManager.get_last_dir(
+            self.mainwindow.servicemanagerSettingsSection))
+        path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            UiStrings().SaveService,
-            SettingsManager.get_last_dir(
-            self.mainwindow.servicemanagerSettingsSection),
+            UiStrings().SaveService, path,
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
