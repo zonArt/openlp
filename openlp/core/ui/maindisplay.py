@@ -493,11 +493,14 @@ class AudioPlayer(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.currentIndex = -1
         self.playlist = []
+        self.repeat = False
         self.mediaObject = Phonon.MediaObject()
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onFinished)
 
     def __del__(self):
         """
@@ -515,6 +518,14 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex += 1
         if len(self.playlist) > self.currentIndex:
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
+
+    def onFinished(self):
+        if self.repeat:
+            log.debug(u'Repeat is enabled... here we go again!')
+            self.mediaObject.clearQueue()
+            self.mediaObject.clear()
+            self.currentIndex = -1
+            self.play()
 
     def connectVolumeSlider(self, slider):
         slider.setAudioOutput(self.audioObject)
@@ -562,4 +573,3 @@ class AudioPlayer(QtCore.QObject):
             filenames = [filenames]
         for filename in filenames:
             self.playlist.append(Phonon.MediaSource(filename))
-

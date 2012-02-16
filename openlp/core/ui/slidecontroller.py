@@ -279,11 +279,26 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
             self.toolbar.makeWidgetsInvisible([u'Song Menu'])
             # Stuff for items with background audio.
-            self.audioPauseItem = self.toolbar.addToolbarButton(
-                u'Pause Audio', u':/slides/media_playback_pause.png',
-                translate('OpenLP.SlideController', 'Pause audio.'),
-                self.onAudioPauseClicked, True)
+            self.audioPauseItem = QtGui.QToolButton(self.toolbar)
+            self.audioPauseItem.setIcon(QtGui.QIcon(u':/slides/media_playback_pause.png'))
+            #u'Pause Audio', ,
+            self.audioPauseItem.setText(translate('OpenLP.SlideController',
+                'Pause audio.'))
+            self.audioPauseItem.setCheckable(True)
+            self.toolbar.addToolbarWidget(u'Pause Audio', self.audioPauseItem)
+            QtCore.QObject.connect(self.audioPauseItem,
+                QtCore.SIGNAL(u'clicked(bool)'),  self.onAudioPauseClicked)
             self.audioPauseItem.setVisible(False)
+            audioMenu = QtGui.QMenu(
+                translate('OpenLP.SlideController', 'Background Audio'),
+                self.toolbar)
+            trackMenu = audioMenu.addMenu(
+                translate('OpenLP.SlideController', 'Tracks'))
+            trackMenu.addAction('first song')
+            trackMenu.addAction('second song')
+            trackMenu.addAction('third song')
+            self.audioPauseItem.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+            self.audioPauseItem.setMenu(audioMenu)
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -715,7 +730,7 @@ class SlideController(Controller):
         Adjusts the value of the ``delaySpinBox`` to the given one.
         """
         self.delaySpinBox.setValue(int(value))
-    
+
     def updateSlideLimits(self):
         """
         Updates the Slide Limits variable from the settings.
@@ -860,10 +875,15 @@ class SlideController(Controller):
             self.display.audioPlayer.reset()
             self.setAudioItemsVisibility(False)
             self.audioPauseItem.setChecked(False)
+            # If the current item has background audio
             if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
                 self.display.audioPlayer.addToPlaylist(
                     self.serviceItem.background_audio)
+                self.display.audioPlayer.repeat = QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + \
+                        u'/audio repeat list',
+                    QtCore.QVariant(False)).toBool()
                 if QtCore.QSettings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio start paused',
