@@ -243,6 +243,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
             self.session.rollback()
             self.session.add(object_instance)
             if commit:
@@ -274,6 +275,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
             self.session.rollback()
             self.session.add_all(object_list)
             if commit:
@@ -304,6 +306,7 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes
                 # to terminate connections on its own without telling anyone.
                 # See bug #927473
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 return self.session.query(object_class).get(key)
 
@@ -323,6 +326,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
             self.session.rollback()
             return self.session.query(object_class).filter(filter_clause).first()
 
@@ -354,6 +358,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
             self.session.rollback()
             return query.all()
 
@@ -377,6 +382,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
             self.session.rollback()
             return query.count()
 
@@ -401,6 +407,7 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes
                 # to terminate connections on its own without telling anyone.
                 # See bug #927473
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 self.session.delete(object_instance)
                 self.session.commit()
@@ -439,6 +446,7 @@ class Manager(object):
             # This exception clause is for users running MySQL which likes
             # to terminate connections on its own without telling anyone.
             # See bug #927473
+            log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
             self.session.rollback()
             query = self.session.query(object_class)
             if filter_clause is not None:
