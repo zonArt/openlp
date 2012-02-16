@@ -31,7 +31,7 @@ import locale
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate
+    translate, create_separated_list
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, \
@@ -868,7 +868,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanWordSplit)
         # Service Item: Title
-        service_item.title = u', '.join(raw_title)
+        service_item.title = create_separated_list(raw_title)
         # Service Item: Theme
         if len(self.settings.bible_theme) == 0:
             service_item.theme = None

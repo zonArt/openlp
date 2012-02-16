@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus
+    translate, check_item_selected, PluginStatus, create_separated_list
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
 from openlp.core.utils import AppLocation
@@ -247,7 +247,8 @@ class SongMediaItem(MediaManagerItem):
                 continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
-            song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
+            song_detail = u'%s (%s)' % (song_title,
+                create_separated_list(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
@@ -469,7 +470,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
         service_item.raw_footer.append(song.title)
-        service_item.raw_footer.append(u', '.join(author_list))
+        service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
         if QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():

@@ -33,7 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
+    create_separated_list
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
@@ -255,7 +256,7 @@ class SongExportForm(OpenLPWizard):
             # No need to export temporary songs.
             if song.temporary:
                 continue
-            authors = u', '.join([author.display_name
+            authors = create_separated_list([author.display_name
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)

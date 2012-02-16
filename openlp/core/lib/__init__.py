@@ -298,6 +298,32 @@ def check_directory_exists(dir):
     except IOError:
         pass
 
+def create_separated_list(stringlist):
+    """
+    Returns a string that represents a join of a list of strings with a
+    localized separator. This function corresponts to
+    QLocale::createSeparatedList which was introduced in Qt 4.8 and implements
+    the algorithm from http://www.unicode.org/reports/tr35/#ListPatterns
+
+    ``stringlist``
+        List of unicode strings
+    """
+    if not stringlist:
+        return u''
+    elif len(stringlist) == 1:
+        return stringlist[0]
+    elif len(stringlist) == 2:
+        return unicode(translate('OpenLP.core.lib', '%1 and %2',
+            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1]))
+    else:
+        merged = unicode(translate('OpenLP.core.lib', '%1, and %2',
+            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1]))
+        for index in reversed(range(1, len(stringlist) - 2)):
+            merged = unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: middle').arg(stringlist[index], merged))
+        return unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: start').arg(stringlist[0], merged))
+
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags
