@@ -32,7 +32,7 @@ import logging
 import os.path
 import types
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
@@ -308,6 +308,8 @@ def create_separated_list(stringlist):
     ``stringlist``
         List of unicode strings
     """
+    if Qt.qVersion() >= u'4.8':
+        return unicode(QtCore.QLocale.createSeparatedList(stringlist))
     if not stringlist:
         return u''
     elif len(stringlist) == 1:
