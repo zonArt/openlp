@@ -33,7 +33,7 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
+    translate, build_icon, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
@@ -277,10 +277,10 @@ class SlideController(Controller):
             self.toolbar.addToolbarWidget(u'Song Menu', self.songMenu)
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
-            self.toolbar.makeWidgetsInvisible([u'Song Menu'])
             # Stuff for items with background audio.
             self.audioPauseItem = QtGui.QToolButton(self.toolbar)
-            self.audioPauseItem.setIcon(QtGui.QIcon(u':/slides/media_playback_pause.png'))
+            self.audioPauseItem.setIcon(
+                QtGui.QIcon(u':/slides/media_playback_pause.png'))
             #u'Pause Audio', ,
             self.audioPauseItem.setText(translate('OpenLP.SlideController',
                 'Pause audio.'))
@@ -289,16 +289,27 @@ class SlideController(Controller):
             QtCore.QObject.connect(self.audioPauseItem,
                 QtCore.SIGNAL(u'clicked(bool)'),  self.onAudioPauseClicked)
             self.audioPauseItem.setVisible(False)
-            audioMenu = QtGui.QMenu(
+            self.audioMenu = QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Background Audio'),
                 self.toolbar)
-            trackMenu = audioMenu.addMenu(
+            self.nextTrackItem = shortcut_action(self.audioMenu,
+                'nextTrackItem', [], self.onNextTrackClicked, None, None,
+                unicode(UiStrings().LiveToolbar))
+            self.nextTrackItem.setText(translate('OpenLP.SlideController', 'Next Track'))
+            self.audioMenu.addAction(self.nextTrackItem)
+            self.trackMenu = self.audioMenu.addMenu(
                 translate('OpenLP.SlideController', 'Tracks'))
-            trackMenu.addAction('first song')
-            trackMenu.addAction('second song')
-            trackMenu.addAction('third song')
+            self.trackMenu.addAction('first song')
+            self.trackMenu.addAction('second song')
+            self.trackMenu.addAction('third song')
             self.audioPauseItem.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.audioPauseItem.setMenu(audioMenu)
+            self.audioPauseItem.setMenu(self.audioMenu)
+            self.audioTimeLabel = QtGui.QLabel(u' 00:00 ', self.toolbar)
+            self.audioTimeLabel.setAlignment(QtCore.Qt.AlignCenter|QtCore.Qt.AlignHCenter)
+            self.audioTimeLabel.setStyleSheet(u'background-color: palette(background); border-top-color: palette(shadow); border-left-color: palette(shadow); border-bottom-color: palette(light); border-right-color: palette(light); border-radius: 3px; border-style: inset; border-width: 1; font-family: monospace; margin: 2px;')
+            self.audioTimeLabel.setObjectName(u'audioTimeLabel')
+            self.toolbar.addToolbarWidget(u'Time Remaining', self.audioTimeLabel)
+            self.toolbar.makeWidgetsInvisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -657,6 +668,7 @@ class SlideController(Controller):
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
+            self.display.audioPlayer.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.onAudioTimeRemaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
@@ -1333,7 +1345,10 @@ class SlideController(Controller):
         self.onToggleLoop()
 
     def setAudioItemsVisibility(self, visible):
-        self.audioPauseItem.setVisible(visible)
+        if visible:
+            self.toolbar.makeWidgetsVisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
+        else:
+            self.toolbar.makeWidgetsInvisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
 
     def onAudioPauseClicked(self, checked):
         if not self.audioPauseItem.isVisible():
@@ -1444,3 +1459,12 @@ class SlideController(Controller):
             return HideMode.Screen
         else:
             return None
+
+    def onNextTrackClicked(self):
+        self.display.audioPlayer.next()
+
+    def onAudioTimeRemaining(self, time):
+        seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
+        minutes = seconds // 60
+        seconds = seconds % 60
+        self.audioTimeLabel.setText(u' %02d:%02d ' % (minutes, seconds))

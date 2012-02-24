@@ -30,7 +30,6 @@ and play multimedia within OpenLP.
 """
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -136,12 +135,12 @@ class MainDisplay(Display):
                 QtCore.Qt.WindowStaysOnTopHint
         if QtCore.QSettings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
-            windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+            windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
         # stay always on top on Mac OS X. For details see bug 906926.
         # It needs more investigation to fix it properly.
         if sys.platform == 'darwin':
-            windowFlags = windowFlags | QtCore.Qt.SplashScreen
+            windowFlags |= QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(True)
@@ -495,6 +494,7 @@ class AudioPlayer(QtCore.QObject):
         self.playlist = []
         self.repeat = False
         self.mediaObject = Phonon.MediaObject()
+        self.mediaObject.setTickInterval(100)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(self.mediaObject,
@@ -573,3 +573,19 @@ class AudioPlayer(QtCore.QObject):
             filenames = [filenames]
         for filename in filenames:
             self.playlist.append(Phonon.MediaSource(filename))
+
+    def next(self):
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.currentIndex += 1
+        if len(self.playlist) <= self.currentIndex:
+            if self.repeat:
+                self.currentIndex = 0
+            else:
+                self.currentIndex = -1
+        if self.currentIndex >= 0:
+            self.mediaObject.enqueue(self.playlist[self.currentIndex])
+            self.mediaObject.play()
+
+    def connectSlot(self, signal, slot):
+        QtCore.QObject.connect(self.mediaObject, signal, slot)
