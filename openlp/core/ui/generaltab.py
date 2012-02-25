@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -97,9 +97,6 @@ class GeneralTab(SettingsTab):
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
         self.settingsLayout.addRow(self.autoPreviewCheckBox)
-        self.enableLoopCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
-        self.enableLoopCheckBox.setObjectName(u'enableLoopCheckBox')
-        self.settingsLayout.addRow(self.enableLoopCheckBox)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
         self.timeoutLabel.setObjectName(u'timeoutLabel')
@@ -231,8 +228,6 @@ class GeneralTab(SettingsTab):
             'Unblank display when adding new live item'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
-        self.enableLoopCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Enable slide wrap-around'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Timed slide interval:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
@@ -289,8 +284,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
-        self.enableLoopCheckBox.setChecked(settings.value(u'enable slide loop',
-            QtCore.QVariant(True)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
         self.overrideCheckBox.setChecked(settings.value(u'override position',
@@ -311,6 +304,7 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.display_changed = False
+        settings.beginGroup(self.settingsSection)
 
     def save(self):
         """
@@ -336,8 +330,6 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'enable slide loop',
-            QtCore.QVariant(self.enableLoopCheckBox.isChecked()))
         settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
         settings.setValue(u'ccli number',
@@ -358,7 +350,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.endGroup()
+        settings.endGroup()        
         # On save update the screens as well
         self.postSetUp(True)
 

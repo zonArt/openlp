@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -40,6 +40,7 @@ class PresentationTab(SettingsTab):
         """
         self.controllers = controllers
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        self.activated = False
 
     def setupUi(self):
         """
@@ -110,8 +111,12 @@ class PresentationTab(SettingsTab):
 
     def save(self):
         """
-        Save the settings.
+        Save the settings. If the tab hasn't been made visible to the user
+        then there is nothing to do, so exit. This removes the need to
+        start presentation applications unnecessarily.
         """
+        if not self.activated:
+            return
         changed = False
         for key in self.controllers:
             controller = self.controllers[key]
@@ -140,6 +145,7 @@ class PresentationTab(SettingsTab):
         """
         Tab has just been made visible to the user
         """
+        self.activated = True
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]

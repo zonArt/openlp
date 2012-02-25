@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,14 +31,14 @@ import locale
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate
+    translate, create_separated_list
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box, \
     find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    VerseReferenceList, get_reference_match
+    VerseReferenceList, get_reference_separator
 
 log = logging.getLogger(__name__)
 
@@ -634,8 +634,8 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = self.advancedToChapter.currentText()
         verse_from = self.advancedFromVerse.currentText()
         verse_to = self.advancedToVerse.currentText()
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
+        range_separator = get_reference_separator(u'sep_r_display')
         verse_range = chapter_from + verse_separator + verse_from + \
             range_separator + chapter_to + verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
@@ -737,7 +737,7 @@ class BibleMediaItem(MediaManagerItem):
         Displays the search results in the media manager. All data needed for
         further action is saved for/in each row.
         """
-        verse_separator = get_reference_match(u'sep_v_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
         version = self.plugin.manager.get_meta_data(bible, u'Version').value
         copyright = self.plugin.manager.get_meta_data(bible, u'Copyright').value
         permissions = \
@@ -868,7 +868,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanWordSplit)
         # Service Item: Title
-        service_item.title = u', '.join(raw_title)
+        service_item.title = create_separated_list(raw_title)
         # Service Item: Theme
         if len(self.settings.bible_theme) == 0:
             service_item.theme = None
@@ -890,8 +890,8 @@ class BibleMediaItem(MediaManagerItem):
         ``old_item``
             The last item of a range.
         """
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
+        range_separator = get_reference_separator(u'sep_r_display')
         old_chapter = self._decodeQtObject(old_bitem, 'chapter')
         old_verse = self._decodeQtObject(old_bitem, 'verse')
         start_book = self._decodeQtObject(start_bitem, 'book')
@@ -971,7 +971,7 @@ class BibleMediaItem(MediaManagerItem):
         ``verse``
             The verse number (int).
         """
-        verse_separator = get_reference_match(u'sep_v_display')
+        verse_separator = get_reference_separator(u'sep_v_display')
         if not self.settings.show_new_chapters or old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:

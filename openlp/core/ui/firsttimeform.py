@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,6 +29,7 @@ import io
 import logging
 import os
 import sys
+import time
 import urllib
 import urllib2
 from tempfile import gettempdir
@@ -42,6 +43,29 @@ from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
+
+class ThemeScreenshotThread(QtCore.QThread):
+    """
+    This thread downloads the theme screenshots.
+    """
+    def __init__(self, parent):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self):
+        themes = self.parent().config.get(u'themes', u'files')
+        themes = themes.split(u',')
+        config = self.parent().config
+        for theme in themes:
+            title = config.get(u'theme_%s' % theme, u'title')
+            filename = config.get(u'theme_%s' % theme, u'filename')
+            screenshot = config.get(u'theme_%s' % theme, u'screenshot')
+            urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
+                os.path.join(gettempdir(), u'openlp', screenshot))
+            item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+            item.setCheckState(QtCore.Qt.Unchecked)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+
 
 class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
@@ -125,21 +149,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
-            themes = self.config.get(u'themes', u'files')
-            themes = themes.split(u',')
-            for theme in themes:
-                title = self.config.get(u'theme_%s' % theme, u'title')
-                filename = self.config.get(u'theme_%s' % theme, u'filename')
-                screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
-                urllib.urlretrieve(u'%s%s' % (self.web, screenshot),
-                    os.path.join(gettempdir(), u'openlp', screenshot))
-                item = QtGui.QListWidgetItem(title, self.themesListWidget)
-                item.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(filename))
-                item.setIcon(build_icon(
-                    os.path.join(gettempdir(), u'openlp', screenshot)))
-                item.setCheckState(QtCore.Qt.Unchecked)
-                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            # Download the theme screenshots.
+            self.themeScreenshotThread = ThemeScreenshotThread(self)
+            self.themeScreenshotThread.start()
         Receiver.send_message(u'cursor_normal')
 
     def nextId(self):
@@ -156,6 +168,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             return -1
         elif self.currentId() == FirstTimePage.NoInternet:
             return FirstTimePage.Progress
+        elif self.currentId() == FirstTimePage.Themes:
+            Receiver.send_message(u'cursor_busy')
+            while not self.themeScreenshotThread.isFinished():
+                time.sleep(0.1)
+            # Build the screenshot icons, as this can not be done in the thread.
+            self._buildThemeScreenshots()
+            Receiver.send_message(u'cursor_normal')
+            return FirstTimePage.Defaults
         else:
             return self.currentId() + 1
 
@@ -172,7 +192,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if self.hasRunWizard:
                 self.noInternetLabel.setText(self.noInternetText)
             else:
-                self.noInternetLabel.setText(self.noInternetText + 
+                self.noInternetLabel.setText(self.noInternetText +
                     self.cancelWizardText)
         elif pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
@@ -264,6 +284,23 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.downloadCanceled:
             os.remove(fpath)
 
+    def _buildThemeScreenshots(self):
+        """
+        This method builds the theme screenshots' icons for all items in the
+        ``self.themesListWidget``.
+        """
+        themes = self.config.get(u'themes', u'files')
+        themes = themes.split(u',')
+        for theme in themes:
+            filename = self.config.get(u'theme_%s' % theme, u'filename')
+            screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
+            for index in xrange(self.themesListWidget.count()):
+                item = self.themesListWidget.item(index)
+                if item.data(QtCore.Qt.UserRole) == QtCore.QVariant(filename):
+                    break
+            item.setIcon(build_icon(
+                os.path.join(gettempdir(), u'openlp', screenshot)))
+
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
         meta = site.info()
@@ -273,7 +310,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         increment = (count * block_size) - self.previous_size
         self._incrementProgressBar(None, increment)
         self.previous_size = count * block_size
-    
+
     def _incrementProgressBar(self, status_text, increment=1):
         """
         Update the wizard progress page.
@@ -421,6 +458,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
                 QtCore.QVariant(self.displayComboBox.currentIndex()))
+            self.screens.set_current_display(
+                 self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',

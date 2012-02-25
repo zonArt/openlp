@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,6 +28,7 @@
 The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
+import cgi
 import logging
 import os
 import sys
@@ -36,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager
+    translate, PluginManager, expand_tags
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -81,6 +82,10 @@ class Display(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
+        palette = self.webView.palette()
+        palette.setBrush(QtGui.QPalette.Base, QtCore.Qt.transparent)
+        self.webView.page().setPalette(palette)
+        self.webView.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
@@ -129,7 +134,8 @@ class MainDisplay(Display):
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
                 QtCore.Qt.WindowStaysOnTopHint
-        if os.environ.get(u'XDG_CURRENT_DESKTOP') == u'Unity':
+        if QtCore.QSettings().value(u'advanced/x11 bypass wm',
+            QtCore.QVariant(True)).toBool():
             windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
         # stay always on top on Mac OS X. For details see bug 906926.
@@ -138,6 +144,7 @@ class MainDisplay(Display):
             windowFlags = windowFlags | QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setTransparency(True)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
@@ -147,6 +154,14 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def setTransparency(self, enabled):
+        if enabled:
+            self.setAutoFillBackground(False)
+        else:
+            self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
+        self.repaint()
 
     def cssChanged(self):
         """
@@ -236,16 +251,17 @@ class MainDisplay(Display):
             The text to be displayed.
         """
         log.debug(u'alert to display')
+        # First we convert <>& marks to html variants, then apply
+        # formattingtags, finally we double all backslashes for JavaScript.
+        text_prepared = expand_tags(cgi.escape(text)) \
+            .replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
         if self.height() != self.screen[u'size'].height() or \
             not self.isVisible():
             shrink = True
-            js = u'show_alert("%s", "%s")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
-                u'top')
+            js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
             shrink = False
-            js = u'show_alert("%s", "")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+            js = u'show_alert("%s", "")' % text_prepared
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
@@ -346,13 +362,7 @@ class MainDisplay(Display):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        preview = QtGui.QPixmap(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
-        painter = QtGui.QPainter(preview)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        self.frame.render(painter)
-        painter.end()
-        return preview
+        return QtGui.QPixmap.grabWidget(self)
 
     def buildHtml(self, serviceItem, image=None):
         """
@@ -416,6 +426,11 @@ class MainDisplay(Display):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -436,6 +451,11 @@ class MainDisplay(Display):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)

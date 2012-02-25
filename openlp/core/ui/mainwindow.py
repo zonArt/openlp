@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -38,6 +38,7 @@ from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action, shortcut_action
+from openlp.core.lib import SlideLimits
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
@@ -1059,7 +1060,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
-            section, key = section_key.split(u'/')
             key_value = settings.value(section_key)
             export_settings.setValue(section_key, key_value)
         export_settings.sync()
@@ -1307,6 +1307,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Load the main window settings.
         """
         log.debug(u'Loading QSettings')
+       # Migrate Wrap Settings to Slide Limits Settings
+        if QtCore.QSettings().contains(self.generalSettingsSection + 
+            u'/enable slide loop'):
+            if QtCore.QSettings().value(self.generalSettingsSection +
+                u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                    u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
+            else:
+                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                    u'/slide limits', QtCore.QVariant(SlideLimits.End))
+            QtCore.QSettings().remove(self.generalSettingsSection + 
+                u'/enable slide loop')
+            Receiver.send_message(u'slidecontroller_update_slide_limits')
         settings = QtCore.QSettings()
         # Remove obsolete entries.
         settings.remove(u'custom slide')

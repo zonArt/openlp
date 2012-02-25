@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -813,10 +813,13 @@ class ThemeManager(QtGui.QWidget):
                 unicode(theme.BackgroundParameter1.name())
             newtheme.background_end_color = \
                 unicode(theme.BackgroundParameter2.name())
-        else:
+        elif theme.BackgroundType == 2:
             newtheme.background_type = \
                 BackgroundType.to_string(BackgroundType.Image)
             newtheme.background_filename = unicode(theme.BackgroundParameter1)
+        elif theme.BackgroundType == 3:
+            newtheme.background_type = \
+                BackgroundType.to_string(BackgroundType.Transparent)
         newtheme.font_main_name = theme.FontName
         newtheme.font_main_color = unicode(theme.FontColor.name())
         newtheme.font_main_size = theme.FontProportion * 3

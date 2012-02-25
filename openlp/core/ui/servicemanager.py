@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,6 +31,7 @@ import os
 import shutil
 import zipfile
 from tempfile import mkstemp
+from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
 
@@ -595,7 +596,10 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
         if success:
-            shutil.copy(temp_file_name, path_file_name)
+            try:
+                shutil.copy(temp_file_name, path_file_name)
+            except:
+                return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         try:
@@ -609,10 +613,44 @@ class ServiceManager(QtGui.QWidget):
         Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
+        default_service_enabled = QtCore.QSettings().value(
+            u'advanced/default service enabled', QtCore.QVariant(True)).toBool()
+        if default_service_enabled:
+            service_day = QtCore.QSettings().value(
+                u'advanced/default service day', 7).toInt()[0]
+            if service_day == 7:
+                time = datetime.now()
+            else:
+                service_hour = QtCore.QSettings().value(
+                    u'advanced/default service hour', 11).toInt()[0]
+                service_minute = QtCore.QSettings().value(
+                    u'advanced/default service minute', 0).toInt()[0]
+                now = datetime.now()
+                day_delta = service_day - now.weekday()
+                if day_delta < 0:
+                    day_delta += 7
+                time = now + timedelta(days=day_delta)
+                time = time.replace(hour=service_hour, minute=service_minute)
+            default_pattern = unicode(QtCore.QSettings().value(
+                u'advanced/default service name',
+                translate('OpenLP.AdvancedTab',
+                'Service %Y-%m-%d %H-%M',
+                'This is the default default service name template, which can '
+                'be found under Advanced in Settings, Configure OpenLP. '
+                'Please do not include any of the following characters: '
+                '/\\?*|<>\[\]":+\n'
+                'You can use any of the directives as shown on page '
+                'http://docs.python.org/library/datetime.html'
+                '#strftime-strptime-behavior , but if possible, please keep '
+                'the resulting string sortable by name.')).toString())
+            default_filename = time.strftime(default_pattern)
+        else:
+            default_filename = u''
+        directory = unicode(SettingsManager.get_last_dir(
+            self.mainwindow.servicemanagerSettingsSection))
+        path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            UiStrings().SaveService,
-            SettingsManager.get_last_dir(
-            self.mainwindow.servicemanagerSettingsSection),
+            UiStrings().SaveService, path,
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
@@ -823,7 +861,7 @@ class ServiceManager(QtGui.QWidget):
                 lookFor = 1
             serviceIterator += 1
 
-    def previousItem(self):
+    def previousItem(self, message):
         """
         Called by the SlideController to select the previous service item.
         """
@@ -831,15 +869,26 @@ class ServiceManager(QtGui.QWidget):
             return
         selected = self.serviceManagerList.selectedItems()[0]
         prevItem = None
+        prevItemLastSlide = None
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         while serviceIterator.value():
             if serviceIterator.value() == selected:
-                if prevItem:
+                if message == u'last slide' and prevItemLastSlide:
+                    pos = prevItem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    check_expanded = self.serviceItems[pos - 1][u'expanded']
+                    self.serviceManagerList.setCurrentItem(prevItemLastSlide)
+                    if not check_expanded:
+                        self.serviceManagerList.collapseItem(prevItem)
+                    self.makeLive()
+                    self.serviceManagerList.setCurrentItem(prevItem)
+                elif prevItem:
                     self.serviceManagerList.setCurrentItem(prevItem)
                     self.makeLive()
                 return
             if serviceIterator.value().parent() is None:
                 prevItem = serviceIterator.value()
+            if serviceIterator.value().parent() is prevItem:
+                prevItemLastSlide = serviceIterator.value()
             serviceIterator += 1
 
     def onSetItem(self, message):
