@@ -46,8 +46,9 @@ class SlideList(QtGui.QTableWidget):
     Customised version of QTableWidget which can respond to keyboard
     events.
     """
-    def __init__(self, parent=None, name=None):
+    def __init__(self, parent=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
+
 
 class Controller(QtGui.QWidget):
     """
@@ -293,23 +294,33 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Background Audio'),
                 self.toolbar)
             self.nextTrackItem = shortcut_action(self.audioMenu,
-                'nextTrackItem', [], self.onNextTrackClicked, None, None,
-                unicode(UiStrings().LiveToolbar))
-            self.nextTrackItem.setText(translate('OpenLP.SlideController', 'Next Track'))
+                u'nextTrackItem', [], self.onNextTrackClicked,
+                u':/slides/media_playback_next.png',
+                category=unicode(UiStrings().LiveToolbar))
+            self.nextTrackItem.setText(
+                translate('OpenLP.SlideController', 'Next Track'))
             self.audioMenu.addAction(self.nextTrackItem)
             self.trackMenu = self.audioMenu.addMenu(
                 translate('OpenLP.SlideController', 'Tracks'))
-            self.trackMenu.addAction('first song')
-            self.trackMenu.addAction('second song')
-            self.trackMenu.addAction('third song')
             self.audioPauseItem.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.audioPauseItem.setMenu(self.audioMenu)
             self.audioTimeLabel = QtGui.QLabel(u' 00:00 ', self.toolbar)
-            self.audioTimeLabel.setAlignment(QtCore.Qt.AlignCenter|QtCore.Qt.AlignHCenter)
-            self.audioTimeLabel.setStyleSheet(u'background-color: palette(background); border-top-color: palette(shadow); border-left-color: palette(shadow); border-bottom-color: palette(light); border-right-color: palette(light); border-radius: 3px; border-style: inset; border-width: 1; font-family: monospace; margin: 2px;')
+            self.audioTimeLabel.setAlignment(
+                QtCore.Qt.AlignCenter|QtCore.Qt.AlignHCenter)
+            self.audioTimeLabel.setStyleSheet(
+                u'background-color: palette(background); '
+                u'border-top-color: palette(shadow); '
+                u'border-left-color: palette(shadow); '
+                u'border-bottom-color: palette(light); '
+                u'border-right-color: palette(light); '
+                u'border-radius: 3px; border-style: inset; '
+                u'border-width: 1; font-family: monospace; margin: 2px;'
+            )
             self.audioTimeLabel.setObjectName(u'audioTimeLabel')
-            self.toolbar.addToolbarWidget(u'Time Remaining', self.audioTimeLabel)
-            self.toolbar.makeWidgetsInvisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
+            self.toolbar.addToolbarWidget(
+                u'Time Remaining', self.audioTimeLabel)
+            self.toolbar.makeWidgetsInvisible([u'Song Menu', u'Pause Audio',
+                u'Time Remaining'])
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -570,7 +581,7 @@ class SlideController(Controller):
            # Reset the shortcut.
             self.current_shortcut = u''
 
-    def setPreviewHotkeys(self, parent=None):
+    def setPreviewHotkeys(self):
         self.previousItem.setObjectName(u'previousItemPreview')
         self.nextItem.setObjectName(u'nextItemPreview')
         action_list = ActionList.get_instance()
@@ -647,7 +658,7 @@ class SlideController(Controller):
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
                 if keypressCommand == ServiceItemAction.Previous:
-                    Receiver.send_message('servicemanager_previous_item', None)
+                    Receiver.send_message('servicemanager_previous_item')
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
                     Receiver.send_message('servicemanager_previous_item', u'last slide')
@@ -680,7 +691,7 @@ class SlideController(Controller):
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem,
-            self.previewDisplay.screen, None, self.isLive, None,
+            self.previewDisplay.screen, None, self.isLive,
             plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
@@ -892,6 +903,14 @@ class SlideController(Controller):
                 log.debug(u'Starting to play...')
                 self.display.audioPlayer.addToPlaylist(
                     self.serviceItem.background_audio)
+                self.trackMenu.clear()
+                for counter in range(len(self.serviceItem.background_audio)):
+                    action = self.trackMenu.addAction(os.path.basename(
+                        self.serviceItem.background_audio[counter]))
+                    action.setData(counter)
+                    QtCore.QObject.connect(action,
+                        QtCore.SIGNAL(u'triggered(bool)'),
+                        self.onTrackTriggered)
                 self.display.audioPlayer.repeat = QtCore.QSettings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio repeat list',
@@ -947,7 +966,7 @@ class SlideController(Controller):
                 self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
-            if slideHeight != 0:
+            if not slideHeight:
                 self.previewListWidget.setRowHeight(framenumber, slideHeight)
         self.previewListWidget.setVerticalHeaderLabels(text)
         if self.serviceItem.is_text():
@@ -1149,7 +1168,7 @@ class SlideController(Controller):
             else:
                 Receiver.send_message(u'live_display_show')
 
-    def onSlideSelected(self, start=False):
+    def onSlideSelected(self):
         """
         Slide selected in controller
         """
@@ -1466,5 +1485,10 @@ class SlideController(Controller):
     def onAudioTimeRemaining(self, time):
         seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
         minutes = seconds // 60
-        seconds = seconds % 60
+        seconds %= 60
         self.audioTimeLabel.setText(u' %02d:%02d ' % (minutes, seconds))
+
+    def onTrackTriggered(self):
+        action = self.sender()
+        index = action.data().toInt()[0]
+        self.display.audioPlayer.goTo(index)

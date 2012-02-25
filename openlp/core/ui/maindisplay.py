@@ -575,6 +575,7 @@ class AudioPlayer(QtCore.QObject):
             self.playlist.append(Phonon.MediaSource(filename))
 
     def next(self):
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
         self.mediaObject.clearQueue()
         self.mediaObject.clear()
         self.currentIndex += 1
@@ -585,7 +586,23 @@ class AudioPlayer(QtCore.QObject):
                 self.currentIndex = -1
         if self.currentIndex >= 0:
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
-            self.mediaObject.play()
+            if isPlaying:
+                self.mediaObject.play()
+
+    def goTo(self, index):
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.currentIndex = index
+        if len(self.playlist) <= self.currentIndex:
+            if self.repeat:
+                self.currentIndex = 0
+            else:
+                self.currentIndex = -1
+        if self.currentIndex >= 0:
+            self.mediaObject.enqueue(self.playlist[self.currentIndex])
+            if isPlaying:
+                self.mediaObject.play()
 
     def connectSlot(self, signal, slot):
         QtCore.QObject.connect(self.mediaObject, signal, slot)
