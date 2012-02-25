@@ -282,7 +282,6 @@ class SlideController(Controller):
             self.audioPauseItem = QtGui.QToolButton(self.toolbar)
             self.audioPauseItem.setIcon(
                 QtGui.QIcon(u':/slides/media_playback_pause.png'))
-            #u'Pause Audio', ,
             self.audioPauseItem.setText(translate('OpenLP.SlideController',
                 'Pause audio.'))
             self.audioPauseItem.setCheckable(True)
