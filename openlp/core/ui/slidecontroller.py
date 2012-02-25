@@ -678,7 +678,8 @@ class SlideController(Controller):
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
-            self.display.audioPlayer.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.onAudioTimeRemaining)
+            self.display.audioPlayer.connectSlot(
+                QtCore.SIGNAL(u'tick(qint64)'), self.onAudioTimeRemaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
@@ -1364,9 +1365,11 @@ class SlideController(Controller):
 
     def setAudioItemsVisibility(self, visible):
         if visible:
-            self.toolbar.makeWidgetsVisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
+            self.toolbar.makeWidgetsVisible(
+                [u'Song Menu', u'Pause Audio', u'Time Remaining'])
         else:
-            self.toolbar.makeWidgetsInvisible([u'Song Menu', u'Pause Audio', u'Time Remaining'])
+            self.toolbar.makeWidgetsInvisible(
+                [u'Song Menu', u'Pause Audio', u'Time Remaining'])
 
     def onAudioPauseClicked(self, checked):
         if not self.audioPauseItem.isVisible():
