@@ -280,101 +280,104 @@ def create_up_down_push_button_set(parent):
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
 
-def base_action(parent, name, category=None):
+def create_action(parent, name, text=u'', icon=None, tooltip=u'', statustip=u'',
+    checked=None, enabled=True, visible=True, shortcuts=None,
+    context=QtCore.Qt.WindowShortcut, category=None, trigger=None):
     """
-    Return the most basic action with the object name set.
+    Return an action with the object name set and the given parameters.
+    Parameters with default values are not set in case they stay unchanged.
+
+    ``parent``
+        A QtCore.QObject or ``None`` for the actions parent.
+
+    ``name``
+        A string which is set as object name.
+
+    ``text``
+        A string for the action text.
+
+    ``icon``
+        Either a QIcon, a resource string, or a file location string for the
+        action icon.
+
+    ``tooltip``
+        A string for the action tool tip.
+
+    ``statustip``
+        A string for the action status tip.
+
+    ``checked``
+        Either ``None`` for a not checkable action or bool for the state.
+
+    ``enabled``
+        False in case the action should be disabled.
+
+    ``visible``
+        False in case the action should be hidden.
+
+    ``shortcuts``
+        A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
+
+    ``context``
+        A context for the shortcut execution (only will be set if ``shortcuts``
+        is not None)
 
     ``category``
         The category the action should be listed in the shortcut dialog. If you
         not wish, that this action is added to the shortcut dialog, then do not
         state any.
+
+    ``trigger``
+       A slot which is connected to the actions ``triggered()`` slot.
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
-    if category is not None:
-        action_list = ActionList.get_instance()
-        action_list.add_action(action, category)
-    return action
-
-def checkable_action(parent, name, checked=None, category=None):
-    """
-    Return a standard action with the checkable attribute set.
-    """
-    action = base_action(parent, name, category)
-    action.setCheckable(True)
-    if checked is not None:
-        action.setChecked(checked)
-    return action
-
-def icon_action(parent, name, icon, checked=None, category=None):
-    """
-    Return a standard action with an icon.
-    """
-    if checked is not None:
-        action = checkable_action(parent, name, checked, category)
-    else:
-        action = base_action(parent, name, category)
-    action.setIcon(build_icon(icon))
-    return action
-
-def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None, context=QtCore.Qt.WindowShortcut):
-    """
-    Return a shortcut enabled action.
-    """
-    action = QtGui.QAction(parent)
-    action.setObjectName(name)
+    if text:
+        action.setText(text)
     if icon is not None:
         action.setIcon(build_icon(icon))
+    if tooltip:
+        action.setToolTip(tooltip)
+    if statustip:
+        action.setStatusTip(statustip)
     if checked is not None:
         action.setCheckable(True)
         action.setChecked(checked)
-    if shortcuts:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
-    action_list = ActionList.get_instance()
-    action_list.add_action(action, category)
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
-    return action
-
-def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut):
-    """
-    Utility method to help build context menus.
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
-
-    ``text``
-        The text to display for this action
-
-    ``slot``
-        The code to run when this action is triggered
-
-    ``shortcuts``
-        The action's shortcuts.
-
-    ``category``
-        The category the shortcut should be listed in the shortcut dialog. If
-        left to ``None``, then the action will be hidden in the shortcut dialog.
-
-    ``context``
-        The context the shortcut is valid.
-    """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), slot)
+    if not enabled:
+        action.setEnabled(enabled)
+    if not visible:
+        action.setVisible(visible)
     if shortcuts is not None:
         action.setShortcuts(shortcuts)
         action.setShortcutContext(context)
+    if category is not None:
         action_list = ActionList.get_instance()
-        action_list.add_action(action)
-    base.addAction(action)
+        action_list.add_action(action, category)
+    if trigger is not None:
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
+            trigger)
     return action
+
+def base_action(parent, name, category=None):
+    return create_action(parent, name, category=category)
+
+def checkable_action(parent, name, checked=None, category=None):
+    return create_action(parent, name, checked=bool(checked), category=category)
+
+def icon_action(parent, name, icon, checked=None, category=None):
+    return create_action(parent, name, icon=icon, checked=checked,
+        category=category)
+
+def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
+    category=None, context=QtCore.Qt.WindowShortcut):
+    return create_action(parent, name, icon=icon, checked=checked,
+        shortcuts=shortcuts, context=context, category=category,
+        trigger=function)
+
+def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
+    context=QtCore.Qt.WidgetShortcut):
+    return create_action(parent=base, name=u'', icon=icon, text=text,
+        trigger=slot, shortcuts=shortcuts, category=category, context=context)
 
 def context_menu(base, icon, text):
     """
