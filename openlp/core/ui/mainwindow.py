@@ -1378,14 +1378,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         recentFileCount = QtCore.QSettings().value(
             u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
-            if QtCore.QFile.exists(recentFile)]
+            if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
         self.recentFilesMenu.clear()
         for fileId, filename in enumerate(recentFilesToDisplay):
             log.debug('Recent file name: %s', filename)
             action =  base_action(self, u'')
-            action.setText(u'&%d %s' %
-                (fileId + 1, QtCore.QFileInfo(filename).fileName()))
+            action.setText(u'&%d %s' % (fileId + 1,
+                os.path.splitext(os.path.basename(unicode(filename)))[0]))
             action.setData(QtCore.QVariant(filename))
             self.connect(action, QtCore.SIGNAL(u'triggered()'),
                 self.serviceManagerContents.onRecentServiceClicked)

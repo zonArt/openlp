@@ -683,7 +683,7 @@ class ServiceManager(QtGui.QWidget):
                         'File is not a valid service.\n'
                         'The content encoding is not UTF-8.'))
                     continue
-                osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
+                osfile = ucsfile.replace(u'/', os.path.sep)
                 if not osfile.startswith(u'audio'):
                     osfile = os.path.split(osfile)[1]
                 log.debug(u'Extract file: %s', osfile)

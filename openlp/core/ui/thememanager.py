@@ -544,7 +544,7 @@ class ThemeManager(QtGui.QWidget):
                         log.exception(u'Theme file contains non utf-8 filename'
                             u' "%s"' % name.decode(u'utf-8', u'replace'))
                         raise Exception(u'validation')
-                    uname = unicode(QtCore.QDir.toNativeSeparators(uname))
+                    uname = uname.replace(u'/', os.path.sep)
                     splitname = uname.split(os.path.sep)
                     if splitname[-1] == u'' or len(splitname) == 1:
                         # is directory or preview file
