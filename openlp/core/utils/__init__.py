@@ -400,7 +400,7 @@ def clean_filename(filename):
     """
     if not isinstance(filename, unicode):
         filename = unicode(filename, u'utf-8')
-    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+    return re.sub(r'[/\\?*|<>\[\]":<>+%\n]+', u'_', filename).strip(u'_')
 
 def delete_file(file_path_name):
     """
