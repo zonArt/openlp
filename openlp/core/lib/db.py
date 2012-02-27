@@ -193,18 +193,18 @@ class Manager(object):
             else:
                 self.db_url = u'sqlite:///%s/%s.sqlite' % (
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
-        elif db_type == u'mysql' :
-            self.db_url = u'%s://%s:%s@%s/%s?charset=utf8' % (db_type,
-                urlquote(unicode(settings.value(u'db username').toString())),
-                urlquote(unicode(settings.value(u'db password').toString())),
-                urlquote(unicode(settings.value(u'db hostname').toString())),
-                urlquote(unicode(settings.value(u'db database').toString())))
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
                 urlquote(unicode(settings.value(u'db username').toString())),
                 urlquote(unicode(settings.value(u'db password').toString())),
                 urlquote(unicode(settings.value(u'db hostname').toString())),
                 urlquote(unicode(settings.value(u'db database').toString())))
+            if db_type == u'mysql':
+                db_encoding = unicode(
+                    settings.value(u'db encoding').toString())
+                if db_encoding == "":
+                    db_encoding = u'utf8'
+                self.db_url += u'?charset=%s' % (urlquote(db_encoding))
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
