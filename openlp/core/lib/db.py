@@ -193,6 +193,12 @@ class Manager(object):
             else:
                 self.db_url = u'sqlite:///%s/%s.sqlite' % (
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
+        elif db_type == u'mysql' :
+            self.db_url = u'%s://%s:%s@%s/%s?charset=utf8' % (db_type,
+                urlquote(unicode(settings.value(u'db username').toString())),
+                urlquote(unicode(settings.value(u'db password').toString())),
+                urlquote(unicode(settings.value(u'db hostname').toString())),
+                urlquote(unicode(settings.value(u'db database').toString())))
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
                 urlquote(unicode(settings.value(u'db username').toString())),
