@@ -30,7 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import base_action, UiStrings
+from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.forms import BibleUpgradeForm
@@ -93,19 +93,16 @@ class BiblePlugin(Plugin):
                 self.onToolsUpgradeItemTriggered()
 
     def addImportMenuItem(self, import_menu):
-        self.importBibleItem = base_action(import_menu, u'importBibleItem')
-        self.importBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        self.importBibleItem = create_action(import_menu, u'importBibleItem',
+            text=translate('BiblesPlugin', '&Bible'), visible=False,
+            triggers=self.onBibleImportClick)
         import_menu.addAction(self.importBibleItem)
-        # signals and slots
-        QtCore.QObject.connect(self.importBibleItem,
-            QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
-        self.importBibleItem.setVisible(False)
 
     def addExportMenuItem(self, export_menu):
-        self.exportBibleItem = base_action(export_menu, u'exportBibleItem')
-        self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        self.exportBibleItem = create_action(export_menu, u'exportBibleItem',
+            text=translate('BiblesPlugin', '&Bible'),
+            visible=False)
         export_menu.addAction(self.exportBibleItem)
-        self.exportBibleItem.setVisible(False)
 
     def addToolsMenuItem(self, tools_menu):
         """

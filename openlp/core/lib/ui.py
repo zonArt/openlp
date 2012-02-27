@@ -312,6 +312,9 @@ def create_action(parent, name, **kwargs):
     ``visible``
         False in case the action should be hidden.
 
+    ``data``
+        Data which is set as QVariant type.
+
     ``shortcuts``
         A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
@@ -328,48 +331,37 @@ def create_action(parent, name, **kwargs):
     action = QtGui.QAction(parent)
     action.setObjectName(name)
     if kwargs.get(u'text'):
-        action.setText(kwargs[u'text'])
+        action.setText(kwargs.pop(u'text'))
     if kwargs.get(u'icon'):
-        action.setIcon(build_icon(kwargs[u'icon']))
-    if kwargs.get('tooltip'):
-        action.setToolTip(kwargs['tooltip'])
-    if kwargs.get('statustip'):
-        action.setStatusTip(kwargs['statustip'])
-    if kwargs.get('checked') is not None:
+        action.setIcon(build_icon(kwargs.pop(u'icon')))
+    if kwargs.get(u'tooltip'):
+        action.setToolTip(kwargs.pop(u'tooltip'))
+    if kwargs.get(u'statustip'):
+        action.setStatusTip(kwargs.pop(u'statustip'))
+    if kwargs.get(u'checked') is not None:
         action.setCheckable(True)
-        action.setChecked(kwargs['checked'])
-    if not kwargs.get('enabled'):
+        action.setChecked(kwargs.pop(u'checked'))
+    if not kwargs.pop(u'enabled', True):
         action.setEnabled(False)
-    if not kwargs.get('visible'):
+    if not kwargs.pop(u'visible', True):
         action.setVisible(False)
-    if kwargs.get('shortcuts'):
-        action.setShortcuts(kwargs['shortcuts'])
-        action.setShortcutContext(kwargs.get('context',
+    if u'data' in kwargs:
+        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
+    if kwargs.get(u'shortcuts'):
+        action.setShortcuts(kwargs.pop(u'shortcuts'))
+        action.setShortcutContext(kwargs.pop(u'context',
             QtCore.Qt.WindowShortcut))
-    if kwargs.get('category'):
+    if kwargs.get(u'category'):
         action_list = ActionList.get_instance()
-        action_list.add_action(action, kwargs['category'])
-    if kwargs.get('triggers'):
+        action_list.add_action(action, kwargs.pop(u'category'))
+    if kwargs.get(u'triggers'):
         QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-            kwargs['triggers'])
+            kwargs.pop(u'triggers'))
+    for key in kwargs.keys():
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked',
+            u'shortcuts', u'context', u'category', u'triggers']:
+            log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
-
-def base_action(parent, name, category=None, **kwargs):
-    return create_action(parent, name, category=None, **kwargs)
-
-def checkable_action(parent, name, checked=None, category=None, **kwargs):
-    return create_action(parent, name, checked=bool(checked), category=category,
-        **kwargs)
-
-def icon_action(parent, name, icon, checked=None, category=None, **kwargs):
-    return create_action(parent, name, icon=icon, checked=checked,
-        category=category, **kwargs)
-
-def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None, context=QtCore.Qt.WindowShortcut, **kwargs):
-    return create_action(parent, name, icon=icon, checked=checked,
-        shortcuts=shortcuts, context=context, category=category,
-        triggers=function, **kwargs)
 
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
     context=QtCore.Qt.WidgetShortcut, **kwargs):
