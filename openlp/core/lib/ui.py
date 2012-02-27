@@ -280,18 +280,15 @@ def create_up_down_push_button_set(parent):
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
 
-def create_action(parent, name, text=u'', icon=None, tooltip=u'', statustip=u'',
-    checked=None, enabled=True, visible=True, shortcuts=None,
-    context=QtCore.Qt.WindowShortcut, category=None, trigger=None):
+def create_action(parent, name, **kwargs):
     """
     Return an action with the object name set and the given parameters.
-    Parameters with default values are not set in case they stay unchanged.
 
     ``parent``
-        A QtCore.QObject or ``None`` for the actions parent.
+        A QtCore.QObject for the actions parent (required).
 
     ``name``
-        A string which is set as object name.
+        A string which is set as object name (required).
 
     ``text``
         A string for the action text.
@@ -307,7 +304,7 @@ def create_action(parent, name, text=u'', icon=None, tooltip=u'', statustip=u'',
         A string for the action status tip.
 
     ``checked``
-        Either ``None`` for a not checkable action or bool for the state.
+        A bool for the state. If ``None`` the Action is not checkable.
 
     ``enabled``
         False in case the action should be disabled.
@@ -319,65 +316,66 @@ def create_action(parent, name, text=u'', icon=None, tooltip=u'', statustip=u'',
         A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
     ``context``
-        A context for the shortcut execution (only will be set if ``shortcuts``
-        is not None)
+        A context for the shortcut execution (only will be set together with
+        ``shortcuts``).
 
     ``category``
-        The category the action should be listed in the shortcut dialog. If you
-        not wish, that this action is added to the shortcut dialog, then do not
-        state any.
+        A category the action should be listed in the shortcut dialog.
 
-    ``trigger``
-       A slot which is connected to the actions ``triggered()`` slot.
+    ``triggers``
+        A slot which is connected to the actions ``triggered()`` slot.
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
-    if text:
-        action.setText(text)
-    if icon is not None:
-        action.setIcon(build_icon(icon))
-    if tooltip:
-        action.setToolTip(tooltip)
-    if statustip:
-        action.setStatusTip(statustip)
-    if checked is not None:
+    if kwargs.get(u'text'):
+        action.setText(kwargs[u'text'])
+    if kwargs.get(u'icon'):
+        action.setIcon(build_icon(kwargs[u'icon']))
+    if kwargs.get('tooltip'):
+        action.setToolTip(kwargs['tooltip'])
+    if kwargs.get('statustip'):
+        action.setStatusTip(kwargs['statustip'])
+    if kwargs.get('checked') is not None:
         action.setCheckable(True)
-        action.setChecked(checked)
-    if not enabled:
-        action.setEnabled(enabled)
-    if not visible:
-        action.setVisible(visible)
-    if shortcuts is not None:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
-    if category is not None:
+        action.setChecked(kwargs['checked'])
+    if not kwargs.get('enabled'):
+        action.setEnabled(False)
+    if not kwargs.get('visible'):
+        action.setVisible(False)
+    if kwargs.get('shortcuts'):
+        action.setShortcuts(kwargs['shortcuts'])
+        action.setShortcutContext(kwargs.get('context',
+            QtCore.Qt.WindowShortcut))
+    if kwargs.get('category'):
         action_list = ActionList.get_instance()
-        action_list.add_action(action, category)
-    if trigger is not None:
+        action_list.add_action(action, kwargs['category'])
+    if kwargs.get('triggers'):
         QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-            trigger)
+            kwargs['triggers'])
     return action
 
-def base_action(parent, name, category=None):
-    return create_action(parent, name, category=category)
+def base_action(parent, name, category=None, **kwargs):
+    return create_action(parent, name, category=None, **kwargs)
 
-def checkable_action(parent, name, checked=None, category=None):
-    return create_action(parent, name, checked=bool(checked), category=category)
+def checkable_action(parent, name, checked=None, category=None, **kwargs):
+    return create_action(parent, name, checked=bool(checked), category=category,
+        **kwargs)
 
-def icon_action(parent, name, icon, checked=None, category=None):
+def icon_action(parent, name, icon, checked=None, category=None, **kwargs):
     return create_action(parent, name, icon=icon, checked=checked,
-        category=category)
+        category=category, **kwargs)
 
 def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None, context=QtCore.Qt.WindowShortcut):
+    category=None, context=QtCore.Qt.WindowShortcut, **kwargs):
     return create_action(parent, name, icon=icon, checked=checked,
         shortcuts=shortcuts, context=context, category=category,
-        trigger=function)
+        triggers=function, **kwargs)
 
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut):
+    context=QtCore.Qt.WidgetShortcut, **kwargs):
     return create_action(parent=base, name=u'', icon=icon, text=text,
-        trigger=slot, shortcuts=shortcuts, category=category, context=context)
+        triggers=slot, shortcuts=shortcuts, category=category, context=context,
+        **kwargs)
 
 def context_menu(base, icon, text):
     """
