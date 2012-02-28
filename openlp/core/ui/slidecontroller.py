@@ -350,10 +350,10 @@ class SlideController(Controller):
                 context=QtCore.Qt.WidgetWithChildrenShortcut,
                 category=unicode(UiStrings().LiveToolbar) \
                     if s.get(u'configurable') else None,
-                triggers=self.slideShortcutActivated) for s in shortcuts])
+                triggers=self._slideShortcutActivated) for s in shortcuts])
             QtCore.QObject.connect(
                 self.shortcutTimer, QtCore.SIGNAL(u'timeout()'),
-                self.slideShortcutActivated)
+                self._slideShortcutActivated)
         # Signals
         QtCore.QObject.connect(self.previewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
@@ -403,7 +403,7 @@ class SlideController(Controller):
             QtCore.SIGNAL(u'slidecontroller_update_slide_limits'),
             self.updateSlideLimits)
 
-    def slideShortcutActivated(self):
+    def _slideShortcutActivated(self):
         """
         Called, when a shortcut has been activated to jump to a chorus, verse,
         etc.
@@ -419,8 +419,9 @@ class SlideController(Controller):
             SONGS_PLUGIN_AVAILABLE = True
         except ImportError:
             SONGS_PLUGIN_AVAILABLE = False
-        verse_type = \
-            unicode(self.sender().objectName())[len(u'shortcutAction_'):]
+        sender_name = unicode(self.sender().objectName())
+        verse_type = sender_name[15:] \
+            if sender_name[:15] == u'shortcutAction_' else u''
         if SONGS_PLUGIN_AVAILABLE:
             if verse_type == u'V':
                 self.current_shortcut = \
@@ -448,7 +449,7 @@ class SlideController(Controller):
             self.current_shortcut = self.current_shortcut.upper()
         elif verse_type.isnumeric():
             self.current_shortcut += verse_type
-        else:
+        elif verse_type:
             self.current_shortcut = verse_type
         keys = self.slideList.keys()
         matches = [match for match in keys
@@ -458,7 +459,7 @@ class SlideController(Controller):
             self.current_shortcut = u''
             self.__checkUpdateSelectedSlide(self.slideList[matches[0]])
             self.slideSelected()
-        elif verse_type != u'shortcutTimer':
+        elif sender_name != u'shortcutTimer':
             # Start the time as we did not have any match.
             self.shortcutTimer.start(350)
         else:
