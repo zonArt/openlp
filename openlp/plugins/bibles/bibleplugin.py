@@ -114,17 +114,12 @@ class BiblePlugin(Plugin):
             use it as their parent.
         """
         log.debug(u'add tools menu')
-        self.toolsUpgradeItem = QtGui.QAction(tools_menu)
-        self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
-        self.toolsUpgradeItem.setText(
-            translate('BiblesPlugin', '&Upgrade older Bibles'))
-        self.toolsUpgradeItem.setStatusTip(
-            translate('BiblesPlugin', 'Upgrade the Bible databases to the '
-            'latest format.'))
+        self.toolsUpgradeItem = create_action(tools_menu, u'toolsUpgradeItem',
+            text=translate('BiblesPlugin', '&Upgrade older Bibles'),
+            statustip=translate('BiblesPlugin',
+            'Upgrade the Bible databases to the latest format.'),
+            visible=False, triggers=self.onToolsUpgradeItemTriggered)
         tools_menu.addAction(self.toolsUpgradeItem)
-        QtCore.QObject.connect(self.toolsUpgradeItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsUpgradeItemTriggered)
-        self.toolsUpgradeItem.setVisible(False)
 
     def onToolsUpgradeItemTriggered(self):
         """

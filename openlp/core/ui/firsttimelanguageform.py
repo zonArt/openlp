@@ -27,6 +27,7 @@
 
 from PyQt4 import QtGui
 
+from openlp.core.lib.ui import create_action
 from openlp.core.utils import LanguageManager
 from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
@@ -55,8 +56,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
             LanguageManager.set_language(False, False)
         else:
             LanguageManager.auto_language = False
-            action = QtGui.QAction(None)
-            action.setObjectName(unicode(self.languageComboBox.currentText()))
+            action = create_action(None, self.languageComboBox.currentText())
             LanguageManager.set_language(action, False)
         return QtGui.QDialog.accept(self)
 

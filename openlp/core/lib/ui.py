@@ -364,10 +364,11 @@ def create_action(parent, name, **kwargs):
     return action
 
 def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut, **kwargs):
-    return create_action(parent=base, name=u'', icon=icon, text=text,
-        triggers=slot, shortcuts=shortcuts, category=category, context=context,
-        **kwargs)
+    context=QtCore.Qt.WidgetShortcut):
+    action = create_action(parent=base, name=u'', text=text, icon=icon,
+        shortcuts=shortcuts, context=context, category=category, triggers=slot)
+    base.addAction(action)
+    return action
 
 def context_menu(base, icon, text):
     """
@@ -393,7 +394,7 @@ def context_menu_separator(base):
     ``base``
         The menu object to add the separator to
     """
-    action = QtGui.QAction(u'', base)
+    action = QtGui.QAction(base)
     action.setSeparator(True)
     base.addAction(action)
     return action

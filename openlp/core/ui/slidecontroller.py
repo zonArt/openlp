@@ -328,96 +328,29 @@ class SlideController(Controller):
             self.shortcutTimer = QtCore.QTimer()
             self.shortcutTimer.setObjectName(u'shortcutTimer')
             self.shortcutTimer.setSingleShot(True)
-            self.verseShortcut = create_action(self, u'verseShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Verse"'),
-                shortcuts=[QtGui.QKeySequence(u'V')],
+            shortcuts = [{u'key': u'V', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Verse"')},
+                {u'key': u'C', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Chorus"')},
+                {u'key': u'B', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Bridge"')},
+                {u'key': u'P', u'configurable': True,
+                u'text': translate('OpenLP.SlideController',
+                'Go to "Pre-Chorus"')},
+                {u'key': u'I', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Intro"')},
+                {u'key': u'E', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Ending"')},
+                {u'key': u'O', u'configurable': True,
+                u'text': translate('OpenLP.SlideController', 'Go to "Other"')}]
+            shortcuts += [{u'key': unicode(number)} for number in range(0, 10)]
+            self.previewListWidget.addActions([create_action(self,
+                u'shortcutAction_%s' % s[u'key'], text=s.get(u'text'),
+                shortcuts=[QtGui.QKeySequence(s[u'key'])],
                 context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.shortcut0 = create_action(self, u'0',
-                shortcuts=[QtGui.QKeySequence(u'0')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut1 = create_action(self, u'1',
-                shortcuts=[QtGui.QKeySequence(u'1')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut2 = create_action(self, u'2',
-                shortcuts=[QtGui.QKeySequence(u'2')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut3 = create_action(self, u'3',
-                shortcuts=[QtGui.QKeySequence(u'3')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut4 = create_action(self, u'4',
-                shortcuts=[QtGui.QKeySequence(u'4')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut5 = create_action(self, u'5',
-                shortcuts=[QtGui.QKeySequence(u'5')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut6 = create_action(self, u'6',
-                shortcuts=[QtGui.QKeySequence(u'6')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut7 = create_action(self, u'7',
-                shortcuts=[QtGui.QKeySequence(u'7')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut8 = create_action(self, u'8',
-                shortcuts=[QtGui.QKeySequence(u'8')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.shortcut9 = create_action(self, u'9',
-                shortcuts=[QtGui.QKeySequence(u'9')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                triggers=self.slideShortcutActivated)
-            self.chorusShortcut = create_action(self, u'chorusShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Chorus"'),
-                shortcuts=[QtGui.QKeySequence(u'C')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.bridgeShortcut = create_action(self, u'bridgeShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Bridge"'),
-                shortcuts=[QtGui.QKeySequence(u'B')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.preChorusShortcut = create_action(self, u'preChorusShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Pre-Chorus"'),
-                shortcuts=[QtGui.QKeySequence(u'P')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.introShortcut = create_action(self, u'introShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Intro"'),
-                shortcuts=[QtGui.QKeySequence(u'I')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.endingShortcut = create_action(self, u'endingShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Ending"'),
-                shortcuts=[QtGui.QKeySequence(u'E')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.otherShortcut = create_action(self, u'otherShortcut',
-                text=translate('OpenLP.SlideController', 'Go to "Other"'),
-                shortcuts=[QtGui.QKeySequence(u'O')],
-                context=QtCore.Qt.WidgetWithChildrenShortcut,
-                category=unicode(UiStrings().LiveToolbar),
-                triggers=self.slideShortcutActivated)
-            self.previewListWidget.addActions([
-                self.shortcut0, self.shortcut1, self.shortcut2, self.shortcut3,
-                self.shortcut4, self.shortcut5, self.shortcut6, self.shortcut7,
-                self.shortcut8, self.shortcut9, self.verseShortcut,
-                self.chorusShortcut, self.bridgeShortcut,
-                self.preChorusShortcut, self.introShortcut, self.endingShortcut,
-                self.otherShortcut
-            ])
+                category=unicode(UiStrings().LiveToolbar) \
+                    if s.get(u'configurable') else None,
+                triggers=self.slideShortcutActivated) for s in shortcuts])
             QtCore.QObject.connect(
                 self.shortcutTimer, QtCore.SIGNAL(u'timeout()'),
                 self.slideShortcutActivated)
@@ -486,52 +419,37 @@ class SlideController(Controller):
             SONGS_PLUGIN_AVAILABLE = True
         except ImportError:
             SONGS_PLUGIN_AVAILABLE = False
-        verse_type = unicode(self.sender().objectName())
-        if verse_type.startswith(u'verseShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+        verse_type = \
+            unicode(self.sender().objectName())[len(u'shortcutAction_'):]
+        if SONGS_PLUGIN_AVAILABLE:
+            if verse_type == u'V':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Verse]
-            else:
-                self.current_shortcut = u'V'
-        elif verse_type.startswith(u'chorusShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'C':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Chorus]
-            else:
-                self.current_shortcut = u'C'
-        elif verse_type.startswith(u'bridgeShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'B':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Bridge]
-            else:
-                self.current_shortcut = u'B'
-        elif verse_type.startswith(u'preChorusShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'P':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.PreChorus]
-            else:
-                self.current_shortcut = u'P'
-        elif verse_type.startswith(u'introShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'I':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Intro]
-            else:
-                self.current_shortcut = u'I'
-        elif verse_type.startswith(u'endingShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'E':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Ending]
-            else:
-                self.current_shortcut = u'E'
-        elif verse_type.startswith(u'otherShortcut'):
-            if SONGS_PLUGIN_AVAILABLE:
+            elif verse_type == u'O':
                 self.current_shortcut = \
                     VerseType.TranslatedTags[VerseType.Other]
-            else:
-                self.current_shortcut = u'O'
+            elif verse_type.isnumeric():
+                self.current_shortcut += verse_type
+            self.current_shortcut = self.current_shortcut.upper()
         elif verse_type.isnumeric():
             self.current_shortcut += verse_type
-        self.current_shortcut = self.current_shortcut.upper()
+        else:
+            self.current_shortcut = verse_type
         keys = self.slideList.keys()
         matches = [match for match in keys
             if match.startswith(self.current_shortcut)]
