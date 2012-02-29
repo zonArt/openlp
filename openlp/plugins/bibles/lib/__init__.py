@@ -58,6 +58,13 @@ class DisplayStyle(object):
     Curly = 2
     Square = 3
 
+class LanguageSelection(object):
+    """
+    An enumeration for bible bookname language.
+    """
+    Bible = 0
+    Application = 1
+    English = 2
 
 def update_reference_separators():
     """

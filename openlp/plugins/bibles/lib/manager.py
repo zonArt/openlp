@@ -227,6 +227,19 @@ class BibleManager(object):
             for book in self.db_cache[bible].get_books()
         ]
 
+    def get_book_by_id(self, bible, id):
+        """
+        Returns a book object by given id.
+
+        ``bible``
+            Unicode. The Bible to get the list of books from.
+
+        ``id``
+            Unicode. The book_reference_id to get the book for.
+        """
+        log.debug(u'BibleManager.get_book_by_id("%s", "%s")', bible, id)
+        return self.db_cache[bible].get_book_by_book_ref_id(id)
+
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.

@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    update_reference_separators, get_reference_separator
+    update_reference_separators, get_reference_separator, LanguageSelection
 
 log = logging.getLogger(__name__)
 
@@ -140,9 +140,25 @@ class BiblesTab(SettingsTab):
         self.scriptureReferenceLayout.addWidget(self.endSeparatorLineEdit, 3,
             1)
         self.leftLayout.addWidget(self.scriptureReferenceGroupBox)
-        self.leftLayout.addStretch()
         self.rightColumn.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.languageSelectionGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.languageSelectionGroupBox.setObjectName(
+            u'languageSelectionGroupBox')
+        self.languageSelectionLayout = QtGui.QVBoxLayout(
+            self.languageSelectionGroupBox)
+        self.languageSelectionLabel = QtGui.QLabel(
+            self.languageSelectionGroupBox)
+        self.languageSelectionLabel.setObjectName(u'languageSelectionLabel')
+        self.languageSelectionComboBox = QtGui.QComboBox(
+            self.languageSelectionGroupBox)
+        self.languageSelectionComboBox.setObjectName(
+            u'languageSelectionComboBox')
+        self.languageSelectionComboBox.addItems([u'', u'', u''])
+        self.languageSelectionLayout.addWidget(self.languageSelectionLabel)
+        self.languageSelectionLayout.addWidget(self.languageSelectionComboBox)
+        self.rightLayout.addWidget(self.languageSelectionGroupBox)
+        self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(
@@ -198,6 +214,9 @@ class BiblesTab(SettingsTab):
             self.onEndSeparatorLineEditFinished)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        QtCore.QObject.connect(
+            self.languageSelectionComboBox, QtCore.SIGNAL(u'activated(int)'),
+            self.onLanguageSelectionComboBoxChanged)
 
     def retranslateUi(self):
         self.verseDisplayGroupBox.setTitle(
@@ -257,6 +276,24 @@ class BiblesTab(SettingsTab):
                 'end marks may be defined.\nThey have to be separated by a '
                 'vertical bar "|".\nPlease clear this edit line to use the '
                 'default value.'))
+        self.languageSelectionGroupBox.setTitle(
+            translate('BiblesPlugin.BiblesTab', 'Preferred Bookname Language'))
+        self.languageSelectionLabel.setText(translate('BiblesPlugin.BiblesTab',
+            'Choose the language in which the book names of the\nbible should '
+            'be displayed in advanced search or on\nautocompleter in quick '
+            'search:'))
+        self.languageSelectionComboBox.setItemText(LanguageSelection.Bible,
+            translate('BiblesPlugin.BiblesTab', 'Bible language'))
+        self.languageSelectionComboBox.setItemText(
+            LanguageSelection.Application,
+            translate('BiblesPlugin.BiblesTab', 'Application language'))
+        self.languageSelectionComboBox.setItemText(LanguageSelection.English,
+            translate('BiblesPlugin.BiblesTab', 'English'))
+        self.languageSelectionComboBox.setToolTip(
+            translate('BiblesPlugin.BiblesTab', 'Multiple options:\n '
+                'Bible language - the language in which the bible book names '
+                'was imported\n Application language - the language you have '
+                'choosen for Openlp\n English - use always English booknames'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.bibleThemeComboBox.currentText()
@@ -266,6 +303,9 @@ class BiblesTab(SettingsTab):
 
     def onLayoutStyleComboBoxChanged(self):
         self.layout_style = self.layoutStyleComboBox.currentIndex()
+
+    def onLanguageSelectionComboBoxChanged(self):
+        self.language_selection = self.languageSelectionComboBox.currentIndex()
 
     def onNewChaptersCheckBoxChanged(self, check_state):
         self.show_new_chapters = False
@@ -448,6 +488,9 @@ class BiblesTab(SettingsTab):
             self.endSeparatorLineEdit.setPalette(
                 self.getGreyTextPalette(False))
             self.endSeparatorCheckBox.setChecked(True)
+        self.language_selection = settings.value(
+            u'bookname language', QtCore.QVariant(0)).toInt()[0]
+        self.languageSelectionComboBox.setCurrentIndex(self.language_selection)
         settings.endGroup()
 
     def save(self):
@@ -459,6 +502,8 @@ class BiblesTab(SettingsTab):
             QtCore.QVariant(self.display_style))
         settings.setValue(u'verse layout style',
             QtCore.QVariant(self.layout_style))
+        settings.setValue(u'bookname language',
+            QtCore.QVariant(self.language_selection))
         settings.setValue(u'second bibles', QtCore.QVariant(self.second_bibles))
         settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))
         if self.verseSeparatorCheckBox.isChecked():
@@ -482,6 +527,7 @@ class BiblesTab(SettingsTab):
         else:
             settings.remove(u'end separator')
         update_reference_separators()
+        Receiver.send_message(u'bibles_load_list')
         settings.endGroup()
 
     def updateThemeList(self, theme_list):

@@ -38,7 +38,9 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    VerseReferenceList, get_reference_separator
+    VerseReferenceList, get_reference_separator, LanguageSelection
+from openlp.plugins.bibles.lib.ui import BibleStrings
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -424,20 +426,37 @@ class BibleMediaItem(MediaManagerItem):
             book_data = book_data_temp
         self.advancedBookComboBox.clear()
         first = True
+        language_selection = QtCore.QSettings().value(
+            self.settingsSection + u'/bookname language',
+            QtCore.QVariant(0)).toInt()[0]        
         for book in book_data:
             row = self.advancedBookComboBox.count()
-            self.advancedBookComboBox.addItem(book[u'name'])
+            if language_selection == LanguageSelection.Bible:
+                self.advancedBookComboBox.addItem(book[u'name'])
+            elif language_selection == LanguageSelection.Application:
+                data = BiblesResourcesDB.get_book_by_id(
+                    book[u'book_reference_id'])
+                abbr = data[u'abbreviation'].replace(u'1', u'First').\
+                    replace(u'2', u'Second').replace(u'3', u'Third').\
+                    replace(u'4', u'Fourth')
+                self.advancedBookComboBox.addItem(getattr(BibleStrings, abbr))
+            elif language_selection == LanguageSelection.English:
+                data = BiblesResourcesDB.get_book_by_id(
+                    book[u'book_reference_id'])
+                self.advancedBookComboBox.addItem(data[u'name'])
             self.advancedBookComboBox.setItemData(
-                row, QtCore.QVariant(book[u'chapters']))
+                row, QtCore.QVariant(book[u'book_reference_id']))
             if first:
                 first = False
                 self.initialiseChapterVerse(bible, book[u'name'],
-                    book[u'chapters'])
+                    book[u'book_reference_id'])
 
-    def initialiseChapterVerse(self, bible, book, chapter_count):
-        log.debug(u'initialiseChapterVerse %s, %s', bible, book)
-        self.chapter_count = chapter_count
-        verse_count = self.plugin.manager.get_verse_count(bible, book, 1)
+    def initialiseChapterVerse(self, bible, book, book_ref_id):
+        log.debug(u'initialiseChapterVerse %s, %s, %s', bible, book,
+            book_ref_id)
+        book = self.plugin.manager.get_book_by_id(bible, book_ref_id)
+        self.chapter_count = self.plugin.manager.get_chapter_count(bible, book)
+        verse_count = self.plugin.manager.get_verse_count(bible, book.name, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
@@ -480,7 +499,24 @@ class BibleMediaItem(MediaManagerItem):
                                 secondbook.book_reference_id:
                                 book_data_temp.append(book)
                     book_data = book_data_temp
-                books = [book.name + u' ' for book in book_data]
+                language_selection = QtCore.QSettings().value(
+                    self.settingsSection + u'/bookname language',
+                    QtCore.QVariant(0)).toInt()[0]   
+                if language_selection == LanguageSelection.Bible:
+                    books = [book.name + u' ' for book in book_data]
+                elif language_selection == LanguageSelection.Application:
+                    for book in book_data:
+                        data = BiblesResourcesDB.get_book_by_id(
+                        book.book_reference_id)
+                        abbr = data[u'abbreviation'].replace(u'1', u'First').\
+                            replace(u'2', u'Second').replace(u'3', u'Third').\
+                            replace(u'4', u'Fourth')
+                        books.append(getattr(BibleStrings, abbr) + u' ')
+                elif language_selection == LanguageSelection.English:
+                    for book in book_data:
+                        data = BiblesResourcesDB.get_book_by_id(
+                        book.book_reference_id)
+                        books.append(data[u'name'] + u' ')
                 books.sort(cmp=locale.strcoll)
         add_widget_completer(books, self.quickSearchEdit)
 
@@ -547,7 +583,7 @@ class BibleMediaItem(MediaManagerItem):
         self.initialiseChapterVerse(
             unicode(self.advancedVersionComboBox.currentText()),
             unicode(self.advancedBookComboBox.currentText()),
-            self.advancedBookComboBox.itemData(item).toInt()[0])
+            unicode(self.advancedBookComboBox.itemData(item).toString()))
 
     def onAdvancedFromVerse(self):
         chapter_from = int(self.advancedFromChapter.currentText())
