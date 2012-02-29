@@ -119,7 +119,8 @@ class OSISBible(BibleDB):
                 if match:
                     language = BiblesResourcesDB.get_language(match.group(1))
                     if language:
-                        self.create_meta(u'language_id', language[u'id'])
+                        language_id = language[u'id']
+                        self.create_meta(u'language_id', language_id)
                     else:
                         language_id = self.get_language(bible_name)
                         if not language_id:
