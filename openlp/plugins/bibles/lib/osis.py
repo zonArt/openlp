@@ -53,6 +53,7 @@ class OSISBible(BibleDB):
         self.filename = kwargs[u'filename']
         fbibles = None
         self.books = {}
+        self.language_regex = re.compile(r'<language.*>(.*?)</language>')
         self.verse_regex = re.compile(
             r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
@@ -107,14 +108,25 @@ class OSISBible(BibleDB):
         finally:
             if detect_file:
                 detect_file.close()
-        # Set meta language_id
-        language_id = self.get_language(bible_name)
-        if not language_id:
-            log.exception(u'Importing books from "%s" failed' % self.filename)
-            return False
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             repl = replacement
+            # Set meta language_id
+            for file_record in osis:
+                if self.stop_import_flag:
+                    break
+                match = self.language_regex.search(file_record)
+                if match:
+                    language = BiblesResourcesDB.get_language(match.group(1))
+                    if language:
+                        self.create_meta(u'language_id', language[u'id'])
+                    else:
+                        language_id = self.get_language(bible_name)
+                        if not language_id:
+                            log.exception(u'Importing books from "%s" failed'
+                                % self.filename)
+                            return False
+                    break
             for file_record in osis:
                 if self.stop_import_flag:
                     break
