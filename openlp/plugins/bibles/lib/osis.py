@@ -111,28 +111,29 @@ class OSISBible(BibleDB):
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             repl = replacement
-            # Set meta language_id
+            language_id = False
             for file_record in osis:
                 if self.stop_import_flag:
                     break
-                match = self.language_regex.search(file_record)
+                # Try to find the bible language
+                if not language_id:
+                    language_match = self.language_regex.search(file_record)
+                    if language_match:
+                        language = BiblesResourcesDB.get_language(
+                            language_match.group(1))
+                        if language:
+                            language_id = language[u'id']
+                            self.create_meta(u'language_id', language_id)
+                        continue
+                match = self.verse_regex.search(file_record)
                 if match:
-                    language = BiblesResourcesDB.get_language(match.group(1))
-                    if language:
-                        language_id = language[u'id']
-                        self.create_meta(u'language_id', language_id)
-                    else:
+                    # Set meta language_id if not detected till now
+                    if not language_id:
                         language_id = self.get_language(bible_name)
                         if not language_id:
                             log.exception(u'Importing books from "%s" failed'
                                 % self.filename)
                             return False
-                    break
-            for file_record in osis:
-                if self.stop_import_flag:
-                    break
-                match = self.verse_regex.search(file_record)
-                if match:
                     match_count += 1
                     book = match.group(1)
                     chapter = int(match.group(2))
