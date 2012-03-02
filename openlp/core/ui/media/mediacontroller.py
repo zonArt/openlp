@@ -100,8 +100,7 @@ class MediaController(object):
         Register each media Player controller (Webkit, Phonon, etc) and store
         for later use
         """
-        if controller.check_available():
-            self.mediaPlayers[controller.name] = controller
+        self.mediaPlayers[controller.name] = controller
 
     def check_available_media_players(self):
         """
@@ -134,7 +133,8 @@ class MediaController(object):
                 QtCore.QVariant(u'webkit')).toString())
             savedPlayers = playerSettings.split(u',')
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
-                if not mediaPlayer in self.mediaPlayers]
+                if not mediaPlayer in self.mediaPlayers or \
+                self.mediaPlayers[mediaPlayer].check_available() == False]
             if len(invalidMediaPlayers) > 0:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
