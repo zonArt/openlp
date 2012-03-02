@@ -36,8 +36,7 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list
-from openlp.core.lib.ui import UiStrings, context_menu_action, \
-    context_menu_separator
+from openlp.core.lib.ui import UiStrings, create_action, create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -100,8 +99,9 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.maintenanceAction = self.addToolbarButton(u'', u'',
-            ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
+        self.maintenanceAction = self.addToolbarButton(u'maintenanceAction',
+            icon=':/songs/song_maintenance.png',
+            triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -121,11 +121,10 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextButtonClick)
 
     def addCustomContextActions(self):
-        context_menu_separator(self.listView)
-        context_menu_action(
-            self.listView, u':/general/general_clone.png',
-            translate('OpenLP.MediaManagerItem',
-            '&Clone'), self.onCloneClick)
+        create_widget_action(self.listView, separator=True)
+        create_widget_action(self.listView,
+            text=translate('OpenLP.MediaManagerItem', '&Clone'),
+            icon=u':/general/general_clone.png', triggers=self.onCloneClick)
 
     def onFocus(self):
         self.searchTextEdit.setFocus()

@@ -32,6 +32,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
+from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
@@ -51,58 +52,21 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.actions = {}
         log.debug(u'Init done for %s' % parent.__class__.__name__)
 
-    def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        checkable=False, shortcuts=None, context=QtCore.Qt.WidgetShortcut):
+    def addToolbarButton(self, name, **kwargs):
         """
-        A method to help developers easily add a button to the toolbar.
-
-        ``title``
-            The title of the button.
-
-        ``icon``
-            The icon of the button. This can be an instance of QIcon, or a
-            string containing either the absolute path to the image, or an
-            internal resource path starting with ':/'.
-
-        ``tooltip``
-            A hint or tooltip for this button.
-
-        ``slot``
-            The method to run when this button is clicked.
-
-        ``checkable``
-            If *True* the button has two, *off* and *on*, states. Default is
-            *False*, which means the buttons has only one state.
-
-        ``shortcuts``
-            The list of shortcuts for this action
-
-        ``context``
-            Specify the context in which this shortcut is valid
+        A method to help developers easily add a button to the toolbar. A new
+        QAction is created by calling ``create_action()``. The action is added
+        to the toolbar and the toolbar is set as parent. For more details please
+        look at openlp.core.lib.ui.create_action()
         """
-        if icon:
-            actionIcon = build_icon(icon)
-            if slot and not checkable:
-                newAction = self.addAction(actionIcon, title, slot)
-            else:
-                newAction = self.addAction(actionIcon, title)
-            self.icons[title] = actionIcon
-        else:
-            newAction = QtGui.QAction(title, self)
-            self.addAction(newAction)
-            QtCore.QObject.connect(newAction,
-                QtCore.SIGNAL(u'triggered()'), slot)
-        if tooltip:
-            newAction.setToolTip(tooltip)
-        if checkable:
-            newAction.setCheckable(True)
-            QtCore.QObject.connect(newAction,
-                QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = newAction
-        if shortcuts is not None:
-            newAction.setShortcuts(shortcuts)
-            newAction.setShortcutContext(context)
-        return newAction
+        action = create_widget_action(self, name, **kwargs)
+        # The ObjectNames should be used as keys. So translators can't break
+        # anything.
+        title = kwargs.get(u'text', u'')
+        self.actions[title] = action
+        if u'icon' in kwargs:
+            self.icons[title] = action.icon()
+        return action
 
     def addToolbarSeparator(self, handle):
         """

@@ -312,6 +312,9 @@ def create_action(parent, name, **kwargs):
     ``visible``
         False in case the action should be hidden.
 
+    ``separator``
+        True in case the action will be considered a separator.
+
     ``data``
         Data which is set as QVariant type.
 
@@ -345,15 +348,17 @@ def create_action(parent, name, **kwargs):
         action.setEnabled(False)
     if not kwargs.pop(u'visible', True):
         action.setVisible(False)
+    if kwargs.pop(u'separator', False):
+        action.setSeparator(True)
     if u'data' in kwargs:
         action.setData(QtCore.QVariant(kwargs.pop(u'data')))
     if kwargs.get(u'shortcuts'):
         action.setShortcuts(kwargs.pop(u'shortcuts'))
-        action.setShortcutContext(kwargs.pop(u'context',
-            QtCore.Qt.WindowShortcut))
+        if kwargs.get(u'context') is not None:
+            action.setShortcutContext(kwargs.pop(u'context'))
     if kwargs.get(u'category'):
         action_list = ActionList.get_instance()
-        action_list.add_action(action, kwargs.pop(u'category'))
+        action_list.add_action(action, unicode(kwargs.pop(u'category')))
     if kwargs.get(u'triggers'):
         QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
             kwargs.pop(u'triggers'))
@@ -363,11 +368,15 @@ def create_action(parent, name, **kwargs):
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 
-def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut):
-    action = create_action(parent=base, name=u'', text=text, icon=icon,
-        shortcuts=shortcuts, context=context, category=category, triggers=slot)
-    base.addAction(action)
+def create_widget_action(parent, name=u'', **kwargs):
+    """
+    Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
+    The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
+    is added to the parents action list.
+    """
+    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut) 
+    action = create_action(parent, name, **kwargs)
+    parent.addAction(action)
     return action
 
 def context_menu(base, icon, text):
@@ -385,18 +394,6 @@ def context_menu(base, icon, text):
     """
     action = QtGui.QMenu(text, base)
     action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(base)
-    action.setSeparator(True)
-    base.addAction(action)
     return action
 
 def add_widget_completer(cache, widget):

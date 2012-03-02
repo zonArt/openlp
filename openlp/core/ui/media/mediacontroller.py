@@ -204,18 +204,21 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_play', u':/slides/media_playback_start.png',
-            translate('OpenLP.SlideController', 'Start playing media.'),
-            controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Pause playing media.'),
-            controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Stop playing media.'),
-            controller.sendToPlugins)
+        controller.mediabar.addToolbarButton(u'playbackPlay',
+            text=u'media_playback_play',
+            icon=u':/slides/media_playback_start.png',
+            tooltip=translate('OpenLP.SlideController', 'Start playing media.'),
+            triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarButton(u'playbackPause',
+            text=u'media_playback_pause',
+            icon=u':/slides/media_playback_pause.png',
+            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
+            triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarButton(u'playbackStop',
+            text=u'media_playback_stop',
+            icon=u':/slides/media_playback_stop.png',
+            tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
+            triggers=controller.sendToPlugins)
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.seekSlider.setMaximum(1000)
