@@ -47,76 +47,50 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         QtGui.QToolBar.__init__(self, parent)
         # useful to be able to reuse button icons...
-        self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
         log.debug(u'Init done for %s' % parent.__class__.__name__)
 
     def addToolbarButton(self, name, **kwargs):
         """
-        A method to help developers easily add a button to the toolbar. A new
-        QAction is created by calling ``create_action()``. The action is added
-        to the toolbar and the toolbar is set as parent. For more details please
-        look at openlp.core.lib.ui.create_action()
+        A method to help developers easily add a button to the toolbar.
+        A new QAction is created by calling ``create_action()``. The action is
+        added to the toolbar and the toolbar is set as parent.
+        For more details please look at openlp.core.lib.ui.create_action()
         """
         action = create_widget_action(self, name, **kwargs)
-        # The ObjectNames should be used as keys. So translators can't break
-        # anything.
-        title = kwargs.get(u'text', u'')
-        self.actions[title] = action
-        if u'icon' in kwargs:
-            self.icons[title] = action.icon()
+        self.actions[name] = action
         return action
 
     def addToolbarSeparator(self, handle):
         """
-        Add a Separator bar to the toolbar and store it's Handle
+        Add a separator bar and store it's handle.
         """
         action = self.addSeparator()
         self.actions[handle] = action
 
-    def addToolbarWidget(self, handle, widget):
+    def addToolbarWidget(self, widget):
         """
-        Add a Widget to the toolbar and store it's Handle
+        Add a widget and store it's handle under the widgets object name.
         """
         action = self.addWidget(widget)
-        self.actions[handle] = action
+        self.actions[unicode(widget.objectName())] = action
 
-    def getIconFromTitle(self, title):
+    def setWidgetVisible(self, widgets, visible=True):
         """
-        Search through the list of icons for an icon with a particular title,
-        and return that icon.
+        Set the visibitity for a widget or a list of widgets.
 
-        ``title``
-            The title of the icon to search for.
-        """
-        title = QtCore.QString(title)
-        try:
-            if self.icons[title]:
-                return self.icons[title]
-        except KeyError:
-            log.exception(u'getIconFromTitle - no icon for %s' % title)
-            return QtGui.QIcon()
+        ``widget``
+            A list of string with widget object names.
 
-    def makeWidgetsInvisible(self, widgets):
+        ``visible``
+            The new state as bool.
         """
-        Hide a set of widgets.
-
-        ``widgets``
-            The list of names of widgets to be hidden.
-        """
-        for widget in widgets:
-            self.actions[widget].setVisible(False)
-
-    def makeWidgetsVisible(self, widgets):
-        """
-        Show a set of widgets.
-
-        ``widgets``
-            The list of names of widgets to be shown.
-        """
-        for widget in widgets:
-            self.actions[widget].setVisible(True)
+        for handle in widgets:
+            if handle in self.actions:
+            	self.actions[handle].setVisible(visible)
+            else:
+                log.warn(u'No handle "%s" in actions list.', unicode(handle))
 
     def addPushButton(self, image_file=None, text=u''):
         """

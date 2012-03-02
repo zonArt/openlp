@@ -133,7 +133,7 @@ class ServiceManager(QtGui.QWidget):
         self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
         self.themeLabel.setMargin(3)
         self.themeLabel.setObjectName(u'themeLabel')
-        self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
+        self.toolbar.addToolbarWidget(self.themeLabel)
         self.themeComboBox = QtGui.QComboBox(self.toolbar)
         self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
             'Select a theme for the service.'))
@@ -142,7 +142,7 @@ class ServiceManager(QtGui.QWidget):
         self.themeComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.themeComboBox.setObjectName(u'themeComboBox')
-        self.toolbar.addToolbarWidget(u'ThemeWidget', self.themeComboBox)
+        self.toolbar.addToolbarWidget(self.themeComboBox)
         self.toolbar.setObjectName(u'toolbar')
         self.layout.addWidget(self.toolbar)
         # Create the service manager list
@@ -1120,12 +1120,9 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        if self.mainwindow.renderer.theme_level == ThemeLevel.Global:
-            self.toolbar.actions[u'ThemeLabel'].setVisible(False)
-            self.toolbar.actions[u'ThemeWidget'].setVisible(False)
-        else:
-            self.toolbar.actions[u'ThemeLabel'].setVisible(True)
-            self.toolbar.actions[u'ThemeWidget'].setVisible(True)
+        visible = self.mainwindow.renderer.theme_level == ThemeLevel.Global
+        self.themeLabel.setVisible(visible)
+        self.themeComboBox.setVisible(visible)
 
     def regenerateServiceItems(self):
         """

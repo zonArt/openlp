@@ -91,16 +91,16 @@ class SlideController(Controller):
         self.imageManager = self.parent().imageManager
         self.mediaController = self.parent().mediaController
         self.loopList = [
-            u'Play Slides Menu',
-            u'Loop Separator',
-            u'Image SpinBox'
+            u'playSlidesMenu',
+            u'loopSeparator',
+            u'delaySpinBox'
         ]
         self.songEditList = [
-            u'Edit Song',
+            u'editSong',
         ]
         self.nextPreviousList = [
-            u'Previous Slide',
-            u'Next Slide'
+            u'previousItem',
+            u'nextItem'
         ]
         self.timer_id = 0
         self.songEdit = False
@@ -169,13 +169,13 @@ class SlideController(Controller):
             self.toolbar.sizePolicy().hasHeightForWidth())
         self.toolbar.setSizePolicy(sizeToolbarPolicy)
         self.previousItem = self.toolbar.addToolbarButton(u'previousItem',
-            text=u'Previous Slide', icon=u':/slides/slide_previous.png',
+            icon=u':/slides/slide_previous.png',
             tooltip=translate('OpenLP.SlideController', 'Move to previous.'),
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut,
             triggers=self.onSlideSelectedPrevious)
         self.nextItem = self.toolbar.addToolbarButton(u'nextItem',
-            text=u'Next Slide', icon=u':/slides/slide_next.png',
+            icon=u':/slides/slide_next.png',
             tooltip=translate('OpenLP.SlideController', 'Move to next.'),
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut,
@@ -184,11 +184,12 @@ class SlideController(Controller):
         if self.isLive:
             # Hide Menu
             self.hideMenu = QtGui.QToolButton(self.toolbar)
+            self.hideMenu.setObjectName(u'hideMenu')
             self.hideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.hideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.toolbar.addToolbarWidget(u'Hide Menu', self.hideMenu)
             self.hideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
+            self.toolbar.addToolbarWidget(self.hideMenu)
             self.blankScreen = create_action(self.hideMenu, u'blankScreen',
                 text=translate('OpenLP.SlideController', 'Blank Screen'),
                 icon=u':/slides/slide_blank.png', checked=False,
@@ -208,17 +209,17 @@ class SlideController(Controller):
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
-            self.toolbar.addToolbarSeparator(u'Loop Separator')
+            self.toolbar.addToolbarSeparator(u'loopSeparator')
             # Play Slides Menu
             self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
+            self.playSlidesMenu.setObjectName(u'playSlidesMenu')
             self.playSlidesMenu.setText(translate('OpenLP.SlideController',
                 'Play Slides'))
             self.playSlidesMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.toolbar.addToolbarWidget(u'Play Slides Menu',
-                self.playSlidesMenu)
             self.playSlidesMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Play Slides'),
                 self.toolbar))
+            self.toolbar.addToolbarWidget(self.playSlidesMenu)
             self.playSlidesLoop = create_action(self.playSlidesMenu,
                 u'playSlidesLoop', text=UiStrings().PlaySlidesInLoop,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
@@ -238,26 +239,24 @@ class SlideController(Controller):
             self.playSlidesMenu.menu().addAction(self.playSlidesOnce)
             # Loop Delay Spinbox
             self.delaySpinBox = QtGui.QSpinBox()
+            self.delaySpinBox.setObjectName(u'delaySpinBox')
             self.delaySpinBox.setRange(1, 180)
-            self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
             self.delaySpinBox.setSuffix(UiStrings().Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds.'))
+            self.toolbar.addToolbarWidget(self.delaySpinBox)
         else:
             self.toolbar.addToolbarButton(u'goLive',
-                # Does not need translating - control string.
-                text=u'Go Live', icon=u':/general/general_live.png',
+                icon=u':/general/general_live.png',
                 tooltip=translate('OpenLP.SlideController', 'Move to live.'),
                 triggers=self.onGoLive)
             self.toolbar.addToolbarButton(u'addToService',
-                # Does not need translating - control string.
-                text=u'Add to Service', icon=u':/general/general_add.png',
+                icon=u':/general/general_add.png',
                 tooltip=translate('OpenLP.SlideController', 'Add to Service.'),
                 triggers=self.onPreviewAddToService)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(u'editSong',
-                # Does not need translating - control string.
-                text=u'Edit Song', icon=u':/general/general_edit.png',
+                icon=u':/general/general_edit.png',
                 tooltip=translate('OpenLP.SlideController',
                 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
@@ -266,12 +265,13 @@ class SlideController(Controller):
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
+            self.songMenu.setObjectName(u'songMenu')
             self.songMenu.setText(translate('OpenLP.SlideController', 'Go To'))
             self.songMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
-            self.toolbar.addToolbarWidget(u'Song Menu', self.songMenu)
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
-            self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+            self.songMenu.hide()
+            self.toolbar.addToolbarWidget(self.songMenu)
             # Stuff for items with background audio.
             self.audioPauseItem = self.toolbar.addToolbarButton(u'audioPause',
                 text=u'Pause Audio', icon=u':/slides/media_playback_pause.png',
@@ -358,12 +358,12 @@ class SlideController(Controller):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_toggle_display'),
                 self.toggleDisplay)
-            self.toolbar.makeWidgetsInvisible(self.loopList)
+            self.toolbar.setWidgetVisible(self.loopList, False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
                 self.onGoLiveClick)
-            self.toolbar.makeWidgetsInvisible(self.songEditList)
+            self.toolbar.setWidgetVisible(self.songEditList, False)
         if self.isLive:
             self.setLiveHotkeys(self)
             self.__addActionsToWidget(self.previewListWidget)
@@ -661,9 +661,9 @@ class SlideController(Controller):
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
         self.toolbar.hide()
-        self.mediabar.setVisible(False)
-        self.toolbar.makeWidgetsInvisible([u'Song Menu'])
-        self.toolbar.makeWidgetsInvisible(self.loopList)
+        self.mediabar.hide()
+        self.songMenu.hide()
+        self.toolbar.setWidgetVisible(self.loopList, False)
         # Reset the button
         self.playSlidesOnce.setChecked(False)
         self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
@@ -673,17 +673,17 @@ class SlideController(Controller):
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
-                self.toolbar.makeWidgetsVisible([u'Song Menu'])
+                self.songMenu.show()
         if item.is_capable(ItemCapabilities.CanLoop) and \
             len(item.get_frames()) > 1:
-            self.toolbar.makeWidgetsVisible(self.loopList)
+            self.toolbar.setWidgetVisible(self.loopList)
         if item.is_media():
             self.mediabar.setVisible(True)
-            self.toolbar.makeWidgetsInvisible(self.nextPreviousList)
+            self.toolbar.setWidgetVisible(self.nextPreviousList, False)
         else:
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
-            self.toolbar.makeWidgetsVisible(self.nextPreviousList)
+            self.toolbar.setWidgetVisible(self.nextPreviousList)
         self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
@@ -694,16 +694,16 @@ class SlideController(Controller):
         # See bug #791050
         self.toolbar.hide()
         self.mediabar.setVisible(False)
-        self.toolbar.makeWidgetsInvisible(self.songEditList)
+        self.toolbar.setWidgetVisible(self.songEditList, False)
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
-            self.toolbar.makeWidgetsVisible(self.songEditList)
+            self.toolbar.setWidgetVisible(self.songEditList)
         elif item.is_media():
             self.mediabar.setVisible(True)
-            self.toolbar.makeWidgetsInvisible(self.nextPreviousList)
+            self.toolbar.setWidgetVisible(self.nextPreviousList, False)
         if not item.is_media():
             # Work-around for OS X, hide and then show the toolbar
             # See bug #791050
-            self.toolbar.makeWidgetsVisible(self.nextPreviousList)
+            self.toolbar.setWidgetVisible(self.nextPreviousList)
         self.toolbar.show()
 
     def refreshServiceItem(self):
