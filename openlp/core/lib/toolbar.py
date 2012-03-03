@@ -51,7 +51,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.actions = {}
         log.debug(u'Init done for %s' % parent.__class__.__name__)
 
-    def addToolbarButton(self, name, **kwargs):
+    def addToolbarAction(self, name, **kwargs):
         """
         A method to help developers easily add a button to the toolbar.
         A new QAction is created by calling ``create_action()``. The action is
@@ -61,13 +61,6 @@ class OpenLPToolbar(QtGui.QToolBar):
         action = create_widget_action(self, name, **kwargs)
         self.actions[name] = action
         return action
-
-    def addToolbarSeparator(self, handle):
-        """
-        Add a separator bar and store it's handle.
-        """
-        action = self.addSeparator()
-        self.actions[handle] = action
 
     def addToolbarWidget(self, widget):
         """
@@ -88,18 +81,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         for handle in widgets:
             if handle in self.actions:
-            	self.actions[handle].setVisible(visible)
+                self.actions[handle].setVisible(visible)
             else:
                 log.warn(u'No handle "%s" in actions list.', unicode(handle))
 
-    def addPushButton(self, image_file=None, text=u''):
-        """
-        Adds a push button to the toolbar.
-
-        Returns the push button
-        """
-        push_button = QtGui.QPushButton(build_icon(image_file), text)
-        push_button.setCheckable(True)
-        push_button.setFlat(True)
-        self.addWidget(push_button)
-        return push_button
