@@ -97,10 +97,10 @@ class SongMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(song, True)
 
     def addEndHeaderBar(self):
-        self.addToolbarSeparator()
+        self.toolbar.addSeparator()
         ## Song Maintenance Button ##
-        self.maintenanceAction = self.addToolbarButton(u'maintenanceAction',
-            icon=':/songs/song_maintenance.png',
+        self.maintenanceAction = self.toolbar.addToolbarAction(
+            u'maintenanceAction', icon=':/songs/song_maintenance.png',
             triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots

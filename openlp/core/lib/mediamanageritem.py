@@ -147,20 +147,6 @@ class MediaManagerItem(QtGui.QWidget):
             self.toolbar = OpenLPToolbar(self)
             self.pageLayout.addWidget(self.toolbar)
 
-    def addToolbarButton(self, name, **kwargs):
-        """
-        A method to help developers easily add a button to the toolbar. For
-        details please have a look at OpenLPToolbar.addToolbarButton() and
-        openlp.core.lib.ui.create_action().
-        """
-        return self.toolbar.addToolbarButton(name, **kwargs)
-
-    def addToolbarSeparator(self):
-        """
-        A very simple method to add a separator to the toolbar.
-        """
-        self.toolbar.addSeparator()
-
     def setupUi(self):
         """
         This method sets up the interface on the button. Plugin
@@ -214,8 +200,9 @@ class MediaManagerItem(QtGui.QWidget):
             u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:
-                self.addToolbarSeparator()
-            self.addToolbarButton(u'%s%sAction' % (self.plugin.name, action[0]),
+                self.toolbar.addSeparator()
+            self.toolbar.addToolbarAction(
+                u'%s%sAction' % (self.plugin.name, action[0]),
                 text=self.plugin.getString(action[1])[u'title'], icon=action[2],
                 tooltip=self.plugin.getString(action[1])[u'tooltip'],
                 triggers=action[3])

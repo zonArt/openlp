@@ -204,17 +204,17 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
-        controller.mediabar.addToolbarButton(u'playbackPlay',
+        controller.mediabar.addToolbarAction(u'playbackPlay',
             text=u'media_playback_play',
             icon=u':/slides/media_playback_start.png',
             tooltip=translate('OpenLP.SlideController', 'Start playing media.'),
             triggers=controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(u'playbackPause',
+        controller.mediabar.addToolbarAction(u'playbackPause',
             text=u'media_playback_pause',
             icon=u':/slides/media_playback_pause.png',
             tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
             triggers=controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(u'playbackStop',
+        controller.mediabar.addToolbarAction(u'playbackStop',
             text=u'media_playback_stop',
             icon=u':/slides/media_playback_stop.png',
             tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
