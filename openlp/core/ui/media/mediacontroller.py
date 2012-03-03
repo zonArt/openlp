@@ -134,7 +134,7 @@ class MediaController(object):
             savedPlayers = playerSettings.split(u',')
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
                 if not mediaPlayer in self.mediaPlayers or \
-                self.mediaPlayers[mediaPlayer].check_available() == False]
+                not self.mediaPlayers[mediaPlayer].check_available()]
             if len(invalidMediaPlayers) > 0:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
