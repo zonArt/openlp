@@ -38,7 +38,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     find_and_set_in_combo_box, build_icon
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    VerseReferenceList, get_reference_separator, LanguageSelection
+    VerseReferenceList, get_reference_separator, LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -428,7 +428,7 @@ class BibleMediaItem(MediaManagerItem):
         language_selection = QtCore.QSettings().value(
             self.settingsSection + u'/bookname language',
             QtCore.QVariant(0)).toInt()[0]
-        booknames = LanguageSelection.Booknames
+        booknames = BibleStrings().Booknames
         for book in book_data:
             row = self.advancedBookComboBox.count()
             if language_selection == LanguageSelection.Bible:
@@ -505,7 +505,7 @@ class BibleMediaItem(MediaManagerItem):
                 if language_selection == LanguageSelection.Bible:
                     books = [book.name + u' ' for book in book_data]
                 elif language_selection == LanguageSelection.Application:
-                    booknames = LanguageSelection.Booknames
+                    booknames = BibleStrings().Booknames
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
