@@ -39,7 +39,6 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_separator, LanguageSelection
-from openlp.plugins.bibles.lib.ui import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
