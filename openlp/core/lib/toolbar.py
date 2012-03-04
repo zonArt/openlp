@@ -31,7 +31,6 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)

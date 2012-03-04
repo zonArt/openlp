@@ -126,7 +126,7 @@ class VLCException(Exception):
 try:
     _Ints = (int, long)
 except NameError:  # no long in Python 3+
-    _Ints =  int
+    _Ints = int
 
 # Default instance. It is used to instanciate classes directly in the
 # OO-wrapper.

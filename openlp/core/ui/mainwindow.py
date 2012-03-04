@@ -1386,12 +1386,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.recentFilesMenu.clear()
         for fileId, filename in enumerate(recentFilesToDisplay):
             log.debug('Recent file name: %s', filename)
-            action =  create_action(self, u'',
+            action = create_action(self, u'',
                 text=u'&%d %s' % (fileId + 1, os.path.splitext(os.path.basename(
                 unicode(filename)))[0]), data=filename,
                 triggers=self.serviceManagerContents.onRecentServiceClicked)
             self.recentFilesMenu.addAction(action)
-        clearRecentFilesAction =  create_action(self, u'',
+        clearRecentFilesAction = create_action(self, u'',
             text=translate('OpenLP.MainWindow', 'Clear List',
             'Clear List of recent files'),
             statustip=translate('OpenLP.MainWindow',
