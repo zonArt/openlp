@@ -428,7 +428,8 @@ class BibleMediaItem(MediaManagerItem):
         first = True
         language_selection = QtCore.QSettings().value(
             self.settingsSection + u'/bookname language',
-            QtCore.QVariant(0)).toInt()[0]        
+            QtCore.QVariant(0)).toInt()[0]
+        booknames = LanguageSelection.Booknames
         for book in book_data:
             row = self.advancedBookComboBox.count()
             if language_selection == LanguageSelection.Bible:
@@ -436,10 +437,8 @@ class BibleMediaItem(MediaManagerItem):
             elif language_selection == LanguageSelection.Application:
                 data = BiblesResourcesDB.get_book_by_id(
                     book[u'book_reference_id'])
-                abbr = data[u'abbreviation'].replace(u'1', u'First').\
-                    replace(u'2', u'Second').replace(u'3', u'Third').\
-                    replace(u'4', u'Fourth')
-                self.advancedBookComboBox.addItem(getattr(BibleStrings, abbr))
+                self.advancedBookComboBox.addItem(
+                    booknames[data[u'abbreviation']])
             elif language_selection == LanguageSelection.English:
                 data = BiblesResourcesDB.get_book_by_id(
                     book[u'book_reference_id'])
@@ -456,7 +455,8 @@ class BibleMediaItem(MediaManagerItem):
             book_ref_id)
         book = self.plugin.manager.get_book_by_id(bible, book_ref_id)
         self.chapter_count = self.plugin.manager.get_chapter_count(bible, book)
-        verse_count = self.plugin.manager.get_verse_count(bible, book.name, 1)
+        verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible,
+            book_ref_id, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
@@ -475,6 +475,7 @@ class BibleMediaItem(MediaManagerItem):
         completion depends on the bible. It is only updated when we are doing a
         reference search, otherwise the auto completion list is removed.
         """
+        log.debug(u'updateAutoCompleter')
         # Save the current search type to the configuration.
         QtCore.QSettings().setValue(u'%s/last search type' %
             self.settingsSection,
@@ -501,17 +502,15 @@ class BibleMediaItem(MediaManagerItem):
                     book_data = book_data_temp
                 language_selection = QtCore.QSettings().value(
                     self.settingsSection + u'/bookname language',
-                    QtCore.QVariant(0)).toInt()[0]   
+                    QtCore.QVariant(0)).toInt()[0]
                 if language_selection == LanguageSelection.Bible:
                     books = [book.name + u' ' for book in book_data]
                 elif language_selection == LanguageSelection.Application:
+                    booknames = LanguageSelection.Booknames
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
-                        abbr = data[u'abbreviation'].replace(u'1', u'First').\
-                            replace(u'2', u'Second').replace(u'3', u'Third').\
-                            replace(u'4', u'Fourth')
-                        books.append(getattr(BibleStrings, abbr) + u' ')
+                        books.append(data[u'name'] + u' ')
                 elif language_selection == LanguageSelection.English:
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
@@ -590,22 +589,24 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.advancedToChapter.currentText())
         if chapter_from == chapter_to:
             bible = unicode(self.advancedVersionComboBox.currentText())
-            book = unicode(self.advancedBookComboBox.currentText())
+            book_ref_id = unicode(self.advancedBookComboBox.itemData(
+                int(self.advancedBookComboBox.currentIndex())).toString())
             verse_from = int(self.advancedFromVerse.currentText())
-            verse_count = self.plugin.manager.get_verse_count(bible, book,
-                chapter_to)
+            verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(
+                bible, book_ref_id, chapter_to)
             self.adjustComboBox(verse_from, verse_count,
                 self.advancedToVerse, True)
 
     def onAdvancedToChapter(self):
         bible = unicode(self.advancedVersionComboBox.currentText())
-        book = unicode(self.advancedBookComboBox.currentText())
+        book_ref_id = unicode(self.advancedBookComboBox.itemData(
+            int(self.advancedBookComboBox.currentIndex())).toString())
         chapter_from = int(self.advancedFromChapter.currentText())
         chapter_to = int(self.advancedToChapter.currentText())
         verse_from = int(self.advancedFromVerse.currentText())
         verse_to = int(self.advancedToVerse.currentText())
-        verse_count = self.plugin.manager.get_verse_count(bible, book,
-            chapter_to)
+        verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible,
+            book_ref_id, chapter_to)
         if chapter_from == chapter_to and verse_from > verse_to:
             self.adjustComboBox(verse_from, verse_count, self.advancedToVerse)
         else:
@@ -613,11 +614,12 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedFromChapter(self):
         bible = unicode(self.advancedVersionComboBox.currentText())
-        book = unicode(self.advancedBookComboBox.currentText())
+        book_ref_id = unicode(self.advancedBookComboBox.itemData(
+            int(self.advancedBookComboBox.currentIndex())).toString())
         chapter_from = int(self.advancedFromChapter.currentText())
         chapter_to = int(self.advancedToChapter.currentText())
-        verse_count = self.plugin.manager.get_verse_count(bible, book,
-            chapter_from)
+        verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible,
+            book_ref_id, chapter_from)
         self.adjustComboBox(1, verse_count, self.advancedFromVerse)
         if chapter_from > chapter_to:
             self.adjustComboBox(1, verse_count, self.advancedToVerse)
@@ -666,6 +668,8 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.advancedVersionComboBox.currentText())
         second_bible = unicode(self.advancedSecondComboBox.currentText())
         book = unicode(self.advancedBookComboBox.currentText())
+        book_ref_id = unicode(self.advancedBookComboBox.itemData(
+            int(self.advancedBookComboBox.currentIndex())).toString())
         chapter_from = self.advancedFromChapter.currentText()
         chapter_to = self.advancedToChapter.currentText()
         verse_from = self.advancedFromVerse.currentText()
@@ -676,10 +680,11 @@ class BibleMediaItem(MediaManagerItem):
             range_separator + chapter_to + verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
         Receiver.send_message(u'cursor_busy')
-        self.search_results = self.plugin.manager.get_verses(bible, versetext)
+        self.search_results = self.plugin.manager.get_verses(bible, versetext,
+            book_ref_id)
         if second_bible:
             self.second_search_results = self.plugin.manager.get_verses(
-                second_bible, versetext, bible)
+                second_bible, versetext, book_ref_id)
         if not self.advancedLockButton.isChecked():
             self.listView.clear()
         if self.listView.count() != 0:
@@ -707,7 +712,8 @@ class BibleMediaItem(MediaManagerItem):
             self.search_results = self.plugin.manager.get_verses(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = self.plugin.manager.get_verses(
-                    second_bible, text, bible)
+                    second_bible, text,
+                    self.search_results[0].book.book_reference_id)
         else:
             # We are doing a 'Text Search'.
             Receiver.send_message(u'cursor_busy')
@@ -1025,8 +1031,7 @@ class BibleMediaItem(MediaManagerItem):
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False,
-            False)
+        search_results = self.plugin.manager.get_verses(bible, string, False)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]
