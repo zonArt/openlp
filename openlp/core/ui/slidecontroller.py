@@ -98,10 +98,6 @@ class SlideController(Controller):
         self.songEditList = [
             u'editSong',
         ]
-        self.nextPreviousList = [
-            u'previousItem',
-            u'nextItem'
-        ]
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -172,22 +168,23 @@ class SlideController(Controller):
         sizeToolbarPolicy.setHeightForWidth(
             self.toolbar.sizePolicy().hasHeightForWidth())
         self.toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.previousItem = self.toolbar.addToolbarAction(
+        self.previousItem = create_action(self,
             u'previousItem_' + self.typePrefix,
-            text=translate('OpenLP.SlideController', 'Previous Item'),
+            text=translate('OpenLP.SlideController', 'Previous Slide'),
             icon=u':/slides/slide_previous.png',
             tooltip=translate('OpenLP.SlideController', 'Move to previous.'),
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
             context=QtCore.Qt.WidgetWithChildrenShortcut,
             category=self.category, triggers=self.onSlideSelectedPrevious)
-        self.nextItem = self.toolbar.addToolbarAction(
-            u'nextItem_' + self.typePrefix,
-            text=translate('OpenLP.SlideController', 'Next Item'),
+        self.toolbar.addAction(self.previousItem)
+        self.nextItem = create_action(self, u'nextItem_' + self.typePrefix,
+            text=translate('OpenLP.SlideController', 'Next Slide'),
             icon=u':/slides/slide_next.png',
             tooltip=translate('OpenLP.SlideController', 'Move to next.'),
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut,
             category=self.category, triggers=self.onSlideSelectedNext)
+        self.toolbar.addAction(self.nextItem)
         self.toolbar.addSeparator()
         if self.isLive:
             # Hide Menu
@@ -198,17 +195,17 @@ class SlideController(Controller):
             self.hideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.toolbar.addToolbarWidget(self.hideMenu)
-            self.blankScreen = create_action(self.hideMenu, u'blankScreen',
+            self.blankScreen = create_action(self, u'blankScreen',
                 text=translate('OpenLP.SlideController', 'Blank Screen'),
                 icon=u':/slides/slide_blank.png', checked=False,
                 shortcuts=[QtCore.Qt.Key_Period],
                 category=self.category, triggers=self.onBlankDisplay)
-            self.themeScreen = create_action(self.hideMenu, u'themeScreen',
+            self.themeScreen = create_action(self, u'themeScreen',
                 text=translate('OpenLP.SlideController', 'Blank to Theme'),
                 icon=u':/slides/slide_theme.png', checked=False,
                 shortcuts=[QtGui.QKeySequence(u'T')],
                 category=self.category, triggers=self.onThemeDisplay)
-            self.desktopScreen = create_action(self.hideMenu, u'desktopScreen',
+            self.desktopScreen = create_action(self, u'desktopScreen',
                 text=translate('OpenLP.SlideController', 'Show Desktop'),
                 icon=u':/slides/slide_desktop.png', checked=False,
                 shortcuts=[QtGui.QKeySequence(u'D')],
@@ -228,12 +225,12 @@ class SlideController(Controller):
                 translate('OpenLP.SlideController', 'Play Slides'),
                 self.toolbar))
             self.toolbar.addToolbarWidget(self.playSlidesMenu)
-            self.playSlidesLoop = create_action(self.playSlidesMenu,
-                u'playSlidesLoop', text=UiStrings().PlaySlidesInLoop,
+            self.playSlidesLoop = create_action(self, u'playSlidesLoop',
+                text=UiStrings().PlaySlidesInLoop,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
                 category=self.category, triggers=self.onPlaySlidesLoop)
-            self.playSlidesOnce = create_action(self.playSlidesMenu,
-                u'playSlidesOnce', text=UiStrings().PlaySlidesToEnd,
+            self.playSlidesOnce = create_action(self, u'playSlidesOnce',
+                text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
                 category=self.category, triggers=self.onPlaySlidesOnce)
             if QtCore.QSettings().value(self.parent().generalSettingsSection +
@@ -667,12 +664,11 @@ class SlideController(Controller):
             len(item.get_frames()) > 1:
             self.toolbar.setWidgetVisible(self.loopList)
         if item.is_media():
-            self.mediabar.setVisible(True)
-            self.toolbar.setWidgetVisible(self.nextPreviousList, False)
-        else:
-            # Work-around for OS X, hide and then show the toolbar
-            # See bug #791050
-            self.toolbar.setWidgetVisible(self.nextPreviousList)
+            self.mediabar.show()
+        self.previousItem.setVisible(not item.is_media())
+        self.nextItem.setVisible(not item.is_media())
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
         self.toolbar.show()
 
     def enablePreviewToolBar(self, item):
@@ -682,17 +678,16 @@ class SlideController(Controller):
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
         self.toolbar.hide()
-        self.mediabar.setVisible(False)
+        self.mediabar.hide()
         self.toolbar.setWidgetVisible(self.songEditList, False)
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
             self.toolbar.setWidgetVisible(self.songEditList)
         elif item.is_media():
-            self.mediabar.setVisible(True)
-            self.toolbar.setWidgetVisible(self.nextPreviousList, False)
-        if not item.is_media():
-            # Work-around for OS X, hide and then show the toolbar
-            # See bug #791050
-            self.toolbar.setWidgetVisible(self.nextPreviousList)
+            self.mediabar.show()
+        self.previousItem.setVisible(not item.is_media())
+        self.nextItem.setVisible(not item.is_media())
+        # Work-around for OS X, hide and then show the toolbar
+        # See bug #791050
         self.toolbar.show()
 
     def refreshServiceItem(self):
@@ -824,7 +819,7 @@ class SlideController(Controller):
                 self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))
             self.previewListWidget.setItem(framenumber, 0, item)
-            if slideHeight != 0:
+            if slideHeight:
                 self.previewListWidget.setRowHeight(framenumber, slideHeight)
         self.previewListWidget.setVerticalHeaderLabels(text)
         if self.serviceItem.is_text():
@@ -1039,7 +1034,7 @@ class SlideController(Controller):
         """
         row = self.previewListWidget.currentRow()
         self.selectedRow = 0
-        if row > -1 and row < self.previewListWidget.rowCount():
+        if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.is_command():
                 if self.isLive and not start:
                     Receiver.send_message(
@@ -1175,7 +1170,7 @@ class SlideController(Controller):
         """
         Stop the timer loop running
         """
-        if self.timer_id != 0:
+        if self.timer_id:
             self.killTimer(self.timer_id)
             self.timer_id = 0
 
@@ -1276,7 +1271,7 @@ class SlideController(Controller):
         If preview copy slide item to live
         """
         row = self.previewListWidget.currentRow()
-        if row > -1 and row < self.previewListWidget.rowCount():
+        if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.from_service:
                 Receiver.send_message('servicemanager_preview_live',
                     u'%s:%s' % (self.serviceItem._uuid, row))
