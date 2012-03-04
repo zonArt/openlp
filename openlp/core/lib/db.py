@@ -199,6 +199,10 @@ class Manager(object):
                 urlquote(unicode(settings.value(u'db password').toString())),
                 urlquote(unicode(settings.value(u'db hostname').toString())),
                 urlquote(unicode(settings.value(u'db database').toString())))
+            if db_type == u'mysql':
+                db_encoding = unicode(
+                    settings.value(u'db encoding', u'utf8').toString())
+                self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)

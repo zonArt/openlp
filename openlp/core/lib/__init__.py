@@ -56,7 +56,7 @@ class SlideLimits(object):
 
 class ServiceItemAction(object):
     """
-    Provides an enumeration for the required action moving between service 
+    Provides an enumeration for the required action moving between service
     items by left/right arrow keys
     """
     Previous = 1
@@ -321,15 +321,15 @@ def check_directory_exists(dir):
 def create_separated_list(stringlist):
     """
     Returns a string that represents a join of a list of strings with a
-    localized separator. This function corresponts to
+    localized separator. This function corresponds to
     QLocale::createSeparatedList which was introduced in Qt 4.8 and implements
     the algorithm from http://www.unicode.org/reports/tr35/#ListPatterns
 
     ``stringlist``
         List of unicode strings
     """
-    if Qt.qVersion() >= u'4.8':
-        return unicode(QtCore.QLocale.createSeparatedList(stringlist))
+    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
+        return unicode(QtCore.QLocale().createSeparatedList(stringlist))
     if not stringlist:
         return u''
     elif len(stringlist) == 1:
