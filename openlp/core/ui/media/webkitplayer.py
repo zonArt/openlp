@@ -27,6 +27,7 @@
 
 import logging
 
+from openlp.core.lib import translate
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
@@ -260,6 +261,7 @@ class WebkitPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'webkit')
+        self.display_name = translate('MediaPlugin.MediaTab', 'WebKit')
         self.parent = parent
         self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT

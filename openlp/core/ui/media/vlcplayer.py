@@ -43,7 +43,7 @@ except OSError, e:
         raise
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
@@ -89,6 +89,7 @@ class VlcPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'vlc')
+        self.display_name = translate('MediaPlugin.MediaTab', 'VLC')
         self.parent = parent
         self.canFolder = True
         self.audio_extensions_list = AUDIO_EXT

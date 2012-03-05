@@ -31,7 +31,7 @@ from datetime import datetime
 
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, Translate
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
@@ -63,6 +63,7 @@ class PhononPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'phonon')
+        self.display_name = translate('MediaPlugin.MediaTab', 'Phonon')
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()

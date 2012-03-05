@@ -117,11 +117,11 @@ class MediaTab(SettingsTab):
             player = self.mediaPlayers[key]
             checkbox = self.playerCheckBoxes[player.name]
             if player.available:
-                checkbox.setText(player.name)
+                checkbox.setText(player.display_name)
             else:
                 checkbox.setText(
                     unicode(translate('MediaPlugin.MediaTab',
-                    '%s (unavailable)')) % player.name)
+                    '%s (unavailable)')) % player.display_name)
         self.playerOrderGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'Player Order'))
         self.orderingDownButton.setText(
@@ -134,7 +134,10 @@ class MediaTab(SettingsTab):
             'Allow media player to be overriden'))
 
     def onPlayerCheckBoxChanged(self, check_state):
-        player = self.sender().text()
+        display_name = self.sender().text()
+        for key in self.mediaPlayers:
+            if self.mediaPlayers[key].display_name == display_name:
+                player = key
         if check_state == QtCore.Qt.Checked:
             if player not in self.usedPlayers:
                 self.usedPlayers.append(player)
@@ -152,7 +155,8 @@ class MediaTab(SettingsTab):
                     self.playerCheckBoxes[u'%s' % player].setEnabled(False)
                 else:
                     self.playerCheckBoxes[u'%s' % player].setEnabled(True)
-                self.playerOrderlistWidget.addItem(player)
+                self.playerOrderlistWidget.addItem(
+                    self.mediaPlayers[unicode(player)].display_name)
 
     def onOrderingUpButtonPressed(self):
         currentRow = self.playerOrderlistWidget.currentRow()
@@ -171,9 +175,6 @@ class MediaTab(SettingsTab):
             self.usedPlayers.move(currentRow, currentRow + 1)
 
     def load(self):
-        if self.savedUsedPlayers:
-            self.usedPlayers = self.savedUsedPlayers
-            self.savedUsedPlayers = None
         self.usedPlayers = QtCore.QSettings().value(
             self.settingsSection + u'/players',
             QtCore.QVariant(u'webkit')).toString().split(u',')
