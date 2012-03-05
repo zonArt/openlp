@@ -93,6 +93,7 @@ class UiStrings(object):
         self.New = translate('OpenLP.Ui', 'New')
         self.NewService = translate('OpenLP.Ui', 'New Service')
         self.NewTheme = translate('OpenLP.Ui', 'New Theme')
+        self.NextTrack = translate('OpenLP.Ui', 'Next Track')
         self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')

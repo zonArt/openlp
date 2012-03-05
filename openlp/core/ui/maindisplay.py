@@ -30,7 +30,6 @@ and play multimedia within OpenLP.
 """
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -136,12 +135,12 @@ class MainDisplay(Display):
                 QtCore.Qt.WindowStaysOnTopHint
         if QtCore.QSettings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
-            windowFlags = windowFlags | QtCore.Qt.X11BypassWindowManagerHint
+            windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
         # stay always on top on Mac OS X. For details see bug 906926.
         # It needs more investigation to fix it properly.
         if sys.platform == 'darwin':
-            windowFlags = windowFlags | QtCore.Qt.SplashScreen
+            windowFlags |= QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(True)
@@ -493,11 +492,15 @@ class AudioPlayer(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.currentIndex = -1
         self.playlist = []
+        self.repeat = False
         self.mediaObject = Phonon.MediaObject()
+        self.mediaObject.setTickInterval(100)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onFinished)
 
     def __del__(self):
         """
@@ -515,6 +518,14 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex += 1
         if len(self.playlist) > self.currentIndex:
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
+
+    def onFinished(self):
+        if self.repeat:
+            log.debug(u'Repeat is enabled... here we go again!')
+            self.mediaObject.clearQueue()
+            self.mediaObject.clear()
+            self.currentIndex = -1
+            self.play()
 
     def connectVolumeSlider(self, slider):
         slider.setAudioOutput(self.audioObject)
@@ -563,3 +574,27 @@ class AudioPlayer(QtCore.QObject):
         for filename in filenames:
             self.playlist.append(Phonon.MediaSource(filename))
 
+    def next(self):
+        if not self.repeat and self.currentIndex + 1 == len(self.playlist):
+            return
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        self.currentIndex += 1
+        if self.repeat and self.currentIndex == len(self.playlist):
+            self.currentIndex = 0
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        if isPlaying:
+            self.mediaObject.play()
+
+    def goTo(self, index):
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.currentIndex = index
+        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        if isPlaying:
+            self.mediaObject.play()
+
+    def connectSlot(self, signal, slot):
+        QtCore.QObject.connect(self.mediaObject, signal, slot)

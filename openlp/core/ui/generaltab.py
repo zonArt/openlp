@@ -175,6 +175,9 @@ class GeneralTab(SettingsTab):
         self.startPausedCheckBox = QtGui.QCheckBox(self.audioGroupBox)
         self.startPausedCheckBox.setObjectName(u'startPausedCheckBox')
         self.audioLayout.addWidget(self.startPausedCheckBox)
+        self.repeatListCheckBox = QtGui.QCheckBox(self.audioGroupBox)
+        self.repeatListCheckBox.setObjectName(u'repeatListCheckBox')
+        self.audioLayout.addWidget(self.repeatListCheckBox)
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
@@ -251,6 +254,8 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Background Audio'))
         self.startPausedCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Start background audio paused'))
+        self.repeatListCheckBox.setText(
+            translate('OpenLP.GeneralTab', 'Repeat track list'))
 
     def load(self):
         """
@@ -298,6 +303,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
         self.startPausedCheckBox.setChecked(settings.value(
             u'audio start paused', QtCore.QVariant(True)).toBool())
+        self.repeatListCheckBox.setChecked(settings.value(
+            u'audio repeat list', QtCore.QVariant(False)).toBool())
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
@@ -350,7 +357,9 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.endGroup()        
+        settings.setValue(u'audio repeat list',
+            QtCore.QVariant(self.repeatListCheckBox.isChecked()))
+        settings.endGroup()
         # On save update the screens as well
         self.postSetUp(True)
 
