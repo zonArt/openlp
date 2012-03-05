@@ -641,19 +641,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         'corresponding to %s. Valid entries are %s.')) % \
                         (order_names[count], valid))
                     return False
+            verses_not_used = []
             for count, verse in enumerate(verses):
-                if verse not in order:
-                    self.songTabWidget.setCurrentIndex(0)
-                    self.verseOrderEdit.setFocus()
-                    answer = QtGui.QMessageBox.warning(self,
-                        translate('SongsPlugin.EditSongForm', 'Warning'),
-                        unicode(translate('SongsPlugin.EditSongForm',
-                        'You have not used %s anywhere in the verse '
-                        'order. Are you sure you want to save the song '
-                        'like this?')) % verse_names[count],
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-                    if answer == QtGui.QMessageBox.No:
-                        return False
+                if not verse in order:
+                    verses_not_used.append(verse)
+                    #self.songTabWidget.setCurrentIndex(0)
+                    #self.verseOrderEdit.setFocus()
+                    #answer = QtGui.QMessageBox.warning(self,
+                    #    translate('SongsPlugin.EditSongForm', 'Warning'),
+                    #    unicode(translate('SongsPlugin.EditSongForm',
+                    #    'You have not used %s anywhere in the verse '
+                    #    'order. Are you sure you want to save the song '
+                    #    'like this?')) % verse_names[count],
+                    #    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+                    #if answer == QtGui.QMessageBox.No:
+                    #    return False
+            if len(verses_in_use) < len(verses):
+                self.warningLabel.setVisible(True)
         item = int(self.songBookComboBox.currentIndex())
         text = unicode(self.songBookComboBox.currentText())
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
