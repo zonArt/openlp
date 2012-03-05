@@ -93,6 +93,7 @@ class UiStrings(object):
         self.New = translate('OpenLP.Ui', 'New')
         self.NewService = translate('OpenLP.Ui', 'New Service')
         self.NewTheme = translate('OpenLP.Ui', 'New Theme')
+        self.NextTrack = translate('OpenLP.Ui', 'Next Track')
         self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
@@ -322,8 +323,7 @@ def create_action(parent, name, **kwargs):
         A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
     ``context``
-        A context for the shortcut execution (only will be set together with
-        ``shortcuts``).
+        A context for the shortcut execution.
 
     ``category``
         A category the action should be listed in the shortcut dialog.
@@ -354,8 +354,8 @@ def create_action(parent, name, **kwargs):
         action.setData(QtCore.QVariant(kwargs.pop(u'data')))
     if kwargs.get(u'shortcuts'):
         action.setShortcuts(kwargs.pop(u'shortcuts'))
-        if kwargs.get(u'context') is not None:
-            action.setShortcutContext(kwargs.pop(u'context'))
+    if u'context' in kwargs:
+        action.setShortcutContext(kwargs.pop(u'context'))
     if kwargs.get(u'category'):
         action_list = ActionList.get_instance()
         action_list.add_action(action, unicode(kwargs.pop(u'category')))
@@ -364,7 +364,7 @@ def create_action(parent, name, **kwargs):
             kwargs.pop(u'triggers'))
     for key in kwargs.keys():
         if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked',
-            u'shortcuts', u'context', u'category', u'triggers']:
+            u'shortcuts', u'category', u'triggers']:
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 

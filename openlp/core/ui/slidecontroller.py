@@ -33,7 +33,7 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, ServiceItem, build_html, PluginManager, ServiceItem
+    translate, build_icon, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
@@ -46,8 +46,9 @@ class SlideList(QtGui.QTableWidget):
     Customised version of QTableWidget which can respond to keyboard
     events.
     """
-    def __init__(self, parent=None, name=None):
+    def __init__(self, parent=None):
         QtGui.QTableWidget.__init__(self, parent.controller)
+
 
 class Controller(QtGui.QWidget):
     """
@@ -95,8 +96,10 @@ class SlideController(Controller):
             u'loopSeparator',
             u'delaySpinBox'
         ]
-        self.songEditList = [
-            u'editSong',
+        self.audioList = [
+            u'songMenu',
+            u'audioPauseItem',
+            u'audioTimeLabel'
         ]
         self.timer_id = 0
         self.songEdit = False
@@ -273,14 +276,44 @@ class SlideController(Controller):
             self.songMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.songMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Go To'), self.toolbar))
-            self.songMenu.hide()
             self.toolbar.addToolbarWidget(self.songMenu)
             # Stuff for items with background audio.
-            self.audioPauseItem = self.toolbar.addToolbarAction(u'audioPause',
-                text=u'Pause Audio', icon=u':/slides/media_playback_pause.png',
+            self.audioPauseItem = self.toolbar.addToolbarAction(
+                u'audioPauseItem', icon=u':/slides/media_playback_pause.png',
+                text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
-                checked=False, visible=False,
+                checked=False, visible=False, category=self.category,
                 triggers=self.onAudioPauseClicked)
+            self.audioMenu = QtGui.QMenu(
+                translate('OpenLP.SlideController', 'Background Audio'), self)
+            self.audioPauseItem.setMenu(self.audioMenu)
+            self.audioPauseItem.setParent(self)
+            self.toolbar.widgetForAction(self.audioPauseItem).setPopupMode(
+                QtGui.QToolButton.MenuButtonPopup)
+            self.nextTrackItem = create_action(self, u'nextTrackItem',
+                text=translate('OpenLP.SlideController', 'Next Track'),
+                icon=u':/slides/media_playback_next.png', tooltip=translate(
+                'OpenLP.SlideController', 'Go to next audio track.'),
+                category=self.category, context=QtCore.Qt.WindowShortcut,
+                triggers=self.onNextTrackClicked)
+            self.audioMenu.addAction(self.nextTrackItem)
+            self.trackMenu = self.audioMenu.addMenu(
+                translate('OpenLP.SlideController', 'Tracks'))
+            self.audioTimeLabel = QtGui.QLabel(u' 00:00 ', self.toolbar)
+            self.audioTimeLabel.setAlignment(
+                QtCore.Qt.AlignCenter|QtCore.Qt.AlignHCenter)
+            self.audioTimeLabel.setStyleSheet(
+                u'background-color: palette(background); '
+                u'border-top-color: palette(shadow); '
+                u'border-left-color: palette(shadow); '
+                u'border-bottom-color: palette(light); '
+                u'border-right-color: palette(light); '
+                u'border-radius: 3px; border-style: inset; '
+                u'border-width: 1; font-family: monospace; margin: 2px;'
+            )
+            self.audioTimeLabel.setObjectName(u'audioTimeLabel')
+            self.toolbar.addToolbarWidget(self.audioTimeLabel)
+            self.toolbar.setWidgetVisible(self.audioList, False)
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -365,7 +398,7 @@ class SlideController(Controller):
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
                 self.onGoLiveClick)
-            self.toolbar.setWidgetVisible(self.songEditList, False)
+            self.toolbar.setWidgetVisible([u'editSong'], False)
         if self.isLive:
             self.setLiveHotkeys(self)
             self.__addActionsToWidget(self.previewListWidget)
@@ -527,7 +560,7 @@ class SlideController(Controller):
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
                 if keypressCommand == ServiceItemAction.Previous:
-                    Receiver.send_message('servicemanager_previous_item', None)
+                    Receiver.send_message('servicemanager_previous_item')
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
                     Receiver.send_message('servicemanager_previous_item', u'last slide')
@@ -548,6 +581,8 @@ class SlideController(Controller):
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
+            self.display.audioPlayer.connectSlot(
+                QtCore.SIGNAL(u'tick(qint64)'), self.onAudioTimeRemaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
@@ -559,7 +594,7 @@ class SlideController(Controller):
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem,
-            self.previewDisplay.screen, None, self.isLive, None,
+            self.previewDisplay.screen, None, self.isLive,
             plugins=PluginManager.get_instance().plugins))
         self.mediaController.setup_display(self.previewDisplay)
         if self.serviceItem:
@@ -621,7 +656,7 @@ class SlideController(Controller):
         Adjusts the value of the ``delaySpinBox`` to the given one.
         """
         self.delaySpinBox.setValue(int(value))
-    
+
     def updateSlideLimits(self):
         """
         Updates the Slide Limits variable from the settings.
@@ -679,9 +714,9 @@ class SlideController(Controller):
         # See bug #791050
         self.toolbar.hide()
         self.mediabar.hide()
-        self.toolbar.setWidgetVisible(self.songEditList, False)
+        self.toolbar.setWidgetVisible([u'editSong'], False)
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
-            self.toolbar.setWidgetVisible(self.songEditList)
+            self.toolbar.setWidgetVisible([u'editSong'])
         elif item.is_media():
             self.mediabar.show()
         self.previousItem.setVisible(not item.is_media())
@@ -764,10 +799,23 @@ class SlideController(Controller):
             self.display.audioPlayer.reset()
             self.setAudioItemsVisibility(False)
             self.audioPauseItem.setChecked(False)
+            # If the current item has background audio
             if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
                 self.display.audioPlayer.addToPlaylist(
                     self.serviceItem.background_audio)
+                self.trackMenu.clear()
+                for counter in range(len(self.serviceItem.background_audio)):
+                    action = self.trackMenu.addAction(os.path.basename(
+                        self.serviceItem.background_audio[counter]))
+                    action.setData(counter)
+                    QtCore.QObject.connect(action,
+                        QtCore.SIGNAL(u'triggered(bool)'),
+                        self.onTrackTriggered)
+                self.display.audioPlayer.repeat = QtCore.QSettings().value(
+                    self.parent().generalSettingsSection + \
+                        u'/audio repeat list',
+                    QtCore.QVariant(False)).toBool()
                 if QtCore.QSettings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio start paused',
@@ -1021,7 +1069,7 @@ class SlideController(Controller):
             else:
                 Receiver.send_message(u'live_display_show')
 
-    def onSlideSelected(self, start=False):
+    def onSlideSelected(self):
         """
         Slide selected in controller
         """
@@ -1217,7 +1265,7 @@ class SlideController(Controller):
         self.onToggleLoop()
 
     def setAudioItemsVisibility(self, visible):
-        self.audioPauseItem.setVisible(visible)
+        self.toolbar.setWidgetVisible(self.audioList, visible)
 
     def onAudioPauseClicked(self, checked):
         if not self.audioPauseItem.isVisible():
@@ -1328,3 +1376,17 @@ class SlideController(Controller):
             return HideMode.Screen
         else:
             return None
+
+    def onNextTrackClicked(self):
+        self.display.audioPlayer.next()
+
+    def onAudioTimeRemaining(self, time):
+        seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
+        minutes = seconds // 60
+        seconds %= 60
+        self.audioTimeLabel.setText(u' %02d:%02d ' % (minutes, seconds))
+
+    def onTrackTriggered(self):
+        action = self.sender()
+        index = action.data().toInt()[0]
+        self.display.audioPlayer.goTo(index)

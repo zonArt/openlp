@@ -42,7 +42,7 @@ from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
     clean_string
-from openlp.plugins.songs.lib.db import Author, Song, MediaFile
+from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
@@ -55,7 +55,8 @@ class SongSearch(object):
     Titles = 2
     Lyrics = 3
     Authors = 4
-    Themes = 5
+    Books = 5
+    Themes = 6
 
 
 class SongMediaItem(MediaManagerItem):
@@ -157,6 +158,8 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
                 SongStrings.Authors),
+            (SongSearch.Books, u':/songs/song_book_edit.png',
+                 SongStrings.SongBooks),
             (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
@@ -195,6 +198,19 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == SongSearch.Books:
+            log.debug(u'Books Search')
+            search_results = self.plugin.manager.get_all_objects(Book,
+                Book.name.like(u'%' + search_keywords + u'%'),
+                Book.name.asc())
+            song_number = False
+            if not search_results:
+                search_keywords = search_keywords.rpartition(' ')
+                search_results = self.plugin.manager.get_all_objects(Book,
+                    Book.name.like(u'%' + search_keywords[0] + u'%'),
+                    Book.name.asc())
+                song_number = re.sub(r'[^0-9]', u'', search_keywords[2])
+            self.displayResultsBook(search_results, song_number)
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(Song,
@@ -265,6 +281,25 @@ class SongMediaItem(MediaManagerItem):
                 if song.temporary:
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                self.listView.addItem(song_name)
+
+    def displayResultsBook(self, searchresults, song_number=False):
+        log.debug(u'display results Book')
+        self.listView.clear()
+        for book in searchresults:
+            songs = sorted(book.songs, key=lambda song: int(
+                re.sub(r'[^0-9]', u' ', song.song_number).partition(' ')[0])
+                if len(re.sub(r'[^\w]', ' ', song.song_number)) else 0)
+            for song in songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
+                if song_number and not song_number in song.song_number:
+                    continue
+                song_detail = u'%s - %s (%s)' % (book.name, song.song_number,
+                    song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
