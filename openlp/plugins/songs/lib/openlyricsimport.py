@@ -77,7 +77,4 @@ class OpenLyricsImport(SongImport):
             except OpenLyricsError as exception:
                 log.exception(u'OpenLyricsException of type %s: %s in file %s'
                     % (exception.type, exception.message, file_path))
-                if exception.type == 'XML':
-                    self.logError(file_path, SongStrings.XMLSyntaxError)
-                else:
-                    self.logError(file_path, exception.message)
+                self.logError(file_path, exception.display_message)
