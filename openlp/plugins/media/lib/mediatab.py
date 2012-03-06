@@ -30,6 +30,14 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.lib.ui import UiStrings
 
+class MediaQCheckBox(QtGui.QCheckBox):
+    """
+    MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
+    """
+    def setPlayerName(self, name):
+        self.playerName = name
+
+
 class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
@@ -49,7 +57,7 @@ class MediaTab(SettingsTab):
         self.playerCheckBoxes = {}
         for key, player in self.mediaPlayers.iteritems():
             player = self.mediaPlayers[key]
-            checkbox = QtGui.QCheckBox(self.mediaPlayerGroupBox)
+            checkbox = MediaQCheckBox(self.mediaPlayerGroupBox)
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'CheckBox')
             self.playerCheckBoxes[player.name] = checkbox
@@ -116,6 +124,7 @@ class MediaTab(SettingsTab):
         for key in self.mediaPlayers:
             player = self.mediaPlayers[key]
             checkbox = self.playerCheckBoxes[player.name]
+            checkbox.setPlayerName(key)
             if player.available:
                 checkbox.setText(player.display_name)
             else:
@@ -134,10 +143,7 @@ class MediaTab(SettingsTab):
             'Allow media player to be overriden'))
 
     def onPlayerCheckBoxChanged(self, check_state):
-        display_name = self.sender().text()
-        for key in self.mediaPlayers:
-            if self.mediaPlayers[key].display_name == display_name:
-                player = key
+        player = self.sender().playerName
         if check_state == QtCore.Qt.Checked:
             if player not in self.usedPlayers:
                 self.usedPlayers.append(player)
