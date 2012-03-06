@@ -100,8 +100,7 @@ class MediaController(object):
         Register each media Player controller (Webkit, Phonon, etc) and store
         for later use
         """
-        if controller.check_available():
-            self.mediaPlayers[controller.name] = controller
+        self.mediaPlayers[controller.name] = controller
 
     def check_available_media_players(self):
         """
@@ -134,7 +133,8 @@ class MediaController(object):
                 QtCore.QVariant(u'webkit')).toString())
             savedPlayers = playerSettings.split(u',')
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
-                if not mediaPlayer in self.mediaPlayers]
+                if not mediaPlayer in self.mediaPlayers or \
+                not self.mediaPlayers[mediaPlayer].check_available()]
             if len(invalidMediaPlayers) > 0:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
@@ -219,6 +219,7 @@ class MediaController(object):
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.seekSlider.setMaximum(1000)
+        controller.seekSlider.setTracking(False)
         controller.seekSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
@@ -231,6 +232,7 @@ class MediaController(object):
         controller.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
         controller.volumeSlider.setMinimum(0)
         controller.volumeSlider.setMaximum(100)
+        controller.volumeSlider.setTracking(True)
         controller.volumeSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
@@ -242,9 +244,9 @@ class MediaController(object):
         controller.mediabar.setVisible(False)
         # Signals
         QtCore.QObject.connect(controller.seekSlider,
-            QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
+            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
         QtCore.QObject.connect(controller.volumeSlider,
-            QtCore.SIGNAL(u'sliderMoved(int)'), controller.sendToPlugins)
+            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
     def setup_special_controls(self, controller, control_panel):
         """
@@ -276,6 +278,10 @@ class MediaController(object):
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
+        if controller.isLive and controller.display:
+            if self.curDisplayMediaPlayer and value:
+                if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
+                    controller.display.setTransparency(False)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
@@ -316,7 +322,8 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = display.serviceItem.start_time
+                controller.media_info.start_time = \
+                    display.serviceItem.start_time
                 controller.media_info.end_time = display.serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
@@ -478,6 +485,7 @@ class MediaController(object):
         Responds to the request to reset a loaded video
         """
         log.debug(u'video_reset')
+        self.set_controls_visible(controller, False)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.override = {}
@@ -486,7 +494,6 @@ class MediaController(object):
                 display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"hidden");')
                 del self.curDisplayMediaPlayer[display]
-        self.set_controls_visible(controller, False)
 
     def video_hide(self, msg):
         """

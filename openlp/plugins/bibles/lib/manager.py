@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,7 +33,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
-from openlp.plugins.bibles.lib import parse_reference
+from openlp.plugins.bibles.lib import parse_reference, get_reference_separator
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from csvbible import CSVBible
 from http import HTTPBible
@@ -309,19 +309,29 @@ class BibleManager(object):
             return self.db_cache[bible].get_verses(reflist, show_error)
         else:
             if show_error:
+                reference_seperators = {
+                    u'verse': get_reference_separator(u'sep_v_display'),
+                    u'range': get_reference_separator(u'sep_r_display'),
+                    u'list': get_reference_separator(u'sep_l_display')}
                 Receiver.send_message(u'openlp_information_message', {
                     u'title': translate('BiblesPlugin.BibleManager',
                     'Scripture Reference Error'),
-                    u'message': translate('BiblesPlugin.BibleManager',
+                    u'message': unicode(translate('BiblesPlugin.BibleManager',
                     'Your scripture reference is either not supported by '
                     'OpenLP or is invalid. Please make sure your reference '
-                    'conforms to one of the following patterns:\n\n'
+                    'conforms to one of the following patterns or consult the '
+                    'manual:\n\n'
                     'Book Chapter\n'
-                    'Book Chapter-Chapter\n'
-                    'Book Chapter:Verse-Verse\n'
-                    'Book Chapter:Verse-Verse,Verse-Verse\n'
-                    'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                    'Book Chapter:Verse-Chapter:Verse')
+                    'Book Chapter%(range)sChapter\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
+                    '%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
+                    '%(verse)sVerse%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
+                    'Please pay attention to the appended "s" of the wildcards '
+                    'and refrain from translating the words inside the '
+                    'names in the brackets.')) % reference_seperators
                     })
             return None
 

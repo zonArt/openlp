@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,8 +35,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus
-from openlp.core.lib.searchedit import SearchEdit
+    translate, check_item_selected, PluginStatus, create_separated_list
 from openlp.core.lib.ui import UiStrings, context_menu_action, \
     context_menu_separator
 from openlp.core.utils import AppLocation
@@ -44,7 +43,7 @@ from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
     clean_string
-from openlp.plugins.songs.lib.db import Author, Song, MediaFile
+from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
@@ -57,7 +56,8 @@ class SongSearch(object):
     Titles = 2
     Lyrics = 3
     Authors = 4
-    Themes = 5
+    Books = 5
+    Themes = 6
 
 
 class SongMediaItem(MediaManagerItem):
@@ -103,35 +103,8 @@ class SongMediaItem(MediaManagerItem):
         ## Song Maintenance Button ##
         self.maintenanceAction = self.addToolbarButton(u'', u'',
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.searchWidget = QtGui.QWidget(self)
-        self.searchWidget.setObjectName(u'searchWidget')
-        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
-        self.searchLayout.setObjectName(u'searchLayout')
-        self.searchTextLayout = QtGui.QFormLayout()
-        self.searchTextLayout.setObjectName(u'searchTextLayout')
-        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
-        self.searchTextLabel.setObjectName(u'searchTextLabel')
-        self.searchTextEdit = SearchEdit(self.searchWidget)
-        self.searchTextEdit.setObjectName(u'searchTextEdit')
-        self.searchTextLabel.setBuddy(self.searchTextEdit)
-        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
-        self.searchLayout.addLayout(self.searchTextLayout)
-        self.searchButtonLayout = QtGui.QHBoxLayout()
-        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
-        self.searchButtonLayout.addStretch()
-        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
-        self.searchTextButton.setObjectName(u'searchTextButton')
-        self.searchButtonLayout.addWidget(self.searchTextButton)
-        self.searchLayout.addLayout(self.searchButtonLayout)
-        self.pageLayout.addWidget(self.searchWidget)
+        self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -186,6 +159,8 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
                 SongStrings.Authors),
+            (SongSearch.Books, u':/songs/song_book_edit.png',
+                 SongStrings.SongBooks),
             (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
@@ -224,6 +199,19 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == SongSearch.Books:
+            log.debug(u'Books Search')
+            search_results = self.plugin.manager.get_all_objects(Book,
+                Book.name.like(u'%' + search_keywords + u'%'),
+                Book.name.asc())
+            song_number = False
+            if not search_results:
+                search_keywords = search_keywords.rpartition(' ')
+                search_results = self.plugin.manager.get_all_objects(Book,
+                    Book.name.like(u'%' + search_keywords[0] + u'%'),
+                    Book.name.asc())
+                song_number = re.sub(r'[^0-9]', u'', search_keywords[2])
+            self.displayResultsBook(search_results, song_number)
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(Song,
@@ -275,7 +263,8 @@ class SongMediaItem(MediaManagerItem):
                 continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
-            song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
+            song_detail = u'%s (%s)' % (song_title,
+                create_separated_list(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
@@ -293,6 +282,25 @@ class SongMediaItem(MediaManagerItem):
                 if song.temporary:
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                self.listView.addItem(song_name)
+
+    def displayResultsBook(self, searchresults, song_number=False):
+        log.debug(u'display results Book')
+        self.listView.clear()
+        for book in searchresults:
+            songs = sorted(book.songs, key=lambda song: int(
+                re.sub(r'[^0-9]', u' ', song.song_number).partition(' ')[0])
+                if len(re.sub(r'[^\w]', ' ', song.song_number)) else 0)
+            for song in songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
+                if song_number and not song_number in song.song_number:
+                    continue
+                song_detail = u'%s - %s (%s)' % (book.name, song.song_number,
+                    song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
@@ -497,7 +505,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
         service_item.raw_footer.append(song.title)
-        service_item.raw_footer.append(u', '.join(author_list))
+        service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
         if QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():

@@ -5,12 +5,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,22 +28,22 @@
 
 """
 This script is used to maintain the translation files in OpenLP. It downloads
-the latest translation files from the Pootle translation server, updates the
-local translation files from both the source code and the files from Pootle,
+the latest translation files from the Transifex translation server, updates the
+local translation files from both the source code and the files from Transifex,
 and can also generate the compiled translation files.
 
 Create New Language
 -------------------
 
-To create a new language, simply run this script with the ``-a`` command line
+To create a new language, simply run this script with the ``-c`` command line
 option::
 
-    @:~$ ./translation_utils.py -a
+    @:~$ ./translation_utils.py -c
 
 Update Translation Files
 ------------------------
 
-The best way to update the translations is to download the files from Pootle,
+The best way to update the translations is to download the files from Transifex,
 and then update the local files using both the downloaded files and the source.
 This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 
@@ -51,20 +51,26 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 
 """
 import os
-import urllib
+import urllib2
 import re
 from shutil import copy
+from getpass import getpass
+import base64
+import json
+import webbrowser
 
 from optparse import OptionParser
 from PyQt4 import QtCore
 from BeautifulSoup import BeautifulSoup
 
-SERVER_URL = u'http://pootle.projecthq.biz/export/openlp/'
+SERVER_URL = u'http://www.transifex.net/api/2/project/openlp/'
 IGNORED_PATHS = [u'scripts']
 IGNORED_FILES = [u'setup.py']
 
 verbose_mode = False
 quiet_mode = False
+username = ''
+password = ''
 
 class Command(object):
     """
@@ -172,35 +178,40 @@ def run(command):
     print_verbose(u'Error(s):\n%s' % process.readAllStandardError())
     print_verbose(u'Output:\n%s' % process.readAllStandardOutput())
 
-def update_export_at_pootle(source_filename):
-    """
-    This is needed because of database and exported *.ts file can be out of sync
-
-    ``source_filename``
-        The file to sync.
-
-    """
-    language = source_filename[:-3]
-    REVIEW_URL = u'http://pootle.projecthq.biz/%s/openlp/review.html' % language
-    print_verbose(u'Accessing: %s' % (REVIEW_URL))
-    page = urllib.urlopen(REVIEW_URL)
-    page.close()
-
 def download_translations():
     """
     This method downloads the translation files from the Pootle server.
+
+    **Note:** URLs and headers need to remain strings, not unicode.
     """
-    print_quiet(u'Download translation files from Pootle')
-    page = urllib.urlopen(SERVER_URL)
-    soup = BeautifulSoup(page)
-    languages = soup.findAll(text=re.compile(r'.*\.ts'))
-    for language_file in languages:
-        update_export_at_pootle(language_file)
-    for language_file in languages:
+    global username, password
+    if not username:
+        username = raw_input(u'Transifex username: ')
+    if not password:
+        password = getpass(u'Transifex password: ')
+    print_quiet(u'Download translation files from Transifex')
+    # First get the list of languages
+    url = SERVER_URL + 'resource/ents/'
+    base64string = base64.encodestring(
+        '%s:%s' % (username, password))[:-1]
+    auth_header =  'Basic %s' % base64string
+    request = urllib2.Request(url + '?details')
+    request.add_header('Authorization', auth_header)
+    print_verbose(u'Downloading list of languages from: %s' % url)
+    json_response = urllib2.urlopen(request)
+    json_dict = json.loads(json_response.read())
+    languages = [lang[u'code'] for lang in json_dict[u'available_languages']]
+    for language in languages:
+        lang_url = url + 'translation/%s/?file' % language
+        request = urllib2.Request(lang_url)
+        request.add_header('Authorization', auth_header)
         filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
-            language_file)
+            language + u'.ts')
         print_verbose(u'Get Translation File: %s' % filename)
-        urllib.urlretrieve(SERVER_URL + language_file, filename)
+        response = urllib2.urlopen(request)
+        fd = open(filename, u'w')
+        fd.write(response.read())
+        fd.close()
     print_quiet(u'   Done.')
 
 def prepare_project():
@@ -252,7 +263,7 @@ def prepare_project():
 def update_translations():
     print_quiet(u'Update the translation files')
     if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print u'You have no generated a project file yet, please run this ' + \
+        print u'You have not generated a project file yet, please run this ' + \
             u'script with the -p option.'
         return
     else:
@@ -274,24 +285,16 @@ def generate_binaries():
         print_quiet(u'   Done.')
 
 
-def create_translation(language):
+def create_translation():
     """
-    This method creates a new translation file.
-
-    ``language``
-        The language file to create.
+    This method opens a browser to the OpenLP project page at Transifex so
+    that the user can request a new language.
     """
-    print_quiet(u'Create new Translation File')
-    if not language.endswith(u'.ts'):
-        language += u'.ts'
-    filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n', language)
-    urllib.urlretrieve(SERVER_URL + u'en.ts', filename)
-    print_quiet(u'   ** Please Note **')
-    print_quiet(u'   In order to get this file into OpenLP and onto the '
-        u'Pootle translation server you will need to subscribe to the '
-        u'OpenLP Translators mailing list, and request that your language '
-        u'file be added to the project.')
-    print_quiet(u'   Done.')
+    print_quiet(u'Please request a new language at the OpenLP project on '
+        'Transifex.')
+    webbrowser.open('https://www.transifex.net/projects/p/openlp/'
+        'resource/ents/')
+    print_quiet(u'Opening browser to OpenLP project...')
 
 def process_stack(command_stack):
     """
@@ -314,23 +317,26 @@ def process_stack(command_stack):
             elif command == Command.Generate:
                 generate_binaries()
             elif command == Command.Create:
-                arguments = command_stack.arguments()
-                create_translation(*arguments)
+                create_translation()
         print_quiet(u'Finished processing commands.')
     else:
         print_quiet(u'No commands to process.')
 
 def main():
-    global verbose_mode, quiet_mode
+    global verbose_mode, quiet_mode, username, password
     # Set up command line options.
     usage = u'%prog [options]\nOptions are parsed in the order they are ' + \
         u'listed below. If no options are given, "-dpug" will be used.\n\n' + \
         u'This script is used to manage OpenLP\'s translation files.'
     parser = OptionParser(usage=usage)
+    parser.add_option('-U', '--username', dest='username', metavar='USERNAME',
+        help='Transifex username, used for authentication')
+    parser.add_option('-P', '--password', dest='password', metavar='PASSWORD',
+        help='Transifex password, used for authentication')
     parser.add_option('-d', '--download-ts', dest='download',
-        action='store_true', help='download language files from Pootle')
-    parser.add_option('-c', '--create', dest='create', metavar='LANG',
-        help='create a new translation file for language LANG, e.g. "en_GB"')
+        action='store_true', help='download language files from Transifex')
+    parser.add_option('-c', '--create', dest='create', action='store_true',
+        help='go to Transifex to request a new translation file')
     parser.add_option('-p', '--prepare', dest='prepare', action='store_true',
         help='generate a project file, used to update the translations')
     parser.add_option('-u', '--update', action='store_true', dest='update',
@@ -356,6 +362,10 @@ def main():
         command_stack.append(Command.Generate)
     verbose_mode = options.verbose
     quiet_mode = options.quiet
+    if options.username:
+        username = options.username
+    if options.password:
+        password = options.password
     if not command_stack:
         command_stack.append(Command.Download)
         command_stack.append(Command.Prepare)

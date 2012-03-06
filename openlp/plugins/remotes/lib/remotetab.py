@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -81,6 +81,21 @@ class RemoteTab(SettingsTab):
         self.stageUrl.setOpenExternalLinks(True)
         self.serverSettingsLayout.addRow(self.stageUrlLabel, self.stageUrl)
         self.leftLayout.addWidget(self.serverSettingsGroupBox)
+        self.androidAppGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.androidAppGroupBox.setObjectName(u'androidAppGroupBox')
+        self.rightLayout.addWidget(self.androidAppGroupBox)
+        self.qrLayout = QtGui.QVBoxLayout(self.androidAppGroupBox)
+        self.qrLayout.setObjectName(u'qrLayout')
+        self.qrCodeLabel = QtGui.QLabel(self.androidAppGroupBox)
+        self.qrCodeLabel.setPixmap(QtGui.QPixmap(u':/remotes/android_app_qr.png'))
+        self.qrCodeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.qrCodeLabel.setObjectName(u'qrCodeLabel')
+        self.qrLayout.addWidget(self.qrCodeLabel)
+        self.qrDescriptionLabel = QtGui.QLabel(self.androidAppGroupBox)
+        self.qrDescriptionLabel.setObjectName(u'qrDescriptionLabel')
+        self.qrDescriptionLabel.setOpenExternalLinks(True)
+        self.qrDescriptionLabel.setWordWrap(True)
+        self.qrLayout.addWidget(self.qrDescriptionLabel)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.twelveHourCheckBox,
@@ -101,6 +116,12 @@ class RemoteTab(SettingsTab):
         self.twelveHourCheckBox.setText(
             translate('RemotePlugin.RemoteTab',
             'Display stage time in 12h format'))
+        self.androidAppGroupBox.setTitle(
+            translate('RemotePlugin.RemoteTab', 'Android App'))
+        self.qrDescriptionLabel.setText(translate('RemotePlugin.RemoteTab',
+            'Scan the QR code or click <a '
+            'href="https://market.android.com/details?id=org.openlp.android">'
+            'download</a> to install the Android app from the Market.'))
 
     def setUrls(self):
         ipAddress = u'localhost'
