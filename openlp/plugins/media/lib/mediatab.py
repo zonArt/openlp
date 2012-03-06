@@ -124,7 +124,7 @@ class MediaTab(SettingsTab):
         for key in self.mediaPlayers:
             player = self.mediaPlayers[key]
             checkbox = self.playerCheckBoxes[player.name]
-            checkbox.setPlayerName(key)
+            checkbox.setPlayerName(player.name)
             if player.available:
                 checkbox.setText(player.display_name)
             else:
