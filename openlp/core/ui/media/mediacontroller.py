@@ -282,8 +282,6 @@ class MediaController(object):
             if self.curDisplayMediaPlayer and value:
                 if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
-            else:
-                controller.display.setTransparency(True)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
