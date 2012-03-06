@@ -66,7 +66,7 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.core.utils import get_application_version
