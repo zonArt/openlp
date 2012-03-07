@@ -53,20 +53,56 @@ class GeneralTab(SettingsTab):
         """
         self.setObjectName(u'GeneralTab')
         SettingsTab.setupUi(self)
+        # Monitors
         self.monitorGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.monitorGroupBox.setObjectName(u'monitorGroupBox')
-        self.monitorLayout = QtGui.QFormLayout(self.monitorGroupBox)
+        self.monitorLayout = QtGui.QGridLayout(self.monitorGroupBox)
         self.monitorLayout.setObjectName(u'monitorLayout')
-        self.monitorLabel = QtGui.QLabel(self.monitorGroupBox)
-        self.monitorLabel.setObjectName(u'monitorLabel')
-        self.monitorLayout.addRow(self.monitorLabel)
+        self.monitorRadioButton = QtGui.QRadioButton(self.monitorGroupBox)
+        self.monitorRadioButton.setObjectName(u'monitorRadioButton')
+        self.monitorLayout.addWidget(self.monitorRadioButton, 0, 0, 1, 5)
         self.monitorComboBox = QtGui.QComboBox(self.monitorGroupBox)
         self.monitorComboBox.setObjectName(u'monitorComboBox')
-        self.monitorLayout.addRow(self.monitorComboBox)
+        self.monitorLayout.addWidget(self.monitorComboBox, 1, 1, 1, 4)
         self.displayOnMonitorCheck = QtGui.QCheckBox(self.monitorGroupBox)
         self.displayOnMonitorCheck.setObjectName(u'monitorComboBox')
-        self.monitorLayout.addRow(self.displayOnMonitorCheck)
+        self.monitorLayout.addWidget(self.displayOnMonitorCheck, 2, 1, 1, 4)
+        # Display Position
+        self.overrideRadioButton = QtGui.QRadioButton(self.monitorGroupBox)
+        self.overrideRadioButton.setObjectName(u'overrideRadioButton')
+        self.monitorLayout.addWidget(self.overrideRadioButton, 3, 0, 1, 5)
         self.leftLayout.addWidget(self.monitorGroupBox)
+        # Custom position
+        self.customXLabel = QtGui.QLabel(self.monitorGroupBox)
+        self.customXLabel.setObjectName(u'customXLabel')
+        self.monitorLayout.addWidget(self.customXLabel, 4, 1)
+        self.customXValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
+        self.customXValueEdit.setObjectName(u'customXValueEdit')
+        self.customXValueEdit.setRange(-9999, 9999)
+        self.monitorLayout.addWidget(self.customXValueEdit, 5, 1)
+        self.customYLabel = QtGui.QLabel(self.monitorGroupBox)
+        self.customYLabel.setObjectName(u'customYLabel')
+        self.monitorLayout.addWidget(self.customYLabel, 4, 2)
+        self.customYValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
+        self.customYValueEdit.setObjectName(u'customYValueEdit')
+        self.customYValueEdit.setRange(-9999, 9999)
+        self.monitorLayout.addWidget(self.customYValueEdit, 5, 2)
+        self.customWidthLabel = QtGui.QLabel(self.monitorGroupBox)
+        self.customWidthLabel.setObjectName(u'customWidthLabel')
+        self.monitorLayout.addWidget(self.customWidthLabel, 4, 3)
+        self.customWidthValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
+        self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
+        self.customWidthValueEdit.setMaximum(9999)
+        self.monitorLayout.addWidget(self.customWidthValueEdit, 5, 3)
+        self.customHeightLabel = QtGui.QLabel(self.monitorGroupBox)
+        self.customHeightLabel.setObjectName(u'customHeightLabel')
+        self.monitorLayout.addWidget(self.customHeightLabel, 4, 4)
+        self.customHeightValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
+        self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
+        self.customHeightValueEdit.setMaximum(9999)
+        self.monitorLayout.addWidget(self.customHeightValueEdit, 5, 4)
+        self.leftLayout.addWidget(self.monitorGroupBox)
+        # Application Startup
         self.startupGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.startupGroupBox.setObjectName(u'startupGroupBox')
         self.startupLayout = QtGui.QVBoxLayout(self.startupGroupBox)
@@ -84,6 +120,7 @@ class GeneralTab(SettingsTab):
         self.checkForUpdatesCheckBox.setObjectName(u'checkForUpdatesCheckBox')
         self.startupLayout.addWidget(self.checkForUpdatesCheckBox)
         self.leftLayout.addWidget(self.startupGroupBox)
+        # Application Settings
         self.settingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.settingsGroupBox.setObjectName(u'settingsGroupBox')
         self.settingsLayout = QtGui.QFormLayout(self.settingsGroupBox)
@@ -106,6 +143,7 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
         self.leftLayout.addWidget(self.settingsGroupBox)
         self.leftLayout.addStretch()
+        # CCLI Details
         self.ccliGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.ccliGroupBox.setObjectName(u'ccliGroupBox')
         self.ccliLayout = QtGui.QFormLayout(self.ccliGroupBox)
@@ -128,45 +166,6 @@ class GeneralTab(SettingsTab):
         self.passwordEdit.setObjectName(u'passwordEdit')
         self.ccliLayout.addRow(self.passwordLabel, self.passwordEdit)
         self.rightLayout.addWidget(self.ccliGroupBox)
-        # Moved here from display tab
-        self.displayGroupBox = QtGui.QGroupBox(self.rightColumn)
-        self.displayGroupBox.setObjectName(u'displayGroupBox')
-        self.displayLayout = QtGui.QGridLayout(self.displayGroupBox)
-        self.displayLayout.setObjectName(u'displayLayout')
-        self.overrideCheckBox = QtGui.QCheckBox(self.displayGroupBox)
-        self.overrideCheckBox.setObjectName(u'overrideCheckBox')
-        self.displayLayout.addWidget(self.overrideCheckBox, 2, 0, 1, 4)
-        self.rightLayout.addWidget(self.displayGroupBox)
-        # Custom position
-        self.customXLabel = QtGui.QLabel(self.displayGroupBox)
-        self.customXLabel.setObjectName(u'customXLabel')
-        self.displayLayout.addWidget(self.customXLabel, 3, 0)
-        self.customXValueEdit = QtGui.QSpinBox(self.displayGroupBox)
-        self.customXValueEdit.setObjectName(u'customXValueEdit')
-        self.customXValueEdit.setRange(-9999, 9999)
-        self.displayLayout.addWidget(self.customXValueEdit, 4, 0)
-        self.customYLabel = QtGui.QLabel(self.displayGroupBox)
-        self.customYLabel.setObjectName(u'customYLabel')
-        self.displayLayout.addWidget(self.customYLabel, 3, 1)
-        self.customYValueEdit = QtGui.QSpinBox(self.displayGroupBox)
-        self.customYValueEdit.setObjectName(u'customYValueEdit')
-        self.customYValueEdit.setRange(-9999, 9999)
-        self.displayLayout.addWidget(self.customYValueEdit, 4, 1)
-        self.customWidthLabel = QtGui.QLabel(self.displayGroupBox)
-        self.customWidthLabel.setObjectName(u'customWidthLabel')
-        self.displayLayout.addWidget(self.customWidthLabel, 3, 2)
-        self.customWidthValueEdit = QtGui.QSpinBox(self.displayGroupBox)
-        self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
-        self.customWidthValueEdit.setMaximum(9999)
-        self.displayLayout.addWidget(self.customWidthValueEdit, 4, 2)
-        self.customHeightLabel = QtGui.QLabel(self.displayGroupBox)
-        self.customHeightLabel.setObjectName(u'customHeightLabel')
-        self.displayLayout.addWidget(self.customHeightLabel, 3, 3)
-        self.customHeightValueEdit = QtGui.QSpinBox(self.displayGroupBox)
-        self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
-        self.customHeightValueEdit.setMaximum(9999)
-        self.displayLayout.addWidget(self.customHeightValueEdit, 4, 3)
-        self.rightLayout.addWidget(self.displayGroupBox)
         # Background audio
         self.audioGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.audioGroupBox.setObjectName(u'audioGroupBox')
@@ -181,8 +180,8 @@ class GeneralTab(SettingsTab):
         self.rightLayout.addWidget(self.audioGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.overrideCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
+        QtCore.QObject.connect(self.overrideRadioButton,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideRadioButtonPressed)
         QtCore.QObject.connect(self.customHeightValueEdit,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.customWidthValueEdit,
@@ -209,7 +208,7 @@ class GeneralTab(SettingsTab):
         self.tabTitleVisible = translate('OpenLP.GeneralTab', 'General')
         self.monitorGroupBox.setTitle(translate('OpenLP.GeneralTab',
             'Monitors'))
-        self.monitorLabel.setText(translate('OpenLP.GeneralTab',
+        self.monitorRadioButton.setText(translate('OpenLP.GeneralTab',
             'Select monitor for output display:'))
         self.displayOnMonitorCheck.setText(
             translate('OpenLP.GeneralTab', 'Display if a single screen'))
@@ -242,10 +241,8 @@ class GeneralTab(SettingsTab):
         self.passwordLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
-        self.displayGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Display Position'))
-        self.overrideCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Override display position'))
+        self.overrideRadioButton.setText(translate('OpenLP.GeneralTab',
+            'Override display position:'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
@@ -291,7 +288,9 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
-        self.overrideCheckBox.setChecked(settings.value(u'override position',
+        self.monitorRadioButton.setChecked(not settings.value(u'override position',
+            QtCore.QVariant(False)).toBool())
+        self.overrideRadioButton.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
         self.customXValueEdit.setValue(settings.value(u'x position',
             QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
@@ -306,10 +305,12 @@ class GeneralTab(SettingsTab):
         self.repeatListCheckBox.setChecked(settings.value(
             u'audio repeat list', QtCore.QVariant(False)).toBool())
         settings.endGroup()
-        self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
+        self.monitorComboBox.setDisabled(self.overrideRadioButton.isChecked())
+        self.displayOnMonitorCheck.setDisabled(self.overrideRadioButton.isChecked())
+        self.customXValueEdit.setEnabled(self.overrideRadioButton.isChecked())
+        self.customYValueEdit.setEnabled(self.overrideRadioButton.isChecked())
+        self.customHeightValueEdit.setEnabled(self.overrideRadioButton.isChecked())
+        self.customWidthValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.display_changed = False
         settings.beginGroup(self.settingsSection)
 
@@ -354,7 +355,7 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'width',
             QtCore.QVariant(self.customWidthValueEdit.value()))
         settings.setValue(u'override position',
-            QtCore.QVariant(self.overrideCheckBox.isChecked()))
+            QtCore.QVariant(self.overrideRadioButton.isChecked()))
         settings.setValue(u'audio start paused',
             QtCore.QVariant(self.startPausedCheckBox.isChecked()))
         settings.setValue(u'audio repeat list',
@@ -380,7 +381,7 @@ class GeneralTab(SettingsTab):
             self.customYValueEdit.value(),
             self.customWidthValueEdit.value(),
             self.customHeightValueEdit.value())
-        if self.overrideCheckBox.isChecked():
+        if self.overrideRadioButton.isChecked():
             self.screens.set_override_display()
         else:
             self.screens.reset_current_display()
@@ -388,13 +389,15 @@ class GeneralTab(SettingsTab):
             Receiver.send_message(u'config_screen_changed')
         self.display_changed = False
 
-    def onOverrideCheckBoxToggled(self, checked):
+    def onOverrideRadioButtonPressed(self, checked):
         """
         Toggle screen state depending on check box state.
 
         ``checked``
             The state of the check box (boolean).
         """
+        self.monitorComboBox.setDisabled(checked)
+        self.displayOnMonitorCheck.setDisabled(checked)
         self.customXValueEdit.setEnabled(checked)
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
