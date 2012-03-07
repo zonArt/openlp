@@ -361,40 +361,45 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         book = match.group(u'book')
         if not book_ref_id:
             booknames = BibleStrings().Booknames
-            regex_book = re.compile(u'^[1-4]?[\. ]{0,2}%s' % book.lower(),
-                re.UNICODE)
+            # escape reserved characters
+            book_escaped = book
+            for character in u'\\.^$*+?{}[]()':
+                book_escaped = book_escaped.replace(
+                    character, u'\\' + character)
+            regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
+                book_escaped.split()), re.UNICODE | re.IGNORECASE)
             if language_selection == LanguageSelection.Bible:
                 db_book = bible.get_book(book)
                 if db_book:
                     book_ref_id = db_book.book_reference_id
             elif language_selection == LanguageSelection.Application:
                 book_list = []
-                for k, v in booknames.iteritems():
-                    if regex_book.search(unicode(v).lower()):
-                        book_list.append(k)
+                for key, value in booknames.iteritems():
+                    if regex_book.match(unicode(value)):
+                        book_list.append(key)
                 books = []
                 if book_list:
-                    for v in book_list:
-                        value = BiblesResourcesDB.get_book(v)
-                        if value:
-                            books.append(value)
+                    for value in book_list:
+                        item = BiblesResourcesDB.get_book(value)
+                        if item:
+                            books.append(item)
                 if books:
-                    for v in books:        
-                        if bible.get_book_by_book_ref_id(v[u'id']):
-                            book_ref_id = v[u'id']
+                    for value in books:        
+                        if bible.get_book_by_book_ref_id(value[u'id']):
+                            book_ref_id = value[u'id']
                             break
             elif language_selection == LanguageSelection.English:
                 books = BiblesResourcesDB.get_books_like(book)
                 if books:
                     book_list = []
-                    for v in books:
-                        if regex_book.search(v[u'name'].lower()):
-                            book_list.append(v)
+                    for value in books:
+                        if regex_book.match(value[u'name']):
+                            book_list.append(value)
                     if not book_list:
                         book_list = books
-                    for v in book_list:        
-                        if bible.get_book_by_book_ref_id(v[u'id']):
-                            book_ref_id = v[u'id']
+                    for value in book_list:        
+                        if bible.get_book_by_book_ref_id(value[u'id']):
+                            book_ref_id = value[u'id']
                             break
         else:
             if not bible.get_book_by_book_ref_id(book_ref_id):
