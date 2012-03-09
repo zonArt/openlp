@@ -511,6 +511,20 @@ class ThemeManager(QtGui.QWidget):
             return ThemeXML()
         else:
             return self._createThemeFromXml(xml, self.path)
+            
+    def overWriteMessageBox(self, themeName):
+        ret = QtGui.QMessageBox.question(self,
+            translate('OpenLP.ThemeManager', 'Theme Already Exists!'), 
+            translate('OpenLP.ThemeManager',  
+                'The theme %s already exists. Do you want to replace it?' 
+                % themeName),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+            QtGui.QMessageBox.No)
+        if ret == QtGui.QMessageBox.Yes:
+            return True
+        elif ret == QtGui.QMessageBox.No:
+            return False
 
     def unzipTheme(self, filename, dir):
         """
@@ -522,7 +536,7 @@ class ThemeManager(QtGui.QWidget):
         filename = unicode(filename)
         zip = None
         outfile = None
-        filexml = None
+        filexml = None            
         try:
             zip = zipfile.ZipFile(filename)
             xmlfile = filter(lambda name:
@@ -533,10 +547,17 @@ class ThemeManager(QtGui.QWidget):
             xml_tree = ElementTree(element=XML(zip.read(xmlfile[0]))).getroot()
             v1_background = xml_tree.find(u'BackgroundType')
             if v1_background is not None:
-                (themename, filexml, outfile) = self.unzipVersion122(dir, zip,
+                (themename, filexml, outfile,  abortimport) = self.unzipVersion122(dir, zip,
                     xmlfile[0], xml_tree, v1_background, outfile)
             else:
                 themename = xml_tree.find(u'name').text.strip()
+                themefolder = os.path.join(dir,  themename)
+                themeexists = os.path.exists(themefolder)
+                if themeexists and not self.overWriteMessageBox(themename):
+                    abortimport = True
+                    return
+                else:
+                    abortimport = False
                 for name in zip.namelist():
                     try:
                         uname = unicode(name, u'utf-8')
@@ -575,19 +596,20 @@ class ThemeManager(QtGui.QWidget):
                 zip.close()
             if outfile:
                 outfile.close()
-            # As all files are closed, we can create the Theme.
-            if filexml:
-                theme = self._createThemeFromXml(filexml, self.path)
-                self.generateAndSaveImage(dir, themename, theme)
-            # Only show the error message, when IOError was not raised (in this
-            # case the error message has already been shown).
-            elif zip is not None:
-                critical_error_message_box(
-                    translate('OpenLP.ThemeManager', 'Validation Error'),
-                    translate('OpenLP.ThemeManager',
-                    'File is not a valid theme.'))
-                log.exception(u'Theme file does not contain XML data %s' %
-                    filename)
+            if not abortimport:
+                # As all files are closed, we can create the Theme.
+                if filexml:
+                    theme = self._createThemeFromXml(filexml, self.path)
+                    self.generateAndSaveImage(dir, themename, theme)
+                # Only show the error message, when IOError was not raised (in this
+                # case the error message has already been shown).
+                elif zip is not None:
+                    critical_error_message_box(
+                        translate('OpenLP.ThemeManager', 'Validation Error'),
+                        translate('OpenLP.ThemeManager',
+                        'File is not a valid theme.'))
+                    log.exception(u'Theme file does not contain XML data %s' %
+                        filename)
 
     def unzipVersion122(self, dir, zip, xmlfile, xml_tree, background, outfile):
         """
@@ -596,6 +618,10 @@ class ThemeManager(QtGui.QWidget):
         """
         themename = xml_tree.find(u'Name').text.strip()
         themename = self.bad_v1_name_chars.sub(u'', themename)
+        themefolder = os.path.join(dir,  themename)
+        themeexists = os.path.exists(themefolder)
+        if themeexists and not self.overWriteMessageBox(themename):
+            return ( '',  '',  '', True)
         themedir = os.path.join(dir, themename)
         check_directory_exists(themedir)
         filexml = unicode(zip.read(xmlfile), u'utf-8')
@@ -617,7 +643,7 @@ class ThemeManager(QtGui.QWidget):
                 log.exception(u'Theme file does not contain image file "%s"' %
                     imagename.decode(u'utf-8', u'replace'))
                 raise Exception(u'validation')
-        return (themename, filexml, outfile)
+        return (themename, filexml, outfile,  False)
 
     def checkIfThemeExists(self, themeName):
         """
