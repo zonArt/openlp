@@ -676,17 +676,17 @@ class OpenLyrics(object):
         try:
             lyrics = song_xml.lyrics
         except AttributeError:
-            raise OpenLyricsError('XML', 'Missing lyrics item',
+            raise OpenLyricsError(OpenLyricsError.LyricsError,
+                '<lyrics> tag is missing.',
                 unicode(translate('OpenLP.OpenLyricsImportError',
-                'XML tree is missing <lyrics> tag. '
-                'It is not valid OpenLyrics file.')))
+                '<lyrics> tag is missing.')))
         try:
             verses = lyrics.verse
         except AttributeError:
-            raise OpenLyricsError('XML', 'Missing lyrics item',
+            raise OpenLyricsError(OpenLyricsError.VerseError,
+                '<verse> tag is missing.',
                 unicode(translate('OpenLP.OpenLyricsImportError',
-                'XML tree is missing <verse> tag. '
-                'It is not valid OpenLyrics file.')))
+                '<verse> tag is missing.')))
         # Loop over the "verse" elements.
         for verse in verses:
             text = u''
@@ -807,13 +807,12 @@ class OpenLyrics(object):
 
 
 class OpenLyricsError(Exception):
-    """
-    By now raised only in case of missing lyrics or verse element in XML.
-    """
-    def __init__(self, exception_type, message, display_message):
-        self.type = exception_type
-        self.message = message
-        self.display_message = display_message
+    # XML tree is missing the lyrics tag
+    LyricsError = 1
+    # XML tree has no verse tags
+    VerseError = 2
 
-    def __str__(self):
-        return "%s: %s" % (self.type, self.message)
+    def __init__(self, type, log_message, display_message):
+        self.type = type
+        self.log_message = log_message
+        self.display_message = display_message
