@@ -89,7 +89,8 @@ class VlcPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'vlc')
-        self.display_name = translate('MediaPlugin.MediaTab', 'VLC')
+        self.original_name = u'VLC'
+        self.display_name = u'&VLC'
         self.parent = parent
         self.canFolder = True
         self.audio_extensions_list = AUDIO_EXT

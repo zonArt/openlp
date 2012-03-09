@@ -132,15 +132,15 @@ class MediaTab(SettingsTab):
                     unicode(translate('MediaPlugin.MediaTab',
                     '%s (unavailable)')) % player.display_name)
         self.playerOrderGroupBox.setTitle(
-            translate('MediaPlugin.MediaTab', 'Player Order'))
+            translate('MediaPlugin.MediaTab', 'Player O&rder'))
         self.orderingDownButton.setText(
-            translate('MediaPlugin.MediaTab', 'Down'))
+            translate('MediaPlugin.MediaTab', '&Down'))
         self.orderingUpButton.setText(
-            translate('MediaPlugin.MediaTab', 'Up'))
+            translate('MediaPlugin.MediaTab', '&Up'))
         self.advancedGroupBox.setTitle(UiStrings().Advanced)
         self.overridePlayerCheckBox.setText(
             translate('MediaPlugin.MediaTab',
-            'Allow media player to be overriden'))
+            '&Allow media player to be overriden'))
 
     def onPlayerCheckBoxChanged(self, check_state):
         player = self.sender().playerName
@@ -162,7 +162,7 @@ class MediaTab(SettingsTab):
                 else:
                     self.playerCheckBoxes[u'%s' % player].setEnabled(True)
                 self.playerOrderlistWidget.addItem(
-                    self.mediaPlayers[unicode(player)].display_name)
+                    self.mediaPlayers[unicode(player)].original_name)
 
     def onOrderingUpButtonPressed(self):
         currentRow = self.playerOrderlistWidget.currentRow()
