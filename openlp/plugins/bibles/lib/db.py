@@ -609,7 +609,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM book_reference WHERE '
                 u'LOWER(name) LIKE ? OR LOWER(abbreviation) LIKE ?',
-                (u'%'+string.lower()+u'%', u'%'+string.lower()+u'%'))
+                (u'%' + string.lower() + u'%', u'%' + string.lower() + u'%'))
         if books:
             return [
                 {
