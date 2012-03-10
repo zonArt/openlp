@@ -159,7 +159,7 @@ class ThemeManager(QtGui.QWidget):
         encoding = get_filesystem_encoding()
         files = SettingsManager.get_files(self.settingsSection, u'.otz')
         for file in files:
-            file = os.path.join(self.path, file).encode(encoding)
+            file = os.path.join(self.path, file)
             self.unzipTheme(file, self.path)
             delete_file(file)
         Receiver.send_message(u'cursor_normal')
