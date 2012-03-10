@@ -665,9 +665,9 @@ class ThemeManager(QtGui.QWidget):
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
-            self.mainWindow.imageManager.update_image(theme.theme_name,
+            self.main_window.imageManager.update_image(theme.theme_name,
                 u'theme', QtGui.QColor(theme.background_border_color))
-            self.mainWindow.imageManager.process_updates()
+            self.main_window.imageManager.process_updates()
         self.loadThemes()
 
     def _writeTheme(self, theme, image_from, image_to):
@@ -718,12 +718,12 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
-        self.mainWindow.displayProgressBar(len(self.theme_list))
+        self.main_window.displayProgressBar(len(self.theme_list))
         for theme in self.theme_list:
-            self.mainWindow.incrementProgressBar()
+            self.main_window.incrementProgressBar()
             self.generateAndSaveImage(
                 self.path, theme, self.getThemeData(theme))
-        self.mainWindow.finishedProgressBar()
+        self.main_window.finishedProgressBar()
         self.loadThemes()
 
     def generateImage(self, theme_data, forcePage=False):
@@ -737,7 +737,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', theme_data)
-        return self.mainWindow.renderer.generate_preview(
+        return self.main_window.renderer.generate_preview(
             theme_data, forcePage)
 
     def getPreviewImage(self, theme):
@@ -791,7 +791,7 @@ class ThemeManager(QtGui.QWidget):
                 return False
             # check for use in the system else where.
             if testPlugin:
-                for plugin in self.mainWindow.pluginManager.plugins:
+                for plugin in self.main_window.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         critical_error_message_box(
                             translate('OpenLP.ThemeManager',
