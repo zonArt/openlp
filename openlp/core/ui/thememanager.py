@@ -513,9 +513,9 @@ class ThemeManager(QtGui.QWidget):
             
     def overWriteMessageBox(self, theme_name):
         ret = QtGui.QMessageBox.question(self,
-            translate('OpenLP.ThemeManager', 'Theme Already Exists!'), 
+            translate('OpenLP.ThemeManager', 'Theme Already Exists.'), 
             translate('OpenLP.ThemeManager',  
-                'The theme %s already exists. Do you want to replace it?' 
+                'Theme %s already exists. Do you want to replace it?' 
                 % theme_name),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -617,7 +617,7 @@ class ThemeManager(QtGui.QWidget):
         theme_folder = os.path.join(dir,  theme_name)
         theme_exists = os.path.exists(theme_folder)
         if theme_exists and not self.overWriteMessageBox(theme_name):
-            return '',  '',  '', True
+            return '', '', '', True
         themedir = os.path.join(dir, theme_name)
         check_directory_exists(themedir)
         file_xml = unicode(zip.read(xml_file), u'utf-8')
