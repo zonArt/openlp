@@ -53,6 +53,7 @@ class GeneralTab(SettingsTab):
         """
         self.setObjectName(u'GeneralTab')
         SettingsTab.setupUi(self)
+        self.tabLayout.setStretch(1, 1)
         # Monitors
         self.monitorGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.monitorGroupBox.setObjectName(u'monitorGroupBox')
