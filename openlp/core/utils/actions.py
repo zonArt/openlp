@@ -281,7 +281,7 @@ class ActionList(object):
             return
         self.categories[category].actions.remove(action)
         # Remove empty categories.
-        if len(self.categories[category].actions) == 0:
+        if not self.categories[category].actions:
             self.categories.remove(category)
         shortcuts = map(unicode,
             map(QtGui.QKeySequence.toString, action.shortcuts()))
@@ -354,18 +354,31 @@ class ActionList(object):
         ``action``
             The action which wants to use a particular shortcut.
         """
+        local = action.shortcutContext() in \
+            [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
+        affected_actions = filter(lambda a: isinstance(a, QtGui.QAction),
+            self.getAllChildObjects(action.parent())) if local else []
         for existing_action in existing_actions:
             if action is existing_action:
                 continue
-            if existing_action.parent() is action.parent():
+            if not local or existing_action in affected_actions:
                 return False
-            if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut,
-                QtCore.Qt.ApplicationShortcut]:
+            if existing_action.shortcutContext() \
+                in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False
-            if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
-                QtCore.Qt.ApplicationShortcut]:
+            elif action in self.getAllChildObjects(existing_action.parent()):
                 return False
         return True
+    
+    def getAllChildObjects(self, qobject):
+        """
+        Goes recursively through the children of ``qobject`` and returns a list
+        of all child objects.
+        """
+        children = [child for child in qobject.children()]
+        for child in qobject.children():
+            children.append(self.getAllChildObjects(child))
+        return children
 
 
 class CategoryOrder(object):

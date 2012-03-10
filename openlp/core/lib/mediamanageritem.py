@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
     StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings, context_menu_action, \
-    context_menu_separator, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, create_widget_action, \
+    critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -147,43 +147,6 @@ class MediaManagerItem(QtGui.QWidget):
             self.toolbar = OpenLPToolbar(self)
             self.pageLayout.addWidget(self.toolbar)
 
-    def addToolbarButton(
-        self, title, tooltip, icon, slot=None, checkable=False):
-        """
-        A method to help developers easily add a button to the toolbar.
-
-        ``title``
-            The title of the button.
-
-        ``tooltip``
-            The tooltip to be displayed when the mouse hovers over the
-            button.
-
-        ``icon``
-            The icon of the button. This can be an instance of QIcon, or a
-            string containing either the absolute path to the image, or an
-            internal resource path starting with ':/'.
-
-        ``slot``
-            The method to call when the button is clicked.
-
-        ``checkable``
-            If *True* the button has two, *off* and *on*, states. Default is
-            *False*, which means the buttons has only one state.
-        """
-        # NB different order (when I broke this out, I didn't want to
-        # break compatability), but it makes sense for the icon to
-        # come before the tooltip (as you have to have an icon, but
-        # not neccesarily a tooltip)
-        return self.toolbar.addToolbarButton(title, icon, tooltip, slot,
-            checkable)
-
-    def addToolbarSeparator(self):
-        """
-        A very simple method to add a separator to the toolbar.
-        """
-        self.toolbar.addSeparator()
-
     def setupUi(self):
         """
         This method sets up the interface on the button. Plugin
@@ -208,40 +171,41 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions = []
         ## Import Button ##
         if self.hasImportIcon:
-            toolbar_actions.append([StringContent.Import,
+            toolbar_actions.append([u'Import', StringContent.Import,
             u':/general/general_import.png', self.onImportClick])
         ## Load Button ##
         if self.hasFileIcon:
-            toolbar_actions.append([StringContent.Load,
+            toolbar_actions.append([u'Load', StringContent.Load,
                 u':/general/general_open.png', self.onFileClick])
         ## New Button ##
         if self.hasNewIcon:
-            toolbar_actions.append([StringContent.New,
+            toolbar_actions.append([u'New', StringContent.New,
                 u':/general/general_new.png', self.onNewClick])
         ## Edit Button ##
         if self.hasEditIcon:
-            toolbar_actions.append([StringContent.Edit,
+            toolbar_actions.append([u'Edit', StringContent.Edit,
                 u':/general/general_edit.png', self.onEditClick])
         ## Delete Button ##
         if self.hasDeleteIcon:
-            toolbar_actions.append([StringContent.Delete,
+            toolbar_actions.append([u'Delete', StringContent.Delete,
                 u':/general/general_delete.png', self.onDeleteClick])
         ## Preview ##
-        toolbar_actions.append([StringContent.Preview,
+        toolbar_actions.append([u'Preview', StringContent.Preview,
             u':/general/general_preview.png', self.onPreviewClick])
         ## Live Button ##
-        toolbar_actions.append([StringContent.Live,
+        toolbar_actions.append([u'Live', StringContent.Live,
             u':/general/general_live.png', self.onLiveClick])
         ## Add to service Button ##
-        toolbar_actions.append([StringContent.Service,
+        toolbar_actions.append([u'Service', StringContent.Service,
             u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:
-                self.addToolbarSeparator()
-            self.addToolbarButton(
-                self.plugin.getString(action[0])[u'title'],
-                self.plugin.getString(action[0])[u'tooltip'],
-                action[1], action[2])
+                self.toolbar.addSeparator()
+            self.toolbar.addToolbarAction(
+                u'%s%sAction' % (self.plugin.name, action[0]),
+                text=self.plugin.getString(action[1])[u'title'], icon=action[2],
+                tooltip=self.plugin.getString(action[1])[u'tooltip'],
+                triggers=action[3])
 
     def addListViewToToolBar(self):
         """
@@ -259,35 +223,37 @@ class MediaManagerItem(QtGui.QWidget):
         # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.hasEditIcon:
-            context_menu_action(
-                self.listView, u':/general/general_edit.png',
-                self.plugin.getString(StringContent.Edit)[u'title'],
-                self.onEditClick)
-            context_menu_separator(self.listView)
+            create_widget_action(self.listView,
+                text=self.plugin.getString(StringContent.Edit)[u'title'],
+                icon=u':/general/general_edit.png',
+                triggers=self.onEditClick)
+            create_widget_action(self.listView, separator=True)
         if self.hasDeleteIcon:
-            context_menu_action(
-                self.listView, u':/general/general_delete.png',
-                self.plugin.getString(StringContent.Delete)[u'title'],
-                self.onDeleteClick, [QtCore.Qt.Key_Delete])
-            context_menu_separator(self.listView)
-        context_menu_action(
-            self.listView, u':/general/general_preview.png',
-            self.plugin.getString(StringContent.Preview)[u'title'],
-            self.onPreviewClick, [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return])
-        context_menu_action(
-            self.listView, u':/general/general_live.png',
-            self.plugin.getString(StringContent.Live)[u'title'],
-            self.onLiveClick, [QtCore.Qt.ShiftModifier + QtCore.Qt.Key_Enter,
-            QtCore.Qt.ShiftModifier + QtCore.Qt.Key_Return])
-        context_menu_action(
-            self.listView, u':/general/general_add.png',
-            self.plugin.getString(StringContent.Service)[u'title'],
-            self.onAddClick, [QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal])
+            create_widget_action(self.listView,
+                text=self.plugin.getString(StringContent.Delete)[u'title'],
+                icon=u':/general/general_delete.png',
+                shortcuts=[QtCore.Qt.Key_Delete], triggers=self.onDeleteClick)
+            create_widget_action(self.listView, separator=True)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Preview)[u'title'],
+            icon=u':/general/general_preview.png',
+            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+            triggers=self.onPreviewClick)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Live)[u'title'],
+            icon=u':/general/general_live.png',
+            shortcuts=[QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter,
+            QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return],
+            triggers=self.onLiveClick)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Service)[u'title'],
+            icon=u':/general/general_add.png',
+            shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
+            triggers=self.onAddClick)
         if self.addToServiceItem:
-            context_menu_action(
-                self.listView, u':/general/general_add.png',
-                translate('OpenLP.MediaManagerItem',
-                '&Add to selected Service Item'), self.onAddEditClick)
+            create_widget_action(self.listView, text=translate(
+                'OpenLP.MediaManagerItem', '&Add to selected Service Item'),
+                icon=u':/general/general_add.png', triggers=self.onAddEditClick)
         self.addCustomContextActions()
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()

@@ -41,7 +41,7 @@ from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    context_menu_action, context_menu_separator
+    create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
@@ -64,32 +64,32 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarButton(UiStrings().NewTheme,
-            u':/themes/theme_new.png',
-            translate('OpenLP.ThemeManager', 'Create a new theme.'),
-            self.onAddTheme)
-        self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Edit Theme'),
-            u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', 'Edit a theme.'),
-            self.onEditTheme)
-        self.deleteToolbarAction = self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Delete Theme'),
-            u':/general/general_delete.png',
-            translate('OpenLP.ThemeManager', 'Delete a theme.'),
-            self.onDeleteTheme)
-        self.toolbar.addSeparator()
-        self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Import Theme'),
-            u':/general/general_import.png',
-            translate('OpenLP.ThemeManager', 'Import a theme.'),
-            self.onImportTheme)
-        self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Export Theme'),
-            u':/general/general_export.png',
-            translate('OpenLP.ThemeManager', 'Export a theme.'),
-            self.onExportTheme)
         self.toolbar.setObjectName(u'toolbar')
+        self.toolbar.addToolbarAction(u'newTheme',
+            text=UiStrings().NewTheme, icon=u':/themes/theme_new.png',
+            tooltip=translate('OpenLP.ThemeManager', 'Create a new theme.'),
+            triggers=self.onAddTheme)
+        self.toolbar.addToolbarAction(u'editTheme',
+            text=translate('OpenLP.ThemeManager', 'Edit Theme'),
+            icon=u':/themes/theme_edit.png',
+            tooltip=translate('OpenLP.ThemeManager', 'Edit a theme.'),
+            triggers=self.onEditTheme)
+        self.deleteToolbarAction = self.toolbar.addToolbarAction(u'deleteTheme',
+            text=translate('OpenLP.ThemeManager', 'Delete Theme'),
+            icon=u':/general/general_delete.png',
+            tooltip=translate('OpenLP.ThemeManager', 'Delete a theme.'),
+            triggers=self.onDeleteTheme)
+        self.toolbar.addSeparator()
+        self.toolbar.addToolbarAction(u'importTheme',
+            text=translate('OpenLP.ThemeManager', 'Import Theme'),
+            icon=u':/general/general_import.png',
+            tooltip=translate('OpenLP.ThemeManager', 'Import a theme.'),
+            triggers=self.onImportTheme)
+        self.toolbar.addToolbarAction(u'exportTheme',
+            text=translate('OpenLP.ThemeManager', 'Export Theme'),
+            icon=u':/general/general_export.png',
+            tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),
+            triggers=self.onExportTheme)
         self.layout.addWidget(self.toolbar)
         self.themeWidget = QtGui.QWidgetAction(self.toolbar)
         self.themeWidget.setObjectName(u'themeWidget')
@@ -105,29 +105,26 @@ class ThemeManager(QtGui.QWidget):
             self.contextMenu)
         # build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = context_menu_action(
-            self.menu, u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Edit Theme'), self.onEditTheme)
-        self.copyAction = context_menu_action(
-            self.menu, u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Copy Theme'), self.onCopyTheme)
-        self.renameAction = context_menu_action(
-            self.menu, u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Rename Theme'),
-            self.onRenameTheme)
-        self.deleteAction = context_menu_action(
-            self.menu, u':/general/general_delete.png',
-            translate('OpenLP.ThemeManager', '&Delete Theme'),
-            self.onDeleteTheme)
-        context_menu_separator(self.menu)
-        self.globalAction = context_menu_action(
-            self.menu, u':/general/general_export.png',
-            translate('OpenLP.ThemeManager', 'Set As &Global Default'),
-            self.changeGlobalFromScreen)
-        self.exportAction = context_menu_action(
-            self.menu, u':/general/general_export.png',
-            translate('OpenLP.ThemeManager', '&Export Theme'),
-            self.onExportTheme)
+        self.editAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', '&Edit Theme'),
+            icon=u':/themes/theme_edit.png', triggers=self.onEditTheme)
+        self.copyAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', '&Copy Theme'),
+            icon=u':/themes/theme_edit.png', triggers=self.onCopyTheme)
+        self.renameAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', '&Rename Theme'),
+            icon=u':/themes/theme_edit.png', triggers=self.onRenameTheme)
+        self.deleteAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', '&Delete Theme'),
+            icon=u':/general/general_delete.png', triggers=self.onDeleteTheme)
+        self.menu.addSeparator()
+        self.globalAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', 'Set As &Global Default'),
+            icon=u':/general/general_export.png',
+            triggers=self.changeGlobalFromScreen)
+        self.exportAction = create_widget_action(self.menu,
+            text=translate('OpenLP.ThemeManager', '&Export Theme'),
+            icon=u':/general/general_export.png', triggers=self.onExportTheme)
         # Signals
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -544,7 +541,7 @@ class ThemeManager(QtGui.QWidget):
                         log.exception(u'Theme file contains non utf-8 filename'
                             u' "%s"' % name.decode(u'utf-8', u'replace'))
                         raise Exception(u'validation')
-                    uname = unicode(QtCore.QDir.toNativeSeparators(uname))
+                    uname = uname.replace(u'/', os.path.sep)
                     splitname = uname.split(os.path.sep)
                     if splitname[-1] == u'' or len(splitname) == 1:
                         # is directory or preview file

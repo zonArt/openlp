@@ -68,7 +68,7 @@ class CustomMediaItem(MediaManagerItem):
         self.manager = plugin.manager
 
     def addEndHeaderBar(self):
-        self.addToolbarSeparator()
+        self.toolbar.addSeparator()
         self.addSearchToToolBar()
         # Signals and slots
         QtCore.QObject.connect(self.searchTextEdit,
