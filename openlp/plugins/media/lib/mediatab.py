@@ -131,7 +131,7 @@ class MediaTab(SettingsTab):
         self.advancedGroupBox.setTitle(UiStrings().Advanced)
         self.overridePlayerCheckBox.setText(
             translate('MediaPlugin.MediaTab',
-            'Allow media player to be overriden'))
+            'Allow media player to be overridden'))
 
     def onPlayerCheckBoxChanged(self, check_state):
         player = self.sender().text()

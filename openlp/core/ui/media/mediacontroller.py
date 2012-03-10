@@ -47,7 +47,7 @@ class MediaController(object):
         self.parent = parent
         self.mediaPlayers = {}
         self.controller = []
-        self.overridenPlayer = ''
+        self.overriddenPlayer = ''
         self.curDisplayMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
@@ -365,8 +365,8 @@ class MediaController(object):
         usedPlayers = playerSettings.split(u',')
         if QtCore.QSettings().value(u'media/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if self.overridenPlayer != '':
-                usedPlayers = [self.overridenPlayer]
+            if self.overriddenPlayer != '':
+                usedPlayers = [self.overriddenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \
                 controller.media_info.file_info.suffix().toLower()
@@ -581,9 +581,9 @@ class MediaController(object):
             QtCore.QVariant(u'webkit')).toString())
         usedPlayers = playerSettings.split(u',')
         if override_player in usedPlayers:
-            self.overridenPlayer = override_player
+            self.overriddenPlayer = override_player
         else:
-            self.overridenPlayer = ''
+            self.overriddenPlayer = ''
 
     def finalise(self):
         self.timer.stop()
