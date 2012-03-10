@@ -52,9 +52,9 @@ class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    def __init__(self, main_window, parent=None):
+    def __init__(self, mainwindow, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.main_window = main_window
+        self.mainwindow = mainwindow
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
@@ -282,7 +282,7 @@ class ThemeManager(QtGui.QWidget):
                     old_theme_data = self.getThemeData(old_theme_name)
                     self.cloneThemeData(old_theme_data, new_theme_name)
                     self.deleteTheme(old_theme_name)
-                    for plugin in self.main_window.pluginManager.plugins:
+                    for plugin in self.mainwindow.pluginManager.plugins:
                         if plugin.usesTheme(old_theme_name):
                             plugin.renameTheme(old_theme_name, new_theme_name)
                     self.loadThemes()
@@ -665,9 +665,9 @@ class ThemeManager(QtGui.QWidget):
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
-            self.main_window.imageManager.update_image(theme.theme_name,
+            self.mainwindow.imageManager.update_image(theme.theme_name,
                 u'theme', QtGui.QColor(theme.background_border_color))
-            self.main_window.imageManager.process_updates()
+            self.mainwindow.imageManager.process_updates()
         self.loadThemes()
 
     def _writeTheme(self, theme, image_from, image_to):
@@ -718,12 +718,12 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
-        self.main_window.displayProgressBar(len(self.theme_list))
+        self.mainwindow.displayProgressBar(len(self.theme_list))
         for theme in self.theme_list:
-            self.main_window.incrementProgressBar()
+            self.mainwindow.incrementProgressBar()
             self.generateAndSaveImage(
                 self.path, theme, self.getThemeData(theme))
-        self.main_window.finishedProgressBar()
+        self.mainwindow.finishedProgressBar()
         self.loadThemes()
 
     def generateImage(self, theme_data, forcePage=False):
@@ -737,7 +737,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', theme_data)
-        return self.main_window.renderer.generate_preview(
+        return self.mainwindow.renderer.generate_preview(
             theme_data, forcePage)
 
     def getPreviewImage(self, theme):
@@ -791,7 +791,7 @@ class ThemeManager(QtGui.QWidget):
                 return False
             # check for use in the system else where.
             if testPlugin:
-                for plugin in self.main_window.pluginManager.plugins:
+                for plugin in self.mainwindow.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         critical_error_message_box(
                             translate('OpenLP.ThemeManager',
