@@ -52,9 +52,9 @@ class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    def __init__(self, mainWindow, parent=None):
+    def __init__(self, main_window, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.mainWindow = mainWindow
+        self.main_window = main_window
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
@@ -282,7 +282,7 @@ class ThemeManager(QtGui.QWidget):
                     old_theme_data = self.getThemeData(old_theme_name)
                     self.cloneThemeData(old_theme_data, new_theme_name)
                     self.deleteTheme(old_theme_name)
-                    for plugin in self.mainWindow.pluginManager.plugins:
+                    for plugin in self.main_window.pluginManager.plugins:
                         if plugin.usesTheme(old_theme_name):
                             plugin.renameTheme(old_theme_name, new_theme_name)
                     self.loadThemes()
@@ -295,7 +295,7 @@ class ThemeManager(QtGui.QWidget):
         old_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
         self.fileRenameForm.fileNameEdit.setText(
             unicode(translate('OpenLP.ThemeManager',
-            'Copy of %s','Copy of <theme name>')) % old_theme_name)
+            'Copy of %s', 'Copy of <theme name>')) % old_theme_name)
         if self.fileRenameForm.exec_(True):
             new_theme_name = unicode(self.fileRenameForm.fileNameEdit.text())
             if self.checkIfThemeExists(new_theme_name):
@@ -513,7 +513,7 @@ class ThemeManager(QtGui.QWidget):
             
     def overWriteMessageBox(self, theme_name):
         ret = QtGui.QMessageBox.question(self,
-            translate('OpenLP.ThemeManager', 'Theme Already Exists.'), 
+            translate('OpenLP.ThemeManager', 'Theme Already Exists'), 
             translate('OpenLP.ThemeManager',  
                 'Theme %s already exists. Do you want to replace it?' 
                 % theme_name),
@@ -562,8 +562,8 @@ class ThemeManager(QtGui.QWidget):
                             u' "%s"' % name.decode(u'utf-8', u'replace'))
                         raise Exception(u'validation')
                     uname = unicode(QtCore.QDir.toNativeSeparators(uname))
-                    spli_tname = uname.split(os.path.sep)
-                    if spli_tname[-1] == u'' or len(spli_tname) == 1:
+                    split_name = uname.split(os.path.sep)
+                    if split_name[-1] == u'' or len(split_name) == 1:
                         # is directory or preview file
                         continue
                     full_name = os.path.join(dir, uname)
@@ -614,7 +614,7 @@ class ThemeManager(QtGui.QWidget):
         """
         theme_name = xml_tree.find(u'Name').text.strip()
         theme_name = self.bad_v1_name_chars.sub(u'', theme_name)
-        theme_folder = os.path.join(dir,  theme_name)
+        theme_folder = os.path.join(dir, theme_name)
         theme_exists = os.path.exists(theme_folder)
         if theme_exists and not self.overWriteMessageBox(theme_name):
             return '', '', '', True
