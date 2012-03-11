@@ -53,6 +53,7 @@ class OSISBible(BibleDB):
         self.filename = kwargs[u'filename']
         fbibles = None
         self.books = {}
+        self.language_regex = re.compile(r'<language.*>(.*?)</language>')
         self.verse_regex = re.compile(
             r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
@@ -107,19 +108,32 @@ class OSISBible(BibleDB):
         finally:
             if detect_file:
                 detect_file.close()
-        # Set meta language_id
-        language_id = self.get_language(bible_name)
-        if not language_id:
-            log.exception(u'Importing books from "%s" failed' % self.filename)
-            return False
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             repl = replacement
+            language_id = False
             for file_record in osis:
                 if self.stop_import_flag:
                     break
+                # Try to find the bible language
+                if not language_id:
+                    language_match = self.language_regex.search(file_record)
+                    if language_match:
+                        language = BiblesResourcesDB.get_language(
+                            language_match.group(1))
+                        if language:
+                            language_id = language[u'id']
+                            self.create_meta(u'language_id', language_id)
+                        continue
                 match = self.verse_regex.search(file_record)
                 if match:
+                    # Set meta language_id if not detected till now
+                    if not language_id:
+                        language_id = self.get_language(bible_name)
+                        if not language_id:
+                            log.exception(u'Importing books from "%s" failed'
+                                % self.filename)
+                            return False
                     match_count += 1
                     book = match.group(1)
                     chapter = int(match.group(2))

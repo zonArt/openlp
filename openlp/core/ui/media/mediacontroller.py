@@ -47,7 +47,7 @@ class MediaController(object):
         self.parent = parent
         self.mediaPlayers = {}
         self.controller = []
-        self.overridenPlayer = ''
+        self.overriddenPlayer = ''
         self.curDisplayMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
@@ -100,8 +100,7 @@ class MediaController(object):
         Register each media Player controller (Webkit, Phonon, etc) and store
         for later use
         """
-        if controller.check_available():
-            self.mediaPlayers[controller.name] = controller
+        self.mediaPlayers[controller.name] = controller
 
     def check_available_media_players(self):
         """
@@ -134,7 +133,8 @@ class MediaController(object):
                 QtCore.QVariant(u'webkit')).toString())
             savedPlayers = playerSettings.split(u',')
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
-                if not mediaPlayer in self.mediaPlayers]
+                if not mediaPlayer in self.mediaPlayers or \
+                not self.mediaPlayers[mediaPlayer].check_available()]
             if len(invalidMediaPlayers) > 0:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
@@ -204,18 +204,21 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_play', u':/slides/media_playback_start.png',
-            translate('OpenLP.SlideController', 'Start playing media.'),
-            controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_pause', u':/slides/media_playback_pause.png',
-            translate('OpenLP.SlideController', 'Pause playing media.'),
-            controller.sendToPlugins)
-        controller.mediabar.addToolbarButton(
-            u'media_playback_stop', u':/slides/media_playback_stop.png',
-            translate('OpenLP.SlideController', 'Stop playing media.'),
-            controller.sendToPlugins)
+        controller.mediabar.addToolbarAction(u'playbackPlay',
+            text=u'media_playback_play',
+            icon=u':/slides/media_playback_start.png',
+            tooltip=translate('OpenLP.SlideController', 'Start playing media.'),
+            triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarAction(u'playbackPause',
+            text=u'media_playback_pause',
+            icon=u':/slides/media_playback_pause.png',
+            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
+            triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarAction(u'playbackStop',
+            text=u'media_playback_stop',
+            icon=u':/slides/media_playback_stop.png',
+            tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
+            triggers=controller.sendToPlugins)
         # Build the seekSlider.
         controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.seekSlider.setMaximum(1000)
@@ -223,9 +226,8 @@ class MediaController(object):
         controller.seekSlider.setToolTip(translate(
             'OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        controller.seekSlider.setObjectName(u'seek_slider')
-        controller.mediabar.addToolbarWidget(u'Seek Slider',
-            controller.seekSlider)
+        controller.seekSlider.setObjectName(u'seekSlider')
+        controller.mediabar.addToolbarWidget(controller.seekSlider)
         # Build the volumeSlider.
         controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.volumeSlider.setTickInterval(10)
@@ -237,9 +239,8 @@ class MediaController(object):
             'OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
-        controller.volumeSlider.setObjectName(u'volume_slider')
-        controller.mediabar.addToolbarWidget(u'Audio Volume',
-            controller.volumeSlider)
+        controller.volumeSlider.setObjectName(u'volumeSlider')
+        controller.mediabar.addToolbarWidget(controller.volumeSlider)
         control_panel.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
@@ -278,6 +279,10 @@ class MediaController(object):
     def set_controls_visible(self, controller, value):
         # Generic controls
         controller.mediabar.setVisible(value)
+        if controller.isLive and controller.display:
+            if self.curDisplayMediaPlayer and value:
+                if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
+                    controller.display.setTransparency(False)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
         # TODO
@@ -361,8 +366,8 @@ class MediaController(object):
         usedPlayers = playerSettings.split(u',')
         if QtCore.QSettings().value(u'media/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if self.overridenPlayer != '':
-                usedPlayers = [self.overridenPlayer]
+            if self.overriddenPlayer != '':
+                usedPlayers = [self.overriddenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \
                 controller.media_info.file_info.suffix().toLower()
@@ -481,6 +486,7 @@ class MediaController(object):
         Responds to the request to reset a loaded video
         """
         log.debug(u'video_reset')
+        self.set_controls_visible(controller, False)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.override = {}
@@ -489,7 +495,6 @@ class MediaController(object):
                 display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"hidden");')
                 del self.curDisplayMediaPlayer[display]
-        self.set_controls_visible(controller, False)
 
     def video_hide(self, msg):
         """
@@ -577,9 +582,9 @@ class MediaController(object):
             QtCore.QVariant(u'webkit')).toString())
         usedPlayers = playerSettings.split(u',')
         if override_player in usedPlayers:
-            self.overridenPlayer = override_player
+            self.overriddenPlayer = override_player
         else:
-            self.overridenPlayer = ''
+            self.overriddenPlayer = ''
 
     def finalise(self):
         self.timer.stop()

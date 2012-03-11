@@ -40,7 +40,7 @@ except ImportError:
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, FormattingTags
-from openlp.core.lib.ui import checkable_action
+from openlp.core.lib.ui import create_action
 
 log = logging.getLogger(__name__)
 
@@ -90,9 +90,8 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             lang_menu = QtGui.QMenu(
                 translate('OpenLP.SpellTextEdit', 'Language:'))
             for lang in enchant.list_languages():
-                action = checkable_action(
-                    lang_menu, lang, lang == self.dictionary.tag)
-                action.setText(lang)
+                action = create_action(lang_menu, lang, text=lang,
+                    checked=lang == self.dictionary.tag)
                 lang_menu.addAction(action)
             popupMenu.insertSeparator(popupMenu.actions()[0])
             popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)

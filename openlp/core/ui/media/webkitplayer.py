@@ -246,7 +246,7 @@ VIDEO_EXT = [
             , u'*.swf'
         ]
 
-AUDIO_EXT =  [
+AUDIO_EXT = [
               u'*.mp3'
             , u'*.ogg'
         ]
@@ -294,7 +294,7 @@ class WebkitPlayer(MediaPlayer):
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        if display.hasAudio:
+        if display.hasAudio and not controller.media_info.is_background:
             volume = controller.media_info.volume
             vol = float(volume) / float(100)
         else:

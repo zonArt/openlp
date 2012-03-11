@@ -105,7 +105,6 @@ class ImpressController(PresentationController):
             cmd = get_uno_command()
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
-            self.process.waitForStarted()
 
     def get_uno_desktop(self):
         """

@@ -32,7 +32,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate
+from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
+    create_separated_list
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -633,7 +634,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         VerseType.translated_tag(verse[0]), verse[1:]))
             for count, item in enumerate(order):
                 if item not in verses:
-                    valid = u', '.join(verse_names)
+                    valid = create_separated_list(verse_names)
                     critical_error_message_box(
                         message=unicode(translate('SongsPlugin.EditSongForm',
                         'The verse order is invalid. There is no verse '
