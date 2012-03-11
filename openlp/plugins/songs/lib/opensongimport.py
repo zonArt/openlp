@@ -238,7 +238,7 @@ class OpenSongImport(SongImport):
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                     if not len(verse_tag):
-                        verse_tag =  VerseType.Tags[VerseType.Verse]
+                        verse_tag = VerseType.Tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def

@@ -30,7 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
-from openlp.core.lib.ui import icon_action
+from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
@@ -150,12 +150,8 @@ class SearchEdit(QtGui.QLineEdit):
         menu = QtGui.QMenu(self)
         first = None
         for identifier, icon, title in items:
-            action = icon_action(menu, u'', icon)
-            action.setText(title)
-            action.setData(QtCore.QVariant(identifier))
-            menu.addAction(action)
-            QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-                self._onMenuActionTriggered)
+            action = create_widget_action(menu, text=title, icon=icon,
+                data=identifier, triggers=self._onMenuActionTriggered)
             if first is None:
                 first = action
                 self._currentSearchType = identifier

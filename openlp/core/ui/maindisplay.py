@@ -37,6 +37,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate, PluginManager, expand_tags
+from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -143,7 +144,7 @@ class MainDisplay(Display):
             windowFlags |= QtCore.Qt.SplashScreen
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setTransparency(True)
+        self.setTransparency(False)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
@@ -387,6 +388,8 @@ class MainDisplay(Display):
                 # replace the background
                 background = self.imageManager. \
                     get_image_bytes(self.override[u'image'])
+        self.setTransparency(self.serviceItem.themedata.background_type ==
+            BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)

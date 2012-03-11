@@ -66,7 +66,7 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.core.utils import get_application_version
@@ -673,9 +673,22 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
-        lyrics = song_xml.lyrics
+        try:
+            lyrics = song_xml.lyrics
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.LyricsError,
+                '<lyrics> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<lyrics> tag is missing.')))
+        try:
+            verse_list = lyrics.verse
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.VerseError,
+                '<verse> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<verse> tag is missing.')))
         # Loop over the "verse" elements.
-        for verse in lyrics.verse:
+        for verse in verse_list:
             text = u''
             # Loop over the "lines" elements.
             for lines in verse.lines:
@@ -791,3 +804,15 @@ class OpenLyrics(object):
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
+
+
+class OpenLyricsError(Exception):
+    # XML tree is missing the lyrics tag
+    LyricsError = 1
+    # XML tree has no verse tags
+    VerseError = 2
+
+    def __init__(self, type, log_message, display_message):
+        self.type = type
+        self.log_message = log_message
+        self.display_message = display_message
