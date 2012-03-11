@@ -435,19 +435,19 @@ class BibleDB(QtCore.QObject, Manager):
         else:
             return count
 
-    def get_verse_count(self, book_id, chapter):
+    def get_verse_count(self, book_ref_id, chapter):
         """
         Return the number of verses in a chapter.
 
-        ``book``
-            The book containing the chapter.
+        ``book_ref_id``
+            The book reference id.
 
         ``chapter``
             The chapter to get the verse count for.
         """
-        log.debug(u'BibleDB.get_verse_count("%s", "%s")', book_id, chapter)
+        log.debug(u'BibleDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
         count = self.session.query(Verse).join(Book)\
-            .filter(Book.book_reference_id==book_id)\
+            .filter(Book.book_reference_id==book_ref_id)\
             .filter(Verse.chapter==chapter)\
             .count()
         if not count:
@@ -596,6 +596,35 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             return None
 
     @staticmethod
+    def get_books_like(string):
+        """
+        Return the books which include string.
+
+        ``string``
+            The string to search for in the booknames or abbreviations.
+        """
+        log.debug(u'BiblesResourcesDB.get_book_like("%s")', string)
+        if not isinstance(string, unicode):
+            name = unicode(string)
+        books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
+                u'abbreviation, chapters FROM book_reference WHERE '
+                u'LOWER(name) LIKE ? OR LOWER(abbreviation) LIKE ?',
+                (u'%' + string.lower() + u'%', u'%' + string.lower() + u'%'))
+        if books:
+            return [
+                {
+                u'id': book[0],
+                u'testament_id': book[1],
+                u'name': unicode(book[2]),
+                u'abbreviation': unicode(book[3]),
+                u'chapters': book[4]
+                }
+                for book in books
+            ]
+        else:
+            return None
+
+    @staticmethod
     def get_book_by_id(id):
         """
         Return a book by id.
@@ -621,23 +650,23 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             return None
 
     @staticmethod
-    def get_chapter(book_id, chapter):
+    def get_chapter(book_ref_id, chapter):
         """
         Return the chapter details for a specific chapter of a book.
 
-        ``book_id``
+        ``book_ref_id``
             The id of a book.
 
         ``chapter``
             The chapter number.
         """
-        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_id,
+        log.debug(u'BiblesResourcesDB.get_chapter("%s", "%s")', book_ref_id,
             chapter)
         if not isinstance(chapter, int):
             chapter = int(chapter)
         chapters = BiblesResourcesDB.run_sql(u'SELECT id, book_reference_id, '
             u'chapter, verse_count FROM chapters WHERE book_reference_id = ?',
-            (book_id,))
+            (book_ref_id,))
         try:
             return {
                 u'id': chapters[chapter-1][0],
@@ -649,21 +678,21 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             return None
 
     @staticmethod
-    def get_chapter_count(book_id):
+    def get_chapter_count(book_ref_id):
         """
         Return the number of chapters in a book.
 
-        ``book_id``
+        ``book_ref_id``
             The id of the book.
         """
-        log.debug(u'BiblesResourcesDB.get_chapter_count("%s")', book_id)
-        details = BiblesResourcesDB.get_book_by_id(book_id)
+        log.debug(u'BiblesResourcesDB.get_chapter_count("%s")', book_ref_id)
+        details = BiblesResourcesDB.get_book_by_id(book_ref_id)
         if details:
             return details[u'chapters']
         return 0
 
     @staticmethod
-    def get_verse_count(book_id, chapter):
+    def get_verse_count(book_ref_id, chapter):
         """
         Return the number of verses in a chapter.
 
@@ -673,9 +702,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         ``chapter``
             The number of the chapter.
         """
-        log.debug(u'BiblesResourcesDB.get_verse_count("%s", "%s")', book_id,
+        log.debug(u'BiblesResourcesDB.get_verse_count("%s", "%s")', book_ref_id,
             chapter)
-        details = BiblesResourcesDB.get_chapter(book_id, chapter)
+        details = BiblesResourcesDB.get_chapter(book_ref_id, chapter)
         if details:
             return details[u'verse_count']
         return 0
