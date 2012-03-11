@@ -681,14 +681,14 @@ class OpenLyrics(object):
                 unicode(translate('OpenLP.OpenLyricsImportError',
                 '<lyrics> tag is missing.')))
         try:
-            verses = lyrics.verse
+            verse_list = lyrics.verse
         except AttributeError:
             raise OpenLyricsError(OpenLyricsError.VerseError,
                 '<verse> tag is missing.',
                 unicode(translate('OpenLP.OpenLyricsImportError',
                 '<verse> tag is missing.')))
         # Loop over the "verse" elements.
-        for verse in verses:
+        for verse in verse_list:
             text = u''
             # Loop over the "lines" elements.
             for lines in verse.lines:
