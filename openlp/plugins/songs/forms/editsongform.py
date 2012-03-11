@@ -578,12 +578,25 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verseDeleteButton.setEnabled(False)
 
     def onVerseOrderTextChanged(self, text):
-        self._validate_verse_list(text, self.verseListWidget.rowCount())
+        verses = []
+        verse_names = []
+        order = self.__extractVerseOrder(text)
+        for index in range(0, self.verseListWidget.rowCount()):
+            verse = self.verseListWidget.item(index, 0)
+            verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
+            if verse not in verse_names:
+                verses.append(verse)
+                verse_names.append(u'%s%s' % (
+                    VerseType.translated_tag(verse[0]), verse[1:]))
+        verses_not_used = []
+        for count, verse in enumerate(verses):
+            if not verse in order:
+                verses_not_used.append(verse)
+        self.warningLabel.setVisible(len(verses_not_used) > 0)
 
-    def _validate_verse_list(self, verse_list, verse_count):
-        errors = []
+    def __extractVerseOrder(self, verse_order):
         order = []
-        order_names = unicode(verse_list).split()
+        order_names = unicode(verse_order).split()
         for item in order_names:
             if len(item) == 1:
                 verse_index = VerseType.from_translated_tag(item, None)
@@ -601,8 +614,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     verse_tag = VerseType.Tags[verse_index]
                     verse_num = item[1:].lower()
                     order.append(verse_tag + verse_num)
+        return order
+
+    def __validateVerseList(self, verse_order, verse_count):
         verses = []
+        invalid_verses = []
         verse_names = []
+        order_names = unicode(verse_order).split()
+        order = self.__extractVerseOrder(verse_order)
         for index in range(0, verse_count):
             verse = self.verseListWidget.item(index, 0)
             verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
@@ -612,20 +631,22 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     VerseType.translated_tag(verse[0]), verse[1:]))
         for count, item in enumerate(order):
             if item not in verses:
-                valid = create_separated_list(verse_names)
-                errors.append(unicode(translate('SongsPlugin.EditSongForm',
-                    'The verse order is invalid. There is no verse '
-                    'corresponding to %s. Valid entries are %s.')) % \
-                    (order_names[count], valid))
-                return False
-        verses_not_used = []
-        for count, verse in enumerate(verses):
-            if not verse in order:
-                verses_not_used.append(verse)
-        self.warningLabel.setVisible(len(verses_not_used) > 0)
-        return errors
+                invalid_verses.append(order_names[count])
+        if invalid_verses:
+            valid = create_separated_list(verse_names)
+            if len(invalid_verses) > 1:
+                critical_error_message_box(message=unicode(translate(
+                    'SongsPlugin.EditSongForm', 'The verse order is invalid. '
+                    'There are no verses corresponding to %s. Valid entries '
+                    'are %s.')) % (u', '.join(invalid_verses), valid))
+            else:
+                critical_error_message_box(message=unicode(translate(
+                    'SongsPlugin.EditSongForm', 'The verse order is invalid. '
+                    'There is no verse corresponding to %s. Valid entries '
+                    'are %s.')) % (invalid_verses[0], valid))
+        return len(invalid_verses) == 0
 
-    def _validate_song(self):
+    def __validateSong(self):
         """
         Check the validity of the song.
         """
@@ -655,10 +676,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 'You need to have an author for this song.'))
             return False
         if self.verseOrderEdit.text():
-            errors = self._validate_verse_list(self.verseOrderEdit.text(),
+            result = self.__validateVerseList(self.verseOrderEdit.text(),
                 self.verseListWidget.rowCount())
-            if errors:
-                critical_error_message_box(message=u'\n\n'.join(errors))
+            if not result:
+                return False
         item = int(self.songBookComboBox.currentIndex())
         text = unicode(self.songBookComboBox.currentText())
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
@@ -795,7 +816,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         log.debug(u'SongEditForm.accept')
         self.clearCaches()
-        if self._validate_song():
+        if self.__validateSong():
             self.saveSong()
             self.song = None
             QtGui.QDialog.accept(self)
