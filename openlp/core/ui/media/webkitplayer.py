@@ -246,7 +246,7 @@ VIDEO_EXT = [
             , u'*.swf'
         ]
 
-AUDIO_EXT =  [
+AUDIO_EXT = [
               u'*.mp3'
             , u'*.ogg'
         ]

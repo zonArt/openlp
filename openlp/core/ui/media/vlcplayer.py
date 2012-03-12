@@ -49,7 +49,7 @@ from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
 
-AUDIO_EXT =  [
+AUDIO_EXT = [
       u'*.mp3'
     , u'*.wav'
     , u'*.ogg'

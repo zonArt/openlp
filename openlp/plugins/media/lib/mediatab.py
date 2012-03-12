@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, create_up_down_push_button_set
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -65,7 +65,7 @@ class MediaTab(SettingsTab):
         self.leftLayout.addWidget(self.mediaPlayerGroupBox)
         self.playerOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
-        self.playerOrderLayout = QtGui.QVBoxLayout(self.playerOrderGroupBox)
+        self.playerOrderLayout = QtGui.QHBoxLayout(self.playerOrderGroupBox)
         self.playerOrderLayout.setObjectName(u'playerOrderLayout')
         self.playerOrderlistWidget = QtGui.QListWidget( \
             self.playerOrderGroupBox)
@@ -84,18 +84,15 @@ class MediaTab(SettingsTab):
             QtGui.QAbstractItemView.NoEditTriggers)
         self.playerOrderlistWidget.setObjectName(u'playerOrderlistWidget')
         self.playerOrderLayout.addWidget(self.playerOrderlistWidget)
-        self.orderingButtonsWidget = QtGui.QWidget(self.playerOrderGroupBox)
-        self.orderingButtonsWidget.setObjectName(u'orderingButtonsWidget')
-        self.orderingButtonLayout = QtGui.QHBoxLayout( \
-            self.orderingButtonsWidget)
+        self.orderingButtonLayout = QtGui.QVBoxLayout()
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
-        self.orderingDownButton = QtGui.QPushButton(self.orderingButtonsWidget)
-        self.orderingDownButton.setObjectName(u'orderingDownButton')
-        self.orderingButtonLayout.addWidget(self.orderingDownButton)
-        self.orderingUpButton = QtGui.QPushButton(self.playerOrderGroupBox)
-        self.orderingUpButton.setObjectName(u'orderingUpButton')
+        self.orderingButtonLayout.addStretch(1)
+        self.orderingUpButton, self.orderingDownButton = \
+            create_up_down_push_button_set(self)
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
-        self.playerOrderLayout.addWidget(self.orderingButtonsWidget)
+        self.orderingButtonLayout.addWidget(self.orderingDownButton)
+        self.orderingButtonLayout.addStretch(1)
+        self.playerOrderLayout.addLayout(self.orderingButtonLayout)
         self.leftLayout.addWidget(self.playerOrderGroupBox)
         self.advancedGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.advancedGroupBox.setObjectName(u'advancedGroupBox')
@@ -113,10 +110,6 @@ class MediaTab(SettingsTab):
             QtCore.QObject.connect(checkbox,
                 QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onPlayerCheckBoxChanged)
-        QtCore.QObject.connect(self.orderingUpButton,
-            QtCore.SIGNAL(u'pressed()'), self.onOrderingUpButtonPressed)
-        QtCore.QObject.connect(self.orderingDownButton,
-            QtCore.SIGNAL(u'pressed()'), self.onOrderingDownButtonPressed)
 
     def retranslateUi(self):
         self.mediaPlayerGroupBox.setTitle(
@@ -133,14 +126,10 @@ class MediaTab(SettingsTab):
                     '%s (unavailable)')) % player.display_name)
         self.playerOrderGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'Player O&rder'))
-        self.orderingDownButton.setText(
-            translate('MediaPlugin.MediaTab', '&Down'))
-        self.orderingUpButton.setText(
-            translate('MediaPlugin.MediaTab', '&Up'))
         self.advancedGroupBox.setTitle(UiStrings().Advanced)
         self.overridePlayerCheckBox.setText(
             translate('MediaPlugin.MediaTab',
-            '&Allow media player to be overriden'))
+            '&Allow media player to be overridden'))
 
     def onPlayerCheckBoxChanged(self, check_state):
         player = self.sender().playerName
@@ -164,21 +153,23 @@ class MediaTab(SettingsTab):
                 self.playerOrderlistWidget.addItem(
                     self.mediaPlayers[unicode(player)].original_name)
 
-    def onOrderingUpButtonPressed(self):
-        currentRow = self.playerOrderlistWidget.currentRow()
-        if currentRow > 0:
-            item = self.playerOrderlistWidget.takeItem(currentRow)
-            self.playerOrderlistWidget.insertItem(currentRow - 1, item)
-            self.playerOrderlistWidget.setCurrentRow(currentRow - 1)
-            self.usedPlayers.move(currentRow, currentRow - 1)
+    def onUpButtonClicked(self):
+        row = self.playerOrderlistWidget.currentRow()
+        if row <= 0:
+            return
+        item = self.playerOrderlistWidget.takeItem(row)
+        self.playerOrderlistWidget.insertItem(row - 1, item)
+        self.playerOrderlistWidget.setCurrentRow(row - 1)
+        self.usedPlayers.move(row, row - 1)
 
-    def onOrderingDownButtonPressed(self):
-        currentRow = self.playerOrderlistWidget.currentRow()
-        if currentRow < self.playerOrderlistWidget.count() - 1:
-            item = self.playerOrderlistWidget.takeItem(currentRow)
-            self.playerOrderlistWidget.insertItem(currentRow + 1, item)
-            self.playerOrderlistWidget.setCurrentRow(currentRow + 1)
-            self.usedPlayers.move(currentRow, currentRow + 1)
+    def onDownButtonClicked(self):
+        row = self.playerOrderlistWidget.currentRow()
+        if row == -1 or row > self.playerOrderlistWidget.count() - 1:
+            return
+        item = self.playerOrderlistWidget.takeItem(row)
+        self.playerOrderlistWidget.insertItem(row + 1, item)
+        self.playerOrderlistWidget.setCurrentRow(row + 1)
+        self.usedPlayers.move(row, row + 1)
 
     def load(self):
         self.usedPlayers = QtCore.QSettings().value(
