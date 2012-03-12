@@ -461,7 +461,7 @@ class ServiceManager(QtGui.QWidget):
         log.debug(temp_file_name)
         path_file_name = unicode(self.fileName())
         path, file_name = os.path.split(path_file_name)
-        basename, extension = os.path.splitext(file_name)
+        basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(
@@ -1359,15 +1359,15 @@ class ServiceManager(QtGui.QWidget):
             Handle of the event pint passed
         """
         link = event.mimeData()
-        if event.mimeData().hasUrls():
+        if link.hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
-            for url in event.mimeData().urls():
+            for url in link.urls():
                 filename = unicode(url.toLocalFile())
                 if filename.endswith(u'.osz'):
                     self.onLoadServiceClicked(filename)
-        elif event.mimeData().hasText():
-            plugin = unicode(event.mimeData().text())
+        elif link.hasText():
+            plugin = unicode(link.text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
