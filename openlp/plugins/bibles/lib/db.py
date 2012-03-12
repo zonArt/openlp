@@ -81,6 +81,7 @@ def init_schema(url):
         Column(u'book_reference_id', types.Integer, index=True),
         Column(u'testament_reference_id', types.Integer),
         Column(u'name', types.Unicode(50), index=True),
+        #Column(u'custom_name', types.Unicode(50), index=True),
     )
     verse_table = Table(u'verse', metadata,
         Column(u'id', types.Integer, primary_key=True, index=True),
@@ -205,6 +206,18 @@ class BibleDB(QtCore.QObject, Manager):
         self.save_object(book)
         return book
 
+    def update_book(self, book):
+        """
+        Update a book in the database.
+
+        ``book``
+            The book object
+        """
+        log.debug(u'BibleDB.update_book("%s")', book.name)
+        if self.save_object(book):
+            return True
+        return False
+
     def delete_book(self, db_book):
         """
         Delete a book from the database.
@@ -285,6 +298,26 @@ class BibleDB(QtCore.QObject, Manager):
             value = unicode(value)
         log.debug(u'BibleDB.save_meta("%s/%s")', key, value)
         self.save_object(BibleMeta.populate(key=key, value=value))
+
+    def update_meta(self, key, value):
+        """
+        Utility method to update BibleMeta objects in a Bible database.
+
+        ``key``
+            The key for this instance.
+
+        ``value``
+            The value for this instance.
+        """
+        if not isinstance(value, unicode):
+            value = unicode(value)
+        log.debug(u'BibleDB.update_meta("%s/%s")', key, value)
+        meta = self.get_object(BibleMeta, key)
+        if meta:
+            meta.value = value
+            self.save_object(meta)
+        else:
+            self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
         """

@@ -31,7 +31,8 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box, \
+    create_accept_reject_button_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
@@ -141,13 +142,14 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.settingsSection, self.suffix)
-        if u'alternative_book_names.sqlite' in files:
-            files.remove(u'alternative_book_names.sqlite')
-        log.debug(u'Bible Files %s', files)
+        self.files = SettingsManager.get_files(self.settingsSection,
+            self.suffix)
+        if u'alternative_book_names.sqlite' in self.files:
+            self.files.remove(u'alternative_book_names.sqlite')
+        log.debug(u'Bible Files %s', self.files)
         self.db_cache = {}
         self.old_bible_databases = []
-        for filename in files:
+        for filename in self.files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
             # Remove corrupted files.
@@ -203,6 +205,22 @@ class BibleManager(object):
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
         return importer
+
+    def delete_bible(self, name):
+        """
+        Delete a bible completly.
+
+        ``name``
+            The name of the bible.
+        """
+        for filename in self.files:
+            bible = BibleDB(self.parent, path=self.path, file=filename)
+            # Remove the bible files
+            if name == bible.get_name():
+                bible.session.close()
+                if delete_file(os.path.join(self.path, filename)):
+                    return True
+        return False
 
     def get_bibles(self):
         """
@@ -400,11 +418,24 @@ class BibleManager(object):
         """
         Saves the bibles meta data.
         """
-        log.debug(u'save_meta data %s,%s, %s,%s',
+        log.debug(u'save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
         self.db_cache[bible].create_meta(u'Version', version)
         self.db_cache[bible].create_meta(u'Copyright', copyright)
         self.db_cache[bible].create_meta(u'Permissions', permissions)
+
+    def update_meta_data(self, bible, version, copyright, permissions, 
+        bookname_language):
+        """
+        Saves the bibles meta data.
+        """
+        log.debug(u'update_meta data %s, %s, %s, %s',
+            bible, version, copyright, permissions)
+        self.db_cache[bible].update_meta(u'Version', version)
+        self.db_cache[bible].update_meta(u'Copyright', copyright)
+        self.db_cache[bible].update_meta(u'Permissions', permissions)
+        self.db_cache[bible].update_meta(u'Bookname language',
+            bookname_language)
 
     def get_meta_data(self, bible, key):
         """
@@ -412,6 +443,13 @@ class BibleManager(object):
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
+    
+    def update_book(self, bible, book):
+        """
+        Update a book of the bible.
+        """
+        log.debug(u'BibleManager.update_book("%s", "%s")', bible, book.name)
+        self.db_cache[bible].update_book(book)
 
     def exists(self, name):
         """
