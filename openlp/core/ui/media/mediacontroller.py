@@ -577,12 +577,13 @@ class MediaController(object):
                         video_list.append(item)
         return video_list
 
-    def override_player(self, override_player):
+    def override_player(self, override_player_index):
         playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
         usedPlayers = playerSettings.split(u',')
-        if override_player in usedPlayers:
-            self.overriddenPlayer = override_player
+        if override_player_index >= 0 and \
+            override_player_index < len(usedPlayers):
+            self.overridenPlayer = usedPlayers[override_player_index]
         else:
             self.overriddenPlayer = ''
 

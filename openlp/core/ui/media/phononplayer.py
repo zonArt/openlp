@@ -63,6 +63,8 @@ class PhononPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'phonon')
+        self.original_name = u'Phonon'
+        self.display_name = u'&Phonon'
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
