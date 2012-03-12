@@ -325,7 +325,10 @@ class ServiceItem(object):
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if u'background_audio' in header:
-            self.background_audio = header[u'background_audio']
+            self.background_audio = []
+            for filename in header[u'background_audio']:
+                # Give them real file paths
+                self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
