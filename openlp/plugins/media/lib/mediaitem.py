@@ -142,8 +142,8 @@ class MediaMediaItem(MediaManagerItem):
             self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
-        Receiver.send_message(u'media_override_player', \
-            u'%s' % self.displayTypeComboBox.currentText())
+        # index - 1, because the first item is "Automatic".
+        Receiver.send_message(u'media_override_player', index - 1)
 
     def onResetClick(self):
         """
@@ -249,9 +249,10 @@ class MediaMediaItem(MediaManagerItem):
         playerSettings = str(QtCore.QSettings().value(u'media/players',
             QtCore.QVariant(u'webkit')).toString())
         usedPlayers = playerSettings.split(u',')
-        for title in usedPlayers:
+        mediaPlayers = self.plugin.mediaController.mediaPlayers
+        for player in usedPlayers:
             # load the drop down selection
-            self.displayTypeComboBox.addItem(title)
+            self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.automatic)
             self.displayTypeComboBox.setCurrentIndex(0)

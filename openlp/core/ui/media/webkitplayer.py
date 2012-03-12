@@ -260,6 +260,8 @@ class WebkitPlayer(MediaPlayer):
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'webkit')
+        self.original_name = u'WebKit'
+        self.display_name = u'&WebKit'
         self.parent = parent
         self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT
