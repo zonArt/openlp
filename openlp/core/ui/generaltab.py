@@ -295,7 +295,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
-        self.monitorRadioButton.setChecked(not settings.value(u'override position',
+        self.monitorRadioButton.setChecked(
+            not settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
         self.overrideRadioButton.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
@@ -313,11 +314,14 @@ class GeneralTab(SettingsTab):
             u'audio repeat list', QtCore.QVariant(False)).toBool())
         settings.endGroup()
         self.monitorComboBox.setDisabled(self.overrideRadioButton.isChecked())
-        self.displayOnMonitorCheck.setDisabled(self.overrideRadioButton.isChecked())
+        self.displayOnMonitorCheck.setDisabled(
+            self.overrideRadioButton.isChecked())
         self.customXValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.customYValueEdit.setEnabled(self.overrideRadioButton.isChecked())
-        self.customHeightValueEdit.setEnabled(self.overrideRadioButton.isChecked())
-        self.customWidthValueEdit.setEnabled(self.overrideRadioButton.isChecked())
+        self.customHeightValueEdit.setEnabled(
+            self.overrideRadioButton.isChecked())
+        self.customWidthValueEdit.setEnabled(
+            self.overrideRadioButton.isChecked())
         self.display_changed = False
         settings.beginGroup(self.settingsSection)
 
