@@ -31,7 +31,7 @@ from datetime import datetime
 
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, Translate
+from openlp.core.lib import Receiver
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 

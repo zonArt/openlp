@@ -27,7 +27,6 @@
 
 import logging
 
-from openlp.core.lib import translate
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
