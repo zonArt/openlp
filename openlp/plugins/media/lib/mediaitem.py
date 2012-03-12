@@ -104,7 +104,7 @@ class MediaMediaItem(MediaManagerItem):
         self.automatic = translate('MediaPlugin.MediaItem',
             'Automatic')
         self.displayTypeLabel.setText(
-            translate('MediaPlugin.MediaItem', 'Use &Player:'))
+            translate('MediaPlugin.MediaItem', 'Use Player:'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -252,8 +252,7 @@ class MediaMediaItem(MediaManagerItem):
         mediaPlayers = self.plugin.mediaController.mediaPlayers
         for player in usedPlayers:
             # load the drop down selection
-            title = mediaPlayers[player].original_name
-            self.displayTypeComboBox.addItem(title)
+            self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
