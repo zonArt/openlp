@@ -279,9 +279,8 @@ class BiblesTab(SettingsTab):
         self.languageSelectionGroupBox.setTitle(
             translate('BiblesPlugin.BiblesTab', 'Preferred Bookname Language'))
         self.languageSelectionLabel.setText(translate('BiblesPlugin.BiblesTab',
-            'Choose the language in which the book names of the\nbible should '
-            'be displayed in advanced search or on\nautocompleter in quick '
-            'search:'))
+            'Choose the language in which the book names of the\nBible should '
+            'be displayed in the Bible search:'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible,
             translate('BiblesPlugin.BiblesTab', 'Bible language'))
         self.languageSelectionComboBox.setItemText(
@@ -291,9 +290,9 @@ class BiblesTab(SettingsTab):
             translate('BiblesPlugin.BiblesTab', 'English'))
         self.languageSelectionComboBox.setToolTip(
             translate('BiblesPlugin.BiblesTab', 'Multiple options:\n '
-                'Bible language - the language in which the bible book names '
-                'was imported\n Application language - the language you have '
-                'choosen for Openlp\n English - use always English booknames'))
+            'Bible language - the language in which the Bible book names '
+            'were imported\n Application language - the language you have '
+            'chosen for OpenLP\n English - always use English book names'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.bibleThemeComboBox.currentText()

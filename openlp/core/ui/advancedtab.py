@@ -357,7 +357,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.GeneralTab', '&Next Item'))
         self.nextItemLabel.setText(
             translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'advance to the the next or previous Service Item from the '
+            'advance to the next or previous Service Item from the '
             'top and bottom slides of each Service Item.'))
 
     def load(self):
