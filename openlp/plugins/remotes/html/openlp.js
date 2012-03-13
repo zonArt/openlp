@@ -281,7 +281,8 @@ window.OpenLP = {
   },
   escapeString: function (string) { 
     string = string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
-    return string.replace(/#/g, "\\u0023").replace(/;/g, "\\u003B")
+    string = string.replace(/#/g, "%23").replace(/;/g, "%3B")
+    return string
   }
 }
 // Service Manager
