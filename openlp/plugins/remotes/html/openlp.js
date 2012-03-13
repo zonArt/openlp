@@ -208,9 +208,8 @@ window.OpenLP = {
   },
   showAlert: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" +
-        $("#alert-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
-        "\"}}";
+    var alert = OpenLP.escapeString($("#alert-text").val())
+    var text = "{\"request\": {\"text\": \"" + alert + "\"}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
@@ -221,9 +220,8 @@ window.OpenLP = {
   },
   search: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" +
-        $("#search-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
-        "\"}}";
+    var query = OpenLP.escapeString($("#search-text").val())
+    var text = "{\"request\": {\"text\": \"" + query + "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
@@ -280,6 +278,10 @@ window.OpenLP = {
     );
     $("#options").dialog("close");
     $.mobile.changePage("#service-manager");
+  },
+  escapeString: function (string) { 
+    string = string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
+    return string.replace(/#/g, "\\u0023").replace(/;/g, "\\u003B")
   }
 }
 // Service Manager
