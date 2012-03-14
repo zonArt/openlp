@@ -328,7 +328,7 @@ def create_separated_list(stringlist):
     ``stringlist``
         List of unicode strings
     """
-    if Qt.PYQT_VERSION_STR >= u'4.9':
+    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
         return unicode(QtCore.QLocale().createSeparatedList(stringlist))
     if not stringlist:
         return u''

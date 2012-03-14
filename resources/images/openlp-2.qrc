@@ -68,6 +68,7 @@
     <file>media_playback_start.png</file>
     <file>media_playback_stop.png</file>
     <file>media_playback_pause.png</file>
+    <file>media_playback_next.png</file>
   </qresource>
   <qresource prefix="icon">
     <file>openlp-logo-16x16.png</file>

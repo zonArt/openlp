@@ -85,7 +85,7 @@ class PresentationTab(SettingsTab):
         self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
-            'Allow presentation application to be overriden'))
+            'Allow presentation application to be overridden'))
 
     def setControllerText(self, checkbox, controller):
         if checkbox.isEnabled():

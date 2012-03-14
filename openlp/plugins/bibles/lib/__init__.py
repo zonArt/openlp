@@ -89,7 +89,7 @@ def update_reference_separators():
         while u'||' in source_string:
             source_string = source_string.replace(u'||', u'|')
         if role != u'e':
-            REFERENCE_SEPARATORS[u'sep_%s_display' % role] =  \
+            REFERENCE_SEPARATORS[u'sep_%s_display' % role] = \
                 source_string.split(u'|')[0]
         # escape reserved characters
         for character in u'\\.^$*+?{}[]()':

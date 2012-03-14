@@ -150,7 +150,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             translate('OpenLP.ExceptionForm',
             'Text files (*.txt *.log *.text)'))
         if filename:
-            filename = unicode(QtCore.QDir.toNativeSeparators(filename))
+            filename = unicode(filename).replace(u'/', os.path.sep)
             SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
                 filename))
             report_text = report_text % self._createReport()
