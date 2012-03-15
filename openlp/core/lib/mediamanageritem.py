@@ -641,7 +641,7 @@ class MediaManagerItem(QtGui.QWidget):
             if item:
                 self.autoSelectId = item.data(QtCore.Qt.UserRole).toInt()[0]
 
-    def search(self, string):
+    def search(self, string, showError=True):
         """
         Performs a plugin specific search for items containing ``string``
         """

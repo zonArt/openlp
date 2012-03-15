@@ -1013,6 +1013,7 @@ class BibleMediaItem(MediaManagerItem):
             The verse number (int).
         """
         verse_separator = get_reference_separator(u'sep_v_display')
+        if not self.settings.show_new_chapters or old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:
             verse_text = unicode(verse)
@@ -1024,12 +1025,13 @@ class BibleMediaItem(MediaManagerItem):
             return u'{su}[%s]{/su}' % verse_text
         return u'{su}%s{/su}' % verse_text
 
-    def search(self, string):
+    def search(self, string, showError):
         """
         Search for some Bible verses (by reference).
         """
         bible = unicode(self.quickVersionComboBox.currentText())
-        search_results = self.plugin.manager.get_verses(bible, string, False)
+        search_results = self.plugin.manager.get_verses(bible, string, False,
+            showError)
         if search_results:
             versetext = u' '.join([verse.text for verse in search_results])
             return [[string, versetext]]
