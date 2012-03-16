@@ -37,6 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.core.ui import Controller, Display
+from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
@@ -142,8 +143,11 @@ class MediaMediaItem(MediaManagerItem):
             self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
-        # index - 1, because the first item is "Automatic".
-        Receiver.send_message(u'media_override_player', index - 1)
+        player = get_media_players()[0]
+        if index == 0:
+            set_media_players(player)
+        else:
+            set_media_players(player, player[index-1])
 
     def onResetClick(self):
         """
@@ -239,29 +243,31 @@ class MediaMediaItem(MediaManagerItem):
         self.plugin.mediaController.setup_display( \
             self.mediaController.previewDisplay)
 
-
     def populateDisplayTypes(self):
         """
         Load the combobox with the enabled media players,
         allowing user to select a specific player if settings allow
         """
+        # block signals to avoid unnecessary overridePlayerChanged Signales
+        # while combo box creation
+        self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()
-        playerSettings = str(QtCore.QSettings().value(u'media/players',
-            QtCore.QVariant(u'webkit')).toString())
-        usedPlayers = playerSettings.split(u',')
+        usedPlayers, overridePlayer = get_media_players()
         mediaPlayers = self.plugin.mediaController.mediaPlayers
+        currentIndex = 0
         for player in usedPlayers:
             # load the drop down selection
             self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
+            if overridePlayer == player:
+                currentIndex = len(self.displayTypeComboBox)
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.automatic)
-            self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override player',
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            self.displayTypeComboBox.setCurrentIndex(currentIndex)
+        if overridePlayer != '':
             self.mediaWidget.show()
         else:
             self.mediaWidget.hide()
-
+        self.displayTypeComboBox.blockSignals(False)
 
     def onDeleteClick(self):
         """

@@ -24,17 +24,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
+
+from PyQt4 import QtCore
+
+log = logging.getLogger(__name__)
 
 class MediaState(object):
     """
-    An enumeration for possible States of the Media Player (copied partially 
-    from Phonon::State)
+    An enumeration for possible States of the Media Player
     """
-    Loading = 0
-    Stopped = 1
+    Off = 0
+    Loaded = 1
     Playing = 2
-    Paused = 4
-    Off = 6
+    Paused = 3
+    Stopped = 4
 
 
 class MediaType(object):
@@ -61,5 +65,52 @@ class MediaInfo(object):
     start_time = 0
     end_time = 0
     media_type = MediaType()
+
+def get_media_players():
+    """
+    This method extract the configured media players and overridden player from
+    the settings
+
+    ``playersList``
+        this is a python list with all active media players
+    ``overriddenPlayer``
+        here an special media player is choosen for all media actions
+    """
+    log.debug(u'get_media_players')
+    players = str(QtCore.QSettings().value(u'media/players',
+        QtCore.QVariant(u'webkit')).toString())
+    if len(players) == 0:
+        players = u'webkit'
+    reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
+    canOverride = True if QtCore.QSettings().value(u'media/override player',
+        QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked else False
+    if canOverride:
+        if reg_ex.exactMatch(players):
+            overriddenPlayer = u'%s' % reg_ex.cap(1)
+        else:
+            overriddenPlayer = u'auto'
+    else:
+        overriddenPlayer = u''
+    playersList = players.replace('[', '').replace(']', '').split(u',')
+    return [playersList, overriddenPlayer]
+
+
+def set_media_players(playersList, overriddenPlayer=u'auto'):
+    """
+    This method saves the configured media players and overridden player to the
+    settings
+
+    ``playersList``
+        this is a python list with all active media players
+    ``overriddenPlayer``
+        here an special media player is choosen for all media actions
+    """
+    log.debug(u'set_media_players')
+    players = u','.join(playersList)
+    canOverride = True if QtCore.QSettings().value(u'media/override player',
+        QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked else False
+    if canOverride and overriddenPlayer != u'auto':
+        players = players.replace(overriddenPlayer, u'[%s]' % overriddenPlayer)
+    QtCore.QSettings().setValue(u'media/players', QtCore.QVariant(players))
 
 from mediacontroller import MediaController

@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.lib.ui import UiStrings, create_up_down_push_button_set
-
+from openlp.core.ui.media import get_media_players, set_media_players
 class MediaQCheckBox(QtGui.QCheckBox):
     """
     MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
@@ -138,7 +138,7 @@ class MediaTab(SettingsTab):
                 self.usedPlayers.append(player)
         else:
             if player in self.usedPlayers:
-                self.usedPlayers.takeAt(self.usedPlayers.indexOf(player))
+                self.usedPlayers.remove(player)
         self.updatePlayerList()
 
     def updatePlayerList(self):
@@ -160,7 +160,7 @@ class MediaTab(SettingsTab):
         item = self.playerOrderlistWidget.takeItem(row)
         self.playerOrderlistWidget.insertItem(row - 1, item)
         self.playerOrderlistWidget.setCurrentRow(row - 1)
-        self.usedPlayers.move(row, row - 1)
+        self.usedPlayers.insert(row-1, self.usedPlayers.pop(row))
 
     def onDownButtonClicked(self):
         row = self.playerOrderlistWidget.currentRow()
@@ -169,12 +169,12 @@ class MediaTab(SettingsTab):
         item = self.playerOrderlistWidget.takeItem(row)
         self.playerOrderlistWidget.insertItem(row + 1, item)
         self.playerOrderlistWidget.setCurrentRow(row + 1)
-        self.usedPlayers.move(row, row + 1)
+        self.usedPlayers.insert(row+1, self.usedPlayers.pop(row))
 
     def load(self):
-        self.usedPlayers = QtCore.QSettings().value(
-            self.settingsSection + u'/players',
-            QtCore.QVariant(u'webkit')).toString().split(u',')
+        if self.savedUsedPlayers:
+            self.usedPlayers = self.savedUsedPlayers
+        self.usedPlayers = get_media_players()[0]
         self.savedUsedPlayers = self.usedPlayers
         for key in self.mediaPlayers:
             player = self.mediaPlayers[key]
@@ -191,14 +191,10 @@ class MediaTab(SettingsTab):
     def save(self):
         override_changed = False
         player_string_changed = False
-        old_players = QtCore.QSettings().value(
-            self.settingsSection + u'/players',
-            QtCore.QVariant(u'webkit')).toString()
-        new_players = self.usedPlayers.join(u',')
-        if old_players != new_players:
+        old_players, override_player = get_media_players()
+        if self.usedPlayers != old_players:
             # clean old Media stuff
-            QtCore.QSettings().setValue(self.settingsSection + u'/players',
-                QtCore.QVariant(new_players))
+            set_media_players(self.usedPlayers, override_player)
             player_string_changed = True
             override_changed = True
         setting_key = self.settingsSection + u'/override player'
