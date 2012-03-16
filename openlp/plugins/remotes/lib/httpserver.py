@@ -522,7 +522,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text)
+            results = plugin.mediaItem.search(text, False)
         else:
             results = []
         return HttpResponse(

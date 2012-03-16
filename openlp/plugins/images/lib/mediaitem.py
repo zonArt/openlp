@@ -234,7 +234,7 @@ class ImageMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()

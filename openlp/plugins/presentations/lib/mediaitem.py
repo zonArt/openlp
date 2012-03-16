@@ -322,7 +322,7 @@ class PresentationMediaItem(MediaManagerItem):
                     return controller
         return None
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(
             self.settingsSection, u'presentations')
         results = []

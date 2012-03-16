@@ -586,7 +586,7 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'service_item_update',
                 u'%s:%s:%s' % (editId, item._uuid, temporary))
 
-    def search(self, string):
+    def search(self, string, showError):
         """
         Search for some songs
         """
