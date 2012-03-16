@@ -60,19 +60,13 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'playbackPlay'), self.video_play)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_playback_play'), self.video_play)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'playbackPause'), self.video_pause)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_playback_pause'), self.video_pause)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'playbackStop'), self.video_stop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_playback_stop'), self.video_stop)
+            QtCore.SIGNAL(u'seekSlider'), self.video_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'seek_slider'), self.video_seek)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'volume_slider'), self.video_volume)
+            QtCore.SIGNAL(u'volumeSlider'), self.video_volume)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_hide'), self.video_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -168,7 +162,9 @@ class MediaController(object):
                     return
         # no players are active anymore
         for display in self.curDisplayMediaPlayer.keys():
-            display.controller.seekSlider.setSliderPosition(0)
+            if self.curDisplayMediaPlayer[display] \
+                .state != MediaState.Paused:
+                display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
     def get_media_display_css(self):
