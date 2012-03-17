@@ -111,15 +111,11 @@ the remotes.
             {"results": {"items": [{...}, {...}]}}
 """
 
+import json
 import logging
 import os
-import urlparse
 import re
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import urlparse
 
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
