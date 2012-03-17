@@ -3,8 +3,8 @@
  * ------------------------------------------------------------------------- *
  * Copyright (c) 2008-2010 Raoul Snyman                                      *
  * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
- * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
- * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
+ * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Kï¿½hler,      *
+ * Andreas Preikschat, Mattias Pï¿½ldaru, Christian Richter, Philip Ridout,    *
  * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
  * Woldsund                                                                  *
  * ------------------------------------------------------------------------- *
@@ -46,7 +46,7 @@ body {
 }
 
 #clock {
-  font-size: 40pt;
+  font-size: 30pt;
   color: yellow;
   text-align: right;
 }

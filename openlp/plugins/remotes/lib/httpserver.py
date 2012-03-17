@@ -427,7 +427,9 @@ class HttpConnection(object):
         Send an alert.
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        Receiver.send_message(u'alerts_text', [text])
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        if plugin.status == PluginStatus.Active:
+            Receiver.send_message(u'alerts_text', [text])
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 

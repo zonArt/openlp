@@ -27,7 +27,10 @@
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, translate, build_icon
+from PyQt4 import QtCore
+
+from openlp.core.lib import Plugin, StringContent, translate, build_icon,\
+    Receiver
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -45,6 +48,9 @@ class RemotesPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'remote_config_updated'),
+            self.config_updated)
 
     def initialise(self):
         """
@@ -86,3 +92,11 @@ class RemotesPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
+
+    def config_updated(self):
+        """
+        Called when Config is changed to restart the server on new address or
+        port
+        """
+        self.finalise()
+        self.initialise()
