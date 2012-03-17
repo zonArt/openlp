@@ -186,7 +186,7 @@ class SlideController(Controller):
             tooltip=translate('OpenLP.SlideController', 'Move to next.'),
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
             context=QtCore.Qt.WidgetWithChildrenShortcut,
-            category=self.category, triggers=self.onSlideSelectedNext)
+            category=self.category, triggers=self.onSlideSelectedNextAction)
         self.toolbar.addAction(self.nextItem)
         self.toolbar.addSeparator()
         if self.isLive:
@@ -1138,6 +1138,13 @@ class SlideController(Controller):
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
+
+    def onSlideSelectedNextAction(self, checked):
+        """
+        Wrapper function from create_action so we can throw away the
+        incorrect parameter
+        """
+        self.onSlideSelectedNext()
 
     def onSlideSelectedNext(self, wrap=None):
         """
