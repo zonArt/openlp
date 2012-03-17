@@ -399,7 +399,7 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
-    def configUpdatedl(self):
+    def configUpdated(self):
         """
         The plugin's config has changed
         """
