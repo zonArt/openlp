@@ -93,6 +93,7 @@ window.OpenLP = {
           li.children("a").click(OpenLP.setSlide);
           ul.append(li);
         }
+        OpenLP.currentItem = data.results.item;
         ul.listview("refresh");
       }
     );

@@ -463,6 +463,8 @@ class HttpConnection(object):
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
+            if current_item:
+                json_data[u'results'][u'item'] = self.parent.current_item._uuid
         else:
             if self.url_params and self.url_params.get(u'data'):
                 data = json.loads(self.url_params[u'data'][0])
