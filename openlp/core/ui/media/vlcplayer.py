@@ -83,7 +83,7 @@ VIDEO_EXT = [
 
 class VlcPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a QtWebKit 
+    A specialised version of the MediaPlayer class, which provides a VLC
     display.
     """
 
@@ -122,7 +122,7 @@ class VlcPlayer(MediaPlayer):
             display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
         elif sys.platform == "darwin": # for MacOS
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
-        else: 
+        else:
             # for Linux using the X Server
             display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
         self.hasOwnWidget = True
@@ -210,6 +210,8 @@ class VlcPlayer(MediaPlayer):
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):
+        if display.vlcMedia.get_state() == vlc.State.Ended:
+            self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
             if display.vlcMediaPlayer.get_time() > \
