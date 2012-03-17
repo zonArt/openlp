@@ -537,6 +537,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def add_to_service(self, type):
         """
@@ -547,6 +548,7 @@ class HttpConnection(object):
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
             plugin.mediaItem.addToService(item_id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code
