@@ -213,9 +213,10 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_add_service_item``
         Ask the plugin to push the selected items to the service item.
 
-    ``{plugin}_service_load``
-        Ask the plugin to process an individual service item after it has been
-        loaded.
+
+    ``{plugin}_config_updated``
+        The Plugn's config has changed so lets do some processing.
+
 
     ``alerts_text``
         Displays an alert message.

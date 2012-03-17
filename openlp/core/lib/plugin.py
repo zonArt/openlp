@@ -173,6 +173,9 @@ class Plugin(QtCore.QObject):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_config_updated' % self.name),
+            self.configUpdated)
 
     def checkPreConditions(self):
         """
@@ -395,3 +398,9 @@ class Plugin(QtCore.QObject):
         Add html code to htmlbuilder.
         """
         return u''
+
+    def configUpdatedl(self):
+        """
+        The plugin's config has changed
+        """
+        pass
