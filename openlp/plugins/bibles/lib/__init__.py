@@ -183,13 +183,8 @@ def update_reference_separators():
     """
     default_separators = unicode(translate('BiblesPlugin',
         ':|v|V|verse|verses;;-|to;;,|and;;end',
-        'This are 4 values seperated each by two semicolons representing the '
-        'seperators for parsing references. This values are verse separators, '
-        'range separators, list separators and end mark. Alternative values '
-        'to be seperated by a vertical bar "|". In this case the first value '
-        'is the default and used for the display format. If a semicolon should '
-        'be used you have to give an alternative separator afterwards to allow '
-        'OpenLP correct splitting of the translation.')).split(u';;')
+        'Double-semicolon delimited separators for parsing references. '
+        'Consult the developers for further information.')).split(u';;')
     settings = QtCore.QSettings()
     settings.beginGroup(u'bibles')
     custom_separators = [
