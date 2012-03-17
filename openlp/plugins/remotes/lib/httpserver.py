@@ -426,7 +426,10 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        try:
+            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        except ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         Receiver.send_message(u'alerts_text', [text])
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
@@ -468,7 +471,10 @@ class HttpConnection(object):
                 json_data[u'results'][u'item'] = self.parent.current_item._uuid
         else:
             if self.url_params and self.url_params.get(u'data'):
-                data = json.loads(self.url_params[u'data'][0])
+                try:
+                    data = json.loads(self.url_params[u'data'][0])
+                except ValueError:
+                    return HttpResponse(code=u'400 Bad Request')
                 log.info(data)
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
@@ -488,7 +494,10 @@ class HttpConnection(object):
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
-            data = json.loads(self.url_params[u'data'][0])
+            try:
+                data = json.loads(self.url_params[u'data'][0])
+            except ValueError:
+                return HttpResponse(code=u'400 Bad Request')
             Receiver.send_message(event, data[u'request'][u'id'])
         else:
             Receiver.send_message(event)
@@ -521,7 +530,10 @@ class HttpConnection(object):
         ``type``
             The plugin name to search in.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        try:
+            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        except ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
@@ -537,7 +549,10 @@ class HttpConnection(object):
         """
         Go live on an item of type ``type``.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id, remote=True)
@@ -547,7 +562,10 @@ class HttpConnection(object):
         """
         Add item of type ``type`` to the end of the service.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
