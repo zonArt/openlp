@@ -57,7 +57,7 @@ ADDITIONAL_EXT = {
 
 class PhononPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a Phonon 
+    A specialised version of the MediaPlayer class, which provides a Phonon
     display.
     """
 
@@ -192,6 +192,9 @@ class PhononPlayer(MediaPlayer):
             display.phononWidget.setVisible(status)
 
     def update_ui(self, display):
+        if display.mediaObject.state() == Phonon.PausedState and \
+            self.state != MediaState.Paused:
+            self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
             if display.mediaObject.currentTime() > \
