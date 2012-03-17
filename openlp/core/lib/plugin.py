@@ -176,7 +176,6 @@ class Plugin(QtCore.QObject):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_config_updated' % self.name),
             self.configUpdated)
-        print u'%s_config_updated' % self.name
 
     def checkPreConditions(self):
         """
