@@ -426,9 +426,16 @@ class HttpConnection(object):
         """
         Send an alert.
         """
+        for plugin in self.parent.plugin.pluginManager.plugins:
+            if plugin.name == u'alerts' and \
+                plugin.status != PluginStatus.Active:
+                # Forget about the request, alerts is turned off.
+                return HttpResponse(json.dumps(
+                    {u'results': {u'success': False}}),
+                    {u'Content-Type': u'application/json'})
         try:
             text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        except ValueError:
+        except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         Receiver.send_message(u'alerts_text', [text])
@@ -473,7 +480,7 @@ class HttpConnection(object):
             if self.url_params and self.url_params.get(u'data'):
                 try:
                     data = json.loads(self.url_params[u'data'][0])
-                except ValueError:
+                except KeyError, ValueError:
                     return HttpResponse(code=u'400 Bad Request')
                 log.info(data)
                 # This slot expects an int within a list.
@@ -496,7 +503,7 @@ class HttpConnection(object):
         if self.url_params and self.url_params.get(u'data'):
             try:
                 data = json.loads(self.url_params[u'data'][0])
-            except ValueError:
+            except KeyError, ValueError:
                 return HttpResponse(code=u'400 Bad Request')
             Receiver.send_message(event, data[u'request'][u'id'])
         else:
@@ -532,7 +539,7 @@ class HttpConnection(object):
         """
         try:
             text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        except ValueError:
+        except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
@@ -551,7 +558,7 @@ class HttpConnection(object):
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
-        except ValueError:
+        except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
@@ -564,7 +571,7 @@ class HttpConnection(object):
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
-        except ValueError:
+        except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
