@@ -267,7 +267,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.clear()
         self.onSearchTextButtonClick()
 
-    def search(self, string):
+    def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
             or_(func.lower(CustomSlide.title).like(u'%' +
             string.lower() + u'%'),
