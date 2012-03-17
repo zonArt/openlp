@@ -173,7 +173,7 @@ class RemoteTab(SettingsTab):
         QtCore.QSettings().setValue(self.settingsSection + u'/twelve hour',
             QtCore.QVariant(self.twelveHour))
         if changed:
-            Receiver.send_message(u'remote_config_updated')
+            Receiver.send_message(u'remotes_config_updated')
 
     def onTwelveHourCheckBoxChanged(self, check_state):
         self.twelveHour = False
