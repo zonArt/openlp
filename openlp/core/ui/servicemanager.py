@@ -483,8 +483,7 @@ class ServiceManager(QtGui.QWidget):
                 for i, filename in \
                     enumerate(service_item[u'header'][u'background_audio']):
                     new_file = os.path.join(u'audio',
-                        item[u'service_item']._uuid,
-                        os.path.split(filename)[1])
+                        item[u'service_item']._uuid, filename)
                     audio_files.append((filename, new_file))
                     service_item[u'header'][u'background_audio'][i] = new_file
             # Add the service item to the service.
