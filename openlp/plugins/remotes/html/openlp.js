@@ -72,7 +72,9 @@ window.OpenLP = {
     );
   },
   loadController: function (event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     $.getJSON(
       "/api/controller/live/text",
       function (data, status) {
