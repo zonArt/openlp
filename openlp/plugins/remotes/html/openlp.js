@@ -283,8 +283,7 @@ window.OpenLP = {
     $.mobile.changePage("#service-manager");
   },
   escapeString: function (string) { 
-    return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"").replace(
-        /#/g, "%23").replace(/;/g, "%3B").replace(/\+/g, "%2B")
+    return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
 // Service Manager

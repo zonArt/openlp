@@ -115,6 +115,7 @@ import json
 import logging
 import os
 import re
+import urllib
 import urlparse
 
 from PyQt4 import QtCore, QtNetwork
@@ -310,11 +311,14 @@ class HttpConnection(object):
         """
         log.debug(u'ready to read socket')
         if self.socket.canReadLine():
-            data = self.socket.readLine()
-            data = QtCore.QByteArray.fromPercentEncoding(data)
-            data = unicode(data, 'utf8')
-            log.debug(u'received: ' + data)
-            words = data.split(u' ')
+            data = str(self.socket.readLine())
+            try:
+                log.debug(u'received: ' + data)
+            except UnicodeDecodeError:
+                # Malicious request containing non-ASCII characters.
+                self.close()
+                return
+            words = data.split(' ')
             response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
@@ -423,6 +427,7 @@ class HttpConnection(object):
         Send an alert.
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        text = urllib.unquote(text)
         Receiver.send_message(u'alerts_text', [text])
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
@@ -517,6 +522,7 @@ class HttpConnection(object):
             The plugin name to search in.
         """
         text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
