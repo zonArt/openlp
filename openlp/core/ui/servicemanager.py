@@ -609,16 +609,11 @@ class ServiceManager(QtGui.QWidget):
                 time = time.replace(hour=service_hour, minute=service_minute)
             default_pattern = unicode(QtCore.QSettings().value(
                 u'advanced/default service name',
-                translate('OpenLP.AdvancedTab',
-                'Service %Y-%m-%d %H-%M',
-                'This is the default default service name template, which can '
-                'be found under Advanced in Settings, Configure OpenLP. '
-                'Please do not include any of the following characters: '
-                '/\\?*|<>\[\]":+\n'
-                'You can use any of the directives as shown on page '
-                'http://docs.python.org/library/datetime.html'
-                '#strftime-strptime-behavior , but if possible, please keep '
-                'the resulting string sortable by name.')).toString())
+                translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
+                    'This may not contain any of the following characters: '
+                    '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
+                    'datetime.html#strftime-strptime-behavior for more '
+                    'information.')).toString())
             default_filename = time.strftime(default_pattern)
         else:
             default_filename = u''

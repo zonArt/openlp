@@ -177,7 +177,7 @@ class CustomMediaItem(MediaManagerItem):
                 UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected custom'
-                ' slides(s)?', '',
+                ' slide(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
