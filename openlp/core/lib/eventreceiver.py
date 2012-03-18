@@ -217,6 +217,9 @@ class EventReceiver(QtCore.QObject):
         Ask the plugin to process an individual service item after it has been
         loaded.
 
+    ``{plugin}_config_updated``
+        The config has changed so tell the plugin about it.
+
     ``alerts_text``
         Displays an alert message.
 
