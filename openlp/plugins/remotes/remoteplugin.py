@@ -46,7 +46,6 @@ class RemotesPlugin(Plugin):
         self.weight = -1
         self.server = None
 
-
     def initialise(self):
         """
         Initialise the remotes plugin, and start the http server
