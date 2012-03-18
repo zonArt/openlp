@@ -426,20 +426,19 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        for plugin in self.parent.plugin.pluginManager.plugins:
-            if plugin.name == u'alerts' and \
-                plugin.status != PluginStatus.Active:
-                # Forget about the request, alerts is turned off.
-                return HttpResponse(json.dumps(
-                    {u'results': {u'success': False}}),
-                    {u'Content-Type': u'application/json'})
-        try:
-            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        except KeyError, ValueError:
-            return HttpResponse(code=u'400 Bad Request')
-        text = urllib.unquote(text)
-        Receiver.send_message(u'alerts_text', [text])
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        if plugin.status == PluginStatus.Active:
+            try:
+                text = json.loads(
+                    self.url_params[u'data'][0])[u'request'][u'text']
+            except KeyError, ValueError:
+                return HttpResponse(code=u'400 Bad Request')
+            text = urllib.unquote(text)
+            Receiver.send_message(u'alerts_text', [text])
+            success = True
+        else:
+            success = False
+        return HttpResponse(json.dumps({u'results': {u'success': success}}),
             {u'Content-Type': u'application/json'})
 
     def controller(self, type, action):
