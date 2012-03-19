@@ -563,7 +563,8 @@ class SlideController(Controller):
                     Receiver.send_message('servicemanager_previous_item')
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
-                    Receiver.send_message('servicemanager_previous_item', u'last slide')
+                    Receiver.send_message('servicemanager_previous_item',
+                        u'last slide')
                 else:
                     Receiver.send_message('servicemanager_next_item')
             self.keypress_loop = False
@@ -1190,7 +1191,8 @@ class SlideController(Controller):
                 if self.slide_limits == SlideLimits.Wrap:
                     row = self.previewListWidget.rowCount() - 1
                 elif self.isLive and self.slide_limits == SlideLimits.Next:
-                    self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
+                    self.keypress_queue.append(
+                        ServiceItemAction.PreviousLastSlide)
                     self._process_queue()
                     return
                 else:

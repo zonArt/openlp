@@ -87,7 +87,8 @@ class RemoteTab(SettingsTab):
         self.qrLayout = QtGui.QVBoxLayout(self.androidAppGroupBox)
         self.qrLayout.setObjectName(u'qrLayout')
         self.qrCodeLabel = QtGui.QLabel(self.androidAppGroupBox)
-        self.qrCodeLabel.setPixmap(QtGui.QPixmap(u':/remotes/android_app_qr.png'))
+        self.qrCodeLabel.setPixmap(QtGui.QPixmap(
+            u':/remotes/android_app_qr.png'))
         self.qrCodeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.qrCodeLabel.setObjectName(u'qrCodeLabel')
         self.qrLayout.addWidget(self.qrCodeLabel)
