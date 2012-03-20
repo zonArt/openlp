@@ -589,7 +589,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_names.append(u'%s%s' % (
                     VerseType.translated_tag(verse[0]), verse[1:]))
         verses_not_used = []
-        for count, verse in enumerate(verses):
+        for verse in verses:
             if not verse in order:
                 verses_not_used.append(verse)
         self.warningLabel.setVisible(len(verses_not_used) > 0)
@@ -680,7 +680,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.verseListWidget.rowCount())
             if not result:
                 return False
-        item = int(self.songBookComboBox.currentIndex())
         text = unicode(self.songBookComboBox.currentText())
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
             if QtGui.QMessageBox.question(self,

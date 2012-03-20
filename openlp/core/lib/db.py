@@ -33,7 +33,8 @@ from urllib import quote_plus as urlquote
 
 from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
-from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
+    OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 

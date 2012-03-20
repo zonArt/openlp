@@ -316,7 +316,7 @@ class MediaMediaItem(MediaManagerItem):
         media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
         return media
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'media')
         results = []
         string = string.lower()

@@ -166,7 +166,7 @@ class ImageManager(QtCore.QObject):
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        for key, image in self._cache.iteritems():
+        for image in self._cache.values():
             self._reset_image(image)
 
     def update_images(self, image_type, background):
@@ -176,7 +176,7 @@ class ImageManager(QtCore.QObject):
         log.debug(u'update_images')
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        for key, image in self._cache.iteritems():
+        for image in self._cache.values():
             if image.source == image_type:
                 image.background = background
                 self._reset_image(image)
@@ -188,7 +188,7 @@ class ImageManager(QtCore.QObject):
         log.debug(u'update_images')
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        for key, image in self._cache.iteritems():
+        for image in self._cache.values():
             if image.source == image_type and image.name == name:
                 image.background = background
                 self._reset_image(image)

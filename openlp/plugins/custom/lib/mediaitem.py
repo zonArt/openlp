@@ -177,7 +177,7 @@ class CustomMediaItem(MediaManagerItem):
                 UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected custom'
-                ' slides(s)?', '',
+                ' slide(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -267,7 +267,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.clear()
         self.onSearchTextButtonClick()
 
-    def search(self, string):
+    def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
             or_(func.lower(CustomSlide.title).like(u'%' +
             string.lower() + u'%'),

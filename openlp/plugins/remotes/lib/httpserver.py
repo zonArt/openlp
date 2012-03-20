@@ -111,15 +111,12 @@ the remotes.
             {"results": {"items": [{...}, {...}]}}
 """
 
+import json
 import logging
 import os
-import urlparse
 import re
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import urllib
+import urlparse
 
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
@@ -314,11 +311,14 @@ class HttpConnection(object):
         """
         log.debug(u'ready to read socket')
         if self.socket.canReadLine():
-            data = self.socket.readLine()
-            data = QtCore.QByteArray.fromPercentEncoding(data)
-            data = unicode(data, 'utf8')
-            log.debug(u'received: ' + data)
-            words = data.split(u' ')
+            data = str(self.socket.readLine())
+            try:
+                log.debug(u'received: ' + data)
+            except UnicodeDecodeError:
+                # Malicious request containing non-ASCII characters.
+                self.close()
+                return
+            words = data.split(' ')
             response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
@@ -426,9 +426,19 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        Receiver.send_message(u'alerts_text', [text])
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        if plugin.status == PluginStatus.Active:
+            try:
+                text = json.loads(
+                    self.url_params[u'data'][0])[u'request'][u'text']
+            except KeyError, ValueError:
+                return HttpResponse(code=u'400 Bad Request')
+            text = urllib.unquote(text)
+            Receiver.send_message(u'alerts_text', [text])
+            success = True
+        else:
+            success = False
+        return HttpResponse(json.dumps({u'results': {u'success': success}}),
             {u'Content-Type': u'application/json'})
 
     def controller(self, type, action):
@@ -463,9 +473,14 @@ class HttpConnection(object):
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
+            if current_item:
+                json_data[u'results'][u'item'] = self.parent.current_item._uuid
         else:
             if self.url_params and self.url_params.get(u'data'):
-                data = json.loads(self.url_params[u'data'][0])
+                try:
+                    data = json.loads(self.url_params[u'data'][0])
+                except KeyError, ValueError:
+                    return HttpResponse(code=u'400 Bad Request')
                 log.info(data)
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
@@ -485,7 +500,10 @@ class HttpConnection(object):
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
-            data = json.loads(self.url_params[u'data'][0])
+            try:
+                data = json.loads(self.url_params[u'data'][0])
+            except KeyError, ValueError:
+                return HttpResponse(code=u'400 Bad Request')
             Receiver.send_message(event, data[u'request'][u'id'])
         else:
             Receiver.send_message(event)
@@ -518,11 +536,15 @@ class HttpConnection(object):
         ``type``
             The plugin name to search in.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        try:
+            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
+        text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text)
+            results = plugin.mediaItem.search(text, False)
         else:
             results = []
         return HttpResponse(
@@ -533,20 +555,28 @@ class HttpConnection(object):
         """
         Go live on an item of type ``type``.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def add_to_service(self, type):
         """
         Add item of type ``type`` to the end of the service.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
             plugin.mediaItem.addToService(item_id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

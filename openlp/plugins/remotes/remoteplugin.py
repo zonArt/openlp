@@ -86,3 +86,11 @@ class RemotesPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
+
+    def configUpdated(self):
+        """
+        Called when Config is changed to restart the server on new address or
+        port
+        """
+        self.finalise()
+        self.initialise()

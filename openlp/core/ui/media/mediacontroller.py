@@ -150,6 +150,11 @@ class MediaController(object):
                 if self.curDisplayMediaPlayer[display] \
                     .state == MediaState.Playing:
                     return
+        # no players are active anymore
+        for display in self.curDisplayMediaPlayer.keys():
+            if self.curDisplayMediaPlayer[display] \
+                .state != MediaState.Paused:
+                display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
     def get_media_display_css(self):
@@ -271,7 +276,8 @@ class MediaController(object):
         controller.mediabar.setVisible(value)
         if controller.isLive and controller.display:
             if self.curDisplayMediaPlayer and value:
-                if self.curDisplayMediaPlayer[controller.display] != self.mediaPlayers[u'webkit']:
+                if self.curDisplayMediaPlayer[controller.display] != \
+                    self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
         # Special controls: Here media type specific Controls will be enabled
         # (e.g. for DVD control, ...)
@@ -437,6 +443,7 @@ class MediaController(object):
                 display.frame.evaluateJavaScript(u'show_blank("black");')
                 self.curDisplayMediaPlayer[display].stop(display)
                 self.curDisplayMediaPlayer[display].set_visible(display, False)
+                controller.seekSlider.setSliderPosition(0)
 
     def video_volume(self, msg):
         """
