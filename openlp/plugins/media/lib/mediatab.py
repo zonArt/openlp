@@ -160,7 +160,7 @@ class MediaTab(SettingsTab):
         item = self.playerOrderlistWidget.takeItem(row)
         self.playerOrderlistWidget.insertItem(row - 1, item)
         self.playerOrderlistWidget.setCurrentRow(row - 1)
-        self.usedPlayers.insert(row-1, self.usedPlayers.pop(row))
+        self.usedPlayers.insert(row - 1, self.usedPlayers.pop(row))
 
     def onDownButtonClicked(self):
         row = self.playerOrderlistWidget.currentRow()
@@ -169,7 +169,7 @@ class MediaTab(SettingsTab):
         item = self.playerOrderlistWidget.takeItem(row)
         self.playerOrderlistWidget.insertItem(row + 1, item)
         self.playerOrderlistWidget.setCurrentRow(row + 1)
-        self.usedPlayers.insert(row+1, self.usedPlayers.pop(row))
+        self.usedPlayers.insert(row + 1, self.usedPlayers.pop(row))
 
     def load(self):
         if self.savedUsedPlayers:
