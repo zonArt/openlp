@@ -349,10 +349,6 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.plugin.manager.media = self
         self.loadBibles()
-        bible = QtCore.QSettings().value(
-            self.settingsSection + u'/quick bible', QtCore.QVariant(
-            self.quickVersionComboBox.currentText())).toString()
-        find_and_set_in_combo_box(self.quickVersionComboBox, bible)
         self.quickSearchEdit.setSearchTypes([
             (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
             translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
@@ -392,6 +388,10 @@ class BibleMediaItem(MediaManagerItem):
             self.initialiseAdvancedBible(unicode(bible))
         elif len(bibles):
             self.initialiseAdvancedBible(bibles[0])
+        bible = QtCore.QSettings().value(
+            self.settingsSection + u'/quick bible', QtCore.QVariant(
+            self.quickVersionComboBox.currentText())).toString()
+        find_and_set_in_combo_box(self.quickVersionComboBox, bible)
 
     def reloadBibles(self, process=False):
         log.debug(u'Reloading Bibles')
@@ -426,9 +426,14 @@ class BibleMediaItem(MediaManagerItem):
             book_data = book_data_temp
         self.advancedBookComboBox.clear()
         first = True
-        language_selection = QtCore.QSettings().value(
-            self.settingsSection + u'/bookname language',
-            QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.plugin.manager.get_meta_data(
+            bible, u'Bookname language')
+        if language_selection:
+            language_selection = int(language_selection.value)
+        if not language_selection or language_selection == -1:
+            language_selection = QtCore.QSettings().value(
+                self.settingsSection + u'/bookname language',
+                QtCore.QVariant(0)).toInt()[0]
         booknames = BibleStrings().Booknames
         for book in book_data:
             row = self.advancedBookComboBox.count()

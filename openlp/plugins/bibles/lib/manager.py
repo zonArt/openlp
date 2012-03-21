@@ -414,27 +414,17 @@ class BibleManager(object):
                 })
             return None
 
-    def save_meta_data(self, bible, version, copyright, permissions):
+    def save_meta_data(self, bible, version, copyright, permissions, 
+        bookname_language):
         """
         Saves the bibles meta data.
         """
         log.debug(u'save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
-        self.db_cache[bible].create_meta(u'Version', version)
-        self.db_cache[bible].create_meta(u'Copyright', copyright)
-        self.db_cache[bible].create_meta(u'Permissions', permissions)
-
-    def update_meta_data(self, bible, version, copyright, permissions, 
-        bookname_language):
-        """
-        Saves the bibles meta data.
-        """
-        log.debug(u'update_meta data %s, %s, %s, %s',
-            bible, version, copyright, permissions)
-        self.db_cache[bible].update_meta(u'Version', version)
-        self.db_cache[bible].update_meta(u'Copyright', copyright)
-        self.db_cache[bible].update_meta(u'Permissions', permissions)
-        self.db_cache[bible].update_meta(u'Bookname language',
+        self.db_cache[bible].save_meta(u'Version', version)
+        self.db_cache[bible].save_meta(u'Copyright', copyright)
+        self.db_cache[bible].save_meta(u'Permissions', permissions)
+        self.db_cache[bible].save_meta(u'Bookname language',
             bookname_language)
 
     def get_meta_data(self, bible, key):

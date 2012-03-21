@@ -92,8 +92,11 @@ class Ui_EditBibleDialog(object):
         # Book name tab
         self.bookNameTab = QtGui.QWidget()
         self.bookNameTab.setObjectName(u'bookNameTab')
-        self.bookNameTabLayout = QtGui.QHBoxLayout(self.bookNameTab)
+        self.bookNameTabLayout = QtGui.QVBoxLayout(self.bookNameTab)
         self.bookNameTabLayout.setObjectName(u'bookNameTabLayout')
+        self.bookNameNotice = QtGui.QLabel(self.bookNameTab)
+        self.bookNameNotice.setObjectName(u'bookNameNotice')
+        self.bookNameTabLayout.addWidget(self.bookNameNotice)
         self.scrollArea = QtGui.QScrollArea(self.bookNameTab)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(u'scrollArea')
@@ -124,6 +127,9 @@ class Ui_EditBibleDialog(object):
             x = x+1
         self.scrollArea.setWidget(self.bookNameGroupBox)
         self.bookNameTabLayout.addWidget(self.scrollArea)
+        self.spacer = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
+        self.bookNameTabLayout.addItem(self.spacer)
         self.bibleTabWidget.addTab(self.bookNameTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.bibleTabWidget)
@@ -131,7 +137,6 @@ class Ui_EditBibleDialog(object):
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editBibleDialog)
         QtCore.QMetaObject.connectSlotsByName(editBibleDialog)
-        
 
     def retranslateUi(self, editBibleDialog):
         self.booknames = BibleStrings().Booknames
@@ -163,9 +168,9 @@ class Ui_EditBibleDialog(object):
         self.languageSelectionComboBox.setToolTip(
             translate('BiblesPlugin.EditBibleForm', 'Multiple options:\n '
             'General Settings - the option choosen in settings section\n'
-            'Bible language - the language in which the bible book names '
-            'was imported\n Application language - the language you have '
-            'choosen for Openlp\n English - use always English booknames'))
+            'Bible language - the language in which the Bible book names '
+            'were imported\n Application language - the language you have '
+            'chosen for OpenLP\n English - always use English book names'))
         for book in BiblesResourcesDB.get_books():
             self.bookNameLabel[book[u'abbreviation']].setText(
                 u'%s:' % unicode(self.booknames[book[u'abbreviation']]))

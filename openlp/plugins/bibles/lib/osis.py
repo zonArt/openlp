@@ -123,7 +123,7 @@ class OSISBible(BibleDB):
                             language_match.group(1))
                         if language:
                             language_id = language[u'id']
-                            self.create_meta(u'language_id', language_id)
+                            self.save_meta(u'language_id', language_id)
                         continue
                 match = self.verse_regex.search(file_record)
                 if match:
