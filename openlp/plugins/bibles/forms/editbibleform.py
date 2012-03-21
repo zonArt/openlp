@@ -79,7 +79,8 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             self.languageSelectionComboBox.setCurrentIndex(
                 int(self.bookname_language.value)+1)
         self.books = {}
-        self.webbible = self.manager.get_meta_data(self.bible, u'download source')
+        self.webbible = self.manager.get_meta_data(self.bible,
+            u'download source')
         if self.webbible:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
                 'This is a webbible.\nIt is not possible to customize the Book '

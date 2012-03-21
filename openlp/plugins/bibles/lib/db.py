@@ -81,7 +81,6 @@ def init_schema(url):
         Column(u'book_reference_id', types.Integer, index=True),
         Column(u'testament_reference_id', types.Integer),
         Column(u'name', types.Unicode(50), index=True),
-        #Column(u'custom_name', types.Unicode(50), index=True),
     )
     verse_table = Table(u'verse', metadata,
         Column(u'id', types.Integer, primary_key=True, index=True),
