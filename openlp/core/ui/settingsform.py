@@ -57,7 +57,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def exec_(self):
         # load all the settings
         self.settingListWidget.clear()
-        for tabIndex in range(0, self.stackedLayout.count() + 1):
+        while self.stackedLayout.count():
             # take at 0 and the rest shuffle up.
             self.stackedLayout.takeAt(0)
         self.insertTab(self.generalTab, 0, PluginStatus.Active)

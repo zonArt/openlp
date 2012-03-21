@@ -153,7 +153,6 @@ class ThemeManager(QtGui.QWidget):
         Import new themes downloaded by the first time wizard
         """
         Receiver.send_message(u'cursor_busy')
-        encoding = get_filesystem_encoding()
         files = SettingsManager.get_files(self.settingsSection, u'.otz')
         for file in files:
             file = os.path.join(self.path, file)

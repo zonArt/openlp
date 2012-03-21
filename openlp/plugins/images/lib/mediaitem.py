@@ -189,7 +189,7 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            (path, name) = os.path.split(filename)
+            name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
 
@@ -220,7 +220,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
+                name = os.path.split(filename)[1]
                 if self.plugin.liveController.display.directImage(name,
                     filename, background):
                     self.resetAction.setVisible(True)
@@ -234,7 +234,7 @@ class ImageMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()

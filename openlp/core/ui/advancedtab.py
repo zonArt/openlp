@@ -53,13 +53,10 @@ class AdvancedTab(SettingsTab):
         self.defaultServiceMinute = 0
         self.defaultServiceName = unicode(translate('OpenLP.AdvancedTab',
             'Service %Y-%m-%d %H-%M',
-            'This is the default default service name template, which can be '
-            'found under Advanced in Settings, Configure OpenLP. Please do not '
-            'include any of the following characters: /\\?*|<>\[\]":+\n'
-            'You can use any of the directives as shown on page '
-            'http://docs.python.org/library/datetime.html'
-            '#strftime-strptime-behavior , but if possible, please keep '
-            'the resulting string sortable by name.'))
+            'This may not contain any of the following characters: '
+            '/\\?*|<>\[\]":+\n'
+            'See http://docs.python.org/library/datetime.html'
+            '#strftime-strptime-behavior for more information.'))
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
         self.icon_path = u':/system/system_settings.png'
