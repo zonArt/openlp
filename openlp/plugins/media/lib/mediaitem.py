@@ -263,7 +263,7 @@ class MediaMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.automatic)
             self.displayTypeComboBox.setCurrentIndex(currentIndex)
-        if overridePlayer != '':
+        if overridePlayer:
             self.mediaWidget.show()
         else:
             self.mediaWidget.hide()

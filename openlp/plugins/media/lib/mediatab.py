@@ -198,7 +198,7 @@ class MediaTab(SettingsTab):
             player_string_changed = True
             override_changed = True
         setting_key = self.settingsSection + u'/override player'
-        if QtCore.QSettings().value(setting_key) != \
+        if QtCore.QSettings().value(setting_key).toInt()[0] != \
             self.overridePlayerCheckBox.checkState():
             QtCore.QSettings().setValue(setting_key,
                 QtCore.QVariant(self.overridePlayerCheckBox.checkState()))

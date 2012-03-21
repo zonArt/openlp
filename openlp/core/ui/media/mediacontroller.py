@@ -358,7 +358,7 @@ class MediaController(object):
         Select the correct media Player type from the prioritized Player list
         """
         usedPlayers, overriddenPlayer = get_media_players()
-        if overriddenPlayer != '' and overriddenPlayer != 'auto':
+        if overriddenPlayer and overriddenPlayer != u'auto':
             usedPlayers = [overriddenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \

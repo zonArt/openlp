@@ -77,23 +77,20 @@ def get_media_players():
         here an special media player is choosen for all media actions
     """
     log.debug(u'get_media_players')
-    players = str(QtCore.QSettings().value(u'media/players',
-        QtCore.QVariant(u'webkit')).toString())
-    if len(players) == 0:
+    players = unicode(QtCore.QSettings().value(u'media/players').toString())
+    if not players:
         players = u'webkit'
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
-    can_override = True if QtCore.QSettings().value(u'media/override player',
-        QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked else False
-    if can_override:
+    if QtCore.QSettings().value(u'media/override player',
+        QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
         if reg_ex.exactMatch(players):
             overridden_player = u'%s' % reg_ex.cap(1)
         else:
             overridden_player = u'auto'
     else:
         overridden_player = u''
-    players_list = players.replace('[', '').replace(']', '').split(u',')
+    players_list = players.replace(u'[', u'').replace(u']', u'').split(u',')
     return players_list, overridden_player
-
 
 def set_media_players(players_list, overridden_player=u'auto'):
     """
@@ -107,9 +104,9 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    can_override = True if QtCore.QSettings().value(u'media/override player',
-        QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked else False
-    if can_override and overridden_player != u'auto':
+    if QtCore.QSettings().value(u'media/override player',
+        QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+        QtCore.Qt.Checked and overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
     QtCore.QSettings().setValue(u'media/players', QtCore.QVariant(players))
 
