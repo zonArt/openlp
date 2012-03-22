@@ -363,7 +363,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = int(self.authorsComboBox.currentIndex())
         text = unicode(self.authorsComboBox.currentText()).strip(u' \r\n\t')
         if text in self.authors:
-            item = self.authors.index(text)
+            # Index 0 is a blank string, so add 1
+            item = self.authors.index(text) + 1
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.EditSongForm', 'Add Author'),
