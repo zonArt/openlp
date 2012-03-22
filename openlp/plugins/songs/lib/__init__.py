@@ -29,6 +29,7 @@ import re
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
+from openlp.core.utils import CONTROL_CHARS
 from db import Author
 from ui import SongStrings
 
@@ -262,7 +263,7 @@ def clean_title(title):
     Cleans the song title by removing Unicode control chars groups C0 & C1,
     as well as any trailing spaces
     """
-    return re.sub(u'[\x00-\x1F\x7F-\x9F]| +$', u'',  title, re.UNICODE)
+    return CONTROL_CHARS.sub(u'', title).rstrip()
 
 def clean_song(manager, song):
     """
