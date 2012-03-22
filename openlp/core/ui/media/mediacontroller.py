@@ -32,7 +32,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
+    get_media_players, set_media_players
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -47,7 +48,6 @@ class MediaController(object):
         self.parent = parent
         self.mediaPlayers = {}
         self.controller = []
-        self.overriddenPlayer = ''
         self.curDisplayMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
@@ -73,8 +73,6 @@ class MediaController(object):
             QtCore.SIGNAL(u'media_blank'), self.video_blank)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_override_player'), self.override_player)
         # Signals for background video
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_hide'), self.video_hide)
@@ -84,11 +82,7 @@ class MediaController(object):
             QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.set_active_players)
 
     def set_active_players(self):
-        playerSettings = str(QtCore.QSettings().value(u'media/players',
-            QtCore.QVariant(u'webkit')).toString())
-        if len(playerSettings) == 0:
-            playerSettings = u'webkit'
-        savedPlayers = playerSettings.split(u',')
+        savedPlayers = get_media_players()[0]
         for player in self.mediaPlayers.keys():
             if player in savedPlayers:
                 self.mediaPlayers[player].isActive = True
@@ -129,18 +123,14 @@ class MediaController(object):
             controller = controller_class(self)
             self.register_controllers(controller)
         if self.mediaPlayers:
-            playerSettings = str(QtCore.QSettings().value(u'media/players',
-                QtCore.QVariant(u'webkit')).toString())
-            savedPlayers = playerSettings.split(u',')
+            savedPlayers, overriddenPlayer = get_media_players()
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
                 if not mediaPlayer in self.mediaPlayers or \
                 not self.mediaPlayers[mediaPlayer].check_available()]
             if len(invalidMediaPlayers) > 0:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
-                newPlayerSetting = u','.join(savedPlayers)
-                QtCore.QSettings().setValue(u'media/players',
-                    QtCore.QVariant(newPlayerSetting))
+                set_media_players(savedPlayers, overriddenPlayer)
             self.set_active_players()
             return True
         else:
@@ -367,13 +357,9 @@ class MediaController(object):
         """
         Select the correct media Player type from the prioritized Player list
         """
-        playerSettings = str(QtCore.QSettings().value(u'media/players',
-            QtCore.QVariant(u'webkit')).toString())
-        usedPlayers = playerSettings.split(u',')
-        if QtCore.QSettings().value(u'media/override player',
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            if self.overriddenPlayer != '':
-                usedPlayers = [self.overriddenPlayer]
+        usedPlayers, overriddenPlayer = get_media_players()
+        if overriddenPlayer and overriddenPlayer != u'auto':
+            usedPlayers = [overriddenPlayer]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \
                 controller.media_info.file_info.suffix().toLower()
@@ -583,16 +569,6 @@ class MediaController(object):
                     if not item in video_list:
                         video_list.append(item)
         return video_list
-
-    def override_player(self, override_player_index):
-        playerSettings = str(QtCore.QSettings().value(u'media/players',
-            QtCore.QVariant(u'webkit')).toString())
-        usedPlayers = playerSettings.split(u',')
-        if override_player_index >= 0 and \
-            override_player_index < len(usedPlayers):
-            self.overridenPlayer = usedPlayers[override_player_index]
-        else:
-            self.overriddenPlayer = ''
 
     def finalise(self):
         self.timer.stop()
