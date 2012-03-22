@@ -54,7 +54,7 @@ IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
 CONTROL_CHARS = re.compile(u'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
-INVALID_FILE_CHARS = re.compile(u'[\\\/:\*\?"<>\|\[\]%]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(u'[\\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
 VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
