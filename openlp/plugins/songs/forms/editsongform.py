@@ -361,7 +361,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAuthorAddButtonClicked(self):
         item = int(self.authorsComboBox.currentIndex())
-        text = unicode(self.authorsComboBox.currentText())
+        text = unicode(self.authorsComboBox.currentText()).strip(u' \r\n\t')
+        # This if statement is for OS X, which doesn't seem to work well with
+        # the QCompleter autocompletion class. See bug #812628.
+        if text in self.authors:
+            # Index 0 is a blank string, so add 1
+            item = self.authors.index(text) + 1
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.EditSongForm', 'Add Author'),
