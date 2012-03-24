@@ -110,7 +110,6 @@ class DreamBeamImport(SongImport):
                     continue
                 xml = unicode(etree.tostring(parsed_file))
                 song_xml = objectify.fromstring(xml)
-                print song_xml.tag
                 if song_xml.tag != u'DreamSong':
                     self.logError(file, unicode(
                         translate('SongsPlugin.DreamBeamImport',
