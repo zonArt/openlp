@@ -27,9 +27,9 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, Qt
 
-from openlp.core.lib import build_icon
+from openlp.core.lib import build_icon, translate
 from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
@@ -64,6 +64,11 @@ class SearchEdit(QtGui.QLineEdit):
         )
         self._updateStyleSheet()
         self.setAcceptDrops(False)
+        #if Qt.PYQT_VERSION_STR >= u'4.9.1' and Qt.qVersion() >= u'4.7':
+        if True:
+            print u'pyqt:',  Qt.PYQT_VERSION_STR
+            print u'qt:',  Qt.qVersion()
+            self.setPlaceholderText(translate('OpenLP.searchedit', 'Search...'))
 
     def _updateStyleSheet(self):
         """
