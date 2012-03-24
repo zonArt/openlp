@@ -64,11 +64,12 @@ class SearchEdit(QtGui.QLineEdit):
         )
         self._updateStyleSheet()
         self.setAcceptDrops(False)
-        #if Qt.PYQT_VERSION_STR >= u'4.9.1' and Qt.qVersion() >= u'4.7':
-        if True:
-            print u'pyqt:',  Qt.PYQT_VERSION_STR
-            print u'qt:',  Qt.qVersion()
+        # setPlaceholderText has been implemented in Qt 4.7 and in at least
+        # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
+        try:
             self.setPlaceholderText(translate('OpenLP.searchedit', 'Search...'))
+        except AttributeError:
+            pass
 
     def _updateStyleSheet(self):
         """
