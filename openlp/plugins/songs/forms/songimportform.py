@@ -554,7 +554,9 @@ class SongImportForm(OpenLPWizard):
         Get CCLI song database files
         """
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.CCLI,
-            self.ccliFileListWidget)
+            self.ccliFileListWidget,  u'%s (*.usr *.txt)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'CCLI SongSelect Files'))
 
     def onCCLIRemoveButtonClicked(self):
         """
@@ -595,15 +597,22 @@ class SongImportForm(OpenLPWizard):
         self.removeSelectedItems(self.genericFileListWidget)
 
     def onEasySlidesBrowseButtonClicked(self):
+        """
+        Get EasyWorship song database file
+        """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.ES,
-            self.easySlidesFilenameEdit)
+            self.easySlidesFilenameEdit, u'%s (*.xml)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'EasySlides XML File'))
 
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
         """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.EW,
-            self.ewFilenameEdit)
+            self.ewFilenameEdit, u'%s (*.db)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'EasyWorship Song Database'))
 
     def onSongBeamerAddButtonClicked(self):
         """
