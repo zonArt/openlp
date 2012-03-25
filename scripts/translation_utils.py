@@ -185,11 +185,11 @@ def download_translations():
     **Note:** URLs and headers need to remain strings, not unicode.
     """
     global username, password
-    if not username:
-        username = raw_input(u'Transifex username: ')
-    if not password:
-        password = getpass(u'Transifex password: ')
     print_quiet(u'Download translation files from Transifex')
+    if not username:
+        username = raw_input(u'   Transifex username: ')
+    if not password:
+        password = getpass(u'   Transifex password: ')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
     base64string = base64.encodestring(

@@ -361,7 +361,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAuthorAddButtonClicked(self):
         item = int(self.authorsComboBox.currentIndex())
-        text = unicode(self.authorsComboBox.currentText())
+        text = unicode(self.authorsComboBox.currentText()).strip(u' \r\n\t')
+        # This if statement is for OS X, which doesn't seem to work well with
+        # the QCompleter autocompletion class. See bug #812628.
+        if text in self.authors:
+            # Index 0 is a blank string, so add 1
+            item = self.authors.index(text) + 1
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.EditSongForm', 'Add Author'),
@@ -589,7 +594,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_names.append(u'%s%s' % (
                     VerseType.translated_tag(verse[0]), verse[1:]))
         verses_not_used = []
-        for count, verse in enumerate(verses):
+        for verse in verses:
             if not verse in order:
                 verses_not_used.append(verse)
         self.warningLabel.setVisible(len(verses_not_used) > 0)
@@ -680,7 +685,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.verseListWidget.rowCount())
             if not result:
                 return False
-        item = int(self.songBookComboBox.currentIndex())
         text = unicode(self.songBookComboBox.currentText())
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
             if QtGui.QMessageBox.question(self,

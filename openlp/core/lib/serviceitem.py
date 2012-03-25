@@ -300,6 +300,7 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
+        log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.name = header[u'name']
