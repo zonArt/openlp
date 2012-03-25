@@ -104,7 +104,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     url='http://openlp.org/',
     license='GNU General Public License',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    scripts=['openlp.pyw', 'scripts/openlp-remoteclient.py'],
+    scripts=['openlp.pyw'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
