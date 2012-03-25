@@ -47,42 +47,42 @@ class DreamBeamImport(SongImport):
     The :class:`DreamBeamImport` class provides the ability to import song files from
     DreamBeam.
     
-    An example of DreamBeam xml mark-up:
+    An example of DreamBeam xml mark-up::
     
-    <?xml version="1.0"?>
-    <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-      <WordWrap>false</WordWrap>
-      <Version>0.80</Version>
-      <Title>Amazing Grace</Title>
-      <Author>John Newton</Author>
-      <Collection />
-      <Number />
-      <Notes />
-      <KeyRangeLow>F</KeyRangeLow>
-      <KeyRangeHigh>G</KeyRangeHigh>
-      <MinorKey>false</MinorKey>
-      <DualLanguage>false</DualLanguage>
-      <SongLyrics>
-        <LyricsItem Type="Verse" Number="1">Amazing Grace, how sweet the sound,
-        That saved a wretch like me.
-        I once was lost but now am found,
-        Was blind, but now, I see.</LyricsItem>
-        <LyricsItem Type="Verse" Number="2">T’was Grace that taught my heart to fear.
-    And Grace, my fears relieved.
-    How precious did that Grace appear…
-    the hour I first believed.</LyricsItem>
-      </SongLyrics>
-      <Sequence>
-        <LyricsSequenceItem Type="Verse" Number="1" />
-        <LyricsSequenceItem Type="Verse" Number="2" />
-      </Sequence>
-      <ShowRectangles>false</ShowRectangles>
-    </DreamSong>
+        <?xml version="1.0"?>
+        <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+          <WordWrap>false</WordWrap>
+          <Version>0.80</Version>
+          <Title>Amazing Grace</Title>
+          <Author>John Newton</Author>
+          <Collection />
+          <Number />
+          <Notes />
+          <KeyRangeLow>F</KeyRangeLow>
+          <KeyRangeHigh>G</KeyRangeHigh>
+          <MinorKey>false</MinorKey>
+          <DualLanguage>false</DualLanguage>
+          <SongLyrics>
+            <LyricsItem Type="Verse" Number="1">Amazing Grace, how sweet the sound,
+            That saved a wretch like me.
+            I once was lost but now am found,
+            Was blind, but now, I see.</LyricsItem>
+            <LyricsItem Type="Verse" Number="2">T’was Grace that taught my heart to fear.
+            And Grace, my fears relieved.
+            How precious did that Grace appear…
+            the hour I first believed.</LyricsItem>
+          </SongLyrics>
+          <Sequence>
+            <LyricsSequenceItem Type="Verse" Number="1" />
+            <LyricsSequenceItem Type="Verse" Number="2" />
+          </Sequence>
+          <ShowRectangles>false</ShowRectangles>
+        </DreamSong>
 
     Valid extensions for a DreamBeam song file are:
 
-    * .xml
+        * \*.xml
     """
 
     def __init__(self, manager, **kwargs):
