@@ -166,8 +166,7 @@ class SongMediaItem(MediaManagerItem):
                 SongStrings.SongBooks,
                 translate('SongsPlugin.MediaItem', 'Search Song Books...')),
             (SongSearch.Themes, u':/slides/slide_theme.png',
-            UiStrings().Themes,
-            translate('SongsPlugin.MediaItem', 'Search Themes...'))
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,

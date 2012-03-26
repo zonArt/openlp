@@ -95,7 +95,7 @@ class CustomMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'Titles'),
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png',
-            UiStrings().Themes,  translate('SongsPlugin.MediaItem', 'Search'))
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))

@@ -115,6 +115,8 @@ class UiStrings(object):
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
         self.Search = translate('OpenLP.Ui', 'Search')
+        self.SearchThemes = translate(
+            'OpenLP.Ui', 'Search Themes...', 'Search bar place holder text ')
         self.SelectDelete = translate('OpenLP.Ui', 'You must select an item '
             'to delete.')
         self.SelectEdit = translate('OpenLP.Ui', 'You must select an item to '
@@ -374,7 +376,7 @@ def create_widget_action(parent, name=u'', **kwargs):
     The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
     is added to the parents action list.
     """
-    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut) 
+    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
     action = create_action(parent, name, **kwargs)
     parent.addAction(action)
     return action
