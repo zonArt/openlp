@@ -133,7 +133,7 @@ class OpenSongImport(SongImport):
             self.logError(file.name, unicode(
                 translate('SongsPlugin.OpenSongImport',
                 ('Invalid OpenSong song file. Missing '
-                    'song tag.'))))
+                'song tag.'))))
             return
         fields = dir(root)
         decode = {
