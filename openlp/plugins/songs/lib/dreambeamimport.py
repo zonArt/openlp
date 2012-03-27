@@ -31,14 +31,11 @@ DreamBeam songs into the OpenLP database.
 import os,  sys
 import logging
 
-from lxml import etree,  objectify
+from lxml import etree, objectify
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
-
-
-
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +84,7 @@ class DreamBeamImport(SongImport):
 
     def __init__(self, manager, **kwargs):
         """
-        Initialise the Words of Worship importer.
+        Initialise the DreamBeam importer.
         """
         SongImport.__init__(self, manager, **kwargs)
         
@@ -119,8 +116,8 @@ class DreamBeamImport(SongImport):
                 if hasattr(song_xml, u'Title'):
                     self.title = unicode(song_xml.Title.text)
                 if hasattr(song_xml, u'Author'):
-                    # Dreambeam does not have a copyright field, instead it
-                    # some times uses the author feild
+                    # DreamBeam does not have a copyright field, instead it
+                    # some times uses the author field
                     self.addCopyright(unicode(song_xml.Author.text))
                     self.parseAuthor(unicode(song_xml.Author.text))                    
                 if hasattr(song_xml, u'SongLyrics'):

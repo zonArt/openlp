@@ -26,7 +26,7 @@
 ###############################################################################
 """
 The :mod:`songshowplusimport` module provides the functionality for importing 
-Song Show Plus songs into the OpenLP database.
+SongShow Plus songs into the OpenLP database.
 """
 import os
 import logging
