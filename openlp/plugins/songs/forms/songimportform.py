@@ -598,7 +598,7 @@ class SongImportForm(OpenLPWizard):
 
     def onEasySlidesBrowseButtonClicked(self):
         """
-        Get EasyWorship song database file
+        Get EasySlides song database file
         """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.ES,
             self.easySlidesFilenameEdit, u'%s (*.xml)'
