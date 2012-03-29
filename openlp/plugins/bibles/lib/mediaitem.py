@@ -354,9 +354,12 @@ class BibleMediaItem(MediaManagerItem):
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
         self.quickSearchEdit.setSearchTypes([
             (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
-            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
+            translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
+            translate(
+            'BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
             (BibleSearch.Text, u':/bibles/bibles_search_text.png',
-            translate('BiblesPlugin.MediaItem', 'Text Search'))
+            translate('BiblesPlugin.MediaItem', 'Text Search'),
+            translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
         self.quickSearchEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
