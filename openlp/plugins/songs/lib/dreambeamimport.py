@@ -81,13 +81,7 @@ class DreamBeamImport(SongImport):
 
         * \*.xml
     """
-
-    def __init__(self, manager, **kwargs):
-        """
-        Initialise the DreamBeam importer.
-        """
-        SongImport.__init__(self, manager, **kwargs)
-        
+    
     def doImport(self):
         """
         Receive a single file or a list of files to import.
