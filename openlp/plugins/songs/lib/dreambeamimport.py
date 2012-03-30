@@ -28,7 +28,8 @@
 The :mod:`dreambeamimport` module provides the functionality for importing
 DreamBeam songs into the OpenLP database.
 """
-import os,  sys
+import os
+import sys
 import logging
 
 from lxml import etree, objectify
@@ -111,7 +112,7 @@ class DreamBeamImport(SongImport):
                     self.title = unicode(song_xml.Title.text)
                 if hasattr(song_xml, u'Author'):
                     # DreamBeam does not have a copyright field, instead it
-                    # some times uses the author field
+                    # sometimes uses the author field
                     self.addCopyright(unicode(song_xml.Author.text))
                     self.parseAuthor(unicode(song_xml.Author.text))                    
                 if hasattr(song_xml, u'SongLyrics'):
