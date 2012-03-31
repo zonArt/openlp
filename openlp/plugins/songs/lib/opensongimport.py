@@ -31,6 +31,7 @@ import re
 from lxml import objectify
 from lxml.etree import Error, LxmlError
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -128,6 +129,12 @@ class OpenSongImport(SongImport):
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
+        if root.tag != u'song':
+            self.logError(file.name, unicode(
+                translate('SongsPlugin.OpenSongImport',
+                ('Invalid OpenSong song file. Missing '
+                'song tag.'))))
+            return
         fields = dir(root)
         decode = {
             u'copyright': self.addCopyright,
