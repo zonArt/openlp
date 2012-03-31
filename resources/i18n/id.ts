@@ -1214,19 +1214,29 @@ dibutuhkan dan membutuhkan koneksi internet.</translation>
         <translation>Tidak dapat menggabungkan hasil pencarian ayat. Ingin menghapus hasil pencarian dan mulai pencarian baru?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="461"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="464"/>
         <source>Bible not fully loaded.</source>
         <translation>Alkitab belum termuat seluruhnya.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="741"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="745"/>
         <source>Information</source>
         <translation>Informasi</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="741"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="745"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
         <translation>Alkitab kedua tidak memiliki seluruh ayat yang ada di Alkitab utama. Hanya ayat yang ditemukan di kedua Alkitab yang akan ditampilkan. %d ayat tidak terlihat di hasil.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="355"/>
+        <source>Search Scripture Reference...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="355"/>
+        <source>Search Text...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1547,7 +1557,7 @@ Perhatikan bahwa ayat dari Alkitab Web akan diunduh saat diminta dan sambungan i
 <context>
     <name>CustomPlugin.MediaItem</name>
     <message numerus="yes">
-        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="176"/>
+        <location filename="openlp/plugins/custom/lib/mediaitem.py" line="177"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -5059,69 +5069,69 @@ Isi berkas tidak berupa UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="118"/>
+        <location filename="openlp/core/lib/ui.py" line="120"/>
         <source>You must select an item to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="120"/>
+        <location filename="openlp/core/lib/ui.py" line="122"/>
         <source>You must select an item to edit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="123"/>
+        <location filename="openlp/core/lib/ui.py" line="125"/>
         <source>Save Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="124"/>
+        <location filename="openlp/core/lib/ui.py" line="126"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="128"/>
+        <location filename="openlp/core/lib/ui.py" line="130"/>
         <source>Start %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="133"/>
+        <location filename="openlp/core/lib/ui.py" line="135"/>
         <source>Theme</source>
         <comment>Singular</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="134"/>
+        <location filename="openlp/core/lib/ui.py" line="136"/>
         <source>Themes</source>
         <comment>Plural</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="136"/>
+        <location filename="openlp/core/lib/ui.py" line="138"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="140"/>
+        <location filename="openlp/core/lib/ui.py" line="142"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="252"/>
+        <location filename="openlp/core/lib/ui.py" line="254"/>
         <source>Delete the selected item.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="271"/>
+        <location filename="openlp/core/lib/ui.py" line="273"/>
         <source>Move selection up one position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="276"/>
+        <location filename="openlp/core/lib/ui.py" line="278"/>
         <source>Move selection down one position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="429"/>
+        <location filename="openlp/core/lib/ui.py" line="431"/>
         <source>&amp;Vertical Align:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5306,32 +5316,32 @@ Isi berkas tidak berupa UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="122"/>
+        <location filename="openlp/core/lib/ui.py" line="124"/>
         <source>Settings</source>
         <translation type="unfinished">Pengaturan</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="135"/>
+        <location filename="openlp/core/lib/ui.py" line="137"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="137"/>
+        <location filename="openlp/core/lib/ui.py" line="139"/>
         <source>Unsupported File</source>
         <translation type="unfinished">Berkas Tidak Didukung</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="138"/>
+        <location filename="openlp/core/lib/ui.py" line="140"/>
         <source>Verse Per Slide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="139"/>
+        <location filename="openlp/core/lib/ui.py" line="141"/>
         <source>Verse Per Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="141"/>
+        <location filename="openlp/core/lib/ui.py" line="143"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5346,7 +5356,7 @@ Isi berkas tidak berupa UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="142"/>
+        <location filename="openlp/core/lib/ui.py" line="144"/>
         <source>View Mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5371,12 +5381,12 @@ Isi berkas tidak berupa UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="125"/>
+        <location filename="openlp/core/lib/ui.py" line="127"/>
         <source>&amp;Split</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="126"/>
+        <location filename="openlp/core/lib/ui.py" line="128"/>
         <source>Split a slide into two only if it does not fit on the screen as one slide.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5401,18 +5411,24 @@ Isi berkas tidak berupa UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="129"/>
+        <location filename="openlp/core/lib/ui.py" line="131"/>
         <source>Stop Play Slides in Loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/ui.py" line="131"/>
+        <location filename="openlp/core/lib/ui.py" line="133"/>
         <source>Stop Play Slides to End</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="96"/>
         <source>Next Track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/lib/ui.py" line="118"/>
+        <source>Search Themes...</source>
+        <comment>Search bar place holder text </comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6274,32 +6290,32 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="665"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="671"/>
         <source>You need to type in a song title.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="672"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="678"/>
         <source>You need to type in at least one verse.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="648"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="654"/>
         <source>The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="690"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="696"/>
         <source>Add Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="690"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="696"/>
         <source>This song book does not exist, do you want to add it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="679"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="685"/>
         <source>You need to have an author for this song.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6329,7 +6345,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="742"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="748"/>
         <source>Open File(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6339,7 +6355,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="643"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="649"/>
         <source>The verse order is invalid. There are no verses corresponding to %s. Valid entries are %s.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6453,7 +6469,7 @@ The encoding is responsible for the correct character representation.</source>
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="585"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="587"/>
         <source>Select Document/Presentation Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6518,22 +6534,22 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="569"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="571"/>
         <source>Songs Of Fellowship Song Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="612"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="621"/>
         <source>SongBeamer Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="627"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="636"/>
         <source>SongShow Plus Song Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="643"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="652"/>
         <source>Foilpresenter Song Files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6567,6 +6583,21 @@ The encoding is responsible for the correct character representation.</source>
         <source>OpenLyrics Files</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="556"/>
+        <source>CCLI SongSelect Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="603"/>
+        <source>EasySlides XML File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="612"/>
+        <source>EasyWorship Song Database</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SongsPlugin.MediaFilesForm</name>
@@ -6594,7 +6625,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="511"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="517"/>
         <source>CCLI License: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -6604,7 +6635,7 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="396"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="402"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -6616,9 +6647,34 @@ The encoding is responsible for the correct character representation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="436"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="442"/>
         <source>copy</source>
         <comment>For song cloning</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="152"/>
+        <source>Search Titles...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="152"/>
+        <source>Search Entire Song...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="152"/>
+        <source>Search Lyrics...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="152"/>
+        <source>Search Authors...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="152"/>
+        <source>Search Song Books...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6713,7 +6769,7 @@ The encoding is responsible for the correct character representation.</source>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="773"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="782"/>
         <source>Your song import failed.</source>
         <translation type="unfinished"></translation>
     </message>
