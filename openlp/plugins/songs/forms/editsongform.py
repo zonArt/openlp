@@ -489,6 +489,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verseListWidget.setItem(
                 self.verseListWidget.rowCount() - 1, 0, item)
         self.tagRows()
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseEditButtonClicked(self):
         item = self.verseListWidget.currentItem()
@@ -516,6 +518,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         item.setData(QtCore.Qt.UserRole, tempId[row])
                         self.verseListWidget.setItem(row, 0, item)
         self.tagRows()
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseEditAllButtonClicked(self):
         verse_list = u''
@@ -575,6 +579,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.tagRows()
         self.verseEditButton.setEnabled(False)
         self.verseDeleteButton.setEnabled(False)
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseDeleteButtonClicked(self):
         self.verseListWidget.removeRow(self.verseListWidget.currentRow())
