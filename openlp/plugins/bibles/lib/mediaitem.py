@@ -512,7 +512,8 @@ class BibleMediaItem(MediaManagerItem):
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
-                        books.append(data[u'name'] + u' ')
+                        books.append(unicode(
+                            booknames[data[u'abbreviation']]) + u' ')
                 elif language_selection == LanguageSelection.English:
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
