@@ -458,13 +458,18 @@ def build_lyrics_format_css(theme, width, height):
     # fix tag incompatibilities
     if theme.display_horizontal_align == HorizontalType.Justify:
         justify = u''
+    if theme.display_vertical_align == VerticalType.Bottom:
+        padding_bottom = u'0.5em'
+    else:
+        padding_bottom = u'0'
     lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
-        'padding: 0; padding-left: %spx; width: %spx; height: %spx; ' % \
+        'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx;' \
+        'height: %spx; ' % \
         (justify, align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
-        left_margin, width, height)
+        padding_bottom, left_margin, width, height)
     if theme.font_main_outline:
         if webkit_version() <= 534.3:
             lyrics += u' letter-spacing: 1px;'

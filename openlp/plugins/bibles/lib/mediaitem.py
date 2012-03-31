@@ -351,9 +351,12 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
         self.quickSearchEdit.setSearchTypes([
             (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
-            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
+            translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
+            translate(
+            'BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
             (BibleSearch.Text, u':/bibles/bibles_search_text.png',
-            translate('BiblesPlugin.MediaItem', 'Text Search'))
+            translate('BiblesPlugin.MediaItem', 'Text Search'),
+            translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
         self.quickSearchEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
@@ -515,7 +518,8 @@ class BibleMediaItem(MediaManagerItem):
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
-                        books.append(data[u'name'] + u' ')
+                        books.append(unicode(
+                            booknames[data[u'abbreviation']]) + u' ')
                 elif language_selection == LanguageSelection.English:
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(

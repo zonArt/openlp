@@ -361,7 +361,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAuthorAddButtonClicked(self):
         item = int(self.authorsComboBox.currentIndex())
-        text = unicode(self.authorsComboBox.currentText())
+        text = unicode(self.authorsComboBox.currentText()).strip(u' \r\n\t')
+        # This if statement is for OS X, which doesn't seem to work well with
+        # the QCompleter autocompletion class. See bug #812628.
+        if text in self.authors:
+            # Index 0 is a blank string, so add 1
+            item = self.authors.index(text) + 1
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.EditSongForm', 'Add Author'),
@@ -484,6 +489,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verseListWidget.setItem(
                 self.verseListWidget.rowCount() - 1, 0, item)
         self.tagRows()
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseEditButtonClicked(self):
         item = self.verseListWidget.currentItem()
@@ -511,6 +518,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         item.setData(QtCore.Qt.UserRole, tempId[row])
                         self.verseListWidget.setItem(row, 0, item)
         self.tagRows()
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseEditAllButtonClicked(self):
         verse_list = u''
@@ -570,6 +579,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.tagRows()
         self.verseEditButton.setEnabled(False)
         self.verseDeleteButton.setEnabled(False)
+        # Check if all verse tags are used.
+        self.onVerseOrderTextChanged(self.verseOrderEdit.text())
 
     def onVerseDeleteButtonClicked(self):
         self.verseListWidget.removeRow(self.verseListWidget.currentRow())

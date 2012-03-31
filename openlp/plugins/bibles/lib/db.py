@@ -25,13 +25,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 import chardet
+import logging
 import os
 import sqlite3
 
 from PyQt4 import QtCore
-from sqlalchemy import Column, ForeignKey, or_, Table, types
+from sqlalchemy import Column, ForeignKey, or_, Table, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
@@ -444,13 +444,11 @@ class BibleDB(QtCore.QObject, Manager):
             The book object to get the chapter count for.
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book.name)
-        count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.book_reference_id==book.book_reference_id)\
-            .distinct().count()
+        count = self.session.query(func.max(Verse.chapter)).join(Book).filter(
+            Book.book_reference_id==book.book_reference_id).scalar()
         if not count:
             return 0
-        else:
-            return count
+        return count
 
     def get_verse_count(self, book_ref_id, chapter):
         """
@@ -463,14 +461,13 @@ class BibleDB(QtCore.QObject, Manager):
             The chapter to get the verse count for.
         """
         log.debug(u'BibleDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
-        count = self.session.query(Verse).join(Book)\
+        count = self.session.query(func.max(Verse.verse)).join(Book)\
             .filter(Book.book_reference_id==book_ref_id)\
             .filter(Verse.chapter==chapter)\
-            .count()
+            .scalar()
         if not count:
             return 0
-        else:
-            return count
+        return count
 
     def get_language(self, bible_name=None):
         """
