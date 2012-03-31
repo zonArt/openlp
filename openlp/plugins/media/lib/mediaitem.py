@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -37,6 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     media_item_combo_box
 from openlp.core.ui import Controller, Display
+from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class MediaMediaItem(MediaManagerItem):
         self.iconPath = u'images/image'
         self.background = False
         self.previewFunction = CLAPPERBOARD
-        self.Automatic = u''
+        self.automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
         self.hasSearch = True
@@ -101,7 +102,7 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
-        self.Automatic = translate('MediaPlugin.MediaItem',
+        self.automatic = translate('MediaPlugin.MediaItem',
             'Automatic')
         self.displayTypeLabel.setText(
             translate('MediaPlugin.MediaItem', 'Use Player:'))
@@ -118,11 +119,11 @@ class MediaMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.replaceAction = self.addToolbarButton(u'', u'',
-            u':/slides/slide_blank.png', self.onReplaceClick, False)
-        self.resetAction = self.addToolbarButton(u'', u'',
-            u':/system/system_close.png', self.onResetClick, False)
-        self.resetAction.setVisible(False)
+        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+            icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
+        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+            icon=u':/system/system_close.png', visible=False,
+            triggers=self.onResetClick)
         self.mediaWidget = QtGui.QWidget(self)
         self.mediaWidget.setObjectName(u'mediaWidget')
         self.displayLayout = QtGui.QFormLayout(self.mediaWidget)
@@ -142,8 +143,11 @@ class MediaMediaItem(MediaManagerItem):
             self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
-        Receiver.send_message(u'media_override_player', \
-            u'%s' % self.displayTypeComboBox.currentText())
+        player = get_media_players()[0]
+        if index == 0:
+            set_media_players(player)
+        else:
+            set_media_players(player, player[index-1])
 
     def onResetClick(self):
         """
@@ -239,28 +243,31 @@ class MediaMediaItem(MediaManagerItem):
         self.plugin.mediaController.setup_display( \
             self.mediaController.previewDisplay)
 
-
     def populateDisplayTypes(self):
         """
         Load the combobox with the enabled media players,
         allowing user to select a specific player if settings allow
         """
+        # block signals to avoid unnecessary overridePlayerChanged Signales
+        # while combo box creation
+        self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()
-        playerSettings = str(QtCore.QSettings().value(u'media/players',
-            QtCore.QVariant(u'webkit')).toString())
-        usedPlayers = playerSettings.split(u',')
-        for title in usedPlayers:
+        usedPlayers, overridePlayer = get_media_players()
+        mediaPlayers = self.plugin.mediaController.mediaPlayers
+        currentIndex = 0
+        for player in usedPlayers:
             # load the drop down selection
-            self.displayTypeComboBox.addItem(title)
+            self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
+            if overridePlayer == player:
+                currentIndex = len(self.displayTypeComboBox)
         if self.displayTypeComboBox.count() > 1:
-            self.displayTypeComboBox.insertItem(0, self.Automatic)
-            self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override player',
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            self.displayTypeComboBox.insertItem(0, self.automatic)
+            self.displayTypeComboBox.setCurrentIndex(currentIndex)
+        if overridePlayer:
             self.mediaWidget.show()
         else:
             self.mediaWidget.hide()
-
+        self.displayTypeComboBox.blockSignals(False)
 
     def onDeleteClick(self):
         """
@@ -309,7 +316,7 @@ class MediaMediaItem(MediaManagerItem):
         media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
         return media
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'media')
         results = []
         string = string.lower()

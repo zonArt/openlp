@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,12 +35,12 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class EasiSlidesImport(SongImport):
+class EasySlidesImport(SongImport):
     """
-    Import songs exported from EasiSlides
+    Import songs exported from EasySlides
 
     The format example is here:
-    http://wiki.openlp.org/Development:EasiSlides_-_Song_Data_Format
+    http://wiki.openlp.org/Development:EasySlides_-_Song_Data_Format
     """
     def __init__(self, manager, **kwargs):
         """
@@ -56,7 +56,7 @@ class EasiSlidesImport(SongImport):
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        log.info(u'Importing EasiSlides XML file %s', self.importSource)
+        log.info(u'Importing EasySlides XML file %s', self.importSource)
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(self.importSource, parser)
         xml = unicode(etree.tostring(parsed_file))
@@ -177,7 +177,7 @@ class EasiSlidesImport(SongImport):
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
         if len(regionlines) > 1:
-            log.info(u'EasiSlidesImport: the file contained a song named "%s"'
+            log.info(u'EasySlidesImport: the file contained a song named "%s"'
                 u'with more than two regions, but only two regions are',
                 u'tested, encountered regions were: %s',
                 self.title, u','.join(regionlines.keys()))
