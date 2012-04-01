@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings, base_action, icon_action
+from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
     SongsTab
@@ -64,6 +64,9 @@ class SongsPlugin(Plugin):
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
 
+    def checkPreConditions(self):
+        return self.manager.session is not None
+
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
@@ -71,9 +74,14 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.songImportItem, UiStrings().Import)
-        action_list.add_action(self.songExportItem, UiStrings().Export)
-        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.add_action(self.songImportItem, unicode(UiStrings().Import))
+        action_list.add_action(self.songExportItem, unicode(UiStrings().Export))
+        action_list.add_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_new_service'),
+        self.clearTemporarySongs)
+
 
     def addImportMenuItem(self, import_menu):
         """
@@ -85,14 +93,12 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.songImportItem = base_action(import_menu, u'songImportItem')
-        self.songImportItem.setText(translate('SongsPlugin', '&Song'))
-        self.songImportItem.setToolTip(translate('SongsPlugin',
-            'Import songs using the import wizard.'))
+        self.songImportItem = create_action(import_menu, u'songImportItem',
+            text=translate('SongsPlugin', '&Song'),
+            tooltip=translate('SongsPlugin',
+            'Import songs using the import wizard.'),
+            triggers=self.onSongImportItemClicked)
         import_menu.addAction(self.songImportItem)
-        # Signals and slots
-        QtCore.QObject.connect(self.songImportItem,
-            QtCore.SIGNAL(u'triggered()'), self.onSongImportItemClicked)
 
     def addExportMenuItem(self, export_menu):
         """
@@ -104,14 +110,12 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.songExportItem = base_action(export_menu, u'songExportItem')
-        self.songExportItem.setText(translate('SongsPlugin', '&Song'))
-        self.songExportItem.setToolTip(translate('SongsPlugin',
-            'Exports songs using the export wizard.'))
+        self.songExportItem = create_action(export_menu, u'songExportItem',
+            text=translate('SongsPlugin', '&Song'),
+            tooltip=translate('SongsPlugin',
+            'Exports songs using the export wizard.'),
+            triggers=self.onSongExportItemClicked)
         export_menu.addAction(self.songExportItem)
-        # Signals and slots
-        QtCore.QObject.connect(self.songExportItem,
-            QtCore.SIGNAL(u'triggered()'), self.onSongExportItemClicked)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -123,17 +127,13 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReindexItem = icon_action(tools_menu, u'toolsReindexItem',
-            u':/plugins/plugin_songs.png')
-        self.toolsReindexItem.setText(
-            translate('SongsPlugin', '&Re-index Songs'))
-        self.toolsReindexItem.setStatusTip(
-            translate('SongsPlugin', 'Re-index the songs database to improve '
-            'searching and ordering.'))
+        self.toolsReindexItem = create_action(tools_menu, u'toolsReindexItem',
+            text=translate('SongsPlugin', '&Re-index Songs'),
+            icon=u':/plugins/plugin_songs.png',
+            statustip=translate('SongsPlugin',
+            'Re-index the songs database to improve searching and ordering.'),
+            visible=False, triggers=self.onToolsReindexItemTriggered)
         tools_menu.addAction(self.toolsReindexItem)
-        QtCore.QObject.connect(self.toolsReindexItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsReindexItemTriggered)
-        self.toolsReindexItem.setVisible(False)
 
     def onToolsReindexItemTriggered(self):
         """
@@ -261,12 +261,23 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
+        self.clearTemporarySongs()
+        # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem, UiStrings().Import)
-        action_list.remove_action(self.songExportItem, UiStrings().Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.songImportItem,
+            unicode(UiStrings().Import))
+        action_list.remove_action(self.songExportItem,
+            unicode(UiStrings().Export))
+        action_list.remove_action(self.toolsReindexItem,
+            unicode(UiStrings().Tools))
         Plugin.finalise(self)
+
+    def clearTemporarySongs(self):
+        # Remove temporary songs
+        songs = self.manager.get_all_objects(Song, Song.temporary == True)
+        for song in songs:
+            self.manager.delete_object(Song, song.id)

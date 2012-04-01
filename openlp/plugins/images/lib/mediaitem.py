@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -89,11 +89,11 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.replaceAction = self.addToolbarButton(u'', u'',
-            u':/slides/slide_blank.png', self.onReplaceClick, False)
-        self.resetAction = self.addToolbarButton(u'', u'',
-            u':/system/system_close.png', self.onResetClick, False)
-        self.resetAction.setVisible(False)
+        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+            icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
+        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+            icon=u':/system/system_close.png', visible=False,
+            triggers=self.onResetClick)
 
     def onDeleteClick(self):
         """
@@ -127,13 +127,13 @@ class ImageMediaItem(MediaManagerItem):
                 self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
-            if not os.path.exists(imageFile):
+            if not os.path.exists(unicode(imageFile)):
                 icon = build_icon(u':/general/general_delete.png')
             else:
-                if validate_thumb(imageFile, thumb):
+                if validate_thumb(unicode(imageFile), thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = create_thumb(imageFile, thumb)
+                    icon = create_thumb(unicode(imageFile), thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)
@@ -189,7 +189,7 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            (path, name) = os.path.split(filename)
+            name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
 
@@ -220,7 +220,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
+                name = os.path.split(filename)[1]
                 if self.plugin.liveController.display.directImage(name,
                     filename, background):
                     self.resetAction.setVisible(True)
@@ -234,7 +234,7 @@ class ImageMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()

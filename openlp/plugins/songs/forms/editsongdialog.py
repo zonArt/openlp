@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -280,8 +280,15 @@ class Ui_EditSongDialog(object):
         self.songTabWidget.addTab(self.audioTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.songTabWidget)
+        self.bottomLayout = QtGui.QHBoxLayout()
+        self.bottomLayout.setObjectName(u'bottomLayout')
+        self.warningLabel = QtGui.QLabel(editSongDialog)
+        self.warningLabel.setObjectName(u'warningLabel')
+        self.warningLabel.setVisible(False)
+        self.bottomLayout.addWidget(self.warningLabel)
         self.buttonBox = create_accept_reject_button_box(editSongDialog)
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.bottomLayout.addWidget(self.buttonBox)
+        self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
         QtCore.QMetaObject.connectSlotsByName(editSongDialog)
 
@@ -349,14 +356,19 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '&Remove'))
         self.audioRemoveAllButton.setText(
             translate('SongsPlugin.EditSongForm', 'Remove &All'))
+        self.warningLabel.setText(
+            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong>'
+                ' Not all of the verses are in use.'))
 
 def editSongDialogComboBox(parent, name):
     """
     Utility method to generate a standard combo box for this dialog.
     """
     comboBox = QtGui.QComboBox(parent)
-    comboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
-    comboBox.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+    comboBox.setSizeAdjustPolicy(
+        QtGui.QComboBox.AdjustToMinimumContentsLength)
+    comboBox.setSizePolicy(
+        QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     comboBox.setEditable(True)
     comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
     comboBox.setObjectName(name)

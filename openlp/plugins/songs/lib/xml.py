@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -66,7 +66,7 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.core.utils import get_application_version
@@ -276,7 +276,7 @@ class OpenLyrics(object):
         application_name = u'OpenLP ' + get_application_version()[u'version']
         song_xml.set(u'createdIn', application_name)
         song_xml.set(u'modifiedIn', application_name)
-        # "Convert" 2011-08-27 11:49:15 to 2011-08-27T11:49:15.
+        # "Convert" 2012-08-27 11:49:15 to 2012-08-27T11:49:15.
         song_xml.set(u'modifiedDate',
             unicode(song.last_modified).replace(u' ', u'T'))
         properties = etree.SubElement(song_xml, u'properties')
@@ -346,7 +346,7 @@ class OpenLyrics(object):
                     lines_element.set(u'break', u'optional')
         return self._extract_xml(song_xml)
 
-    def xml_to_song(self, xml, parse_and_not_save=False):
+    def xml_to_song(self, xml, parse_and_temporary_save=False):
         """
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
@@ -355,9 +355,9 @@ class OpenLyrics(object):
         ``xml``
             The XML to parse (unicode).
 
-        ``parse_and_not_save``
-            Switch to skip processing the whole song and to prevent storing the
-            songs to the database. Defaults to ``False``.
+        ``parse_and_temporary_save``
+            Switch to skip processing the whole song and storing the songs in
+            the database with a temporary flag. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
@@ -371,14 +371,13 @@ class OpenLyrics(object):
             return None
         # Formatting tags are new in OpenLyrics 0.8
         if float(song_xml.get(u'version')) > 0.7:
-            self._process_formatting_tags(song_xml, parse_and_not_save)
-        if parse_and_not_save:
-            return
+            self._process_formatting_tags(song_xml, parse_and_temporary_save)
         song = Song()
         # Values will be set when cleaning the song.
         song.search_lyrics = u''
         song.verse_order = u''
         song.search_title = u''
+        song.temporary = parse_and_temporary_save
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
@@ -674,9 +673,22 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
-        lyrics = song_xml.lyrics
+        try:
+            lyrics = song_xml.lyrics
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.LyricsError,
+                '<lyrics> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<lyrics> tag is missing.')))
+        try:
+            verse_list = lyrics.verse
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.VerseError,
+                '<verse> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<verse> tag is missing.')))
         # Loop over the "verse" elements.
-        for verse in lyrics.verse:
+        for verse in verse_list:
             text = u''
             # Loop over the "lines" elements.
             for lines in verse.lines:
@@ -792,3 +804,15 @@ class OpenLyrics(object):
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
+
+
+class OpenLyricsError(Exception):
+    # XML tree is missing the lyrics tag
+    LyricsError = 1
+    # XML tree has no verse tags
+    VerseError = 2
+
+    def __init__(self, type, log_message, display_message):
+        self.type = type
+        self.log_message = log_message
+        self.display_message = display_message

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,7 +33,8 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
-from openlp.plugins.bibles.lib import parse_reference
+from openlp.plugins.bibles.lib import parse_reference, \
+    get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 from csvbible import CSVBible
 from http import HTTPBible
@@ -227,6 +228,19 @@ class BibleManager(object):
             for book in self.db_cache[bible].get_books()
         ]
 
+    def get_book_by_id(self, bible, id):
+        """
+        Returns a book object by given id.
+
+        ``bible``
+            Unicode. The Bible to get the list of books from.
+
+        ``id``
+            Unicode. The book_reference_id to get the book for.
+        """
+        log.debug(u'BibleManager.get_book_by_id("%s", "%s")', bible, id)
+        return self.db_cache[bible].get_book_by_book_ref_id(id)
+
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.
@@ -252,7 +266,16 @@ class BibleManager(object):
         book_ref_id = db_book.book_reference_id
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_verses(self, bible, versetext, firstbible=False, show_error=True):
+    def get_verse_count_by_book_ref_id(self, bible, book_ref_id, chapter):
+        """
+        Returns all the number of verses for a given
+        book_ref_id and chapterMaxBibleBookVerses.
+        """
+        log.debug(u'BibleManager.get_verse_count_by_book_ref_id("%s", "%s", '
+            u'"%s")', bible, book_ref_id, chapter)
+        return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
+
+    def get_verses(self, bible, versetext, book_ref_id=False, show_error=True):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
@@ -270,6 +293,10 @@ class BibleManager(object):
                 - Genesis 1:1-10,15-20
                 - Genesis 1:1-2:10
                 - Genesis 1:1-10,2:1-10
+        
+        ``book_ref_id``
+            Unicode. The book referece id from the book in versetext.
+            For second bible this is necessary.
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
         if not bible:
@@ -282,46 +309,38 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        reflist = parse_reference(versetext)
+        language_selection = QtCore.QSettings().value(
+            self.settingsSection + u'/bookname language',
+            QtCore.QVariant(0)).toInt()[0]
+        reflist = parse_reference(versetext, self.db_cache[bible],
+            language_selection, book_ref_id)
         if reflist:
-            new_reflist = []
-            for item in reflist:
-                if item:
-                    if firstbible:
-                        db_book = self.db_cache[firstbible].get_book(item[0])
-                        db_book = self.db_cache[bible].get_book_by_book_ref_id(
-                            db_book.book_reference_id)
-                    else:
-                        db_book = self.db_cache[bible].get_book(item[0])
-                    if db_book:
-                        book_id = db_book.book_reference_id
-                        log.debug(u'Book name corrected to "%s"', db_book.name)
-                        new_reflist.append((book_id, item[1], item[2],
-                            item[3]))
-                    else:
-                        log.debug(u'OpenLP failed to find book %s', item[0])
-                        critical_error_message_box(
-                            translate('BiblesPlugin', 'No Book Found'),
-                            translate('BiblesPlugin', 'No matching book '
-                            'could be found in this Bible. Check that you have '
-                            'spelled the name of the book correctly.'))
-            reflist = new_reflist
             return self.db_cache[bible].get_verses(reflist, show_error)
         else:
             if show_error:
+                reference_seperators = {
+                    u'verse': get_reference_separator(u'sep_v_display'),
+                    u'range': get_reference_separator(u'sep_r_display'),
+                    u'list': get_reference_separator(u'sep_l_display')}
                 Receiver.send_message(u'openlp_information_message', {
                     u'title': translate('BiblesPlugin.BibleManager',
                     'Scripture Reference Error'),
-                    u'message': translate('BiblesPlugin.BibleManager',
+                    u'message': unicode(translate('BiblesPlugin.BibleManager',
                     'Your scripture reference is either not supported by '
                     'OpenLP or is invalid. Please make sure your reference '
-                    'conforms to one of the following patterns:\n\n'
+                    'conforms to one of the following patterns or consult the '
+                    'manual:\n\n'
                     'Book Chapter\n'
-                    'Book Chapter-Chapter\n'
-                    'Book Chapter:Verse-Verse\n'
-                    'Book Chapter:Verse-Verse,Verse-Verse\n'
-                    'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                    'Book Chapter:Verse-Chapter:Verse')
+                    'Book Chapter%(range)sChapter\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sVerse'
+                    '%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sVerse%(list)sChapter'
+                    '%(verse)sVerse%(range)sVerse\n'
+                    'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
+                    'Please pay attention to the appended "s" of the wildcards '
+                    'and refrain from translating the words inside the '
+                    'names in the brackets.')) % reference_seperators
                     })
             return None
 

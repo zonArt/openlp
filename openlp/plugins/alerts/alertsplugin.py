@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,7 +31,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import icon_action, UiStrings
+from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
@@ -133,23 +133,19 @@ class AlertsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsAlertItem = icon_action(tools_menu, u'toolsAlertItem',
-            u':/plugins/plugin_alerts.png')
-        self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
-        self.toolsAlertItem.setStatusTip(
-            translate('AlertsPlugin', 'Show an alert message.'))
-        self.toolsAlertItem.setShortcut(u'F7')
+        self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
+            text=translate('AlertsPlugin', '&Alert'),
+            icon=u':/plugins/plugin_alerts.png',
+            statustip=translate('AlertsPlugin', 'Show an alert message.'),
+            visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
         self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
-        QtCore.QObject.connect(self.toolsAlertItem,
-            QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
-        self.toolsAlertItem.setVisible(False)
 
     def initialise(self):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
+        action_list.add_action(self.toolsAlertItem, unicode(UiStrings().Tools))
 
     def finalise(self):
         """

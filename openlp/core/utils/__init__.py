@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -53,6 +53,8 @@ APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
 VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
@@ -400,7 +402,7 @@ def clean_filename(filename):
     """
     if not isinstance(filename, unicode):
         filename = unicode(filename, u'utf-8')
-    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+    return INVALID_FILE_CHARS.sub(u'_', CONTROL_CHARS.sub(u'', filename))
 
 def delete_file(file_path_name):
     """
@@ -455,26 +457,6 @@ def get_web_page(url, header=None, update_openlp=False):
     log.debug(page)
     return page
 
-def file_is_unicode(filename):
-    """
-    Checks if a file is valid unicode and returns the unicode decoded file or
-    None.
-
-    ``filename``
-        File to check is valid unicode.
-    """
-    if not filename:
-        return None
-    ucsfile = None
-    try:
-        ucsfile = filename.decode(u'utf-8')
-    except UnicodeDecodeError:
-        log.exception(u'Filename "%s" is not valid UTF-8' %
-            filename.decode(u'utf-8', u'replace'))
-    if not ucsfile:
-        return None
-    return ucsfile
-
 def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
@@ -507,5 +489,5 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
-    u'ActionList', u'get_web_page', u'file_is_unicode', u'get_uno_command',
-    u'get_uno_instance', u'delete_file', u'clean_filename']
+    u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
+    u'delete_file', u'clean_filename']

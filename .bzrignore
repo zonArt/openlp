@@ -21,3 +21,5 @@ openlp/core/resources.py.old
 *.qm
 resources/windows/warnOpenLP.txt
 openlp.cfg
+.idea
+openlp.pro

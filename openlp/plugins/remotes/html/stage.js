@@ -1,12 +1,12 @@
 /*****************************************************************************
  * OpenLP - Open Source Lyrics Projection                                    *
  * ------------------------------------------------------------------------- *
- * Copyright (c) 2008-2010 Raoul Snyman                                      *
- * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
- * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
- * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
- * Woldsund                                                                  *
+ * Copyright (c) 2008-2012 Raoul Snyman                                      *
+ * Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan    *
+ * Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,    *
+ * Armin KÃ¶hler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias   *
+ * PÃµldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,  *
+ * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -30,10 +30,11 @@ window.OpenLP = {
         $("#notes").html("");
         for (idx in data.results.items) {
           idx = parseInt(idx, 10);
-          if ((data.results.items[idx]["selected"]) &&
-            (data.results.items.length > idx + 1)) {
-            $("#notes").html(data.results.items[idx]["notes"]);
-            OpenLP.nextSong = data.results.items[idx + 1]["title"];
+          if (data.results.items[idx]["selected"]) {
+            $("#notes").html(data.results.items[idx]["notes"].replace(/\n/g, "<br />"));
+            if (data.results.items.length > idx + 1) {
+              OpenLP.nextSong = data.results.items[idx + 1]["title"];
+            }
             break;
           }
         }

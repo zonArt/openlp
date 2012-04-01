@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -104,7 +104,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     url='http://openlp.org/',
     license='GNU General Public License',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    scripts=['openlp.pyw', 'scripts/openlp-remoteclient.py'],
+    scripts=['openlp.pyw'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
