@@ -52,13 +52,12 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)
-        self.buttonBox = create_button_box(languageDialog, [u'cancel', u'ok'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)
         self.setMaximumHeight(self.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(languageDialog)
 
     def retranslateUi(self, languageDialog):
         self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm',

@@ -55,12 +55,10 @@ class Ui_ServiceItemEditDialog(object):
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.buttonBox = create_button_box(serviceItemEditDialog,
+        self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox',
             [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox , 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setWindowTitle(

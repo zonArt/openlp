@@ -51,12 +51,11 @@ class Ui_SongBookDialog(object):
         self.publisherLabel.setBuddy(self.publisherEdit)
         self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
         self.dialogLayout.addLayout(self.bookLayout)
-        self.buttonBox = create_button_box(songBookDialog, [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(songBookDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(songBookDialog)
         songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(songBookDialog)
 
     def retranslateUi(self, songBookDialog):
         songBookDialog.setWindowTitle(

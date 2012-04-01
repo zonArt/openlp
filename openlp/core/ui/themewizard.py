@@ -417,7 +417,6 @@ class Ui_ThemeWizard(object):
         QtCore.QObject.connect(self.footerPositionCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QMetaObject.connectSlotsByName(themeWizard)
 
     def retranslateUi(self, themeWizard):
         themeWizard.setWindowTitle(

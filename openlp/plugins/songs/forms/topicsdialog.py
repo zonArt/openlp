@@ -45,12 +45,11 @@ class Ui_TopicsDialog(object):
         self.nameLabel.setBuddy(self.nameEdit)
         self.nameLayout.addRow(self.nameLabel, self.nameEdit)
         self.dialogLayout.addLayout(self.nameLayout)
-        self.buttonBox = create_button_box(topicsDialog, [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(topicsDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(topicsDialog)
         topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(topicsDialog)
 
     def retranslateUi(self, topicsDialog):
         topicsDialog.setWindowTitle(

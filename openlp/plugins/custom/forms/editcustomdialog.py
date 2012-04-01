@@ -97,12 +97,10 @@ class Ui_CustomEditDialog(object):
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
         self.previewButton = QtGui.QPushButton()
-        self.buttonBox = create_button_box(customEditDialog,
+        self.buttonBox = create_button_box(customEditDialog, u'buttonBox',
             [u'cancel', u'save'], [self.previewButton])
-        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(customEditDialog)
 
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(

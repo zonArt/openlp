@@ -170,7 +170,7 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def create_button_box(dialog, standard_buttons, custom_buttons=[]):
+def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
     """
     Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and
     ``rejected()`` signals of the button box are connected with the dialogs
@@ -179,9 +179,12 @@ def create_button_box(dialog, standard_buttons, custom_buttons=[]):
     ``dialog``
         The parent object. This has to be a ``QDialog`` descendant.
 
+    ``name``
+        A string which is set as object name.
+
     ``standard_buttons``
         A list of strings for the used buttons. It might contain: ``ok``,
-        ``save``, and ``cancel``.
+        ``save``, ``cancel``, ``close``, and ``defaults``.
 
     ``custom_buttons``
         A list of additional buttons. If a item is a instance of
@@ -195,7 +198,12 @@ def create_button_box(dialog, standard_buttons, custom_buttons=[]):
         buttons |= QtGui.QDialogButtonBox.Save
     if u'cancel' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Cancel
+    if u'close' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.Close
+    if u'defaults' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.RestoreDefaults
     button_box = QtGui.QDialogButtonBox(dialog)
+    button_box.setObjectName(name)
     button_box.setStandardButtons(buttons)
     for button in custom_buttons:
         if isinstance(button, QtGui.QAbstractButton):

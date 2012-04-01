@@ -65,12 +65,10 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addWidget(self.insertButton)
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
-        self.buttonBox = create_button_box(editVerseDialog,
+        self.buttonBox = create_button_box(editVerseDialog, u'buttonBox',
             [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editVerseDialog)
-        QtCore.QMetaObject.connectSlotsByName(editVerseDialog)
 
     def retranslateUi(self, editVerseDialog):
         editVerseDialog.setWindowTitle(

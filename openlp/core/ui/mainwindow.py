@@ -372,7 +372,6 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.fileMenu,
             QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
-        QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
         self.importLanguageItem.setVisible(False)

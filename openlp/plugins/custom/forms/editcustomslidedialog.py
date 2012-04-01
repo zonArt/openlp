@@ -44,12 +44,10 @@ class Ui_CustomSlideEditDialog(object):
         self.insertButton = QtGui.QPushButton(customSlideEditDialog)
         self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
         self.insertButton.setObjectName(u'insertButton')
-        self.buttonBox = create_button_box(customSlideEditDialog,
+        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox',
             [u'cancel', u'save'], [self.splitButton, self.insertButton])
-        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
         self.splitButton.setText(UiStrings().Split)

@@ -287,12 +287,11 @@ class Ui_EditSongDialog(object):
         self.warningLabel.setObjectName(u'warningLabel')
         self.warningLabel.setVisible(False)
         self.bottomLayout.addWidget(self.warningLabel)
-        self.buttonBox = create_button_box(editSongDialog, [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox') 
+        self.buttonBox = create_button_box(editSongDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.bottomLayout.addWidget(self.buttonBox)
         self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
-        QtCore.QMetaObject.connectSlotsByName(editSongDialog)
 
     def retranslateUi(self, editSongDialog):
         editSongDialog.setWindowTitle(

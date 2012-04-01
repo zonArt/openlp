@@ -57,12 +57,11 @@ class Ui_AuthorsDialog(object):
         self.displayLabel.setBuddy(self.displayEdit)
         self.authorLayout.addRow(self.displayLabel, self.displayEdit)
         self.dialogLayout.addLayout(self.authorLayout)
-        self.buttonBox = create_button_box(authorsDialog, [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(authorsDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(authorsDialog)
         authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(authorsDialog)
 
     def retranslateUi(self, authorsDialog):
         authorsDialog.setWindowTitle(

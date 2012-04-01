@@ -55,10 +55,9 @@ class ServiceNoteForm(QtGui.QDialog):
         self.textEdit = SpellTextEdit(self, False)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.buttonBox = create_button_box(self, [u'cancel', u'save'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(self, u'buttonBox',
+            [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
-        QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         self.setWindowTitle(

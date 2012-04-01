@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, create_button_box
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_SongMaintenanceDialog(object):
@@ -132,18 +132,14 @@ class Ui_SongMaintenanceDialog(object):
         self.stackedLayout.addWidget(self.booksPage)
         #
         self.dialogLayout.addLayout(self.stackedLayout, 0, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(songMaintenanceDialog)
-        self.buttonBox.addButton(QtGui.QDialogButtonBox.Close)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(songMaintenanceDialog, u'buttonBox',
+            [u'close'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(songMaintenanceDialog)
         self.stackedLayout.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            songMaintenanceDialog.accept)
         QtCore.QObject.connect(self.typeListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.stackedLayout.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(songMaintenanceDialog)
 
     def retranslateUi(self, songMaintenanceDialog):
         songMaintenanceDialog.setWindowTitle(SongStrings.SongMaintenance)

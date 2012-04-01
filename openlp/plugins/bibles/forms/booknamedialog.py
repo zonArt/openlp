@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 class Ui_BookNameDialog(object):
     def setupUi(self, bookNameDialog):
@@ -78,21 +79,11 @@ class Ui_BookNameDialog(object):
         self.apocryphaCheckBox.setCheckState(QtCore.Qt.Checked)
         self.optionsLayout.addWidget(self.apocryphaCheckBox)
         self.bookNameLayout.addWidget(self.optionsGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(bookNameDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(bookNameDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.bookNameLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(bookNameDialog)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            bookNameDialog.accept)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            bookNameDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(bookNameDialog)
 
     def retranslateUi(self, bookNameDialog):
         bookNameDialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog', 

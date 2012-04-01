@@ -44,12 +44,11 @@ class Ui_FileRenameDialog(object):
             QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
-        self.buttonBox = create_button_box(fileRenameDialog, [u'cancel', u'ok'])
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(fileRenameDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(fileRenameDialog)
         self.setMaximumHeight(self.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(fileRenameDialog)
 
     def retranslateUi(self, fileRenameDialog):
         self.fileNameLabel.setText(translate('OpenLP.FileRenameForm',
