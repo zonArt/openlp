@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit, build_icon
-from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
+from openlp.core.lib.ui import create_button_box, UiStrings
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -38,17 +38,15 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.buttonBox = create_accept_reject_button_box(customSlideEditDialog)
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
         self.splitButton.setIcon(build_icon(u':/general/general_add.png'))
         self.splitButton.setObjectName(u'splitButton')
-        self.buttonBox.addButton(self.splitButton,
-            QtGui.QDialogButtonBox.ActionRole)
         self.insertButton = QtGui.QPushButton(customSlideEditDialog)
         self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
         self.insertButton.setObjectName(u'insertButton')
-        self.buttonBox.addButton(self.insertButton,
-            QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox = create_button_box(customSlideEditDialog,
+            [u'cancel', u'save'], [self.splitButton, self.insertButton])
+        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
         QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)

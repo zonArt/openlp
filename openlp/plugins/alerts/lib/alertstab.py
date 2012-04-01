@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.ui import AlertLocation
-from openlp.core.lib.ui import UiStrings, create_valign_combo
+from openlp.core.lib.ui import UiStrings, create_valign_selection_widgets
 
 class AlertsTab(SettingsTab):
     """
@@ -76,7 +76,11 @@ class AlertsTab(SettingsTab):
         self.timeoutSpinBox.setMaximum(180)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.fontLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
-        create_valign_combo(self, self.fontGroupBox, self.fontLayout)
+        self.verticalLabel, self.verticalComboBox = \
+            create_valign_selection_widgets(self.fontGroupBox)
+        self.verticalLabel.setObjectName(u'verticalLabel')
+        self.verticalComboBox.setObjectName(u'verticalComboBox')
+        self.fontLayout.addRow(self.verticalLabel, self.verticalComboBox)
         self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
         self.previewGroupBox = QtGui.QGroupBox(self.rightColumn)

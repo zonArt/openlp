@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
@@ -55,7 +55,9 @@ class ServiceNoteForm(QtGui.QDialog):
         self.textEdit = SpellTextEdit(self, False)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.dialogLayout.addWidget(create_accept_reject_button_box(self))
+        self.buttonBox = create_button_box(self, [u'cancel', u'save'])
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.dialogLayout.addWidget(self.buttonBox)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):

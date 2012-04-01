@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, songUsageDetailDialog):
@@ -74,8 +74,9 @@ class Ui_SongUsageDetailDialog(object):
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.fileHorizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout.addWidget(self.fileGroupBox)
-        self.buttonBox = create_accept_reject_button_box(
-            songUsageDetailDialog, True)
+        self.buttonBox = create_button_box(songUsageDetailDialog,
+            [u'cancel', u'ok'])
+        self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDetailDialog)
         QtCore.QObject.connect(self.saveFilePushButton,

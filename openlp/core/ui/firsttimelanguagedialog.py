@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_FirstTimeLanguageDialog(object):
     def setupUi(self, languageDialog):
@@ -52,7 +52,8 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)
-        self.buttonBox = create_accept_reject_button_box(languageDialog, True)
+        self.buttonBox = create_button_box(languageDialog, [u'cancel', u'ok'])
+        self.buttonBox.setObjectName(u'buttonBox')
         self.dialogLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)

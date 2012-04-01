@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
     create_separated_list
-from openlp.core.lib.ui import UiStrings, add_widget_completer, \
+from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
@@ -148,7 +148,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.authorsComboBox.setItemData(
                 row, QtCore.QVariant(author.id))
             self.authors.append(author.display_name)
-        add_widget_completer(self.authors, self.authorsComboBox)
+        set_case_insensitive_completer(self.authors, self.authorsComboBox)
 
     def loadTopics(self):
         self.topics = []
@@ -167,7 +167,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             combo.addItem(object.name)
             cache.append(object.name)
             combo.setItemData(row, QtCore.QVariant(object.id))
-        add_widget_completer(cache, combo)
+        set_case_insensitive_completer(cache, combo)
 
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
@@ -176,7 +176,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
             self.themes.append(theme)
-        add_widget_completer(self.themes, self.themeComboBox)
+        set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
         self.audioAddFromMediaButton.setVisible(False)

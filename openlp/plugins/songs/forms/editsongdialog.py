@@ -28,8 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
-    create_up_down_push_button_set
+from openlp.core.lib.ui import UiStrings, create_button_box, create_button
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_EditSongDialog(object):
@@ -272,8 +271,10 @@ class Ui_EditSongDialog(object):
         self.audioRemoveAllButton.setObjectName(u'audioRemoveAllButton')
         self.audioButtonsLayout.addWidget(self.audioRemoveAllButton)
         self.audioButtonsLayout.addStretch(1)
-        self.upButton, self.downButton = \
-            create_up_down_push_button_set(self)
+        self.upButton = create_button(self, u'upButton', role=u'up',
+            click=self.onUpButtonClicked)
+        self.downButton = create_button(self, u'downButton', role=u'down',
+            click=self.onDownButtonClicked)
         self.audioButtonsLayout.addWidget(self.upButton)
         self.audioButtonsLayout.addWidget(self.downButton)
         self.audioLayout.addLayout(self.audioButtonsLayout)
@@ -286,7 +287,8 @@ class Ui_EditSongDialog(object):
         self.warningLabel.setObjectName(u'warningLabel')
         self.warningLabel.setVisible(False)
         self.bottomLayout.addWidget(self.warningLabel)
-        self.buttonBox = create_accept_reject_button_box(editSongDialog)
+        self.buttonBox = create_button_box(editSongDialog, [u'cancel', u'save'])
+        self.buttonBox.setObjectName(u'buttonBox') 
         self.bottomLayout.addWidget(self.buttonBox)
         self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
