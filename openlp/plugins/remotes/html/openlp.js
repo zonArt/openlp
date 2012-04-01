@@ -1,12 +1,12 @@
 /*****************************************************************************
  * OpenLP - Open Source Lyrics Projection                                    *
  * ------------------------------------------------------------------------- *
- * Copyright (c) 2008-2010 Raoul Snyman                                      *
- * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
- * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
- * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
- * Woldsund                                                                  *
+ * Copyright (c) 2008-2012 Raoul Snyman                                      *
+ * Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan    *
+ * Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,    *
+ * Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias   *
+ * Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,  *
+ * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -72,7 +72,9 @@ window.OpenLP = {
     );
   },
   loadController: function (event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     $.getJSON(
       "/api/controller/live/text",
       function (data, status) {
@@ -91,6 +93,7 @@ window.OpenLP = {
           li.children("a").click(OpenLP.setSlide);
           ul.append(li);
         }
+        OpenLP.currentItem = data.results.item;
         ul.listview("refresh");
       }
     );
@@ -208,9 +211,8 @@ window.OpenLP = {
   },
   showAlert: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" +
-        $("#alert-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
-        "\"}}";
+    var alert = OpenLP.escapeString($("#alert-text").val())
+    var text = "{\"request\": {\"text\": \"" + alert + "\"}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
@@ -221,9 +223,8 @@ window.OpenLP = {
   },
   search: function (event) {
     event.preventDefault();
-    var text = "{\"request\": {\"text\": \"" +
-        $("#search-text").val().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") +
-        "\"}}";
+    var query = OpenLP.escapeString($("#search-text").val())
+    var text = "{\"request\": {\"text\": \"" + query + "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
@@ -280,6 +281,9 @@ window.OpenLP = {
     );
     $("#options").dialog("close");
     $.mobile.changePage("#service-manager");
+  },
+  escapeString: function (string) { 
+    return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
 // Service Manager

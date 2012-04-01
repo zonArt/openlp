@@ -36,7 +36,7 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list
-from openlp.core.lib.ui import UiStrings, create_action, create_widget_action
+from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -151,16 +151,22 @@ class SongMediaItem(MediaManagerItem):
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
             (SongSearch.Entire, u':/songs/song_search_all.png',
-                translate('SongsPlugin.MediaItem', 'Entire Song')),
+                translate('SongsPlugin.MediaItem', 'Entire Song'),
+                translate('SongsPlugin.MediaItem', 'Search Entire Song...')),
             (SongSearch.Titles, u':/songs/song_search_title.png',
-                translate('SongsPlugin.MediaItem', 'Titles')),
+                translate('SongsPlugin.MediaItem', 'Titles'),
+                translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (SongSearch.Lyrics, u':/songs/song_search_lyrics.png',
-                translate('SongsPlugin.MediaItem', 'Lyrics')),
+                translate('SongsPlugin.MediaItem', 'Lyrics'),
+                translate('SongsPlugin.MediaItem', 'Search Lyrics...')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
-                SongStrings.Authors),
+                SongStrings.Authors,
+                translate('SongsPlugin.MediaItem', 'Search Authors...')),
             (SongSearch.Books, u':/songs/song_book_edit.png',
-                 SongStrings.SongBooks),
-            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
+                SongStrings.SongBooks,
+                translate('SongsPlugin.MediaItem', 'Search Song Books...')),
+            (SongSearch.Themes, u':/slides/slide_theme.png',
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
@@ -586,7 +592,7 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'service_item_update',
                 u'%s:%s:%s' % (editId, item._uuid, temporary))
 
-    def search(self, string):
+    def search(self, string, showError):
         """
         Search for some songs
         """

@@ -92,9 +92,10 @@ class CustomMediaItem(MediaManagerItem):
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
             (CustomSearch.Titles, u':/songs/song_search_title.png',
-                translate('SongsPlugin.MediaItem', 'Titles')),
+            translate('SongsPlugin.MediaItem', 'Titles'),
+            translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png',
-                UiStrings().Themes)
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
@@ -177,7 +178,7 @@ class CustomMediaItem(MediaManagerItem):
                 UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected custom'
-                ' slides(s)?', '',
+                ' slide(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -267,7 +268,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.clear()
         self.onSearchTextButtonClick()
 
-    def search(self, string):
+    def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
             or_(func.lower(CustomSlide.title).like(u'%' +
             string.lower() + u'%'),
