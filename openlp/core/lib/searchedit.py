@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -30,7 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
-from openlp.core.lib.ui import icon_action
+from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
@@ -122,6 +122,13 @@ class SearchEdit(QtGui.QLineEdit):
         menu = self.menuButton.menu()
         for action in menu.actions():
             if identifier == action.data().toInt()[0]:
+                # setPlaceholderText has been implemented in Qt 4.7 and in at
+                # least PyQt 4.9 (I am not sure, if it was implemented in
+                # PyQt 4.8).
+                try:
+                    self.setPlaceholderText(action.placeholderText)
+                except AttributeError:
+                    pass
                 self.menuButton.setDefaultAction(action)
                 self._currentSearchType = identifier
                 self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
@@ -137,25 +144,22 @@ class SearchEdit(QtGui.QLineEdit):
             identifier, an icon (QIcon instance or string) and a title for the
             item in the menu. In short, they should look like this::
 
-                (<identifier>, <icon>, <title>)
+                (<identifier>, <icon>, <title>, <place holder text>)
 
             For instance::
 
-                (1, <QIcon instance>, "Titles")
+                (1, <QIcon instance>, "Titles", "Search Song Titles...")
 
             Or::
 
-                (2, ":/songs/authors.png", "Authors")
+                (2, ":/songs/authors.png", "Authors", "Search Authors...")
         """
         menu = QtGui.QMenu(self)
         first = None
-        for identifier, icon, title in items:
-            action = icon_action(menu, u'', icon)
-            action.setText(title)
-            action.setData(QtCore.QVariant(identifier))
-            menu.addAction(action)
-            QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-                self._onMenuActionTriggered)
+        for identifier, icon, title, placeholder in items:
+            action = create_widget_action(menu, text=title, icon=icon,
+                data=identifier, triggers=self._onMenuActionTriggered)
+            action.placeholderText = placeholder
             if first is None:
                 first = action
                 self._currentSearchType = identifier
@@ -206,5 +210,12 @@ class SearchEdit(QtGui.QLineEdit):
             action.setChecked(False)
         self.menuButton.setDefaultAction(sender)
         self._currentSearchType = sender.data().toInt()[0]
+        # setPlaceholderText has been implemented in Qt 4.7 and in at least
+        # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
+        try:
+            self.setPlaceholderText(
+                self.menuButton.defaultAction().placeholderText)
+        except AttributeError:
+            pass
         self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self._currentSearchType)

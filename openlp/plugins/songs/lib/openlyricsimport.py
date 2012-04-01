@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -38,6 +38,7 @@ from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib import OpenLyrics
+from openlp.plugins.songs.lib.xml import OpenLyricsError
 
 log = logging.getLogger(__name__)
 
@@ -73,3 +74,7 @@ class OpenLyricsImport(SongImport):
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)
                 self.logError(file_path, SongStrings.XMLSyntaxError)
+            except OpenLyricsError as exception:
+                log.exception(u'OpenLyricsException %d in file %s: %s'
+                    % (exception.type, file_path, exception.log_message))
+                self.logError(file_path, exception.display_message)

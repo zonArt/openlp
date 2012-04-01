@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -93,6 +93,7 @@ class UiStrings(object):
         self.New = translate('OpenLP.Ui', 'New')
         self.NewService = translate('OpenLP.Ui', 'New Service')
         self.NewTheme = translate('OpenLP.Ui', 'New Theme')
+        self.NextTrack = translate('OpenLP.Ui', 'Next Track')
         self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
@@ -114,6 +115,8 @@ class UiStrings(object):
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
         self.Search = translate('OpenLP.Ui', 'Search')
+        self.SearchThemes = translate(
+            'OpenLP.Ui', 'Search Themes...', 'Search bar place holder text ')
         self.SelectDelete = translate('OpenLP.Ui', 'You must select an item '
             'to delete.')
         self.SelectEdit = translate('OpenLP.Ui', 'You must select an item to '
@@ -280,100 +283,102 @@ def create_up_down_push_button_set(parent):
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
 
-def base_action(parent, name, category=None):
+def create_action(parent, name, **kwargs):
     """
-    Return the most basic action with the object name set.
+    Return an action with the object name set and the given parameters.
 
-    ``category``
-        The category the action should be listed in the shortcut dialog. If you
-        not wish, that this action is added to the shortcut dialog, then do not
-        state any.
-    """
-    action = QtGui.QAction(parent)
-    action.setObjectName(name)
-    if category is not None:
-        action_list = ActionList.get_instance()
-        action_list.add_action(action, category)
-    return action
+    ``parent``
+        A QtCore.QObject for the actions parent (required).
 
-def checkable_action(parent, name, checked=None, category=None):
-    """
-    Return a standard action with the checkable attribute set.
-    """
-    action = base_action(parent, name, category)
-    action.setCheckable(True)
-    if checked is not None:
-        action.setChecked(checked)
-    return action
-
-def icon_action(parent, name, icon, checked=None, category=None):
-    """
-    Return a standard action with an icon.
-    """
-    if checked is not None:
-        action = checkable_action(parent, name, checked, category)
-    else:
-        action = base_action(parent, name, category)
-    action.setIcon(build_icon(icon))
-    return action
-
-def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None, context=QtCore.Qt.WindowShortcut):
-    """
-    Return a shortcut enabled action.
-    """
-    action = QtGui.QAction(parent)
-    action.setObjectName(name)
-    if icon is not None:
-        action.setIcon(build_icon(icon))
-    if checked is not None:
-        action.setCheckable(True)
-        action.setChecked(checked)
-    if shortcuts:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
-    action_list = ActionList.get_instance()
-    action_list.add_action(action, category)
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
-    return action
-
-def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut):
-    """
-    Utility method to help build context menus.
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
+    ``name``
+        A string which is set as object name (required).
 
     ``text``
-        The text to display for this action
+        A string for the action text.
 
-    ``slot``
-        The code to run when this action is triggered
+    ``icon``
+        Either a QIcon, a resource string, or a file location string for the
+        action icon.
+
+    ``tooltip``
+        A string for the action tool tip.
+
+    ``statustip``
+        A string for the action status tip.
+
+    ``checked``
+        A bool for the state. If ``None`` the Action is not checkable.
+
+    ``enabled``
+        False in case the action should be disabled.
+
+    ``visible``
+        False in case the action should be hidden.
+
+    ``separator``
+        True in case the action will be considered a separator.
+
+    ``data``
+        Data which is set as QVariant type.
 
     ``shortcuts``
-        The action's shortcuts.
-
-    ``category``
-        The category the shortcut should be listed in the shortcut dialog. If
-        left to ``None``, then the action will be hidden in the shortcut dialog.
+        A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
     ``context``
-        The context the shortcut is valid.
+        A context for the shortcut execution.
+
+    ``category``
+        A category the action should be listed in the shortcut dialog.
+
+    ``triggers``
+        A slot which is connected to the actions ``triggered()`` slot.
     """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), slot)
-    if shortcuts is not None:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
+    if kwargs.get(u'text'):
+        action.setText(kwargs.pop(u'text'))
+    if kwargs.get(u'icon'):
+        action.setIcon(build_icon(kwargs.pop(u'icon')))
+    if kwargs.get(u'tooltip'):
+        action.setToolTip(kwargs.pop(u'tooltip'))
+    if kwargs.get(u'statustip'):
+        action.setStatusTip(kwargs.pop(u'statustip'))
+    if kwargs.get(u'checked') is not None:
+        action.setCheckable(True)
+        action.setChecked(kwargs.pop(u'checked'))
+    if not kwargs.pop(u'enabled', True):
+        action.setEnabled(False)
+    if not kwargs.pop(u'visible', True):
+        action.setVisible(False)
+    if kwargs.pop(u'separator', False):
+        action.setSeparator(True)
+    if u'data' in kwargs:
+        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
+    if kwargs.get(u'shortcuts'):
+        action.setShortcuts(kwargs.pop(u'shortcuts'))
+    if u'context' in kwargs:
+        action.setShortcutContext(kwargs.pop(u'context'))
+    if kwargs.get(u'category'):
         action_list = ActionList.get_instance()
-        action_list.add_action(action)
-    base.addAction(action)
+        action_list.add_action(action, unicode(kwargs.pop(u'category')))
+    if kwargs.get(u'triggers'):
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
+            kwargs.pop(u'triggers'))
+    for key in kwargs.keys():
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked',
+            u'shortcuts', u'category', u'triggers']:
+            log.warn(u'Parameter %s was not consumed in create_action().', key)
+    return action
+
+def create_widget_action(parent, name=u'', **kwargs):
+    """
+    Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
+    The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
+    is added to the parents action list.
+    """
+    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
+    action = create_action(parent, name, **kwargs)
+    parent.addAction(action)
     return action
 
 def context_menu(base, icon, text):
@@ -391,18 +396,6 @@ def context_menu(base, icon, text):
     """
     action = QtGui.QMenu(text, base)
     action.setIcon(build_icon(icon))
-    return action
-
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
-
-    ``base``
-        The menu object to add the separator to
-    """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    base.addAction(action)
     return action
 
 def add_widget_completer(cache, widget):

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -57,14 +57,14 @@ class Renderer(object):
 
     def __init__(self, imageManager, themeManager):
         """
-        Initialise the render manager.
+        Initialise the renderer.
 
     ``imageManager``
-        A ImageManager instance which takes care of e. g. caching and resizing
+        A imageManager instance which takes care of e. g. caching and resizing
         images.
 
     ``themeManager``
-        The ThemeManager instance, used to get the current theme details.
+        The themeManager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
@@ -76,18 +76,18 @@ class Renderer(object):
         self.theme_data = None
         self.bg_frame = None
         self.force_page = False
-        self.display = MainDisplay(None, self.imageManager, False)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
 
     def update_display(self):
         """
-        Updates the render manager's information about the current screen.
+        Updates the renderer's information about the current screen.
         """
         log.debug(u'Update Display')
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False)
+        self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
         self.bg_frame = None
         self.theme_data = None
@@ -201,7 +201,8 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            preview = self.display.text(raw_html)
+            self.display.text(raw_html)
+            preview = self.display.preview()
             # Reset the real screen size for subsequent render requests
             self._calculate_default()
             return preview
@@ -249,7 +250,12 @@ class Renderer(object):
                         # render the first virtual slide.
                         text_contains_break = u'[---]' in text
                         if text_contains_break:
-                            text_to_render, text = text.split(u'\n[---]\n', 1)
+                            try:
+                                text_to_render, text = \
+                                    text.split(u'\n[---]\n', 1)
+                            except:
+                                text_to_render = text.split(u'\n[---]\n')[0]
+                                text = u''
                         else:
                             text_to_render = text
                             text = u''
@@ -283,7 +289,7 @@ class Renderer(object):
 
     def _calculate_default(self):
         """
-        Calculate the default dimentions of the screen.
+        Calculate the default dimensions of the screen.
         """
         screen_size = self.screens.current[u'size']
         self.width = screen_size.width()
@@ -304,21 +310,37 @@ class Renderer(object):
             The theme to build a text block for.
         """
         log.debug(u'_build_text_rectangle')
-        main_rect = None
-        footer_rect = None
+        main_rect = self.get_main_rectangle(theme)
+        footer_rect = self.get_footer_rectangle(theme)
+        self._set_text_rectangle(main_rect, footer_rect)
+
+    def get_main_rectangle(self, theme):
+        """
+        Calculates the placement and size of the main rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
-            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+            return QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
+
+    def get_footer_rectangle(self, theme):
+        """
+        Calculates the placement and size of the footer rectangle.
+
+        ``theme``
+            The theme information
+        """
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+            return QtCore.QRect(10, self.footer_start, self.width - 20,
                 self.height - self.footer_start)
         else:
-            footer_rect = QtCore.QRect(theme.font_footer_x,
+            return QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
                 theme.font_footer_height - 1)
-        self._set_text_rectangle(main_rect, footer_rect)
 
     def _set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -358,6 +380,7 @@ class Renderer(object):
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
         self.web.setHtml(html)
+        self.empty_height = self.web_frame.contentsSize().height()
 
     def _paginate_slide(self, lines, line_end):
         """
@@ -578,7 +601,7 @@ class Renderer(object):
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() <= self.page_height
+        return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):
         """

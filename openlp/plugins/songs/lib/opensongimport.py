@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,6 +31,7 @@ import re
 from lxml import objectify
 from lxml.etree import Error, LxmlError
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -128,6 +129,12 @@ class OpenSongImport(SongImport):
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
+        if root.tag != u'song':
+            self.logError(file.name, unicode(
+                translate('SongsPlugin.OpenSongImport',
+                ('Invalid OpenSong song file. Missing '
+                'song tag.'))))
+            return
         fields = dir(root)
         decode = {
             u'copyright': self.addCopyright,
@@ -238,7 +245,7 @@ class OpenSongImport(SongImport):
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                     if not len(verse_tag):
-                        verse_tag =  VerseType.Tags[VerseType.Verse]
+                        verse_tag = VerseType.Tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def

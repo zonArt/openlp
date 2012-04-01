@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -65,7 +65,7 @@ class OooImport(SongImport):
         if not isinstance(self.importSource, list):
             return
         try:
-            self.start_ooo()
+            self.startOoo()
         except NoConnectException as exc:
             self.logError(
                 self.importSource[0],
@@ -142,10 +142,9 @@ class OooImport(SongImport):
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
-                process.waitForStarted()
             self.processStarted = True
         except:
-            log.exception("start_ooo_process failed")
+            log.exception("startOooProcess failed")
 
     def openOooFile(self, filepath):
         """
@@ -171,7 +170,7 @@ class OooImport(SongImport):
                 self.importWizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except AttributeError:
-            log.exception("open_ooo_file failed: %s", url)
+            log.exception("openOooFile failed: %s", url)
         return
 
     def closeOooFile(self):

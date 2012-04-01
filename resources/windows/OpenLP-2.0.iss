@@ -65,8 +65,11 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 
 [Files]
 Source: ..\..\dist\OpenLP\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: psvince.dll; Flags: dontcopy
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+; DLL used to check if the target program is running at install time
+Source: psvince.dll; flags: dontcopy
+; psvince is installed in {app} folder, so it will be loaded at
+; uninstall time to check if the target program is running
+Source: psvince.dll; DestDir: {app}
 
 [Icons]
 Name: {group}\{#AppName}; Filename: {app}\{#AppExeName}
@@ -81,14 +84,25 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCR; Subkey: ".osz"; ValueType: string; ValueName: ""; ValueData: "OpenLP"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "OpenLP"; ValueType: string; ValueName: ""; ValueData: "OpenLP Service"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "OpenLP\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\OpenLP.exe,0"
-Root: HKCR; Subkey: "OpenLP\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\OpenLP.exe"" ""%1"""
+Root: HKCR; Subkey: .osz; ValueType: string; ValueName: ; ValueData: OpenLP; Flags: uninsdeletevalue
+Root: HKCR; Subkey: OpenLP; ValueType: string; ValueName: ; ValueData: OpenLP Service; Flags: uninsdeletekey
+Root: HKCR; Subkey: OpenLP\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\OpenLP.exe,0
+Root: HKCR; Subkey: OpenLP\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\OpenLP.exe"" ""%1"""
+
+[UninstallDelete]
+; Remove support directory created when program is run:
+Type: filesandordirs; Name: {app}\support
+; Remove program directory if empty:
+Name: {app}; Type: dirifempty
 
 [Code]
-function IsModuleLoaded(modulename: String ):  Boolean;
-external 'IsModuleLoaded@files:psvince.dll stdcall';
+// Function to call psvince.dll at install time
+function IsModuleLoadedInstall(modulename: AnsiString ):  Boolean;
+external 'IsModuleLoaded@files:psvince.dll stdcall setuponly';
+
+// Function to call psvince.dll at uninstall time
+function IsModuleLoadedUninstall(modulename: AnsiString ):  Boolean;
+external 'IsModuleLoaded@{app}\psvince.dll stdcall uninstallonly' ;
 
 function GetUninstallString(): String;
 var
@@ -133,7 +147,7 @@ end;
 function InitializeSetup(): Boolean;
 begin
   Result := true;
-  while IsModuleLoaded( 'OpenLP.exe' ) and Result do
+  while IsModuleLoadedInstall( 'OpenLP.exe' ) and Result do
   begin
     if MsgBox( 'Openlp is currently running, please close it to continue the install.',
       mbError, MB_OKCANCEL ) =  IDCANCEL then
@@ -152,4 +166,19 @@ begin
       UnInstallOldVersion();
     end;
   end;
+end;
+
+function InitializeUninstall(): Boolean;
+begin
+  Result := true;
+  while IsModuleLoadedUninstall( 'OpenLP.exe' ) and Result do
+  begin
+    if MsgBox( 'Openlp is currently running, please close it to continue the uninstall.',
+      mbError, MB_OKCANCEL ) =  IDCANCEL then
+	begin
+	  Result := false;
+	end;
+  end;
+// Unload psvince.dll, otherwise it is not deleted
+  UnloadDLL(ExpandConstant('{app}\psvince.dll'));
 end;

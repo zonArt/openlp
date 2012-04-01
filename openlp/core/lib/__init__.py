@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -32,7 +32,7 @@ import logging
 import os.path
 import types
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +42,26 @@ class MediaType(object):
     """
     Audio = 1
     Video = 2
+
+
+class SlideLimits(object):
+    """
+    Provides an enumeration for behaviour of OpenLP at the end limits of each
+    service item when pressing the up/down arrow keys
+    """
+    End = 1
+    Wrap = 2
+    Next = 3
+
+
+class ServiceItemAction(object):
+    """
+    Provides an enumeration for the required action moving between service
+    items by left/right arrow keys
+    """
+    Previous = 1
+    PreviousLastSlide = 2
+    Next = 3
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -80,6 +100,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
+        if not file_handle.read(3) == '\xEF\xBB\xBF':
+            # no BOM was found
+            file_handle.seek(0)
         content = file_handle.read()
         content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):
@@ -191,10 +214,10 @@ def validate_thumb(file_path, thumb_path):
     ``thumb_path``
         The path to the thumb.
     """
-    if not os.path.exists(unicode(thumb_path)):
+    if not os.path.exists(thumb_path):
         return False
-    image_date = os.stat(unicode(file_path)).st_mtime
-    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    image_date = os.stat(file_path).st_mtime
+    thumb_date = os.stat(thumb_path).st_mtime
     return image_date <= thumb_date
 
 def resize_image(image_path, width, height, background=u'#000000'):
@@ -294,6 +317,34 @@ def check_directory_exists(dir):
             os.makedirs(dir)
     except IOError:
         pass
+
+def create_separated_list(stringlist):
+    """
+    Returns a string that represents a join of a list of strings with a
+    localized separator. This function corresponds to
+    QLocale::createSeparatedList which was introduced in Qt 4.8 and implements
+    the algorithm from http://www.unicode.org/reports/tr35/#ListPatterns
+
+    ``stringlist``
+        List of unicode strings
+    """
+    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
+        return unicode(QtCore.QLocale().createSeparatedList(stringlist))
+    if not stringlist:
+        return u''
+    elif len(stringlist) == 1:
+        return stringlist[0]
+    elif len(stringlist) == 2:
+        return unicode(translate('OpenLP.core.lib', '%1 and %2',
+            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1]))
+    else:
+        merged = unicode(translate('OpenLP.core.lib', '%1, and %2',
+            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1]))
+        for index in reversed(range(1, len(stringlist) - 2)):
+            merged = unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: middle').arg(stringlist[index], merged))
+        return unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: start').arg(stringlist[0], merged))
 
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD

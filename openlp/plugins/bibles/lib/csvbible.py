@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,17 +28,7 @@
 The :mod:`cvsbible` modules provides a facility to import bibles from a set of
 CSV files.
 
-The module expects two mandatory files containing the books and the verses and
-will accept an optional third file containing the testaments.
-
-The format of the testament file is:
-
-    <testament_id>,<testament_name>
-
-    For example:
-
-        1,Old Testament
-        2,New Testament
+The module expects two mandatory files containing the books and the verses.
 
 The format of the books file is:
 
@@ -110,6 +100,9 @@ class CSVBible(BibleDB):
         try:
             details = get_file_encoding(self.booksfile)
             books_file = open(self.booksfile, 'r')
+            if not books_file.read(3) == '\xEF\xBB\xBF':
+                # no BOM was found
+                books_file.seek(0)
             books_reader = csv.reader(books_file, delimiter=',', quotechar='"')
             for line in books_reader:
                 if self.stop_import_flag:
@@ -144,6 +137,9 @@ class CSVBible(BibleDB):
             book_ptr = None
             details = get_file_encoding(self.versesfile)
             verse_file = open(self.versesfile, 'rb')
+            if not verse_file.read(3) == '\xEF\xBB\xBF':
+                # no BOM was found
+                verse_file.seek(0)
             verse_reader = csv.reader(verse_file, delimiter=',', quotechar='"')
             for line in verse_reader:
                 if self.stop_import_flag:

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -188,6 +188,7 @@ class ActionList(object):
     actions or categories.
     """
     instance = None
+    shortcut_map = {}
 
     def __init__(self):
         self.categories = CategoryList()
@@ -217,8 +218,6 @@ class ActionList(object):
             The weight specifies how important a category is. However, this only
             has an impact on the order the categories are displayed.
         """
-        if category is not None:
-            category = unicode(category)
         if category not in self.categories:
             self.categories.append(category)
         action.defaultShortcuts = action.shortcuts()
@@ -226,17 +225,45 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
-        if category is None:
-            # Stop here, as this action is not configurable.
-            return
         # Load the shortcut from the config.
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
         shortcuts = settings.value(action.objectName(),
             QtCore.QVariant(action.shortcuts())).toStringList()
+        settings.endGroup()
+        if not shortcuts:
+            action.setShortcuts([])
+            return
+        # We have to do this to ensure that the loaded shortcut list e. g.
+        # STRG+O (German) is converted to CTRL+O, which is only done when we
+        # convert the strings in this way (QKeySequence -> QString -> unicode).
+        shortcuts = map(QtGui.QKeySequence, shortcuts)
+        shortcuts = map(unicode, map(QtGui.QKeySequence.toString, shortcuts))
+        # Check the alternate shortcut first, to avoid problems when the
+        # alternate shortcut becomes the primary shortcut after removing the
+        # (initial) primary shortcut due to conflicts.
+        if len(shortcuts) == 2:
+            existing_actions = ActionList.shortcut_map.get(shortcuts[1], [])
+            # Check for conflicts with other actions considering the shortcut
+            # context.
+            if self._is_shortcut_available(existing_actions, action):
+                actions = ActionList.shortcut_map.get(shortcuts[1], [])
+                actions.append(action)
+                ActionList.shortcut_map[shortcuts[1]] = actions
+            else:
+                shortcuts.remove(shortcuts[1])
+        # Check the primary shortcut.
+        existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
+        # Check for conflicts with other actions considering the shortcut
+        # context.
+        if self._is_shortcut_available(existing_actions, action):
+            actions = ActionList.shortcut_map.get(shortcuts[0], [])
+            actions.append(action)
+            ActionList.shortcut_map[shortcuts[0]] = actions
+        else:
+            shortcuts.remove(shortcuts[0])
         action.setShortcuts(
             [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
-        settings.endGroup()
 
     def remove_action(self, action, category=None):
         """
@@ -244,20 +271,27 @@ class ActionList(object):
         automatically removed.
 
         ``action``
-            The QAction object to be removed.
+            The ``QAction`` object to be removed.
 
         ``category``
             The name (unicode string) of the category, which contains the
             action. Defaults to None.
         """
-        if category is not None:
-            category = unicode(category)
         if category not in self.categories:
             return
         self.categories[category].actions.remove(action)
         # Remove empty categories.
-        if len(self.categories[category].actions) == 0:
+        if not self.categories[category].actions:
             self.categories.remove(category)
+        shortcuts = map(unicode,
+            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        for shortcut in shortcuts:
+            # Remove action from the list of actions which are using this
+            # shortcut.
+            ActionList.shortcut_map[shortcut].remove(action)
+            # Remove empty entries.
+            if not ActionList.shortcut_map[shortcut]:
+                del ActionList.shortcut_map[shortcut]
 
     def add_category(self, name, weight):
         """
@@ -278,6 +312,73 @@ class ActionList(object):
             self.categories.categories.sort(key=lambda cat: cat.weight)
             return
         self.categories.add(name, weight)
+
+    def update_shortcut_map(self, action, old_shortcuts):
+        """
+        Remove the action for the given ``old_shortcuts`` from the
+        ``shortcut_map`` to ensure its up-to-dateness.
+
+        **Note**: The new action's shortcuts **must** be assigned to the given
+        ``action`` **before** calling this method.
+
+        ``action``
+            The action whose shortcuts are supposed to be updated in the
+            ``shortcut_map``.
+
+        ``old_shortcuts``
+            A list of unicode keysequences.
+        """
+        for old_shortcut in old_shortcuts:
+            # Remove action from the list of actions which are using this
+            # shortcut.
+            ActionList.shortcut_map[old_shortcut].remove(action)
+            # Remove empty entries.
+            if not ActionList.shortcut_map[old_shortcut]:
+                del ActionList.shortcut_map[old_shortcut]
+        new_shortcuts = map(unicode,
+            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        # Add the new shortcuts to the map.
+        for new_shortcut in new_shortcuts:
+            existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
+            existing_actions.append(action)
+            ActionList.shortcut_map[new_shortcut] = existing_actions
+
+    def _is_shortcut_available(self, existing_actions, action):
+        """
+        Checks if the given ``action`` may use its assigned shortcut(s) or not.
+        Returns ``True`` or ``False.
+
+        ``existing_actions``
+            A list of actions which already use a particular shortcut.
+
+        ``action``
+            The action which wants to use a particular shortcut.
+        """
+        local = action.shortcutContext() in \
+            [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
+        affected_actions = filter(lambda a: isinstance(a, QtGui.QAction),
+            self.getAllChildObjects(action.parent())) if local else []
+        for existing_action in existing_actions:
+            if action is existing_action:
+                continue
+            if not local or existing_action in affected_actions:
+                return False
+            if existing_action.shortcutContext() \
+                in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+                return False
+            elif action in self.getAllChildObjects(existing_action.parent()):
+                return False
+        return True
+    
+    def getAllChildObjects(self, qobject):
+        """
+        Goes recursively through the children of ``qobject`` and returns a list
+        of all child objects.
+        """
+        children = [child for child in qobject.children()]
+        for child in qobject.children():
+            children.append(self.getAllChildObjects(child))
+        return children
 
 
 class CategoryOrder(object):
