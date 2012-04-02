@@ -68,14 +68,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onAuthorRemoveButtonClicked)
         QtCore.QObject.connect(self.authorsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onAuthorsListViewPressed)
+            self.onAuthorsListViewClicked)
         QtCore.QObject.connect(self.topicAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
         QtCore.QObject.connect(self.topicRemoveButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicRemoveButtonClicked)
         QtCore.QObject.connect(self.topicsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onTopicListViewPressed)
+            self.onTopicListViewClicked)
         QtCore.QObject.connect(self.copyrightInsertButton,
             QtCore.SIGNAL(u'clicked()'), self.onCopyrightInsertButtonTriggered)
         QtCore.QObject.connect(self.verseAddButton,
@@ -91,7 +91,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
         QtCore.QObject.connect(self.verseListWidget,
             QtCore.SIGNAL(u'itemClicked(QTableWidgetItem*)'),
-            self.onVerseListViewPressed)
+            self.onVerseListViewClicked)
         QtCore.QObject.connect(self.verseOrderEdit,
             QtCore.SIGNAL(u'textChanged(QString)'),
             self.onVerseOrderTextChanged)
@@ -412,7 +412,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
         self.authorsListView.addItem(author_item)
 
-    def onAuthorsListViewPressed(self):
+    def onAuthorsListViewClicked(self):
         if self.authorsListView.count() > 1:
             self.authorRemoveButton.setEnabled(True)
 
@@ -463,7 +463,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 'type in a new topic and click the "Add Topic to Song" '
                 'button to add the new topic.'))
 
-    def onTopicListViewPressed(self):
+    def onTopicListViewClicked(self):
         self.topicRemoveButton.setEnabled(True)
 
     def onTopicRemoveButtonClicked(self):
@@ -472,7 +472,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         row = self.topicsListView.row(item)
         self.topicsListView.takeItem(row)
 
-    def onVerseListViewPressed(self):
+    def onVerseListViewClicked(self):
         self.verseEditButton.setEnabled(True)
         self.verseDeleteButton.setEnabled(True)
 
@@ -729,7 +729,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onPreview(self, button):
         """
-        Save and Preview button pressed.
+        Save and Preview button clicked.
         The Song is valid so as the plugin to add it to preview to see.
 
         ``button``

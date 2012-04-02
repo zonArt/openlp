@@ -112,7 +112,7 @@ class SettingsTab(QtGui.QWidget):
 
     def cancel(self):
         """
-        Reset any settings if cancel pressed
+        Reset any settings if cancel triggered
         """
         self.load()
 

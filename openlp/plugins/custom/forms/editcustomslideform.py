@@ -46,9 +46,9 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.insertButton,
-            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
         QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
 
     def setText(self, text):
         """
@@ -68,7 +68,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
 
-    def onInsertButtonPressed(self):
+    def onInsertButtonClicked(self):
         """
         Adds a slide split at the cursor.
         """
@@ -77,7 +77,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         self.slideTextEdit.insertPlainText(u'[===]\n')
         self.slideTextEdit.setFocus()
 
-    def onSplitButtonPressed(self):
+    def onSplitButtonClicked(self):
         """
         Adds a virtual split at cursor.
         """

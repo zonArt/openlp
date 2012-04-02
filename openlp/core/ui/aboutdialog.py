@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib.ui import UiStrings, create_button, create_button_box
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -71,10 +71,8 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.contributeButton = QtGui.QPushButton()
-        self.contributeButton.setIcon(
-            build_icon(u':/system/system_contribute.png'))
-        self.contributeButton.setObjectName(u'contributeButton')
+        self.contributeButton = create_button(None, u'contributeButton',
+            icon=u':/system/system_contribute.png')
         self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
             [u'close'], [self.contributeButton])
         self.aboutDialogLayout.addWidget(self.buttonBox)

@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import create_button_box
+from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_ExceptionDialog(object):
     def setupUi(self, exceptionDialog):
@@ -63,16 +63,15 @@ class Ui_ExceptionDialog(object):
         self.exceptionTextEdit.setReadOnly(True)
         self.exceptionTextEdit.setObjectName(u'exceptionTextEdit')
         self.exceptionLayout.addWidget(self.exceptionTextEdit)
-        self.sendReportButton = QtGui.QPushButton(exceptionDialog)
-        self.sendReportButton.setIcon(build_icon(
-            u':/general/general_email.png'))
-        self.sendReportButton.setObjectName(u'sendReportButton')
-        self.saveReportButton = QtGui.QPushButton(exceptionDialog)
-        self.saveReportButton.setIcon(build_icon(u':/general/general_save.png'))
-        self.saveReportButton.setObjectName(u'saveReportButton')
-        self.attachFileButton = QtGui.QPushButton(exceptionDialog)
-        self.attachFileButton.setIcon(build_icon(u':/general/general_open.png'))
-        self.attachFileButton.setObjectName(u'attachFileButton')
+        self.sendReportButton = create_button(exceptionDialog,
+            u'sendReportButton', icon=u':/general/general_email.png',
+            click=self.onSendReportButtonClicked)
+        self.saveReportButton = create_button(exceptionDialog,
+            u'saveReportButton', icon=u':/general/general_save.png',
+            click=self.onSaveReportButtonClicked)
+        self.attachFileButton = create_icon(exceptionDialog,
+            u'attachFileButton', icon=u':/general/general_open.png',
+            click=self.onAttachFileButtonClicked)
         self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
             [u'close'], [self.sendReportButton, self.saveReportButton,
             self.attachFileButton])
@@ -81,12 +80,6 @@ class Ui_ExceptionDialog(object):
         self.retranslateUi(exceptionDialog)
         QtCore.QObject.connect(self.descriptionTextEdit,
             QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
-        QtCore.QObject.connect(self.sendReportButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSendReportButtonPressed)
-        QtCore.QObject.connect(self.saveReportButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSaveReportButtonPressed)
-        QtCore.QObject.connect(self.attachFileButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAttachFileButtonPressed)
 
     def retranslateUi(self, exceptionDialog):
         exceptionDialog.setWindowTitle(

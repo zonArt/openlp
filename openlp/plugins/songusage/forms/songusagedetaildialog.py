@@ -79,7 +79,7 @@ class Ui_SongUsageDetailDialog(object):
         self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDetailDialog)
         QtCore.QObject.connect(self.saveFilePushButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             songUsageDetailDialog.defineOutputLocation)
 
     def retranslateUi(self, songUsageDetailDialog):

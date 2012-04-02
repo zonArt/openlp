@@ -271,9 +271,9 @@ class BibleMediaItem(MediaManagerItem):
             self.onAdvancedStyleComboBoxChanged)
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
+            QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.quickSearchButton,
-            QtCore.SIGNAL(u'pressed()'), self.onQuickSearchButton)
+            QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Other stuff
@@ -667,7 +667,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         Does an advanced search and saves the search results.
         """
-        log.debug(u'Advanced Search Button pressed')
+        log.debug(u'Advanced Search Button clicked')
         self.advancedSearchButton.setEnabled(False)
         Receiver.send_message(u'openlp_process_events')
         bible = unicode(self.advancedVersionComboBox.currentText())
@@ -706,7 +706,7 @@ class BibleMediaItem(MediaManagerItem):
         Does a quick search and saves the search results. Quick search can
         either be "Reference Search" or "Text Search".
         """
-        log.debug(u'Quick Search Button pressed')
+        log.debug(u'Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
         Receiver.send_message(u'openlp_process_events')
         bible = unicode(self.quickVersionComboBox.currentText())

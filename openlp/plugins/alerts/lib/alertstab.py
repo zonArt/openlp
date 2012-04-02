@@ -94,9 +94,9 @@ class AlertsTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.fontColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.fontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.timeoutSpinBox,

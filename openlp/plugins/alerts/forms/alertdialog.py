@@ -68,20 +68,16 @@ class Ui_AlertDialog(object):
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
         self.deleteButton = create_button(alertDialog, u'deleteButton',
-            role=u'delete', click=alertDialog.onDeleteButtonClicked)
-        self.deleteButton.setEnabled(False)
+            role=u'delete', enabled=False,
+            click=alertDialog.onDeleteButtonClicked)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
         displayIcon = build_icon(u':/general/general_live.png')
-        self.displayButton = QtGui.QPushButton(alertDialog)
-        self.displayButton.setEnabled(False)
-        self.displayButton.setIcon(displayIcon)
-        self.displayButton.setObjectName(u'displayButton')
-        self.displayCloseButton = QtGui.QPushButton(alertDialog)
-        self.displayCloseButton.setEnabled(False)
-        self.displayCloseButton.setIcon(displayIcon)
-        self.displayCloseButton.setObjectName(u'displayCloseButton')
+        self.displayButton = create_button(alertDialog, u'displayButton',
+            icon=displayIcon, enabled=False)
+        self.displayCloseButton = create_button(alertDialog,
+            u'displayCloseButton', icon=displayIcon, enabled=False)
         self.buttonBox = create_button_box(alertDialog, u'buttonBox',
             [u'close'], [self.displayButton, self.displayCloseButton])
         self.alertDialogLayout.addWidget(self.buttonBox, 2, 0, 1, 2)

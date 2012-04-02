@@ -61,7 +61,7 @@ class ImageTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onbackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(

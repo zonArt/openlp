@@ -72,7 +72,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         """
-        Triggered when the Directory selection button is pressed
+        Triggered when the Directory selection button is clicked
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm',
@@ -85,7 +85,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         """
-        Ok was pressed so lets save the data and run the report
+        Ok was triggered so lets save the data and run the report
         """
         log.debug(u'accept')
         path = unicode(self.fileLineEdit.text())
