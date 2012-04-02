@@ -244,8 +244,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.themeComboBox, unicode(self.song.theme_name))
         self.copyrightEdit.setText(
             self.song.copyright if self.song.copyright else u'')
-        self.verseListWidget.clear()
-        self.verseListWidget.setRowCount(0)
         self.commentsEdit.setPlainText(
             self.song.comments if self.song.comments else u'')
         self.CCLNumberEdit.setText(
@@ -345,7 +343,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             row_def = u'%s%s' % (verse_tag, verse_def[1:])
             row_label.append(row_def)
         self.verseListWidget.setVerticalHeaderLabels(row_label)
-        self.verseListWidget.setColumnWidth(0, self.width)
         self.verseListWidget.resizeRowsToContents()
         self.verseListWidget.repaint()
 
