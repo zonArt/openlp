@@ -77,7 +77,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
             return
-        if not self.selectedItems():
+        if not self.itemAt(self.mapFromGlobal(QtGui.QCursor.pos())):
             event.ignore()
             return
         drag = QtGui.QDrag(self)
