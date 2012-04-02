@@ -330,9 +330,9 @@ class AdvancedTab(SettingsTab):
         self.slideLabel.setText(translate('OpenLP.GeneralTab',
             'Behaviour of next/previous on the last/first slide:'))
         self.endSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Keep slide'))
+            translate('OpenLP.GeneralTab', '&Remain on Slide'))
         self.wrapSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Wrap arround'))
+            translate('OpenLP.GeneralTab', '&Wrap around'))
         self.nextItemRadioButton.setText(translate('OpenLP.GeneralTab',
             '&Move to next/previous service item'))
 
