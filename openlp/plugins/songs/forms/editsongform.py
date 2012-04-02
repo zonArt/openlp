@@ -248,8 +248,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.copyrightEdit.setText(self.song.copyright)
         else:
             self.copyrightEdit.setText(u'')
-        self.verseListWidget.clear()
-        self.verseListWidget.setRowCount(0)
         if self.song.comments:
             self.commentsEdit.setPlainText(self.song.comments)
         else:
@@ -355,7 +353,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             row_def = u'%s%s' % (verse_tag, verse_def[1:])
             row_label.append(row_def)
         self.verseListWidget.setVerticalHeaderLabels(row_label)
-        self.verseListWidget.setColumnWidth(0, self.width)
         self.verseListWidget.resizeRowsToContents()
         self.verseListWidget.repaint()
 

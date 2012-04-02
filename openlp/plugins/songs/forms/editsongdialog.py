@@ -69,12 +69,8 @@ class Ui_EditSongDialog(object):
         self.lyricsLabel.setObjectName(u'lyricsLabel')
         self.lyricsTabLayout.addWidget(self.lyricsLabel, 2, 0,
             QtCore.Qt.AlignTop)
-        self.verseListWidget = QtGui.QTableWidget(self.lyricsTab)
-        self.verseListWidget.horizontalHeader().setVisible(False)
-        self.verseListWidget.horizontalHeader().setStretchLastSection(True)
-        self.verseListWidget.horizontalHeader().setMinimumSectionSize(16)
+        self.verseListWidget = SingleColumnTableWidget(self.lyricsTab)
         self.verseListWidget.setAlternatingRowColors(True)
-        self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
         self.verseListWidget.setSelectionMode(
@@ -373,3 +369,24 @@ def editSongDialogComboBox(parent, name):
     comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
     comboBox.setObjectName(name)
     return comboBox
+
+class SingleColumnTableWidget(QtGui.QTableWidget):
+    """
+    Class to for a single column table widget to use for the verse table widget.
+    """
+    def __init__(self, parent):
+    	"""
+    	Constrctor
+    	"""
+        QtGui.QTableWidget.__init__(self, parent)
+        self.horizontalHeader().setVisible(False)
+        self.setColumnCount(1)
+
+    def resizeEvent(self, event):
+    	"""
+    	Resize the first column together with the widget.
+   	"""
+        QtGui.QTableWidget.resizeEvent(self, event)
+        if self.columnCount():
+            self.setColumnWidth(0, event.size().width())
+            self.resizeRowsToContents()
