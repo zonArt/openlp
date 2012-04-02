@@ -90,7 +90,7 @@ class SongExportForm(OpenLPWizard):
         """
         QtCore.QObject.connect(self.availableListWidget,
             QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
-            self.onItemTriggered)
+            self.onItemActivated)
         QtCore.QObject.connect(self.searchLineEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
@@ -312,7 +312,7 @@ class SongExportForm(OpenLPWizard):
             QtCore.QString(unicode(text)), QtCore.Qt.MatchContains)
         ]
 
-    def onItemTriggered(self, item):
+    def onItemActivated(self, item):
         """
         Called, when an item in the *availableListWidget* has been triggered.
         The item is check if it was not checked, whereas it is unchecked when it
