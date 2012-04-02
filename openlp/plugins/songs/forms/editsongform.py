@@ -233,10 +233,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadMediaFiles()
         self.song = self.manager.get_object(Song, id)
         self.titleEdit.setText(self.song.title)
-        if self.song.alternate_title:
-            self.alternativeEdit.setText(self.song.alternate_title)
-        else:
-            self.alternativeEdit.clear()
+        self.alternativeEdit.setText(
+            self.song.alternate_title if self.song.alternate_title else u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
             find_and_set_in_combo_box(
@@ -244,24 +242,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.song.theme_name:
             find_and_set_in_combo_box(
                 self.themeComboBox, unicode(self.song.theme_name))
-        if self.song.copyright:
-            self.copyrightEdit.setText(self.song.copyright)
-        else:
-            self.copyrightEdit.clear()
+        self.copyrightEdit.setText(
+            self.song.copyright if self.song.copyright else u'')
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
-        if self.song.comments:
-            self.commentsEdit.setPlainText(self.song.comments)
-        else:
-            self.commentsEdit.clear()
-        if self.song.ccli_number:
-            self.CCLNumberEdit.setText(self.song.ccli_number)
-        else:
-            self.CCLNumberEdit.clear()
-        if self.song.song_number:
-            self.songBookNumberEdit.setText(self.song.song_number)
-        else:
-            self.songBookNumberEdit.clear()
+        self.commentsEdit.setPlainText(
+            self.song.comments if self.song.comments else u'')
+        self.CCLNumberEdit.setText(
+            self.song.ccli_number if self.song.ccli_number else u'')
+        self.songBookNumberEdit.setText(
+            self.song.song_number if self.song.song_number else u'')
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
