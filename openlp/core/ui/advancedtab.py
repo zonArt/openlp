@@ -328,14 +328,13 @@ class AdvancedTab(SettingsTab):
         self.slideGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slideLabel.setText(translate('OpenLP.GeneralTab',
-            'Behavior at advance over the last slide or decrease previous the '
-            'first slide:'))
+            'Behaviour of next/previous on the last/first slide:'))
         self.endSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Keep Slide'))
+            translate('OpenLP.GeneralTab', '&Keep slide'))
         self.wrapSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Wrap Arround'))
+            translate('OpenLP.GeneralTab', '&Wrap arround'))
         self.nextItemRadioButton.setText(translate('OpenLP.GeneralTab',
-            '&Move to Next/Previous Service Item'))
+            '&Move to next/previous service item'))
 
     def load(self):
         """
