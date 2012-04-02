@@ -276,11 +276,10 @@ class BiblesTab(SettingsTab):
                 'end marks may be defined.\nThey have to be separated by a '
                 'vertical bar "|".\nPlease clear this edit line to use the '
                 'default value.'))
-        self.languageSelectionGroupBox.setTitle(
-            translate('BiblesPlugin.BiblesTab', 'Preferred Bookname Language'))
+        self.languageSelectionGroupBox.setTitle(translate('BiblesPlugin.BiblesTab',
+            'Default Search Field Language'))
         self.languageSelectionLabel.setText(translate('BiblesPlugin.BiblesTab',
-            'Choose the language in which the book names of the\nBible should '
-            'be displayed in the Bible search:'))
+            'Book name language in search field:'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible,
             translate('BiblesPlugin.BiblesTab', 'Bible language'))
         self.languageSelectionComboBox.setItemText(
@@ -288,11 +287,6 @@ class BiblesTab(SettingsTab):
             translate('BiblesPlugin.BiblesTab', 'Application language'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.English,
             translate('BiblesPlugin.BiblesTab', 'English'))
-        self.languageSelectionComboBox.setToolTip(
-            translate('BiblesPlugin.BiblesTab', 'Multiple options:\n '
-            'Bible language - the language in which the Bible book names '
-            'were imported\n Application language - the language you have '
-            'chosen for OpenLP\n English - always use English book names'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.bibleThemeComboBox.currentText()
