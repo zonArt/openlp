@@ -227,9 +227,17 @@ class OpenSongImport(SongImport):
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
+        verse_joints = {}
         for (verse_tag, verse_num, inst) in our_verse_order:
-            verse_def = u'%s%s' % (verse_tag, verse_num)
             lines = u'\n'.join(verses[verse_tag][verse_num][inst])
+            length = 0
+            while(length < len(verse_num) and verse_num[length].isnumeric()):
+                length += 1
+            verse_def = u'%s%s' % (verse_tag, verse_num[:length])
+            verse_joints[verse_def] = \
+                u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+                if verse_def in verse_joints else lines
+        for verse_def, lines in verse_joints.iteritems():
             self.addVerse(lines, verse_def)
         if not self.verses:
             self.addVerse('')
