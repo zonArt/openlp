@@ -181,7 +181,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarAction(
             u'moveUp', text=translate('OpenLP.ServiceManager', 'Move &up'),
             icon=u':/services/service_up.png',
-            tooltip=translate( 'OpenLP.ServiceManager',
+            tooltip=translate('OpenLP.ServiceManager',
             'Move item up one position in the service.'),
             shortcuts=[QtCore.Qt.Key_PageUp], category=UiStrings().Service,
             triggers=self.onServiceUp)

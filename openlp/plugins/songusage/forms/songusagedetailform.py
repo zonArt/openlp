@@ -118,7 +118,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             fileHandle = open(outname, u'w')
             for instance in usage:
                 record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
-                    u'\"%s\",\"%s\"\n' % ( instance.usagedate,
+                    u'\"%s\",\"%s\"\n' % (instance.usagedate,
                     instance.usagetime, instance.title, instance.copyright,
                     instance.ccl_number, instance.authors,
                     instance.plugin_name, instance.source)

@@ -985,11 +985,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # We have a good file, import it.
         for section_key in import_keys:
             value = import_settings.value(section_key)
-            settings.setValue(u'%s' % (section_key) ,
+            settings.setValue(u'%s' % (section_key),
                 QtCore.QVariant(value))
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue( u'file_imported' , QtCore.QVariant(import_file_name))
+        settings.setValue(u'file_imported', QtCore.QVariant(import_file_name))
         settings.setValue(u'file_date_imported',
             now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()

@@ -57,7 +57,7 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
         self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox',
             [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox , 1, 0, 1, 2)
+        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
