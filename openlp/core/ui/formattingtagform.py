@@ -50,11 +50,11 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
         QtCore.QObject.connect(self.newPushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onNewPushed)
+            QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
         QtCore.QObject.connect(self.savePushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSavedPushed)
+            QtCore.SIGNAL(u'clicked()'), self.onSavedClicked)
         QtCore.QObject.connect(self.deletePushButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDeletePushed)
+            QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             self.close)
         # Forces reloading of tags from openlp configuration.
@@ -95,7 +95,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             self.savePushButton.setEnabled(True)
             self.deletePushButton.setEnabled(True)
 
-    def onNewPushed(self):
+    def onNewClicked(self):
         """
         Add a new tag to list only if it is not a duplicate.
         """
@@ -123,7 +123,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.onRowSelected()
         self.tagTableWidget.scrollToBottom()
 
-    def onDeletePushed(self):
+    def onDeleteClicked(self):
         """
         Delete selected custom tag.
         """
@@ -133,7 +133,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self._resetTable()
         FormattingTags.save_html_tags()
 
-    def onSavedPushed(self):
+    def onSavedClicked(self):
         """
         Update Custom Tag details if not duplicate and save the data.
         """

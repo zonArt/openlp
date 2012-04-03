@@ -35,7 +35,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
     validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    media_item_combo_box
+    create_horizontal_adjusting_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -110,7 +110,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = media_item_combo_box(
+        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(
             self.presentationWidget, u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
         self.displayLayout.addRow(self.displayTypeLabel,

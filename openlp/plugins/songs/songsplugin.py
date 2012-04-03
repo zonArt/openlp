@@ -151,7 +151,7 @@ class SongsPlugin(Plugin):
             clean_song(self.manager, song)
             progressDialog.setValue(number + 1)
         self.manager.save_objects(songs)
-        self.mediaItem.onSearchTextButtonClick()
+        self.mediaItem.onSearchTextButtonClicked()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
@@ -254,7 +254,7 @@ class SongsPlugin(Plugin):
             importer = OpenLPSongImport(self.manager, filename=db)
             importer.doImport()
         progress.setValue(len(song_dbs))
-        self.mediaItem.onSearchTextButtonClick()
+        self.mediaItem.onSearchTextButtonClicked()
 
     def finalise(self):
         """

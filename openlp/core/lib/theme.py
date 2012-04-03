@@ -306,7 +306,7 @@ class ThemeXML(object):
 
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
-        xpos=0, ypos=0, width=0, height=0 , outline=u'False',
+        xpos=0, ypos=0, width=0, height=0, outline=u'False',
         outline_color=u'#ffffff', outline_pixel=2, shadow=u'False',
         shadow_color=u'#ffffff', shadow_pixel=5):
         """
@@ -550,7 +550,7 @@ class ThemeXML(object):
             element = u'size'
         return False, master, element, value
 
-    def _create_attr(self, master , element, value):
+    def _create_attr(self, master, element, value):
         """
         Create the attributes with the correct data types and name format
         """

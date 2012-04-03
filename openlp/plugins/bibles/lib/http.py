@@ -363,7 +363,7 @@ class CWExtract(object):
 
 
 class HTTPBible(BibleDB):
-    log.info(u'%s HTTPBible loaded' , __name__)
+    log.info(u'%s HTTPBible loaded', __name__)
 
     def __init__(self, parent, **kwargs):
         """

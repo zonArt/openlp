@@ -96,11 +96,11 @@ class ThemesTab(SettingsTab):
         self.rightLayout.addWidget(self.LevelGroupBox)
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SongLevelRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSongLevelButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onSongLevelButtonClicked)
         QtCore.QObject.connect(self.ServiceLevelRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onServiceLevelButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onServiceLevelButtonClicked)
         QtCore.QObject.connect(self.GlobalLevelRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onGlobalLevelButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onGlobalLevelButtonClicked)
         QtCore.QObject.connect(self.DefaultComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -158,13 +158,13 @@ class ThemesTab(SettingsTab):
     def postSetUp(self):
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
-    def onSongLevelButtonPressed(self):
+    def onSongLevelButtonClicked(self):
         self.theme_level = ThemeLevel.Song
 
-    def onServiceLevelButtonPressed(self):
+    def onServiceLevelButtonClicked(self):
         self.theme_level = ThemeLevel.Service
 
-    def onGlobalLevelButtonPressed(self):
+    def onGlobalLevelButtonClicked(self):
         self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
