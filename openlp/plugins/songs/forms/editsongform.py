@@ -193,19 +193,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song = None
         self.initialise()
         self.songTabWidget.setCurrentIndex(0)
-        self.titleEdit.setText(u'')
-        self.alternativeEdit.setText(u'')
-        self.copyrightEdit.setText(u'')
-        self.verseOrderEdit.setText(u'')
-        self.commentsEdit.setText(u'')
-        self.CCLNumberEdit.setText(u'')
+        self.titleEdit.clear()
+        self.alternativeEdit.clear()
+        self.copyrightEdit.clear()
+        self.verseOrderEdit.clear()
+        self.commentsEdit.clear()
+        self.CCLNumberEdit.clear()
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
         self.authorsListView.clear()
         self.topicsListView.clear()
         self.audioListWidget.clear()
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
-        self.songBookNumberEdit.setText(u'')
+        self.songBookNumberEdit.clear()
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
@@ -233,10 +233,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadMediaFiles()
         self.song = self.manager.get_object(Song, id)
         self.titleEdit.setText(self.song.title)
-        if self.song.alternate_title:
-            self.alternativeEdit.setText(self.song.alternate_title)
-        else:
-            self.alternativeEdit.setText(u'')
+        self.alternativeEdit.setText(
+            self.song.alternate_title if self.song.alternate_title else u'')
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
             find_and_set_in_combo_box(
@@ -244,24 +242,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.song.theme_name:
             find_and_set_in_combo_box(
                 self.themeComboBox, unicode(self.song.theme_name))
-        if self.song.copyright:
-            self.copyrightEdit.setText(self.song.copyright)
-        else:
-            self.copyrightEdit.setText(u'')
-        self.verseListWidget.clear()
-        self.verseListWidget.setRowCount(0)
-        if self.song.comments:
-            self.commentsEdit.setPlainText(self.song.comments)
-        else:
-            self.commentsEdit.setPlainText(u'')
-        if self.song.ccli_number:
-            self.CCLNumberEdit.setText(self.song.ccli_number)
-        else:
-            self.CCLNumberEdit.setText(u'')
-        if self.song.song_number:
-            self.songBookNumberEdit.setText(self.song.song_number)
-        else:
-            self.songBookNumberEdit.setText(u'')
+        self.copyrightEdit.setText(
+            self.song.copyright if self.song.copyright else u'')
+        self.commentsEdit.setPlainText(
+            self.song.comments if self.song.comments else u'')
+        self.CCLNumberEdit.setText(
+            self.song.ccli_number if self.song.ccli_number else u'')
+        self.songBookNumberEdit.setText(
+            self.song.song_number if self.song.song_number else u'')
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
@@ -355,7 +343,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             row_def = u'%s%s' % (verse_tag, verse_def[1:])
             row_label.append(row_def)
         self.verseListWidget.setVerticalHeaderLabels(row_label)
-        self.verseListWidget.setColumnWidth(0, self.width)
         self.verseListWidget.resizeRowsToContents()
         self.verseListWidget.repaint()
 
