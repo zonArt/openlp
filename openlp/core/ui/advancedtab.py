@@ -233,22 +233,22 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'textChanged(QString)'),
             self.updateServiceNameExample)
         QtCore.QObject.connect(self.serviceNameRevertButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onServiceNameRevertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onServiceNameRevertButtonClicked)
         QtCore.QObject.connect(self.defaultColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultColorButtonClicked)
         QtCore.QObject.connect(self.defaultBrowseButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultBrowseButtonClicked)
         QtCore.QObject.connect(self.defaultRevertButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultRevertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
         QtCore.QObject.connect(self.endSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEndSlideButtonClicked)
         QtCore.QObject.connect(self.wrapSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onWrapSlideButtonClicked)
         QtCore.QObject.connect(self.nextItemRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onnextItemButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onnextItemButtonClicked)
 
     def retranslateUi(self):
         """
@@ -485,11 +485,11 @@ class AdvancedTab(SettingsTab):
         self.serviceNameTime.setEnabled(service_day is not 7)
         self.updateServiceNameExample(None)
 
-    def onServiceNameRevertButtonPressed(self):
+    def onServiceNameRevertButtonClicked(self):
         self.serviceNameEdit.setText(self.defaultServiceName)
         self.serviceNameEdit.setFocus()
 
-    def onDefaultColorButtonPressed(self):
+    def onDefaultColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.defaultColor), self)
         if new_color.isValid():
@@ -497,7 +497,7 @@ class AdvancedTab(SettingsTab):
             self.defaultColorButton.setStyleSheet(
                 u'background-color: %s' % self.defaultColor)
 
-    def onDefaultBrowseButtonPressed(self):
+    def onDefaultBrowseButtonClicked(self):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
             UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
@@ -507,7 +507,7 @@ class AdvancedTab(SettingsTab):
             self.defaultFileEdit.setText(filename)
         self.defaultFileEdit.setFocus()
 
-    def onDefaultRevertButtonPressed(self):
+    def onDefaultRevertButtonClicked(self):
         self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
         self.defaultFileEdit.setFocus()
 
@@ -520,11 +520,11 @@ class AdvancedTab(SettingsTab):
         """
         self.displayChanged = True
 
-    def onEndSlideButtonPressed(self):
+    def onEndSlideButtonClicked(self):
         self.slide_limits = SlideLimits.End
 
-    def onWrapSlideButtonPressed(self):
+    def onWrapSlideButtonClicked(self):
         self.slide_limits = SlideLimits.Wrap
 
-    def onnextItemButtonPressed(self):
+    def onnextItemButtonClicked(self):
         self.slide_limits = SlideLimits.Next

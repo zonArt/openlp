@@ -75,7 +75,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self.onSearchTextButtonClick)
+            self.onSearchTextButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -154,7 +154,7 @@ class CustomMediaItem(MediaManagerItem):
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
 
     def onEditClick(self):
         """
@@ -166,7 +166,7 @@ class CustomMediaItem(MediaManagerItem):
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
 
     def onDeleteClick(self):
         """
@@ -190,7 +190,7 @@ class CustomMediaItem(MediaManagerItem):
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
@@ -226,7 +226,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.raw_footer = raw_footer
         return True
 
-    def onSearchTextButtonClick(self):
+    def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
         QtCore.QSettings().setValue(u'%s/last search type' %
             self.settingsSection,
@@ -257,7 +257,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         search_length = 2
         if len(text) > search_length:
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
         elif len(text) == 0:
             self.onClearTextButtonClick()
 
@@ -266,7 +266,7 @@ class CustomMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.searchTextEdit.clear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
 
     def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,

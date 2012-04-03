@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
@@ -49,10 +49,10 @@ class Ui_SettingsDialog(object):
         self.stackedLayout = QtGui.QStackedLayout()
         self.stackedLayout.setObjectName(u'stackedLayout')
         self.dialogLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
-        self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
+        self.buttonBox = create_button_box(settingsDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
-        QtCore.QMetaObject.connectSlotsByName(settingsDialog)
         QtCore.QObject.connect(self.settingListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.tabChanged)
