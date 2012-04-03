@@ -837,9 +837,28 @@ class BibleMediaItem(MediaManagerItem):
             second_permissions = self.plugin.manager.get_meta_data(
                 second_bible, u'Permissions').value
         items = []
+        language_selection = self.plugin.manager.get_meta_data(
+                bible, u'Bookname language')
+        if language_selection:
+            language_selection = int(language_selection.value)
+        if language_selection == None or language_selection == -1:
+            language_selection = QtCore.QSettings().value(
+                self.settingsSection + u'/bookname language',
+                QtCore.QVariant(0)).toInt()[0]
         for count, verse in enumerate(search_results):
+            if language_selection == LanguageSelection.Bible:
+                book = verse.book.name
+            elif language_selection == LanguageSelection.Application:
+                booknames = BibleStrings().Booknames
+                data = BiblesResourcesDB.get_book_by_id(
+                verse.book.book_reference_id)
+                book = unicode(booknames[data[u'abbreviation']])
+            elif language_selection == LanguageSelection.English:
+                data = BiblesResourcesDB.get_book_by_id(
+                    verse.book.book_reference_id)
+                book = data[u'name']
             data = {
-                'book': QtCore.QVariant(verse.book.name),
+                'book': QtCore.QVariant(book),
                 'chapter': QtCore.QVariant(verse.chapter),
                 'verse': QtCore.QVariant(verse.verse),
                 'bible': QtCore.QVariant(bible),
@@ -861,11 +880,11 @@ class BibleMediaItem(MediaManagerItem):
                     log.exception(u'The second_search_results does not have as '
                     'many verses as the search_results.')
                     break
-                bible_text = u'%s %d%s%d (%s, %s)' % (verse.book.name,
+                bible_text = u'%s %d%s%d (%s, %s)' % (book,
                     verse.chapter, verse_separator, verse.verse, version,
                     second_version)
             else:
-                bible_text = u'%s %d%s%d (%s)' % (verse.book.name,
+                bible_text = u'%s %d%s%d (%s)' % (book,
                     verse.chapter, verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
