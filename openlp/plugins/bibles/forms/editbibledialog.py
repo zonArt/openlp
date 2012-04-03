@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 from openlp.plugins.bibles.lib import LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
@@ -133,7 +133,8 @@ class Ui_EditBibleDialog(object):
         self.bibleTabWidget.addTab(self.bookNameTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.bibleTabWidget)
-        self.buttonBox = create_accept_reject_button_box(editBibleDialog)
+        self.buttonBox = create_button_box(editBibleDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editBibleDialog)
         QtCore.QMetaObject.connectSlotsByName(editBibleDialog)
