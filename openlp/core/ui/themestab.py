@@ -71,24 +71,28 @@ class ThemesTab(SettingsTab):
         self.SongLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.SongLevelRadioButton.setObjectName(u'SongLevelRadioButton')
         self.SongLevelLabel = QtGui.QLabel(self.LevelGroupBox)
-        self.SongLevelLabel.setWordWrap(True)
         self.SongLevelLabel.setObjectName(u'SongLevelLabel')
         self.LevelLayout.addRow(self.SongLevelRadioButton, self.SongLevelLabel)
         self.ServiceLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.ServiceLevelRadioButton.setObjectName(u'ServiceLevelRadioButton')
         self.ServiceLevelLabel = QtGui.QLabel(self.LevelGroupBox)
-        self.ServiceLevelLabel.setWordWrap(True)
         self.ServiceLevelLabel.setObjectName(u'ServiceLevelLabel')
         self.LevelLayout.addRow(self.ServiceLevelRadioButton,
             self.ServiceLevelLabel)
         self.GlobalLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
-        self.GlobalLevelRadioButton.setChecked(True)
         self.GlobalLevelRadioButton.setObjectName(u'GlobalLevelRadioButton')
         self.GlobalLevelLabel = QtGui.QLabel(self.LevelGroupBox)
-        self.GlobalLevelLabel.setWordWrap(True)
         self.GlobalLevelLabel.setObjectName(u'GlobalLevelLabel')
         self.LevelLayout.addRow(self.GlobalLevelRadioButton,
             self.GlobalLevelLabel)
+        label_top_margin = (self.SongLevelRadioButton.sizeHint().height() -
+            self.SongLevelLabel.sizeHint().height()) / 2
+        for label in [self.SongLevelLabel, self.ServiceLevelLabel,
+            self.GlobalLevelLabel]:
+            rect = label.rect()
+            rect.setTop(rect.top() + label_top_margin)
+            label.setFrameRect(rect)
+            label.setWordWrap(True)
         self.rightLayout.addWidget(self.LevelGroupBox)
         self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SongLevelRadioButton,
@@ -131,9 +135,8 @@ class ThemesTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         self.theme_level = settings.value(
-            u'theme level', QtCore.QVariant(ThemeLevel.Global)).toInt()[0]
-        self.global_theme = unicode(settings.value(
-            u'global theme', QtCore.QVariant(u'')).toString())
+            u'theme level', ThemeLevel.Song).toInt()[0]
+        self.global_theme = unicode(settings.value(u'global theme').toString())
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)

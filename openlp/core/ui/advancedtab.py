@@ -195,33 +195,20 @@ class AdvancedTab(SettingsTab):
         # Service Item Slide Limits
         self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.slideGroupBox.setObjectName(u'slideGroupBox')
-        self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
-        self.slideLayout.setLabelAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.slideLayout.setFormAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.slideLayout = QtGui.QVBoxLayout(self.slideGroupBox)
         self.slideLayout.setObjectName(u'slideLayout')
+        self.slideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.slideLabel.setWordWrap(True)
+        self.slideLayout.addWidget(self.slideLabel)
         self.endSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
         self.endSlideRadioButton.setObjectName(u'endSlideRadioButton')
-        self.endSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.endSlideLabel.setWordWrap(True)
-        self.endSlideLabel.setObjectName(u'endSlideLabel')
-        self.slideLayout.addRow(self.endSlideRadioButton, self.endSlideLabel)
+        self.slideLayout.addWidget(self.endSlideRadioButton)
         self.wrapSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
         self.wrapSlideRadioButton.setObjectName(u'wrapSlideRadioButton')
-        self.wrapSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.wrapSlideLabel.setWordWrap(True)
-        self.wrapSlideLabel.setObjectName(u'wrapSlideLabel')
-        self.slideLayout.addRow(self.wrapSlideRadioButton,
-            self.wrapSlideLabel)
+        self.slideLayout.addWidget(self.wrapSlideRadioButton)
         self.nextItemRadioButton = QtGui.QRadioButton(self.slideGroupBox)
-        self.nextItemRadioButton.setChecked(True)
         self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
-        self.nextItemLabel = QtGui.QLabel(self.slideGroupBox)
-        self.nextItemLabel.setWordWrap(True)
-        self.nextItemLabel.setObjectName(u'nextItemLabel')
-        self.slideLayout.addRow(self.nextItemRadioButton,
-            self.nextItemLabel)
+        self.slideLayout.addWidget(self.nextItemRadioButton)
         self.rightLayout.addWidget(self.slideGroupBox)
         self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
         self.x11GroupBox.setObjectName(u'x11GroupBox')
@@ -340,22 +327,14 @@ class AdvancedTab(SettingsTab):
         # Slide Limits
         self.slideGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
+        self.slideLabel.setText(translate('OpenLP.GeneralTab',
+            'Behavior of next/previous on the last/first slide:'))
         self.endSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&End Slide'))
-        self.endSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'stop at the top and bottom slides of each Service Item.'))
+            translate('OpenLP.GeneralTab', '&Remain on Slide'))
         self.wrapSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Wrap Slide'))
-        self.wrapSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'wrap around at the top and bottom slides of each Service Item.'))
-        self.nextItemRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Next Item'))
-        self.nextItemLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'advance to the next or previous Service Item from the '
-            'top and bottom slides of each Service Item.'))
+            translate('OpenLP.GeneralTab', '&Wrap around'))
+        self.nextItemRadioButton.setText(translate('OpenLP.GeneralTab',
+            '&Move to next/previous service item'))
 
     def load(self):
         """

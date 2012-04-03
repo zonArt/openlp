@@ -53,6 +53,7 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.colorLayout)
         self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
         self.informationLabel.setObjectName(u'InformationLabel')
+        self.informationLabel.setWordWrap(True)
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
@@ -69,8 +70,8 @@ class ImageTab(SettingsTab):
         self.backgroundColorLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Provides border where image '
-            'is not the correct dimensions for the screen when resized.'))
+            translate('ImagesPlugin.ImageTab', 'Visible background for images '
+            'with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

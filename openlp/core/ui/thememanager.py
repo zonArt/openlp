@@ -220,6 +220,8 @@ class ThemeManager(QtGui.QWidget):
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % new_name
                 self.themeListWidget.item(count).setText(name)
+                self.deleteToolbarAction.setVisible(
+                    item not in self.themeListWidget.selectedItems())
 
     def changeGlobalFromScreen(self, index=-1):
         """
