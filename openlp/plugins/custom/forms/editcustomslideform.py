@@ -72,16 +72,25 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         Adds a slide split at the cursor.
         """
-        if self.slideTextEdit.textCursor().columnNumber() != 0:
-            self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[===]\n')
+        self.insertSingleLineTextAtCursor(u'[===]')
         self.slideTextEdit.setFocus()
 
     def onSplitButtonPressed(self):
         """
         Adds a virtual split at cursor.
         """
-        if self.slideTextEdit.textCursor().columnNumber() != 0:
-            self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[---]')
+        self.insertSingleLineTextAtCursor(u'[---]')
         self.slideTextEdit.setFocus()
+
+    def insertSingleLineTextAtCursor(self, text):
+        """
+        Adds ``text`` in a single line at the cursor position.
+        """
+        full_text = self.slideTextEdit.toPlainText()
+        position = self.slideTextEdit.textCursor().position()
+        if position and full_text[position-1] != u'\n':
+             text = u'\n' + text
+        if position ==  len(full_text) or full_text[position] != u'\n':
+             text += u'\n'
+        self.slideTextEdit.insertPlainText(text)
+
