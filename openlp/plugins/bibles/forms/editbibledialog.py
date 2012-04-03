@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box
 from openlp.plugins.bibles.lib import LanguageSelection, BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
@@ -36,7 +36,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 class Ui_EditBibleDialog(object):
     def setupUi(self, editBibleDialog):
         editBibleDialog.setObjectName(u'editBibleDialog')
-        editBibleDialog.resize(650, 400)
+        editBibleDialog.resize(600, 400)
         editBibleDialog.setWindowIcon(
             build_icon(u':/icon/openlp-logo-16x16.png'))
         editBibleDialog.setModal(True)
@@ -166,11 +166,11 @@ class Ui_EditBibleDialog(object):
         self.languageSelectionComboBox.setItemText(LanguageSelection.English+1,
             translate('BiblesPlugin.EditBibleForm', 'English'))
         self.languageSelectionComboBox.setToolTip(
-            translate('BiblesPlugin.EditBibleForm', 'Multiple options:\n '
+            translate('BiblesPlugin.EditBibleForm', 'Multiple options:\n'
             'General Settings - the option choosen in settings section\n'
             'Bible language - the language in which the Bible book names '
-            'were imported\n Application language - the language you have '
-            'chosen for OpenLP\n English - always use English book names'))
+            'were imported\nApplication language - the language you have '
+            'chosen for OpenLP\nEnglish - always use English book names'))
         for book in BiblesResourcesDB.get_books():
             self.bookNameLabel[book[u'abbreviation']].setText(
                 u'%s:' % unicode(self.booknames[book[u'abbreviation']]))

@@ -433,7 +433,7 @@ class BibleMediaItem(MediaManagerItem):
             bible, u'Bookname language')
         if language_selection:
             language_selection = int(language_selection.value)
-        if not language_selection or language_selection == -1:
+        if language_selection == None or language_selection == -1:
             language_selection = QtCore.QSettings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
@@ -508,9 +508,14 @@ class BibleMediaItem(MediaManagerItem):
                                 secondbook.book_reference_id:
                                 book_data_temp.append(book)
                     book_data = book_data_temp
-                language_selection = QtCore.QSettings().value(
-                    self.settingsSection + u'/bookname language',
-                    QtCore.QVariant(0)).toInt()[0]
+                language_selection = self.plugin.manager.get_meta_data(
+                    bible, u'Bookname language')
+                if language_selection:
+                    language_selection = int(language_selection.value)
+                if language_selection == None or language_selection == -1:
+                    language_selection = QtCore.QSettings().value(
+                        self.settingsSection + u'/bookname language',
+                        QtCore.QVariant(0)).toInt()[0]
                 if language_selection == LanguageSelection.Bible:
                     books = [book.name + u' ' for book in book_data]
                 elif language_selection == LanguageSelection.Application:

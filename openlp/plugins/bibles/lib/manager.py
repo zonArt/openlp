@@ -327,9 +327,13 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = QtCore.QSettings().value(
-            self.settingsSection + u'/bookname language',
-            QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.get_meta_data(bible, u'Bookname language')
+        if language_selection:
+            language_selection = int(language_selection.value)
+        if language_selection == None or language_selection == -1:
+            language_selection = QtCore.QSettings().value(
+                self.settingsSection + u'/bookname language',
+                QtCore.QVariant(0)).toInt()[0]
         reflist = parse_reference(versetext, self.db_cache[bible],
             language_selection, book_ref_id)
         if reflist:
@@ -415,7 +419,7 @@ class BibleManager(object):
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions, 
-        bookname_language):
+        bookname_language=-1):
         """
         Saves the bibles meta data.
         """

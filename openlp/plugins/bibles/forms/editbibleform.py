@@ -26,16 +26,15 @@
 ###############################################################################
 
 import logging
+import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
-    create_separated_list
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.utils import AppLocation
 from editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -89,9 +88,8 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             self.scrollArea.setParent(None)
         else:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
-                'You could customize the Book Names of this Bible.\nTo use '
-                'the Book Names below, you have to choose the option "Bible '
-                'language" in general settings or explicit for this Bible.'))
+                'To use the customized Book Names, choose the option "Bible '
+                'language"\nin general settings or explicit for this Bible.'))
             for book in BiblesResourcesDB.get_books():
                 self.books[book[u'abbreviation']] = self.manager.get_book_by_id(
                     self.bible, book[u'id'])
@@ -125,12 +123,12 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.permissions = unicode(self.permissionsEdit.text())
         self.bookname_language = \
             self.languageSelectionComboBox.currentIndex()-1
+        for error in self.validate_error:
+            self.changeBackgroundColor(error, 'white')
         if not self.validateMeta():
             save = False
         if not self.webbible and save:
             custom_names = {}
-            for error in self.validate_error:
-                self.changeBackgroundColor(error, 'white')
             for abbr, book in self.books.iteritems():
                 if book:
                     custom_names[abbr] = unicode(self.bookNameEdit[abbr].text())
@@ -139,6 +137,8 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                             save = False
                             break
         if save:
+            Receiver.send_message(u'openlp_process_events')
+            Receiver.send_message(u'cursor_busy')
             self.manager.save_meta_data(self.bible, self.version,
                 self.copyright, self.permissions, self.bookname_language)
             if not self.webbible:
@@ -148,6 +148,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                             book.name = custom_names[abbr]
                             self.manager.update_book(self.bible, book)
             self.bible = None
+            Receiver.send_message(u'cursor_normal')
             QtGui.QDialog.accept(self)
 
     def validateMeta(self):
@@ -155,27 +156,33 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Validate the Meta before saving.
         """
         if not self.version:
+            self.changeBackgroundColor(self.versionNameEdit, 'red')
+            self.validate_error = [self.versionNameEdit]
+            self.versionNameEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to specify a version name for your Bible.'))
-            self.versionNameEdit.setFocus()
             return False
         elif not self.copyright:
+            self.changeBackgroundColor(self.copyrightEdit, 'red')
+            self.validate_error = [self.copyrightEdit]
+            self.copyrightEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to set a copyright for your Bible. '
                 'Bibles in the Public Domain need to be marked as such.'))
-            self.copyrightEdit.setFocus()
             return False
         elif self.manager.exists(self.version) and \
             self.manager.get_meta_data(self.bible, u'Version').value != \
             self.version:
+            self.changeBackgroundColor(self.versionNameEdit, 'red')
+            self.validate_error = [self.versionNameEdit]
+            self.versionNameEdit.setFocus()
             critical_error_message_box(
                 translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
                 translate('BiblesPlugin.BibleEditForm',
                 'This Bible already exists. Please import '
                 'a different Bible or first delete the existing one.'))
-            self.versionNameEdit.setFocus()
             return False
         return True
 
@@ -183,6 +190,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         Validate a book.
         """
+        book_regex = re.compile(u'[\d]*[^\d]+$')
         if not new_bookname:
             self.changeBackgroundColor(self.bookNameEdit[abbreviation], 'red')
             self.validate_error = [self.bookNameEdit[abbreviation]]
@@ -192,9 +200,21 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 'You need to specify a book name for "%s".')) %
                 self.booknames[abbreviation])
             return False
+        elif not book_regex.match(new_bookname):
+            self.changeBackgroundColor(self.bookNameEdit[abbreviation], 'red')
+            self.validate_error = [self.bookNameEdit[abbreviation]]
+            self.bookNameEdit[abbreviation].setFocus()
+            critical_error_message_box(UiStrings().EmptyField,
+                unicode(translate('BiblesPlugin.BibleEditForm',
+                'The book name "%s" is not correct.\nDecimal digits only could '
+                'be used at the beginning and\nmust be followed by one or more '
+                'non-digit characters')) % new_bookname)
+            return False
         for abbr, book in self.books.iteritems():
             if book:
-                if book.name == new_bookname:
+                if abbr == abbreviation:
+                    continue
+                if unicode(self.bookNameEdit[abbr].text()) == new_bookname:
                     self.changeBackgroundColor(self.bookNameEdit[abbreviation],
                         'red')
                     self.bookNameEdit[abbreviation].setFocus()
