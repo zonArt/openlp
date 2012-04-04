@@ -69,7 +69,7 @@ class Ui_ExceptionDialog(object):
         self.saveReportButton = create_button(exceptionDialog,
             u'saveReportButton', icon=u':/general/general_save.png',
             click=self.onSaveReportButtonClicked)
-        self.attachFileButton = create_icon(exceptionDialog,
+        self.attachFileButton = create_button(exceptionDialog,
             u'attachFileButton', icon=u':/general/general_open.png',
             click=self.onAttachFileButtonClicked)
         self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
