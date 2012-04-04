@@ -213,9 +213,7 @@ class BibleDB(QtCore.QObject, Manager):
             The book object
         """
         log.debug(u'BibleDB.update_book("%s")', book.name)
-        if self.save_object(book):
-            return True
-        return False
+        return self.save_object(book)
 
     def delete_book(self, db_book):
         """

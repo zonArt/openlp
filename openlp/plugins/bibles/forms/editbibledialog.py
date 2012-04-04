@@ -53,40 +53,29 @@ class Ui_EditBibleDialog(object):
         self.metaTabLayout.setObjectName(u'metaTabLayout')
         self.versionNameLabel = QtGui.QLabel(self.metaTab)
         self.versionNameLabel.setObjectName(u'versionNameLabel')
-        self.metaTabLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.versionNameLabel)
         self.versionNameEdit = QtGui.QLineEdit(self.metaTab)
         self.versionNameEdit.setObjectName(u'versionNameEdit')
         self.versionNameLabel.setBuddy(self.versionNameEdit)
-        self.metaTabLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.versionNameEdit)
+        self.metaTabLayout.addRow(self.versionNameLabel, self.versionNameEdit)
         self.copyrightLabel = QtGui.QLabel(self.metaTab)
         self.copyrightLabel.setObjectName(u'copyrightLabel')
-        self.metaTabLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.copyrightLabel)
         self.copyrightEdit = QtGui.QLineEdit(self.metaTab)
         self.copyrightEdit.setObjectName(u'copyrightEdit')
         self.copyrightLabel.setBuddy(self.copyrightEdit)
-        self.metaTabLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
-            self.copyrightEdit)
+        self.metaTabLayout.addRow(self.copyrightLabel, self.copyrightEdit)
         self.permissionsLabel = QtGui.QLabel(self.metaTab)
         self.permissionsLabel.setObjectName(u'permissionsLabel')
-        self.metaTabLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.permissionsLabel)
         self.permissionsEdit = QtGui.QLineEdit(self.metaTab)
         self.permissionsEdit.setObjectName(u'permissionsEdit')
         self.permissionsLabel.setBuddy(self.permissionsEdit)
-        self.metaTabLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
-            self.permissionsEdit)
+        self.metaTabLayout.addRow(self.permissionsLabel, self.permissionsEdit)
         self.languageSelectionLabel = QtGui.QLabel(self.metaTab)
         self.languageSelectionLabel.setObjectName(u'languageSelectionLabel')
-        self.metaTabLayout.setWidget(3, QtGui.QFormLayout.LabelRole,
-            self.languageSelectionLabel)
         self.languageSelectionComboBox = QtGui.QComboBox(self.metaTab)
         self.languageSelectionComboBox.setObjectName(
             u'languageSelectionComboBox')
         self.languageSelectionComboBox.addItems([u'', u'', u'', u''])
-        self.metaTabLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
+        self.metaTabLayout.addRow(self.languageSelectionLabel, 
             self.languageSelectionComboBox)
         self.bibleTabWidget.addTab(self.metaTab, u'')
         # Book name tab
@@ -102,34 +91,29 @@ class Ui_EditBibleDialog(object):
         self.scrollArea.setObjectName(u'scrollArea')
         self.scrollArea.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.bookNameGroupBox = QtGui.QWidget(self.scrollArea)
-        self.bookNameGroupBox.setObjectName(u'bookNameGroupBox')
-        self.bookNameGroupBoxLayout = QtGui.QFormLayout(self.bookNameGroupBox)
-        self.bookNameGroupBoxLayout.setObjectName(u'bookNameGroupBoxLayout')
+        self.bookNameWidget = QtGui.QWidget(self.scrollArea)
+        self.bookNameWidget.setObjectName(u'bookNameWidget')
+        self.bookNameWidgetLayout = QtGui.QFormLayout(self.bookNameWidget)
+        self.bookNameWidgetLayout.setObjectName(u'bookNameWidgetLayout')
         self.bookNameLabel = {}
         self.bookNameEdit= {}
         x = 0
         for book in BiblesResourcesDB.get_books():
             self.bookNameLabel[book[u'abbreviation']] = QtGui.QLabel(
-                self.bookNameGroupBox)
+                self.bookNameWidget)
             self.bookNameLabel[book[u'abbreviation']].setObjectName(
                 u'bookNameLabel[%s]' % book[u'abbreviation'])
-            self.bookNameGroupBoxLayout.setWidget(x,
-                QtGui.QFormLayout.LabelRole,
-                self.bookNameLabel[book[u'abbreviation']])
             self.bookNameEdit[book[u'abbreviation']] = QtGui.QLineEdit(
-                self.bookNameGroupBox)
+                self.bookNameWidget)
             self.bookNameEdit[book[u'abbreviation']].setObjectName(
                 u'bookNameEdit[%s]' % book[u'abbreviation'])
-            self.bookNameGroupBoxLayout.setWidget(x,
-                QtGui.QFormLayout.FieldRole,
+            self.bookNameWidgetLayout.addRow(
+                self.bookNameLabel[book[u'abbreviation']], 
                 self.bookNameEdit[book[u'abbreviation']])
-            x = x+1
-        self.scrollArea.setWidget(self.bookNameGroupBox)
+            x = x + 1
+        self.scrollArea.setWidget(self.bookNameWidget)
         self.bookNameTabLayout.addWidget(self.scrollArea)
-        self.spacer = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Expanding)
-        self.bookNameTabLayout.addItem(self.spacer)
+        self.bookNameTabLayout.addStretch()
         self.bibleTabWidget.addTab(self.bookNameTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.bibleTabWidget)
@@ -156,15 +140,16 @@ class Ui_EditBibleDialog(object):
             self.bibleTabWidget.indexOf(self.bookNameTab),
             translate('SongsPlugin.EditBibleForm', 'Custom Book Names'))
         self.languageSelectionLabel.setText(
-            translate('BiblesPlugin.EditBibleForm', 'Bookname language:'))
+            translate('BiblesPlugin.EditBibleForm', 'Book name language:'))
         self.languageSelectionComboBox.setItemText(0,
             translate('BiblesPlugin.EditBibleForm', 'General Settings'))
-        self.languageSelectionComboBox.setItemText(LanguageSelection.Bible+1,
-            translate('BiblesPlugin.EditBibleForm', 'Bible language'))
+        self.languageSelectionComboBox.setItemText(LanguageSelection.Bible + 1,
+            translate('BiblesPlugin.EditBibleForm', 'Bible Language'))
         self.languageSelectionComboBox.setItemText(
-            LanguageSelection.Application+1,
-            translate('BiblesPlugin.EditBibleForm', 'Application language'))
-        self.languageSelectionComboBox.setItemText(LanguageSelection.English+1,
+            LanguageSelection.Application + 1,
+            translate('BiblesPlugin.EditBibleForm', 'Application Language'))
+        self.languageSelectionComboBox.setItemText(
+            LanguageSelection.English + 1,
             translate('BiblesPlugin.EditBibleForm', 'English'))
         self.languageSelectionComboBox.setToolTip(
             translate('BiblesPlugin.EditBibleForm', 'Multiple options:\n'

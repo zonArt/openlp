@@ -52,8 +52,6 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.mediaitem = mediaitem
         self.validate_error = []
         self.booknames = BibleStrings().Booknames
-        # can this be automated?
-        self.width = 400
         self.setupUi(self)
         self.manager = manager
 
@@ -76,7 +74,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             self.bible, u'Bookname language')
         if self.bookname_language:
             self.languageSelectionComboBox.setCurrentIndex(
-                int(self.bookname_language.value)+1)
+                int(self.bookname_language.value) + 1)
         self.books = {}
         self.webbible = self.manager.get_meta_data(self.bible,
             u'download source')
@@ -97,10 +95,10 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     self.bookNameEdit[book[u'abbreviation']].setText(
                         self.books[book[u'abbreviation']].name)
                 else:
-                    self.bookNameGroupBoxLayout.removeWidget(
+                    self.bookNameWidgetLayout.removeWidget(
                         self.bookNameLabel[book[u'abbreviation']])
                     self.bookNameLabel[book[u'abbreviation']].setParent(None)
-                    self.bookNameGroupBoxLayout.removeWidget(
+                    self.bookNameWidgetLayout.removeWidget(
                         self.bookNameEdit[book[u'abbreviation']])
                     self.bookNameEdit[book[u'abbreviation']].setParent(None)
 
@@ -122,9 +120,9 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.copyright = unicode(self.copyrightEdit.text())
         self.permissions = unicode(self.permissionsEdit.text())
         self.bookname_language = \
-            self.languageSelectionComboBox.currentIndex()-1
+            self.languageSelectionComboBox.currentIndex() - 1
         for error in self.validate_error:
-            self.changeBackgroundColor(error, 'white')
+            self.changeBackgroundColor(error)
         if not self.validateMeta():
             save = False
         if not self.webbible and save:
@@ -156,7 +154,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Validate the Meta before saving.
         """
         if not self.version:
-            self.changeBackgroundColor(self.versionNameEdit, 'red')
+            self.changeBackgroundColor(self.versionNameEdit, u'red')
             self.validate_error = [self.versionNameEdit]
             self.versionNameEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
@@ -164,7 +162,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 'You need to specify a version name for your Bible.'))
             return False
         elif not self.copyright:
-            self.changeBackgroundColor(self.copyrightEdit, 'red')
+            self.changeBackgroundColor(self.copyrightEdit, u'red')
             self.validate_error = [self.copyrightEdit]
             self.copyrightEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
@@ -175,7 +173,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         elif self.manager.exists(self.version) and \
             self.manager.get_meta_data(self.bible, u'Version').value != \
             self.version:
-            self.changeBackgroundColor(self.versionNameEdit, 'red')
+            self.changeBackgroundColor(self.versionNameEdit, u'red')
             self.validate_error = [self.versionNameEdit]
             self.versionNameEdit.setFocus()
             critical_error_message_box(
@@ -192,7 +190,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         book_regex = re.compile(u'[\d]*[^\d]+$')
         if not new_bookname:
-            self.changeBackgroundColor(self.bookNameEdit[abbreviation], 'red')
+            self.changeBackgroundColor(self.bookNameEdit[abbreviation], u'red')
             self.validate_error = [self.bookNameEdit[abbreviation]]
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
@@ -201,7 +199,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 self.booknames[abbreviation])
             return False
         elif not book_regex.match(new_bookname):
-            self.changeBackgroundColor(self.bookNameEdit[abbreviation], 'red')
+            self.changeBackgroundColor(self.bookNameEdit[abbreviation], u'red')
             self.validate_error = [self.bookNameEdit[abbreviation]]
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
@@ -216,9 +214,9 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     continue
                 if unicode(self.bookNameEdit[abbr].text()) == new_bookname:
                     self.changeBackgroundColor(self.bookNameEdit[abbreviation],
-                        'red')
+                        u'red')
                     self.bookNameEdit[abbreviation].setFocus()
-                    self.changeBackgroundColor(self.bookNameEdit[abbr], 'red')
+                    self.changeBackgroundColor(self.bookNameEdit[abbr], u'red')
                     self.validate_error = [self.bookNameEdit[abbr],
                         self.bookNameEdit[abbreviation]]
                     critical_error_message_box(
@@ -230,10 +228,11 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     return False
         return True
 
-    def changeBackgroundColor(self, lineedit, color):
+    def changeBackgroundColor(self, lineedit, color=None):
         """
         Change the Background Color of the given LineEdit
         """
-        pal = QtGui.QPalette(lineedit.palette())
-        pal.setColor(QtGui.QPalette.Base,QtGui.QColor(color))
+        pal = QtGui.QPalette(self.palette())
+        if color:
+            pal.setColor(QtGui.QPalette.Base, QtGui.QColor(color))
         lineedit.setPalette(pal)

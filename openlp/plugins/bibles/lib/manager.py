@@ -328,7 +328,7 @@ class BibleManager(object):
         language_selection = self.get_meta_data(bible, u'Bookname language')
         if language_selection:
             language_selection = int(language_selection.value)
-        if language_selection == None or language_selection == -1:
+        if language_selection is None or language_selection == -1:
             language_selection = QtCore.QSettings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]

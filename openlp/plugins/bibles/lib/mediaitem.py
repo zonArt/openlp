@@ -435,7 +435,7 @@ class BibleMediaItem(MediaManagerItem):
             bible, u'Bookname language')
         if language_selection:
             language_selection = int(language_selection.value)
-        if language_selection == None or language_selection == -1:
+        if language_selection is None or language_selection == -1:
             language_selection = QtCore.QSettings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
@@ -514,7 +514,7 @@ class BibleMediaItem(MediaManagerItem):
                     bible, u'Bookname language')
                 if language_selection:
                     language_selection = int(language_selection.value)
-                if language_selection == None or language_selection == -1:
+                if language_selection is None or language_selection == -1:
                     language_selection = QtCore.QSettings().value(
                         self.settingsSection + u'/bookname language',
                         QtCore.QVariant(0)).toInt()[0]
@@ -554,7 +554,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.quickVersionComboBox.currentText())
         elif self.advancedTab.isVisible():
             bible = unicode(self.advancedVersionComboBox.currentText())
-        if bible != u'':
+        if bible:
             self.editBibleForm = EditBibleForm(self, self.plugin.formparent,
                 self.plugin.manager)
             self.editBibleForm.loadBible(bible)
@@ -566,7 +566,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = unicode(self.quickVersionComboBox.currentText())
         elif self.advancedTab.isVisible():
             bible = unicode(self.advancedVersionComboBox.currentText())
-        if bible != u'':
+        if bible:
             if QtGui.QMessageBox.question(self, UiStrings().ConfirmDelete,
                 unicode(translate('BiblesPlugin.MediaItem',
                 'Are you sure you want to delete "%s"?')) % bible,
@@ -843,7 +843,7 @@ class BibleMediaItem(MediaManagerItem):
                 bible, u'Bookname language')
         if language_selection:
             language_selection = int(language_selection.value)
-        if language_selection == None or language_selection == -1:
+        if language_selection is None or language_selection == -1:
             language_selection = QtCore.QSettings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
@@ -882,12 +882,11 @@ class BibleMediaItem(MediaManagerItem):
                     log.exception(u'The second_search_results does not have as '
                     'many verses as the search_results.')
                     break
-                bible_text = u'%s %d%s%d (%s, %s)' % (book,
-                    verse.chapter, verse_separator, verse.verse, version,
-                    second_version)
+                bible_text = u'%s %d%s%d (%s, %s)' % (book, verse.chapter,
+                    verse_separator, verse.verse, version, second_version)
             else:
-                bible_text = u'%s %d%s%d (%s)' % (book,
-                    verse.chapter, verse_separator, verse.verse, version)
+                bible_text = u'%s %d%s%d (%s)' % (book, verse.chapter,
+                    verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             items.append(bible_verse)
