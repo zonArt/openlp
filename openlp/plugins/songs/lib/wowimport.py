@@ -53,7 +53,7 @@ class WowImport(SongImport):
     * A block can be a verse, chorus or bridge.
 
     File Header:
-        Bytes are counted from one, i.e. the first byte is byte 1. The first 19 
+        Bytes are counted from one, i.e. the first byte is byte 1. The first 19
         bytes should be "WoW File \\nSong Words" The bytes after this and up to
         the 56th byte, can change but no real meaning has been found. The
         56th byte specifies how many blocks there are. The first block starts

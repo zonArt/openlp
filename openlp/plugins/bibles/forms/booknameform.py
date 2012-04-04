@@ -42,11 +42,11 @@ log = logging.getLogger(__name__)
 
 class BookNameForm(QDialog, Ui_BookNameDialog):
     """
-    Class to manage a dialog which help the user to refer a book name a 
+    Class to manage a dialog which help the user to refer a book name a
     to a english book name
     """
     log.info(u'BookNameForm loaded')
-    
+
     def __init__(self, parent = None):
         """
         Constructor
@@ -111,7 +111,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         self.currentBookLabel.setText(unicode(name))
         self.correspondingComboBox.setFocus()
         return QDialog.exec_(self)
-    
+
     def accept(self):
         if self.correspondingComboBox.currentText() == u'':
             critical_error_message_box(
