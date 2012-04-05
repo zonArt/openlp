@@ -77,7 +77,7 @@ class OpenSongBible(BibleDB):
                         'failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(unicode(book.attrib[u'n']), 
+                db_book = self.create_book(unicode(book.attrib[u'n']),
                     book_ref_id, book_details[u'testament_id'])
                 for chapter in book.c:
                     if self.stop_import_flag:

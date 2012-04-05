@@ -1310,7 +1310,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
        # Migrate Wrap Settings to Slide Limits Settings
-        if QtCore.QSettings().contains(self.generalSettingsSection + 
+        if QtCore.QSettings().contains(self.generalSettingsSection +
             u'/enable slide loop'):
             if QtCore.QSettings().value(self.generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
@@ -1319,7 +1319,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 QtCore.QSettings().setValue(self.advancedlSettingsSection +
                     u'/slide limits', QtCore.QVariant(SlideLimits.End))
-            QtCore.QSettings().remove(self.generalSettingsSection + 
+            QtCore.QSettings().remove(self.generalSettingsSection +
                 u'/enable slide loop')
             Receiver.send_message(u'slidecontroller_update_slide_limits')
         settings = QtCore.QSettings()

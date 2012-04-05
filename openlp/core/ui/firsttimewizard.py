@@ -263,5 +263,5 @@ class Ui_FirstTimeWizard(object):
             'Select default theme:'))
         self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Starting configuration process...'))
-        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1, 
+        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1,
             translate('OpenLP.FirstTimeWizard', 'Finish'))

@@ -259,14 +259,14 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
 
     ``reference``
         A string. The Bible reference to parse.
-    
+
     ``bible``
         A object. The Bible database object.
-    
+
     ``language_selection``
         An int. The language selection the user has choosen in settings
         section.
-    
+
     ``book_ref_id``
         A string. The book reference id.
 
@@ -382,7 +382,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                         lambda value: regex_book.match(value[u'name']), books)
                     if not book_list:
                         book_list = books
-                    for value in book_list:        
+                    for value in book_list:
                         if bible.get_book_by_book_ref_id(value[u'id']):
                             book_ref_id = value[u'id']
                             break

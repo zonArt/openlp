@@ -261,7 +261,7 @@ def create_horizontal_adjusting_combo_box(parent, name):
 def create_button(parent, name, **kwargs):
     """
     Return an button with the object name set and the given parameters.
-   
+
     ``parent``
         A QtCore.QWidget for the buttons parent (required).
 

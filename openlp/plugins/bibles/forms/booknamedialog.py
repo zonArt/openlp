@@ -86,20 +86,20 @@ class Ui_BookNameDialog(object):
         self.retranslateUi(bookNameDialog)
 
     def retranslateUi(self, bookNameDialog):
-        bookNameDialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog', 
+        bookNameDialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog',
             'Select Book Name'))
-        self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'The following book name cannot be matched up internally. Please '
             'select the corresponding English name from the list.'))
-        self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'Current name:'))
         self.correspondingLabel.setText(translate(
             'BiblesPlugin.BookNameDialog', 'Corresponding name:'))
-        self.optionsGroupBox.setTitle(translate('BiblesPlugin.BookNameDialog', 
+        self.optionsGroupBox.setTitle(translate('BiblesPlugin.BookNameDialog',
             'Show Books From'))
         self.oldTestamentCheckBox.setText(translate(
             'BiblesPlugin.BookNameDialog', 'Old Testament'))
         self.newTestamentCheckBox.setText(translate(
             'BiblesPlugin.BookNameDialog', 'New Testament'))
-        self.apocryphaCheckBox.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.apocryphaCheckBox.setText(translate('BiblesPlugin.BookNameDialog',
             'Apocrypha'))

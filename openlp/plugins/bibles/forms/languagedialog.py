@@ -71,8 +71,8 @@ class Ui_LanguageDialog(object):
         languageDialog.setWindowTitle(
             translate('BiblesPlugin.LanguageDialog', 'Select Language'))
         self.bibleLabel.setText(translate('BiblesPlugin.LanguageDialog', ''))
-        self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+        self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog',
             'OpenLP is unable to determine the language of this translation '
             'of the Bible. Please select the language from the list below.'))
-        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog',
             'Language:'))
