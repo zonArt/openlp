@@ -82,12 +82,11 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
                 'This is a webbible.\nIt is not possible to customize the Book '
                 'Names.'))
-            self.bookNameTabLayout.removeWidget(self.scrollArea)
-            self.scrollArea.setParent(None)
+            self.scrollArea.hide()
         else:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
                 'To use the customized Book Names, choose the option "Bible '
-                'language"\nin general settings or explicit for this Bible.'))
+                'language"\nin global settings or explicit for this Bible.'))
             for book in BiblesResourcesDB.get_books():
                 self.books[book[u'abbreviation']] = self.manager.get_book_by_id(
                     self.bible, book[u'id'])
