@@ -244,9 +244,9 @@ class BibleMediaItem(MediaManagerItem):
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
         QtCore.QObject.connect(self.quickVersionComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onQuickVersionComboBox)
+            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.quickSecondComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onQuickSecondComboBox)
+            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.advancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
         QtCore.QObject.connect(self.advancedSecondComboBox,
@@ -379,14 +379,13 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
         bibles = self.plugin.manager.get_bibles().keys()
+        bibles = filter(None, bibles)
         bibles.sort(cmp=locale.strcoll)
         # Load the bibles into the combo boxes.
-        for bible in bibles:
-            if bible:
-                self.quickVersionComboBox.addItem(bible)
-                self.quickSecondComboBox.addItem(bible)
-                self.advancedVersionComboBox.addItem(bible)
-                self.advancedSecondComboBox.addItem(bible)
+        self.quickVersionComboBox.addItems(bibles)
+        self.quickSecondComboBox.addItems(bibles)
+        self.advancedVersionComboBox.addItems(bibles)
+        self.advancedSecondComboBox.addItems(bibles)
         # set the default value
         bible = QtCore.QSettings().value(
             self.settingsSection + u'/advanced bible',
@@ -523,12 +522,6 @@ class BibleMediaItem(MediaManagerItem):
                         books.append(data[u'name'] + u' ')
                 books.sort(cmp=locale.strcoll)
         set_case_insensitive_completer(books, self.quickSearchEdit)
-
-    def onQuickVersionComboBox(self):
-        self.updateAutoCompleter()
-
-    def onQuickSecondComboBox(self):
-        self.updateAutoCompleter()
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -998,8 +991,7 @@ class BibleMediaItem(MediaManagerItem):
             # last verse of the chapter or the current verse is not the
             # first one of the chapter.
             return True
-        else:
-            return False
+        return False
 
     def formatVerse(self, old_chapter, chapter, verse):
         """
