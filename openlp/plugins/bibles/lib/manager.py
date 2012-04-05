@@ -309,7 +309,7 @@ class BibleManager(object):
                 - Genesis 1:1-10,15-20
                 - Genesis 1:1-2:10
                 - Genesis 1:1-10,2:1-10
-        
+
         ``book_ref_id``
             Unicode. The book referece id from the book in versetext.
             For second bible this is necessary.

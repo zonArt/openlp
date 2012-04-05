@@ -257,7 +257,7 @@ def clean_string(string):
     Strips punctuation from the passed string to assist searching
     """
     return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
-    
+
 def clean_title(title):
     """
     Cleans the song title by removing Unicode control chars groups C0 & C1,

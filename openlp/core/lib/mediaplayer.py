@@ -29,7 +29,7 @@ from openlp.core.ui.media import MediaState
 
 class MediaPlayer(object):
     """
-    This is the base class media Player class to provide OpenLP with a pluggable media display 
+    This is the base class media Player class to provide OpenLP with a pluggable media display
     framework.
     """
 
@@ -65,7 +65,7 @@ class MediaPlayer(object):
 
     def resize(self, display):
         """
-        If the main display size or position is changed, the media widgets 
+        If the main display size or position is changed, the media widgets
         should also resized
         """
         pass
