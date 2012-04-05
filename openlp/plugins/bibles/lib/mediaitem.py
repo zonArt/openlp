@@ -377,13 +377,13 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSecondComboBox.addItem(u'')
         # Get all bibles and sort the list.
         bibles = self.plugin.manager.get_bibles().keys()
+        bibles = filter(None, bibles)
         bibles.sort(cmp=locale.strcoll)
         # Load the bibles into the combo boxes.
-        tmp_bibles = [bible for bible in bibles if bible]
-        self.quickVersionComboBox.addItems(tmp_bibles)
-        self.quickSecondComboBox.addItems(tmp_bibles)
-        self.advancedVersionComboBox.addItems(tmp_bibles)
-        self.advancedSecondComboBox.addItems(tmp_bibles)
+        self.quickVersionComboBox.addItems(bibles)
+        self.quickSecondComboBox.addItems(bibles)
+        self.advancedVersionComboBox.addItems(bibles)
+        self.advancedSecondComboBox.addItems(bibles)
         # set the default value
         bible = QtCore.QSettings().value(
             self.settingsSection + u'/advanced bible',
