@@ -30,7 +30,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.theme import HorizontalType, BackgroundType, \
     BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_combo
+from openlp.core.lib.ui import UiStrings, add_welcome_page, \
+    create_valign_selection_widgets
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -257,8 +258,11 @@ class Ui_ThemeWizard(object):
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
-        create_valign_combo(themeWizard, self.alignmentPage,
-            self.alignmentLayout)
+        self.verticalLabel, self.verticalComboBox = \
+            create_valign_selection_widgets(self.alignmentPage)
+        self.verticalLabel.setObjectName(u'verticalLabel')
+        self.verticalComboBox.setObjectName(u'verticalComboBox')
+        self.alignmentLayout.addRow(self.verticalLabel, self.verticalComboBox)
         self.transitionsLabel = QtGui.QLabel(self.alignmentPage)
         self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)
@@ -413,7 +417,6 @@ class Ui_ThemeWizard(object):
         QtCore.QObject.connect(self.footerPositionCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QMetaObject.connectSlotsByName(themeWizard)
 
     def retranslateUi(self, themeWizard):
         themeWizard.setWindowTitle(

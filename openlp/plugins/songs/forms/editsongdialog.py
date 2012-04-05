@@ -28,8 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
-    create_up_down_push_button_set
+from openlp.core.lib.ui import UiStrings, create_button_box, create_button
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_EditSongDialog(object):
@@ -69,12 +68,8 @@ class Ui_EditSongDialog(object):
         self.lyricsLabel.setObjectName(u'lyricsLabel')
         self.lyricsTabLayout.addWidget(self.lyricsLabel, 2, 0,
             QtCore.Qt.AlignTop)
-        self.verseListWidget = QtGui.QTableWidget(self.lyricsTab)
-        self.verseListWidget.horizontalHeader().setVisible(False)
-        self.verseListWidget.horizontalHeader().setStretchLastSection(True)
-        self.verseListWidget.horizontalHeader().setMinimumSectionSize(16)
+        self.verseListWidget = SingleColumnTableWidget(self.lyricsTab)
         self.verseListWidget.setAlternatingRowColors(True)
-        self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
         self.verseListWidget.setSelectionMode(
@@ -272,8 +267,10 @@ class Ui_EditSongDialog(object):
         self.audioRemoveAllButton.setObjectName(u'audioRemoveAllButton')
         self.audioButtonsLayout.addWidget(self.audioRemoveAllButton)
         self.audioButtonsLayout.addStretch(1)
-        self.upButton, self.downButton = \
-            create_up_down_push_button_set(self)
+        self.upButton = create_button(self, u'upButton', role=u'up',
+            click=self.onUpButtonClicked)
+        self.downButton = create_button(self, u'downButton', role=u'down',
+            click=self.onDownButtonClicked)
         self.audioButtonsLayout.addWidget(self.upButton)
         self.audioButtonsLayout.addWidget(self.downButton)
         self.audioLayout.addLayout(self.audioButtonsLayout)
@@ -286,11 +283,11 @@ class Ui_EditSongDialog(object):
         self.warningLabel.setObjectName(u'warningLabel')
         self.warningLabel.setVisible(False)
         self.bottomLayout.addWidget(self.warningLabel)
-        self.buttonBox = create_accept_reject_button_box(editSongDialog)
+        self.buttonBox = create_button_box(editSongDialog, u'buttonBox',
+            [u'cancel', u'save'])
         self.bottomLayout.addWidget(self.buttonBox)
         self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
-        QtCore.QMetaObject.connectSlotsByName(editSongDialog)
 
     def retranslateUi(self, editSongDialog):
         editSongDialog.setWindowTitle(
@@ -373,3 +370,24 @@ def editSongDialogComboBox(parent, name):
     comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
     comboBox.setObjectName(name)
     return comboBox
+
+class SingleColumnTableWidget(QtGui.QTableWidget):
+    """
+    Class to for a single column table widget to use for the verse table widget.
+    """
+    def __init__(self, parent):
+    	"""
+    	Constrctor
+    	"""
+        QtGui.QTableWidget.__init__(self, parent)
+        self.horizontalHeader().setVisible(False)
+        self.setColumnCount(1)
+
+    def resizeEvent(self, event):
+    	"""
+    	Resize the first column together with the widget.
+   	"""
+        QtGui.QTableWidget.resizeEvent(self, event)
+        if self.columnCount():
+            self.setColumnWidth(0, event.size().width())
+            self.resizeRowsToContents()

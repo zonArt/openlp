@@ -183,7 +183,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Detects Page changes and updates as approprate.
         """
-        # Keep track of the page we are at.  Pressing "Cancel" causes pageId
+        # Keep track of the page we are at.  Triggering "Cancel" causes pageId
         # to be a -1.
         if pageId != -1:
             self.lastId = pageId
@@ -239,7 +239,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def onCancelButtonClicked(self):
         """
-        Process the pressing of the cancel button.
+        Process the triggering of the cancel button.
         """
         if self.lastId == FirstTimePage.NoInternet or \
             (self.lastId <= FirstTimePage.Plugins and \
@@ -251,7 +251,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def onNoInternetFinishButtonClicked(self):
         """
-        Process the pressing of the "Finish" button on the No Internet page.
+        Process the triggering of the "Finish" button on the No Internet page.
         """
         Receiver.send_message(u'cursor_busy')
         self._performWizard()

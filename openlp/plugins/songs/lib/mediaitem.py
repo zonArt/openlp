@@ -119,7 +119,7 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self.onSearchTextButtonClick)
+            self.onSearchTextButtonClicked)
 
     def addCustomContextActions(self):
         create_widget_action(self.listView, separator=True)
@@ -173,7 +173,7 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
-    def onSearchTextButtonClick(self):
+    def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
         QtCore.QSettings().setValue(u'%s/last search type' %
             self.settingsSection,
@@ -251,7 +251,7 @@ class SongMediaItem(MediaManagerItem):
             item = self.buildServiceItem(self.editItem)
             self.plugin.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
         log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
@@ -315,7 +315,7 @@ class SongMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.searchTextEdit.clear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
 
     def onSearchTextEditChanged(self, text):
         """
@@ -330,7 +330,7 @@ class SongMediaItem(MediaManagerItem):
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
                 search_length = 3
             if len(text) > search_length:
-                self.onSearchTextButtonClick()
+                self.onSearchTextButtonClicked()
             elif len(text) == 0:
                 self.onClearTextButtonClick()
 
@@ -426,7 +426,7 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
 
     def onCloneClick(self):
         """
@@ -578,7 +578,7 @@ class SongMediaItem(MediaManagerItem):
             if len(item.background_audio) > 0:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
         elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)

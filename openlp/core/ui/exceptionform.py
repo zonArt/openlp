@@ -133,7 +133,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system = system + u'Desktop: GNOME\n'
         return (openlp_version, description, traceback, system, libraries)
 
-    def onSaveReportButtonPressed(self):
+    def onSaveReportButtonClicked(self):
         """
         Saving exception log and system informations to a file.
         """
@@ -169,7 +169,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             finally:
                 report_file.close()
 
-    def onSendReportButtonPressed(self):
+    def onSendReportButtonClicked(self):
         """
         Opening systems default email client and inserting exception log and
         system informations.
@@ -210,7 +210,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             unicode(translate('OpenLP.ExceptionDialog',
             'Description characters to enter : %s')) % count)
 
-    def onAttachFileButtonPressed(self):
+    def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(
             self,translate('ImagePlugin.ExceptionDialog',
             'Select Attachment'),

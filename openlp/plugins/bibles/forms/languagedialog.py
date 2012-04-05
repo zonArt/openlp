@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 class Ui_LanguageDialog(object):
     def setupUi(self, languageDialog):
@@ -60,18 +61,11 @@ class Ui_LanguageDialog(object):
         self.languageComboBox.setObjectName(u'languageComboBox')
         self.languageHBoxLayout.addWidget(self.languageComboBox)
         self.languageLayout.addLayout(self.languageHBoxLayout)
-        self.buttonBox = QtGui.QDialogButtonBox(languageDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.languageLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'), 
-            languageDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), 
-            languageDialog.reject)
 
     def retranslateUi(self, languageDialog):
         languageDialog.setWindowTitle(

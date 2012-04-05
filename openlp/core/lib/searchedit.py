@@ -189,7 +189,7 @@ class SearchEdit(QtGui.QLineEdit):
 
     def _onClearButtonClicked(self):
         """
-        Internally implemented slot to react to the clear button being pressed
+        Internally implemented slot to react to the clear button being clicked
         to clear the line edit. Once it has cleared the line edit, it emits the
         ``cleared()`` signal so that an application can react to the clearing
         of the line edit.

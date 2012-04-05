@@ -326,7 +326,7 @@ def clean_song(manager, song):
         # Rebuild the verse order, to convert translated verse tags, which might
         # have been added prior to 1.9.5.
         if song.verse_order:
-            order = song.verse_order.strip().split()
+            order = CONTROL_CHARS.sub(u'', song.verse_order).strip().split()
         else:
             order = []
         new_order = []
@@ -358,6 +358,8 @@ def clean_song(manager, song):
             author = Author.populate(
                 display_name=name, last_name=u'', first_name=u'')
         song.authors.append(author)
+    if song.copyright:
+        song.copyright = CONTROL_CHARS.sub(u'', song.copyright).strip()
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab

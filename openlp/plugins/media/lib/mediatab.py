@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.ui import UiStrings, create_up_down_push_button_set
+from openlp.core.lib.ui import UiStrings, create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -87,8 +87,10 @@ class MediaTab(SettingsTab):
         self.orderingButtonLayout = QtGui.QVBoxLayout()
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
         self.orderingButtonLayout.addStretch(1)
-        self.orderingUpButton, self.orderingDownButton = \
-            create_up_down_push_button_set(self)
+        self.orderingUpButton = create_button(self, u'orderingUpButton',
+            role=u'up', click=self.onUpButtonClicked)
+        self.orderingDownButton = create_button(self, u'orderingDownButton',
+            role=u'down', click=self.onDownButtonClicked)
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
         self.orderingButtonLayout.addWidget(self.orderingDownButton)
         self.orderingButtonLayout.addStretch(1)
