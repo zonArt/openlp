@@ -36,7 +36,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 class Ui_EditBibleDialog(object):
     def setupUi(self, editBibleDialog):
         editBibleDialog.setObjectName(u'editBibleDialog')
-        editBibleDialog.resize(600, 400)
+        editBibleDialog.resize(520, 400)
         editBibleDialog.setWindowIcon(
             build_icon(u':/icon/openlp-logo-16x16.png'))
         editBibleDialog.setModal(True)
@@ -103,6 +103,7 @@ class Ui_EditBibleDialog(object):
         self.bookNameTabLayout.setObjectName(u'bookNameTabLayout')
         self.bookNameNotice = QtGui.QLabel(self.bookNameTab)
         self.bookNameNotice.setObjectName(u'bookNameNotice')
+        self.bookNameNotice.setWordWrap(True)
         self.bookNameTabLayout.addWidget(self.bookNameNotice)
         self.scrollArea = QtGui.QScrollArea(self.bookNameTab)
         self.scrollArea.setWidgetResizable(True)
@@ -162,12 +163,12 @@ class Ui_EditBibleDialog(object):
             'Book name language in search field, search results and on '
             'display:'))
         self.languageSelectionComboBox.setItemText(0,
-            translate('BiblesPlugin.EditBibleForm', 'Global Settings'))
+            translate('BiblesPlugin.EditBibleForm', 'Global settings'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible + 1,
-            translate('BiblesPlugin.EditBibleForm', 'Bible Language'))
+            translate('BiblesPlugin.EditBibleForm', 'Bible language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.Application + 1,
-            translate('BiblesPlugin.EditBibleForm', 'Application Language'))
+            translate('BiblesPlugin.EditBibleForm', 'Application language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.English + 1,
             translate('BiblesPlugin.EditBibleForm', 'English'))

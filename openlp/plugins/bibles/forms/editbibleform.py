@@ -50,7 +50,6 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.mediaitem = mediaitem
-        self.validate_error = []
         self.booknames = BibleStrings().Booknames
         self.setupUi(self)
         self.manager = manager
@@ -80,13 +79,14 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             u'download source')
         if self.webbible:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
-                'This is a webbible.\nIt is not possible to customize the Book '
-                'Names.'))
+                'This is a Web Download Bible.\nIt is not possible to '
+                'customize the Book Names.'))
             self.scrollArea.hide()
         else:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
-                'To use the customized Book Names, choose the option "Bible '
-                'language"\nin global settings or explicit for this Bible.'))
+                'To use the customized book names, "Bible language" must be '
+                'selected on the Meta Data tab or, if "Global settings" is '
+                'selected, on the Bible page in Configure OpenLP.'))
             for book in BiblesResourcesDB.get_books():
                 self.books[book[u'abbreviation']] = self.manager.get_book_by_id(
                     self.bible, book[u'id'])
@@ -114,55 +114,46 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Exit Dialog and save data
         """
         log.debug(u'BibleEditForm.accept')
-        save = True
         self.version = unicode(self.versionNameEdit.text())
         self.copyright = unicode(self.copyrightEdit.text())
         self.permissions = unicode(self.permissionsEdit.text())
         self.bookname_language = \
             self.languageSelectionComboBox.currentIndex() - 1
-        for error in self.validate_error:
-            self.changeBackgroundColor(error)
         if not self.validateMeta():
-            save = False
-        if not self.webbible and save:
+            return
+        if not self.webbible:
             custom_names = {}
             for abbr, book in self.books.iteritems():
                 if book:
                     custom_names[abbr] = unicode(self.bookNameEdit[abbr].text())
                     if book.name != custom_names[abbr]:
                         if not self.validateBook(custom_names[abbr], abbr):
-                            save = False
-                            break
-        if save:
-            Receiver.send_message(u'openlp_process_events')
-            Receiver.send_message(u'cursor_busy')
-            self.manager.save_meta_data(self.bible, self.version,
-                self.copyright, self.permissions, self.bookname_language)
-            if not self.webbible:
-                for abbr, book in self.books.iteritems():
-                    if book:
-                        if book.name != custom_names[abbr]:
-                            book.name = custom_names[abbr]
-                            self.manager.update_book(self.bible, book)
-            self.bible = None
-            Receiver.send_message(u'cursor_normal')
-            QtGui.QDialog.accept(self)
+                            return
+        Receiver.send_message(u'openlp_process_events')
+        Receiver.send_message(u'cursor_busy')
+        self.manager.save_meta_data(self.bible, self.version,
+            self.copyright, self.permissions, self.bookname_language)
+        if not self.webbible:
+            for abbr, book in self.books.iteritems():
+                if book:
+                    if book.name != custom_names[abbr]:
+                        book.name = custom_names[abbr]
+                        self.manager.update_book(self.bible, book)
+        self.bible = None
+        Receiver.send_message(u'cursor_normal')
+        QtGui.QDialog.accept(self)
 
     def validateMeta(self):
         """
         Validate the Meta before saving.
         """
         if not self.version:
-            self.changeBackgroundColor(self.versionNameEdit, u'red')
-            self.validate_error = [self.versionNameEdit]
             self.versionNameEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to specify a version name for your Bible.'))
             return False
         elif not self.copyright:
-            self.changeBackgroundColor(self.copyrightEdit, u'red')
-            self.validate_error = [self.copyrightEdit]
             self.copyrightEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
@@ -172,8 +163,6 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         elif self.manager.exists(self.version) and \
             self.manager.get_meta_data(self.bible, u'Version').value != \
             self.version:
-            self.changeBackgroundColor(self.versionNameEdit, u'red')
-            self.validate_error = [self.versionNameEdit]
             self.versionNameEdit.setFocus()
             critical_error_message_box(
                 translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
@@ -189,8 +178,6 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         book_regex = re.compile(u'[\d]*[^\d]+$')
         if not new_bookname:
-            self.changeBackgroundColor(self.bookNameEdit[abbreviation], u'red')
-            self.validate_error = [self.bookNameEdit[abbreviation]]
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 unicode(translate('BiblesPlugin.BibleEditForm',
@@ -198,40 +185,24 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 self.booknames[abbreviation])
             return False
         elif not book_regex.match(new_bookname):
-            self.changeBackgroundColor(self.bookNameEdit[abbreviation], u'red')
-            self.validate_error = [self.bookNameEdit[abbreviation]]
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 unicode(translate('BiblesPlugin.BibleEditForm',
-                'The book name "%s" is not correct.\nDecimal digits only could '
-                'be used at the beginning and\nmust be followed by one or more '
-                'non-digit characters')) % new_bookname)
+                'The book name "%s" is not correct.\nNumbers can only be used '
+                'at the beginning and must\nbe followed by one or more '
+                'non-numeric characters.')) % new_bookname)
             return False
         for abbr, book in self.books.iteritems():
             if book:
                 if abbr == abbreviation:
                     continue
                 if unicode(self.bookNameEdit[abbr].text()) == new_bookname:
-                    self.changeBackgroundColor(self.bookNameEdit[abbreviation],
-                        u'red')
                     self.bookNameEdit[abbreviation].setFocus()
-                    self.changeBackgroundColor(self.bookNameEdit[abbr], u'red')
-                    self.validate_error = [self.bookNameEdit[abbr],
-                        self.bookNameEdit[abbreviation]]
                     critical_error_message_box(
                         translate('BiblesPlugin.BibleEditForm',
-                        'Book Name Exists Twice'),
+                        'Duplicate Book Name'),
                         unicode(translate('BiblesPlugin.BibleEditForm',
-                        'The Book Name "%s" exists twice. Please change one.'))
+                        'The Book Name "%s" has been entered more than once.'))
                         % new_bookname)
                     return False
         return True
-
-    def changeBackgroundColor(self, lineedit, color=None):
-        """
-        Change the Background Color of the given LineEdit
-        """
-        pal = QtGui.QPalette(self.palette())
-        if color:
-            pal.setColor(QtGui.QPalette.Base, QtGui.QColor(color))
-        lineedit.setPalette(pal)
