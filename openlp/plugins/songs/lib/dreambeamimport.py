@@ -108,30 +108,52 @@ class DreamBeamImport(SongImport):
                         ('Invalid DreamBeam song file. Missing '
                             'DreamSong tag.'))))
                     continue
-                if hasattr(song_xml, u'Title'):
-                    self.title = unicode(song_xml.Title.text)
-                if hasattr(song_xml, u'Author'):
-                    # DreamBeam does not have a copyright field, instead it
-                    # sometimes uses the author field
-                    self.addCopyright(unicode(song_xml.Author.text))
-                    self.parseAuthor(unicode(song_xml.Author.text))                    
-                if hasattr(song_xml, u'SongLyrics'):
-                    for lyrics_item in song_xml.SongLyrics.iterchildren():
-                        verse_type =  lyrics_item.get(u'Type')
-                        verse_number = lyrics_item.get(u'Number')
-                        verse_text = unicode(lyrics_item.text)
-                        self.addVerse(verse_text, 
-                            (u'%s%s' % (verse_type[:1], verse_number)))
-                if hasattr(song_xml, u'Collection'):
-                    self.songBookName = unicode(song_xml.Collection.text)
-                if hasattr(song_xml, u'Number'):
-                    self.songNumber = unicode(song_xml.Number.text)
-                if hasattr(song_xml, u'Sequence'):
-                    for LyricsSequenceItem in song_xml.Sequence.iterchildren():
-                        self.verseOrderList.append(
-                            "%s%s" % (LyricsSequenceItem.get(u'Type')[:1], 
-                            LyricsSequenceItem.get(u'Number')))
-                if hasattr(song_xml, u'Notes'):
-                    self.comments = unicode(song_xml.Notes.text)
+                if hasattr(song_xml, u'Version'):
+                    self.version = float(song_xml.Version.text)
+                # Version numbers found in DreamBeam Source /FileTypes/Song.cs
+                if self.version <= 0.49:
+                    if hasattr(song_xml.Text0, u'Text'):
+                        self.title = unicode(song_xml.Text0.Text.text)
+                    if hasattr(song_xml.Text1, u'Text'):
+                        self.lyrics = unicode(song_xml.Text1.Text.text)
+                        for verse in self.lyrics.split(u'\n\n\n'):
+                            self.addVerse(verse)
+                    if hasattr(song_xml.Text2, u'Text'):
+                        # DreamBeam does not have a copyright field, instead it
+                        # sometimes uses the author field
+                        self.addCopyright(unicode(song_xml.Text2.Text.text))
+                        self.parseAuthor(unicode(song_xml.Text2.Text.text)) 
+                elif self.version >= 0.5:
+                    if hasattr(song_xml, u'Title'):
+                        self.title = unicode(song_xml.Title.text)
+                    if hasattr(song_xml, u'Author'):
+                        # DreamBeam does not have a copyright field, instead it
+                        # sometimes uses the author field
+                        self.addCopyright(unicode(song_xml.Author.text))
+                        self.parseAuthor(unicode(song_xml.Author.text))                    
+                    if hasattr(song_xml, u'SongLyrics'):
+                        for lyrics_item in song_xml.SongLyrics.iterchildren():
+                            verse_type =  lyrics_item.get(u'Type')
+                            verse_number = lyrics_item.get(u'Number')
+                            verse_text = unicode(lyrics_item.text)
+                            self.addVerse(verse_text, 
+                                (u'%s%s' % (verse_type[:1], verse_number)))
+                    if hasattr(song_xml, u'Collection'):
+                        self.songBookName = unicode(song_xml.Collection.text)
+                    if hasattr(song_xml, u'Number'):
+                        self.songNumber = unicode(song_xml.Number.text)
+                    if hasattr(song_xml, u'Sequence'):
+                        for LyricsSequenceItem in (
+                            song_xml.Sequence.iterchildren()):
+                            self.verseOrderList.append(
+                                "%s%s" % (LyricsSequenceItem.get(u'Type')[:1], 
+                                LyricsSequenceItem.get(u'Number')))
+                    if hasattr(song_xml, u'Notes'):
+                        self.comments = unicode(song_xml.Notes.text)
+                else:
+                    log.exception(u'No valid version information.'
+                        'Invalid file %s' % file)
+                    self.logError(file, SongStrings.XMLSyntaxError)
+                    continue
                 if not self.finish():
                     self.logError(file)
