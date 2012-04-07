@@ -110,6 +110,13 @@ class DreamBeamImport(SongImport):
                     continue
                 if hasattr(song_xml, u'Version'):
                     self.version = float(song_xml.Version.text)
+                else:
+                    log.exception(u'No valid version information.'
+                        'Invalid file %s' % file)
+                    self.logError(file, unicode(
+                        translate('SongsPlugin.DreamBeamImport',
+                        ('No valid version information.'))))
+                    continue
                 # Version numbers found in DreamBeam Source /FileTypes/Song.cs
                 if self.version <= 0.49:
                     if hasattr(song_xml.Text0, u'Text'):
@@ -150,10 +157,5 @@ class DreamBeamImport(SongImport):
                                 LyricsSequenceItem.get(u'Number')))
                     if hasattr(song_xml, u'Notes'):
                         self.comments = unicode(song_xml.Notes.text)
-                else:
-                    log.exception(u'No valid version information.'
-                        'Invalid file %s' % file)
-                    self.logError(file, SongStrings.XMLSyntaxError)
-                    continue
                 if not self.finish():
                     self.logError(file)
