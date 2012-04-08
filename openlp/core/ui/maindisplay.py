@@ -356,9 +356,11 @@ class MainDisplay(Display):
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
-                    # Only make visible if setting enabled
+                    # Only make visible if setting enabled.
                     if QtCore.QSettings().value(u'general/display on monitor',
-                        QtCore.QVariant(True)).toBool():
+                        QtCore.QVariant(True)).toBool() or \
+                        QtCore.QSettings().value(u'general/override position',
+                        QtCore.QVariant(False)).toBool():
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -429,9 +431,11 @@ class MainDisplay(Display):
         """
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
-            # Only make visible if setting enabled
+            # Only make visible if setting enabled.
             if not QtCore.QSettings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+                QtCore.QVariant(True)).toBool() and not  \
+                QtCore.QSettings().value(u'general/override position',
+                QtCore.QVariant(False)).toBool():
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -454,9 +458,11 @@ class MainDisplay(Display):
         """
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
-            # Only make visible if setting enabled
+            # Only make visible if setting enabled.
             if not QtCore.QSettings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+                QtCore.QVariant(True)).toBool() and not \
+                QtCore.QSettings().value(u'general/override position',
+                QtCore.QVariant(False)).toBool():
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
