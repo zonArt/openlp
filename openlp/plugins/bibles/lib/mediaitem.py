@@ -28,7 +28,7 @@
 import logging
 import locale
 
-from PyQt4 import QtCore, QtGui, Qt
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, create_separated_list
@@ -200,7 +200,7 @@ class BibleMediaItem(MediaManagerItem):
             self.quickSearchLabel, 0, 0, QtCore.Qt.AlignRight)
         self.quickSearchEdit = SearchEdit(self.quickTab)
         self.quickSearchEdit.setSizePolicy(
-            Qt.QSizePolicy.Expanding, Qt.QSizePolicy.Ignored)
+            QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Fixed)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
         self.quickLayout.addWidget(self.quickSearchEdit, 0, 1, 1, 2)
