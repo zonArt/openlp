@@ -45,7 +45,7 @@ HTMLSRC = u"""
     padding: 0;
     border: 0;
     overflow: hidden;
-    -webkit-user-select: none;    
+    -webkit-user-select: none;
 }
 body {
     %s;

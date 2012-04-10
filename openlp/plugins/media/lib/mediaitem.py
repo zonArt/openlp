@@ -35,7 +35,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver, MediaType, \
     ServiceItem, build_html
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    media_item_combo_box
+    create_horizontal_adjusting_combo_box
 from openlp.core.ui import Controller, Display
 from openlp.core.ui.media import get_media_players, set_media_players
 
@@ -131,7 +131,7 @@ class MediaMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.mediaWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = media_item_combo_box(
+        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(
             self.mediaWidget, u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
         self.displayLayout.addRow(self.displayTypeLabel,

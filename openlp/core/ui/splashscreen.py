@@ -42,4 +42,3 @@ class SplashScreen(QtGui.QSplashScreen):
         self.setPixmap(splash_image)
         self.setMask(splash_image.mask())
         self.resize(370, 370)
-        QtCore.QMetaObject.connectSlotsByName(self)

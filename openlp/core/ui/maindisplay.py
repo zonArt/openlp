@@ -221,11 +221,6 @@ class MainDisplay(Display):
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.isLive, None, plugins=self.plugins))
             self.__hideMouse()
-            # To display or not to display?
-            if not self.screen[u'primary']:
-                self.primary = False
-            else:
-                self.primary = True
         log.debug(u'Finished MainDisplay setup')
 
     def text(self, slide):
@@ -253,10 +248,10 @@ class MainDisplay(Display):
         log.debug(u'alert to display')
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
-        text_prepared = expand_tags(cgi.escape(text)) \
-            .replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
-        if self.height() != self.screen[u'size'].height() or \
-            not self.isVisible():
+        text_prepared = expand_tags(
+            cgi.escape(text)).replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
+        if self.height() != self.screen[u'size'].height() or not \
+            self.isVisible():
             shrink = True
             js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
@@ -336,7 +331,7 @@ class MainDisplay(Display):
         """
         log.debug(u'preview for %s', self.isLive)
         Receiver.send_message(u'openlp_process_events')
-        # We must have a service item to preview
+        # We must have a service item to preview.
         if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
@@ -345,7 +340,7 @@ class MainDisplay(Display):
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')
-        # Wait for the webview to update before geting the preview.
+        # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
@@ -356,7 +351,7 @@ class MainDisplay(Display):
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
-                    # Only make visible if setting enabled
+                    # Only make visible if setting enabled.
                     if QtCore.QSettings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():
                         self.setVisible(True)
@@ -374,9 +369,9 @@ class MainDisplay(Display):
         self.initialFrame = None
         self.serviceItem = serviceItem
         background = None
-        # We have an image override so keep the image till the theme changes
+        # We have an image override so keep the image till the theme changes.
         if self.override:
-            # We have an video override so allow it to be stopped
+            # We have an video override so allow it to be stopped.
             if u'video' in self.override:
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
@@ -429,7 +424,7 @@ class MainDisplay(Display):
         """
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
-            # Only make visible if setting enabled
+            # Only make visible if setting enabled.
             if not QtCore.QSettings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
@@ -454,7 +449,7 @@ class MainDisplay(Display):
         """
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
-            # Only make visible if setting enabled
+            # Only make visible if setting enabled.
             if not QtCore.QSettings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
@@ -462,12 +457,14 @@ class MainDisplay(Display):
         if self.isHidden():
             self.setVisible(True)
         self.hideMode = None
-        # Trigger actions when display is active again
+        # Trigger actions when display is active again.
         if self.isLive:
             Receiver.send_message(u'live_display_active')
 
     def __hideMouse(self):
-        # Hide mouse cursor when moved over display if enabled in settings
+        """
+        Hide mouse cursor when moved over display.
+        """
         if QtCore.QSettings().value(u'advanced/hide mouse',
             QtCore.QVariant(False)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
@@ -569,13 +566,12 @@ class AudioPlayer(QtCore.QObject):
         """
         Add another file to the playlist.
 
-        ``filename``
-            The file to add to the playlist.
+        ``filenames``
+            A list with files to be added to the playlist.
         """
         if not isinstance(filenames, list):
             filenames = [filenames]
-        for filename in filenames:
-            self.playlist.append(Phonon.MediaSource(filename))
+        self.playlist.extend(map(Phonon.MediaSource, filenames))
 
     def next(self):
         if not self.repeat and self.currentIndex + 1 == len(self.playlist):
