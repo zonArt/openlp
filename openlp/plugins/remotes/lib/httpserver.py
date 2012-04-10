@@ -396,6 +396,7 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
+            u'service': self.parent.plugin.serviceManager.serviceId or 0,
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',

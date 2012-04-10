@@ -105,6 +105,7 @@ class ServiceManager(QtGui.QWidget):
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
+        self.serviceId = 0
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
@@ -331,6 +332,8 @@ class ServiceManager(QtGui.QWidget):
         Setter for property "modified". Sets whether or not the current service
         has been modified.
         """
+        if modified:
+            self.serviceId += 1
         self._modified = modified
         serviceFile = self.shortFileName() or translate(
             'OpenLP.ServiceManager', 'Untitled Service')
@@ -439,6 +442,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.clear()
         self.serviceItems = []
         self.setFileName(u'')
+        self.serviceId += 1
         self.setModified(False)
         QtCore.QSettings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
