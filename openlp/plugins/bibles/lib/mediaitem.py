@@ -200,6 +200,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickLayout.addWidget(
             self.quickSearchLabel, 0, 0, QtCore.Qt.AlignRight)
         self.quickSearchEdit = SearchEdit(self.quickTab)
+        self.quickSearchEdit.setSizePolicy(
+            QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Fixed)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
         self.quickLayout.addWidget(self.quickSearchEdit, 0, 1, 1, 2)
