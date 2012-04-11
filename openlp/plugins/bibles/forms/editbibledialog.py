@@ -163,12 +163,12 @@ class Ui_EditBibleDialog(object):
             'Book name language in search field, search results and on '
             'display:'))
         self.languageSelectionComboBox.setItemText(0,
-            translate('BiblesPlugin.EditBibleForm', 'Global settings'))
+            translate('BiblesPlugin.EditBibleForm', 'Global Settings'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible + 1,
-            translate('BiblesPlugin.EditBibleForm', 'Bible language'))
+            translate('BiblesPlugin.EditBibleForm', 'Bible Language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.Application + 1,
-            translate('BiblesPlugin.EditBibleForm', 'Application language'))
+            translate('BiblesPlugin.EditBibleForm', 'Application Language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.English + 1,
             translate('BiblesPlugin.EditBibleForm', 'English'))

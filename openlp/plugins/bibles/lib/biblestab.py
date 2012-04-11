@@ -282,10 +282,10 @@ class BiblesTab(SettingsTab):
             'Book name language in search field,\nsearch results and on '
             'display:'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible,
-            translate('BiblesPlugin.BiblesTab', 'Bible language'))
+            translate('BiblesPlugin.BiblesTab', 'Bible Language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.Application,
-            translate('BiblesPlugin.BiblesTab', 'Application language'))
+            translate('BiblesPlugin.BiblesTab', 'Application Language'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.English,
             translate('BiblesPlugin.BiblesTab', 'English'))
 

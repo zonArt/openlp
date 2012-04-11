@@ -94,12 +94,14 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     self.bookNameEdit[book[u'abbreviation']].setText(
                         self.books[book[u'abbreviation']].name)
                 else:
+                    # It is nessecary to remove the Widget otherwise there still
+                    # exists the vertical spacing in QFormLayout
                     self.bookNameWidgetLayout.removeWidget(
                         self.bookNameLabel[book[u'abbreviation']])
-                    self.bookNameLabel[book[u'abbreviation']].setParent(None)
+                    self.bookNameLabel[book[u'abbreviation']].hide()
                     self.bookNameWidgetLayout.removeWidget(
                         self.bookNameEdit[book[u'abbreviation']])
-                    self.bookNameEdit[book[u'abbreviation']].setParent(None)
+                    self.bookNameEdit[book[u'abbreviation']].hide()
 
     def reject(self):
         """
