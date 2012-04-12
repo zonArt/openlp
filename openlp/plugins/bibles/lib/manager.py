@@ -140,14 +140,14 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        self.files = SettingsManager.get_files(self.settingsSection,
+        files = SettingsManager.get_files(self.settingsSection,
             self.suffix)
-        if u'alternative_book_names.sqlite' in self.files:
-            self.files.remove(u'alternative_book_names.sqlite')
-        log.debug(u'Bible Files %s', self.files)
+        if u'alternative_book_names.sqlite' in files:
+            files.remove(u'alternative_book_names.sqlite')
+        log.debug(u'Bible Files %s', files)
         self.db_cache = {}
         self.old_bible_databases = []
-        for filename in self.files:
+        for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
             # Remove corrupted files.
@@ -211,7 +211,12 @@ class BibleManager(object):
         ``name``
             The name of the bible.
         """
-        for filename in self.files:
+        log.debug(u'BibleManager.delete_bible("%s")', name)
+        files = SettingsManager.get_files(self.settingsSection,
+            self.suffix)
+        if u'alternative_book_names.sqlite' in files:
+            files.remove(u'alternative_book_names.sqlite')
+        for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             # Remove the bible files
             if name == bible.get_name():
@@ -364,6 +369,22 @@ class BibleManager(object):
                     })
             return None
 
+    def get_language_selection(self, bible):
+        """
+        Returns the language selection of a bible.
+
+        ``bible``
+            Unicode. The Bible to get the language selection from.
+        """
+        log.debug(u'BibleManager.get_language_selection("%s")', bible)
+        language_selection = self.get_meta_data(bible, u'Bookname language')
+        if language_selection and language_selection.value != u'None':
+            return int(language_selection.value)
+        if language_selection is None or  language_selection.value == u'None':
+            return QtCore.QSettings().value(
+                self.settingsSection + u'/bookname language',
+                QtCore.QVariant(0)).toInt()[0]
+
     def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
@@ -417,7 +438,7 @@ class BibleManager(object):
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions, 
-        bookname_language=-1):
+        bookname_language=None):
         """
         Saves the bibles meta data.
         """

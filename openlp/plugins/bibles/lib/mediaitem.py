@@ -432,14 +432,7 @@ class BibleMediaItem(MediaManagerItem):
             book_data = book_data_temp
         self.advancedBookComboBox.clear()
         first = True
-        language_selection = self.plugin.manager.get_meta_data(
-            bible, u'Bookname language')
-        if language_selection:
-            language_selection = int(language_selection.value)
-        if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.plugin.manager.get_language_selection(bible)
         booknames = BibleStrings().Booknames
         for book in book_data:
             row = self.advancedBookComboBox.count()
@@ -511,14 +504,8 @@ class BibleMediaItem(MediaManagerItem):
                                 secondbook.book_reference_id:
                                 book_data_temp.append(book)
                     book_data = book_data_temp
-                language_selection = self.plugin.manager.get_meta_data(
-                    bible, u'Bookname language')
-                if language_selection:
-                    language_selection = int(language_selection.value)
-                if language_selection is None or language_selection == -1:
-                    language_selection = QtCore.QSettings().value(
-                        self.settingsSection + u'/bookname language',
-                        QtCore.QVariant(0)).toInt()[0]
+                language_selection = self.plugin.manager.get_language_selection(
+                    bible)
                 if language_selection == LanguageSelection.Bible:
                     books = [book.name + u' ' for book in book_data]
                 elif language_selection == LanguageSelection.Application:
@@ -834,14 +821,7 @@ class BibleMediaItem(MediaManagerItem):
             second_permissions = self.plugin.manager.get_meta_data(
                 second_bible, u'Permissions').value
         items = []
-        language_selection = self.plugin.manager.get_meta_data(
-                bible, u'Bookname language')
-        if language_selection:
-            language_selection = int(language_selection.value)
-        if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.plugin.manager.get_language_selection(bible)
         for count, verse in enumerate(search_results):
             if language_selection == LanguageSelection.Bible:
                 book = verse.book.name

@@ -69,11 +69,11 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             self.manager.get_meta_data(self.bible, u'Copyright').value)
         self.permissionsEdit.setText(
             self.manager.get_meta_data(self.bible, u'Permissions').value)
-        self.bookname_language = self.manager.get_meta_data(
-            self.bible, u'Bookname language')
-        if self.bookname_language:
+        bookname_language = self.manager.get_meta_data(self.bible,
+            u'Bookname language')
+        if bookname_language and bookname_language.value != u'None':
             self.languageSelectionComboBox.setCurrentIndex(
-                int(self.bookname_language.value) + 1)
+                int(bookname_language.value) + 1)
         self.books = {}
         self.webbible = self.manager.get_meta_data(self.bible,
             u'download source')
@@ -107,7 +107,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         Exit Dialog and do not save
         """
-        log.debug (u'BibleEditForm.reject')
+        log.debug(u'BibleEditForm.reject')
         self.bible = None
         QtGui.QDialog.reject(self)
 
@@ -116,12 +116,13 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Exit Dialog and save data
         """
         log.debug(u'BibleEditForm.accept')
-        self.version = unicode(self.versionNameEdit.text())
-        self.copyright = unicode(self.copyrightEdit.text())
-        self.permissions = unicode(self.permissionsEdit.text())
-        self.bookname_language = \
-            self.languageSelectionComboBox.currentIndex() - 1
-        if not self.validateMeta():
+        version = unicode(self.versionNameEdit.text())
+        copyright = unicode(self.copyrightEdit.text())
+        permissions = unicode(self.permissionsEdit.text())
+        bookname_language = self.languageSelectionComboBox.currentIndex() - 1
+        if bookname_language == -1:
+            bookname_language = None
+        if not self.validateMeta(version, copyright):
             return
         if not self.webbible:
             custom_names = {}
@@ -133,8 +134,8 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                             return
         Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_busy')
-        self.manager.save_meta_data(self.bible, self.version,
-            self.copyright, self.permissions, self.bookname_language)
+        self.manager.save_meta_data(self.bible, version, copyright, permissions,
+            bookname_language)
         if not self.webbible:
             for abbr, book in self.books.iteritems():
                 if book:
@@ -145,26 +146,26 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Receiver.send_message(u'cursor_normal')
         QtGui.QDialog.accept(self)
 
-    def validateMeta(self):
+    def validateMeta(self, version, copyright):
         """
         Validate the Meta before saving.
         """
-        if not self.version:
+        if not version:
             self.versionNameEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to specify a version name for your Bible.'))
             return False
-        elif not self.copyright:
+        elif not copyright:
             self.copyrightEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to set a copyright for your Bible. '
                 'Bibles in the Public Domain need to be marked as such.'))
             return False
-        elif self.manager.exists(self.version) and \
+        elif self.manager.exists(version) and \
             self.manager.get_meta_data(self.bible, u'Version').value != \
-            self.version:
+            version:
             self.versionNameEdit.setFocus()
             critical_error_message_box(
                 translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
