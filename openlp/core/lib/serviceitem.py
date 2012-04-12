@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -300,6 +300,7 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
+        log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.name = header[u'name']
@@ -325,7 +326,10 @@ class ServiceItem(object):
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if u'background_audio' in header:
-            self.background_audio = header[u'background_audio']
+            self.background_audio = []
+            for filename in header[u'background_audio']:
+                # Give them real file paths
+                self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:

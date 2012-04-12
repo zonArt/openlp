@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_delete_push_button
+from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_AlertDialog(object):
     def setupUi(self, alertDialog):
@@ -67,31 +67,21 @@ class Ui_AlertDialog(object):
         self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
-        self.deleteButton = create_delete_push_button(alertDialog)
-        self.deleteButton.setEnabled(False)
+        self.deleteButton = create_button(alertDialog, u'deleteButton',
+            role=u'delete', enabled=False,
+            click=alertDialog.onDeleteButtonClicked)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(alertDialog)
-        self.buttonBox.addButton(QtGui.QDialogButtonBox.Close)
         displayIcon = build_icon(u':/general/general_live.png')
-        self.displayButton = QtGui.QPushButton(alertDialog)
-        self.displayButton.setEnabled(False)
-        self.displayButton.setIcon(displayIcon)
-        self.displayButton.setObjectName(u'displayButton')
-        self.buttonBox.addButton(self.displayButton,
-            QtGui.QDialogButtonBox.ActionRole)
-        self.displayCloseButton = QtGui.QPushButton(alertDialog)
-        self.displayCloseButton.setEnabled(False)
-        self.displayCloseButton.setIcon(displayIcon)
-        self.displayCloseButton.setObjectName(u'displayCloseButton')
-        self.buttonBox.addButton(self.displayCloseButton,
-            QtGui.QDialogButtonBox.ActionRole)
+        self.displayButton = create_button(alertDialog, u'displayButton',
+            icon=displayIcon, enabled=False)
+        self.displayCloseButton = create_button(alertDialog,
+            u'displayCloseButton', icon=displayIcon, enabled=False)
+        self.buttonBox = create_button_box(alertDialog, u'buttonBox',
+            [u'close'], [self.displayButton, self.displayCloseButton])
         self.alertDialogLayout.addWidget(self.buttonBox, 2, 0, 1, 2)
         self.retranslateUi(alertDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            alertDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(alertDialog)
 
     def retranslateUi(self, alertDialog):
         alertDialog.setWindowTitle(

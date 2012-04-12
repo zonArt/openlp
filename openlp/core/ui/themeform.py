@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -359,11 +359,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.gradientEndButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_end_color)
             self.setField(u'background_type', QtCore.QVariant(1))
-        else:
+        elif self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
             self.imageColorButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
             self.setField(u'background_type', QtCore.QVariant(2))
+        elif self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Transparent):
+            self.setField(u'background_type', QtCore.QVariant(3))
         if self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
             self.setField(u'gradient', QtCore.QVariant(0))
@@ -604,7 +608,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def accept(self):
         """
-        Lets save the theme as Finish has been pressed
+        Lets save the theme as Finish has been triggered
         """
         # Save the theme name
         self.theme.theme_name = unicode(self.field(u'name').toString())

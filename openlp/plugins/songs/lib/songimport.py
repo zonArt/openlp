@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -24,6 +24,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 import logging
 import re
 import shutil
@@ -308,7 +309,7 @@ class SongImport(QtCore.QObject):
                 verses_changed_to_other[verse_def] = new_verse_def
                 other_count += 1
                 verse_tag = VerseType.Tags[VerseType.Other]
-                log.info(u'Versetype %s changing to %s' , verse_def,
+                log.info(u'Versetype %s changing to %s', verse_def,
                     new_verse_def)
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)

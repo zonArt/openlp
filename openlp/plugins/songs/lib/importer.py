@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -30,7 +30,7 @@ The :mod:`importer` modules provides the general song import functionality.
 import logging
 
 from opensongimport import OpenSongImport
-from easislidesimport import EasiSlidesImport
+from easyslidesimport import EasySlidesImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
@@ -73,7 +73,7 @@ class SongFormat(object):
     OpenLP1 = 2
     Generic = 3
     CCLI = 4
-    EasiSlides = 5
+    EasySlides = 5
     EasyWorship = 6
     FoilPresenter = 7
     OpenSong = 8
@@ -107,8 +107,8 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
-        elif format == SongFormat.EasiSlides:
-            return EasiSlidesImport
+        elif format == SongFormat.EasySlides:
+            return EasySlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
@@ -130,8 +130,8 @@ class SongFormat(object):
             SongFormat.OpenLP1,
             SongFormat.Generic,
             SongFormat.CCLI,
-            SongFormat.EasiSlides,
-            SongFormat.EasyWorship,            
+            SongFormat.EasySlides,
+            SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
             SongFormat.OpenSong,
             SongFormat.SongBeamer,

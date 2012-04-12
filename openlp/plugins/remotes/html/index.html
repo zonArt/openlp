@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 -->
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
   <title>${app_title}</title>
   <link rel="stylesheet" href="/files/jquery.mobile.css" />
   <link rel="stylesheet" href="/files/openlp.css" />
@@ -58,7 +59,7 @@
 </div>
 <div data-role="page" id="service-manager">
   <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="notext">${back}</a>
     <h1>${service_manager}</h1>
     <a href="#" id="service-refresh" data-role="button" data-icon="refresh">${refresh}</a>
   </div>
@@ -89,7 +90,7 @@
 </div>
 <div data-role="page" id="slide-controller">
   <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="notext">${back}</a>
     <h1>${slide_controller}</h1>
     <a href="#" id="controller-refresh" data-role="button" data-icon="refresh">${refresh}</a>
   </div>
@@ -120,7 +121,7 @@
 </div>
 <div data-role="page" id="alerts">
   <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="notext">${back}</a>
     <h1>${alerts}</h1>
   </div>
   <div data-role="content">
@@ -133,7 +134,7 @@
 </div>
 <div data-role="page" id="search">
   <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="notext">${back}</a>
     <h1>${search}</h1>
   </div>
   <div data-role="content">

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -56,20 +56,20 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.previewButton,
-            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onPreviewButtonClicked)
         QtCore.QObject.connect(self.addButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
         QtCore.QObject.connect(self.editButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEditButtonClicked)
         QtCore.QObject.connect(self.editAllButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEditAllButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEditAllButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onEditButtonPressed)
+            self.onEditButtonClicked)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
@@ -154,18 +154,18 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.slideListView.insertItem(selectedRow + 1, qw)
             self.slideListView.setCurrentRow(selectedRow + 1)
 
-    def onAddButtonPressed(self):
+    def onAddButtonClicked(self):
         self.editSlideForm.setText(u'')
         if self.editSlideForm.exec_():
             for slide in self.editSlideForm.getText():
                 self.slideListView.addItem(slide)
 
-    def onEditButtonPressed(self):
+    def onEditButtonClicked(self):
         self.editSlideForm.setText(self.slideListView.currentItem().text())
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText())
 
-    def onEditAllButtonPressed(self):
+    def onEditAllButtonClicked(self):
         """
         Edits all slides.
         """
@@ -179,7 +179,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText(), True)
 
-    def onPreviewButtonPressed(self):
+    def onPreviewButtonClicked(self):
         """
         Save the custom item and preview it.
         """

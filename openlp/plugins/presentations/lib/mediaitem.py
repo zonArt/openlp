@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,7 +35,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
     validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    media_item_combo_box
+    create_horizontal_adjusting_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -110,7 +110,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = media_item_combo_box(
+        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(
             self.presentationWidget, u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
         self.displayLayout.addRow(self.displayTypeLabel,
@@ -322,7 +322,7 @@ class PresentationMediaItem(MediaManagerItem):
                     return controller
         return None
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(
             self.settingsSection, u'presentations')
         results = []

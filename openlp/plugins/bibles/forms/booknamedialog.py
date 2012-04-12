@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
 # Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
 # Tibble, Carsten Tinggaard, Frode Woldsund                                   #
@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 class Ui_BookNameDialog(object):
     def setupUi(self, bookNameDialog):
@@ -78,37 +79,27 @@ class Ui_BookNameDialog(object):
         self.apocryphaCheckBox.setCheckState(QtCore.Qt.Checked)
         self.optionsLayout.addWidget(self.apocryphaCheckBox)
         self.bookNameLayout.addWidget(self.optionsGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(bookNameDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(bookNameDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.bookNameLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(bookNameDialog)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            bookNameDialog.accept)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            bookNameDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(bookNameDialog)
 
     def retranslateUi(self, bookNameDialog):
-        bookNameDialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog', 
+        bookNameDialog.setWindowTitle(translate('BiblesPlugin.BookNameDialog',
             'Select Book Name'))
-        self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'The following book name cannot be matched up internally. Please '
             'select the corresponding English name from the list.'))
-        self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'Current name:'))
         self.correspondingLabel.setText(translate(
             'BiblesPlugin.BookNameDialog', 'Corresponding name:'))
-        self.optionsGroupBox.setTitle(translate('BiblesPlugin.BookNameDialog', 
+        self.optionsGroupBox.setTitle(translate('BiblesPlugin.BookNameDialog',
             'Show Books From'))
         self.oldTestamentCheckBox.setText(translate(
             'BiblesPlugin.BookNameDialog', 'Old Testament'))
         self.newTestamentCheckBox.setText(translate(
             'BiblesPlugin.BookNameDialog', 'New Testament'))
-        self.apocryphaCheckBox.setText(translate('BiblesPlugin.BookNameDialog', 
+        self.apocryphaCheckBox.setText(translate('BiblesPlugin.BookNameDialog',
             'Apocrypha'))

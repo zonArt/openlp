@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -53,6 +53,7 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.colorLayout)
         self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
         self.informationLabel.setObjectName(u'InformationLabel')
+        self.informationLabel.setWordWrap(True)
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
@@ -61,7 +62,7 @@ class ImageTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onbackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(
@@ -69,8 +70,8 @@ class ImageTab(SettingsTab):
         self.backgroundColorLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Provides border where image '
-            'is not the correct dimensions for the screen when resized.'))
+            translate('ImagesPlugin.ImageTab', 'Visible background for images '
+            'with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,7 +31,15 @@ plugin.
 import logging
 import re
 
+from PyQt4 import QtCore
+
+from openlp.core.lib import translate
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+
 log = logging.getLogger(__name__)
+
+REFERENCE_MATCHES = {}
+REFERENCE_SEPARATORS = {}
 
 class LayoutStyle(object):
     """
@@ -52,41 +60,198 @@ class DisplayStyle(object):
     Square = 3
 
 
+class LanguageSelection(object):
+    """
+    An enumeration for bible bookname language.
+    And standard strings for use throughout the bibles plugin.
+    """
+    Bible = 0
+    Application = 1
+    English = 2
+
+
+class BibleStrings(object):
+    """
+    Provide standard strings for objects to use.
+    """
+    __instance__ = None
+
+    def __new__(cls):
+        """
+        Override the default object creation method to return a single instance.
+        """
+        if not cls.__instance__:
+            cls.__instance__ = object.__new__(cls)
+        return cls.__instance__
+
+    def __init__(self):
+        """
+        These strings should need a good reason to be retranslated elsewhere.
+        """
+        self.Booknames = {
+            u'Gen': translate('BiblesPlugin', 'Genesis'),
+            u'Exod': translate('BiblesPlugin', 'Exodus'),
+            u'Lev': translate('BiblesPlugin', 'Leviticus'),
+            u'Num': translate('BiblesPlugin', 'Numbers'),
+            u'Deut': translate('BiblesPlugin', 'Deuteronomy'),
+            u'Josh': translate('BiblesPlugin', 'Joshua'),
+            u'Judg': translate('BiblesPlugin', 'Judges'),
+            u'Ruth': translate('BiblesPlugin', 'Ruth'),
+            u'1Sam': translate('BiblesPlugin', '1 Samuel'),
+            u'2Sam': translate('BiblesPlugin', '2 Samuel'),
+            u'1Kgs': translate('BiblesPlugin', '1 Kings'),
+            u'2Kgs': translate('BiblesPlugin', '2 Kings'),
+            u'1Chr': translate('BiblesPlugin', '1 Chronicles'),
+            u'2Chr': translate('BiblesPlugin', '2 Chronicles'),
+            u'Esra': translate('BiblesPlugin', 'Ezra'),
+            u'Neh': translate('BiblesPlugin', 'Nehemiah'),
+            u'Esth': translate('BiblesPlugin', 'Esther'),
+            u'Job': translate('BiblesPlugin', 'Job'),
+            u'Ps': translate('BiblesPlugin', 'Psalms'),
+            u'Prov': translate('BiblesPlugin', 'Proverbs'),
+            u'Eccl': translate('BiblesPlugin', 'Ecclesiastes'),
+            u'Song': translate('BiblesPlugin', 'Song of Solomon'),
+            u'Isa': translate('BiblesPlugin', 'Isaiah'),
+            u'Jer': translate('BiblesPlugin', 'Jeremiah'),
+            u'Lam': translate('BiblesPlugin', 'Lamentations'),
+            u'Ezek': translate('BiblesPlugin', 'Ezekiel'),
+            u'Dan': translate('BiblesPlugin', 'Daniel'),
+            u'Hos': translate('BiblesPlugin', 'Hosea'),
+            u'Joel': translate('BiblesPlugin', 'Joel'),
+            u'Amos': translate('BiblesPlugin', 'Amos'),
+            u'Obad': translate('BiblesPlugin', 'Obadiah'),
+            u'Jonah': translate('BiblesPlugin', 'Jonah'),
+            u'Mic': translate('BiblesPlugin', 'Micah'),
+            u'Nah': translate('BiblesPlugin', 'Nahum'),
+            u'Hab': translate('BiblesPlugin', 'Habakkuk'),
+            u'Zeph': translate('BiblesPlugin', 'Zephaniah'),
+            u'Hag': translate('BiblesPlugin', 'Haggai'),
+            u'Zech': translate('BiblesPlugin', 'Zechariah'),
+            u'Mal': translate('BiblesPlugin', 'Malachi'),
+            u'Matt': translate('BiblesPlugin', 'Matthew'),
+            u'Mark': translate('BiblesPlugin', 'Mark'),
+            u'Luke': translate('BiblesPlugin', 'Luke'),
+            u'John': translate('BiblesPlugin', 'John'),
+            u'Acts': translate('BiblesPlugin', 'Acts'),
+            u'Rom': translate('BiblesPlugin', 'Romans'),
+            u'1Cor': translate('BiblesPlugin', '1 Corinthians'),
+            u'2Cor': translate('BiblesPlugin', '2 Corinthians'),
+            u'Gal': translate('BiblesPlugin', 'Galatians'),
+            u'Eph': translate('BiblesPlugin', 'Ephesians'),
+            u'Phil': translate('BiblesPlugin', 'Philippians'),
+            u'Col': translate('BiblesPlugin', 'Colossians'),
+            u'1Thess': translate('BiblesPlugin', '1 Thessalonians'),
+            u'2Thess': translate('BiblesPlugin', '2 Thessalonians'),
+            u'1Tim': translate('BiblesPlugin', '1 Timothy'),
+            u'2Tim': translate('BiblesPlugin', '2 Timothy'),
+            u'Titus': translate('BiblesPlugin', 'Titus'),
+            u'Phlm': translate('BiblesPlugin', 'Philemon'),
+            u'Heb': translate('BiblesPlugin', 'Hebrews'),
+            u'Jas': translate('BiblesPlugin', 'James'),
+            u'1Pet': translate('BiblesPlugin', '1 Peter'),
+            u'2Pet': translate('BiblesPlugin', '2 Peter'),
+            u'1John': translate('BiblesPlugin', '1 John'),
+            u'2John': translate('BiblesPlugin', '2 John'),
+            u'3John': translate('BiblesPlugin', '3 John'),
+            u'Jude': translate('BiblesPlugin', 'Jude'),
+            u'Rev': translate('BiblesPlugin', 'Revelation'),
+            u'Jdt': translate('BiblesPlugin', 'Judith'),
+            u'Wis': translate('BiblesPlugin', 'Wisdom'),
+            u'Tob': translate('BiblesPlugin', 'Tobit'),
+            u'Sir': translate('BiblesPlugin', 'Sirach'),
+            u'Bar': translate('BiblesPlugin', 'Baruch'),
+            u'1Macc': translate('BiblesPlugin', '1 Maccabees'),
+            u'2Macc': translate('BiblesPlugin', '2 Maccabees'),
+            u'3Macc': translate('BiblesPlugin', '3 Maccabees'),
+            u'4Macc': translate('BiblesPlugin', '4 Maccabees'),
+            u'AddDan': translate('BiblesPlugin', 'Rest of Daniel'),
+            u'AddEsth': translate('BiblesPlugin', 'Rest of Esther'),
+            u'PrMan': translate('BiblesPlugin', 'Prayer of Manasses'),
+            u'LetJer': translate('BiblesPlugin', 'Letter of Jeremiah'),
+            u'PrAza': translate('BiblesPlugin', 'Prayer of Azariah'),
+            u'Sus': translate('BiblesPlugin', 'Susanna'),
+            u'Bel': translate('BiblesPlugin', 'Bel'),
+            u'1Esdr': translate('BiblesPlugin', '1 Esdras'),
+            u'2Esdr': translate('BiblesPlugin', '2 Esdras')
+        }
+
+
+def update_reference_separators():
+    """
+    Updates separators and matches for parsing and formating scripture
+    references.
+    """
+    default_separators = unicode(translate('BiblesPlugin',
+        ':|v|V|verse|verses;;-|to;;,|and;;end',
+        'Double-semicolon delimited separators for parsing references. '
+        'Consult the developers for further information.')).split(u';;')
+    settings = QtCore.QSettings()
+    settings.beginGroup(u'bibles')
+    custom_separators = [
+        unicode(settings.value(u'verse separator').toString()),
+        unicode(settings.value(u'range separator').toString()),
+        unicode(settings.value(u'list separator').toString()),
+        unicode(settings.value(u'end separator').toString())]
+    settings.endGroup()
+    for index, role in enumerate([u'v', u'r', u'l', u'e']):
+        if custom_separators[index].strip(u'|') == u'':
+            source_string = default_separators[index].strip(u'|')
+        else:
+            source_string = custom_separators[index].strip(u'|')
+        while u'||' in source_string:
+            source_string = source_string.replace(u'||', u'|')
+        if role != u'e':
+            REFERENCE_SEPARATORS[u'sep_%s_display' % role] = \
+                source_string.split(u'|')[0]
+        # escape reserved characters
+        for character in u'\\.^$*+?{}[]()':
+            source_string = source_string.replace(character, u'\\' + character)
+        # add various unicode alternatives
+        source_string = source_string.replace(u'-',
+            u'(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
+        source_string = source_string.replace(u',', u'(?:[,\u201A])')
+        REFERENCE_SEPARATORS[u'sep_%s' % role] = u'\s*(?:%s)\s*' % source_string
+        REFERENCE_SEPARATORS[u'sep_%s_default' % role] = \
+            default_separators[index]
+    # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
+    range_regex = u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
+        u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>' \
+        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % \
+        REFERENCE_SEPARATORS
+    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_regex,
+        re.UNICODE)
+    REFERENCE_MATCHES[u'range_separator'] = re.compile(
+        REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
+    # full reference match: <book>(<range>(,(?!$)|(?=$)))+
+    REFERENCE_MATCHES[u'full'] = re.compile(
+        u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+        u'(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
+        % dict(REFERENCE_SEPARATORS.items() + [(u'range_regex', range_regex)]),
+        re.UNICODE)
+
+def get_reference_separator(separator_type):
+    """
+    Provides separators for parsing and formatting scripture references.
+
+    ``separator_type``
+        The role and format of the separator.
+    """
+    if len(REFERENCE_SEPARATORS) == 0:
+        update_reference_separators()
+    return REFERENCE_SEPARATORS[separator_type]
+
 def get_reference_match(match_type):
     """
-    Provides the regexes and matches to use while parsing strings for bible
-    references.
+    Provides matches for parsing scripture references strings.
 
     ``match_type``
-        The type of reference information trying to be extracted in this call.
+        The type of match is ``range_separator``, ``range`` or ``full``.
     """
-    local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
-        ).split(u';;') # English
-    # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'
-    #   ).split(u';;') # German
-    separators = {
-        u'sep_v_display': local_separator[0], u'sep_v': local_separator[1],
-        u'sep_r_display': local_separator[2], u'sep_r': local_separator[3],
-        u'sep_l_display': local_separator[4], u'sep_l': local_separator[5],
-        u'sep_e': local_separator[6]}
+    if len(REFERENCE_MATCHES) == 0:
+        update_reference_separators()
+    return REFERENCE_MATCHES[match_type]
 
-    # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
-    range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
-        r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
-        r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
-    if match_type == u'range':
-        return re.compile(r'^\s*' + range_string + r'\s*$', re.UNICODE)
-    elif match_type == u'range_separator':
-        return re.compile(separators[u'sep_l'])
-    elif match_type == u'full':
-        # full reference match: <book>(<range>(,|(?=$)))+
-        return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-            r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
-                % separators, re.UNICODE)
-    else:
-        return separators[match_type]
-
-def parse_reference(reference):
+def parse_reference(reference, bible, language_selection, book_ref_id=False):
     """
     This is the next generation über-awesome function that takes a person's
     typed in string and converts it to a list of references to be queried from
@@ -94,6 +259,16 @@ def parse_reference(reference):
 
     ``reference``
         A string. The Bible reference to parse.
+
+    ``bible``
+        A object. The Bible database object.
+
+    ``language_selection``
+        An int. The language selection the user has choosen in settings
+        section.
+
+    ``book_ref_id``
+        A string. The book reference id.
 
     Returns ``None`` or a reference list.
 
@@ -140,7 +315,7 @@ def parse_reference(reference):
     If there is a range separator without further verse declaration the last
     refered chapter is addressed until the end.
 
-    ``range_string`` is a regular expression which matches for verse range
+    ``range_regex`` is a regular expression which matches for verse range
     declarations:
 
     ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?``
@@ -169,9 +344,9 @@ def parse_reference(reference):
         are optional leading digits followed by non-digits. The group ends
         before the whitspace in front of the next digit.
 
-    ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
+    ``(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$``
         The second group contains all ``ranges``. This can be multiple
-        declarations of a range_string separated by a list separator.
+        declarations of range_regex separated by a list separator.
 
     """
     log.debug(u'parse_reference("%s")', reference)
@@ -179,6 +354,40 @@ def parse_reference(reference):
     if match:
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
+        if not book_ref_id:
+            booknames = BibleStrings().Booknames
+            # escape reserved characters
+            book_escaped = book
+            for character in u'\\.^$*+?{}[]()':
+                book_escaped = book_escaped.replace(
+                    character, u'\\' + character)
+            regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
+                book_escaped.split()), re.UNICODE | re.IGNORECASE)
+            if language_selection == LanguageSelection.Bible:
+                db_book = bible.get_book(book)
+                if db_book:
+                    book_ref_id = db_book.book_reference_id
+            elif language_selection == LanguageSelection.Application:
+                books = filter(lambda key:
+                    regex_book.match(unicode(booknames[key])), booknames.keys())
+                books = filter(None, map(BiblesResourcesDB.get_book, books))
+                for value in books:
+                    if bible.get_book_by_book_ref_id(value[u'id']):
+                        book_ref_id = value[u'id']
+                        break
+            elif language_selection == LanguageSelection.English:
+                books = BiblesResourcesDB.get_books_like(book)
+                if books:
+                    book_list = filter(
+                        lambda value: regex_book.match(value[u'name']), books)
+                    if not book_list:
+                        book_list = books
+                    for value in book_list:
+                        if bible.get_book_by_book_ref_id(value[u'id']):
+                            book_ref_id = value[u'id']
+                            break
+        elif bible.get_book_by_book_ref_id(book_ref_id):
+            book_ref_id = False
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)
         ref_list = []
@@ -224,16 +433,18 @@ def parse_reference(reference):
                 if not to_verse:
                     to_verse = -1
                 if to_chapter > from_chapter:
-                    ref_list.append((book, from_chapter, from_verse, -1))
+                    ref_list.append((book_ref_id, from_chapter, from_verse, -1))
                     for i in range(from_chapter + 1, to_chapter):
-                        ref_list.append((book, i, 1, -1))
-                    ref_list.append((book, to_chapter, 1, to_verse))
+                        ref_list.append((book_ref_id, i, 1, -1))
+                    ref_list.append((book_ref_id, to_chapter, 1, to_verse))
                 elif to_verse >= from_verse or to_verse == -1:
-                    ref_list.append((book, from_chapter, from_verse, to_verse))
+                    ref_list.append((book_ref_id, from_chapter,
+                        from_verse, to_verse))
             elif from_verse:
-                ref_list.append((book, from_chapter, from_verse, from_verse))
+                ref_list.append((book_ref_id, from_chapter,
+                    from_verse, from_verse))
             else:
-                ref_list.append((book, from_chapter, 1, -1))
+                ref_list.append((book_ref_id, from_chapter, 1, -1))
         return ref_list
     else:
         log.debug(u'Invalid reference: %s' % reference)

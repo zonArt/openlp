@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -289,7 +289,7 @@ class Renderer(object):
 
     def _calculate_default(self):
         """
-        Calculate the default dimentions of the screen.
+        Calculate the default dimensions of the screen.
         """
         screen_size = self.screens.current[u'size']
         self.width = screen_size.width()
@@ -380,6 +380,7 @@ class Renderer(object):
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
         self.web.setHtml(html)
+        self.empty_height = self.web_frame.contentsSize().height()
 
     def _paginate_slide(self, lines, line_end):
         """
@@ -600,7 +601,7 @@ class Renderer(object):
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() <= self.page_height
+        return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):
         """

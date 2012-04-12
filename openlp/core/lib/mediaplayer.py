@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,7 +29,7 @@ from openlp.core.ui.media import MediaState
 
 class MediaPlayer(object):
     """
-    This is the base class media Player class to provide OpenLP with a pluggable media display 
+    This is the base class media Player class to provide OpenLP with a pluggable media display
     framework.
     """
 
@@ -65,7 +65,7 @@ class MediaPlayer(object):
 
     def resize(self, display):
         """
-        If the main display size or position is changed, the media widgets 
+        If the main display size or position is changed, the media widgets
         should also resized
         """
         pass

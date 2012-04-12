@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -32,7 +32,7 @@ import platform
 import sqlalchemy
 import BeautifulSoup
 from lxml import etree
-from PyQt4 import Qt, QtCore, QtGui
+from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
 try:
     from PyQt4.phonon import Phonon
@@ -77,6 +77,11 @@ try:
     UNO_VERSION = node.getByName(u'ooSetupVersion')
 except ImportError:
     UNO_VERSION = u'-'
+try:
+    WEBKIT_VERSION = QtWebKit.qWebKitVersion()
+except AttributeError:
+    WEBKIT_VERSION = u'-'
+
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.ui import UiStrings
@@ -111,6 +116,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'Qt4: %s\n' % Qt.qVersion() + \
             u'Phonon: %s\n' % PHONON_VERSION + \
             u'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
+            u'QtWebkit: %s\n' % WEBKIT_VERSION + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
             u'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
             u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
@@ -127,7 +133,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system = system + u'Desktop: GNOME\n'
         return (openlp_version, description, traceback, system, libraries)
 
-    def onSaveReportButtonPressed(self):
+    def onSaveReportButtonClicked(self):
         """
         Saving exception log and system informations to a file.
         """
@@ -144,7 +150,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             translate('OpenLP.ExceptionForm',
             'Text files (*.txt *.log *.text)'))
         if filename:
-            filename = unicode(QtCore.QDir.toNativeSeparators(filename))
+            filename = unicode(filename).replace(u'/', os.path.sep)
             SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
                 filename))
             report_text = report_text % self._createReport()
@@ -163,7 +169,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             finally:
                 report_file.close()
 
-    def onSendReportButtonPressed(self):
+    def onSendReportButtonClicked(self):
         """
         Opening systems default email client and inserting exception log and
         system informations.
@@ -204,7 +210,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             unicode(translate('OpenLP.ExceptionDialog',
             'Description characters to enter : %s')) % count)
 
-    def onAttachFileButtonPressed(self):
+    def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(
             self,translate('ImagePlugin.ExceptionDialog',
             'Select Attachment'),

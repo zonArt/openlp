@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,13 +28,16 @@
 The :mod:`maindisplay` module provides the functionality to display screens
 and play multimedia within OpenLP.
 """
+import cgi
 import logging
+import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager
+    translate, PluginManager, expand_tags
+from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -60,7 +63,12 @@ class Display(QtGui.QGraphicsView):
         self.controller = controller
         self.screen = {}
         self.plugins = PluginManager.get_instance().plugins
-        self.setViewport(QtOpenGL.QGLWidget())
+        # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
+        # OpenGL. Only white blank screen is shown on the 2nd monitor all the
+        # time. We need to investigate more how to use OpenGL properly on Mac OS
+        # X.
+        if sys.platform != 'darwin':
+            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -74,6 +82,10 @@ class Display(QtGui.QGraphicsView):
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.webView.settings().setAttribute(
             QtWebKit.QWebSettings.PluginsEnabled, True)
+        palette = self.webView.palette()
+        palette.setBrush(QtGui.QPalette.Base, QtCore.Qt.transparent)
+        self.webView.page().setPalette(palette)
+        self.webView.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
@@ -120,10 +132,19 @@ class MainDisplay(Display):
             self.audioPlayer = None
         self.firstTime = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
-            QtCore.Qt.WindowStaysOnTopHint |
-            QtCore.Qt.X11BypassWindowManagerHint)
+        windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
+                QtCore.Qt.WindowStaysOnTopHint
+        if QtCore.QSettings().value(u'advanced/x11 bypass wm',
+            QtCore.QVariant(True)).toBool():
+            windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
+        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
+        # stay always on top on Mac OS X. For details see bug 906926.
+        # It needs more investigation to fix it properly.
+        if sys.platform == 'darwin':
+            windowFlags |= QtCore.Qt.SplashScreen
+        self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setTransparency(False)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
@@ -133,6 +154,14 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
+
+    def setTransparency(self, enabled):
+        if enabled:
+            self.setAutoFillBackground(False)
+        else:
+            self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
+        self.repaint()
 
     def cssChanged(self):
         """
@@ -192,11 +221,6 @@ class MainDisplay(Display):
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.isLive, None, plugins=self.plugins))
             self.__hideMouse()
-            # To display or not to display?
-            if not self.screen[u'primary']:
-                self.primary = False
-            else:
-                self.primary = True
         log.debug(u'Finished MainDisplay setup')
 
     def text(self, slide):
@@ -222,16 +246,17 @@ class MainDisplay(Display):
             The text to be displayed.
         """
         log.debug(u'alert to display')
-        if self.height() != self.screen[u'size'].height() or \
-            not self.isVisible():
+        # First we convert <>& marks to html variants, then apply
+        # formattingtags, finally we double all backslashes for JavaScript.
+        text_prepared = expand_tags(
+            cgi.escape(text)).replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
+        if self.height() != self.screen[u'size'].height() or not \
+            self.isVisible():
             shrink = True
-            js = u'show_alert("%s", "%s")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
-                u'top')
+            js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
             shrink = False
-            js = u'show_alert("%s", "")' % (
-                text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+            js = u'show_alert("%s", "")' % text_prepared
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
@@ -306,7 +331,7 @@ class MainDisplay(Display):
         """
         log.debug(u'preview for %s', self.isLive)
         Receiver.send_message(u'openlp_process_events')
-        # We must have a service item to preview
+        # We must have a service item to preview.
         if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
@@ -315,7 +340,7 @@ class MainDisplay(Display):
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')
-        # Wait for the webview to update before geting the preview.
+        # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
@@ -326,19 +351,13 @@ class MainDisplay(Display):
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
-                    # Only make visible if setting enabled
+                    # Only make visible if setting enabled.
                     if QtCore.QSettings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
-        preview = QtGui.QPixmap(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
-        painter = QtGui.QPainter(preview)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        self.frame.render(painter)
-        painter.end()
-        return preview
+        return QtGui.QPixmap.grabWidget(self)
 
     def buildHtml(self, serviceItem, image=None):
         """
@@ -350,9 +369,9 @@ class MainDisplay(Display):
         self.initialFrame = None
         self.serviceItem = serviceItem
         background = None
-        # We have an image override so keep the image till the theme changes
+        # We have an image override so keep the image till the theme changes.
         if self.override:
-            # We have an video override so allow it to be stopped
+            # We have an video override so allow it to be stopped.
             if u'video' in self.override:
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
@@ -364,6 +383,8 @@ class MainDisplay(Display):
                 # replace the background
                 background = self.imageManager. \
                     get_image_bytes(self.override[u'image'])
+        self.setTransparency(self.serviceItem.themedata.background_type ==
+            BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
@@ -402,6 +423,11 @@ class MainDisplay(Display):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled.
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -422,16 +448,23 @@ class MainDisplay(Display):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
+        if self.screens.display_count == 1:
+            # Only make visible if setting enabled.
+            if not QtCore.QSettings().value(u'general/display on monitor',
+                QtCore.QVariant(True)).toBool():
+                return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
         self.hideMode = None
-        # Trigger actions when display is active again
+        # Trigger actions when display is active again.
         if self.isLive:
             Receiver.send_message(u'live_display_active')
 
     def __hideMouse(self):
-        # Hide mouse cursor when moved over display if enabled in settings
+        """
+        Hide mouse cursor when moved over display.
+        """
         if QtCore.QSettings().value(u'advanced/hide mouse',
             QtCore.QVariant(False)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
@@ -459,11 +492,15 @@ class AudioPlayer(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.currentIndex = -1
         self.playlist = []
+        self.repeat = False
         self.mediaObject = Phonon.MediaObject()
+        self.mediaObject.setTickInterval(100)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'finished()'), self.onFinished)
 
     def __del__(self):
         """
@@ -481,6 +518,14 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex += 1
         if len(self.playlist) > self.currentIndex:
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
+
+    def onFinished(self):
+        if self.repeat:
+            log.debug(u'Repeat is enabled... here we go again!')
+            self.mediaObject.clearQueue()
+            self.mediaObject.clear()
+            self.currentIndex = -1
+            self.play()
 
     def connectVolumeSlider(self, slider):
         slider.setAudioOutput(self.audioObject)
@@ -521,11 +566,34 @@ class AudioPlayer(QtCore.QObject):
         """
         Add another file to the playlist.
 
-        ``filename``
-            The file to add to the playlist.
+        ``filenames``
+            A list with files to be added to the playlist.
         """
         if not isinstance(filenames, list):
             filenames = [filenames]
-        for filename in filenames:
-            self.playlist.append(Phonon.MediaSource(filename))
+        self.playlist.extend(map(Phonon.MediaSource, filenames))
 
+    def next(self):
+        if not self.repeat and self.currentIndex + 1 == len(self.playlist):
+            return
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        self.currentIndex += 1
+        if self.repeat and self.currentIndex == len(self.playlist):
+            self.currentIndex = 0
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        if isPlaying:
+            self.mediaObject.play()
+
+    def goTo(self, index):
+        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        self.mediaObject.clearQueue()
+        self.mediaObject.clear()
+        self.currentIndex = index
+        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        if isPlaying:
+            self.mediaObject.play()
+
+    def connectSlot(self, signal, slot):
+        QtCore.QObject.connect(self.mediaObject, signal, slot)

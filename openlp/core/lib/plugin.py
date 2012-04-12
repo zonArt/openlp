@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -173,6 +173,9 @@ class Plugin(QtCore.QObject):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_config_updated' % self.name),
+            self.configUpdated)
 
     def checkPreConditions(self):
         """
@@ -395,3 +398,9 @@ class Plugin(QtCore.QObject):
         Add html code to htmlbuilder.
         """
         return u''
+
+    def configUpdated(self):
+        """
+        The plugin's config has changed
+        """
+        pass

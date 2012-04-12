@@ -126,7 +126,7 @@ VIDEO_JS = u"""
                 vid.src = '';
                 vid2.src = '';
                 break;
-             case 'length':
+            case 'length':
                 return vid.duration;
             case 'currentTime':
                 return vid.currentTime;
@@ -134,6 +134,8 @@ VIDEO_JS = u"""
                 // doesnt work currently
                 vid.currentTime = varVal;
                 break;
+            case 'isEnded':
+                return vid.ended;
             case 'setVisible':
                 vid.style.visibility = varVal;
                 break;
@@ -211,6 +213,8 @@ FLASH_JS = u"""
             case 'seek':
 //                flashMovie.GotoFrame(varVal);
                 break;
+            case 'isEnded':
+                return false;//TODO check flash end
             case 'setVisible':
                 text.style.visibility = varVal;
                 break;
@@ -246,7 +250,7 @@ VIDEO_EXT = [
             , u'*.swf'
         ]
 
-AUDIO_EXT =  [
+AUDIO_EXT = [
               u'*.mp3'
             , u'*.ogg'
         ]
@@ -254,12 +258,14 @@ AUDIO_EXT =  [
 
 class WebkitPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a QtWebKit 
+    A specialised version of the MediaPlayer class, which provides a QtWebKit
     display.
     """
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'webkit')
+        self.original_name = u'WebKit'
+        self.display_name = u'&WebKit'
         self.parent = parent
         self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT
@@ -294,7 +300,7 @@ class WebkitPlayer(MediaPlayer):
     def load(self, display):
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        if display.hasAudio:
+        if display.hasAudio and not controller.media_info.is_background:
             volume = controller.media_info.volume
             vol = float(volume) / float(100)
         else:
@@ -354,7 +360,6 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_flash("stop");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
-        controller.seekSlider.setSliderPosition(0)
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
@@ -406,6 +411,9 @@ class WebkitPlayer(MediaPlayer):
             length = display.frame.evaluateJavaScript( \
                 u'show_flash("length");').toInt()[0]
         else:
+            if display.frame.evaluateJavaScript( \
+                u'show_video("isEnded");').toString() == 'true':
+                self.stop(display)
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()
             # check if conversion was ok and value is not 'NaN'
