@@ -376,17 +376,17 @@ class SingleColumnTableWidget(QtGui.QTableWidget):
     Class to for a single column table widget to use for the verse table widget.
     """
     def __init__(self, parent):
-    	"""
-    	Constrctor
-    	"""
+        """
+        Constrctor
+        """
         QtGui.QTableWidget.__init__(self, parent)
         self.horizontalHeader().setVisible(False)
         self.setColumnCount(1)
 
     def resizeEvent(self, event):
-    	"""
-    	Resize the first column together with the widget.
-   	"""
+        """
+        Resize the first column together with the widget.
+        """
         QtGui.QTableWidget.resizeEvent(self, event)
         if self.columnCount():
             self.setColumnWidth(0, event.size().width())
