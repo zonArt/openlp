@@ -165,6 +165,7 @@ class PresentationMediaItem(MediaManagerItem):
         titles = [os.path.split(file)[1] for file in currlist]
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
+            Receiver.send_message(u'cursor_busy')
             self.plugin.formparent.displayProgressBar(len(files))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
@@ -217,6 +218,7 @@ class PresentationMediaItem(MediaManagerItem):
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.plugin.formparent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
 
     def onDeleteClick(self):
         """
@@ -226,6 +228,8 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formparent.displayProgressBar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(
                     QtCore.Qt.UserRole).toString())
@@ -233,6 +237,9 @@ class PresentationMediaItem(MediaManagerItem):
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
+                self.plugin.formparent.incrementProgressBar()
+            self.plugin.formparent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
