@@ -31,6 +31,7 @@ DreamBeam songs into the OpenLP database.
 import os
 import sys
 import logging
+import types
 
 from lxml import etree, objectify
 
@@ -111,33 +112,13 @@ class DreamBeamImport(SongImport):
                 if hasattr(song_xml, u'Version'):
                     self.version = float(song_xml.Version.text)
                 else:
-                    log.exception(u'No valid version information.'
-                        'Invalid file %s' % file)
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.DreamBeamImport',
-                        ('No valid version information.'))))
-                    continue
+                    self.version = 0
                 # Version numbers found in DreamBeam Source /FileTypes/Song.cs
-                if self.version <= 0.49:
-                    if hasattr(song_xml.Text0, u'Text'):
-                        self.title = unicode(song_xml.Text0.Text.text)
-                    if hasattr(song_xml.Text1, u'Text'):
-                        self.lyrics = unicode(song_xml.Text1.Text.text)
-                        for verse in self.lyrics.split(u'\n\n\n'):
-                            self.addVerse(verse)
-                    if hasattr(song_xml.Text2, u'Text'):
-                        # DreamBeam does not have a copyright field, instead it
-                        # sometimes uses the author field
-                        self.addCopyright(unicode(song_xml.Text2.Text.text))
-                        self.parseAuthor(unicode(song_xml.Text2.Text.text)) 
-                elif self.version >= 0.5:
+                if self.version >= 0.5:
                     if hasattr(song_xml, u'Title'):
                         self.title = unicode(song_xml.Title.text)
                     if hasattr(song_xml, u'Author'):
-                        # DreamBeam does not have a copyright field, instead it
-                        # sometimes uses the author field
-                        self.addCopyright(unicode(song_xml.Author.text))
-                        self.parseAuthor(unicode(song_xml.Author.text))                    
+                        author_copyright = song_xml.Author.text
                     if hasattr(song_xml, u'SongLyrics'):
                         for lyrics_item in song_xml.SongLyrics.iterchildren():
                             verse_type =  lyrics_item.get(u'Type')
@@ -157,5 +138,21 @@ class DreamBeamImport(SongImport):
                                 LyricsSequenceItem.get(u'Number')))
                     if hasattr(song_xml, u'Notes'):
                         self.comments = unicode(song_xml.Notes.text)
+                else:
+                    if hasattr(song_xml.Text0, u'Text'):
+                        self.title = unicode(song_xml.Text0.Text.text)
+                    if hasattr(song_xml.Text1, u'Text'):
+                        self.lyrics = unicode(song_xml.Text1.Text.text)
+                        for verse in self.lyrics.split(u'\n\n\n'):
+                            self.addVerse(verse)
+                    if hasattr(song_xml.Text2, u'Text'):
+                        author_copyright = song_xml.Text2.Text.text
+                if author_copyright:
+                    author_copyright = unicode(author_copyright)
+                    if author_copyright.find(
+                        unicode(SongStrings.CopyrightSymbol)) >= 0:
+                        self.addCopyright(author_copyright)
+                    else:
+                        self.parseAuthor(author_copyright)
                 if not self.finish():
                     self.logError(file)
