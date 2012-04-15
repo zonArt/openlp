@@ -377,7 +377,7 @@ class SingleColumnTableWidget(QtGui.QTableWidget):
     """
     def __init__(self, parent):
         """
-        Constrctor
+        Constructor
         """
         QtGui.QTableWidget.__init__(self, parent)
         self.horizontalHeader().setVisible(False)
