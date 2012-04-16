@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -108,7 +108,7 @@ class Ui_PrintServiceDialog(object):
         self.footerLabel = QtGui.QLabel(self.optionsWidget)
         self.footerLabel.setObjectName(u'footerLabel')
         self.optionsLayout.addWidget(self.footerLabel)
-        self.footerTextEdit = SpellTextEdit(self.optionsWidget)
+        self.footerTextEdit = SpellTextEdit(self.optionsWidget, False)
         self.footerTextEdit.setObjectName(u'footerTextEdit')
         self.optionsLayout.addWidget(self.footerTextEdit)
         self.optionsGroupBox = QtGui.QGroupBox()
@@ -126,7 +126,6 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout.addWidget(self.optionsGroupBox)
 
         self.retranslateUi(printServiceDialog)
-        QtCore.QMetaObject.connectSlotsByName(printServiceDialog)
         QtCore.QObject.connect(self.optionsButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 

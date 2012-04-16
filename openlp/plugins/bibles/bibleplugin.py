@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,10 +27,10 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import base_action, UiStrings
+from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.forms import BibleUpgradeForm
@@ -41,7 +41,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', plugin_helpers,
+        Plugin.__init__(self, u'bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -55,9 +55,11 @@ class BiblePlugin(Plugin):
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        action_list.add_action(self.importBibleItem,
+            unicode(UiStrings().Import))
         # Do not add the action to the list yet.
-        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
+        #action_list.add_action(self.exportBibleItem,
+        #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
         if len(self.manager.old_bible_databases):
@@ -71,7 +73,8 @@ class BiblePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.importBibleItem, UiStrings().Import)
+        action_list.remove_action(self.importBibleItem,
+            unicode(UiStrings().Import))
         self.importBibleItem.setVisible(False)
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
@@ -90,19 +93,16 @@ class BiblePlugin(Plugin):
                 self.onToolsUpgradeItemTriggered()
 
     def addImportMenuItem(self, import_menu):
-        self.importBibleItem = base_action(import_menu, u'importBibleItem')
-        self.importBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        self.importBibleItem = create_action(import_menu, u'importBibleItem',
+            text=translate('BiblesPlugin', '&Bible'), visible=False,
+            triggers=self.onBibleImportClick)
         import_menu.addAction(self.importBibleItem)
-        # signals and slots
-        QtCore.QObject.connect(self.importBibleItem,
-            QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
-        self.importBibleItem.setVisible(False)
 
     def addExportMenuItem(self, export_menu):
-        self.exportBibleItem = base_action(export_menu, u'exportBibleItem')
-        self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
+        self.exportBibleItem = create_action(export_menu, u'exportBibleItem',
+            text=translate('BiblesPlugin', '&Bible'),
+            visible=False)
         export_menu.addAction(self.exportBibleItem)
-        self.exportBibleItem.setVisible(False)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -114,17 +114,12 @@ class BiblePlugin(Plugin):
             use it as their parent.
         """
         log.debug(u'add tools menu')
-        self.toolsUpgradeItem = QtGui.QAction(tools_menu)
-        self.toolsUpgradeItem.setObjectName(u'toolsUpgradeItem')
-        self.toolsUpgradeItem.setText(
-            translate('BiblePlugin', '&Upgrade older Bibles'))
-        self.toolsUpgradeItem.setStatusTip(
-            translate('BiblePlugin', 'Upgrade the Bible databases to the '
-            'latest format.'))
+        self.toolsUpgradeItem = create_action(tools_menu, u'toolsUpgradeItem',
+            text=translate('BiblesPlugin', '&Upgrade older Bibles'),
+            statustip=translate('BiblesPlugin',
+            'Upgrade the Bible databases to the latest format.'),
+            visible=False, triggers=self.onToolsUpgradeItemTriggered)
         tools_menu.addAction(self.toolsUpgradeItem)
-        QtCore.QObject.connect(self.toolsUpgradeItem,
-            QtCore.SIGNAL(u'triggered()'), self.onToolsUpgradeItemTriggered)
-        self.toolsUpgradeItem.setVisible(False)
 
     def onToolsUpgradeItemTriggered(self):
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -49,10 +49,12 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.resize(550, 386)
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages|
+        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage)
+            QtGui.QWizard.NoBackButtonOnLastPage |
+            QtGui.QWizard.HaveCustomButton1)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
+        self.noInternetFinishButton = self.button(QtGui.QWizard.CustomButton1)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.nextButton = self.button(QtGui.QWizard.NextButton)
         self.backButton = self.button(QtGui.QWizard.BackButton)
@@ -81,9 +83,9 @@ class Ui_FirstTimeWizard(object):
         self.pluginLayout.addWidget(self.imageCheckBox)
         self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
         if sys.platform == "darwin":
-             self.presentationCheckBox.setChecked(False)
+            self.presentationCheckBox.setChecked(False)
         else:
-             self.presentationCheckBox.setChecked(True)
+            self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
         self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
@@ -189,9 +191,7 @@ class Ui_FirstTimeWizard(object):
         self.progressBar.setObjectName(u'progressBar')
         self.progressLayout.addWidget(self.progressBar)
         FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
-
         self.retranslateUi(FirstTimeWizard)
-        QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
         FirstTimeWizard.setWindowTitle(translate(
@@ -209,7 +209,7 @@ class Ui_FirstTimeWizard(object):
             'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
         self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Custom Text'))
+            'Custom Slides'))
         self.bibleCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Images'))
@@ -230,14 +230,17 @@ class Ui_FirstTimeWizard(object):
         self.noInternetPage.setSubTitle(translate(
             'OpenLP.FirstTimeWizard',
             'Unable to detect an Internet connection.'))
-        self.noInternetLabel.setText(translate('OpenLP.FirstTimeWizard',
+        self.noInternetText = translate('OpenLP.FirstTimeWizard',
             'No Internet connection was found. The First Time Wizard needs an '
             'Internet connection in order to be able to download sample '
-            'songs, Bibles and themes.\n\nTo re-run the First Time Wizard and '
-            'import this sample data at a later stage, press the cancel '
-            'button now, check your Internet connection, and restart OpenLP.'
-            '\n\nTo cancel the First Time Wizard completely, press the finish '
-            'button now.'))
+            'songs, Bibles and themes.  Click the Finish button now to start '
+            'OpenLP with initial settings and no sample data.\n\nTo re-run the '
+            'First Time Wizard and import this sample data at a later time, '
+            'check your Internet connection and re-run this wizard by '
+            'selecting "Tools/Re-run First Time Wizard" from OpenLP.')
+        self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
+            '\n\nTo cancel the First Time Wizard completely (and not start '
+            'OpenLP), click the Cancel button now.')
         self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Sample Songs'))
         self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
@@ -260,3 +263,5 @@ class Ui_FirstTimeWizard(object):
             'Select default theme:'))
         self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Starting configuration process...'))
+        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1,
+            translate('OpenLP.FirstTimeWizard', 'Finish'))

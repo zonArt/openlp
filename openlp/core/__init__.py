@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -24,9 +24,268 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 """
 The :mod:`core` module provides all core application functions
 
 All the core functions of the OpenLP application including the GUI, settings,
 logging and a plugin framework are contained within the openlp.core module.
 """
+
+import os
+import sys
+import logging
+from optparse import OptionParser
+from traceback import format_exception
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
+from openlp.core.resources import qInitResources
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
+    get_application_version, DelayStartThread
+
+
+__all__ = [u'OpenLP', u'main']
+
+
+log = logging.getLogger()
+application_stylesheet = u"""
+QMainWindow::separator
+{
+  border: none;
+}
+
+QDockWidget::title
+{
+  border: 1px solid palette(dark);
+  padding-left: 5px;
+  padding-top: 2px;
+  margin: 1px 0;
+}
+
+QToolBar
+{
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+"""
+
+
+class OpenLP(QtGui.QApplication):
+    """
+    The core application class. This class inherits from Qt's QApplication
+    class in order to provide the core of the application.
+    """
+
+    args = []
+
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+
+    def run(self, args, testing=False):
+        """
+        Run the OpenLP application.
+        """
+        # On Windows, the args passed into the constructor are
+        # ignored. Not very handy, so set the ones we want to use.
+        self.args.extend(args)
+        # provide a listener for widgets to reqest a screen update.
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        has_run_wizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        if not has_run_wizard:
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                QtCore.QSettings().setValue(u'general/has run wizard',
+                    QtCore.QVariant(True))
+        if os.name == u'nt':
+            self.setStyleSheet(application_stylesheet)
+        show_splash = QtCore.QSettings().value(
+            u'general/show splash', QtCore.QVariant(True)).toBool()
+        if show_splash:
+            self.splash = SplashScreen()
+            self.splash.show()
+        # make sure Qt really display the splash screen
+        self.processEvents()
+        # start the main app window
+        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow.show()
+        if show_splash:
+            # now kill the splashscreen
+            self.splash.finish(self.mainWindow)
+            log.debug(u'Splashscreen closed')
+        # make sure Qt really display the splash screen
+        self.processEvents()
+        self.mainWindow.repaint()
+        self.processEvents()
+        if not has_run_wizard:
+            self.mainWindow.firstTime()
+        update_check = QtCore.QSettings().value(
+            u'general/update check', QtCore.QVariant(True)).toBool()
+        if update_check:
+            VersionThread(self.mainWindow).start()
+        Receiver.send_message(u'live_display_blank_check')
+        self.mainWindow.appStartup()
+        DelayStartThread(self.mainWindow).start()
+        # Skip exec_() for gui tests
+        if not testing:
+            return self.exec_()
+
+    def isAlreadyRunning(self):
+        """
+        Look to see if OpenLP is already running and ask if a 2nd copy
+        is to be started.
+        """
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            status = QtGui.QMessageBox.critical(None,
+                UiStrings().Error, UiStrings().OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
+        else:
+            self.sharedMemory.create(1)
+            return False
+
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow'):
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.setNormalCursor()
+        self.exceptionForm.exec_()
+
+    def setBusyCursor(self):
+        """
+        Sets the Busy Cursor for the Application
+        """
+        self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        self.processEvents()
+
+    def setNormalCursor(self):
+        """
+        Sets the Normal Cursor for the Application
+        """
+        self.restoreOverrideCursor()
+
+    def event(self, event):
+        """
+        Enables direct file opening on OS X
+        """
+        if event.type() == QtCore.QEvent.FileOpen:
+            file_name = event.file()
+            log.debug(u'Got open file event for %s!', file_name)
+            self.args.insert(0, unicode(file_name))
+            return True
+        else:
+            return QtGui.QApplication.event(self, event)
+
+
+def main(args=None):
+    """
+    The main function which parses command line options and then runs
+    the PyQt4 Application.
+    """
+    # Set up command line options.
+    usage = 'Usage: %prog [options] [qt-options]'
+    parser = OptionParser(usage=usage)
+    parser.add_option('-e', '--no-error-form', dest='no_error_form',
+        action='store_true', help='Disable the error notification form.')
+    parser.add_option('-l', '--log-level', dest='loglevel',
+        default='warning', metavar='LEVEL', help='Set logging to LEVEL '
+        'level. Valid values are "debug", "info", "warning".')
+    parser.add_option('-p', '--portable', dest='portable',
+        action='store_true', help='Specify if this should be run as a '
+        'portable app, off a USB flash drive (not implemented).')
+    parser.add_option('-d', '--dev-version', dest='dev_version',
+        action='store_true', help='Ignore the version file and pull the '
+        'version directly from Bazaar')
+    parser.add_option('-s', '--style', dest='style',
+        help='Set the Qt4 style (passed directly to Qt4).')
+    parser.add_option('--testing', dest='testing',
+        action='store_true', help='Run by testing framework')
+    # Set up logging
+    log_path = AppLocation.get_directory(AppLocation.CacheDir)
+    check_directory_exists(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = logging.FileHandler(filename, u'w')
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    # Parse command line options and deal with them.
+    # Use args supplied programatically if possible.
+    (options, args) = parser.parse_args(args) if args else parser.parse_args()
+    qt_args = []
+    if options.loglevel.lower() in ['d', 'debug']:
+        log.setLevel(logging.DEBUG)
+        print 'Logging to:', filename
+    elif options.loglevel.lower() in ['w', 'warning']:
+        log.setLevel(logging.WARNING)
+    else:
+        log.setLevel(logging.INFO)
+    if options.style:
+        qt_args.extend(['-style', options.style])
+    # Throw the rest of the arguments at Qt, just in case.
+    qt_args.extend(args)
+    # Initialise the resources
+    qInitResources()
+    # Now create and actually run the application.
+    app = OpenLP(qt_args)
+    app.setOrganizationName(u'OpenLP')
+    app.setOrganizationDomain(u'openlp.org')
+    app.setApplicationName(u'OpenLP')
+    app.setApplicationVersion(get_application_version()[u'version'])
+    # Instance check
+    if not options.testing:
+        # Instance check
+        if app.isAlreadyRunning():
+            sys.exit()
+    # First time checks in settings
+    if not QtCore.QSettings().value(u'general/has run wizard',
+        QtCore.QVariant(False)).toBool():
+        if not FirstTimeLanguageForm().exec_():
+            # if cancel then stop processing
+            sys.exit()
+    # i18n Set Language
+    language = LanguageManager.get_language()
+    app_translator, default_translator = \
+        LanguageManager.get_translator(language)
+    if not app_translator.isEmpty():
+        app.installTranslator(app_translator)
+    if not default_translator.isEmpty():
+        app.installTranslator(default_translator)
+    else:
+        log.debug(u'Could not find default_translator.')
+    if not options.no_error_form:
+        sys.excepthook = app.hookException
+    # Do not run method app.exec_() when running gui tests
+    if options.testing:
+        app.run(qt_args, testing=True)
+        # For gui tests we need access to window intances and their components
+        return app
+    else:
+        sys.exit(app.run(qt_args))

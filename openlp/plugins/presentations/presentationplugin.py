@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -52,18 +52,18 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', plugin_helpers)
+        Plugin.__init__(self, u'presentations', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
 
-    def getSettingsTab(self, parent):
+    def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return PresentationTab(parent, self.name, visible_name[u'title'],
-            self.controllers, self.icon_path)
+        self.settings_tab = PresentationTab(parent, self.name,
+            visible_name[u'title'], self.controllers, self.icon_path)
 
     def initialise(self):
         """
@@ -87,18 +87,18 @@ class PresentationPlugin(Plugin):
         to close down their applications and release resources.
         """
         log.info(u'Plugin Finalise')
-        #Ask each controller to tidy up
+        # Ask each controller to tidy up.
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.enabled():
                 controller.kill()
         Plugin.finalise(self)
 
-    def getMediaManagerItem(self):
+    def createMediaManagerItem(self):
         """
         Create the Media Manager List
         """
-        return PresentationMediaItem(
+        self.mediaItem = PresentationMediaItem(
             self.mediadock.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):

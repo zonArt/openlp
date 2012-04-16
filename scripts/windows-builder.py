@@ -32,8 +32,7 @@ Windows Build Script
 This script is used to build the Windows binary and the accompanying installer.
 For this script to work out of the box, it depends on a number of things:
 
-Python 2.6
-    This build script only works with Python 2.6.
+Python 2.6/2.7
 
 PyQt4
     You should already have this installed, OpenLP doesn't work without it. The
@@ -47,21 +46,15 @@ PyEnchant
 Inno Setup 5
     Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
 
-UPX
-    This is used to compress DLLs and EXEs so that they take up less space, but
-    still function exactly the same. To install UPS, download it from
-    http://upx.sourceforge.net/, extract it into C:\%PROGRAMFILES%\UPX, and then
-    add that directory to your PATH environment variable.
-
 Sphinx
     This is used to build the documentation.  The documentation trunk must be at
-    the same directory level as Openlp trunk and named "documentation"
+    the same directory level as Openlp trunk and named "documentation".
 
 HTML Help Workshop
-    This is used to create the help file
+    This is used to create the help file.
 
 PyInstaller
-    PyInstaller should be a checkout of revision 844 of trunk, and in a
+    PyInstaller should be a checkout of revision 1470 of trunk, and in a
     directory called, "pyinstaller" on the same level as OpenLP's Bazaar shared
     repository directory. The revision is very important as there is currently
     a major regression in HEAD.
@@ -71,15 +64,6 @@ PyInstaller
     directory called "pyinstaller"::
 
         http://svn.pyinstaller.org/trunk
-
-    Then you need to copy the two hook-*.py files from the "pyinstaller"
-    subdirectory in OpenLP's "resources" directory into PyInstaller's "hooks"
-    directory.
-
-    Once you've done that, open a command prompt (DOS shell), navigate to the
-    PyInstaller directory and run::
-
-        C:\Projects\pyinstaller>python Configure.py
 
 Bazaar
     You need the command line "bzr" client installed.
@@ -91,7 +75,7 @@ OpenLP
 
 Visual C++ 2008 Express Edition
     This is to build pptviewlib.dll, the library for controlling the
-    PowerPointViewer
+    PowerPointViewer.
 
 windows-builder.py
     This script, of course. It should be in the "scripts" directory of OpenLP.
@@ -100,23 +84,34 @@ psvince.dll
     This dll is used during the actual install of OpenLP to check if OpenLP is
     running on the users machine prior to the setup.  If OpenLP is running,
     the install will fail.  The dll can be obtained from here:
-    http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+        
+        http://www.vincenzo.net/isxkb/index.php?title=PSVince)
+    
+    The dll is presently included in .\\resources\\windows
 
-Mako    
+Mako
     Mako Templates for Python.  This package is required for building the
     remote plugin.  It can be installed by going to your
     python_directory\scripts\.. and running "easy_install Mako".  If you do not
     have easy_install, the Mako package can be obtained here:
-    http://www.makotemplates.org/download.html
-
+        
+        http://www.makotemplates.org/download.html
+         
+Sqlalchemy Migrate
+    Required for the data-bases used in OpenLP.  The package can be
+    obtained here:
+    
+        http://code.google.com/p/sqlalchemy-migrate/
+    
 """
 
 import os
 import sys
-from shutil import copy
-from shutil import rmtree
+from shutil import copy, rmtree
 from subprocess import Popen, PIPE
+from ConfigParser import SafeConfigParser as ConfigParser
 
+# Executable paths
 python_exe = sys.executable
 innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
     u'ISCC.exe')
@@ -137,9 +132,18 @@ site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
 
 # Files and executables
 pyi_build = os.path.abspath(os.path.join(branch_path, u'..', u'..',
-    u'pyinstaller', u'Build.py'))
-lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
+    u'pyinstaller', u'pyinstaller.py'))
+openlp_main_script = os.path.abspath(os.path.join(branch_path, 'openlp.pyw'))
+if os.path.exists(os.path.join(site_packages, u'PyQt4', u'bin')):
+    # Older versions of the PyQt4 Windows installer put their binaries in the
+    # "bin" directory
+    lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
+else:
+    # Newer versions of the PyQt4 Windows installer put their binaries in the
+    # base directory of the installation
+    lrelease_exe = os.path.join(site_packages, u'PyQt4', u'lrelease.exe')
 i18n_utils = os.path.join(script_path, u'translation_utils.py')
+win32_icon = os.path.join(branch_path, u'resources', u'images', 'OpenLP.ico')
 
 # Paths
 source_path = os.path.join(branch_path, u'openlp')
@@ -148,11 +152,15 @@ manual_build_path = os.path.join(manual_path, u'build')
 helpfile_path = os.path.join(manual_build_path, u'htmlhelp')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
 winres_path = os.path.join(branch_path, u'resources', u'windows')
-build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
+build_path = os.path.join(branch_path, u'build')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
-enchant_path = os.path.join(site_packages, u'enchant')
 pptviewlib_path = os.path.join(source_path, u'plugins', u'presentations',
     u'lib', u'pptviewlib')
+hooks_path = os.path.join(branch_path , u'resources', u'pyinstaller')
+
+# Transifex details -- will be read in from the file.
+transifex_filename = os.path.abspath(os.path.join(branch_path, '..',
+    'transifex.conf'))
 
 def update_code():
     os.chdir(branch_path)
@@ -174,8 +182,18 @@ def update_code():
 def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
-    pyinstaller = Popen((python_exe, pyi_build, u'-y', u'-o', build_path,
-        os.path.join(winres_path, u'OpenLP.spec')), stdout=PIPE)
+    pyinstaller = Popen((python_exe, pyi_build,
+        u'--noconfirm',
+        u'--windowed',
+        u'--noupx',
+        u'--additional-hooks-dir', hooks_path,
+        u'--log-level=ERROR',
+        u'-o', branch_path,
+        u'-i', win32_icon,
+        u'-p', branch_path,
+        u'-n', 'OpenLP',
+        openlp_main_script),
+        stdout=PIPE)
     output, error = pyinstaller.communicate()
     code = pyinstaller.wait()
     if code != 0:
@@ -208,23 +226,23 @@ def write_version_file():
     f.write(versionstring)
     f.close()
 
-def copy_enchant():
-    print u'Copying enchant/pyenchant...'
-    source = enchant_path
-    dest = os.path.join(dist_path, u'enchant')
+def copy_plugins():
+    print u'Copying plugins...'
+    source = os.path.join(source_path, u'plugins')
+    dest = os.path.join(dist_path, u'plugins')
     for root, dirs, files in os.walk(source):
         for filename in files:
-            if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
-                dest_path = os.path.join(dest, root[len(source) + 1:])
+            if not filename.endswith(u'.pyc'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
                 if not os.path.exists(dest_path):
                     os.makedirs(dest_path)
                 copy(os.path.join(root, filename),
                     os.path.join(dest_path, filename))
 
-def copy_plugins():
-    print u'Copying plugins...'
-    source = os.path.join(source_path, u'plugins')
-    dest = os.path.join(dist_path, u'plugins')
+def copy_media_player():
+    print u'Copying media player...'
+    source = os.path.join(source_path, u'core', u'ui', u'media')
+    dest = os.path.join(dist_path, u'core', u'ui', u'media')
     for root, dirs, files in os.walk(source):
         for filename in files:
             if not filename.endswith(u'.pyc'):
@@ -242,17 +260,31 @@ def copy_windows_files():
         os.path.join(dist_path, u'LICENSE.txt'))
     copy(os.path.join(winres_path, u'psvince.dll'),
         os.path.join(dist_path, u'psvince.dll'))
-    if os.path.isfile(os.path.join(helpfile_path, u'Openlp.chm')):
+    if os.path.isfile(os.path.join(helpfile_path, u'OpenLP.chm')):
         print u'        Windows help file found'
-        copy(os.path.join(helpfile_path, u'Openlp.chm'),
-            os.path.join(dist_path, u'Openlp.chm'))
+        copy(os.path.join(helpfile_path, u'OpenLP.chm'),
+            os.path.join(dist_path, u'OpenLP.chm'))
     else:
         print u'  WARNING ---- Windows help file not found ---- WARNING'
 
 def update_translations():
     print u'Updating translations...'
+    if not os.path.exists(transifex_filename):
+        raise Exception(u'Could not find Transifex credentials file: %s' \
+            % transifex_filename)
+    config = ConfigParser()
+    config.read(transifex_filename)
+    if not config.has_section('transifex'):
+        raise Exception(u'No section named "transifex" found.')
+    if not config.has_option('transifex', 'username'):
+        raise Exception(u'No option named "username" found.')
+    if not config.has_option('transifex', 'password'):
+        raise Exception(u'No option named "password" found.')
+    username = config.get('transifex', 'username')
+    password = config.get('transifex', 'password')
     os.chdir(script_path)
-    translation_utils = Popen((python_exe, i18n_utils, u'-qdpu'))
+    translation_utils = Popen([python_exe, i18n_utils, u'-qdpu', '-U',
+        username, '-P', password])
     code = translation_utils.wait()
     if code != 0:
         raise Exception(u'Error running translation_utils.py')
@@ -330,17 +362,19 @@ def main():
     import sys
     for arg in sys.argv:
         if arg == u'-v' or arg == u'--verbose':
-            print "Script path:", script_path
-            print "Branch path:", branch_path
-            print "Source path:", source_path
-            print "\"dist\" path:", dist_path
-            print "PyInstaller:", pyi_build
+            print "OpenLP main script: ......", openlp_main_script
+            print "Script path: .............", script_path
+            print "Branch path: .............", branch_path
+            print "Source path: .............", source_path
+            print "\"dist\" path: .............", dist_path
+            print "PyInstaller: .............", pyi_build
             print "Documentation branch path:", doc_branch_path
-            print "Help file build path;", helpfile_path
-            print "Inno Setup path:", innosetup_exe
-            print "Windows resources:", winres_path
-            print "VCBuild path:", vcbuild_exe
-            print "PPTVIEWLIB path:", pptviewlib_path
+            print "Help file build path: ....", helpfile_path
+            print "Inno Setup path: .........", innosetup_exe
+            print "Windows resources: .......", winres_path
+            print "VCBuild path: ............", vcbuild_exe
+            print "PPTVIEWLIB path: .........", pptviewlib_path
+            print ""
         elif arg == u'--skip-update':
             skip_update = True
         elif arg == u'/?' or arg == u'-h' or arg == u'--help':
@@ -353,8 +387,8 @@ def main():
     build_pptviewlib()
     run_pyinstaller()
     write_version_file()
-    copy_enchant()
     copy_plugins()
+    copy_media_player()
     if os.path.exists(manual_path):
         run_sphinx()
         run_htmlhelp()

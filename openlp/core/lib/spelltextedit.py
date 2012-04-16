@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -39,8 +39,8 @@ except ImportError:
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, DisplayTags
-from openlp.core.lib.ui import checkable_action
+from openlp.core.lib import translate, FormattingTags
+from openlp.core.lib.ui import create_action
 
 log = logging.getLogger(__name__)
 
@@ -48,16 +48,17 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
-    def __init__(self, *args):
+    def __init__(self, parent=None, formattingTagsAllowed=True):
         global ENCHANT_AVAILABLE
-        QtGui.QPlainTextEdit.__init__(self, *args)
+        QtGui.QPlainTextEdit.__init__(self, parent)
+        self.formattingTagsAllowed = formattingTagsAllowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
                 self.highlighter = Highlighter(self.document())
                 self.highlighter.spellingDictionary = self.dictionary
-            except Error, DictNotFoundError:
+            except (Error, DictNotFoundError):
                 ENCHANT_AVAILABLE = False
                 log.debug(u'Could not load default dictionary')
 
@@ -89,9 +90,8 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             lang_menu = QtGui.QMenu(
                 translate('OpenLP.SpellTextEdit', 'Language:'))
             for lang in enchant.list_languages():
-                action = checkable_action(
-                    lang_menu, lang, lang == self.dictionary.tag)
-                action.setText(lang)
+                action = create_action(lang_menu, lang, text=lang,
+                    checked=lang == self.dictionary.tag)
                 lang_menu.addAction(action)
             popupMenu.insertSeparator(popupMenu.actions()[0])
             popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
@@ -110,16 +110,17 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     spell_menu.addAction(action)
                 # Only add the spelling suggests to the menu if there are
                 # suggestions.
-                if len(spell_menu.actions()):
+                if spell_menu.actions():
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
-        for html in DisplayTags.get_html_tags():
-            action = SpellAction(html[u'desc'], tagMenu)
-            action.correct.connect(self.htmlTag)
-            tagMenu.addAction(action)
-        popupMenu.insertSeparator(popupMenu.actions()[0])
-        popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
+        if self.formattingTagsAllowed:
+            for html in FormattingTags.get_html_tags():
+                action = SpellAction(html[u'desc'], tagMenu)
+                action.correct.connect(self.htmlTag)
+                tagMenu.addAction(action)
+            popupMenu.insertSeparator(popupMenu.actions()[0])
+            popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
         popupMenu.exec_(event.globalPos())
 
     def setLanguage(self, action):
@@ -148,7 +149,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
-        for html in DisplayTags.get_html_tags():
+        for html in FormattingTags.get_html_tags():
             if tag == html[u'desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():

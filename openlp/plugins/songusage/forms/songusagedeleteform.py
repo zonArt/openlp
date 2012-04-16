@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -25,7 +25,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, Receiver
 from openlp.plugins.songusage.lib.db import SongUsageItem
@@ -42,23 +42,32 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         self.manager = manager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        QtCore.QObject.connect(
+            self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+            self.onButtonBoxClicked)
 
-    def accept(self):
-        ret = QtGui.QMessageBox.question(self,
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Delete Selected Song Usage Events?'),
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Are you sure you want to delete selected Song Usage data?'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
-                QtGui.QMessageBox.Cancel),
-            QtGui.QMessageBox.Cancel)
-        if ret == QtGui.QMessageBox.Ok:
-            deleteDate = self.deleteCalendar.selectedDate().toPyDate()
-            self.manager.delete_all_objects(SongUsageItem,
-                SongUsageItem.usagedate <= deleteDate)
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Deletion Successful'),
-                u'message': translate('SongUsagePlugin.SongUsageDeleteForm',
-                'All requested data has been deleted successfully. ')})
-        self.close()
+    def onButtonBoxClicked(self, button):
+        if self.buttonBox.standardButton(button) == QtGui.QDialogButtonBox.Ok:
+            ret = QtGui.QMessageBox.question(self,
+                translate('SongUsagePlugin.SongUsageDeleteForm',
+                    'Delete Selected Song Usage Events?'),
+                translate('SongUsagePlugin.SongUsageDeleteForm',
+                    'Are you sure you want to delete selected Song Usage '
+                    'data?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                    QtGui.QMessageBox.No),
+                QtGui.QMessageBox.No)
+            if ret == QtGui.QMessageBox.Yes:
+                deleteDate = self.deleteCalendar.selectedDate().toPyDate()
+                self.manager.delete_all_objects(SongUsageItem,
+                    SongUsageItem.usagedate <= deleteDate)
+                Receiver.send_message(u'openlp_information_message', {
+                    u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
+                        'Deletion Successful'),
+                    u'message': translate(
+                        'SongUsagePlugin.SongUsageDeleteForm',
+                        'All requested data has been deleted successfully. ')}
+                )
+                self.accept()
+        else:
+            self.reject()
