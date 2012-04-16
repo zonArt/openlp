@@ -364,7 +364,7 @@ class Renderer(object):
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
-        # Adjust width and height to account for shadow. outline done in css
+        # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');
