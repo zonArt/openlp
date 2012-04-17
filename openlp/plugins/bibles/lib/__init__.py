@@ -386,7 +386,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                         if bible.get_book_by_book_ref_id(value[u'id']):
                             book_ref_id = value[u'id']
                             break
-        elif bible.get_book_by_book_ref_id(book_ref_id):
+        elif not bible.get_book_by_book_ref_id(book_ref_id):
             book_ref_id = False
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)
