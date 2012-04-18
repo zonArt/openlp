@@ -246,9 +246,8 @@ window.OpenLP = {
         else {
             $.each(data.results.items, function (idx, value) {
               ul.append($("<li>").append($("<a>").attr("href", "#options")
-                  .attr("data-rel", "dialog").attr("data-transition", "pop")
-                  .attr("value", value[0]).click(OpenLP.showOptions)
-                  .text(value[1])));
+                  .attr("data-rel", "dialog").attr("value", value[0])
+                  .click(OpenLP.showOptions).text(value[1])));
             });
         }
         ul.listview("refresh");
@@ -299,7 +298,7 @@ window.OpenLP = {
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text},
       function () {
-        $("#options").dialog("close");
+        //$("#options").dialog("close");
         $.mobile.changePage("#service-manager");
       }
     );
@@ -308,6 +307,11 @@ window.OpenLP = {
     return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
+// Initial jQueryMobile options
+$(document).bind("mobileinit", function(){
+  $.mobile.defaultDialogTransition = "none";
+  $.mobile.defaultPageTransition = "none";
+});
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#service-refresh").live("click", OpenLP.loadService);
