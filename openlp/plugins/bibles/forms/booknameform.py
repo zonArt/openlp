@@ -36,6 +36,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.forms.booknamedialog import \
     Ui_BookNameDialog
+from openlp.plugins.bibles.lib import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -54,6 +55,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.customSignals()
+        self.booknames = BibleStrings().Booknames
 
     def customSignals(self):
         """
@@ -97,7 +99,8 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
                 and item[u'testament_id'] == 3:
                 addBook = False
             if addBook:
-                self.correspondingComboBox.addItem(item[u'name'])
+                self.correspondingComboBox.addItem(
+                    self.booknames[item[u'abbreviation']])
 
     def exec_(self, name, books, maxbooks):
         self.books = books
