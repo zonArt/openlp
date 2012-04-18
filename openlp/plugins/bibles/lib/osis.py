@@ -51,8 +51,6 @@ class OSISBible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
-        fbibles = None
-        self.books = {}
         self.language_regex = re.compile(r'<language.*>(.*?)</language>')
         self.verse_regex = re.compile(
             r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
@@ -75,16 +73,6 @@ class OSISBible(BibleDB):
         filepath = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
             u'resources', u'osisbooks.csv')
-        try:
-            fbibles = open(filepath, u'r')
-            for line in fbibles:
-                book = line.split(u',')
-                self.books[book[0]] = (book[1].strip(), book[2].strip())
-        except IOError:
-            log.exception(u'OSIS bible import failed')
-        finally:
-            if fbibles:
-                fbibles.close()
 
     def do_import(self, bible_name=None):
         """
@@ -102,6 +90,8 @@ class OSISBible(BibleDB):
         try:
             detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read(1048576))
+            detect_file.seek(0)
+            lines_in_file = int(len(detect_file.readlines()))
         except IOError:
             log.exception(u'Failed to detect OSIS file encoding')
             return
@@ -112,6 +102,17 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, u'r', details['encoding'])
             repl = replacement
             language_id = False
+            # Decide if the bible propably contains only NT or AT and NT or 
+            # AT, NT and Apocrypha
+            if lines_in_file < 11500:
+                book_count = 27
+                chapter_count = 260
+            elif lines_in_file < 34200:
+                book_count = 66
+                chapter_count = 1188
+            else:
+                book_count = 67
+                chapter_count = 1336
             for file_record in osis:
                 if self.stop_import_flag:
                     break
@@ -135,36 +136,32 @@ class OSISBible(BibleDB):
                                 % self.filename)
                             return False
                     match_count += 1
-                    book = match.group(1)
+                    book = unicode(match.group(1))
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
                     verse_text = match.group(4)
-                    if not db_book or db_book.name != self.books[book][0]:
-                        log.debug(u'New book: "%s"' % self.books[book][0])
-                        book_ref_id = self.get_book_ref_id_by_name(unicode(
-                            self.books[book][0]), 67, language_id)
-                        if not book_ref_id:
-                            log.exception(u'Importing books from "%s" '\
-                                'failed' % self.filename)
-                            return False
-                        book_details = BiblesResourcesDB.get_book_by_id(
-                            book_ref_id)
+                    book_ref_id = self.get_book_ref_id_by_name(book, book_count,
+                        language_id)
+                    if not book_ref_id:
+                        log.exception(u'Importing books from "%s" failed' %
+                            self.filename)
+                        return False
+                    book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+                    if not db_book or db_book.name != book_details[u'name']:
+                        log.debug(u'New book: "%s"' % book_details[u'name'])
                         db_book = self.create_book(
-                            unicode(self.books[book][0]),
+                            book_details[u'name'],
                             book_ref_id,
                             book_details[u'testament_id'])
                     if last_chapter == 0:
-                        if book == u'Gen':
-                            self.wizard.progressBar.setMaximum(1188)
-                        else:
-                            self.wizard.progressBar.setMaximum(260)
+                        self.wizard.progressBar.setMaximum(chapter_count)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
                         self.wizard.incrementProgressBar(unicode(translate(
                             'BiblesPlugin.OsisImport', 'Importing %s %s...',
                             'Importing <book name> <chapter>...')) %
-                            (self.books[match.group(1)][0], chapter))
+                            (book_details[u'name'], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis
                     # tool from the Sword library embeds XML in the OSIS
