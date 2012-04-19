@@ -26,7 +26,6 @@
 ###############################################################################
 
 import os
-import os.path
 import logging
 import chardet
 import codecs
