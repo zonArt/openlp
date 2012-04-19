@@ -415,7 +415,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 meta_data[meta[u'key']] = meta[u'value']
                 if not meta[u'key'] == u'Version' and not meta[u'key'] == \
                     u'dbversion':
-                    self.newbibles[number].create_meta(meta[u'key'],
+                    self.newbibles[number].save_meta(meta[u'key'],
                         meta[u'value'])
                 if meta[u'key'] == u'download source':
                     webbible = True
@@ -455,7 +455,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     meta_data[u'download source'].lower())
                 if bible and bible[u'language_id']:
                     language_id = bible[u'language_id']
-                    self.newbibles[number].create_meta(u'language_id',
+                    self.newbibles[number].save_meta(u'language_id',
                         language_id)
                 else:
                     language_id = self.newbibles[number].get_language(name)
@@ -574,7 +574,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.progressBar.maximum() - self.progressBar.value())
             else:
                 self.success[number] = True
-                self.newbibles[number].create_meta(u'Version', name)
+                self.newbibles[number].save_meta(u'Version', name)
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
