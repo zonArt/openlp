@@ -28,6 +28,7 @@
 Module implementing BookNameForm.
 """
 import logging
+import re
 
 from PyQt4.QtGui import QDialog
 from PyQt4 import QtCore
@@ -56,6 +57,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         self.setupUi(self)
         self.customSignals()
         self.booknames = BibleStrings().Booknames
+        self.book_id = False
 
     def customSignals(self):
         """
@@ -123,4 +125,13 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.correspondingComboBox.setFocus()
             return False
         else:
+            cor_book = unicode(self.correspondingComboBox.currentText())
+            for character in u'\\.^$*+?{}[]()':
+                cor_book = cor_book.replace(character, u'\\' + character)
+            books = filter(lambda key:
+                re.match(cor_book, unicode(self.booknames[key]), re.UNICODE),
+                self.booknames.keys())
+            books = filter(None, map(BiblesResourcesDB.get_book, books))
+            if books:
+                self.book_id = books[0][u'id']
             return QDialog.accept(self)

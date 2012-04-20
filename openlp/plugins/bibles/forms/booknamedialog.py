@@ -90,7 +90,7 @@ class Ui_BookNameDialog(object):
             'Select Book Name'))
         self.infoLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'The following book name cannot be matched up internally. Please '
-            'select the corresponding English name from the list.'))
+            'select the corresponding name from the list.'))
         self.currentLabel.setText(translate('BiblesPlugin.BookNameDialog',
             'Current name:'))
         self.correspondingLabel.setText(translate(
