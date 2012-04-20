@@ -299,11 +299,12 @@ class PresentationMediaItem(MediaManagerItem):
                     return False
             else:
                 # File is no longer present
-                critical_error_message_box(
-                    translate('PresentationPlugin.MediaItem',
-                    'Missing Presentation'),
-                    unicode(translate('PresentationPlugin.MediaItem',
-                    'The presentation %s no longer exists.')) % filename)
+                if not remote:
+                    critical_error_message_box(
+                        translate('PresentationPlugin.MediaItem',
+                        'Missing Presentation'),
+                        unicode(translate('PresentationPlugin.MediaItem',
+                        'The presentation %s no longer exists.')) % filename)
                 return False
 
     def findControllerByType(self, filename):
