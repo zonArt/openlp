@@ -697,7 +697,7 @@ class OpenLyrics(object):
                 # Append text from "lines" element to verse text.
                 text += self._process_verse_lines(lines,
                     version=song_xml.get(u'version'))
-                # Add a virtual split to the verse text.
+                # Add an optional split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
