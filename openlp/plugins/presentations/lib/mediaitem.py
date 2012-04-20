@@ -294,7 +294,7 @@ class PresentationMediaItem(MediaManagerItem):
                             'Missing Presentation'),
                             unicode(translate(
                             'PresentationPlugin.MediaItem',
-                            'The Presentation %s is incomplete,'
+                            'The presentation %s is incomplete,'
                             ' please reload.')) % filename)
                     return False
             else:
@@ -303,7 +303,7 @@ class PresentationMediaItem(MediaManagerItem):
                     translate('PresentationPlugin.MediaItem',
                     'Missing Presentation'),
                     unicode(translate('PresentationPlugin.MediaItem',
-                    'The Presentation %s no longer exists.')) % filename)
+                    'The presentation %s no longer exists.')) % filename)
                 return False
 
     def findControllerByType(self, filename):
