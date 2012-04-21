@@ -666,27 +666,27 @@ Möchten Sie trotzdem fortfahren?</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished">Bitte geben Sie den Namen der Bibelübersetzung ein.</translation>
+        <translation>Bitte geben Sie den Namen der Bibelübersetzung ein.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="161"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished">Das Copyright muss angegeben werden. Gemeinfreie Bibeln ohne Copyright sind als solche zu kennzeichnen.</translation>
+        <translation>Das Copyright muss angegeben werden. Gemeinfreie Bibeln ohne Copyright sind als solche zu kennzeichnen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="170"/>
         <source>Bible Exists</source>
-        <translation type="unfinished">Übersetzung bereits vorhanden</translation>
+        <translation>Bibel existiert bereits</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="170"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished">Diese Bibel existiert bereit. Bitte geben Sie einen anderen Übersetzungsnamen an oder löschen Sie zuerst die Existierende.</translation>
+        <translation>Diese Bibel existiert bereit. Bitte geben Sie einen anderen Übersetzungsnamen an oder löschen Sie zuerst die Existierende.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="185"/>
         <source>You need to specify a book name for &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie müssen ein Buchnamen für »%s« angeben.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="192"/>
@@ -703,7 +703,7 @@ be followed by one or more non-numeric characters.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="204"/>
         <source>The Book Name &quot;%s&quot; has been entered more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Buchnamen »%s« wurde mehrmals angegeben.</translation>
     </message>
 </context>
 <context>
@@ -880,23 +880,24 @@ Trenner wird zur Darstellung in OpenLP genutzt.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="279"/>
         <source>Default Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard Bibelsprache</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="281"/>
         <source>Book name language in search field,
 search results and on display:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache des Buchnames im Suchfeld,
+Suchergebnis und Projektionsbildschirm:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="284"/>
         <source>Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibelsprache</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="286"/>
         <source>Application Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwendungssprache</translation>
     </message>
 </context>
 <context>
@@ -974,37 +975,37 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="145"/>
         <source>Bible Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibeleditor</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="151"/>
         <source>License Details</source>
-        <translation type="unfinished">Lizenzdetails</translation>
+        <translation>Lizenzdetails</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="153"/>
         <source>Version name:</source>
-        <translation type="unfinished">Bibelausgabe:</translation>
+        <translation>Bibelausgabe:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="155"/>
         <source>Copyright:</source>
-        <translation type="unfinished">Copyright:</translation>
+        <translation>Copyright:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="157"/>
         <source>Permissions:</source>
-        <translation type="unfinished">Genehmigung:</translation>
+        <translation>Genehmigung:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="159"/>
         <source>Default Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard Bibelsprache</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="161"/>
         <source>Book name language in search field, search results and on display:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache des Buchnames im Suchfeld, Suchergebnis und Projektionsbildschirm:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="165"/>
@@ -1014,23 +1015,24 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="167"/>
         <source>Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Bibelsprache</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="169"/>
         <source>Application Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwendungssprache</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="172"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Englisch</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="81"/>
         <source>This is a Web Download Bible.
 It is not possible to customize the Book Names.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist eine Webbibel.
+Es ist nicht möglich die Büchernamen anzupassen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="86"/>
@@ -1364,7 +1366,7 @@ werden. Daher ist eine Internetverbindung erforderlich.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="552"/>
         <source>Are you sure you want to delete &quot;%s&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sind Sie sicher, dass Sie &quot;%s&quot; löschen möchten?</translation>
     </message>
 </context>
 <context>
@@ -1822,7 +1824,7 @@ Wollen Sie die anderen Bilder trotzdem hinzufügen?</translation>
     <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="72"/>
         <source>Visible background for images with aspect ratio different to screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarer Hintergrund für Bilder mit einem anderem Seitenverhältnis als der Projektionsbildschirm.</translation>
     </message>
 </context>
 <context>
@@ -2717,14 +2719,18 @@ Version: %s
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.  Click the Finish button now to start OpenLP with initial settings and no sample data.
 
 To re-run the First Time Wizard and import this sample data at a later time, check your Internet connection and re-run this wizard by selecting &quot;Tools/Re-run First Time Wizard&quot; from OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es wurde keine Internetverbindung erkannt. Um während des erstmaligen Startes von OpenLP Beispiel Lieder, Bibeln und Designs zu installieren ist eine Internetverbindung nötig. Klicken Sie »Abschließen«, um OpenLP nun mit Grundeinstellungen und ohne Beispiel Daten zu starten.
+ 
+Um diesen Einrichtungsassistenten erneut zu starten und die Beispiel Daten zu importieren, prüfen Sie Ihre Internetverbindung und starten den Assistenten im Menü &quot;Extras/Einrichtungsassistenten starten&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="241"/>
         <source>
 
 To cancel the First Time Wizard completely (and not start OpenLP), click the Cancel button now.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Um den Einrichtungsassistenten zu unterbrechen (und OpenLP nicht zu starten), bitte »Abbrechen« klicken.</translation>
     </message>
 </context>
 <context>
@@ -3036,22 +3042,22 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the Can
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="330"/>
         <source>Behavior of next/previous on the last/first slide:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verhalten von &quot;Vorherige/Nächste Folie&quot; bei letzter Folie:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="332"/>
         <source>&amp;Remain on Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Halte</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="334"/>
         <source>&amp;Wrap around</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Umlauf</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="336"/>
         <source>&amp;Move to next/previous service item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nächstes/vorheriges Ablaufelement</translation>
     </message>
 </context>
 <context>
@@ -5553,7 +5559,7 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="127"/>
         <source>Optional &amp;Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Optionale &amp;Teilung</translation>
     </message>
 </context>
 <context>
@@ -5821,22 +5827,22 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="293"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="296"/>
         <source>Theme</source>
-        <translation type="unfinished">Design</translation>
+        <translation>Design</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="297"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="306"/>
         <source>Add &amp;amp; Go to Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinzufügen &amp; zum Ablauf gehen</translation>
     </message>
 </context>
 <context>
@@ -6304,12 +6310,12 @@ Easy Worship]</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="148"/>
         <source>Meta Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadaten</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="176"/>
         <source>Custom Book Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierte Büchernamen</translation>
     </message>
 </context>
 <context>
@@ -7068,7 +7074,7 @@ Easy Worship]</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="85"/>
         <source>Import missing songs from service files</source>
-        <translation type="unfinished"></translation>
+        <translation>Lieder aus Abläufen in die Datenbank importieren</translation>
     </message>
 </context>
 <context>

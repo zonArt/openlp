@@ -666,44 +666,46 @@ Do you want to continue anyway?</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="155"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished">You need to specify a version name for your Bible.</translation>
+        <translation>You need to specify a version name for your Bible.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="161"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished">You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</translation>
+        <translation>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="170"/>
         <source>Bible Exists</source>
-        <translation type="unfinished">Bible Exists</translation>
+        <translation>Bible Exists</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="170"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished">This Bible already exists. Please import a different Bible or first delete the existing one.</translation>
+        <translation>This Bible already exists. Please import a different Bible or first delete the existing one.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="185"/>
         <source>You need to specify a book name for &quot;%s&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to specify a book name for &quot;%s&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="192"/>
         <source>The book name &quot;%s&quot; is not correct.
 Numbers can only be used at the beginning and must
 be followed by one or more non-numeric characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>The book name &quot;%s&quot; is not correct.
+Numbers can only be used at the beginning and must
+be followed by one or more non-numeric characters.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="204"/>
         <source>Duplicate Book Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplicate Book Name</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="204"/>
         <source>The Book Name &quot;%s&quot; has been entered more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>The Book Name &quot;%s&quot; has been entered more than once.</translation>
     </message>
 </context>
 <context>
@@ -879,23 +881,24 @@ Please clear this edit line to use the default value.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="279"/>
         <source>Default Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Default Bible Language</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="281"/>
         <source>Book name language in search field,
 search results and on display:</source>
-        <translation type="unfinished"></translation>
+        <translation>Book name language in search field,
+search results and on display:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="284"/>
         <source>Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Bible Language</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="286"/>
         <source>Application Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Application Language</translation>
     </message>
 </context>
 <context>
@@ -973,68 +976,69 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="145"/>
         <source>Bible Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Bible Editor</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="151"/>
         <source>License Details</source>
-        <translation type="unfinished">License Details</translation>
+        <translation>License Details</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="153"/>
         <source>Version name:</source>
-        <translation type="unfinished">Version name:</translation>
+        <translation>Version name:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="155"/>
         <source>Copyright:</source>
-        <translation type="unfinished">Copyright:</translation>
+        <translation>Copyright:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="157"/>
         <source>Permissions:</source>
-        <translation type="unfinished">Permissions:</translation>
+        <translation>Permissions:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="159"/>
         <source>Default Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Default Bible Language</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="161"/>
         <source>Book name language in search field, search results and on display:</source>
-        <translation type="unfinished"></translation>
+        <translation>Book name language in search field, search results and on display:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="165"/>
         <source>Global Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Global Settings</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="167"/>
         <source>Bible Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Bible Language</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="169"/>
         <source>Application Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Application Language</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="172"/>
         <source>English</source>
-        <translation type="unfinished">English</translation>
+        <translation>English</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="81"/>
         <source>This is a Web Download Bible.
 It is not possible to customize the Book Names.</source>
-        <translation type="unfinished"></translation>
+        <translation>This is a Web Download Bible.
+It is not possible to customize the Book Names.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="86"/>
         <source>To use the customized book names, &quot;Bible language&quot; must be selected on the Meta Data tab or, if &quot;Global settings&quot; is selected, on the Bible page in Configure OpenLP.</source>
-        <translation type="unfinished"></translation>
+        <translation>To use the customized book names, &quot;Bible language&quot; must be selected on the Meta Data tab or, if &quot;Global settings&quot; is selected, on the Bible page in Configure OpenLP.</translation>
     </message>
 </context>
 <context>
@@ -1362,7 +1366,7 @@ demand and thus an internet connection is required.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="552"/>
         <source>Are you sure you want to delete &quot;%s&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to delete &quot;%s&quot;?</translation>
     </message>
 </context>
 <context>
@@ -5550,7 +5554,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="127"/>
         <source>Optional &amp;Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Optional &amp;Split</translation>
     </message>
 </context>
 <context>
@@ -5818,22 +5822,22 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="293"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="296"/>
         <source>Theme</source>
-        <translation type="unfinished">Theme</translation>
+        <translation>Theme</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="297"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Desktop</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/httpserver.py" line="306"/>
         <source>Add &amp;amp; Go to Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Add &amp;amp; Go to Service</translation>
     </message>
 </context>
 <context>
@@ -6300,12 +6304,12 @@ The encoding is responsible for the correct character representation.</translati
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="148"/>
         <source>Meta Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Meta Data</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="176"/>
         <source>Custom Book Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Custom Book Names</translation>
     </message>
 </context>
 <context>
