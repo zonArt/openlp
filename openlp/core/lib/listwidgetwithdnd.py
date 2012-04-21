@@ -27,7 +27,7 @@
 """
 Extend QListWidget to handle drag and drop functionality
 """
-import os.path
+import os
 
 from PyQt4 import QtCore, QtGui
 

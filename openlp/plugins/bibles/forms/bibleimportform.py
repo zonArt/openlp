@@ -29,7 +29,6 @@ The bible import functions for OpenLP
 """
 import logging
 import os
-import os.path
 import locale
 
 from PyQt4 import QtCore, QtGui

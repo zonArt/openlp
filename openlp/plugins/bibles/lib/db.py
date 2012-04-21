@@ -25,13 +25,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 import chardet
+import logging
 import os
 import sqlite3
 
 from PyQt4 import QtCore
-from sqlalchemy import Column, ForeignKey, or_, Table, types
+from sqlalchemy import Column, ForeignKey, or_, Table, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
@@ -182,7 +182,7 @@ class BibleDB(QtCore.QObject, Manager):
             The actual Qt wizard form.
         """
         self.wizard = wizard
-        self.create_meta(u'dbversion', u'2')
+        self.save_meta(u'dbversion', u'2')
         return self.name
 
     def create_book(self, name, bk_ref_id, testament=1):
@@ -204,6 +204,16 @@ class BibleDB(QtCore.QObject, Manager):
             testament_reference_id=testament)
         self.save_object(book)
         return book
+
+    def update_book(self, book):
+        """
+        Update a book in the database.
+
+        ``book``
+            The book object
+        """
+        log.debug(u'BibleDB.update_book("%s")', book.name)
+        return self.save_object(book)
 
     def delete_book(self, db_book):
         """
@@ -271,9 +281,9 @@ class BibleDB(QtCore.QObject, Manager):
         self.session.add(verse)
         return verse
 
-    def create_meta(self, key, value):
+    def save_meta(self, key, value):
         """
-        Utility method to save BibleMeta objects in a Bible database.
+        Utility method to save or update BibleMeta objects in a Bible database.
 
         ``key``
             The key for this instance.
@@ -284,7 +294,12 @@ class BibleDB(QtCore.QObject, Manager):
         if not isinstance(value, unicode):
             value = unicode(value)
         log.debug(u'BibleDB.save_meta("%s/%s")', key, value)
-        self.save_object(BibleMeta.populate(key=key, value=value))
+        meta = self.get_object(BibleMeta, key)
+        if meta:
+            meta.value = value
+            self.save_object(meta)
+        else:
+            self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
         """
@@ -427,13 +442,11 @@ class BibleDB(QtCore.QObject, Manager):
             The book object to get the chapter count for.
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book.name)
-        count = self.session.query(Verse.chapter).join(Book)\
-            .filter(Book.book_reference_id==book.book_reference_id)\
-            .distinct().count()
+        count = self.session.query(func.max(Verse.chapter)).join(Book).filter(
+            Book.book_reference_id==book.book_reference_id).scalar()
         if not count:
             return 0
-        else:
-            return count
+        return count
 
     def get_verse_count(self, book_ref_id, chapter):
         """
@@ -446,14 +459,13 @@ class BibleDB(QtCore.QObject, Manager):
             The chapter to get the verse count for.
         """
         log.debug(u'BibleDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
-        count = self.session.query(Verse).join(Book)\
+        count = self.session.query(func.max(Verse.verse)).join(Book)\
             .filter(Book.book_reference_id==book_ref_id)\
             .filter(Verse.chapter==chapter)\
-            .count()
+            .scalar()
         if not count:
             return 0
-        else:
-            return count
+        return count
 
     def get_language(self, bible_name=None):
         """
@@ -474,7 +486,7 @@ class BibleDB(QtCore.QObject, Manager):
             return False
         language = BiblesResourcesDB.get_language(language)
         language_id = language[u'id']
-        self.create_meta(u'language_id', language_id)
+        self.save_meta(u'language_id', language_id)
         return language_id
 
     def is_old_database(self):

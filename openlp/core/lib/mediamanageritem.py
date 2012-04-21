@@ -260,7 +260,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.menu.addActions(self.listView.actions())
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onClickPressed)
+            self.onDoubleClicked)
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onSelectionChange)
@@ -295,9 +295,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
         QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClicked)
         QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onSearchTextButtonClicked)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
@@ -458,7 +458,7 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
-    def onClickPressed(self):
+    def onDoubleClicked(self):
         """
         Allows the list click action to be determined dynamically
         """

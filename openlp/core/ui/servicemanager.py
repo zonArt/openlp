@@ -77,7 +77,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
             return
-        if not self.selectedItems():
+        if not self.itemAt(self.mapFromGlobal(QtGui.QCursor.pos())):
             event.ignore()
             return
         drag = QtGui.QDrag(self)
@@ -105,6 +105,7 @@ class ServiceManager(QtGui.QWidget):
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
+        self.serviceId = 0
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
@@ -181,7 +182,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarAction(
             u'moveUp', text=translate('OpenLP.ServiceManager', 'Move &up'),
             icon=u':/services/service_up.png',
-            tooltip=translate( 'OpenLP.ServiceManager',
+            tooltip=translate('OpenLP.ServiceManager',
             'Move item up one position in the service.'),
             shortcuts=[QtCore.Qt.Key_PageUp], category=UiStrings().Service,
             triggers=self.onServiceUp)
@@ -331,6 +332,8 @@ class ServiceManager(QtGui.QWidget):
         Setter for property "modified". Sets whether or not the current service
         has been modified.
         """
+        if modified:
+            self.serviceId += 1
         self._modified = modified
         serviceFile = self.shortFileName() or translate(
             'OpenLP.ServiceManager', 'Untitled Service')
@@ -439,6 +442,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.clear()
         self.serviceItems = []
         self.setFileName(u'')
+        self.serviceId += 1
         self.setModified(False)
         QtCore.QSettings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
@@ -1106,7 +1110,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.servicemanagerSettingsSection +
                 u'/service theme',
             QtCore.QVariant(self.service_theme))
-        self.regenerateServiceItems()
+        self.regenerateServiceItems(True)
 
     def themeChange(self):
         """
@@ -1118,7 +1122,7 @@ class ServiceManager(QtGui.QWidget):
         self.themeLabel.setVisible(visible)
         self.themeComboBox.setVisible(visible)
 
-    def regenerateServiceItems(self):
+    def regenerateServiceItems(self, changed=False):
         """
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
@@ -1154,7 +1158,8 @@ class ServiceManager(QtGui.QWidget):
                     repaint=False, selected=item[u'selected'])
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
-            self.setModified()
+            if changed:
+                self.setModified()
             # Repaint it once only at the end
             self.repaintServiceList(-1, -1)
         Receiver.send_message(u'cursor_normal')
@@ -1439,7 +1444,7 @@ class ServiceManager(QtGui.QWidget):
             theme = None
         item = self.findServiceItem()[0]
         self.serviceItems[item][u'service_item'].update_theme(theme)
-        self.regenerateServiceItems()
+        self.regenerateServiceItems(True)
 
     def _getParentItemData(self, item):
         parentitem = item.parent()

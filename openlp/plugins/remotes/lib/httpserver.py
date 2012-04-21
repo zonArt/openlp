@@ -290,9 +290,11 @@ class HttpConnection(object):
                 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
             'search': translate('RemotePlugin.Mobile', 'Search'),
-            'back': translate('RemotePlugin.Mobile', 'Back'),
+            'home': translate('RemotePlugin.Mobile', 'Home'),
             'refresh': translate('RemotePlugin.Mobile', 'Refresh'),
             'blank': translate('RemotePlugin.Mobile', 'Blank'),
+            'theme': translate('RemotePlugin.Mobile', 'Theme'),
+            'desktop': translate('RemotePlugin.Mobile', 'Desktop'),
             'show': translate('RemotePlugin.Mobile', 'Show'),
             'prev': translate('RemotePlugin.Mobile', 'Prev'),
             'next': translate('RemotePlugin.Mobile', 'Next'),
@@ -301,6 +303,8 @@ class HttpConnection(object):
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
             'add_to_service': translate('RemotePlugin.Mobile',
                 'Add to Service'),
+            'add_and_go_to_service': translate('RemotePlugin.Mobile',
+                'Add &amp; Go to Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options')
         }
@@ -396,6 +400,7 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
+            u'service': self.parent.plugin.serviceManager.serviceId,
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',

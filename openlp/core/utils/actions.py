@@ -369,7 +369,7 @@ class ActionList(object):
             elif action in self.getAllChildObjects(existing_action.parent()):
                 return False
         return True
-    
+
     def getAllChildObjects(self, qobject):
         """
         Goes recursively through the children of ``qobject`` and returns a list

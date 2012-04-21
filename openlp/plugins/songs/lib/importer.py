@@ -131,7 +131,7 @@ class SongFormat(object):
             SongFormat.Generic,
             SongFormat.CCLI,
             SongFormat.EasySlides,
-            SongFormat.EasyWorship,            
+            SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
             SongFormat.OpenSong,
             SongFormat.SongBeamer,

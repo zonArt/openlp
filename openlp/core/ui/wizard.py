@@ -114,7 +114,6 @@ class OpenLPWizard(QtGui.QWizard):
         self.addCustomPages()
         self.addProgressPage()
         self.retranslateUi()
-        QtCore.QMetaObject.connectSlotsByName(self)
 
     def registerFields(self):
         """

@@ -291,7 +291,7 @@ class SlideController(Controller):
             self.toolbar.widgetForAction(self.audioPauseItem).setPopupMode(
                 QtGui.QToolButton.MenuButtonPopup)
             self.nextTrackItem = create_action(self, u'nextTrackItem',
-                text=translate('OpenLP.SlideController', 'Next Track'),
+                text=UiStrings().NextTrack,
                 icon=u':/slides/media_playback_next.png', tooltip=translate(
                 'OpenLP.SlideController', 'Go to next audio track.'),
                 category=self.category, context=QtCore.Qt.WindowShortcut,

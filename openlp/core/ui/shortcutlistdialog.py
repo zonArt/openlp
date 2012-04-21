@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_button_box
 
 class CaptureShortcutButton(QtGui.QPushButton):
     """
@@ -108,18 +109,11 @@ class Ui_ShortcutListDialog(object):
         self.alternateLabel.setObjectName(u'alternateLabel')
         self.detailsLayout.addWidget(self.alternateLabel, 0, 2, 1, 1)
         self.shortcutListLayout.addLayout(self.detailsLayout)
-        self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(shortcutListDialog, u'buttonBox',
+            [u'cancel', u'ok', u'defaults'])
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults)
         self.shortcutListLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            shortcutListDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            shortcutListDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(shortcutListDialog)
 
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
