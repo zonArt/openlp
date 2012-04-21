@@ -332,6 +332,7 @@ class BibleDB(QtCore.QObject, Manager):
     def get_book_ref_id_by_name(self, book, maxbooks, language_id=None):
         log.debug(u'BibleDB.get_book_ref_id_by_name:("%s", "%s")', book,
             language_id)
+        book_id = None
         if BiblesResourcesDB.get_book(book, True):
             book_temp = BiblesResourcesDB.get_book(book, True)
             book_id = book_temp[u'id']
@@ -341,26 +342,13 @@ class BibleDB(QtCore.QObject, Manager):
             book_id = AlternativeBookNamesDB.get_book_reference_id(book)
         else:
             from openlp.plugins.bibles.forms import BookNameForm
-            book_ref = None
             book_name = BookNameForm(self.wizard)
             if book_name.exec_(book, self.get_books(), maxbooks):
-                book_ref = unicode(
-                    book_name.correspondingComboBox.currentText())
-            if not book_ref:
-                return None
-            else:
-                book_temp = BiblesResourcesDB.get_book(book_ref)
-            if book_temp:
-                book_id = book_temp[u'id']
-            else:
-                return None
+                book_id = book_name.book_id
             if book_id:
                 AlternativeBookNamesDB.create_alternative_book_name(
                     book, book_id, language_id)
-        if book_id:
-            return book_id
-        else:
-            return None
+        return book_id
 
     def get_verses(self, reference_list, show_error=True):
         """
