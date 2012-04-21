@@ -401,16 +401,16 @@ class HTTPBible(BibleDB):
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible',
             'Registering Bible and loading books...')))
-        self.create_meta(u'download source', self.download_source)
-        self.create_meta(u'download name', self.download_name)
+        self.save_meta(u'download source', self.download_source)
+        self.save_meta(u'download name', self.download_name)
         if self.proxy_server:
-            self.create_meta(u'proxy server', self.proxy_server)
+            self.save_meta(u'proxy server', self.proxy_server)
         if self.proxy_username:
             # Store the proxy userid.
-            self.create_meta(u'proxy username', self.proxy_username)
+            self.save_meta(u'proxy username', self.proxy_username)
         if self.proxy_password:
             # Store the proxy password.
-            self.create_meta(u'proxy password', self.proxy_password)
+            self.save_meta(u'proxy password', self.proxy_password)
         if self.download_source.lower() == u'crosswalk':
             handler = CWExtract(self.proxy_server)
         elif self.download_source.lower() == u'biblegateway':
@@ -429,7 +429,7 @@ class HTTPBible(BibleDB):
                 self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
-            self.create_meta(u'language_id', language_id)
+            self.save_meta(u'language_id', language_id)
         else:
             language_id = self.get_language(bible_name)
         if not language_id:

@@ -276,15 +276,16 @@ class BiblesTab(SettingsTab):
                 'end marks may be defined.\nThey have to be separated by a '
                 'vertical bar "|".\nPlease clear this edit line to use the '
                 'default value.'))
-        self.languageSelectionGroupBox.setTitle(translate('BiblesPlugin.BiblesTab',
-            'Default Search Field Language'))
+        self.languageSelectionGroupBox.setTitle(translate(
+            'BiblesPlugin.BiblesTab', 'Default Bible Language'))
         self.languageSelectionLabel.setText(translate('BiblesPlugin.BiblesTab',
-            'Book name language in search field:'))
+            'Book name language in search field,\nsearch results and on '
+            'display:'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible,
-            translate('BiblesPlugin.BiblesTab', 'Bible language'))
+            translate('BiblesPlugin.BiblesTab', 'Bible Language'))
         self.languageSelectionComboBox.setItemText(
             LanguageSelection.Application,
-            translate('BiblesPlugin.BiblesTab', 'Application language'))
+            translate('BiblesPlugin.BiblesTab', 'Application Language'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.English,
             translate('BiblesPlugin.BiblesTab', 'English'))
 

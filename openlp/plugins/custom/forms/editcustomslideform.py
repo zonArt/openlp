@@ -77,7 +77,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
 
     def onSplitButtonClicked(self):
         """
-        Adds a virtual split at cursor.
+        Adds an optional split at cursor.
         """
         self.insertSingleLineTextAtCursor(u'[---]')
         self.slideTextEdit.setFocus()
