@@ -26,14 +26,12 @@
 ###############################################################################
 """
 The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the Songs plugin
+backend for the Bibles plugin
 """
 
-from sqlalchemy import Column, Table, types
-from sqlalchemy.sql.expression import func
-from migrate.changeset.constraint import ForeignKeyConstraint
+from sqlalchemy import Table, update, or_
 
-__version__ = 3
+__version__ = 1
 
 def upgrade_setup(metadata):
     """
@@ -41,14 +39,11 @@ def upgrade_setup(metadata):
     upgrade process. If you want to drop a table, you need to remove it from
     here, and add it to your upgrade function.
     """
+    # Don't define the "metadata" table, as the upgrade mechanism already
+    # defines it.
     tables = {
-        u'authors': Table(u'authors', metadata, autoload=True),
-        u'media_files': Table(u'media_files', metadata, autoload=True),
-        u'song_books': Table(u'song_books', metadata, autoload=True),
-        u'songs': Table(u'songs', metadata, autoload=True),
-        u'topics': Table(u'topics', metadata, autoload=True),
-        u'authors_songs': Table(u'authors_songs', metadata, autoload=True),
-        u'songs_topics': Table(u'songs_topics', metadata, autoload=True)
+        u'book': Table(u'book', metadata, autoload=True),
+        u'verse': Table(u'verse', metadata, autoload=True)
     }
     return tables
 
@@ -57,43 +52,22 @@ def upgrade_1(session, metadata, tables):
     """
     Version 1 upgrade.
 
-    This upgrade removes the many-to-many relationship between songs and
-    media_files and replaces it with a one-to-many, which is far more
-    representative of the real relationship between the two entities.
-
-    In order to facilitate this one-to-many relationship, a song_id column is
-    added to the media_files table, and a weight column so that the media
-    files can be ordered.
+    This upgrade renames a number of keys to a single naming convention..
     """
-    Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
-    Column(u'song_id', types.Integer(), default=None)\
-        .create(table=tables[u'media_files'])
-    Column(u'weight', types.Integer(), default=0)\
-        .create(table=tables[u'media_files'])
-    if metadata.bind.url.get_dialect().name != 'sqlite':
-        # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
-        ForeignKeyConstraint([u'song_id'], [u'songs.id'],
-            table=tables[u'media_files']).create()
-
-
-def upgrade_2(session, metadata, tables):
-    """
-    Version 2 upgrade.
-
-    This upgrade adds a create_date and last_modified date to the songs table
-    """
-    Column(u'create_date', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'])
-    Column(u'last_modified', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'])
-
-
-def upgrade_3(session, metadata, tables):
-    """
-    Version 3 upgrade.
-
-    This upgrade adds a temporary song flag to the songs table
-    """
-    Column(u'temporary', types.Boolean(), default=False)\
-        .create(table=tables[u'songs'])
-
+    metadata_table = metadata.tables[u'metadata']
+    # Rename "Bookname language" to "book_name_language"
+    session.execute(update(metadata_table)\
+        .where(or_(metadata_table.c.key == u'bookname language',
+        metadata_table.c.key == u'Bookname language'))\
+        .values(key=u'book_name_language'))
+    # Rename "Copyright" to "copyright"
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'Copyright').values(key=u'copyright'))
+    # Rename "Version" to "name" ("version" used by upgrade system)
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'Version').values(key=u'name'))
+    # Rename "Permissions" to "permissions"
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'Permissions')\
+        .values(key=u'permissions'))
+    session.commit()

@@ -27,7 +27,7 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import create_action, UiStrings
@@ -81,16 +81,23 @@ class BiblePlugin(Plugin):
 
     def appStartup(self):
         """
-        Perform tasks on application starup
+        Perform tasks on application startup
         """
         if len(self.manager.old_bible_databases):
-            if QtGui.QMessageBox.information(self.formparent,
+            if QtGui.QMessageBox.information(self.formParent,
                 translate('OpenLP', 'Information'), translate('OpenLP',
                 'Bible format has changed.\nYou have to upgrade your '
                 'existing Bibles.\nShould OpenLP upgrade now?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        if settings.contains(u'bookname language'):
+            settings.setValue(u'book name language', settings.value(
+                u'bookname language', QtCore.QVariant(0)).toInt()[0])
+            settings.remove(u'bookname language')
+        settings.endGroup()
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = create_action(import_menu, u'importBibleItem',
@@ -126,7 +133,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formparent,
+            self.upgrade_wizard = BibleUpgradeForm(self.formParent,
                 self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
@@ -147,7 +154,7 @@ class BiblePlugin(Plugin):
         Called to find out if the bible plugin is currently using a theme.
         Returns True if the theme is being used, otherwise returns False.
         """
-        if unicode(self.settings_tab.bible_theme) == theme:
+        if unicode(self.settingsTab.bible_theme) == theme:
             return True
         return False
 
@@ -163,8 +170,8 @@ class BiblePlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        self.settings_tab.bible_theme = newTheme
-        self.settings_tab.save()
+        self.settingsTab.bible_theme = newTheme
+        self.settingsTab.save()
 
     def setPluginTextStrings(self):
         """

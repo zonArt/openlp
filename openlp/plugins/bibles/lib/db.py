@@ -39,6 +39,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, clean_filename
+import upgrade
 
 log = logging.getLogger(__name__)
 
@@ -147,7 +148,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.file = clean_filename(self.name) + u'.sqlite'
         if u'file' in kwargs:
             self.file = kwargs[u'file']
-        Manager.__init__(self, u'bibles', init_schema, self.file)
+        Manager.__init__(self, u'bibles', init_schema, self.file, upgrade)
         if u'file' in kwargs:
             self.get_name()
         if u'path' in kwargs:
@@ -167,7 +168,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         Returns the version name of the Bible.
         """
-        version_name = self.get_object(BibleMeta, u'Version')
+        version_name = self.get_object(BibleMeta, u'name')
         self.name = version_name.value if version_name else None
         return self.name
 
@@ -483,7 +484,7 @@ class BibleDB(QtCore.QObject, Manager):
         prior to 1.9.6.
         """
         try:
-            columns = self.session.query(Book).all()
+            self.session.query(Book).all()
         except:
             return True
         return False
@@ -550,16 +551,13 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         log.debug(u'BiblesResourcesDB.get_books()')
         books = BiblesResourcesDB.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM book_reference ORDER BY id')
-        return [
-            {
-                u'id': book[0],
-                u'testament_id': book[1],
-                u'name': unicode(book[2]),
-                u'abbreviation': unicode(book[3]),
-                u'chapters': book[4]
-            }
-            for book in books
-        ]
+        return [{
+            u'id': book[0],
+            u'testament_id': book[1],
+            u'name': unicode(book[2]),
+            u'abbreviation': unicode(book[3]),
+            u'chapters': book[4]
+        } for book in books]
 
     @staticmethod
     def get_book(name, lower=False):
@@ -601,7 +599,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         Return the books which include string.
 
         ``string``
-            The string to search for in the booknames or abbreviations.
+            The string to search for in the book names or abbreviations.
         """
         log.debug(u'BiblesResourcesDB.get_book_like("%s")', string)
         if not isinstance(string, unicode):
@@ -611,16 +609,13 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'LOWER(name) LIKE ? OR LOWER(abbreviation) LIKE ?',
                 (u'%' + string.lower() + u'%', u'%' + string.lower() + u'%'))
         if books:
-            return [
-                {
+            return [{
                 u'id': book[0],
                 u'testament_id': book[1],
                 u'name': unicode(book[2]),
                 u'abbreviation': unicode(book[3]),
                 u'chapters': book[4]
-                }
-                for book in books
-            ]
+            } for book in books]
         else:
             return None
 
@@ -747,16 +742,13 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             u'language_id, download_source_id FROM webbibles WHERE '
             u'download_source_id = ?', (source[u'id'],))
         if bibles:
-            return [
-                {
+            return [{
                 u'id': bible[0],
                 u'name': bible[1],
                 u'abbreviation': bible[2],
                 u'language_id': bible[3],
                 u'download_source_id': bible[4]
-                }
-                for bible in bibles
-            ]
+            } for bible in bibles]
         else:
             return None
 
@@ -789,7 +781,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
                 u'abbreviation': bible[0][2],
                 u'language_id': bible[0][3],
                 u'download_source_id': bible[0][4]
-                }
+            }
         except (IndexError, TypeError):
             return None
 
@@ -850,14 +842,11 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         languages = BiblesResourcesDB.run_sql(u'SELECT id, name, code FROM '
                 u'language ORDER by name')
         if languages:
-            return [
-                {
+            return [{
                 u'id': language[0],
                 u'name': unicode(language[1]),
                 u'code': unicode(language[2])
-                }
-                for language in languages
-            ]
+            } for language in languages]
         else:
             return None
 
@@ -1036,7 +1025,7 @@ class OldBibleDB(QtCore.QObject, Manager):
         Returns the version name of the Bible.
         """
         version_name = self.run_sql(u'SELECT value FROM '
-                u'metadata WHERE key = "Version"')
+                u'metadata WHERE key = "name"')
         if version_name:
             self.name = version_name[0][0]
         else:
@@ -1050,13 +1039,10 @@ class OldBibleDB(QtCore.QObject, Manager):
         metadata = self.run_sql(u'SELECT key, value FROM metadata '
             u'ORDER BY rowid')
         if metadata:
-            return [
-                {
+            return [{
                 u'key': unicode(meta[0]),
                 u'value': unicode(meta[1])
-                }
-                for meta in metadata
-            ]
+            } for meta in metadata]
         else:
             return None
 
@@ -1088,13 +1074,10 @@ class OldBibleDB(QtCore.QObject, Manager):
         """
         books = self.run_sql(u'SELECT name, id FROM book ORDER BY id')
         if books:
-            return [
-                {
+            return [{
                 u'name': unicode(book[0]),
                 u'id':int(book[1])
-                }
-                for book in books
-            ]
+            } for book in books]
         else:
             return None
 
@@ -1105,15 +1088,12 @@ class OldBibleDB(QtCore.QObject, Manager):
         verses = self.run_sql(u'SELECT book_id, chapter, verse, text FROM '
             u'verse WHERE book_id = ? ORDER BY id', (book_id, ))
         if verses:
-            return [
-                {
+            return [{
                 u'book_id': int(verse[0]),
                 u'chapter': int(verse[1]),
                 u'verse': int(verse[2]),
                 u'text': unicode(verse[3])
-                }
-                for verse in verses
-            ]
+            } for verse in verses]
         else:
             return None
 

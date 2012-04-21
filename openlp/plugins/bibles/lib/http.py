@@ -54,23 +54,23 @@ class BGExtract(object):
         self.proxyurl = proxyurl
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode Bibles via the BibleGateway website.
 
         ``version``
             The version of the Bible like 31 for New International version.
 
-        ``bookname``
+        ``book_name``
             Name of the Book.
 
         ``chapter``
             Chapter number.
         """
         log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            bookname, chapter)
-        urlbookname = urllib.quote(bookname.encode("utf-8"))
-        url_params = u'search=%s+%s&version=%s' % (urlbookname, chapter,
+            book_name, chapter)
+        url_book_name = urllib.quote(book_name.encode("utf-8"))
+        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter,
             version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
@@ -120,7 +120,7 @@ class BGExtract(object):
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
                 log.warn(u'Illegal verse number in %s %s %s:%s',
-                    version, bookname, chapter, unicode(raw_verse_num))
+                    version, book_name, chapter, unicode(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next
                 part = raw_verse_num.next.next
@@ -138,7 +138,7 @@ class BGExtract(object):
             log.debug(u'No content found in the BibleGateway response.')
             send_error_message(u'parse')
             return None
-        return SearchResults(bookname, chapter, verse_list)
+        return SearchResults(book_name, chapter, verse_list)
 
     def get_books_from_http(self, version):
         """
@@ -200,25 +200,25 @@ class BSExtract(object):
         self.proxyurl = proxyurl
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode bibles via Bibleserver mobile website
 
         ``version``
             The version of the bible like NIV for New International Version
 
-        ``bookname``
+        ``book_name``
             Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
 
         ``chapter``
             Chapter number
         """
         log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            bookname, chapter)
-        urlversion = urllib.quote(version.encode("utf-8"))
-        urlbookname = urllib.quote(bookname.encode("utf-8"))
+            book_name, chapter)
+        url_version = urllib.quote(version.encode("utf-8"))
+        url_book_name = urllib.quote(book_name.encode("utf-8"))
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % \
-            (urlversion, urlbookname, chapter)
+            (url_version, url_book_name, chapter)
         header = (u'Accept-Language', u'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -236,7 +236,7 @@ class BSExtract(object):
             Receiver.send_message(u'openlp_process_events')
             versenumber = int(verse_number.sub(r'\3', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
-        return SearchResults(bookname, chapter, verses)
+        return SearchResults(book_name, chapter, verses)
 
     def get_books_from_http(self, version):
         """
@@ -273,67 +273,67 @@ class CWExtract(object):
         self.proxyurl = proxyurl
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode bibles via the Crosswalk website
 
         ``version``
             The version of the Bible like niv for New International Version
 
-        ``bookname``
+        ``book_name``
             Text name of in english e.g. 'gen' for Genesis
 
         ``chapter``
             Chapter number
         """
         log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            bookname, chapter)
-        urlbookname = bookname.replace(u' ', u'-')
-        urlbookname = urlbookname.lower()
-        urlbookname = urllib.quote(urlbookname.encode("utf-8"))
+            book_name, chapter)
+        url_book_name = book_name.replace(u' ', u'-')
+        url_book_name = url_book_name.lower()
+        url_book_name = urllib.quote(url_book_name.encode("utf-8"))
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, urlbookname, chapter)
+            (version, url_book_name, chapter)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
-        htmlverses = soup.findAll(u'span', u'versetext')
-        if not htmlverses:
+        html_verses = soup.findAll(u'span', u'versetext')
+        if not html_verses:
             log.error(u'No verses found in the CrossWalk response.')
             send_error_message(u'parse')
             return None
         verses = {}
         reduce_spaces = re.compile(r'[ ]{2,}')
         fix_punctuation = re.compile(r'[ ]+([.,;])')
-        for verse in htmlverses:
+        for verse in html_verses:
             Receiver.send_message(u'openlp_process_events')
-            versenumber = int(verse.contents[0].contents[0])
-            versetext = u''
+            verse_number = int(verse.contents[0].contents[0])
+            verse_text = u''
             for part in verse.contents:
                 Receiver.send_message(u'openlp_process_events')
                 if isinstance(part, NavigableString):
-                    versetext = versetext + part
+                    verse_text = verse_text + part
                 elif part and part.attrMap and \
                     (part.attrMap[u'class'] == u'WordsOfChrist' or \
                     part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
                         Receiver.send_message(u'openlp_process_events')
                         if isinstance(subpart, NavigableString):
-                            versetext = versetext + subpart
+                            verse_text = verse_text + subpart
                         elif subpart and subpart.attrMap and \
                             subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
                                 Receiver.send_message(u'openlp_process_events')
                                 if isinstance(subsub, NavigableString):
-                                    versetext = versetext + subsub
+                                    verse_text = verse_text + subsub
             Receiver.send_message(u'openlp_process_events')
             # Fix up leading and trailing spaces, multiple spaces, and spaces
             # between text and , and .
-            versetext = versetext.strip(u'\n\r\t ')
-            versetext = reduce_spaces.sub(u' ', versetext)
-            versetext = fix_punctuation.sub(r'\1', versetext)
-            verses[versenumber] = versetext
-        return SearchResults(bookname, chapter, verses)
+            verse_text = verse_text.strip(u'\n\r\t ')
+            verse_text = reduce_spaces.sub(u' ', verse_text)
+            verse_text = fix_punctuation.sub(r'\1', verse_text)
+            verses[verse_number] = verse_text
+        return SearchResults(book_name, chapter, verses)
 
     def get_books_from_http(self, version):
         """
@@ -499,10 +499,10 @@ class HTTPBible(BibleDB):
                     ## if it was there. By reusing the returned book name
                     ## we get a correct book. For example it is possible
                     ## to request ac and get Acts back.
-                    bookname = search_results.book
+                    book_name = search_results.book
                     Receiver.send_message(u'openlp_process_events')
                     # Check to see if book/chapter exists.
-                    db_book = self.get_book(bookname)
+                    db_book = self.get_book(book_name)
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')

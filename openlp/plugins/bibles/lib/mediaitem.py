@@ -64,7 +64,7 @@ class BibleMediaItem(MediaManagerItem):
         self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
-        self.settings = self.plugin.settings_tab
+        self.settings = self.plugin.settingsTab
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.search_results = {}
@@ -433,7 +433,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedBookComboBox.clear()
         first = True
         language_selection = self.plugin.manager.get_language_selection(bible)
-        booknames = BibleStrings().Booknames
+        book_names = BibleStrings().BookNames
         for book in book_data:
             row = self.advancedBookComboBox.count()
             if language_selection == LanguageSelection.Bible:
@@ -442,7 +442,7 @@ class BibleMediaItem(MediaManagerItem):
                 data = BiblesResourcesDB.get_book_by_id(
                     book[u'book_reference_id'])
                 self.advancedBookComboBox.addItem(
-                    booknames[data[u'abbreviation']])
+                    book_names[data[u'abbreviation']])
             elif language_selection == LanguageSelection.English:
                 data = BiblesResourcesDB.get_book_by_id(
                     book[u'book_reference_id'])
@@ -509,12 +509,12 @@ class BibleMediaItem(MediaManagerItem):
                 if language_selection == LanguageSelection.Bible:
                     books = [book.name + u' ' for book in book_data]
                 elif language_selection == LanguageSelection.Application:
-                    booknames = BibleStrings().Booknames
+                    book_names = BibleStrings().BookNames
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
                         books.append(unicode(
-                            booknames[data[u'abbreviation']]) + u' ')
+                            book_names[data[u'abbreviation']]) + u' ')
                 elif language_selection == LanguageSelection.English:
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(
@@ -537,7 +537,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.advancedTab.isVisible():
             bible = unicode(self.advancedVersionComboBox.currentText())
         if bible:
-            self.editBibleForm = EditBibleForm(self, self.plugin.formparent,
+            self.editBibleForm = EditBibleForm(self, self.plugin.formParent,
                 self.plugin.manager)
             self.editBibleForm.loadBible(bible)
             if self.editBibleForm.exec_():
@@ -806,30 +806,30 @@ class BibleMediaItem(MediaManagerItem):
         further action is saved for/in each row.
         """
         verse_separator = get_reference_separator(u'sep_v_display')
-        version = self.plugin.manager.get_meta_data(bible, u'Version').value
-        copyright = self.plugin.manager.get_meta_data(bible, u'Copyright').value
+        version = self.plugin.manager.get_meta_data(bible, u'name').value
+        copyright = self.plugin.manager.get_meta_data(bible, u'copyright').value
         permissions = \
-            self.plugin.manager.get_meta_data(bible, u'Permissions').value
+            self.plugin.manager.get_meta_data(bible, u'permissions').value
         second_version = u''
         second_copyright = u''
         second_permissions = u''
         if second_bible:
             second_version = self.plugin.manager.get_meta_data(
-                second_bible, u'Version').value
+                second_bible, u'name').value
             second_copyright = self.plugin.manager.get_meta_data(
-                second_bible, u'Copyright').value
+                second_bible, u'copyright').value
             second_permissions = self.plugin.manager.get_meta_data(
-                second_bible, u'Permissions').value
+                second_bible, u'permissions').value
         items = []
         language_selection = self.plugin.manager.get_language_selection(bible)
         for count, verse in enumerate(search_results):
             if language_selection == LanguageSelection.Bible:
                 book = verse.book.name
             elif language_selection == LanguageSelection.Application:
-                booknames = BibleStrings().Booknames
+                book_names = BibleStrings().Booknames
                 data = BiblesResourcesDB.get_book_by_id(
                 verse.book.book_reference_id)
-                book = unicode(booknames[data[u'abbreviation']])
+                book = unicode(book_names[data[u'abbreviation']])
             elif language_selection == LanguageSelection.English:
                 data = BiblesResourcesDB.get_book_by_id(
                     verse.book.book_reference_id)

@@ -330,7 +330,7 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = self.get_meta_data(bible, u'Bookname language')
+        language_selection = self.get_meta_data(bible, u'book_name_language')
         if language_selection:
             language_selection = int(language_selection.value)
         if language_selection is None or language_selection == -1:
@@ -377,7 +377,7 @@ class BibleManager(object):
             Unicode. The Bible to get the language selection from.
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
-        language_selection = self.get_meta_data(bible, u'Bookname language')
+        language_selection = self.get_meta_data(bible, u'book_name_language')
         if language_selection and language_selection.value != u'None':
             return int(language_selection.value)
         if language_selection is None or  language_selection.value == u'None':
@@ -438,17 +438,17 @@ class BibleManager(object):
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions, 
-        bookname_language=None):
+        book_name_language=None):
         """
         Saves the bibles meta data.
         """
         log.debug(u'save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
-        self.db_cache[bible].save_meta(u'Version', version)
-        self.db_cache[bible].save_meta(u'Copyright', copyright)
-        self.db_cache[bible].save_meta(u'Permissions', permissions)
-        self.db_cache[bible].save_meta(u'Bookname language',
-            bookname_language)
+        self.db_cache[bible].save_meta(u'name', version)
+        self.db_cache[bible].save_meta(u'copyright', copyright)
+        self.db_cache[bible].save_meta(u'permissions', permissions)
+        self.db_cache[bible].save_meta(u'book_name_language',
+            book_name_language)
 
     def get_meta_data(self, bible, key):
         """

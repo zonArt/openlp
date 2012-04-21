@@ -59,7 +59,7 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
+        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
             self.mediaController.mediaPlayers, self.icon_path)
 
     def about(self):
@@ -142,6 +142,6 @@ class MediaPlugin(Plugin):
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
                 settings.setValue(u'players', \
                     QtCore.QVariant(u','.join(new_players)))
-                self.settings_tab.load()
+                self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

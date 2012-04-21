@@ -56,7 +56,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.customSignals()
-        self.booknames = BibleStrings().Booknames
+        self.book_names = BibleStrings().BookNames
         self.book_id = False
 
     def customSignals(self):
@@ -102,7 +102,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
                 addBook = False
             if addBook:
                 self.correspondingComboBox.addItem(
-                    self.booknames[item[u'abbreviation']])
+                    self.book_names[item[u'abbreviation']])
 
     def exec_(self, name, books, maxbooks):
         self.books = books
@@ -129,8 +129,8 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             for character in u'\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, u'\\' + character)
             books = filter(lambda key:
-                re.match(cor_book, unicode(self.booknames[key]), re.UNICODE),
-                self.booknames.keys())
+                re.match(cor_book, unicode(self.book_names[key]), re.UNICODE),
+                self.book_names.keys())
             books = filter(None, map(BiblesResourcesDB.get_book, books))
             if books:
                 self.book_id = books[0][u'id']

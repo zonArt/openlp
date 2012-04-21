@@ -50,7 +50,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.mediaitem = mediaitem
-        self.booknames = BibleStrings().Booknames
+        self.book_names = BibleStrings().BookNames
         self.setupUi(self)
         self.manager = manager
 
@@ -64,16 +64,16 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         log.debug(u'Load Bible')
         self.bible = bible
         self.versionNameEdit.setText(
-            self.manager.get_meta_data(self.bible, u'Version').value)
+            self.manager.get_meta_data(self.bible, u'name').value)
         self.copyrightEdit.setText(
-            self.manager.get_meta_data(self.bible, u'Copyright').value)
+            self.manager.get_meta_data(self.bible, u'copyright').value)
         self.permissionsEdit.setText(
-            self.manager.get_meta_data(self.bible, u'Permissions').value)
-        bookname_language = self.manager.get_meta_data(self.bible,
-            u'Bookname language')
-        if bookname_language and bookname_language.value != u'None':
+            self.manager.get_meta_data(self.bible, u'permissions').value)
+        book_name_language = self.manager.get_meta_data(self.bible,
+            u'book_name_language')
+        if book_name_language and book_name_language.value != u'None':
             self.languageSelectionComboBox.setCurrentIndex(
-                int(bookname_language.value) + 1)
+                int(book_name_language.value) + 1)
         self.books = {}
         self.webbible = self.manager.get_meta_data(self.bible,
             u'download source')
@@ -119,9 +119,9 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         version = unicode(self.versionNameEdit.text())
         copyright = unicode(self.copyrightEdit.text())
         permissions = unicode(self.permissionsEdit.text())
-        bookname_language = self.languageSelectionComboBox.currentIndex() - 1
-        if bookname_language == -1:
-            bookname_language = None
+        book_name_language = self.languageSelectionComboBox.currentIndex() - 1
+        if book_name_language == -1:
+            book_name_language = None
         if not self.validateMeta(version, copyright):
             return
         if not self.webbible:
@@ -135,7 +135,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_busy')
         self.manager.save_meta_data(self.bible, version, copyright, permissions,
-            bookname_language)
+            book_name_language)
         if not self.webbible:
             for abbr, book in self.books.iteritems():
                 if book:
@@ -146,11 +146,11 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Receiver.send_message(u'cursor_normal')
         QtGui.QDialog.accept(self)
 
-    def validateMeta(self, version, copyright):
+    def validateMeta(self, name, copyright):
         """
         Validate the Meta before saving.
         """
-        if not version:
+        if not name:
             self.versionNameEdit.setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 translate('BiblesPlugin.BibleEditForm',
@@ -163,9 +163,9 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 'You need to set a copyright for your Bible. '
                 'Bibles in the Public Domain need to be marked as such.'))
             return False
-        elif self.manager.exists(version) and \
-            self.manager.get_meta_data(self.bible, u'Version').value != \
-            version:
+        elif self.manager.exists(name) and \
+            self.manager.get_meta_data(self.bible, u'name').value != \
+            name:
             self.versionNameEdit.setFocus()
             critical_error_message_box(
                 translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
@@ -175,37 +175,37 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             return False
         return True
 
-    def validateBook(self, new_bookname, abbreviation):
+    def validateBook(self, new_book_name, abbreviation):
         """
         Validate a book.
         """
         book_regex = re.compile(u'[\d]*[^\d]+$')
-        if not new_bookname:
+        if not new_book_name:
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 unicode(translate('BiblesPlugin.BibleEditForm',
                 'You need to specify a book name for "%s".')) %
-                self.booknames[abbreviation])
+                self.book_names[abbreviation])
             return False
-        elif not book_regex.match(new_bookname):
+        elif not book_regex.match(new_book_name):
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
                 unicode(translate('BiblesPlugin.BibleEditForm',
                 'The book name "%s" is not correct.\nNumbers can only be used '
                 'at the beginning and must\nbe followed by one or more '
-                'non-numeric characters.')) % new_bookname)
+                'non-numeric characters.')) % new_book_name)
             return False
         for abbr, book in self.books.iteritems():
             if book:
                 if abbr == abbreviation:
                     continue
-                if unicode(self.bookNameEdit[abbr].text()) == new_bookname:
+                if unicode(self.bookNameEdit[abbr].text()) == new_book_name:
                     self.bookNameEdit[abbreviation].setFocus()
                     critical_error_message_box(
                         translate('BiblesPlugin.BibleEditForm',
                         'Duplicate Book Name'),
                         unicode(translate('BiblesPlugin.BibleEditForm',
                         'The Book Name "%s" has been entered more than once.'))
-                        % new_bookname)
+                        % new_book_name)
                     return False
         return True

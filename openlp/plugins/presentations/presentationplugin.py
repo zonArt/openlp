@@ -62,7 +62,7 @@ class PresentationPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settings_tab = PresentationTab(parent, self.name,
+        self.settingsTab = PresentationTab(parent, self.name,
             visible_name[u'title'], self.controllers, self.icon_path)
 
     def initialise(self):
@@ -99,7 +99,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.mediadock.media_dock, self, self.icon, self.controllers)
+            self.mediaDock.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """
