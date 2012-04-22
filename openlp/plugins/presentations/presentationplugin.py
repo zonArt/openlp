@@ -134,10 +134,7 @@ class PresentationPlugin(Plugin):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.registerControllers(controller)
-        if self.controllers:
-            return True
-        else:
-            return False
+        return bool(self.controllers)
 
     def about(self):
         """

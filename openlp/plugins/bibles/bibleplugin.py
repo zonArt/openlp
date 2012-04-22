@@ -145,11 +145,10 @@ class BiblePlugin(Plugin):
     def usesTheme(self, theme):
         """
         Called to find out if the bible plugin is currently using a theme.
-        Returns True if the theme is being used, otherwise returns False.
+        Returns ``True`` if the theme is being used, otherwise returns
+        ``False``.
         """
-        if unicode(self.settings_tab.bible_theme) == theme:
-            return True
-        return False
+        return unicode(self.settings_tab.bible_theme) == theme
 
     def renameTheme(self, oldTheme, newTheme):
         """

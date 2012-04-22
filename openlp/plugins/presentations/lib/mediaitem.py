@@ -263,50 +263,49 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
-        if shortname:
-            for bitem in items:
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if os.path.exists(filename):
-                    if shortname == self.Automatic:
-                        service_item.shortname = \
-                            self.findControllerByType(filename)
-                        if not service_item.shortname:
-                            return False
-                    controller = self.controllers[service_item.shortname]
-                    (path, name) = os.path.split(filename)
-                    doc = controller.add_document(filename)
-                    if doc.get_thumbnail_path(1, True) is None:
-                        doc.load_presentation()
-                    i = 1
-                    img = doc.get_thumbnail_path(i, True)
-                    if img:
-                        while img:
-                            service_item.add_from_command(path, name, img)
-                            i = i + 1
-                            img = doc.get_thumbnail_path(i, True)
-                        doc.close_presentation()
-                        return True
-                    else:
-                        # File is no longer present
-                        if not remote:
-                            critical_error_message_box(
-                                translate('PresentationPlugin.MediaItem',
-                                'Missing Presentation'),
-                                unicode(translate(
-                                'PresentationPlugin.MediaItem',
-                                'The Presentation %s is incomplete,'
-                                ' please reload.')) % filename)
+        if not shortname:
+            return False
+        for bitem in items:
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if os.path.exists(filename):
+                if shortname == self.Automatic:
+                    service_item.shortname = self.findControllerByType(filename)
+                    if not service_item.shortname:
                         return False
+                controller = self.controllers[service_item.shortname]
+                (path, name) = os.path.split(filename)
+                doc = controller.add_document(filename)
+                if doc.get_thumbnail_path(1, True) is None:
+                    doc.load_presentation()
+                i = 1
+                img = doc.get_thumbnail_path(i, True)
+                if img:
+                    while img:
+                        service_item.add_from_command(path, name, img)
+                        i = i + 1
+                        img = doc.get_thumbnail_path(i, True)
+                    doc.close_presentation()
+                    return True
                 else:
                     # File is no longer present
+                    if not remote:
+                        critical_error_message_box(
+                            translate('PresentationPlugin.MediaItem',
+                            'Missing Presentation'),
+                            unicode(translate(
+                            'PresentationPlugin.MediaItem',
+                            'The presentation %s is incomplete,'
+                            ' please reload.')) % filename)
+                    return False
+            else:
+                # File is no longer present
+                if not remote:
                     critical_error_message_box(
                         translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
                         unicode(translate('PresentationPlugin.MediaItem',
-                        'The Presentation %s no longer exists.')) % filename)
-                    return False
-        else:
-            return False
+                        'The presentation %s no longer exists.')) % filename)
+                return False
 
     def findControllerByType(self, filename):
         """
