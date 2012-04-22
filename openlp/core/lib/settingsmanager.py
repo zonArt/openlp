@@ -104,7 +104,7 @@ class SettingsManager(object):
             u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         new_count = len(list)
         settings.setValue(u'%s count' % name, QtCore.QVariant(new_count))
-        for counter in range (0, new_count):
+        for counter in range(new_count):
             settings.setValue(
                 u'%s %d' % (name, counter), QtCore.QVariant(list[counter-1]))
         if old_count > new_count:
@@ -130,7 +130,7 @@ class SettingsManager(object):
             u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         list = []
         if list_count:
-            for counter in range(0, list_count):
+            for counter in range(list_count):
                 item = unicode(
                     settings.value(u'%s %d' % (name, counter)).toString())
                 if item:

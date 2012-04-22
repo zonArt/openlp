@@ -236,18 +236,18 @@ class Renderer(object):
                     # the first two slides (and neglect the last for now).
                     if len(slides) == 3:
                         html_text = expand_tags(u'\n'.join(slides[:2]))
-                    # We check both slides to determine if the virtual break is
-                    # needed (there is only one virtual break).
+                    # We check both slides to determine if the optional break is
+                    # needed (there is only one optional break).
                     else:
                         html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
                     if self._text_fits_on_slide(html_text):
-                        # The first two virtual slides fit (as a whole) on one
+                        # The first two optional slides fit (as a whole) on one
                         # slide. Replace the first occurrence of [---].
                         text = text.replace(u'\n[---]', u'', 1)
                     else:
-                        # The first virtual slide fits, which means we have to
-                        # render the first virtual slide.
+                        # The first optional slide fits, which means we have to
+                        # render the first optional slide.
                         text_contains_break = u'[---]' in text
                         if text_contains_break:
                             try:
@@ -364,7 +364,7 @@ class Renderer(object):
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
-        # Adjust width and height to account for shadow. outline done in css
+        # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');

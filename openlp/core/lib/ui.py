@@ -124,7 +124,7 @@ class UiStrings(object):
         self.Settings = translate('OpenLP.Ui', 'Settings')
         self.SaveService = translate('OpenLP.Ui', 'Save Service')
         self.Service = translate('OpenLP.Ui', 'Service')
-        self.Split = translate('OpenLP.Ui', '&Split')
+        self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
