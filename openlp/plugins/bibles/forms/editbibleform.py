@@ -76,7 +76,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 int(book_name_language.value) + 1)
         self.books = {}
         self.webbible = self.manager.get_meta_data(self.bible,
-            u'download source')
+            u'download_source')
         if self.webbible:
             self.bookNameNotice.setText(translate('BiblesPlugin.EditBibleForm',
                 'This is a Web Download Bible.\nIt is not possible to '

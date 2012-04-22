@@ -49,9 +49,9 @@ class BGExtract(object):
     """
     Extract verses from BibleGateway
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'BGExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'BGExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, book_name, chapter):
@@ -195,9 +195,9 @@ class BSExtract(object):
     """
     Extract verses from Bibleserver.com
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'BSExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'BSExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, book_name, chapter):
@@ -268,9 +268,9 @@ class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'CWExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'CWExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, book_name, chapter):
@@ -401,16 +401,16 @@ class HTTPBible(BibleDB):
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible',
             'Registering Bible and loading books...')))
-        self.save_meta(u'download source', self.download_source)
-        self.save_meta(u'download name', self.download_name)
+        self.save_meta(u'download_source', self.download_source)
+        self.save_meta(u'download_name', self.download_name)
         if self.proxy_server:
-            self.save_meta(u'proxy server', self.proxy_server)
+            self.save_meta(u'proxy_server', self.proxy_server)
         if self.proxy_username:
             # Store the proxy userid.
-            self.save_meta(u'proxy username', self.proxy_username)
+            self.save_meta(u'proxy_username', self.proxy_username)
         if self.proxy_password:
             # Store the proxy password.
-            self.save_meta(u'proxy password', self.proxy_password)
+            self.save_meta(u'proxy_password', self.proxy_password)
         if self.download_source.lower() == u'crosswalk':
             handler = CWExtract(self.proxy_server)
         elif self.download_source.lower() == u'biblegateway':

@@ -183,7 +183,6 @@ class BibleDB(QtCore.QObject, Manager):
             The actual Qt wizard form.
         """
         self.wizard = wizard
-        self.save_meta(u'dbversion', u'2')
         return self.name
 
     def create_book(self, name, bk_ref_id, testament=1):

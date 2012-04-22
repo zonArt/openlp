@@ -29,7 +29,7 @@ The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the Bibles plugin
 """
 
-from sqlalchemy import Table, update, or_
+from sqlalchemy import Table, update, delete, or_
 
 __version__ = 1
 
@@ -70,4 +70,21 @@ def upgrade_1(session, metadata, tables):
     session.execute(update(metadata_table)\
         .where(metadata_table.c.key == u'Permissions')\
         .values(key=u'permissions'))
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'download source')\
+        .values(key=u'download_source'))
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'download name')\
+        .values(key=u'download_name'))
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'proxy server')\
+        .values(key=u'proxy_server'))
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'proxy username')\
+        .values(key=u'proxy_username'))
+    session.execute(update(metadata_table)\
+        .where(metadata_table.c.key == u'proxy password')\
+        .values(key=u'proxy_password'))
+    session.execute(delete(metadata_table)\
+        .where(metadata_table.c.key == u'dbversion'))
     session.commit()

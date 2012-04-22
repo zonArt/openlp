@@ -418,28 +418,29 @@ class BibleUpgradeForm(OpenLPWizard):
                 if meta[u'key'] == u'Bookname language':
                     meta[u'key'] = 'book_name_language'
                 meta[u'key'] = meta[u'key'].lower().replace(' ', '_')
+                # Copy the metadata
                 meta_data[meta[u'key']] = meta[u'value']
                 if meta[u'key'] != u'name' and meta[u'key'] != u'dbversion':
                     self.newbibles[number].save_meta(meta[u'key'],
                         meta[u'value'])
-                if meta[u'key'] == u'download source':
+                if meta[u'key'] == u'download_source':
                     web_bible = True
                     self.includeWebBible = True
-                if meta.has_key(u'proxy server'):
-                    proxy_server = meta[u'proxy server']
+                if meta.has_key(u'proxy_server'):
+                    proxy_server = meta[u'proxy_server']
             if web_bible:
-                if meta_data[u'download source'].lower() == u'crosswalk':
+                if meta_data[u'download_source'].lower() == u'crosswalk':
                     handler = CWExtract(proxy_server)
-                elif meta_data[u'download source'].lower() == u'biblegateway':
+                elif meta_data[u'download_source'].lower() == u'biblegateway':
                     handler = BGExtract(proxy_server)
-                elif meta_data[u'download source'].lower() == u'bibleserver':
+                elif meta_data[u'download_source'].lower() == u'bibleserver':
                     handler = BSExtract(proxy_server)
-                books = handler.get_books_from_http(meta_data[u'download name'])
+                books = handler.get_books_from_http(meta_data[u'download_name'])
                 if not books:
                     log.error(u'Upgrading books from %s - download '\
                         u'name: "%s" failed' % (
-                        meta_data[u'download source'],
-                        meta_data[u'download name']))
+                        meta_data[u'download_source'],
+                        meta_data[u'download_name']))
                     self.newbibles[number].session.close()
                     del self.newbibles[number]
                     critical_error_message_box(
@@ -456,8 +457,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.success[number] = False
                     continue
                 bible = BiblesResourcesDB.get_webbible(
-                    meta_data[u'download name'],
-                    meta_data[u'download source'].lower())
+                    meta_data[u'download_name'],
+                    meta_data[u'download_source'].lower())
                 if bible and bible[u'language_id']:
                     language_id = bible[u'language_id']
                     self.newbibles[number].save_meta(u'language_id',
@@ -490,8 +491,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.warn(u'Upgrading books from %s - download '\
                             u'name: "%s" aborted by user' % (
-                            meta_data[u'download source'],
-                            meta_data[u'download name']))
+                            meta_data[u'download_source'],
+                            meta_data[u'download_name']))
                         self.newbibles[number].session.close()
                         del self.newbibles[number]
                         self.success[number] = False
