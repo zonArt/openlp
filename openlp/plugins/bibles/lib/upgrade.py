@@ -29,7 +29,7 @@ The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the Bibles plugin
 """
 
-from sqlalchemy import Table, update, delete, or_
+from sqlalchemy import Table, select, update, insert, or_
 
 __version__ = 1
 
@@ -60,16 +60,27 @@ def upgrade_1(session, metadata, tables):
         .where(or_(metadata_table.c.key == u'bookname language',
         metadata_table.c.key == u'Bookname language'))\
         .values(key=u'book_name_language'))
-    # Rename "Copyright" to "copyright"
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'Copyright').values(key=u'copyright'))
-    # Rename "Version" to "name" ("version" used by upgrade system)
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'Version').values(key=u'name'))
-    # Rename "Permissions" to "permissions"
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'Permissions')\
-        .values(key=u'permissions'))
+    # Copy "Copyright" to "copyright"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    session.execute(insert(metadata_table).values(
+        key=u'copyright',
+        value=select(metadata_table, metadata_table.c.key == u'Copyright')\
+            .as_scalar()
+    ))
+    # Copy "Version" to "name" ("version" used by upgrade system)
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    session.execute(insert(metadata_table).values(
+        key=u'name',
+        value=select(metadata_table, metadata_table.c.key == u'Version')\
+            .as_scalar()
+    ))
+    # Copy "Permissions" to "permissions"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    session.execute(insert(metadata_table).values(
+        key=u'permissions',
+        value=select(metadata_table, metadata_table.c.key == u'Permissions')\
+            .as_scalar()
+    ))
     session.execute(update(metadata_table)\
         .where(metadata_table.c.key == u'download source')\
         .values(key=u'download_source'))
@@ -85,6 +96,7 @@ def upgrade_1(session, metadata, tables):
     session.execute(update(metadata_table)\
         .where(metadata_table.c.key == u'proxy password')\
         .values(key=u'proxy_password'))
-    session.execute(delete(metadata_table)\
-        .where(metadata_table.c.key == u'dbversion'))
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    #session.execute(delete(metadata_table)\
+    #    .where(metadata_table.c.key == u'dbversion'))
     session.commit()
