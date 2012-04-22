@@ -258,7 +258,7 @@ class Plugin(QtCore.QObject):
         if self.settingsTabClass:
             self.settingsTab = self.settingsTabClass(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
-                self.icon_path)
+                self.iconPath)
 
     def addToMenu(self, menubar):
         """

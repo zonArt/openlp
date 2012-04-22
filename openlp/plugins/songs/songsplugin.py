@@ -61,8 +61,8 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
-        self.icon_path = u':/plugins/plugin_songs.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_songs.png'
+        self.icon = build_icon(self.iconPath)
 
     def checkPreConditions(self):
         return self.manager.session is not None

@@ -117,8 +117,8 @@ class AlertsPlugin(Plugin):
         Plugin.__init__(self, u'alerts', plugin_helpers,
             settings_tab_class=AlertsTab)
         self.weight = -3
-        self.icon_path = u':/plugins/plugin_alerts.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_alerts.png'
+        self.icon = build_icon(self.iconPath)
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self)

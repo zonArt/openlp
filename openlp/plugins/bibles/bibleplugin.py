@@ -44,8 +44,8 @@ class BiblePlugin(Plugin):
         Plugin.__init__(self, u'bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
-        self.icon_path = u':/plugins/plugin_bibles.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_bibles.png'
+        self.icon = build_icon(self.iconPath)
         self.manager = None
 
     def initialise(self):
@@ -152,11 +152,10 @@ class BiblePlugin(Plugin):
     def usesTheme(self, theme):
         """
         Called to find out if the bible plugin is currently using a theme.
-        Returns True if the theme is being used, otherwise returns False.
+        Returns ``True`` if the theme is being used, otherwise returns
+        ``False``.
         """
-        if unicode(self.settingsTab.bible_theme) == theme:
-            return True
-        return False
+        return unicode(self.settingsTab.bible_theme) == theme
 
     def renameTheme(self, oldTheme, newTheme):
         """
