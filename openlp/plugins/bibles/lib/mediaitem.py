@@ -436,6 +436,7 @@ class BibleMediaItem(MediaManagerItem):
             book_data = book_data_temp
         self.advancedBookComboBox.clear()
         first = True
+        initialise_chapter_verse = False
         language_selection = self.plugin.manager.get_language_selection(bible)
         booknames = BibleStrings().Booknames
         for book in book_data:
@@ -614,13 +615,13 @@ class BibleMediaItem(MediaManagerItem):
         self.initialiseAdvancedBible(
             unicode(self.advancedVersionComboBox.currentText()),
             self.advancedBookComboBox.itemData(
-            int(self.advancedBookComboBox.currentIndex())))
+                int(self.advancedBookComboBox.currentIndex())))
 
     def onAdvancedSecondComboBox(self):
         self.initialiseAdvancedBible(
             unicode(self.advancedVersionComboBox.currentText()),
             self.advancedBookComboBox.itemData(
-            int(self.advancedBookComboBox.currentIndex())))
+                int(self.advancedBookComboBox.currentIndex())))
 
     def onAdvancedBookComboBox(self):
         item = int(self.advancedBookComboBox.currentIndex())
