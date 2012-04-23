@@ -28,10 +28,12 @@
 The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the Bibles plugin
 """
+import logging
 
-from sqlalchemy import Table, select, update, insert, or_
+from sqlalchemy import Table, func, select, insert
 
 __version__ = 1
+log = logging.getLogger(__name__)
 
 def upgrade_setup(metadata):
     """
@@ -55,47 +57,134 @@ def upgrade_1(session, metadata, tables):
     This upgrade renames a number of keys to a single naming convention..
     """
     metadata_table = metadata.tables[u'metadata']
-    # Rename "Bookname language" to "book_name_language"
-    session.execute(update(metadata_table)\
-        .where(or_(metadata_table.c.key == u'bookname language',
-        metadata_table.c.key == u'Bookname language'))\
-        .values(key=u'book_name_language'))
-    # Copy "Copyright" to "copyright"
-    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
-    session.execute(insert(metadata_table).values(
-        key=u'copyright',
-        value=select(metadata_table, metadata_table.c.key == u'Copyright')\
-            .as_scalar()
-    ))
     # Copy "Version" to "name" ("version" used by upgrade system)
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
         key=u'name',
-        value=select(metadata_table, metadata_table.c.key == u'Version')\
-            .as_scalar()
+        value=select(
+            [metadata_table.c.value],
+            metadata_table.c.key == u'Version'
+        ).as_scalar()
+    ))
+    # Copy "Copyright" to "copyright"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    session.execute(insert(metadata_table).values(
+        key=u'copyright',
+        value=select(
+            [metadata_table.c.value],
+            metadata_table.c.key == u'Copyright'
+        ).as_scalar()
     ))
     # Copy "Permissions" to "permissions"
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
         key=u'permissions',
-        value=select(metadata_table, metadata_table.c.key == u'Permissions')\
-            .as_scalar()
+        value=select(
+            [metadata_table.c.value],
+            metadata_table.c.key == u'Permissions'
+        ).as_scalar()
     ))
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'download source')\
-        .values(key=u'download_source'))
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'download name')\
-        .values(key=u'download_name'))
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'proxy server')\
-        .values(key=u'proxy_server'))
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'proxy username')\
-        .values(key=u'proxy_username'))
-    session.execute(update(metadata_table)\
-        .where(metadata_table.c.key == u'proxy password')\
-        .values(key=u'proxy_password'))
+    # Copy "Bookname language" to "book_name_language"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'Bookname language'
+        )
+    ).scalar()
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'book_name_language',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'Bookname language'
+            ).as_scalar()
+        ))
+    # Copy "download source" to "download_source"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'download source'
+        )
+    ).scalar()
+    log.debug(u'download source: %s', value_count)
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'download_source',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'download source'
+            ).as_scalar()
+        ))
+    # Copy "download name" to "download_name"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'download name'
+        )
+    ).scalar()
+    log.debug(u'download name: %s', value_count)
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'download_name',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'download name'
+            ).as_scalar()
+        ))
+    # Copy "proxy server" to "proxy_server"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'proxy server'
+        )
+    ).scalar()
+    log.debug(u'proxy server: %s', value_count)
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'proxy_server',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'proxy server'
+            ).as_scalar()
+        ))
+    # Copy "proxy username" to "proxy_username"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'proxy username'
+        )
+    ).scalar()
+    log.debug(u'proxy username: %s', value_count)
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'proxy_username',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'proxy username'
+            ).as_scalar()
+        ))
+    # Copy "proxy password" to "proxy_password"
+    # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
+    value_count = session.execute(
+        select(
+            [func.count(metadata_table.c.value)],
+            metadata_table.c.key == u'proxy password'
+        )
+    ).scalar()
+    log.debug(u'proxy password: %s', value_count)
+    if value_count > 0:
+        session.execute(insert(metadata_table).values(
+            key=u'proxy_password',
+            value=select(
+                [metadata_table.c.value],
+                metadata_table.c.key == u'proxy password'
+            ).as_scalar()
+        ))
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     #session.execute(delete(metadata_table)\
     #    .where(metadata_table.c.key == u'dbversion'))

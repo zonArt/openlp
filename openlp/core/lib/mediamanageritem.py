@@ -582,7 +582,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
-        serviceItem.add_icon(self.plugin.icon_path)
+        serviceItem.add_icon(self.plugin.iconPath)
         if self.generateSlideData(serviceItem, item, xmlVersion, remote):
             return serviceItem
         else:

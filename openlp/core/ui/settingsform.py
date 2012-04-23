@@ -80,7 +80,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         pos = self.stackedLayout.addWidget(tab)
         if is_active:
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
-            icon = build_icon(tab.icon_path)
+            icon = build_icon(tab.iconPath)
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(location, item_name)
         else:
