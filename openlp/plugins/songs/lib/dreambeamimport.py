@@ -31,7 +31,6 @@ DreamBeam songs into the OpenLP database.
 import os
 import sys
 import logging
-import types
 
 from lxml import etree, objectify
 
