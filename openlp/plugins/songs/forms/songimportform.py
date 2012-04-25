@@ -57,7 +57,7 @@ class SongImportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        self.clipboard = plugin.formparent.clipboard
+        self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
             u':/wizards/wizard_importsong.bmp')
 
