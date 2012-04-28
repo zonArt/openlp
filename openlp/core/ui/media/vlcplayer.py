@@ -26,6 +26,7 @@
 ###############################################################################
 
 from datetime import datetime
+from distutils.version import LooseVersion
 import logging
 import os
 import sys
@@ -53,16 +54,12 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        # Older versions of vlc fail here.
-        vlcInstance = vlc.Instance()
-        vlcInstance.media_player_new()
-    except AttributeError:
-        VLC_AVAILABLE = False
+        version = vlc.libvlc_get_version()
+    except:
         version = u'0.0.0'
-        try:
-            version = vlc.libvlc_get_version()
-        finally:
-            log.debug(u'VLC could not be loaded: %s' % version)
+    if LooseVersion(version) < '1.1.0':
+        VLC_AVAILABLE = False
+        log.debug(u'VLC could not be loaded: %s' % version)
 
 AUDIO_EXT = [
       u'*.mp3'
