@@ -57,7 +57,7 @@ if VLC_AVAILABLE:
         version = vlc.libvlc_get_version()
     except:
         version = u'0.0.0'
-    if LooseVersion(version) < '1.1.0':
+    if LooseVersion(version) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
         log.debug(u'VLC could not be loaded: %s' % version)
 
