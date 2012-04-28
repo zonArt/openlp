@@ -69,12 +69,13 @@ class MediaInfo(object):
 def get_media_players():
     """
     This method extract the configured media players and overridden player from
-    the settings
+    the settings.
 
     ``players_list``
-        this is a python list with all active media players
+       Awith all active media players.
+
     ``overridden_player``
-        here an special media player is choosen for all media actions
+        Here an special media player is chosen for all media actions.
     """
     log.debug(u'get_media_players')
     players = unicode(QtCore.QSettings().value(u'media/players').toString())
@@ -92,15 +93,17 @@ def get_media_players():
     players_list = players.replace(u'[', u'').replace(u']', u'').split(u',')
     return players_list, overridden_player
 
+
 def set_media_players(players_list, overridden_player=u'auto'):
     """
     This method saves the configured media players and overridden player to the
     settings
 
     ``players_list``
-        this is a python list with all active media players
+        A list with all active media players.
+
     ``overridden_player``
-        here an special media player is choosen for all media actions
+        Here an special media player is chosen for all media actions.
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)

@@ -26,23 +26,24 @@
 ###############################################################################
 
 import logging
-import sys, os
+import os
+import sys
 from datetime import datetime
+
+from PyQt4 import QtCore, QtGui
+
+VLC_AVAILABLE = False
 try:
     import vlc
-    vlc_available = bool(vlc.get_default_instance())
+    VLC_AVAILABLE = bool(vlc.get_default_instance())
 except (ImportError, NameError):
-    vlc_available = False
+    pass
 except OSError, e:
     if sys.platform.startswith('win'):
-        if isinstance(e, WindowsError) and e.winerror == 126:
-            vlc_available = False
-        else:
+        if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
     else:
         raise
-
-from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
@@ -128,7 +129,7 @@ class VlcPlayer(MediaPlayer):
         self.hasOwnWidget = True
 
     def check_available(self):
-        return vlc_available
+        return VLC_AVAILABLE
 
     def load(self, display):
         log.debug(u'load vid in Vlc Controller')
