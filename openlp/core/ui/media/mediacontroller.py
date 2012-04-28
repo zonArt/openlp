@@ -496,7 +496,7 @@ class MediaController(object):
         controller = self.parent.liveController
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller != controller or  \
-                self.curDisplayMediaPlayer[display].state == MediaState.Playing:
+                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
                 continue
             self.curDisplayMediaPlayer[display].pause(display)
             self.curDisplayMediaPlayer[display].set_visible(display, False)
