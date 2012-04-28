@@ -72,7 +72,7 @@ def get_media_players():
     the settings.
 
     ``players_list``
-       Awith all active media players.
+       A list with all active media players.
 
     ``overridden_player``
         Here an special media player is chosen for all media actions.
