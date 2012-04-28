@@ -62,7 +62,7 @@ if VLC_AVAILABLE:
         try:
             version = vlc.libvlc_get_version()
         finally:
-            log.debug(u'VlC could not be loaded: %s' % version)
+            log.debug(u'VLC could not be loaded: %s' % version)
 
 AUDIO_EXT = [
       u'*.mp3'
