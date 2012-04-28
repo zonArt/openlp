@@ -141,7 +141,7 @@ class Ui_EditBibleDialog(object):
         QtCore.QMetaObject.connectSlotsByName(editBibleDialog)
 
     def retranslateUi(self, editBibleDialog):
-        self.booknames = BibleStrings().Booknames
+        self.book_names = BibleStrings().BookNames
         editBibleDialog.setWindowTitle(
             translate('BiblesPlugin.EditBibleForm', 'Bible Editor'))
         # Meta tab
@@ -178,4 +178,4 @@ class Ui_EditBibleDialog(object):
             translate('SongsPlugin.EditBibleForm', 'Custom Book Names'))
         for book in BiblesResourcesDB.get_books():
             self.bookNameLabel[book[u'abbreviation']].setText(
-                u'%s:' % unicode(self.booknames[book[u'abbreviation']]))
+                u'%s:' % unicode(self.book_names[book[u'abbreviation']]))

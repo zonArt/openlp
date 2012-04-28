@@ -648,8 +648,8 @@ class SlideController(Controller):
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
-        slideno = self.slideList[request]
-        self.__updatePreviewSelection(slideno)
+        slide_no = self.slideList[request]
+        self.__updatePreviewSelection(slide_no)
         self.slideSelected()
 
     def receiveSpinDelay(self, value):
@@ -663,7 +663,7 @@ class SlideController(Controller):
         Updates the Slide Limits variable from the settings.
         """
         self.slide_limits = QtCore.QSettings().value(
-            self.parent().advancedlSettingsSection + u'/slide limits',
+            self.parent().advancedSettingsSection + u'/slide limits',
             QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
     def enableToolBar(self, item):

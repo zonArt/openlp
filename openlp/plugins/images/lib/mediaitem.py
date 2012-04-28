@@ -106,24 +106,24 @@ class ImageMediaItem(MediaManagerItem):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formparent.displayProgressBar(len(row_list))
+            self.plugin.formParent.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
                     delete_file(os.path.join(self.servicePath,
                         unicode(text.text())))
                 self.listView.takeItem(row)
-                self.plugin.formparent.incrementProgressBar()
+                self.plugin.formParent.incrementProgressBar()
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
-            self.plugin.formparent.finishedProgressBar()
+            self.plugin.formParent.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formparent.displayProgressBar(len(images))
+            self.plugin.formParent.displayProgressBar(len(images))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         images.sort(cmp=locale.strcoll,
@@ -144,9 +144,9 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
             if not initialLoad:
-                self.plugin.formparent.incrementProgressBar()
+                self.plugin.formParent.incrementProgressBar()
         if not initialLoad:
-            self.plugin.formparent.finishedProgressBar()
+            self.plugin.formParent.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,

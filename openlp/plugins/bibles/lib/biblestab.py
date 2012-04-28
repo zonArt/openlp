@@ -483,7 +483,7 @@ class BiblesTab(SettingsTab):
                 self.getGreyTextPalette(False))
             self.endSeparatorCheckBox.setChecked(True)
         self.language_selection = settings.value(
-            u'bookname language', QtCore.QVariant(0)).toInt()[0]
+            u'book name language', QtCore.QVariant(0)).toInt()[0]
         self.languageSelectionComboBox.setCurrentIndex(self.language_selection)
         settings.endGroup()
 
@@ -496,7 +496,7 @@ class BiblesTab(SettingsTab):
             QtCore.QVariant(self.display_style))
         settings.setValue(u'verse layout style',
             QtCore.QVariant(self.layout_style))
-        settings.setValue(u'bookname language',
+        settings.setValue(u'book name language',
             QtCore.QVariant(self.language_selection))
         settings.setValue(u'second bibles', QtCore.QVariant(self.second_bibles))
         settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))

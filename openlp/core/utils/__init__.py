@@ -72,6 +72,7 @@ class VersionThread(QtCore.QThread):
         time.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
+        print app_version, version
         remote_version = {}
         local_version = {}
         match = VERSION_SPLITTER.match(version)
