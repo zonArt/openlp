@@ -25,12 +25,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 import os
 import sys
-from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import Receiver
+from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.ui.media import MediaState
+
+log = logging.getLogger(__name__)
 
 VLC_AVAILABLE = False
 try:
@@ -44,11 +50,19 @@ except OSError, e:
             raise
     else:
         raise
-from openlp.core.lib import Receiver
-from openlp.core.lib.mediaplayer import MediaPlayer
-from openlp.core.ui.media import MediaState
 
-log = logging.getLogger(__name__)
+if VLC_AVAILABLE:
+    try:
+        # Older versions of vlc fail here.
+        vlcInstance = vlc.Instance()
+        vlcInstance.media_player_new()
+    except AttributeError:
+        VLC_AVAILABLE = False
+        version = u'0.0.0'
+        try:
+            version = vlc.libvlc_get_version()
+        finally:
+            log.debug(u'VlC could not be loaded: %s' % version)
 
 AUDIO_EXT = [
       u'*.mp3'
