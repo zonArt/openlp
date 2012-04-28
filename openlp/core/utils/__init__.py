@@ -72,7 +72,7 @@ class VersionThread(QtCore.QThread):
         time.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
-        if LooseVersion(str(version)) > str(app_version[u'full']):
+        if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 
