@@ -53,6 +53,7 @@ class WizardStrings(object):
     OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
+    PS = u'PowerSong'
     SB = u'SongBeamer'
     SoF = u'Songs of Fellowship'
     SSP = u'SongShow Plus'
