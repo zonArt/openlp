@@ -236,7 +236,7 @@ class EasySlidesImport(SongImport):
                     region = defaultregion
                 inst = 1
                 if self._listHas(verses, [reg, vt, vn, inst]):
-                    inst = len(verses[reg][vt][vn])+1
+                    inst = len(verses[reg][vt][vn]) + 1
             else:
                 if not [reg, vt, vn, inst] in our_verse_order:
                     our_verse_order.append([reg, vt, vn, inst])
