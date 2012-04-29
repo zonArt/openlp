@@ -68,7 +68,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.editSongForm = EditSongForm(self, self.plugin.formparent,
+        self.editSongForm = EditSongForm(self, self.plugin.formParent,
             self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
@@ -408,6 +408,8 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(items))
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -426,6 +428,9 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
+                self.plugin.formParent.incrementProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
             self.onSearchTextButtonClicked()
 
     def onCloneClick(self):

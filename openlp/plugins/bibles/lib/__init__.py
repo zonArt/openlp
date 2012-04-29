@@ -88,7 +88,7 @@ class BibleStrings(object):
         """
         These strings should need a good reason to be retranslated elsewhere.
         """
-        self.Booknames = {
+        self.BookNames = {
             u'Gen': translate('BiblesPlugin', 'Genesis'),
             u'Exod': translate('BiblesPlugin', 'Exodus'),
             u'Lev': translate('BiblesPlugin', 'Leviticus'),
@@ -355,7 +355,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
         if not book_ref_id:
-            booknames = BibleStrings().Booknames
+            book_names = BibleStrings().BookNames
             # escape reserved characters
             book_escaped = book
             for character in u'\\.^$*+?{}[]()':
@@ -369,7 +369,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                     book_ref_id = db_book.book_reference_id
             elif language_selection == LanguageSelection.Application:
                 books = filter(lambda key:
-                    regex_book.match(unicode(booknames[key])), booknames.keys())
+                    regex_book.match(unicode(book_names[key])), book_names.keys())
                 books = filter(None, map(BiblesResourcesDB.get_book, books))
                 for value in books:
                     if bible.get_book_by_book_ref_id(value[u'id']):
@@ -386,7 +386,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                         if bible.get_book_by_book_ref_id(value[u'id']):
                             book_ref_id = value[u'id']
                             break
-        elif bible.get_book_by_book_ref_id(book_ref_id):
+        elif not bible.get_book_by_book_ref_id(book_ref_id):
             book_ref_id = False
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)

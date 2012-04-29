@@ -43,7 +43,7 @@ class GeneralTab(SettingsTab):
         Initialise the general settings tab
         """
         self.screens = ScreenList.get_instance()
-        self.icon_path = u':/icon/openlp-logo-16x16.png'
+        self.iconPath = u':/icon/openlp-logo-16x16.png'
         generalTranslated = translate('OpenLP.GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
 
@@ -65,42 +65,42 @@ class GeneralTab(SettingsTab):
         self.monitorComboBox = QtGui.QComboBox(self.monitorGroupBox)
         self.monitorComboBox.setObjectName(u'monitorComboBox')
         self.monitorLayout.addWidget(self.monitorComboBox, 1, 1, 1, 4)
-        self.displayOnMonitorCheck = QtGui.QCheckBox(self.monitorGroupBox)
-        self.displayOnMonitorCheck.setObjectName(u'monitorComboBox')
-        self.monitorLayout.addWidget(self.displayOnMonitorCheck, 2, 1, 1, 4)
         # Display Position
         self.overrideRadioButton = QtGui.QRadioButton(self.monitorGroupBox)
         self.overrideRadioButton.setObjectName(u'overrideRadioButton')
-        self.monitorLayout.addWidget(self.overrideRadioButton, 3, 0, 1, 5)
+        self.monitorLayout.addWidget(self.overrideRadioButton, 2, 0, 1, 5)
         # Custom position
         self.customXLabel = QtGui.QLabel(self.monitorGroupBox)
         self.customXLabel.setObjectName(u'customXLabel')
-        self.monitorLayout.addWidget(self.customXLabel, 4, 1)
+        self.monitorLayout.addWidget(self.customXLabel, 3, 1)
         self.customXValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
         self.customXValueEdit.setObjectName(u'customXValueEdit')
         self.customXValueEdit.setRange(-9999, 9999)
-        self.monitorLayout.addWidget(self.customXValueEdit, 5, 1)
+        self.monitorLayout.addWidget(self.customXValueEdit, 4, 1)
         self.customYLabel = QtGui.QLabel(self.monitorGroupBox)
         self.customYLabel.setObjectName(u'customYLabel')
-        self.monitorLayout.addWidget(self.customYLabel, 4, 2)
+        self.monitorLayout.addWidget(self.customYLabel, 3, 2)
         self.customYValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
         self.customYValueEdit.setObjectName(u'customYValueEdit')
         self.customYValueEdit.setRange(-9999, 9999)
-        self.monitorLayout.addWidget(self.customYValueEdit, 5, 2)
+        self.monitorLayout.addWidget(self.customYValueEdit, 4, 2)
         self.customWidthLabel = QtGui.QLabel(self.monitorGroupBox)
         self.customWidthLabel.setObjectName(u'customWidthLabel')
-        self.monitorLayout.addWidget(self.customWidthLabel, 4, 3)
+        self.monitorLayout.addWidget(self.customWidthLabel, 3, 3)
         self.customWidthValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
         self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
         self.customWidthValueEdit.setMaximum(9999)
-        self.monitorLayout.addWidget(self.customWidthValueEdit, 5, 3)
+        self.monitorLayout.addWidget(self.customWidthValueEdit, 4, 3)
         self.customHeightLabel = QtGui.QLabel(self.monitorGroupBox)
         self.customHeightLabel.setObjectName(u'customHeightLabel')
-        self.monitorLayout.addWidget(self.customHeightLabel, 4, 4)
+        self.monitorLayout.addWidget(self.customHeightLabel, 3, 4)
         self.customHeightValueEdit = QtGui.QSpinBox(self.monitorGroupBox)
         self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
         self.customHeightValueEdit.setMaximum(9999)
-        self.monitorLayout.addWidget(self.customHeightValueEdit, 5, 4)
+        self.monitorLayout.addWidget(self.customHeightValueEdit, 4, 4)
+        self.displayOnMonitorCheck = QtGui.QCheckBox(self.monitorGroupBox)
+        self.displayOnMonitorCheck.setObjectName(u'monitorComboBox')
+        self.monitorLayout.addWidget(self.displayOnMonitorCheck, 5, 0, 1, 5)
         # Set up the stretchiness of each column, so that the first column
         # less stretchy (and therefore smaller) than the others
         self.monitorLayout.setColumnStretch(0, 1)
@@ -314,8 +314,6 @@ class GeneralTab(SettingsTab):
             u'audio repeat list', QtCore.QVariant(False)).toBool())
         settings.endGroup()
         self.monitorComboBox.setDisabled(self.overrideRadioButton.isChecked())
-        self.displayOnMonitorCheck.setDisabled(
-            self.overrideRadioButton.isChecked())
         self.customXValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.customYValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.customHeightValueEdit.setEnabled(
@@ -408,7 +406,6 @@ class GeneralTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.monitorComboBox.setDisabled(checked)
-        self.displayOnMonitorCheck.setDisabled(checked)
         self.customXValueEdit.setEnabled(checked)
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)

@@ -521,9 +521,9 @@ class OpenLyrics(object):
         if hasattr(properties, u'comments'):
             comments_list = []
             for comment in properties.comments.comment:
-                commenttext = self._text(comment)
-                if commenttext:
-                    comments_list.append(commenttext)
+                comment_text = self._text(comment)
+                if comment_text:
+                    comments_list.append(comment_text)
             song.comments = u'\n'.join(comments_list)
 
     def _process_copyright(self, properties, song):
@@ -697,7 +697,7 @@ class OpenLyrics(object):
                 # Append text from "lines" element to verse text.
                 text += self._process_verse_lines(lines,
                     version=song_xml.get(u'version'))
-                # Add a virtual split to the verse text.
+                # Add an optional split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
@@ -746,13 +746,13 @@ class OpenLyrics(object):
         song.song_number = u''
         if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:
-                bookname = songbook.get(u'name', u'')
-                if bookname:
+                book_name = songbook.get(u'name', u'')
+                if book_name:
                     book = self.manager.get_object_filtered(Book,
-                        Book.name == bookname)
+                        Book.name == book_name)
                     if book is None:
                         # We need to create a book, because it does not exist.
-                        book = Book.populate(name=bookname, publisher=u'')
+                        book = Book.populate(name=book_name, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     song.song_number = songbook.get(u'entry', u'')
@@ -787,14 +787,14 @@ class OpenLyrics(object):
             The song object.
         """
         if hasattr(properties, u'themes'):
-            for topictext in properties.themes.theme:
-                topictext = self._text(topictext)
-                if topictext:
+            for topic_text in properties.themes.theme:
+                topic_text = self._text(topic_text)
+                if topic_text:
                     topic = self.manager.get_object_filtered(Topic,
-                        Topic.name == topictext)
+                        Topic.name == topic_text)
                     if topic is None:
                         # We need to create a topic, because it does not exist.
-                        topic = Topic.populate(name=topictext)
+                        topic = Topic.populate(name=topic_text)
                         self.manager.save_object(topic)
                     song.topics.append(topic)
 
@@ -813,6 +813,7 @@ class OpenLyricsError(Exception):
     VerseError = 2
 
     def __init__(self, type, log_message, display_message):
+        Exception.__init__(self)
         self.type = type
         self.log_message = log_message
         self.display_message = display_message

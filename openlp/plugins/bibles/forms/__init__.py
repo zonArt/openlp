@@ -55,6 +55,7 @@ from booknameform import BookNameForm
 from languageform import LanguageForm
 from bibleimportform import BibleImportForm
 from bibleupgradeform import BibleUpgradeForm
+from editbibleform import EditBibleForm
 
 __all__ = [u'BookNameForm', u'LanguageForm', u'BibleImportForm',
-    u'BibleUpgradeForm']
+    u'BibleUpgradeForm', u'EditBibleForm']

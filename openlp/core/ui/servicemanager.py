@@ -105,6 +105,7 @@ class ServiceManager(QtGui.QWidget):
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
+        self.serviceId = 0
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
@@ -271,7 +272,7 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
-            self.mainwindow.servicemanagerSettingsSection + u'/service theme',
+            self.mainwindow.serviceManagerSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
@@ -331,6 +332,8 @@ class ServiceManager(QtGui.QWidget):
         Setter for property "modified". Sets whether or not the current service
         has been modified.
         """
+        if modified:
+            self.serviceId += 1
         self._modified = modified
         serviceFile = self.shortFileName() or translate(
             'OpenLP.ServiceManager', 'Untitled Service')
@@ -408,7 +411,7 @@ class ServiceManager(QtGui.QWidget):
                 self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
                 SettingsManager.get_last_dir(
-                self.mainwindow.servicemanagerSettingsSection),
+                self.mainwindow.serviceManagerSettingsSection),
                 translate('OpenLP.ServiceManager',
                 'OpenLP Service Files (*.osz)')))
             if not fileName:
@@ -416,7 +419,7 @@ class ServiceManager(QtGui.QWidget):
         else:
             fileName = loadFile
         SettingsManager.set_last_dir(
-            self.mainwindow.servicemanagerSettingsSection,
+            self.mainwindow.serviceManagerSettingsSection,
             split_filename(fileName)[0])
         self.loadFile(fileName)
 
@@ -439,6 +442,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.clear()
         self.serviceItems = []
         self.setFileName(u'')
+        self.serviceId += 1
         self.setModified(False)
         QtCore.QSettings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
@@ -465,7 +469,7 @@ class ServiceManager(QtGui.QWidget):
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(
-            self.mainwindow.servicemanagerSettingsSection,
+            self.mainwindow.serviceManagerSettingsSection,
             path)
         service = []
         write_list = []
@@ -618,7 +622,7 @@ class ServiceManager(QtGui.QWidget):
         else:
             default_filename = u''
         directory = unicode(SettingsManager.get_last_dir(
-            self.mainwindow.servicemanagerSettingsSection))
+            self.mainwindow.serviceManagerSettingsSection))
         path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService, path,
@@ -1103,7 +1107,7 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
-            self.mainwindow.servicemanagerSettingsSection +
+            self.mainwindow.serviceManagerSettingsSection +
                 u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems(True)

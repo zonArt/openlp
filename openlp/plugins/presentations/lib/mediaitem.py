@@ -165,14 +165,15 @@ class PresentationMediaItem(MediaManagerItem):
         titles = [os.path.split(file)[1] for file in currlist]
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
-            self.plugin.formparent.displayProgressBar(len(files))
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(files))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         files.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for file in files:
             if not initialLoad:
-                self.plugin.formparent.incrementProgressBar()
+                self.plugin.formParent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -216,7 +217,8 @@ class PresentationMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
-            self.plugin.formparent.finishedProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
 
     def onDeleteClick(self):
         """
@@ -226,6 +228,8 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(
                     QtCore.Qt.UserRole).toString())
@@ -233,6 +237,9 @@ class PresentationMediaItem(MediaManagerItem):
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
+                self.plugin.formParent.incrementProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
@@ -256,50 +263,49 @@ class PresentationMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
-        if shortname:
-            for bitem in items:
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if os.path.exists(filename):
-                    if shortname == self.Automatic:
-                        service_item.shortname = \
-                            self.findControllerByType(filename)
-                        if not service_item.shortname:
-                            return False
-                    controller = self.controllers[service_item.shortname]
-                    (path, name) = os.path.split(filename)
-                    doc = controller.add_document(filename)
-                    if doc.get_thumbnail_path(1, True) is None:
-                        doc.load_presentation()
-                    i = 1
-                    img = doc.get_thumbnail_path(i, True)
-                    if img:
-                        while img:
-                            service_item.add_from_command(path, name, img)
-                            i = i + 1
-                            img = doc.get_thumbnail_path(i, True)
-                        doc.close_presentation()
-                        return True
-                    else:
-                        # File is no longer present
-                        if not remote:
-                            critical_error_message_box(
-                                translate('PresentationPlugin.MediaItem',
-                                'Missing Presentation'),
-                                unicode(translate(
-                                'PresentationPlugin.MediaItem',
-                                'The Presentation %s is incomplete,'
-                                ' please reload.')) % filename)
+        if not shortname:
+            return False
+        for bitem in items:
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if os.path.exists(filename):
+                if shortname == self.Automatic:
+                    service_item.shortname = self.findControllerByType(filename)
+                    if not service_item.shortname:
                         return False
+                controller = self.controllers[service_item.shortname]
+                (path, name) = os.path.split(filename)
+                doc = controller.add_document(filename)
+                if doc.get_thumbnail_path(1, True) is None:
+                    doc.load_presentation()
+                i = 1
+                img = doc.get_thumbnail_path(i, True)
+                if img:
+                    while img:
+                        service_item.add_from_command(path, name, img)
+                        i = i + 1
+                        img = doc.get_thumbnail_path(i, True)
+                    doc.close_presentation()
+                    return True
                 else:
                     # File is no longer present
+                    if not remote:
+                        critical_error_message_box(
+                            translate('PresentationPlugin.MediaItem',
+                            'Missing Presentation'),
+                            unicode(translate(
+                            'PresentationPlugin.MediaItem',
+                            'The presentation %s is incomplete,'
+                            ' please reload.')) % filename)
+                    return False
+            else:
+                # File is no longer present
+                if not remote:
                     critical_error_message_box(
                         translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
                         unicode(translate('PresentationPlugin.MediaItem',
-                        'The Presentation %s no longer exists.')) % filename)
-                    return False
-        else:
-            return False
+                        'The presentation %s no longer exists.')) % filename)
+                return False
 
     def findControllerByType(self, filename):
         """

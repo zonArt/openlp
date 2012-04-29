@@ -75,6 +75,7 @@ def upgrade_1(session, metadata, tables):
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
             table=tables[u'media_files']).create()
 
+
 def upgrade_2(session, metadata, tables):
     """
     Version 2 upgrade.
@@ -85,6 +86,7 @@ def upgrade_2(session, metadata, tables):
         .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
         .create(table=tables[u'songs'])
+
 
 def upgrade_3(session, metadata, tables):
     """
