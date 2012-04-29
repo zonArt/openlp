@@ -122,8 +122,7 @@ class OpenLP1SongImport(SongImport):
                 cursor.execute(
                     u'SELECT settingsid FROM songs WHERE songid = %s' % song_id)
                 theme_id = cursor.fetchone()[0]
-                if themes.has_key(theme_id):
-                    self.themeName = themes[theme_id]
+                self.themeName = themes.get(theme_id, u'')
             verses = lyrics.split(u'\n\n')
             for verse in verses:
                 if verse.strip():
@@ -191,7 +190,7 @@ class OpenLP1SongImport(SongImport):
         # Detect charset by songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
             u'WHERE type = \'table\' AND name = \'tracks\'')
-        if len(cursor.fetchall()) > 0:
+        if cursor.fetchall():
             cursor.execute(u'SELECT fulltrackname FROM tracks')
             tracks = cursor.fetchall()
             for track in tracks:

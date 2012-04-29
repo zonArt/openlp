@@ -127,7 +127,7 @@ class MediaController(object):
             invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
                 if not mediaPlayer in self.mediaPlayers or \
                 not self.mediaPlayers[mediaPlayer].check_available()]
-            if len(invalidMediaPlayers) > 0:
+            if invalidMediaPlayers:
                 for invalidPlayer in invalidMediaPlayers:
                     savedPlayers.remove(invalidPlayer)
                 set_media_players(savedPlayers, overriddenPlayer)
@@ -141,7 +141,7 @@ class MediaController(object):
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        if len(self.curDisplayMediaPlayer.keys()) == 0:
+        if not self.curDisplayMediaPlayer:
             self.timer.stop()
         else:
             for display in self.curDisplayMediaPlayer.keys():

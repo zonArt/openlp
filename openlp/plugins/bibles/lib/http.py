@@ -106,7 +106,7 @@ class BGExtract(object):
         verse_list = {}
         # Cater for inconsistent mark up in the first verse of a chapter.
         first_verse = verses.find(u'versenum')
-        if first_verse and len(first_verse.contents):
+        if first_verse and first_verse.contents:
             verse_list[1] = unicode(first_verse.contents[0])
         for verse in verses(u'sup', u'versenum'):
             raw_verse_num = verse.next

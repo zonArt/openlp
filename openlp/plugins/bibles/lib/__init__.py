@@ -236,7 +236,7 @@ def get_reference_separator(separator_type):
     ``separator_type``
         The role and format of the separator.
     """
-    if len(REFERENCE_SEPARATORS) == 0:
+    if not REFERENCE_SEPARATORS:
         update_reference_separators()
     return REFERENCE_SEPARATORS[separator_type]
 
@@ -247,7 +247,7 @@ def get_reference_match(match_type):
     ``match_type``
         The type of match is ``range_separator``, ``range`` or ``full``.
     """
-    if len(REFERENCE_MATCHES) == 0:
+    if not REFERENCE_MATCHES:
         update_reference_separators()
     return REFERENCE_MATCHES[match_type]
 

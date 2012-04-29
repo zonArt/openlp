@@ -239,7 +239,7 @@ class SongsPlugin(Plugin):
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
-        if len(song_dbs) == 0:
+        if not song_dbs:
             return
         progress = QtGui.QProgressDialog(self.formParent)
         progress.setWindowModality(QtCore.Qt.WindowModal)

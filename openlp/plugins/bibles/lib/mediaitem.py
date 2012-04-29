@@ -392,7 +392,7 @@ class BibleMediaItem(MediaManagerItem):
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))
-        elif len(bibles):
+        elif bibles:
             self.initialiseAdvancedBible(bibles[0])
         bible = QtCore.QSettings().value(
             self.settingsSection + u'/quick bible', QtCore.QVariant(
@@ -878,7 +878,7 @@ class BibleMediaItem(MediaManagerItem):
             items = item
         else:
             items = self.listView.selectedItems()
-        if len(items) == 0:
+        if not items:
             return False
         bible_text = u''
         old_item = None
@@ -949,7 +949,7 @@ class BibleMediaItem(MediaManagerItem):
         # Service Item: Title
         service_item.title = create_separated_list(raw_title)
         # Service Item: Theme
-        if len(self.settings.bible_theme) == 0:
+        if not self.settings.bible_theme:
             service_item.theme = None
         else:
             service_item.theme = self.settings.bible_theme

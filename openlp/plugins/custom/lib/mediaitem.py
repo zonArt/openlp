@@ -258,7 +258,7 @@ class CustomMediaItem(MediaManagerItem):
         search_length = 2
         if len(text) > search_length:
             self.onSearchTextButtonClicked()
-        elif len(text) == 0:
+        elif not text:
             self.onClearTextButtonClick()
 
     def onClearTextButtonClick(self):

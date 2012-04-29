@@ -204,7 +204,7 @@ class SongShowPlusImport(SongImport):
         elif verse_type == "pre-chorus":
             verse_tag = VerseType.Tags[VerseType.PreChorus]
         else:
-            if not self.otherList.has_key(verse_name):
+            if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
                 self.otherCount = self.otherCount + 1

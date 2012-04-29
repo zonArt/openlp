@@ -162,15 +162,12 @@ class EasySlidesImport(SongImport):
         separatorlines = 0
         for line in lines:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 continue
             elif line[1:7] == u'region':
                 # this is region separator, probably [region 2]
                 region = self._extractRegion(line)
-                if regionlines.has_key(region):
-                    regionlines[region] = regionlines[region] + 1
-                else:
-                    regionlines[region] = 1
+                regionlines[region] = 1 + regionlines.get(region, 0)
             elif line[0] == u'[':
                 separatorlines = separatorlines + 1
         # if the song has separators
@@ -206,7 +203,7 @@ class EasySlidesImport(SongImport):
 
         for line in lines:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 if separators:
                     # separators are used, so empty line means slide break
                     # inside verse
@@ -215,15 +212,11 @@ class EasySlidesImport(SongImport):
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'
-                    if verses[reg].has_key(vt):
-                        vn = len(verses[reg][vt].keys())+1
-                    else:
-                        vn = u'1'
+                    vn = len(verses[reg].get(vt, {})) + 1
                     inst = 1
             elif line[0:7] == u'[region':
                 reg = self._extractRegion(line)
-                if not verses.has_key(reg):
-                    verses[reg] = {}
+                verses.setdefault(reg, {})
                 if not regionsInVerses:
                     vt = u'V'
                     vn = u'1'
@@ -238,12 +231,7 @@ class EasySlidesImport(SongImport):
                 if match:
                     marker = match.group(1).strip()
                     vn = match.group(2)
-                if len(marker) == 0:
-                    vt = u'V'
-                elif MarkTypes.has_key(marker):
-                    vt = MarkTypes[marker]
-                else:
-                    vt = u'O'
+                vt = MarkTypes.get(marker, u'O') if marker else u'V'
                 if regionsInVerses:
                     region = defaultregion
                 inst = 1
@@ -252,14 +240,10 @@ class EasySlidesImport(SongImport):
             else:
                 if not [reg, vt, vn, inst] in our_verse_order:
                     our_verse_order.append([reg, vt, vn, inst])
-                if not verses[reg].has_key(vt):
-                    verses[reg][vt] = {}
-                if not verses[reg][vt].has_key(vn):
-                    verses[reg][vt][vn] = {}
-                if not verses[reg][vt][vn].has_key(inst):
-                    verses[reg][vt][vn][inst] = []
-                words = self.tidyText(line)
-                verses[reg][vt][vn][inst].append(words)
+                verses[reg].setdefault(vt, {})
+                verses[reg][vt].setdefault(vn, {})
+                verses[reg][vt][vn].setdefault(inst, [])
+                verses[reg][vt][vn][inst].append(self.tidyText(line))
         # done parsing
 
         versetags = []
@@ -286,11 +270,11 @@ class EasySlidesImport(SongImport):
         try:
             order = unicode(song.Sequence).strip().split(u',')
             for tag in order:
-                if len(tag) == 0:
+                if not tag:
                     continue
                 elif tag[0].isdigit():
                     tag = u'V' + tag
-                elif SeqTypes.has_key(tag.lower()):
+                elif tag.lower() in SeqTypes:
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
@@ -307,9 +291,7 @@ class EasySlidesImport(SongImport):
 
     def _listHas(self, lst, subitems):
         for subitem in subitems:
-            if isinstance(lst, dict) and lst.has_key(subitem):
-                lst = lst[subitem]
-            elif isinstance(lst, list) and subitem in lst:
+            if subitem in lst:
                 lst = lst[subitem]
             else:
                 return False
