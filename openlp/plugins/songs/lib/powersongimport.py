@@ -75,8 +75,7 @@ class PowerSongImport(SongImport):
         * There is no concept of verse types.
 
     Valid extensions for a PowerSong song file are:
-
-    * .song
+        * .song
     """
 
     def __init__(self, manager, **kwargs):

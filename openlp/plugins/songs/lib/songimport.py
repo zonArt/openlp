@@ -111,7 +111,7 @@ class SongImport(QtCore.QObject):
             instance a database), then this should be the song's title.
 
         ``reason``
-            The reason, why the import failed. The string should be as
+            The reason why the import failed. The string should be as
             informative as possible.
         """
         self.setDefaults()

@@ -90,7 +90,7 @@ class SongFormat(object):
     @staticmethod
     def get_class(format):
         """
-        Return the appropriate imeplementation class.
+        Return the appropriate implementation class.
 
         ``format``
             The song format.
