@@ -103,6 +103,7 @@ class PowerSongImport(SongImport):
                                 '"\x05TITLE" header.'))))
                         continue
                     song_data = song_file.read()
+                    # Extract title and author fields
                     first_part, sep, song_data = song_data.partition(
                         u'\x0DCOPYRIGHTLINE')
                     if sep == '':
