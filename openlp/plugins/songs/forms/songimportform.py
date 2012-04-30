@@ -173,10 +173,10 @@ class SongImportForm(OpenLPWizard):
             self.onFoilPresenterRemoveButtonClicked)
         QtCore.QObject.connect(self.powerSongAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.powerSongAddButtonClicked)
+            self.onPowerSongAddButtonClicked)
         QtCore.QObject.connect(self.powerSongRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.powerSongRemoveButtonClicked)
+            self.onPowerSongRemoveButtonClicked)
 
     def addCustomPages(self):
         """
