@@ -426,8 +426,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 if meta[u'key'] == u'download_source':
                     web_bible = True
                     self.includeWebBible = True
-                if meta.has_key(u'proxy_server'):
-                    proxy_server = meta[u'proxy_server']
+                proxy_server = meta.get(u'proxy_server')
             if web_bible:
                 if meta_data[u'download_source'].lower() == u'crosswalk':
                     handler = CWExtract(proxy_server)
@@ -572,7 +571,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
-            if self.success.has_key(number) and not self.success[number]:
+            if not self.success.get(number, True):
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
@@ -586,7 +585,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Complete')) %
                     (number + 1, max_bibles, name))
-            if self.newbibles.has_key(number):
+            if number in self.newbibles:
                 self.newbibles[number].session.close()
         # Close the last bible's connection if possible.
         if old_bible is not None:
@@ -599,7 +598,7 @@ class BibleUpgradeForm(OpenLPWizard):
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
-            if self.success.has_key(number) and self.success[number]:
+            if self.success.get(number):
                 successful_import += 1
             elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 failed_import += 1

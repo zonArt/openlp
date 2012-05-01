@@ -211,7 +211,7 @@ class CCLIFileImport(SongImport):
                 elif verse_lines[0].startswith(u'('):
                     verse_type = VerseType.Tags[VerseType.Other]
                     verse_text = verse_lines[1]
-            if len(verse_text) > 0:
+            if verse_text:
                 self.addVerse(verse_text, verse_type)
             check_first_verse_line = False
         # Handle multiple authors

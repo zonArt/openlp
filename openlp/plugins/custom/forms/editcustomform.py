@@ -254,7 +254,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Checks whether a custom is valid or not.
         """
         # We must have a title.
-        if len(self.titleEdit.displayText()) == 0:
+        if not self.titleEdit.displayText():
             self.titleEdit.setFocus()
             critical_error_message_box(
                 message=translate('CustomPlugin.EditCustomForm',

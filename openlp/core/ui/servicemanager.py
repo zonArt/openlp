@@ -483,7 +483,7 @@ class ServiceManager(QtGui.QWidget):
             service_item = item[u'service_item'].get_service_repr()
             # Get all the audio files, and ready them for embedding in the
             # service file.
-            if len(service_item[u'header'][u'background_audio']) > 0:
+            if service_item[u'header'][u'background_audio']:
                 for i, filename in \
                     enumerate(service_item[u'header'][u'background_audio']):
                     new_file = os.path.join(u'audio',
@@ -822,7 +822,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by the SlideController to select the next service item.
         """
-        if len(self.serviceManagerList.selectedItems()) == 0:
+        if not self.serviceManagerList.selectedItems():
             return
         selected = self.serviceManagerList.selectedItems()[0]
         lookFor = 0
@@ -840,7 +840,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by the SlideController to select the previous service item.
         """
-        if len(self.serviceManagerList.selectedItems()) == 0:
+        if not self.serviceManagerList.selectedItems():
             return
         selected = self.serviceManagerList.selectedItems()[0]
         prevItem = None

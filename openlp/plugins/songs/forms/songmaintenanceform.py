@@ -108,7 +108,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
-            if item and len(item.songs) == 0:
+            if item and not item.songs:
                 if critical_error_message_box(dlg_title, del_text, self,
                     True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
@@ -191,7 +191,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         ``edit``
             If we edit an item, this should be *True*.
         """
-        if len(objects) > 0:
+        if objects:
             # If we edit an existing object, we need to make sure that we do
             # not return False when nothing has changed.
             if edit:
