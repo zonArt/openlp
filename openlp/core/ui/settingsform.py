@@ -92,7 +92,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.stackedLayout.count()):
+        for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
@@ -102,7 +102,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.stackedLayout.count()):
+        for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
