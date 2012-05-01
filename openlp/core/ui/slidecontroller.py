@@ -373,7 +373,7 @@ class SlideController(Controller):
                 u'text': translate('OpenLP.SlideController', 'Go to "Ending"')},
                 {u'key': u'O', u'configurable': True,
                 u'text': translate('OpenLP.SlideController', 'Go to "Other"')}]
-            shortcuts += [{u'key': unicode(number)} for number in range(0, 10)]
+            shortcuts += [{u'key': unicode(number)} for number in range(10)]
             self.previewListWidget.addActions([create_action(self,
                 u'shortcutAction_%s' % s[u'key'], text=s.get(u'text'),
                 shortcuts=[QtGui.QKeySequence(s[u'key'])],

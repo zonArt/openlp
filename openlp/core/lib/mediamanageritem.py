@@ -373,12 +373,12 @@ class MediaManagerItem(QtGui.QWidget):
         Process a list for files either from the File Dialog or from Drag and
         Drop
 
-         ``files``
-         The files to be loaded
+        ``files``
+            The files to be loaded.
         """
         names = []
         fullList = []
-        for count in range(0, self.listView.count()):
+        for count in range(self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
             fullList.append(unicode(self.listView.item(count).
                 data(QtCore.Qt.UserRole).toString()))
