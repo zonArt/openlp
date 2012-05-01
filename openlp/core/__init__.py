@@ -49,7 +49,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version, DelayStartThread
+    get_application_version
 
 
 __all__ = [u'OpenLP', u'main']
@@ -145,7 +145,6 @@ class OpenLP(QtGui.QApplication):
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
-        DelayStartThread(self.mainWindow).start()
         # Skip exec_() for gui tests
         if not testing:
             return self.exec_()
