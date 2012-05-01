@@ -25,29 +25,41 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
-import sys, os
 from datetime import datetime
-try:
-    import vlc
-    vlc_available = bool(vlc.get_default_instance())
-except (ImportError, NameError):
-    vlc_available = False
-except OSError, e:
-    if sys.platform.startswith('win'):
-        if isinstance(e, WindowsError) and e.winerror == 126:
-            vlc_available = False
-        else:
-            raise
-    else:
-        raise
+from distutils.version import LooseVersion
+import logging
+import os
+import sys
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import Receiver
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
 log = logging.getLogger(__name__)
+
+VLC_AVAILABLE = False
+try:
+    import vlc
+    VLC_AVAILABLE = bool(vlc.get_default_instance())
+except (ImportError, NameError):
+    pass
+except OSError, e:
+    if sys.platform.startswith('win'):
+        if not isinstance(e, WindowsError) and e.winerror != 126:
+            raise
+    else:
+        raise
+
+if VLC_AVAILABLE:
+    try:
+        version = vlc.libvlc_get_version()
+    except:
+        version = u'0.0.0'
+    if LooseVersion(version) < LooseVersion('1.1.0'):
+        VLC_AVAILABLE = False
+        log.debug(u'VLC could not be loaded: %s' % version)
 
 AUDIO_EXT = [
       u'*.mp3'
@@ -128,7 +140,7 @@ class VlcPlayer(MediaPlayer):
         self.hasOwnWidget = True
 
     def check_available(self):
-        return vlc_available
+        return VLC_AVAILABLE
 
     def load(self, display):
         log.debug(u'load vid in Vlc Controller')
