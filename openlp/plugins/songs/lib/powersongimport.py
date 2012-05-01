@@ -29,7 +29,6 @@ The :mod:`powersongimport` module provides the functionality for importing
 PowerSong songs into the OpenLP database.
 """
 import logging
-import re
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -43,46 +42,33 @@ class PowerSongImport(SongImport):
 
     **PowerSong Song File Format:**
 
-    * Encoded as UTF-8.
-    * The file has a number of fields, with the song metadata fields first,
-      followed by the lyrics fields.
+    The file has a number of label-field pairs of variable length.
 
-    Fields:
-        Each field begins with one of four labels, each of which begin with one
-        non-printing byte:
-
-        * ``ENQ`` (0x05) ``TITLE``
-        * ``ACK`` (0x06) ``AUTHOR``
-        * ``CR`` (0x0d) ``COPYRIGHTLINE``
-        * ``EOT`` (0x04) ``PART``
-
-        The field label is separated from the field contents by one random byte.
-        Each field ends at the next field label, or at the end of the file.
+    Labels and Fields:
+        * Every label and field is preceded by an integer which specifies its
+          byte-length.
+        * If the length < 128 bytes, only one byte is used to encode
+          the length integer.
+        * But if it's greater, as many bytes are used as necessary:
+            * the first byte = (length % 128) + 128
+            * the next byte = length / 128
+            * another byte is only used if (length / 128) >= 128
+            * and so on (3 bytes needed iff length > 16383)
 
     Metadata fields:
         * Every PowerSong file begins with a TITLE field.
         * This is followed by zero or more AUTHOR fields.
-        * The next field is always COPYRIGHTLINE, but it may be empty (in which
-          case the byte following the label is the null byte 0x00).
-          When the field contents are not empty, the first byte is 0xc2 and
-          should be discarded.
-          This field may contain a CCLI number at the end: e.g. "CCLI 176263"
+        * The next label is always COPYRIGHTLINE, but its field may be empty.
+          This field may also contain a CCLI number: e.g. "CCLI 176263".
 
     Lyrics fields:
-        * The COPYRIGHTLINE field is followed by zero or more PART fields, each
-          of which contains one verse.
+        * Each verse is contained in a PART field.
         * Lines have Windows line endings ``CRLF`` (0x0d, 0x0a).
         * There is no concept of verse types.
 
     Valid extensions for a PowerSong song file are:
         * .song
     """
-
-    def __init__(self, manager, **kwargs):
-        """
-        Initialise the PowerSong importer.
-        """
-        SongImport.__init__(self, manager, **kwargs)
 
     def doImport(self):
         """
@@ -94,67 +80,78 @@ class PowerSongImport(SongImport):
                 if self.stopImportFlag:
                     return
                 self.setDefaults()
-                with open(file, 'rb') as song_file:
-                    # Check file is valid PowerSong song format
-                    if song_file.read(6) != u'\x05TITLE':
-                        self.logError(file, unicode(
-                            translate('SongsPlugin.PowerSongSongImport',
-                            ('Invalid PowerSong song file. Missing '
-                                '"\x05TITLE" header.'))))
-                        continue
-                    song_data = unicode(song_file.read(), u'utf-8', u'replace')
-                    # Extract title and author fields
-                    first_part, sep, song_data = song_data.partition(
-                        u'\x0DCOPYRIGHTLINE')
-                    if not sep:
+                with open(file, 'rb') as self.song_file:
+                    # Get title and check file is valid PowerSong song format
+                    label, field = self.readLabelField()
+                    if label != u'TITLE':
                         self.logError(file, unicode(
                             translate('SongsPlugin.PowerSongSongImport',
                                 ('Invalid PowerSong song file. Missing '
-                                 '"\x0DCOPYRIGHTLINE" string.'))))
+                                 '"TITLE" header.'))))
                         continue
-                    title_authors = first_part.split(u'\x06AUTHOR')
-                    # Get the song title
-                    self.title = self.stripControlChars(title_authors[0][1:])
-                    # Extract the author(s)
-                    for author in title_authors[1:]:
-                        self.parseAuthor(self.stripControlChars(author[1:]))
-                    # Get copyright and CCLI number
-                    copyright, sep, song_data = song_data.partition(
-                        u'\x04PART')
-                    if not sep:
+                    else:
+                        self.title = field.replace(u'\n', u' ')
+                    while label:
+                        label, field = self.readLabelField()
+                        # Get the author(s)
+                        if label == u'AUTHOR':
+                            self.parseAuthor(field)
+                        # Get copyright and look for CCLI number
+                        elif label == u'COPYRIGHTLINE':
+                            found_copyright = True
+                            copyright, sep, ccli_no = field.rpartition(u'CCLI')
+                            if not sep:
+                                copyright = ccli_no
+                                ccli_no = u''
+                            if copyright:
+                                self.addCopyright(copyright.rstrip(
+                                    u'\n').replace(u'\n', u' '))
+                            if ccli_no:
+                                ccli_no = ccli_no.strip(u' :')
+                                if ccli_no.isdigit():
+                                    self.ccliNumber = ccli_no
+                        # Get verse(s)
+                        elif label == u'PART':
+                            self.addVerse(field)
+                    # Check for copyright label
+                    if not found_copyright:
                         self.logError(file, unicode(
                             translate('SongsPlugin.PowerSongSongImport',
-                                ('No verses found. Missing '
-                                 '"\x04PART" string.'))))
+                                ('"%s" Invalid PowerSong song file. Missing '
+                                 '"COPYRIGHTLINE" string.' % self.title))))
                         continue
-                    copyright, sep, ccli_no = copyright[1:].rpartition(u'CCLI ')
-                    if not sep:
-                        copyright = ccli_no
-                        ccli_no = u''
-                    if copyright:
-                        if copyright[0] == u'\u00c2':
-                            copyright = copyright[1:]
-                        self.addCopyright(self.stripControlChars(
-                            copyright.rstrip(u'\n')))
-                    if ccli_no:
-                        ccli_no = ccli_no.strip()
-                        if ccli_no.isdigit():
-                            self.ccliNumber = self.stripControlChars(ccli_no)
-                    # Get the verse(s)
-                    verses = song_data.split(u'\x04PART')
-                    for verse in verses:
-                        self.addVerse(self.stripControlChars(verse[1:]))
+                    # Check for at least one verse
+                    if not self.verses:
+                        self.logError(file, unicode(
+                            translate('SongsPlugin.PowerSongSongImport',
+                                ('"%s" No verses found. Missing "PART" string.'
+                                 % self.title))))
+                        continue
                 if not self.finish():
                     self.logError(file)
 
-    def stripControlChars(self, text):
+    def readLabelField(self):
         """
-        Get rid of ASCII control characters.
+        Return as a 2-tuple the next two variable-length strings from song file
+        """
+        label = unicode(self.song_file.read(
+            self.readLength()), u'utf-8', u'ignore')
+        if label:
+            field = unicode(self.song_file.read(
+                self.readLength()), u'utf-8', u'ignore')
+        else:
+            field = u''
+        return label, field
 
-        Illegals chars are ASCII code points 0-31 and 127, except:
-            * ``HT`` (0x09) - Tab
-            * ``LF`` (0x0a) - Line feed
-            * ``CR`` (0x0d) - Carriage return
+    def readLength(self):
         """
-        ILLEGAL_CHARS = u'([\x00-\x08\x0b-\x0c\x0e-\x1f\x7f])'
-        return re.sub(ILLEGAL_CHARS, '', text)
+        Return the byte-length of the next variable-length string in song file
+        """
+        this_byte_char = self.song_file.read(1)
+        if not this_byte_char:
+            return 0
+        this_byte = ord(this_byte_char)
+        if this_byte < 128:
+            return this_byte
+        else:
+            return (self.readLength() * 128) + (this_byte - 128)
