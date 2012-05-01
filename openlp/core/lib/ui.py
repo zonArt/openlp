@@ -124,7 +124,7 @@ class UiStrings(object):
         self.Settings = translate('OpenLP.Ui', 'Settings')
         self.SaveService = translate('OpenLP.Ui', 'Save Service')
         self.Service = translate('OpenLP.Ui', 'Service')
-        self.Split = translate('OpenLP.Ui', '&Split')
+        self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
@@ -142,6 +142,7 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+
 
 def add_welcome_page(parent, image):
     """
@@ -169,6 +170,7 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addWidget(parent.informationLabel)
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
+
 
 def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
     """
@@ -216,6 +218,7 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
         dialog.reject)
     return button_box
 
+
 def critical_error_message_box(title=None, message=None, parent=None,
     question=False):
     """
@@ -242,6 +245,7 @@ def critical_error_message_box(title=None, message=None, parent=None,
     data[u'title'] = title if title else UiStrings().Error
     return Receiver.send_message(u'openlp_error_message', data)
 
+
 def create_horizontal_adjusting_combo_box(parent, name):
     """
     Creates a QComboBox with adapting width for media items.
@@ -257,6 +261,7 @@ def create_horizontal_adjusting_combo_box(parent, name):
     combo.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
+
 
 def create_button(parent, name, **kwargs):
     """
@@ -323,6 +328,7 @@ def create_button(parent, name, **kwargs):
         if key not in [u'text', u'icon', u'tooltip', u'click']:
             log.warn(u'Parameter %s was not consumed in create_button().', key)
     return button
+
 
 def create_action(parent, name, **kwargs):
     """
@@ -411,6 +417,7 @@ def create_action(parent, name, **kwargs):
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 
+
 def create_widget_action(parent, name=u'', **kwargs):
     """
     Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
@@ -421,6 +428,7 @@ def create_widget_action(parent, name=u'', **kwargs):
     action = create_action(parent, name, **kwargs)
     parent.addAction(action)
     return action
+
 
 def set_case_insensitive_completer(cache, widget):
     """
@@ -435,6 +443,7 @@ def set_case_insensitive_completer(cache, widget):
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
+
 
 def create_valign_selection_widgets(parent):
     """
@@ -454,6 +463,7 @@ def create_valign_selection_widgets(parent):
     combo_box.addItem(UiStrings().Bottom)
     label.setBuddy(combo_box)
     return label, combo_box
+
 
 def find_and_set_in_combo_box(combo_box, value_to_find):
     """

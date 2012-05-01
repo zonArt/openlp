@@ -46,6 +46,7 @@ class WizardStrings(object):
     # the writers translating their own product name.
     CCLI = u'CCLI/SongSelect'
     CSV = u'CSV'
+    DB = u'DreamBeam'
     EW = u'EasyWorship'
     ES = u'EasySlides'
     FP = u'Foilpresenter'
