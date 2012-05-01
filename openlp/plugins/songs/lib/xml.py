@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -60,13 +60,13 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
         </lyrics>
     </song>
 """
-
+import cgi
 import logging
 import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.core.utils import get_application_version
@@ -257,11 +257,12 @@ class OpenLyrics(object):
 
     """
     IMPLEMENTED_VERSION = u'0.8'
+    START_TAGS_REGEX = re.compile(r'\{(\w+)\}')
+    END_TAGS_REGEX = re.compile(r'\{\/(\w+)\}')
+    VERSE_NUMBER_REGEX = re.compile(u'[a-zA-Z]*')
 
     def __init__(self, manager):
         self.manager = manager
-        self.start_tags_regex = re.compile(r'\{(\w+)\}')  # {abc} -> abc
-        self.end_tags_regex = re.compile(r'\{\/(\w+)\}')  # {/abc} -> abc
 
     def song_to_xml(self, song):
         """
@@ -275,7 +276,7 @@ class OpenLyrics(object):
         application_name = u'OpenLP ' + get_application_version()[u'version']
         song_xml.set(u'createdIn', application_name)
         song_xml.set(u'modifiedIn', application_name)
-        # "Convert" 2011-08-27 11:49:15 to 2011-08-27T11:49:15.
+        # "Convert" 2012-08-27 11:49:15 to 2012-08-27T11:49:15.
         song_xml.set(u'modifiedDate',
             unicode(song.last_modified).replace(u' ', u'T'))
         properties = etree.SubElement(song_xml, u'properties')
@@ -334,7 +335,8 @@ class OpenLyrics(object):
             if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "virtual" verses.
-            virtual_verses = verse[1].split(u'[---]')
+            virtual_verses = cgi.escape(verse[1])
+            virtual_verses = virtual_verses.split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
                 # Add formatting tags to text
                 lines_element = self._add_text_with_tags_to_lines(verse_element,
@@ -344,7 +346,7 @@ class OpenLyrics(object):
                     lines_element.set(u'break', u'optional')
         return self._extract_xml(song_xml)
 
-    def xml_to_song(self, xml, parse_and_not_save=False):
+    def xml_to_song(self, xml, parse_and_temporary_save=False):
         """
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
@@ -353,9 +355,9 @@ class OpenLyrics(object):
         ``xml``
             The XML to parse (unicode).
 
-        ``parse_and_not_save``
-            Switch to skip processing the whole song and to prevent storing the
-            songs to the database. Defaults to ``False``.
+        ``parse_and_temporary_save``
+            Switch to skip processing the whole song and storing the songs in
+            the database with a temporary flag. Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
@@ -369,14 +371,13 @@ class OpenLyrics(object):
             return None
         # Formatting tags are new in OpenLyrics 0.8
         if float(song_xml.get(u'version')) > 0.7:
-            self._process_formatting_tags(song_xml, parse_and_not_save)
-        if parse_and_not_save:
-            return
+            self._process_formatting_tags(song_xml, parse_and_temporary_save)
         song = Song()
         # Values will be set when cleaning the song.
         song.search_lyrics = u''
         song.verse_order = u''
         song.search_title = u''
+        song.temporary = parse_and_temporary_save
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
@@ -402,32 +403,32 @@ class OpenLyrics(object):
 
     def _add_tag_to_formatting(self, tag_name, tags_element):
         """
-        Add new formatting tag to the element ``<format>``
-        if the tag is not present yet.
+        Add new formatting tag to the element ``<format>`` if the tag is not
+        present yet.
         """
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
-        for t in available_tags:
-            if t[u'start tag'] == start_tag:
+        for tag in available_tags:
+            if tag[u'start tag'] == start_tag:
                 # Create new formatting tag in openlyrics xml.
-                el = self._add_text_to_element(u'tag', tags_element)
-                el.set(u'name', tag_name)
-                el_open = self._add_text_to_element(u'open', el)
-                el_open.text = etree.CDATA(t[u'start html'])
+                element = self._add_text_to_element(u'tag', tags_element)
+                element.set(u'name', tag_name)
+                element_open = self._add_text_to_element(u'open', element)
+                element_open.text = etree.CDATA(tag[u'start html'])
                 # Check if formatting tag contains end tag. Some formatting
                 # tags e.g. {br} has only start tag. If no end tag is present
                 # <close> element has not to be in OpenLyrics xml.
-                if t['end tag']:
-                    el_close = self._add_text_to_element(u'close', el)
-                    el_close.text = etree.CDATA(t[u'end html'])
+                if tag['end tag']:
+                    element_close = self._add_text_to_element(u'close', element)
+                    element_close.text = etree.CDATA(tag[u'end html'])
 
     def _add_text_with_tags_to_lines(self, verse_element, text, tags_element):
         """
         Convert text with formatting tags from OpenLP format to OpenLyrics
         format and append it to element ``<lines>``.
         """
-        start_tags = self.start_tags_regex.findall(text)
-        end_tags = self.end_tags_regex.findall(text)
+        start_tags = OpenLyrics.START_TAGS_REGEX.findall(text)
+        end_tags = OpenLyrics.END_TAGS_REGEX.findall(text)
         # Replace start tags with xml syntax.
         for tag in start_tags:
             # Tags already converted to xml structure.
@@ -442,12 +443,11 @@ class OpenLyrics(object):
             if tag not in xml_tags:
                 self._add_tag_to_formatting(tag, tags_element)
         # Replace end tags.
-        for t in end_tags:
-            text = text.replace(u'{/%s}' % t, u'</tag>')
+        for tag in end_tags:
+            text = text.replace(u'{/%s}' % tag, u'</tag>')
         # Replace \n with <br/>.
         text = text.replace(u'\n', u'<br/>')
-        text = u'<lines>' + text + u'</lines>'
-        element = etree.XML(text)
+        element = etree.XML(u'<lines>%s</lines>' % text)
         verse_element.append(element)
         return element
 
@@ -521,9 +521,9 @@ class OpenLyrics(object):
         if hasattr(properties, u'comments'):
             comments_list = []
             for comment in properties.comments.comment:
-                commenttext = self._text(comment)
-                if commenttext:
-                    comments_list.append(commenttext)
+                comment_text = self._text(comment)
+                if comment_text:
+                    comments_list.append(comment_text)
             song.comments = u'\n'.join(comments_list)
 
     def _process_copyright(self, properties, song):
@@ -611,7 +611,7 @@ class OpenLyrics(object):
             text += u'{%s}' % element.get(u'name')
             # Some formattings may have only start tag.
             # Handle this case if element has no children and contains no text.
-            if len(element) == 0 and not element.text:
+            if not element and not element.text:
                 use_endtag = False
         # Append text from element.
         if element.text:
@@ -673,9 +673,22 @@ class OpenLyrics(object):
         sxml = SongXML()
         verses = {}
         verse_def_list = []
-        lyrics = song_xml.lyrics
+        try:
+            lyrics = song_xml.lyrics
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.LyricsError,
+                '<lyrics> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<lyrics> tag is missing.')))
+        try:
+            verse_list = lyrics.verse
+        except AttributeError:
+            raise OpenLyricsError(OpenLyricsError.VerseError,
+                '<verse> tag is missing.',
+                unicode(translate('OpenLP.OpenLyricsImportError',
+                '<verse> tag is missing.')))
         # Loop over the "verse" elements.
-        for verse in lyrics.verse:
+        for verse in verse_list:
             text = u''
             # Loop over the "lines" elements.
             for lines in verse.lines:
@@ -684,7 +697,7 @@ class OpenLyrics(object):
                 # Append text from "lines" element to verse text.
                 text += self._process_verse_lines(lines,
                     version=song_xml.get(u'version'))
-                # Add a virtual split to the verse text.
+                # Add an optional split to the verse text.
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
@@ -692,7 +705,7 @@ class OpenLyrics(object):
                 verse_tag = verse_def[0]
             else:
                 verse_tag = VerseType.Tags[VerseType.Other]
-            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_def)
+            verse_number = OpenLyrics.VERSE_NUMBER_REGEX.sub(u'', verse_def)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:
@@ -733,13 +746,13 @@ class OpenLyrics(object):
         song.song_number = u''
         if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:
-                bookname = songbook.get(u'name', u'')
-                if bookname:
+                book_name = songbook.get(u'name', u'')
+                if book_name:
                     book = self.manager.get_object_filtered(Book,
-                        Book.name == bookname)
+                        Book.name == book_name)
                     if book is None:
                         # We need to create a book, because it does not exist.
-                        book = Book.populate(name=bookname, publisher=u'')
+                        book = Book.populate(name=book_name, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     song.song_number = songbook.get(u'entry', u'')
@@ -774,14 +787,14 @@ class OpenLyrics(object):
             The song object.
         """
         if hasattr(properties, u'themes'):
-            for topictext in properties.themes.theme:
-                topictext = self._text(topictext)
-                if topictext:
+            for topic_text in properties.themes.theme:
+                topic_text = self._text(topic_text)
+                if topic_text:
                     topic = self.manager.get_object_filtered(Topic,
-                        Topic.name == topictext)
+                        Topic.name == topic_text)
                     if topic is None:
                         # We need to create a topic, because it does not exist.
-                        topic = Topic.populate(name=topictext)
+                        topic = Topic.populate(name=topic_text)
                         self.manager.save_object(topic)
                     song.topics.append(topic)
 
@@ -791,3 +804,16 @@ class OpenLyrics(object):
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
+
+
+class OpenLyricsError(Exception):
+    # XML tree is missing the lyrics tag
+    LyricsError = 1
+    # XML tree has no verse tags
+    VerseError = 2
+
+    def __init__(self, type, log_message, display_message):
+        Exception.__init__(self)
+        self.type = type
+        self.log_message = log_message
+        self.display_message = display_message

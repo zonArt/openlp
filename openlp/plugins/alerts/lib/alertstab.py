@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,8 +27,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
-from openlp.core.lib.ui import UiStrings, create_valign_combo
+from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.ui import AlertLocation
+from openlp.core.lib.ui import UiStrings, create_valign_selection_widgets
 
 class AlertsTab(SettingsTab):
     """
@@ -75,7 +76,11 @@ class AlertsTab(SettingsTab):
         self.timeoutSpinBox.setMaximum(180)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.fontLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
-        create_valign_combo(self, self.fontGroupBox, self.fontLayout)
+        self.verticalLabel, self.verticalComboBox = \
+            create_valign_selection_widgets(self.fontGroupBox)
+        self.verticalLabel.setObjectName(u'verticalLabel')
+        self.verticalComboBox.setObjectName(u'verticalComboBox')
+        self.fontLayout.addRow(self.verticalLabel, self.verticalComboBox)
         self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
         self.previewGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -89,9 +94,9 @@ class AlertsTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.fontColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.fontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.timeoutSpinBox,
@@ -140,6 +145,7 @@ class AlertsTab(SettingsTab):
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.timeoutSpinBox.value()
+        self.changed = True
 
     def onFontSizeSpinBoxChanged(self):
         self.font_size = self.fontSizeSpinBox.value()
@@ -158,7 +164,7 @@ class AlertsTab(SettingsTab):
         self.font_face = unicode(settings.value(
             u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
         self.location = settings.value(
-            u'location', QtCore.QVariant(1)).toInt()[0]
+            u'location', QtCore.QVariant(AlertLocation.Bottom)).toInt()[0]
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)
         self.timeoutSpinBox.setValue(self.timeout)
@@ -171,10 +177,15 @@ class AlertsTab(SettingsTab):
         font.setFamily(self.font_face)
         self.fontComboBox.setCurrentFont(font)
         self.updateDisplay()
+        self.changed = False
 
     def save(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
+        # Check value has changed as no event handles this field
+        if settings.value(u'location', QtCore.QVariant(1)).toInt()[0] != \
+            self.verticalComboBox.currentIndex():
+            self.changed = True
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.setValue(u'font color', QtCore.QVariant(self.font_color))
         settings.setValue(u'font size', QtCore.QVariant(self.font_size))
@@ -184,6 +195,9 @@ class AlertsTab(SettingsTab):
         self.location = self.verticalComboBox.currentIndex()
         settings.setValue(u'location', QtCore.QVariant(self.location))
         settings.endGroup()
+        if self.changed:
+            Receiver.send_message(u'update_display_css')
+        self.changed = False
 
     def updateDisplay(self):
         font = QtGui.QFont()
@@ -193,4 +207,5 @@ class AlertsTab(SettingsTab):
         self.fontPreview.setFont(font)
         self.fontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))
+        self.changed = True
 

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit, build_icon
-from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
+from openlp.core.lib.ui import UiStrings, create_button, create_button_box
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -38,20 +38,14 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.buttonBox = create_accept_reject_button_box(customSlideEditDialog)
-        self.splitButton = QtGui.QPushButton(customSlideEditDialog)
-        self.splitButton.setIcon(build_icon(u':/general/general_add.png'))
-        self.splitButton.setObjectName(u'splitButton')
-        self.buttonBox.addButton(self.splitButton,
-            QtGui.QDialogButtonBox.ActionRole)
-        self.insertButton = QtGui.QPushButton(customSlideEditDialog)
-        self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
-        self.insertButton.setObjectName(u'insertButton')
-        self.buttonBox.addButton(self.insertButton,
-            QtGui.QDialogButtonBox.ActionRole)
+        self.splitButton = create_button(customSlideEditDialog, u'splitButton',
+            icon=u':/general/general_add.png')
+        self.insertButton = create_button(customSlideEditDialog,
+            u'insertButton', icon=u':/general/general_add.png')
+        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox',
+            [u'cancel', u'save'], [self.splitButton, self.insertButton])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
         self.splitButton.setText(UiStrings().Split)

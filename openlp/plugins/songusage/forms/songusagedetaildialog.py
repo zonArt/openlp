@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, songUsageDetailDialog):
@@ -74,14 +74,13 @@ class Ui_SongUsageDetailDialog(object):
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.fileHorizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout.addWidget(self.fileGroupBox)
-        self.buttonBox = create_accept_reject_button_box(
-            songUsageDetailDialog, True)
+        self.buttonBox = create_button_box(songUsageDetailDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDetailDialog)
         QtCore.QObject.connect(self.saveFilePushButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             songUsageDetailDialog.defineOutputLocation)
-        QtCore.QMetaObject.connectSlotsByName(songUsageDetailDialog)
 
     def retranslateUi(self, songUsageDetailDialog):
         songUsageDetailDialog.setWindowTitle(

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,6 +27,7 @@
 
 from PyQt4 import QtGui
 
+from openlp.core.lib.ui import create_action
 from openlp.core.utils import LanguageManager
 from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
@@ -55,8 +56,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
             LanguageManager.set_language(False, False)
         else:
             LanguageManager.auto_language = False
-            action = QtGui.QAction(None)
-            action.setObjectName(unicode(self.languageComboBox.currentText()))
+            action = create_action(None, self.languageComboBox.currentText())
             LanguageManager.set_language(action, False)
         return QtGui.QDialog.accept(self)
 

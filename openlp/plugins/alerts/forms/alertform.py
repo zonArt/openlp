@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -43,7 +43,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        QtGui.QDialog.__init__(self, plugin.formparent)
+        QtGui.QDialog.__init__(self, plugin.formParent)
         self.setupUi(self)
         QtCore.QObject.connect(self.displayButton,
             QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
@@ -101,7 +101,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.alertTextEdit.setText(u'')
 
     def onNewClick(self):
-        if len(self.alertTextEdit.text()) == 0:
+        if not self.alertTextEdit.text():
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '

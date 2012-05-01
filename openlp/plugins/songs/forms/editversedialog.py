@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -25,10 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import create_accept_reject_button_box, UiStrings
+from openlp.core.lib.ui import create_button_box, UiStrings
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -65,10 +65,10 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addWidget(self.insertButton)
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
-        self.dialogLayout.addWidget(
-            create_accept_reject_button_box(editVerseDialog))
+        self.buttonBox = create_button_box(editVerseDialog, u'buttonBox',
+            [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editVerseDialog)
-        QtCore.QMetaObject.connectSlotsByName(editVerseDialog)
 
     def retranslateUi(self, editVerseDialog):
         editVerseDialog.setWindowTitle(

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,7 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, create_button, create_button_box
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -71,21 +71,13 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.buttonBox = QtGui.QDialogButtonBox(aboutDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.contributeButton = QtGui.QPushButton()
-        self.contributeButton.setIcon(
-            build_icon(u':/system/system_contribute.png'))
-        self.contributeButton.setObjectName(u'contributeButton')
-        self.buttonBox.addButton(self.contributeButton,
-            QtGui.QDialogButtonBox.ActionRole)
+        self.contributeButton = create_button(None, u'contributeButton',
+            icon=u':/system/system_contribute.png')
+        self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
+            [u'close'], [self.contributeButton])
         self.aboutDialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            aboutDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
         aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
@@ -123,10 +115,11 @@ class Ui_AboutDialog(object):
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
-            u'Tim "TRB143" Bentley (Fedora)',
+            u'Tim "TRB143" Bentley (Fedora and Android)',
             u'Matthias "matthub" Hub (Mac OS X)',
             u'Stevan "ElderP" Pettit (Windows)',
-            u'Raoul "superfly" Snyman (Ubuntu)']
+            u'Raoul "superfly" Snyman (Ubuntu)',
+            u'Garrett "floft" Wilson (Arch Linux)']
         translators = {
             u'af': [u'Johan "nuvolari" Mynhardt'],
             u'de': [u'Patrick "madmuffin" Br\xfcckner',
@@ -226,8 +219,8 @@ class Ui_AboutDialog(object):
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         copyright = unicode(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2011 %s\n'
-            'Portions copyright \xa9 2004-2011 %s')) % (u'Raoul Snyman',
+            'Copyright \xa9 2004-2012 %s\n'
+            'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
             u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
             u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
             u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '

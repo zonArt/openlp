@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,10 +29,9 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 import logging
-import os.path
-import types
+import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +41,27 @@ class MediaType(object):
     """
     Audio = 1
     Video = 2
+
+
+class SlideLimits(object):
+    """
+    Provides an enumeration for behaviour of OpenLP at the end limits of each
+    service item when pressing the up/down arrow keys
+    """
+    End = 1
+    Wrap = 2
+    Next = 3
+
+
+class ServiceItemAction(object):
+    """
+    Provides an enumeration for the required action moving between service
+    items by left/right arrow keys
+    """
+    Previous = 1
+    PreviousLastSlide = 2
+    Next = 3
+
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
@@ -64,6 +84,7 @@ def translate(context, text, comment=None,
     """
     return translate(context, text, comment, encoding, n)
 
+
 def get_text_file_string(text_file):
     """
     Open a file and return its content as unicode string. If the supplied file
@@ -80,6 +101,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
+        if not file_handle.read(3) == '\xEF\xBB\xBF':
+            # no BOM was found
+            file_handle.seek(0)
         content = file_handle.read()
         content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):
@@ -88,6 +112,7 @@ def get_text_file_string(text_file):
         if file_handle:
             file_handle.close()
     return content_string
+
 
 def str_to_bool(stringvalue):
     """
@@ -99,6 +124,7 @@ def str_to_bool(stringvalue):
     if isinstance(stringvalue, bool):
         return stringvalue
     return unicode(stringvalue).strip().lower() in (u'true', u'yes', u'y')
+
 
 def build_icon(icon):
     """
@@ -126,6 +152,7 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
+
 def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and returns
@@ -143,6 +170,7 @@ def image_to_byte(image):
     log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
+
 
 def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
@@ -179,6 +207,7 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     # Fallback for files with animation support.
     return build_icon(unicode(image_path))
 
+
 def validate_thumb(file_path, thumb_path):
     """
     Validates whether an file's thumb still exists and if is up to date.
@@ -191,11 +220,12 @@ def validate_thumb(file_path, thumb_path):
     ``thumb_path``
         The path to the thumb.
     """
-    if not os.path.exists(unicode(thumb_path)):
+    if not os.path.exists(thumb_path):
         return False
-    image_date = os.stat(unicode(file_path)).st_mtime
-    thumb_date = os.stat(unicode(thumb_path)).st_mtime
+    image_date = os.stat(file_path).st_mtime
+    thumb_date = os.stat(thumb_path).st_mtime
     return image_date <= thumb_date
+
 
 def resize_image(image_path, width, height, background=u'#000000'):
     """
@@ -244,6 +274,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
+
 def check_item_selected(list_widget, message):
     """
     Check if a list item is selected so an action may be performed on it
@@ -260,6 +291,7 @@ def check_item_selected(list_widget, message):
         return False
     return True
 
+
 def clean_tags(text):
     """
     Remove Tags from text for display
@@ -272,6 +304,7 @@ def clean_tags(text):
         text = text.replace(tag[u'end tag'], u'')
     return text
 
+
 def expand_tags(text):
     """
     Expand tags HTML for display
@@ -280,6 +313,7 @@ def expand_tags(text):
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
+
 
 def check_directory_exists(dir):
     """
@@ -294,6 +328,36 @@ def check_directory_exists(dir):
             os.makedirs(dir)
     except IOError:
         pass
+
+
+def create_separated_list(stringlist):
+    """
+    Returns a string that represents a join of a list of strings with a
+    localized separator. This function corresponds to
+    QLocale::createSeparatedList which was introduced in Qt 4.8 and implements
+    the algorithm from http://www.unicode.org/reports/tr35/#ListPatterns
+
+    ``stringlist``
+        List of unicode strings
+    """
+    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
+        return unicode(QtCore.QLocale().createSeparatedList(stringlist))
+    if not stringlist:
+        return u''
+    elif len(stringlist) == 1:
+        return stringlist[0]
+    elif len(stringlist) == 2:
+        return unicode(translate('OpenLP.core.lib', '%1 and %2',
+            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1]))
+    else:
+        merged = unicode(translate('OpenLP.core.lib', '%1, and %2',
+            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1]))
+        for index in reversed(range(1, len(stringlist) - 2)):
+            merged = unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: middle').arg(stringlist[index], merged))
+        return unicode(translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: start').arg(stringlist[0], merged))
+
 
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD

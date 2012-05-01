@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_button_box
 
 class Ui_MediaFilesDialog(object):
     def setupUi(self, mediaFilesDialog):
@@ -51,19 +52,11 @@ class Ui_MediaFilesDialog(object):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.fileListWidget.setObjectName(u'fileListWidget')
         self.filesVerticalLayout.addWidget(self.fileListWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(mediaFilesDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(mediaFilesDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.filesVerticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(mediaFilesDialog)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), mediaFilesDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), mediaFilesDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(mediaFilesDialog)
 
     def retranslateUi(self, mediaFilesDialog):
         mediaFilesDialog.setWindowTitle(

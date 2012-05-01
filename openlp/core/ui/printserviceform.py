@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -402,7 +402,10 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.endGroup()
 
     def update_song_usage(self):
-        for index, item in enumerate(self.serviceManager.serviceItems):
+        # Only continue when we include the song's text.
+        if not self.slideTextCheckBox.isChecked():
+            return
+        for item in self.serviceManager.serviceItems:
             # Trigger Audit requests
             Receiver.send_message(u'print_service_started',
                 [item[u'service_item']])

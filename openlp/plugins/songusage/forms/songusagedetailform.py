@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -72,7 +72,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         """
-        Triggered when the Directory selection button is pressed
+        Triggered when the Directory selection button is clicked
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm',
@@ -85,7 +85,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         """
-        Ok was pressed so lets save the data and run the report
+        Ok was triggered so lets save the data and run the report
         """
         log.debug(u'accept')
         path = unicode(self.fileLineEdit.text())
@@ -118,7 +118,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             fileHandle = open(outname, u'w')
             for instance in usage:
                 record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
-                    u'\"%s\",\"%s\"\n' % ( instance.usagedate,
+                    u'\"%s\",\"%s\"\n' % (instance.usagedate,
                     instance.usagetime, instance.title, instance.copyright,
                     instance.ccl_number, instance.authors,
                     instance.plugin_name, instance.source)

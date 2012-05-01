@@ -4,12 +4,12 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode       #
-# Woldsund                                                                    #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
+# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
+# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,9 +27,11 @@
 -->
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
   <title>${app_title}</title>
   <link rel="stylesheet" href="/files/jquery.mobile.css" />
   <link rel="stylesheet" href="/files/openlp.css" />
+  <link rel="shortcut icon" type="image/x-icon" href="/files/images/favicon.ico">
   <script type="text/javascript" src="/files/jquery.js"></script>
   <script type="text/javascript" src="/files/openlp.js"></script>
   <script type="text/javascript" src="/files/jquery.mobile.js"></script>
@@ -38,7 +40,7 @@
     "go_live": "${go_live}",
     "add_to_service": "${add_to_service}",
     "no_results": "${no_results}",
-    "back": "${back}"
+    "home": "${home}"
   }
   </script>
 </head>
@@ -57,43 +59,79 @@
   </div>
 </div>
 <div data-role="page" id="service-manager">
-  <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+  <div data-role="header" data-position="fixed">
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="left">${home}</a>
     <h1>${service_manager}</h1>
     <a href="#" id="service-refresh" data-role="button" data-icon="refresh">${refresh}</a>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#service-manager" data-theme="e">Service</a></li>
+        <li><a href="#slide-controller">Slides</a></li>
+        <li><a href="#alerts">Alerts</a></li>
+        <li><a href="#search">Search</a></li>
+      </ul>
+    </div>
   </div>
   <div data-role="content">
     <ul data-role="listview" data-inset="true">
     </ul>
   </div>
-  <div data-role="footer" data-theme="b" class="ui-bar">
-    <a href="#" id="service-blank" data-role="button" data-icon="blank">${blank}</a>
-    <a href="#" id="service-unblank" data-role="button" data-icon="unblank">${show}</a>
-    <a href="#" id="service-previous" data-role="button" data-icon="arrow-l">${prev}</a>
-    <a href="#" id="service-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+  <div data-role="footer" data-theme="b" class="ui-bar" data-position="fixed">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="service-theme" data-role="button">${theme}</a>
+      <a href="#" id="service-desktop" data-role="button">${desktop}</a>
+      <a href="#" id="service-show" data-role="button" data-icon="unblank" data-iconpos="right">${show}</a>
+    </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="service-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="service-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
   </div>
 </div>
 <div data-role="page" id="slide-controller">
-  <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+  <div data-role="header" data-position="fixed">
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="left">${home}</a>
     <h1>${slide_controller}</h1>
     <a href="#" id="controller-refresh" data-role="button" data-icon="refresh">${refresh}</a>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#service-manager">Service</a></li>
+        <li><a href="#slide-controller" data-theme="e">Slides</a></li>
+        <li><a href="#alerts">Alerts</a></li>
+        <li><a href="#search">Search</a></li>
+      </ul>
+    </div>
   </div>
   <div data-role="content">
     <ul data-role="listview" data-inset="true">
     </ul>
   </div>
-  <div data-role="footer" data-theme="b" class="ui-bar">
-    <a href="#" id="controller-blank" data-role="button" data-icon="blank">${blank}</a>
-    <a href="#" id="controller-unblank" data-role="button" data-icon="unblank">${show}</a>
-    <a href="#" id="controller-previous" data-role="button" data-icon="arrow-l">${prev}</a>
-    <a href="#" id="controller-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+  <div data-role="footer" data-theme="b" class="ui-bar" data-position="fixed">
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-blank" data-role="button" data-icon="blank">${blank}</a>
+      <a href="#" id="controller-theme" data-role="button">${theme}</a>
+      <a href="#" id="controller-desktop" data-role="button">${desktop}</a>
+      <a href="#" id="controller-show" data-role="button" data-icon="unblank" data-iconpos="right">${show}</a>
+    </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float: left;">
+      <a href="#" id="controller-previous" data-role="button" data-icon="arrow-l">${prev}</a>
+      <a href="#" id="controller-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
+    </div>
   </div>
 </div>
 <div data-role="page" id="alerts">
   <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="left">${home}</a>
     <h1>${alerts}</h1>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#service-manager">Service</a></li>
+        <li><a href="#slide-controller">Slides</a></li>
+        <li><a href="#alerts" data-theme="e">Alerts</a></li>
+        <li><a href="#search">Search</a></li>
+      </ul>
+    </div>
   </div>
   <div data-role="content">
     <div data-role="fieldcontain">
@@ -104,9 +142,17 @@
   </div>
 </div>
 <div data-role="page" id="search">
-  <div data-role="header">
-    <a href="#" data-rel="back" data-icon="arrow-l">${back}</a>
+  <div data-role="header" data-position="fixed">
+    <a href="#home" data-role="button" data-icon="home" data-iconpos="left">${home}</a>
     <h1>${search}</h1>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#service-manager">Service</a></li>
+        <li><a href="#slide-controller">Slides</a></li>
+        <li><a href="#alerts">Alerts</a></li>
+        <li><a href="#search" data-theme="e">Search</a></li>
+      </ul>
+    </div>
   </div>
   <div data-role="content">
     <div data-role="fieldcontain">
@@ -127,8 +173,9 @@
   </div>
   <div data-role="content">
     <input type="hidden" id="selected-item" value="" />
-    <a href="#" id="go-live" data-role="button">${go_live}</a>       
-    <a href="#" id="add-to-service" data-role="button">${add_to_service}</a>    
+    <a href="#" id="go-live" data-role="button">${go_live}</a>
+    <a href="#" id="add-to-service" data-role="button">${add_to_service}</a>
+    <a href="#" id="add-and-go-to-service" data-role="button">${add_and_go_to_service}</a>
   </div>
 </div>
 </body>

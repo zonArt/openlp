@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -118,13 +118,14 @@ class ServiceItem(object):
         self.from_service = False
         self.image_border = u'#000000'
         self.background_audio = []
+        self.theme_overwritten = False
+        self.temporary_edit = False
         self._new_item()
 
     def _new_item(self):
         """
-        Method to set the internal id of the item
-        This is used to compare service items to see if they are
-        the same
+        Method to set the internal id of the item. This is used to compare
+        service items to see if they are the same.
         """
         self._uuid = unicode(uuid.uuid1())
 
@@ -160,9 +161,8 @@ class ServiceItem(object):
     def render(self, use_override=False):
         """
         The render method is what generates the frames for the screen and
-        obtains the display information from the renderemanager.
-        At this point all the slides are built for the given
-        display size.
+        obtains the display information from the renderer. At this point all
+        slides are built for the given display size.
         """
         log.debug(u'Render called')
         self._display_frames = []
@@ -275,7 +275,8 @@ class ServiceItem(object):
             u'start_time': self.start_time,
             u'end_time': self.end_time,
             u'media_length': self.media_length,
-            u'background_audio': self.background_audio
+            u'background_audio': self.background_audio,
+            u'theme_overwritten': self.theme_overwritten
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -299,6 +300,7 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
+        log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.name = header[u'name']
@@ -324,7 +326,11 @@ class ServiceItem(object):
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if u'background_audio' in header:
-            self.background_audio = header[u'background_audio']
+            self.background_audio = []
+            for filename in header[u'background_audio']:
+                # Give them real file paths
+                self.background_audio.append(os.path.join(path, filename))
+        self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -364,6 +370,12 @@ class ServiceItem(object):
         """
         self._uuid = other._uuid
         self.notes = other.notes
+        self.temporary_edit = other.temporary_edit
+        # Copy theme over if present.
+        if other.theme is not None:
+            self.theme = other.theme
+            self._new_item()
+        self.render()
         if self.is_capable(ItemCapabilities.HasBackgroundAudio):
             log.debug(self.background_audio)
 
@@ -481,6 +493,7 @@ class ServiceItem(object):
         ``theme``
             The new theme to be replaced in the service item
         """
+        self.theme_overwritten = (theme == None)
         self.theme = theme
         self._new_item()
         self.render()

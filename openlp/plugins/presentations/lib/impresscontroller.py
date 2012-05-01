@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -42,6 +42,9 @@ import time
 if os.name == u'nt':
     from win32com.client import Dispatch
     import pywintypes
+    # Declare an empty exception to match the exception imported from UNO
+    class ErrorCodeIOException(Exception):
+        pass
 else:
     try:
         import uno
@@ -105,7 +108,6 @@ class ImpressController(PresentationController):
             cmd = get_uno_command()
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
-            self.process.waitForStarted()
 
     def get_uno_desktop(self):
         """
@@ -184,7 +186,15 @@ class ImpressController(PresentationController):
         if not desktop:
             return
         docs = desktop.getComponents()
+        cnt = 0
         if docs.hasElements():
+            list = docs.createEnumeration()
+            while list.hasMoreElements():
+                doc = list.nextElement()
+                if doc.getImplementationName() != \
+                    u'com.sun.star.comp.framework.BackingComp':
+                    cnt = cnt + 1
+        if cnt > 0:
             log.debug(u'OpenOffice not terminated as docs are still open')
         else:
             try:
@@ -332,7 +342,6 @@ class ImpressDocument(PresentationDocument):
         Returns true if a presentation is loaded
         """
         log.debug(u'is loaded OpenOffice')
-        #print "is_loaded "
         if self.presentation is None or self.document is None:
             log.debug("is_loaded: no presentation or document")
             return False
@@ -350,14 +359,9 @@ class ImpressDocument(PresentationDocument):
         Returns true if a presentation is active and running
         """
         log.debug(u'is active OpenOffice')
-        #print "is_active "
         if not self.is_loaded():
-            #print "False "
             return False
-        #print "self.con ", self.control
-        if self.control is None:
-            return False
-        return True
+        return self.control is not None
 
     def unblank_screen(self):
         """
