@@ -57,7 +57,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def exec_(self):
         # load all the settings
         self.settingListWidget.clear()
-        for tabIndex in range(0, self.stackedLayout.count() + 1):
+        while self.stackedLayout.count():
             # take at 0 and the rest shuffle up.
             self.stackedLayout.takeAt(0)
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
@@ -65,8 +65,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
         count = 3
         for plugin in self.plugins:
-            if plugin.settings_tab:
-                self.insertTab(plugin.settings_tab, count, plugin.status)
+            if plugin.settingsTab:
+                self.insertTab(plugin.settingsTab, count, plugin.status)
                 count += 1
         self.settingListWidget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
@@ -80,7 +80,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         pos = self.stackedLayout.addWidget(tab)
         if is_active:
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
-            icon = build_icon(tab.icon_path)
+            icon = build_icon(tab.iconPath)
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(location, item_name)
         else:
@@ -116,8 +116,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.themesTab.postSetUp()
         self.advancedTab.postSetUp()
         for plugin in self.plugins:
-            if plugin.settings_tab:
-                plugin.settings_tab.postSetUp()
+            if plugin.settingsTab:
+                plugin.settingsTab.postSetUp()
 
     def tabChanged(self, tabIndex):
         """

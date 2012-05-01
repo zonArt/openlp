@@ -41,8 +41,8 @@ class RemotesPlugin(Plugin):
         """
         Plugin.__init__(self, u'remotes', plugin_helpers,
             settings_tab_class=RemoteTab)
-        self.icon_path = u':/plugins/plugin_remote.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_remote.png'
+        self.icon = build_icon(self.iconPath)
         self.weight = -1
         self.server = None
 
@@ -86,3 +86,11 @@ class RemotesPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
+
+    def configUpdated(self):
+        """
+        Called when Config is changed to restart the server on new address or
+        port
+        """
+        self.finalise()
+        self.initialise()

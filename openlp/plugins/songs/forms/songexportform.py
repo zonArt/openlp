@@ -33,7 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
+    create_separated_list
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
@@ -89,7 +90,7 @@ class SongExportForm(OpenLPWizard):
         """
         QtCore.QObject.connect(self.availableListWidget,
             QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
-            self.onItemPressed)
+            self.onItemActivated)
         QtCore.QObject.connect(self.searchLineEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
@@ -255,7 +256,7 @@ class SongExportForm(OpenLPWizard):
             # No need to export temporary songs.
             if song.temporary:
                 continue
-            authors = u', '.join([author.display_name
+            authors = create_separated_list([author.display_name
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)
@@ -311,14 +312,14 @@ class SongExportForm(OpenLPWizard):
             QtCore.QString(unicode(text)), QtCore.Qt.MatchContains)
         ]
 
-    def onItemPressed(self, item):
+    def onItemActivated(self, item):
         """
-        Called, when an item in the *availableListWidget* has been pressed. Thes
-        item is check if it was not checked, whereas it is unchecked when it was
-        checked.
+        Called, when an item in the *availableListWidget* has been triggered.
+        The item is check if it was not checked, whereas it is unchecked when it
+        was checked.
 
         ``item``
-            The *QListWidgetItem* which was pressed.
+            The *QListWidgetItem* which was triggered.
         """
         item.setCheckState(
             QtCore.Qt.Unchecked if item.checkState() else QtCore.Qt.Checked)

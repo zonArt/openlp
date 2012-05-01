@@ -89,11 +89,11 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.replaceAction = self.addToolbarButton(u'', u'',
-            u':/slides/slide_blank.png', self.onReplaceClick, False)
-        self.resetAction = self.addToolbarButton(u'', u'',
-            u':/system/system_close.png', self.onResetClick, False)
-        self.resetAction.setVisible(False)
+        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+            icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
+        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+            icon=u':/system/system_close.png', visible=False,
+            triggers=self.onResetClick)
 
     def onDeleteClick(self):
         """
@@ -105,26 +105,30 @@ class ImageMediaItem(MediaManagerItem):
             'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
                     delete_file(os.path.join(self.servicePath,
                         unicode(text.text())))
                 self.listView.takeItem(row)
+                self.plugin.formParent.incrementProgressBar()
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
-            self.plugin.formparent.displayProgressBar(len(images))
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(images))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         images.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for imageFile in images:
-            if not initialLoad:
-                self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if not os.path.exists(unicode(imageFile)):
@@ -139,8 +143,11 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setToolTip(imageFile)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
+            if not initialLoad:
+                self.plugin.formParent.incrementProgressBar()
         if not initialLoad:
-            self.plugin.formparent.finishedProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
@@ -189,7 +196,7 @@ class ImageMediaItem(MediaManagerItem):
         # Continue with the existing images.
         for bitem in items:
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            (path, name) = os.path.split(filename)
+            name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
 
@@ -220,7 +227,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
+                name = os.path.split(filename)[1]
                 if self.plugin.liveController.display.directImage(name,
                     filename, background):
                     self.resetAction.setVisible(True)
@@ -234,7 +241,7 @@ class ImageMediaItem(MediaManagerItem):
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
 
-    def search(self, string):
+    def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')
         results = []
         string = string.lower()

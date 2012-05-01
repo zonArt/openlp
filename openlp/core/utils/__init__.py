@@ -53,6 +53,8 @@ APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
 VERSION_SPLITTER = re.compile(r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
 class VersionThread(QtCore.QThread):
@@ -418,7 +420,7 @@ def clean_filename(filename):
     """
     if not isinstance(filename, unicode):
         filename = unicode(filename, u'utf-8')
-    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
+    return INVALID_FILE_CHARS.sub(u'_', CONTROL_CHARS.sub(u'', filename))
 
 def delete_file(file_path_name):
     """

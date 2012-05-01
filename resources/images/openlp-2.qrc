@@ -68,6 +68,7 @@
     <file>media_playback_start.png</file>
     <file>media_playback_stop.png</file>
     <file>media_playback_pause.png</file>
+    <file>media_playback_next.png</file>
   </qresource>
   <qresource prefix="icon">
     <file>openlp-logo-16x16.png</file>
@@ -148,5 +149,8 @@
     <file>theme_delete.png</file>
     <file>theme_new.png</file>
     <file>theme_edit.png</file>
+  </qresource>
+  <qresource prefix="remotes">
+    <file>android_app_qr.png</file>
   </qresource>
 </RCC>

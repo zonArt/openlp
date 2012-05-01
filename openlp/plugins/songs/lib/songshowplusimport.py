@@ -25,8 +25,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`wowimport` module provides the functionality for importing Words of
-Worship songs into the OpenLP database.
+The :mod:`songshowplusimport` module provides the functionality for importing 
+SongShow Plus songs into the OpenLP database.
 """
 import os
 import logging

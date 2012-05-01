@@ -46,9 +46,9 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.insertButton,
-            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
         QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
 
     def setText(self, text):
         """
@@ -68,20 +68,29 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
 
-    def onInsertButtonPressed(self):
+    def onInsertButtonClicked(self):
         """
         Adds a slide split at the cursor.
         """
-        if self.slideTextEdit.textCursor().columnNumber() != 0:
-            self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[===]\n')
+        self.insertSingleLineTextAtCursor(u'[===]')
         self.slideTextEdit.setFocus()
 
-    def onSplitButtonPressed(self):
+    def onSplitButtonClicked(self):
         """
-        Adds a virtual split at cursor.
+        Adds an optional split at cursor.
         """
-        if self.slideTextEdit.textCursor().columnNumber() != 0:
-            self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[---]')
+        self.insertSingleLineTextAtCursor(u'[---]')
         self.slideTextEdit.setFocus()
+
+    def insertSingleLineTextAtCursor(self, text):
+        """
+        Adds ``text`` in a single line at the cursor position.
+        """
+        full_text = self.slideTextEdit.toPlainText()
+        position = self.slideTextEdit.textCursor().position()
+        if position and full_text[position-1] != u'\n':
+             text = u'\n' + text
+        if position ==  len(full_text) or full_text[position] != u'\n':
+             text += u'\n'
+        self.slideTextEdit.insertPlainText(text)
+
