@@ -61,9 +61,9 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         QtCore.QObject.__init__(self)
-        if kwargs.has_key(u'filename'):
+        if u'filename' in kwargs:
             self.importSource = kwargs[u'filename']
-        elif kwargs.has_key(u'filenames'):
+        elif u'filenames' in kwargs:
             self.importSource = kwargs[u'filenames']
         else:
             raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
@@ -273,7 +273,7 @@ class SongImport(QtCore.QObject):
         Author not checked here, if no author then "Author unknown" is
         automatically added
         """
-        if not self.title or not len(self.verses):
+        if not self.title or not self.verses:
             return False
         else:
             return True
@@ -314,13 +314,10 @@ class SongImport(QtCore.QObject):
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-        if not len(self.verseOrderList) and \
-            self.verseOrderListGeneratedUseful:
+        if not self.verseOrderList and self.verseOrderListGeneratedUseful:
             self.verseOrderList = self.verseOrderListGenerated
-        for i, current_verse_def in enumerate(self.verseOrderList):
-            if verses_changed_to_other.has_key(current_verse_def):
-                self.verseOrderList[i] = \
-                    verses_changed_to_other[current_verse_def]
+        self.verseOrderList = map(lambda v: verses_changed_to_other.get(v, v),
+            self.verseOrderList)
         song.verse_order = u' '.join(self.verseOrderList)
         song.copyright = self.copyright
         song.comments = self.comments

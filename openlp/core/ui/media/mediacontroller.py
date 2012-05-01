@@ -84,10 +84,7 @@ class MediaController(object):
     def set_active_players(self):
         savedPlayers = get_media_players()[0]
         for player in self.mediaPlayers.keys():
-            if player in savedPlayers:
-                self.mediaPlayers[player].isActive = True
-            else:
-                self.mediaPlayers[player].isActive = False
+            self.mediaPlayers[player].isActive = player in savedPlayers
 
     def register_controllers(self, controller):
         """
@@ -106,8 +103,8 @@ class MediaController(object):
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'player.py') and \
-                not filename == 'media_player.py':
+            if filename.endswith(u'player.py') and not \
+                filename == 'media_player.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -122,38 +119,36 @@ class MediaController(object):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.register_controllers(controller)
-        if self.mediaPlayers:
-            savedPlayers, overriddenPlayer = get_media_players()
-            invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers \
-                if not mediaPlayer in self.mediaPlayers or \
-                not self.mediaPlayers[mediaPlayer].check_available()]
-            if len(invalidMediaPlayers) > 0:
-                for invalidPlayer in invalidMediaPlayers:
-                    savedPlayers.remove(invalidPlayer)
-                set_media_players(savedPlayers, overriddenPlayer)
-            self.set_active_players()
-            return True
-        else:
+        if not self.mediaPlayers:
             return False
+        savedPlayers, overriddenPlayer = get_media_players()
+        invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers
+            if not mediaPlayer in self.mediaPlayers or not
+            self.mediaPlayers[mediaPlayer].check_available()]
+        if invalidMediaPlayers:
+            for invalidPlayer in invalidMediaPlayers:
+                savedPlayers.remove(invalidPlayer)
+            set_media_players(savedPlayers, overriddenPlayer)
+        self.set_active_players()
+        return True
 
     def video_state(self):
         """
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        if len(self.curDisplayMediaPlayer.keys()) == 0:
+        if not self.curDisplayMediaPlayer.keys():
             self.timer.stop()
         else:
             for display in self.curDisplayMediaPlayer.keys():
                 self.curDisplayMediaPlayer[display].resize(display)
                 self.curDisplayMediaPlayer[display].update_ui(display)
-                if self.curDisplayMediaPlayer[display] \
-                    .state == MediaState.Playing:
+                if self.curDisplayMediaPlayer[display].state == \
+                    MediaState.Playing:
                     return
         # no players are active anymore
         for display in self.curDisplayMediaPlayer.keys():
-            if self.curDisplayMediaPlayer[display] \
-                .state != MediaState.Paused:
+            if self.curDisplayMediaPlayer[display].state != MediaState.Paused:
                 display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
@@ -333,8 +328,7 @@ class MediaController(object):
                 'Unsupported File')))
             return False
         # dont care about actual theme, set a black background
-        if controller.isLive and ( \
-            controller.media_info.is_background == False):
+        if controller.isLive and not controller.media_info.is_background:
             display.frame.evaluateJavaScript(u'show_video( \
             "setBackBoard", null, null, null,"visible");')
         # now start playing
@@ -395,7 +389,7 @@ class MediaController(object):
         """
         Responds to the request to play a loaded video
 
-         ``msg``
+        ``msg``
             First element is the controller which should be used
         """
         log.debug(u'video_play')
@@ -497,15 +491,15 @@ class MediaController(object):
             First element is the boolean for Live indication
         """
         isLive = msg[1]
-        if isLive:
-            controller = self.parent.liveController
-            for display in self.curDisplayMediaPlayer.keys():
-                if display.controller == controller:
-                    if self.curDisplayMediaPlayer[display] \
-                        .state == MediaState.Playing:
-                        self.curDisplayMediaPlayer[display].pause(display)
-                        self.curDisplayMediaPlayer[display] \
-                            .set_visible(display, False)
+        if not isLive:
+            return
+        controller = self.parent.liveController
+        for display in self.curDisplayMediaPlayer.keys():
+            if display.controller != controller or  \
+                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
+                continue
+            self.curDisplayMediaPlayer[display].pause(display)
+            self.curDisplayMediaPlayer[display].set_visible(display, False)
 
     def video_blank(self, msg):
         """
@@ -517,16 +511,16 @@ class MediaController(object):
         """
         isLive = msg[1]
         hide_mode = msg[2]
-        if isLive:
-            Receiver.send_message(u'live_display_hide', hide_mode)
-            controller = self.parent.liveController
-            for display in self.curDisplayMediaPlayer.keys():
-                if display.controller == controller:
-                    if self.curDisplayMediaPlayer[display] \
-                        .state == MediaState.Playing:
-                        self.curDisplayMediaPlayer[display].pause(display)
-                        self.curDisplayMediaPlayer[display] \
-                            .set_visible(display, False)
+        if not isLive:
+            return
+        Receiver.send_message(u'live_display_hide', hide_mode)
+        controller = self.parent.liveController
+        for display in self.curDisplayMediaPlayer.keys():
+            if display.controller != controller or \
+                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
+                continue
+            self.curDisplayMediaPlayer[display].pause(display)
+            self.curDisplayMediaPlayer[display].set_visible(display, False)
 
     def video_unblank(self, msg):
         """
@@ -538,19 +532,18 @@ class MediaController(object):
         """
         Receiver.send_message(u'live_display_show')
         isLive = msg[1]
-        if isLive:
-            controller = self.parent.liveController
-            for display in self.curDisplayMediaPlayer.keys():
-                if display.controller == controller:
-                    if self.curDisplayMediaPlayer[display] \
-                        .state == MediaState.Paused:
-                        if self.curDisplayMediaPlayer[display].play(display):
-                            self.curDisplayMediaPlayer[display] \
-                                .set_visible(display, True)
-                                    # Start Timer for ui updates
-                            if not self.timer.isActive():
-                                self.timer.start()
-
+        if not isLive:
+            return
+        controller = self.parent.liveController
+        for display in self.curDisplayMediaPlayer.keys():
+            if display.controller != controller or \
+                self.curDisplayMediaPlayer[display].state != MediaState.Paused:
+                continue
+            if self.curDisplayMediaPlayer[display].play(display):
+                self.curDisplayMediaPlayer[display].set_visible(display, True)
+                # Start Timer for ui updates
+                if not self.timer.isActive():
+                    self.timer.start()
 
     def get_audio_extensions_list(self):
         audio_list = []
@@ -565,9 +558,8 @@ class MediaController(object):
         video_list = []
         for player in self.mediaPlayers.values():
             if player.isActive:
-                for item in player.video_extensions_list:
-                    if not item in video_list:
-                        video_list.append(item)
+                video_list.extend([item for item in player.video_extensions_list
+                    if item not in video_list])
         return video_list
 
     def finalise(self):
