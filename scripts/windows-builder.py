@@ -87,7 +87,7 @@ psvince.dll
         
         http://www.vincenzo.net/isxkb/index.php?title=PSVince)
     
-    The dll is presently included in .\\resources\\windows
+    (The dll used to be included, but has been removed for licensing reasons)
 
 Mako
     Mako Templates for Python.  This package is required for building the
