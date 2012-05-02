@@ -195,8 +195,7 @@ class ServiceItem(object):
         # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
-        self.foot_text = \
-            u'<br>'.join([footer for footer in self.raw_footer if footer])
+        self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
 
     def add_from_image(self, path, title, background=None):
         """

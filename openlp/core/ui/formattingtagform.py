@@ -164,12 +164,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Reset List for loading.
         """
+        FormattingTags.load_tags()
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
         self.newPushButton.setEnabled(True)
         self.savePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
-        for linenumber, html in enumerate(FormattingTags.html_expands):
+        for linenumber, html in enumerate(FormattingTags.get_html_tags()):
             self.tagTableWidget.setRowCount(self.tagTableWidget.rowCount() + 1)
             self.tagTableWidget.setItem(linenumber, 0,
                 QtGui.QTableWidgetItem(html[u'desc']))
