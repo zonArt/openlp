@@ -42,31 +42,30 @@ class PowerSongImport(SongImport):
 
     **PowerSong Song File Format:**
 
-    The file has a number of label-field pairs of variable length.
+    The file has a number of label-field pairs.
 
-    Labels and Fields:
-        * Every label and field is preceded by an integer which specifies its
-          byte-length.
-        * If the length < 128 bytes, only one byte is used to encode
-          the length integer.
-        * But if it's greater, as many bytes are used as necessary:
-            * the first byte = (length % 128) + 128
-            * the next byte = length / 128
-            * another byte is only used if (length / 128) >= 128
-            * and so on (3 bytes needed iff length > 16383)
+    Label and Field strings:
+
+        * Every label and field is a variable length string preceded by an
+          integer specifying it's byte length.
+        * Integer is 32-bit but is encoded in 7-bit format to save space. Thus
+          if length will fit in 7 bits (ie <= 127) it takes up only one byte.
 
     Metadata fields:
-        * Every PowerSong file begins with a TITLE field.
-        * This is followed by zero or more AUTHOR fields.
-        * The next label is always COPYRIGHTLINE, but its field may be empty.
+
+        * Every PowerSong file has a TITLE field.
+        * There is zero or more AUTHOR fields.
+        * There is always a COPYRIGHTLINE label, but its field may be empty.
           This field may also contain a CCLI number: e.g. "CCLI 176263".
 
     Lyrics fields:
+
         * Each verse is contained in a PART field.
         * Lines have Windows line endings ``CRLF`` (0x0d, 0x0a).
         * There is no concept of verse types.
 
     Valid extensions for a PowerSong song file are:
+
         * .song
     """
 
@@ -75,6 +74,8 @@ class PowerSongImport(SongImport):
         Receive a list of files to import.
         """
         if not isinstance(self.importSource, list):
+            self.logError(unicode(translate('SongsPlugin.PowerSongImport',
+                'No files to import.')))
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -82,83 +83,103 @@ class PowerSongImport(SongImport):
                 return
             self.setDefaults()
             parse_error = False
-            with open(file, 'rb') as self.song_file:
-                # Get title to check file is valid PowerSong song format
-                label, field = self.readLabelField()
-                if label == u'TITLE':
-                    self.title = field.replace(u'\n', u' ')
-                else:
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.PowerSongSongImport', \
-                        'Invalid PowerSong file. Missing "TITLE" header.')))
-                    continue
-                # Get rest of fields from file
+            with open(file, 'rb') as song_data:
                 while True:
-                    label, field = self.readLabelField()
-                    if not label:
-                        break
-                    if label == u'AUTHOR':
-                        self.parseAuthor(field)
-                    elif label == u'COPYRIGHTLINE':
-                        found_copyright = True
-                        self.parseCopyrightCCLI(field)
-                    elif label == u'PART':
-                        self.addVerse(field)
-                    else:
+                    try:
+                        label = self._readString(song_data)
+                        if not label:
+                            break
+                        field = self._readString(song_data)
+                    except ValueError:
                         parse_error = True
                         self.logError(file, unicode(
-                            translate('SongsPlugin.PowerSongSongImport', \
-                            '"%s" Invalid PowerSong file. Unknown header: "%s".'
-                            % (self.title, label))))
+                            translate('SongsPlugin.PowerSongImport',
+                            'Invalid PowerSong file. Unexpected byte value.')))
                         break
-                if parse_error:
-                    continue
-                # Check that file had COPYRIGHTLINE label
-                if not found_copyright:
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.PowerSongSongImport', \
-                        '"%s" Invalid PowerSong file. Missing "COPYRIGHTLINE" \
-                         header.' % self.title)))
-                    continue
-                # Check that file had at least one verse
-                if not self.verses:
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.PowerSongSongImport', \
-                        '"%s" Verses not found. Missing "PART" header.'
-                        % self.title)))
-                    continue
+                    else:
+                        if label == u'TITLE':
+                            self.title = field.replace(u'\n', u' ')
+                        elif label == u'AUTHOR':
+                            self.parseAuthor(field)
+                        elif label == u'COPYRIGHTLINE':
+                            found_copyright = True
+                            self._parseCopyrightCCLI(field)
+                        elif label == u'PART':
+                            self.addVerse(field)
+            if parse_error:
+                continue
+            # Check that file had TITLE field
+            if not self.title:
+                self.logError(file, unicode(
+                    translate('SongsPlugin.PowerSongImport',
+                    'Invalid PowerSong file. Missing "TITLE" header.')))
+                continue
+            # Check that file had COPYRIGHTLINE label
+            if not found_copyright:
+                self.logError(file, unicode(
+                    translate('SongsPlugin.PowerSongImport',
+                    '"%s" Invalid PowerSong file. Missing "COPYRIGHTLINE" '
+                    'header.' % self.title)))
+                continue
+            # Check that file had at least one verse
+            if not self.verses:
+                self.logError(file, unicode(
+                    translate('SongsPlugin.PowerSongImport',
+                    '"%s" Verses not found. Missing "PART" header.'
+                    % self.title)))
+                continue
             if not self.finish():
                 self.logError(file)
 
-    def readLabelField(self):
+    def _readString(self, file_object):
         """
-        Read (as a 2-tuple) the next two variable-length strings
+        Reads in next variable-length string.
         """
-        label = unicode(self.song_file.read(
-            self.readLength()), u'utf-8', u'ignore')
-        if label:
-            field = unicode(self.song_file.read(
-                self.readLength()), u'utf-8', u'ignore')
-        else:
-            field = u''
-        return label, field
+        string_len = self._read7BitEncodedInteger(file_object)
+        return unicode(file_object.read(string_len), u'utf-8', u'ignore')
 
-    def readLength(self):
+    def _read7BitEncodedInteger(self, file_object):
         """
-        Read the byte-length of the next variable-length string
+        Reads in a 32-bit integer in compressed 7-bit format.
 
-        If at the end of the file, returns 0.
+        Accomplished by reading the integer 7 bits at a time. The high bit
+        of the byte when set means to continue reading more bytes.
+        If the integer will fit in 7 bits (ie <= 127), it only takes up one
+        byte. Otherwise, it may take up to 5 bytes.
+
+        Reference: .NET method System.IO.BinaryReader.Read7BitEncodedInt
         """
-        this_byte = self.song_file.read(1)
-        if not this_byte:
+        val = 0
+        shift = 0
+        i = 0
+        while True:
+            # Check for corrupted stream (since max 5 bytes per 32-bit integer)
+            if i == 5:
+                raise ValueError
+            byte = self._readByte(file_object)
+            # Strip high bit and shift left
+            val += (byte & 0x7f) << shift
+            shift += 7
+            high_bit_set = byte & 0x80
+            if not high_bit_set:
+                break
+            i += 1
+        return val
+
+    def _readByte(self, file_object):
+        """
+        Reads in next byte as an unsigned integer
+
+        Note: returns 0 at end of file.
+        """
+        byte_str = file_object.read(1)
+        # If read result is empty, then reached end of file
+        if not byte_str:
             return 0
-        this_byte_val = ord(this_byte)
-        if this_byte_val < 128:
-            return this_byte_val
         else:
-            return (self.readLength() * 128) + (this_byte_val - 128)
+            return ord(byte_str)
 
-    def parseCopyrightCCLI(self, field):
+    def _parseCopyrightCCLI(self, field):
         """
         Look for CCLI song number, and get copyright
         """
