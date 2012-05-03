@@ -40,9 +40,9 @@ class PowerSongImport(SongImport):
     The :class:`PowerSongImport` class provides the ability to import song files
     from PowerSong.
 
-    **PowerSong Song File Format:**
+    **PowerSong 1.0 Song File Format:**
 
-    The file has a number of label-field pairs.
+    The file has a number of label-field (think key-value) pairs.
 
     Label and Field strings:
 

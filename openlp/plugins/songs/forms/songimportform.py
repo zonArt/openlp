@@ -627,7 +627,7 @@ class SongImportForm(OpenLPWizard):
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.PS,
             self.powerSongFileListWidget, u'%s (*.song)'
             % translate('SongsPlugin.ImportWizardForm',
-                'PowerSong Song Files')
+                'PowerSong 1.0 Song Files')
         )
 
     def onPowerSongRemoveButtonClicked(self):
