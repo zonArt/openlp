@@ -128,7 +128,6 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-    IsDefaultDataPath = True
     
     # Base path where data/config/cache dir is located
     BaseDir = None
@@ -169,25 +168,13 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         # Check if we have a different data location.
-        path = unicode(QtCore.QSettings().value(
-            u'advanced/data path', QtCore.QVariant(u'none')).toString())
-        if path == u'none':
-            AppLocation.IsDefaultDataPath = True
+        if QtCore.QSettings().contains("advanced/data path"):
+            path = unicode(QtCore.QSettings().value(
+                u'advanced/data path', QtCore.QVariant(u'')).toString())
+        else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
-        else:
-            AppLocation.IsDefaultDataPath = False
         return path
-
-    @staticmethod
-    def set_default_data_path():
-        """
-        Reset to default and return the path OpenLP stores all its data under.
-        """
-        #  Remove override location.
-        QtCore.QSettings().remove(u'advanced/data path')
-        data_path = AppLocation.get_data_path()
-        return data_path
 
     @staticmethod
     def get_section_data_path(section):

@@ -102,8 +102,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        # Dialog was cancelled, remove any pending data move
-        QtCore.QSettings().remove(u'advanced/new data path')
+        # Dialogue was cancelled, remove any pending data path change.
+        self.advancedTab.onDataDirectoryCancelButtonClicked();
         for tabIndex in range(0, self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)

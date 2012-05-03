@@ -37,8 +37,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
-    PluginManager, Receiver, translate, ImageManager, PluginStatus, \
-    SettingsManager
+    PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib import SlideLimits
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
@@ -583,6 +582,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
+        self.newDataPath = u''
+        self.copyData = False
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem,
             QtCore.SIGNAL(u'triggered()'),
@@ -649,6 +650,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
@@ -1189,8 +1194,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Save settings
         self.saveSettings()
         # Check if we need to change the data directory
-        if QtCore.QSettings().value(u'advanced/new data path',
-                QtCore.QVariant(u'none')).toString() != u'none':
+        if self.newDataPath:
             self.changeDataDirectory()
         # Close down the display
         self.liveController.display.close()
@@ -1467,47 +1471,44 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.loadProgressBar.hide()
             Receiver.send_message(u'openlp_process_events')
 
+    def setNewDataPath(self, new_data_path):
+        self.newDataPath = new_data_path
+
+    def setCopyData(self, copy_data):
+        self.copyData = copy_data
+
     def changeDataDirectory(self):
-        old_data_path = str(AppLocation.get_data_path())
-        settings = QtCore.QSettings()
-        new_data_path = str(settings.value(u'advanced/new data path', 
-                QtCore.QVariant(u'none')).toString())
-        settings.remove(u'advanced/new data path')
+        log.info(u'Changing data path to %s' % self.newDataPath )
+        old_data_path = unicode(str(AppLocation.get_data_path()))
         # Copy OpenLP data to new location if requested.
-        if settings.value(u'advanced/copy data', 
-                QtCore.QVariant(u'none')).toBool():
+        if self.copyData:
+            log.info(u'Copying data to new path')
             try:
                 Receiver.send_message(u'openlp_process_events')
-                QtGui.QMessageBox.information(self,
-                    translate('OpenLP.MainWindow', 'Copy Data Directory'),
-                    translate('OpenLP.MainWindow',
-                    'OpenLP will now copy your data files from \n\n %s \n\n'
-                    'to \n\n %s' % (old_data_path, new_data_path)),
-                QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok))
                 Receiver.send_message(u'cursor_busy')
-                dir_util.copy_tree(old_data_path, new_data_path)
+                self.showStatusMessage(
+                    translate('OpenLP.MainWindow',
+                    'Copying OpenLP data to new data directory location - %s '
+                    '- Please wait for copy to finish'
+                    % os.path.abspath(os.path.join(self.newDataPath, u'..'))))
+                dir_util.copy_tree(old_data_path, self.newDataPath)
+                log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
                 Receiver.send_message(u'cursor_normal')
+                log.exception(u'Data copy failed %s' % unicode(str(why)))
                 QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.MainWindow', 'New data directory error'),
+                    translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
-                    'OpenLP Data directory copy failed \n\n %s' % str(why)),
+                    'OpenLP Data directory copy failed \n\n %s'
+                    % unicode(str(why))),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok))
                 return False
-        settings.remove(u'advanced/copy data')
-        Receiver.send_message(u'cursor_normal')
+        else:
+            log.info(u'No data copy requested')
         # Change the location of data directory in config file.
-        settings.setValue(u'advanced/data path', new_data_path)
-        QtGui.QMessageBox.information(self,
-            translate('OpenLP.MainWindow', 'New data directory'),
-            translate('OpenLP.MainWindow',
-            'OpenLP Data directory successfully changed to:\n\n %s \n\n'
-            'The new data directory location will be used '
-            'the next time you start OpenLP.' % new_data_path),
-            QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Ok))
+        settings = QtCore.QSettings()
+        settings.setValue(u'advanced/data path', self.newDataPath)
         # Check if the new data path is our default.
-        if new_data_path == AppLocation.get_directory(AppLocation.DataDir):
+        if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')

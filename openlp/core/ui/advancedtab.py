@@ -31,12 +31,15 @@ from datetime import datetime, timedelta
 
 from PyQt4 import QtCore, QtGui
 
+import logging
 import os
 import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
-from openlp.core.lib import SlideLimits
 from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.lib import SlideLimits
+
+log = logging.getLogger(__name__)
 
 class AdvancedTab(SettingsTab):
     """
@@ -61,6 +64,7 @@ class AdvancedTab(SettingsTab):
             '#strftime-strptime-behavior for more information.'))
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
+        self.dataExists = False
         self.iconPath = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
@@ -100,53 +104,6 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
-        self.dataDirectoryGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.dataDirectoryGroupBox.setObjectName(u'dataDirectoryGroupBox')
-        self.dataDirectoryLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
-        self.dataDirectoryLabel.setObjectName(u'dataDirectoryLabel')
-        self.newDataDirectoryEdit = QtGui.QLineEdit(self.dataDirectoryGroupBox)
-        self.newDataDirectoryEdit.setObjectName(u'newDataDirectoryEdit')
-        self.newDataDirectoryEdit.setReadOnly(True)
-        self.newDataDirectoryHasFilesLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
-        self.newDataDirectoryHasFilesLabel.setObjectName(
-            u'newDataDirectoryHasFilesLabel')
-        self.newDataDirectoryHasFilesLabel.setWordWrap(True)
-        self.dataDirectoryBrowseButton = QtGui.QPushButton(
-            self.dataDirectoryGroupBox)
-        self.dataDirectoryBrowseButton.setObjectName(
-            u'dataDirectoryBrowseButton')
-        self.dataDirectoryBrowseButton.setIcon(
-            build_icon(u':/general/general_open.png'))
-        self.dataDirectoryDefaultButton = QtGui.QPushButton(
-            self.dataDirectoryGroupBox)
-        self.dataDirectoryDefaultButton.setObjectName(
-            u'dataDirectoryBrowseButton')
-        self.dataDirectoryDefaultButton.setIcon(
-            build_icon(u':/general/general_revert.png'))
-        self.dataDirectoryCancelButton = QtGui.QPushButton(
-            self.dataDirectoryGroupBox)
-        self.dataDirectoryCancelButton.setObjectName(
-            u'dataDirectoryCancelButton')
-        self.dataDirectoryCancelButton.setIcon(
-            build_icon(u':/general/general_revert.png'))
-        self.dataDirectoryCopyCheckBox = QtGui.QCheckBox(
-            self.dataDirectoryGroupBox)
-        self.dataDirectoryCopyCheckBox.setObjectName(
-            u'dataDirectoryCopyCheckBox')
-        self.dataDirectoryCopyCheckBox.hide()
-        self.newDataDirectoryHasFilesLabel.hide()
-        self.dataDirectoryDefaultButton.hide()
-        self.dataDirectoryCancelButton.hide()
-        self.dataDirectoryLayout =QtGui.QFormLayout(self.dataDirectoryGroupBox)
-        self.dataDirectoryLayout.setObjectName(u'dataDirectoryLayout')
-        self.dataDirectoryLayout.addWidget(self.dataDirectoryLabel)
-        self.dataDirectoryLayout.addWidget(self.dataDirectoryBrowseButton)
-        self.dataDirectoryLayout.addWidget(self.newDataDirectoryEdit)
-        self.dataDirectoryLayout.addWidget(self.dataDirectoryCopyCheckBox)
-        self.dataDirectoryLayout.addWidget(self.newDataDirectoryHasFilesLabel)
-        self.dataDirectoryLayout.addWidget(self.dataDirectoryDefaultButton)
-        self.dataDirectoryLayout.addWidget(self.dataDirectoryCancelButton)
-        self.leftLayout.addWidget(self.dataDirectoryGroupBox)
         # Default service name
         self.serviceNameGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.serviceNameGroupBox.setObjectName(u'serviceNameGroupBox')
@@ -200,6 +157,70 @@ class AdvancedTab(SettingsTab):
         self.serviceNameLayout.addRow(self.serviceNameExampleLabel,
             self.serviceNameExample)
         self.leftLayout.addWidget(self.serviceNameGroupBox)
+        # Data Directory
+        self.dataDirectoryGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.dataDirectoryGroupBox.setObjectName(u'dataDirectoryGroupBox')
+        self.dataDirectoryLayout =QtGui.QFormLayout(self.dataDirectoryGroupBox)
+        self.dataDirectoryLayout.setObjectName(u'dataDirectoryLayout')
+        self.dataDirectoryCurrentLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryCurrentLabel.setObjectName(
+            u'dataDirectoryCurrentLabel')
+        self.dataDirectoryLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryLabel.setObjectName(u'dataDirectoryLabel')
+        self.dataDirectoryNewLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryNewLabel.setObjectName(u'dataDirectoryCurrentLabel')
+        self.newDataDirectoryEdit = QtGui.QLineEdit(self.dataDirectoryGroupBox)
+        self.newDataDirectoryEdit.setObjectName(u'newDataDirectoryEdit')
+        self.newDataDirectoryEdit.setReadOnly(True)
+        self.newDataDirectoryHasFilesLabel = QtGui.QLabel(
+            self.dataDirectoryGroupBox)
+        self.newDataDirectoryHasFilesLabel.setObjectName(
+            u'newDataDirectoryHasFilesLabel')
+        self.newDataDirectoryHasFilesLabel.setWordWrap(True)
+        self.newDataDirectoryLabelHBox = QtGui.QHBoxLayout()
+        self.newDataDirectoryLabelHBox.setObjectName(
+            u'newDataDirectoryLabelHBox')
+        self.dataDirectoryBrowseButton = QtGui.QPushButton(
+            self.dataDirectoryGroupBox)
+        self.dataDirectoryBrowseButton.setObjectName(
+            u'dataDirectoryBrowseButton')
+        self.dataDirectoryBrowseButton.setIcon(
+            build_icon(u':/general/general_open.png'))
+        self.dataDirectoryDefaultButton = QtGui.QPushButton(
+            self.dataDirectoryGroupBox)
+        self.dataDirectoryDefaultButton.setObjectName(
+            u'dataDirectoryDefaultButton')
+        self.dataDirectoryDefaultButton.setIcon(
+            build_icon(u':/general/general_revert.png'))
+        self.dataDirectoryCancelButton = QtGui.QPushButton(
+            self.dataDirectoryGroupBox)
+        self.dataDirectoryCancelButton.setObjectName(
+            u'dataDirectoryCancelButton')
+        self.dataDirectoryCancelButton.setIcon(
+            build_icon(u':/general/general_delete.png'))
+        self.newDataDirectoryLabelHBox.addWidget(self.newDataDirectoryEdit)
+        self.newDataDirectoryLabelHBox.addWidget(
+            self.dataDirectoryBrowseButton)
+        self.newDataDirectoryLabelHBox.addWidget(
+            self.dataDirectoryDefaultButton)
+        self.dataDirectoryCopyCheckHBox = QtGui.QHBoxLayout()
+        self.dataDirectoryCopyCheckHBox.setObjectName(
+            u'dataDirectoryCopyCheckHBox')
+        self.dataDirectoryCopyCheckBox = QtGui.QCheckBox(
+            self.dataDirectoryGroupBox)
+        self.dataDirectoryCopyCheckBox.setObjectName(
+            u'dataDirectoryCopyCheckBox')
+        self.dataDirectoryCopyCheckHBox.addWidget(
+            self.dataDirectoryCopyCheckBox)
+        self.dataDirectoryCopyCheckHBox.addWidget(
+            self.dataDirectoryCancelButton)
+        self.dataDirectoryLayout.addRow(self.dataDirectoryCurrentLabel,
+            self.dataDirectoryLabel)
+        self.dataDirectoryLayout.addRow(self.dataDirectoryNewLabel,
+            self.newDataDirectoryLabelHBox)
+        self.dataDirectoryLayout.addRow(self.dataDirectoryCopyCheckHBox)
+        self.dataDirectoryLayout.addRow(self.newDataDirectoryHasFilesLabel)
+        self.leftLayout.addWidget(self.dataDirectoryGroupBox)
         self.leftLayout.addStretch()
         # Default Image
         self.defaultImageGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -268,7 +289,6 @@ class AdvancedTab(SettingsTab):
         self.x11Layout.addWidget(self.x11BypassCheckBox)
         self.rightLayout.addWidget(self.x11GroupBox)
         self.rightLayout.addStretch()
-
         self.shouldUpdateServiceNameExample = False
         QtCore.QObject.connect(self.serviceNameCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.serviceNameCheckBoxToggled)
@@ -292,21 +312,24 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
+        QtCore.QObject.connect(self.dataDirectoryBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onDataDirectoryBrowseButtonClicked)
+        QtCore.QObject.connect(self.dataDirectoryDefaultButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onDataDirectoryDefaultButtonClicked)
+        QtCore.QObject.connect(self.dataDirectoryCancelButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onDataDirectoryCancelButtonClicked)
+        QtCore.QObject.connect(self.dataDirectoryCopyCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'),
+                self.onDataDirectoryCopyCheckBoxToggled)
         QtCore.QObject.connect(self.endSlideRadioButton,
             QtCore.SIGNAL(u'clicked()'), self.onEndSlideButtonClicked)
         QtCore.QObject.connect(self.wrapSlideRadioButton,
             QtCore.SIGNAL(u'clicked()'), self.onWrapSlideButtonClicked)
         QtCore.QObject.connect(self.nextItemRadioButton,
             QtCore.SIGNAL(u'clicked()'), self.onnextItemButtonClicked)
-        QtCore.QObject.connect(self.dataDirectoryBrowseButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onDataDirectoryBrowseButtonPressed)
-        QtCore.QObject.connect(self.dataDirectoryDefaultButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onDataDirectoryDefaultButtonPressed)
-        QtCore.QObject.connect(self.dataDirectoryCancelButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onDataDirectoryCancelButtonPressed)
 
     def retranslateUi(self):
         """
@@ -380,20 +403,19 @@ class AdvancedTab(SettingsTab):
             'Browse for an image file to display.'))
         self.defaultRevertButton.setToolTip(translate('OpenLP.AdvancedTab',
             'Revert to the default OpenLP logo.'))
-        self.dataDirectoryBrowseButton.setText(translate('OpenLP.AdvancedTab',
-            'Select new location.'))
+        self.dataDirectoryCurrentLabel.setText(translate('OpenLP.AdvancedTab',
+            'Current:'))
+        self.dataDirectoryNewLabel.setText(translate('OpenLP.AdvancedTab',
+            'New:'))
         self.dataDirectoryBrowseButton.setToolTip(
             translate('OpenLP.AdvancedTab',
             'Browse for new data file location.'))
-        self.dataDirectoryDefaultButton.setText(
-            translate('OpenLP.AdvancedTab',
-            'Set to default location.'))
         self.dataDirectoryDefaultButton.setToolTip(
             translate('OpenLP.AdvancedTab',
             'Set the data location to the default.'))
         self.dataDirectoryCancelButton.setText(
             translate('OpenLP.AdvancedTab',
-            'Cancel data directory change'))
+            'Cancel Location Change'))
         self.dataDirectoryCancelButton.setToolTip(
             translate('OpenLP.AdvancedTab',
             'Cancel OpenLP data directory location change.'))
@@ -405,8 +427,8 @@ class AdvancedTab(SettingsTab):
             'Copy the OpenLP data files to the new location.'))
         self.newDataDirectoryHasFilesLabel.setText(
             translate('OpenLP.AdvancedTab',
-            'Warning - New data directory location contains OpenLP '
-            'data files.  These files WILL be replaced during a copy.'))
+            '<strong>WARNING:</strong> New data directory location contains' 
+            'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'X11'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
@@ -484,12 +506,16 @@ class AdvancedTab(SettingsTab):
         else:
             self.nextItemRadioButton.setChecked(True)
         settings.endGroup()
+        self.dataDirectoryCopyCheckBox.hide()
+        self.newDataDirectoryHasFilesLabel.hide()
+        self.dataDirectoryCancelButton.hide()
         # Since data location can be changed, make sure the path is present.
-        data_path = AppLocation.get_data_path()
-        if not os.path.exists(data_path):
+        self.currentDataPath = AppLocation.get_data_path()
+        if not os.path.exists(self.currentDataPath):
+            log.exception(u'Data path not found %s' % self.currentDataPath)
             answer = QtGui.QMessageBox.critical(self,
                 translate('OpenLP.AdvancedTab',
-                'Data directory error - Reset to default?'),
+                'Data Directory Error'),
                 translate('OpenLP.AdvancedTab',
                 'OpenLP data directory was not found \n\n %s \n\n'
                 'This data directory was previously changed from the OpenLP '
@@ -497,22 +523,23 @@ class AdvancedTab(SettingsTab):
                 'media, that media needs to be made available.\n\n'
                 'Click "No" to stop loading OpenLP. allowing you to fix '
                 'the the problem.\n\n'
-                'Click "Yes" to reset the data directory location to the '
-                'default' % data_path),
+                'Click "Yes" to reset the data directory to the default '
+                'location.' % self.currentDataPath),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
+                log.exception(u'User requested termination')
                 Receiver.send_message(u'cleanup')
                 sys.exit()
-            data_path = AppLocation.set_default_data_path()
-            print AppLocation.IsDefaultDataPath
-        if AppLocation.IsDefaultDataPath:
-            self.dataDirectoryDefaultButton.hide()
-        else:
-             self.dataDirectoryDefaultButton.show()
-        self.dataDirectoryLabel.setText(data_path)
+            # Set data location to default.
+            settings.remove(u'advanced/data path')
+            self.currentDataPath = AppLocation.get_data_path()
+            log.exception(u'User requested data path set to default %s'
+                % self.currentDataPath)
+        self.dataDirectoryLabel.setText(os.path.abspath(
+            os.path.join(self.currentDataPath, u'..')))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
 
@@ -556,10 +583,6 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'default color', self.defaultColor)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
-        if not AppLocation.IsDefaultDataPath:
-            settings.setValue(u'data path', self.dataDirectoryLabel.text())
-        settings.setValue(u'copy data',
-            QtCore.QVariant(self.dataDirectoryCopyCheckBox.isChecked()))
         settings.endGroup()
         if self.displayChanged:
             Receiver.send_message(u'config_screen_changed')
@@ -627,123 +650,123 @@ class AdvancedTab(SettingsTab):
             self.defaultFileEdit.setText(filename)
         self.defaultFileEdit.setFocus()
 
-    def onDataDirectoryBrowseButtonPressed(self):
+    def onDataDirectoryBrowseButtonClicked(self):
         """
         Browse for a new data directory location.
         """
-        old_data_path = str(self.dataDirectoryLabel.text())
-        old_root_path = os.path.abspath(os.path.join(
-            old_data_path, u'..', u'..'))
+        old_root_path = unicode(str(self.dataDirectoryLabel.text()))
         # Get the new directory location.
         new_path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.AdvancedTab',
-            'Select Data Folder Root Directory'), old_root_path,
+            'Select Data Directory Location'), old_root_path,
             options=QtGui.QFileDialog.ShowDirsOnly))
-        # Set the new data path
-        settings = QtCore.QSettings()
-        new_data_path = os.path.join(new_path, 'OpenLP', 'Data')
+        # Set the new data path.
+        new_data_path = os.path.join(new_path, 'openlp_data')
         if new_path:
-            if old_data_path.lower() == new_data_path.lower():
-                self.onDataDirectoryCancelButtonPressed()
+            if self.currentDataPath.lower() == new_data_path.lower():
+                self.onDataDirectoryCancelButtonClicked()
                 return
         else:
             return
         # Make sure they want to change the data.
         answer = QtGui.QMessageBox.question(self,
-            translate('OpenLP.AdvancedTab', 'Change data directory?'),
+            translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
             translate('OpenLP.AdvancedTab',
-            'Are you sure you want to change the location of the OpenLP data\n'
-            'directory to:\n\n %s \n\n'
-            'This is the root folder for the data.  The data will be stored '
-            'in:\n\n %s \n\n '
-            'The data directory will be changed when OpenLP is closed.'
-            % (new_path,  new_data_path)),
+                'Are you sure you want to change the location of the OpenLP '
+                'data directory to:\n\n %s \n\n'
+                'The data directory will be changed when OpenLP is closed.'
+                % new_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
             QtGui.QMessageBox.No)
         if answer != QtGui.QMessageBox.Yes:
             return
-        # Check  if data already exists here
+        # Check if data already exists here.
         self.checkDataOverwrite(new_data_path)
         # Save the new location.
-        settings.setValue(u'%s/new data path' % self.settingsSection,
-            new_data_path)
-        self.newDataDirectoryEdit.setText(new_data_path)
+        Receiver.send_message(u'set_new_data_path', new_data_path)
+        self.newDataDirectoryEdit.setText(new_path)
         self.dataDirectoryCancelButton.show()
 
-    def onDataDirectoryDefaultButtonPressed(self):
+    def onDataDirectoryDefaultButtonClicked(self):
         """
         Re-set the data directory location to the 'default' location.
         """
-        # Make sure they want to change the data location back to the default.
-        answer = QtGui.QMessageBox.question(self,
-            translate('OpenLP.AdvancedTab', 'Reset data directory to default?'),
-            translate('OpenLP.AdvancedTab',
-            'Are you sure you want to change the location of the OpenLP data\n'
-            'directory to the default locatiom?  \n\n'
-            'This location will be used after OpenLP is closed.'), 
-            QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Yes |
-            QtGui.QMessageBox.No),
-            QtGui.QMessageBox.No)
-        if answer != QtGui.QMessageBox.Yes:
-            return
-        old_data_path = str(self.dataDirectoryLabel.text())
         new_data_path = AppLocation.get_directory(AppLocation.DataDir)
-        if old_data_path.lower() == new_data_path.lower():
-            self.onDataDirectoryCancelButtonPressed()
-            return
-        self.checkDataOverwrite(new_data_path)
-        # Save the new location.
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/new data path' % self.settingsSection,
-            new_data_path)
-        self.newDataDirectoryEdit.setText(new_data_path)
-        self.dataDirectoryCancelButton.show()
+        if self.currentDataPath.lower() != new_data_path.lower():
+            # Make sure they want to change the data location back to the default.
+            answer = QtGui.QMessageBox.question(self,
+                translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
+                translate('OpenLP.AdvancedTab',
+                'Are you sure you want to change the location of the OpenLP '
+                'data directory to the default location?  \n\n'
+                'This location will be used after OpenLP is closed.'),
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.No)
+            if answer != QtGui.QMessageBox.Yes:
+                return
+            self.checkDataOverwrite(new_data_path)
+            # Save the new location.
+            Receiver.send_message(u'set_new_data_path', new_data_path)
+            self.newDataDirectoryEdit.setText(os.path.abspath(
+                os.path.join(new_data_path, u'..')))
+            self.dataDirectoryCancelButton.show()
+        else:
+            # We cancel the change in case user changed their mind.
+            self.onDataDirectoryCancelButtonClicked()
+
+    def onDataDirectoryCopyCheckBoxToggled(self):
+        Receiver.send_message(u'set_copy_data',
+            self.dataDirectoryCopyCheckBox.isChecked())
+        if self.dataExists:
+            if self.dataDirectoryCopyCheckBox.isChecked():
+                self.newDataDirectoryHasFilesLabel.show()
+            else:
+                self.newDataDirectoryHasFilesLabel.hide()
 
     def checkDataOverwrite(self, data_path ):
         test_path = os.path.join(data_path, u'songs')
         self.dataDirectoryCopyCheckBox.show()
         if os.path.exists(test_path):
-            # Check is they want to replace existing data
+            self.dataExists = True
+            # Check is they want to replace existing data.
             answer = QtGui.QMessageBox.warning(self,
-                translate('OpenLP.AdvancedTab', 'Replace existing data?'),
+                translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
                 translate('OpenLP.AdvancedTab',
-                'WARNING \n\n'
+                'WARNING: \n\n'
                 'The location you have selected \n\n %s \n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
-                'these files with the current data files?' % data_path), 
+                'these files with the current data files?'
+                % os.path.abspath(os.path.join(data_path, u'..'))), 
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
                 self.dataDirectoryCopyCheckBox.setChecked(True)
+                self.newDataDirectoryHasFilesLabel.show()
             else:
                 self.dataDirectoryCopyCheckBox.setChecked(False)
-            self.newDataDirectoryHasFilesLabel.show()
+                self.newDataDirectoryHasFilesLabel.hide()
         else:
+            self.dataExists = False
             self.dataDirectoryCopyCheckBox.setChecked(True)
             self.newDataDirectoryHasFilesLabel.hide()
-
-    def onDataDirectoryCancelButtonPressed(self):
+        
+    def onDataDirectoryCancelButtonClicked(self):
         """
         Cancel the data directory location change
         """
-        self.newDataDirectoryEdit.setText(u'')
+        self.newDataDirectoryEdit.clear()
         self.dataDirectoryCopyCheckBox.setChecked(False)
-        settings = QtCore.QSettings()
-        settings.remove(u'%s/new data path' % self.settingsSection)
-        settings.remove(u'%s/copy data' % self.settingsSection)
+        Receiver.send_message(u'set_new_data_path', u'')
+        Receiver.send_message(u'set_copy_data', False)
         self.dataDirectoryCopyCheckBox.hide()
         self.dataDirectoryCancelButton.hide()
         self.newDataDirectoryHasFilesLabel.hide()
-        print AppLocation.IsDefaultDataPath
-        if AppLocation.IsDefaultDataPath:
-            self.dataDirectoryDefaultButton.hide()
-        else:
-             self.dataDirectoryDefaultButton.show()
 
     def onDefaultRevertButtonClicked(self):
         self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
