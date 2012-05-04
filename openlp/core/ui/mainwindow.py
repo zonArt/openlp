@@ -740,7 +740,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if len(self.arguments):
+        if self.arguments:
             args = []
             for a in self.arguments:
                 args.extend([a])

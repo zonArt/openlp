@@ -611,7 +611,7 @@ class OpenLyrics(object):
             text += u'{%s}' % element.get(u'name')
             # Some formattings may have only start tag.
             # Handle this case if element has no children and contains no text.
-            if len(element) == 0 and not element.text:
+            if not element and not element.text:
                 use_endtag = False
         # Append text from element.
         if element.text:

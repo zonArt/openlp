@@ -336,7 +336,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Tag the Song List rows based on the verse list
         """
         row_label = []
-        for row in range(0, self.verseListWidget.rowCount()):
+        for row in range(self.verseListWidget.rowCount()):
             item = self.verseListWidget.item(row, 0)
             verse_def = unicode(item.data(QtCore.Qt.UserRole).toString())
             verse_tag = VerseType.translated_tag(verse_def[0])
@@ -494,7 +494,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
                     tempList = {}
                     tempId = {}
-                    for row in range(0, self.verseListWidget.rowCount()):
+                    for row in range(self.verseListWidget.rowCount()):
                         tempList[row] = self.verseListWidget.item(row, 0)\
                             .text()
                         tempId[row] = self.verseListWidget.item(row, 0)\
@@ -511,7 +511,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditAllButtonClicked(self):
         verse_list = u''
         if self.verseListWidget.rowCount() > 0:
-            for row in range(0, self.verseListWidget.rowCount()):
+            for row in range(self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(row, 0)
                 field = unicode(item.data(QtCore.Qt.UserRole).toString())
                 verse_tag = VerseType.translated_name(field[0])
@@ -579,7 +579,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verses = []
         verse_names = []
         order = self.__extractVerseOrder(text)
-        for index in range(0, self.verseListWidget.rowCount()):
+        for index in range(self.verseListWidget.rowCount()):
             verse = self.verseListWidget.item(index, 0)
             verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
             if verse not in verse_names:
@@ -620,7 +620,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verse_names = []
         order_names = unicode(verse_order).split()
         order = self.__extractVerseOrder(verse_order)
-        for index in range(0, verse_count):
+        for index in range(verse_count):
             verse = self.verseListWidget.item(index, 0)
             verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
             if verse not in verse_names:
@@ -920,7 +920,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         try:
             sxml = SongXML()
             multiple = []
-            for i in range(0, self.verseListWidget.rowCount()):
+            for i in range(self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 verse_tag = verseId[0]

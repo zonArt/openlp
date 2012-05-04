@@ -62,7 +62,7 @@ class BiblePlugin(Plugin):
         #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        if len(self.manager.old_bible_databases):
+        if self.manager.old_bible_databases:
             self.toolsUpgradeItem.setVisible(True)
 
     def finalise(self):
@@ -83,7 +83,7 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application startup
         """
-        if len(self.manager.old_bible_databases):
+        if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.formParent,
                 translate('OpenLP', 'Information'), translate('OpenLP',
                 'Bible format has changed.\nYou have to upgrade your '

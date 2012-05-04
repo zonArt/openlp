@@ -295,9 +295,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Book')
         self.listView.clear()
         for book in searchresults:
-            songs = sorted(book.songs, key=lambda song: int(
-                re.sub(r'[^0-9]', u' ', song.song_number).partition(' ')[0])
-                if len(re.sub(r'[^\w]', ' ', song.song_number)) else 0)
+            songs = sorted(book.songs, key=lambda song:
+                int(re.match(r'[0-9]+', u'0' + song.song_number).group()))
             for song in songs:
                 # Do not display temporary songs
                 if song.temporary:
@@ -331,7 +330,7 @@ class SongMediaItem(MediaManagerItem):
                 search_length = 3
             if len(text) > search_length:
                 self.onSearchTextButtonClicked()
-            elif len(text) == 0:
+            elif not text:
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
@@ -491,7 +490,7 @@ class SongMediaItem(MediaManagerItem):
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
-                    if len(order) == 0:
+                    if not order:
                         break
                     for verse in verseList:
                         if verse[0][u'type'][0].lower() == order[0] and \
@@ -530,7 +529,7 @@ class SongMediaItem(MediaManagerItem):
             u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         # Add the audio file to the service item.
-        if len(song.media_files) > 0:
+        if song.media_files:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
             service_item.background_audio = \
                 [m.file_name for m in song.media_files]
@@ -575,12 +574,12 @@ class SongMediaItem(MediaManagerItem):
                     editId = song.id
                     break
                 # If there's any backing tracks, copy them over.
-                if len(item.background_audio) > 0:
+                if item.background_audio:
                     self._updateBackgroundAudio(song, item)
         if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             self.onSearchTextButtonClicked()
@@ -588,7 +587,7 @@ class SongMediaItem(MediaManagerItem):
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             temporary = True
