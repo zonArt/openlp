@@ -317,9 +317,7 @@ class OpenLyrics(object):
         tags_element = None
         match = re.search(u'\{/?\w+\}', song.lyrics, re.UNICODE)
         if match:
-            # Reset available tags.
-            FormattingTags.reset_html_tags()
-            # Named 'formatting' - 'format' is built-in fuction in Python.
+            # Named 'format_' - 'format' is built-in fuction in Python.
             format_ = etree.SubElement(song_xml, u'format')
             tags_element = etree.SubElement(format_, u'tags')
             tags_element.set(u'application', u'OpenLP')
@@ -572,7 +570,8 @@ class OpenLyrics(object):
             for tag in FormattingTags.get_html_tags()]
         new_tags = [tag for tag in found_tags
             if tag[u'start tag'] not in existing_tag_ids]
-        FormattingTags.add_html_tags(new_tags, True)
+        FormattingTags.add_html_tags(new_tags)
+        FormattingTags.save_html_tags()
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """
