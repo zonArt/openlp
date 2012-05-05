@@ -255,6 +255,10 @@ class Renderer(object):
                             except:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
+                            text_to_render, raw_tags, html_tags = \
+                                self._get_start_tags(text_to_render)
+                            if text:
+                                text = raw_tags + text
                         else:
                             text_to_render = text
                             text = u''
