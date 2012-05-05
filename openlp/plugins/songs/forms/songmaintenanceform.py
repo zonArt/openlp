@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -60,23 +60,23 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.booksEditButton.setEnabled(False)
         # Signals
         QtCore.QObject.connect(self.authorsAddButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAuthorAddButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorAddButtonClicked)
         QtCore.QObject.connect(self.topicsAddButton,
-            QtCore.SIGNAL(u'pressed()'), self.onTopicAddButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
         QtCore.QObject.connect(self.booksAddButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBookAddButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onBookAddButtonClicked)
         QtCore.QObject.connect(self.authorsEditButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAuthorEditButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorEditButtonClicked)
         QtCore.QObject.connect(self.topicsEditButton,
-            QtCore.SIGNAL(u'pressed()'), self.onTopicEditButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onTopicEditButtonClicked)
         QtCore.QObject.connect(self.booksEditButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBookEditButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onBookEditButtonClicked)
         QtCore.QObject.connect(self.authorsDeleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAuthorDeleteButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onAuthorDeleteButtonClicked)
         QtCore.QObject.connect(self.topicsDeleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onTopicDeleteButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onTopicDeleteButtonClicked)
         QtCore.QObject.connect(self.booksDeleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBookDeleteButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onBookDeleteButtonClicked)
         QtCore.QObject.connect(self.authorsListWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.onAuthorsListRowChanged)
@@ -108,7 +108,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
-            if item and len(item.songs) == 0:
+            if item and not item.songs:
                 if critical_error_message_box(dlg_title, del_text, self,
                     True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
@@ -191,7 +191,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         ``edit``
             If we edit an item, this should be *True*.
         """
-        if len(objects) > 0:
+        if objects:
             # If we edit an existing object, we need to make sure that we do
             # not return False when nothing has changed.
             if edit:
@@ -204,7 +204,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             return True
 
-    def onAuthorAddButtonClick(self):
+    def onAuthorAddButtonClicked(self):
         self.authorform.setAutoDisplayName(True)
         if self.authorform.exec_():
             author = Author.populate(
@@ -223,7 +223,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This author already exists.'))
 
-    def onTopicAddButtonClick(self):
+    def onTopicAddButtonClicked(self):
         if self.topicform.exec_():
             topic = Topic.populate(name=unicode(self.topicform.nameEdit.text()))
             if self.checkTopic(topic):
@@ -238,7 +238,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This topic already exists.'))
 
-    def onBookAddButtonClick(self):
+    def onBookAddButtonClicked(self):
         if self.bookform.exec_():
             book = Book.populate(name=unicode(self.bookform.nameEdit.text()),
                 publisher=unicode(self.bookform.publisherEdit.text()))
@@ -254,7 +254,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This book already exists.'))
 
-    def onAuthorEditButtonClick(self):
+    def onAuthorEditButtonClicked(self):
         author_id = self._getCurrentItemId(self.authorsListWidget)
         if author_id == -1:
             return
@@ -299,7 +299,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'Could not save your modified author, because the '
                     'author already exists.'))
 
-    def onTopicEditButtonClick(self):
+    def onTopicEditButtonClicked(self):
         topic_id = self._getCurrentItemId(self.topicsListWidget)
         if topic_id == -1:
             return
@@ -331,7 +331,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'Could not save your modified topic, because it '
                     'already exists.'))
 
-    def onBookEditButtonClick(self):
+    def onBookEditButtonClicked(self):
         book_id = self._getCurrentItemId(self.booksListWidget)
         if book_id == -1:
             return
@@ -443,7 +443,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.manager.save_object(song)
         self.manager.delete_object(Book, old_book.id)
 
-    def onAuthorDeleteButtonClick(self):
+    def onAuthorDeleteButtonClicked(self):
         """
         Delete the author if the author is not attached to any songs.
         """
@@ -454,7 +454,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             translate('SongsPlugin.SongMaintenanceForm', 'This author cannot '
             'be deleted, they are currently assigned to at least one song.'))
 
-    def onTopicDeleteButtonClick(self):
+    def onTopicDeleteButtonClicked(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
@@ -465,7 +465,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             translate('SongsPlugin.SongMaintenanceForm', 'This topic cannot '
             'be deleted, it is currently assigned to at least one song.'))
 
-    def onBookDeleteButtonClick(self):
+    def onBookDeleteButtonClicked(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """

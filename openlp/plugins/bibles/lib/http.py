@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,9 +29,7 @@ The :mod:`http` module enables OpenLP to retrieve scripture from bible
 websites.
 """
 import logging
-import os
 import re
-import sqlite3
 import socket
 import urllib
 from HTMLParser import HTMLParseError
@@ -40,7 +38,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation, get_web_page
+from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
     Book
@@ -51,28 +49,28 @@ class BGExtract(object):
     """
     Extract verses from BibleGateway
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'BGExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'BGExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode Bibles via the BibleGateway website.
 
         ``version``
             The version of the Bible like 31 for New International version.
 
-        ``bookname``
+        ``book_name``
             Name of the Book.
 
         ``chapter``
             Chapter number.
         """
-        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, 
-            bookname, chapter)
-        urlbookname = urllib.quote(bookname.encode("utf-8"))
-        url_params = u'search=%s+%s&version=%s' % (urlbookname, chapter, 
+        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version,
+            book_name, chapter)
+        url_book_name = urllib.quote(book_name.encode("utf-8"))
+        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter,
             version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
@@ -84,19 +82,31 @@ class BGExtract(object):
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
         if footnotes:
-            [footnote.extract() for footnote in footnotes]
+            for footnote in footnotes:
+                footnote.extract()
         crossrefs = soup.findAll(u'sup', u'xref')
         if crossrefs:
-            [crossref.extract() for crossref in crossrefs]
+            for crossref in crossrefs:
+                crossref.extract()
         headings = soup.findAll(u'h5')
         if headings:
-            [heading.extract() for heading in headings]
+            for heading in headings:
+                heading.extract()
+        chapter_notes = soup.findAll('div', 'footnotes')
+        if chapter_notes:
+            log.debug('Found chapter notes')
+            for note in chapter_notes:
+                note.extract()
+        note_comments = soup.findAll(text=u'end of footnotes')
+        if note_comments:
+            for comment in note_comments:
+                comment.extract()
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         verse_list = {}
         # Cater for inconsistent mark up in the first verse of a chapter.
         first_verse = verses.find(u'versenum')
-        if first_verse and len(first_verse.contents):
+        if first_verse and first_verse.contents:
             verse_list[1] = unicode(first_verse.contents[0])
         for verse in verses(u'sup', u'versenum'):
             raw_verse_num = verse.next
@@ -110,7 +120,7 @@ class BGExtract(object):
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
                 log.warn(u'Illegal verse number in %s %s %s:%s',
-                    version, bookname, chapter, unicode(raw_verse_num))
+                    version, book_name, chapter, unicode(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next
                 part = raw_verse_num.next.next
@@ -128,7 +138,7 @@ class BGExtract(object):
             log.debug(u'No content found in the BibleGateway response.')
             send_error_message(u'parse')
             return None
-        return SearchResults(bookname, chapter, verse_list)
+        return SearchResults(book_name, chapter, verse_list)
 
     def get_books_from_http(self, version):
         """
@@ -147,7 +157,10 @@ class BGExtract(object):
             send_error_message(u'download')
             return None
         page_source = page.read()
-        page_source = unicode(page_source, 'utf8')
+        try:
+            page_source = unicode(page_source, u'utf8')
+        except UnicodeDecodeError:
+            page_source = unicode(page_source, u'cp1251')
         page_source_temp = re.search(u'<table .*?class="infotable".*?>.*?'\
             u'</table>', page_source, re.DOTALL)
         if page_source_temp:
@@ -182,30 +195,30 @@ class BSExtract(object):
     """
     Extract verses from Bibleserver.com
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'BSExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'BSExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode bibles via Bibleserver mobile website
 
         ``version``
             The version of the bible like NIV for New International Version
 
-        ``bookname``
+        ``book_name``
             Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
 
         ``chapter``
             Chapter number
         """
-        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version, 
-            bookname, chapter)
-        urlversion = urllib.quote(version.encode("utf-8"))
-        urlbookname = urllib.quote(bookname.encode("utf-8"))
+        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version,
+            book_name, chapter)
+        url_version = urllib.quote(version.encode("utf-8"))
+        url_book_name = urllib.quote(book_name.encode("utf-8"))
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % \
-            (urlversion, urlbookname, chapter)
+            (url_version, url_book_name, chapter)
         header = (u'Accept-Language', u'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -217,17 +230,17 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.find(u'div').findAll(u'div')
-        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')
             versenumber = int(verse_number.sub(r'\3', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
-        return SearchResults(bookname, chapter, verses)
+        return SearchResults(book_name, chapter, verses)
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a Bible contains from Bibleserver mobile 
+        Load a list of all books a Bible contains from Bibleserver mobile
         website.
 
         ``version``
@@ -255,72 +268,72 @@ class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """
-    def __init__(self, proxyurl=None):
-        log.debug(u'CWExtract.init("%s")', proxyurl)
-        self.proxyurl = proxyurl
+    def __init__(self, proxy_url=None):
+        log.debug(u'CWExtract.init("%s")', proxy_url)
+        self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
 
-    def get_bible_chapter(self, version, bookname, chapter):
+    def get_bible_chapter(self, version, book_name, chapter):
         """
         Access and decode bibles via the Crosswalk website
 
         ``version``
             The version of the Bible like niv for New International Version
 
-        ``bookname``
+        ``book_name``
             Text name of in english e.g. 'gen' for Genesis
 
         ``chapter``
             Chapter number
         """
-        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version, 
-            bookname, chapter)
-        urlbookname = bookname.replace(u' ', u'-')
-        urlbookname = urlbookname.lower()
-        urlbookname = urllib.quote(urlbookname.encode("utf-8"))
+        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version,
+            book_name, chapter)
+        url_book_name = book_name.replace(u' ', u'-')
+        url_book_name = url_book_name.lower()
+        url_book_name = urllib.quote(url_book_name.encode("utf-8"))
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, urlbookname, chapter)
+            (version, url_book_name, chapter)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
-        htmlverses = soup.findAll(u'span', u'versetext')
-        if not htmlverses:
+        html_verses = soup.findAll(u'span', u'versetext')
+        if not html_verses:
             log.error(u'No verses found in the CrossWalk response.')
             send_error_message(u'parse')
             return None
         verses = {}
         reduce_spaces = re.compile(r'[ ]{2,}')
         fix_punctuation = re.compile(r'[ ]+([.,;])')
-        for verse in htmlverses:
+        for verse in html_verses:
             Receiver.send_message(u'openlp_process_events')
-            versenumber = int(verse.contents[0].contents[0])
-            versetext = u''
+            verse_number = int(verse.contents[0].contents[0])
+            verse_text = u''
             for part in verse.contents:
                 Receiver.send_message(u'openlp_process_events')
                 if isinstance(part, NavigableString):
-                    versetext = versetext + part
+                    verse_text = verse_text + part
                 elif part and part.attrMap and \
                     (part.attrMap[u'class'] == u'WordsOfChrist' or \
                     part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
                         Receiver.send_message(u'openlp_process_events')
                         if isinstance(subpart, NavigableString):
-                            versetext = versetext + subpart
+                            verse_text = verse_text + subpart
                         elif subpart and subpart.attrMap and \
                             subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
                                 Receiver.send_message(u'openlp_process_events')
                                 if isinstance(subsub, NavigableString):
-                                    versetext = versetext + subsub
+                                    verse_text = verse_text + subsub
             Receiver.send_message(u'openlp_process_events')
             # Fix up leading and trailing spaces, multiple spaces, and spaces
             # between text and , and .
-            versetext = versetext.strip(u'\n\r\t ')
-            versetext = reduce_spaces.sub(u' ', versetext)
-            versetext = fix_punctuation.sub(r'\1', versetext)
-            verses[versenumber] = versetext
-        return SearchResults(bookname, chapter, verses)
+            verse_text = verse_text.strip(u'\n\r\t ')
+            verse_text = reduce_spaces.sub(u' ', verse_text)
+            verse_text = fix_punctuation.sub(r'\1', verse_text)
+            verses[verse_number] = verse_text
+        return SearchResults(book_name, chapter, verses)
 
     def get_books_from_http(self, version):
         """
@@ -350,7 +363,7 @@ class CWExtract(object):
 
 
 class HTTPBible(BibleDB):
-    log.info(u'%s HTTPBible loaded' , __name__)
+    log.info(u'%s HTTPBible loaded', __name__)
 
     def __init__(self, parent, **kwargs):
         """
@@ -386,18 +399,18 @@ class HTTPBible(BibleDB):
         """
         self.wizard.progressBar.setMaximum(68)
         self.wizard.incrementProgressBar(unicode(translate(
-            'BiblesPlugin.HTTPBible', 
+            'BiblesPlugin.HTTPBible',
             'Registering Bible and loading books...')))
-        self.create_meta(u'download source', self.download_source)
-        self.create_meta(u'download name', self.download_name)
+        self.save_meta(u'download_source', self.download_source)
+        self.save_meta(u'download_name', self.download_name)
         if self.proxy_server:
-            self.create_meta(u'proxy server', self.proxy_server)
+            self.save_meta(u'proxy_server', self.proxy_server)
         if self.proxy_username:
             # Store the proxy userid.
-            self.create_meta(u'proxy username', self.proxy_username)
+            self.save_meta(u'proxy_username', self.proxy_username)
         if self.proxy_password:
             # Store the proxy password.
-            self.create_meta(u'proxy password', self.proxy_password)
+            self.save_meta(u'proxy_password', self.proxy_password)
         if self.download_source.lower() == u'crosswalk':
             handler = CWExtract(self.proxy_server)
         elif self.download_source.lower() == u'biblegateway':
@@ -412,11 +425,11 @@ class HTTPBible(BibleDB):
         self.wizard.progressBar.setMaximum(len(books)+2)
         self.wizard.incrementProgressBar(unicode(translate(
             'BiblesPlugin.HTTPBible', 'Registering Language...')))
-        bible = BiblesResourcesDB.get_webbible(self.download_name, 
+        bible = BiblesResourcesDB.get_webbible(self.download_name,
                 self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
-            self.create_meta(u'language_id', language_id)
+            self.save_meta(u'language_id', language_id)
         else:
             language_id = self.get_language(bible_name)
         if not language_id:
@@ -429,14 +442,14 @@ class HTTPBible(BibleDB):
             self.wizard.incrementProgressBar(unicode(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...',
                 'Importing <book name>...')) % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, len(books), 
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books),
                 language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source,  self.download_name))
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
+            log.debug(u'Book details: Name:%s; id:%s; testament_id:%s',
                 book, book_ref_id, book_details[u'testament_id'])
             self.create_book(book, book_ref_id, book_details[u'testament_id'])
         if self.stop_import_flag:
@@ -486,10 +499,10 @@ class HTTPBible(BibleDB):
                     ## if it was there. By reusing the returned book name
                     ## we get a correct book. For example it is possible
                     ## to request ac and get Acts back.
-                    bookname = search_results.book
+                    book_name = search_results.book
                     Receiver.send_message(u'openlp_process_events')
                     # Check to see if book/chapter exists.
-                    db_book = self.get_book(bookname)
+                    db_book = self.get_book(book_name)
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')
@@ -521,7 +534,7 @@ class HTTPBible(BibleDB):
     def get_chapter_count(self, book):
         """
         Return the number of chapters in a particular book.
-        
+
         ``book``
         The book object to get the chapter count for.
         """
@@ -594,14 +607,14 @@ def send_error_message(error_type):
     """
     if error_type == u'download':
         critical_error_message_box(
-            translate('BiblePlugin.HTTPBible', 'Download Error'),
-            translate('BiblePlugin.HTTPBible', 'There was a '
+            translate('BiblesPlugin.HTTPBible', 'Download Error'),
+            translate('BiblesPlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
             'please consider reporting a bug.'))
     elif error_type == u'parse':
         critical_error_message_box(
-            translate('BiblePlugin.HTTPBible', 'Parse Error'),
-            translate('BiblePlugin.HTTPBible', 'There was a '
+            translate('BiblesPlugin.HTTPBible', 'Parse Error'),
+            translate('BiblesPlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '
             'to occur please consider reporting a bug.'))

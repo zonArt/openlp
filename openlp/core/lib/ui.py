@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -83,7 +83,6 @@ class UiStrings(object):
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-        self.LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
         self.Live = translate('OpenLP.Ui', 'Live')
         self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
         self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
@@ -94,6 +93,7 @@ class UiStrings(object):
         self.New = translate('OpenLP.Ui', 'New')
         self.NewService = translate('OpenLP.Ui', 'New Service')
         self.NewTheme = translate('OpenLP.Ui', 'New Theme')
+        self.NextTrack = translate('OpenLP.Ui', 'Next Track')
         self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
@@ -103,6 +103,8 @@ class UiStrings(object):
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
+        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
+        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
         self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
@@ -113,6 +115,8 @@ class UiStrings(object):
             'The abbreviated unit for seconds')
         self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
         self.Search = translate('OpenLP.Ui', 'Search')
+        self.SearchThemes = translate(
+            'OpenLP.Ui', 'Search Themes...', 'Search bar place holder text ')
         self.SelectDelete = translate('OpenLP.Ui', 'You must select an item '
             'to delete.')
         self.SelectEdit = translate('OpenLP.Ui', 'You must select an item to '
@@ -120,10 +124,14 @@ class UiStrings(object):
         self.Settings = translate('OpenLP.Ui', 'Settings')
         self.SaveService = translate('OpenLP.Ui', 'Save Service')
         self.Service = translate('OpenLP.Ui', 'Service')
-        self.Split = translate('OpenLP.Ui', '&Split')
+        self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
         self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
+            'Stop Play Slides in Loop')
+        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
+            'Stop Play Slides to End')
         self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
         self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
         self.Tools = translate('OpenLP.Ui', 'Tools')
@@ -134,6 +142,7 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
+
 
 def add_welcome_page(parent, image):
     """
@@ -162,32 +171,53 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def create_accept_reject_button_box(parent, okay=False):
-    """
-    Creates a standard dialog button box with two buttons. The buttons default
-    to save and cancel but the ``okay`` parameter can be used to make the
-    buttons okay and cancel instead.
-    The button box is connected to the parent's ``accept()`` and ``reject()``
-    methods to handle the default ``accepted()`` and ``rejected()`` signals.
 
-    ``parent``
-        The parent object. This should be a ``QWidget`` descendant.
-
-    ``okay``
-        If true creates an okay/cancel combination instead of save/cancel.
+def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
     """
-    button_box = QtGui.QDialogButtonBox(parent)
-    accept_button = QtGui.QDialogButtonBox.Save
-    if okay:
-        accept_button = QtGui.QDialogButtonBox.Ok
-    button_box.setStandardButtons(
-        accept_button | QtGui.QDialogButtonBox.Cancel)
-    button_box.setObjectName(u'%sButtonBox' % parent)
+    Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and
+    ``rejected()`` signals of the button box are connected with the dialogs
+    ``accept()`` and ``reject()`` slots.
+
+    ``dialog``
+        The parent object. This has to be a ``QDialog`` descendant.
+
+    ``name``
+        A string which is set as object name.
+
+    ``standard_buttons``
+        A list of strings for the used buttons. It might contain: ``ok``,
+        ``save``, ``cancel``, ``close``, and ``defaults``.
+
+    ``custom_buttons``
+        A list of additional buttons. If a item is a instance of
+        QtGui.QAbstractButton it is added with QDialogButtonBox.ActionRole.
+        Otherwhise the item has to be a tuple of a button and a ButtonRole.
+    """
+    buttons = QtGui.QDialogButtonBox.NoButton
+    if u'ok' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.Ok
+    if u'save' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.Save
+    if u'cancel' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.Cancel
+    if u'close' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.Close
+    if u'defaults' in standard_buttons:
+        buttons |= QtGui.QDialogButtonBox.RestoreDefaults
+    button_box = QtGui.QDialogButtonBox(dialog)
+    button_box.setObjectName(name)
+    button_box.setStandardButtons(buttons)
+    for button in custom_buttons:
+        if isinstance(button, QtGui.QAbstractButton):
+            button_box.addButton(button, QtGui.QDialogButtonBox.ActionRole)
+        else:
+            button_box.addButton(*button)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
-        parent.accept)
+        dialog.accept)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'),
-        parent.reject)
+        dialog.reject)
     return button_box
+
 
 def critical_error_message_box(title=None, message=None, parent=None,
     question=False):
@@ -215,9 +245,16 @@ def critical_error_message_box(title=None, message=None, parent=None,
     data[u'title'] = title if title else UiStrings().Error
     return Receiver.send_message(u'openlp_error_message', data)
 
-def media_item_combo_box(parent, name):
+
+def create_horizontal_adjusting_combo_box(parent, name):
     """
-    Provide a standard combo box for media items.
+    Creates a QComboBox with adapting width for media items.
+
+    ``parent``
+        The parent widget.
+
+    ``name``
+        A string set as object name for the combo box.
     """
     combo = QtGui.QComboBox(parent)
     combo.setObjectName(name)
@@ -225,219 +262,208 @@ def media_item_combo_box(parent, name):
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
 
-def create_delete_push_button(parent, icon=None):
+
+def create_button(parent, name, **kwargs):
     """
-    Creates a standard push button with a delete label and optional icon. The
-    button is connected to the parent's ``onDeleteButtonClicked()`` method to
-    handle the ``clicked()`` signal.
+    Return an button with the object name set and the given parameters.
 
     ``parent``
-        The parent object. This should be a ``QWidget`` descendant.
+        A QtCore.QWidget for the buttons parent (required).
 
-    ``icon``
-        An icon to display on the button. This can be either a ``QIcon``, a
-        resource path or a file name.
-    """
-    delete_button = QtGui.QPushButton(parent)
-    delete_button.setObjectName(u'deleteButton')
-    delete_icon = icon if icon else u':/general/general_delete.png'
-    delete_button.setIcon(build_icon(delete_icon))
-    delete_button.setText(UiStrings().Delete)
-    delete_button.setToolTip(
-        translate('OpenLP.Ui', 'Delete the selected item.'))
-    QtCore.QObject.connect(delete_button,
-        QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
-    return delete_button
+    ``name``
+        A string which is set as object name (required).
 
-def create_up_down_push_button_set(parent):
-    """
-    Creates a standard set of two push buttons, one for up and the other for
-    down, for use with lists. The buttons use arrow icons and no text and are
-    connected to the parent's ``onUpButtonClicked()`` and
-    ``onDownButtonClicked()`` to handle their respective ``clicked()`` signals.
-
-    ``parent``
-        The parent object. This should be a ``QWidget`` descendant.
-    """
-    up_button = QtGui.QPushButton(parent)
-    up_button.setIcon(build_icon(u':/services/service_up.png'))
-    up_button.setObjectName(u'upButton')
-    up_button.setToolTip(
-        translate('OpenLP.Ui', 'Move selection up one position.'))
-    down_button = QtGui.QPushButton(parent)
-    down_button.setIcon(build_icon(u':/services/service_down.png'))
-    down_button.setObjectName(u'downButton')
-    down_button.setToolTip(
-        translate('OpenLP.Ui', 'Move selection down one position.'))
-    QtCore.QObject.connect(up_button,
-        QtCore.SIGNAL(u'clicked()'), parent.onUpButtonClicked)
-    QtCore.QObject.connect(down_button,
-        QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
-    return up_button, down_button
-
-def base_action(parent, name, category=None):
-    """
-    Return the most basic action with the object name set.
-
-    ``category``
-        The category the action should be listed in the shortcut dialog. If you
-        not wish, that this action is added to the shortcut dialog, then do not
-        state any.
-    """
-    action = QtGui.QAction(parent)
-    action.setObjectName(name)
-    if category is not None:
-        action_list = ActionList.get_instance()
-        action_list.add_action(action, category)
-    return action
-
-def checkable_action(parent, name, checked=None, category=None):
-    """
-    Return a standard action with the checkable attribute set.
-    """
-    action = base_action(parent, name, category)
-    action.setCheckable(True)
-    if checked is not None:
-        action.setChecked(checked)
-    return action
-
-def icon_action(parent, name, icon, checked=None, category=None):
-    """
-    Return a standard action with an icon.
-    """
-    if checked is not None:
-        action = checkable_action(parent, name, checked, category)
-    else:
-        action = base_action(parent, name, category)
-    action.setIcon(build_icon(icon))
-    return action
-
-def shortcut_action(parent, name, shortcuts, function, icon=None, checked=None,
-    category=None, context=QtCore.Qt.WindowShortcut):
-    """
-    Return a shortcut enabled action.
-    """
-    action = QtGui.QAction(parent)
-    action.setObjectName(name)
-    if icon is not None:
-        action.setIcon(build_icon(icon))
-    if checked is not None:
-        action.setCheckable(True)
-        action.setChecked(checked)
-    if shortcuts:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
-    action_list = ActionList.get_instance()
-    action_list.add_action(action, category)
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), function)
-    return action
-
-def context_menu_action(base, icon, text, slot, shortcuts=None, category=None,
-    context=QtCore.Qt.WidgetShortcut):
-    """
-    Utility method to help build context menus.
-
-    ``base``
-        The parent menu to add this menu item to
-
-    ``icon``
-        An icon for this action
+    ``role``
+        A string which can have one value out of ``delete``, ``up``, and
+        ``down``. This decides about default values for properties like text,
+        icon, or tooltip.
 
     ``text``
-        The text to display for this action
+        A string for the action text.
 
-    ``slot``
-        The code to run when this action is triggered
+    ``icon``
+        Either a QIcon, a resource string, or a file location string for the
+        action icon.
+
+    ``tooltip``
+        A string for the action tool tip.
+
+    ``enabled``
+        False in case the button should be disabled.
+    """
+    if u'role' in kwargs:
+        role = kwargs.pop(u'role')
+        if role == u'delete':
+            kwargs.setdefault(u'text', UiStrings().Delete)
+            kwargs.setdefault(u'tooltip',
+                translate('OpenLP.Ui', 'Delete the selected item.'))
+        elif role == u'up':
+            kwargs.setdefault(u'icon', u':/services/service_up.png')
+            kwargs.setdefault(u'tooltip',
+                translate('OpenLP.Ui', 'Move selection up one position.'))
+        elif role == u'down':
+            kwargs.setdefault(u'icon', u':/services/service_down.png')
+            kwargs.setdefault(u'tooltip',
+                translate('OpenLP.Ui', 'Move selection down one position.'))
+        else:
+            log.warn(u'The role "%s" is not defined in create_push_button().',
+                role)
+    if kwargs.pop(u'class', u'') == u'toolbutton':
+        button = QtGui.QToolButton(parent)
+    else:
+        button = QtGui.QPushButton(parent)
+    button.setObjectName(name)
+    if kwargs.get(u'text'):
+        button.setText(kwargs.pop(u'text'))
+    if kwargs.get(u'icon'):
+        button.setIcon(build_icon(kwargs.pop(u'icon')))
+    if kwargs.get(u'tooltip'):
+        button.setToolTip(kwargs.pop(u'tooltip'))
+    if not kwargs.pop(u'enabled', True):
+        button.setEnabled(False)
+    if kwargs.get(u'click'):
+        QtCore.QObject.connect(button, QtCore.SIGNAL(u'clicked()'),
+            kwargs.pop(u'click'))
+    for key in kwargs.keys():
+        if key not in [u'text', u'icon', u'tooltip', u'click']:
+            log.warn(u'Parameter %s was not consumed in create_button().', key)
+    return button
+
+
+def create_action(parent, name, **kwargs):
+    """
+    Return an action with the object name set and the given parameters.
+
+    ``parent``
+        A QtCore.QObject for the actions parent (required).
+
+    ``name``
+        A string which is set as object name (required).
+
+    ``text``
+        A string for the action text.
+
+    ``icon``
+        Either a QIcon, a resource string, or a file location string for the
+        action icon.
+
+    ``tooltip``
+        A string for the action tool tip.
+
+    ``statustip``
+        A string for the action status tip.
+
+    ``checked``
+        A bool for the state. If ``None`` the Action is not checkable.
+
+    ``enabled``
+        False in case the action should be disabled.
+
+    ``visible``
+        False in case the action should be hidden.
+
+    ``separator``
+        True in case the action will be considered a separator.
+
+    ``data``
+        Data which is set as QVariant type.
 
     ``shortcuts``
-        The action's shortcuts.
-
-    ``category``
-        The category the shortcut should be listed in the shortcut dialog. If
-        left to ``None``, then the action will be hidden in the shortcut dialog.
+        A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
     ``context``
-        The context the shortcut is valid.
+        A context for the shortcut execution.
+
+    ``category``
+        A category the action should be listed in the shortcut dialog.
+
+    ``triggers``
+        A slot which is connected to the actions ``triggered()`` slot.
     """
-    action = QtGui.QAction(text, base)
-    if icon:
-        action.setIcon(build_icon(icon))
-    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), slot)
-    if shortcuts is not None:
-        action.setShortcuts(shortcuts)
-        action.setShortcutContext(context)
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
+    if kwargs.get(u'text'):
+        action.setText(kwargs.pop(u'text'))
+    if kwargs.get(u'icon'):
+        action.setIcon(build_icon(kwargs.pop(u'icon')))
+    if kwargs.get(u'tooltip'):
+        action.setToolTip(kwargs.pop(u'tooltip'))
+    if kwargs.get(u'statustip'):
+        action.setStatusTip(kwargs.pop(u'statustip'))
+    if kwargs.get(u'checked') is not None:
+        action.setCheckable(True)
+        action.setChecked(kwargs.pop(u'checked'))
+    if not kwargs.pop(u'enabled', True):
+        action.setEnabled(False)
+    if not kwargs.pop(u'visible', True):
+        action.setVisible(False)
+    if kwargs.pop(u'separator', False):
+        action.setSeparator(True)
+    if u'data' in kwargs:
+        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
+    if kwargs.get(u'shortcuts'):
+        action.setShortcuts(kwargs.pop(u'shortcuts'))
+    if u'context' in kwargs:
+        action.setShortcutContext(kwargs.pop(u'context'))
+    if kwargs.get(u'category'):
         action_list = ActionList.get_instance()
-        action_list.add_action(action)
-    base.addAction(action)
+        action_list.add_action(action, unicode(kwargs.pop(u'category')))
+    if kwargs.get(u'triggers'):
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
+            kwargs.pop(u'triggers'))
+    for key in kwargs.keys():
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked',
+            u'shortcuts', u'category', u'triggers']:
+            log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 
-def context_menu(base, icon, text):
+
+def create_widget_action(parent, name=u'', **kwargs):
     """
-    Utility method to help build context menus.
-
-    ``base``
-        The parent object to add this menu to
-
-    ``icon``
-        An icon for this menu
-
-    ``text``
-        The text to display for this menu
+    Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
+    The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
+    is added to the parents action list.
     """
-    action = QtGui.QMenu(text, base)
-    action.setIcon(build_icon(icon))
+    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
+    action = create_action(parent, name, **kwargs)
+    parent.addAction(action)
     return action
 
-def context_menu_separator(base):
-    """
-    Add a separator to a context menu
 
-    ``base``
-        The menu object to add the separator to
+def set_case_insensitive_completer(cache, widget):
     """
-    action = QtGui.QAction(u'', base)
-    action.setSeparator(True)
-    base.addAction(action)
-    return action
-
-def add_widget_completer(cache, widget):
-    """
-    Adds a text autocompleter to a widget.
+    Sets a case insensitive text completer for a widget.
 
     ``cache``
         The list of items to use as suggestions.
 
     ``widget``
-        The object to use the completer.
+        A widget to set the completer (QComboBox or QTextEdit instance)
     """
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
 
-def create_valign_combo(form, parent, layout):
+
+def create_valign_selection_widgets(parent):
     """
     Creates a standard label and combo box for asking users to select a
     vertical alignment.
 
-    ``form``
-        The UI screen that the label and combo will appear on.
-
     ``parent``
         The parent object. This should be a ``QWidget`` descendant.
 
-    ``layout``
-        A layout object to add the label and combo widgets to.
+    Returns a tuple of QLabel and QComboBox.
     """
-    verticalLabel = QtGui.QLabel(parent)
-    verticalLabel.setObjectName(u'VerticalLabel')
-    verticalLabel.setText(translate('OpenLP.Ui', '&Vertical Align:'))
-    form.verticalComboBox = QtGui.QComboBox(parent)
-    form.verticalComboBox.setObjectName(u'VerticalComboBox')
-    form.verticalComboBox.addItem(UiStrings().Top)
-    form.verticalComboBox.addItem(UiStrings().Middle)
-    form.verticalComboBox.addItem(UiStrings().Bottom)
-    verticalLabel.setBuddy(form.verticalComboBox)
-    layout.addRow(verticalLabel, form.verticalComboBox)
+    label = QtGui.QLabel(parent)
+    label.setText(translate('OpenLP.Ui', '&Vertical Align:'))
+    combo_box = QtGui.QComboBox(parent)
+    combo_box.addItem(UiStrings().Top)
+    combo_box.addItem(UiStrings().Middle)
+    combo_box.addItem(UiStrings().Bottom)
+    label.setBuddy(combo_box)
+    return label, combo_box
+
 
 def find_and_set_in_combo_box(combo_box, value_to_find):
     """

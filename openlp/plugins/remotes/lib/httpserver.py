@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -111,21 +111,17 @@ the remotes.
             {"results": {"items": [{...}, {...}]}}
 """
 
+import json
 import logging
 import os
-import urlparse
 import re
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import urllib
+import urlparse
 
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
 from openlp.core.lib import Receiver, PluginStatus, StringContent
-from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
@@ -150,13 +146,11 @@ class HttpResponse(object):
 
 class HttpServer(object):
     """
-    Ability to control OpenLP via a webbrowser
-    e.g. http://localhost:4316/send/slidecontroller_live_next
-          http://localhost:4316/send/alerts_text?q=your%20alert%20text
+    Ability to control OpenLP via a web browser.
     """
     def __init__(self, plugin):
         """
-        Initialise the httpserver, and start the server
+        Initialise the httpserver, and start the server.
         """
         log.debug(u'Initialise httpserver')
         self.plugin = plugin
@@ -170,9 +164,9 @@ class HttpServer(object):
 
     def start_tcp(self):
         """
-        Start the http server, use the port in the settings default to 4316
+        Start the http server, use the port in the settings default to 4316.
         Listen out for slide and song changes so they can be broadcast to
-        clients. Listen out for socket connections
+        clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
         port = QtCore.QSettings().value(
@@ -195,20 +189,20 @@ class HttpServer(object):
 
     def slide_change(self, row):
         """
-        Slide change listener. Store the item and tell the clients
+        Slide change listener. Store the item and tell the clients.
         """
         self.current_slide = row
 
     def item_change(self, items):
         """
-        Item (song) change listener. Store the slide and tell the clients
+        Item (song) change listener. Store the slide and tell the clients.
         """
         self.current_item = items[0]
 
     def new_connection(self):
         """
         A new http connection has been made. Create a client object to handle
-        communication
+        communication.
         """
         log.debug(u'new http connection')
         socket = self.server.nextPendingConnection()
@@ -225,15 +219,16 @@ class HttpServer(object):
 
     def close(self):
         """
-        Close down the http server
+        Close down the http server.
         """
         log.debug(u'close http server')
         self.server.close()
 
+
 class HttpConnection(object):
     """
     A single connection, this handles communication between the server
-    and the client
+    and the client.
     """
     def __init__(self, parent, socket):
         """
@@ -250,7 +245,7 @@ class HttpConnection(object):
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
-            (r'^/api/display/(hide|show)$', self.display),
+            (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
             (r'^/api/(.*)/search$', self.search),
@@ -287,21 +282,29 @@ class HttpConnection(object):
         """
         self.template_vars = {
             'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Remote'),
-            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Stage View'),
-            'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
-            'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
+            'stage_title': translate('RemotePlugin.Mobile',
+                'OpenLP 2.0 Stage View'),
+            'service_manager': translate('RemotePlugin.Mobile',
+                'Service Manager'),
+            'slide_controller': translate('RemotePlugin.Mobile',
+                'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
             'search': translate('RemotePlugin.Mobile', 'Search'),
-            'back': translate('RemotePlugin.Mobile', 'Back'),
+            'home': translate('RemotePlugin.Mobile', 'Home'),
             'refresh': translate('RemotePlugin.Mobile', 'Refresh'),
             'blank': translate('RemotePlugin.Mobile', 'Blank'),
+            'theme': translate('RemotePlugin.Mobile', 'Theme'),
+            'desktop': translate('RemotePlugin.Mobile', 'Desktop'),
             'show': translate('RemotePlugin.Mobile', 'Show'),
             'prev': translate('RemotePlugin.Mobile', 'Prev'),
             'next': translate('RemotePlugin.Mobile', 'Next'),
             'text': translate('RemotePlugin.Mobile', 'Text'),
             'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
-            'add_to_service': translate('RemotePlugin.Mobile', 'Add To Service'),
+            'add_to_service': translate('RemotePlugin.Mobile',
+                'Add to Service'),
+            'add_and_go_to_service': translate('RemotePlugin.Mobile',
+                'Add &amp; Go to Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options')
         }
@@ -312,9 +315,14 @@ class HttpConnection(object):
         """
         log.debug(u'ready to read socket')
         if self.socket.canReadLine():
-            data = unicode(self.socket.readLine())
-            log.debug(u'received: ' + data)
-            words = data.split(u' ')
+            data = str(self.socket.readLine())
+            try:
+                log.debug(u'received: ' + data)
+            except UnicodeDecodeError:
+                # Malicious request containing non-ASCII characters.
+                self.close()
+                return
+            words = data.split(' ')
             response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
@@ -357,7 +365,8 @@ class HttpConnection(object):
         if ext == u'.html':
             mimetype = u'text/html'
             variables = self.template_vars
-            html = Template(filename=path, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
+            html = Template(filename=path, input_encoding=u'utf-8',
+                output_encoding=u'utf-8').render(**variables)
         elif ext == u'.css':
             mimetype = u'text/css'
         elif ext == u'.js':
@@ -391,12 +400,21 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
+            u'service': self.parent.plugin.serviceManager.serviceId,
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
-                if self.parent.current_item else u''
+                if self.parent.current_item else u'',
+            u'twelve':QtCore.QSettings().value(
+            u'remotes/twelve hour', QtCore.QVariant(True)).toBool(),
+            u'blank': self.parent.plugin.liveController.blankScreen.\
+                isChecked(),
+            u'theme': self.parent.plugin.liveController.themeScreen.\
+                isChecked(),
+            u'display': self.parent.plugin.liveController.desktopScreen.\
+                isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
-             {u'Content-Type': u'application/json'})
+            {u'Content-Type': u'application/json'})
 
     def display(self, action):
         """
@@ -405,8 +423,7 @@ class HttpConnection(object):
         ``action``
             This is the action, either ``hide`` or ``show``.
         """
-        event = u'maindisplay_%s' % action
-        Receiver.send_message(event, HideMode.Blank)
+        Receiver.send_message(u'slidecontroller_toggle_display', action)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
@@ -414,9 +431,19 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
-        Receiver.send_message(u'alerts_text', [text])
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        if plugin.status == PluginStatus.Active:
+            try:
+                text = json.loads(
+                    self.url_params[u'data'][0])[u'request'][u'text']
+            except KeyError, ValueError:
+                return HttpResponse(code=u'400 Bad Request')
+            text = urllib.unquote(text)
+            Receiver.send_message(u'alerts_text', [text])
+            success = True
+        else:
+            success = False
+        return HttpResponse(json.dumps({u'results': {u'success': success}}),
             {u'Content-Type': u'application/json'})
 
     def controller(self, type, action):
@@ -451,9 +478,14 @@ class HttpConnection(object):
                     item[u'selected'] = (self.parent.current_slide == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
+            if current_item:
+                json_data[u'results'][u'item'] = self.parent.current_item._uuid
         else:
             if self.url_params and self.url_params.get(u'data'):
-                data = json.loads(self.url_params[u'data'][0])
+                try:
+                    data = json.loads(self.url_params[u'data'][0])
+                except KeyError, ValueError:
+                    return HttpResponse(code=u'400 Bad Request')
                 log.info(data)
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
@@ -473,7 +505,10 @@ class HttpConnection(object):
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
-            data = json.loads(self.url_params[u'data'][0])
+            try:
+                data = json.loads(self.url_params[u'data'][0])
+            except KeyError, ValueError:
+                return HttpResponse(code=u'400 Bad Request')
             Receiver.send_message(event, data[u'request'][u'id'])
         else:
             Receiver.send_message(event)
@@ -482,10 +517,11 @@ class HttpConnection(object):
 
     def pluginInfo(self, action):
         """
-        Return plugin related information, based on the action
+        Return plugin related information, based on the action.
 
-        ``action`` - The action to perform
-            if 'search' return a list of plugin names which support search
+        ``action``
+            The action to perform. If *search* return a list of plugin names
+            which support search.
         """
         if action == u'search':
             searches = []
@@ -500,16 +536,20 @@ class HttpConnection(object):
 
     def search(self, type):
         """
-        Return a list of items that match the search text
+        Return a list of items that match the search text.
 
         ``type``
-        The plugin name to search in.
+            The plugin name to search in.
         """
-        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        try:
+            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
+        text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and \
             plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text)
+            results = plugin.mediaItem.search(text, False)
         else:
             results = []
         return HttpResponse(
@@ -520,20 +560,28 @@ class HttpConnection(object):
         """
         Go live on an item of type ``type``.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id)
+            plugin.mediaItem.goLive(id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def add_to_service(self, type):
         """
-        Add item of type ``type`` to the end of the service
+        Add item of type ``type`` to the end of the service.
         """
-        id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        try:
+            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+        except KeyError, ValueError:
+            return HttpResponse(code=u'400 Bad Request')
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id)
+            plugin.mediaItem.addToService(item_id, remote=True)
+        return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code

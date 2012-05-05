@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,8 +27,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib.ui import create_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
@@ -52,11 +52,12 @@ class ServiceNoteForm(QtGui.QDialog):
         self.dialogLayout.setContentsMargins(8, 8, 8, 8)
         self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'verticalLayout')
-        self.textEdit = QtGui.QTextEdit(self)
+        self.textEdit = SpellTextEdit(self, False)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.dialogLayout.addWidget(create_accept_reject_button_box(self))
-        QtCore.QMetaObject.connectSlotsByName(self)
+        self.buttonBox = create_button_box(self, u'buttonBox',
+            [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.buttonBox)
 
     def retranslateUi(self):
         self.setWindowTitle(

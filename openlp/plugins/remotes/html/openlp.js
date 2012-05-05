@@ -1,12 +1,12 @@
 /*****************************************************************************
  * OpenLP - Open Source Lyrics Projection                                    *
  * ------------------------------------------------------------------------- *
- * Copyright (c) 2008-2010 Raoul Snyman                                      *
- * Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael    *
- * Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,      *
- * Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,    *
- * Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode     *
- * Woldsund                                                                  *
+ * Copyright (c) 2008-2012 Raoul Snyman                                      *
+ * Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan    *
+ * Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,    *
+ * Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias   *
+ * Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,  *
+ * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund           *
  * ------------------------------------------------------------------------- *
  * This program is free software; you can redistribute it and/or modify it   *
  * under the terms of the GNU General Public License as published by the     *
@@ -40,7 +40,7 @@ window.OpenLP = {
     }
     return $(targ);
   },
-  getSearchablePlugins: function (event) {
+  getSearchablePlugins: function () {
     $.getJSON(
       "/api/plugin/search",
       function (data, status) {
@@ -54,6 +54,7 @@ window.OpenLP = {
     );
   },
   loadService: function (event) {
+    event.preventDefault();
     $.getJSON(
       "/api/service/list",
       function (data, status) {
@@ -71,6 +72,9 @@ window.OpenLP = {
     );
   },
   loadController: function (event) {
+    if (event) {
+      event.preventDefault();
+    }
     $.getJSON(
       "/api/controller/live/text",
       function (data, status) {
@@ -89,18 +93,24 @@ window.OpenLP = {
           li.children("a").click(OpenLP.setSlide);
           ul.append(li);
         }
+        OpenLP.currentItem = data.results.item;
         ul.listview("refresh");
       }
     );
   },
   setItem: function (event) {
+    event.preventDefault();
     var item = OpenLP.getElement(event);
     var id = item.attr("value");
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/service/set",
       {"data": text},
       function (data, status) {
+        $.mobile.changePage("#slide-controller");
         $("#service-manager > div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
         while (item[0].tagName != "LI") {
           item = item.parent();
@@ -111,9 +121,13 @@ window.OpenLP = {
     );
   },
   setSlide: function (event) {
+    event.preventDefault();
     var slide = OpenLP.getElement(event);
     var id = slide.attr("value");
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/controller/live/set",
       {"data": text},
@@ -172,31 +186,41 @@ window.OpenLP = {
     );
   },
   nextItem: function (event) {
+    event.preventDefault();
     $.getJSON("/api/service/next");
-    return false;
   },
   previousItem: function (event) {
+    event.preventDefault();
     $.getJSON("/api/service/previous");
-    return false;
   },
   nextSlide: function (event) {
+    event.preventDefault();
     $.getJSON("/api/controller/live/next");
-    return false;
   },
   previousSlide: function (event) {
+    event.preventDefault();
     $.getJSON("/api/controller/live/previous");
-    return false;
   },
   blankDisplay: function (event) {
-    $.getJSON("/api/display/hide");
-    return false;
+    event.preventDefault();
+    $.getJSON("/api/display/blank");
   },
-  unblankDisplay: function (event) {
+  themeDisplay: function (event) {
+    event.preventDefault();
+    $.getJSON("/api/display/theme");
+  },
+  desktopDisplay: function (event) {
+    event.preventDefault();
+    $.getJSON("/api/display/desktop");
+  },
+  showDisplay: function (event) {
+    event.preventDefault();
     $.getJSON("/api/display/show");
-    return false;
   },
   showAlert: function (event) {
-    var text = JSON.stringify({"request": {"text": $("#alert-text").val()}});
+    event.preventDefault();
+    var alert = OpenLP.escapeString($("#alert-text").val())
+    var text = "{\"request\": {\"text\": \"" + alert + "\"}}";
     $.getJSON(
       "/api/alert",
       {"data": text},
@@ -204,10 +228,11 @@ window.OpenLP = {
         $("#alert-text").val("");
       }
     );
-    return false;
   },
   search: function (event) {
-    var text = JSON.stringify({"request": {"text": $("#search-text").val()}});
+    event.preventDefault();
+    var query = OpenLP.escapeString($("#search-text").val())
+    var text = "{\"request\": {\"text\": \"" + query + "\"}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/search",
       {"data": text},
@@ -221,67 +246,107 @@ window.OpenLP = {
         else {
             $.each(data.results.items, function (idx, value) {
               ul.append($("<li>").append($("<a>").attr("href", "#options")
-                  .attr("data-rel", "dialog").attr("data-transition", "pop")
-                  .attr("value", value[0]).click(OpenLP.showOptions)
-                  .text(value[1])));
+                  .attr("data-rel", "dialog").attr("value", value[0])
+                  .click(OpenLP.showOptions).text(value[1])));
             });
         }
         ul.listview("refresh");
       }
     );
-    return false;
   },
   showOptions: function (event) {
+    event.preventDefault();
     var element = OpenLP.getElement(event);
-    console.log(element);
     $("#selected-item").val(element.attr("value"));
   },
   goLive: function (event) {
+    event.preventDefault();
     var id = $("#selected-item").val();
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+      id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/live",
       {"data": text}
     );
     $.mobile.changePage("#slide-controller");
-    return false;
   },
   addToService: function (event) {
+    event.preventDefault();
     var id = $("#selected-item").val();
-    var text = JSON.stringify({"request": {"id": id}});
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
     $.getJSON(
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text},
       function () {
-        history.back();
+        $("#options").dialog("close");
       }
     );
-    $("#options").dialog("close");
-    return false;
+  },
+  addAndGoToService: function (event) {
+    event.preventDefault();
+    var id = $("#selected-item").val();
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        //$("#options").dialog("close");
+        $.mobile.changePage("#service-manager");
+      }
+    );
+  },
+  escapeString: function (string) { 
+    return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
+// Initial jQueryMobile options
+$(document).bind("mobileinit", function(){
+  $.mobile.defaultDialogTransition = "none";
+  $.mobile.defaultPageTransition = "none";
+});
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#service-refresh").live("click", OpenLP.loadService);
 $("#service-next").live("click", OpenLP.nextItem);
 $("#service-previous").live("click", OpenLP.previousItem);
 $("#service-blank").live("click", OpenLP.blankDisplay);
-$("#service-unblank").live("click", OpenLP.unblankDisplay);
+$("#service-theme").live("click", OpenLP.themeDisplay);
+$("#service-desktop").live("click", OpenLP.desktopDisplay);
+$("#service-show").live("click", OpenLP.showDisplay);
 // Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 $("#controller-refresh").live("click", OpenLP.loadController);
 $("#controller-next").live("click", OpenLP.nextSlide);
 $("#controller-previous").live("click", OpenLP.previousSlide);
 $("#controller-blank").live("click", OpenLP.blankDisplay);
-$("#controller-unblank").live("click", OpenLP.unblankDisplay);
+$("#controller-theme").live("click", OpenLP.themeDisplay);
+$("#controller-desktop").live("click", OpenLP.desktopDisplay);
+$("#controller-show").live("click", OpenLP.showDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
 $("#search-submit").live("click", OpenLP.search);
+$("#search-text").live("keypress", function(event) {
+    if (event.which == 13)
+    {
+        OpenLP.search(event);
+    }
+});
 $("#go-live").live("click", OpenLP.goLive);
 $("#add-to-service").live("click", OpenLP.addToService);
+$("#add-and-go-to-service").live("click", OpenLP.addAndGoToService);
 // Poll the server twice a second to get any updates.
-OpenLP.getSearchablePlugins();
-$.ajaxSetup({ cache: false });
+$.ajaxSetup({cache: false});
+$("#search").live("pageinit", function (event) {
+  OpenLP.getSearchablePlugins();
+});
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

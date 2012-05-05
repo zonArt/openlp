@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -152,7 +152,7 @@ class PowerpointDocument(PresentationDocument):
         log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
-        for num in range(0, self.presentation.Slides.Count):
+        for num in range(self.presentation.Slides.Count):
             self.presentation.Slides(num + 1).Export(os.path.join(
                 self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)),
                 'png', 320, 240)

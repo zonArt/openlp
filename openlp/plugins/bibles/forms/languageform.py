@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
 # Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
 # Tibble, Carsten Tinggaard, Frode Woldsund                                   #
@@ -44,8 +44,8 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
     Class to manage a dialog which ask the user for a language.
     """
     log.info(u'LanguageForm loaded')
-    
-    def __init__(self, parent = None):
+
+    def __init__(self, parent=None):
         """
         Constructor
         """
@@ -57,12 +57,11 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         if bible_name:
             self.bibleLabel.setText(unicode(bible_name))
         items = BiblesResourcesDB.get_languages()
-        for item in items:
-            self.languageComboBox.addItem(item[u'name'])
+        self.languageComboBox.addItems([item[u'name'] for item in items])
         return QDialog.exec_(self)
-    
+
     def accept(self):
-        if self.languageComboBox.currentText() == u'':
+        if not self.languageComboBox.currentText():
             critical_error_message_box(
                 message=translate('BiblesPlugin.LanguageForm',
                 'You need to choose a language.'))

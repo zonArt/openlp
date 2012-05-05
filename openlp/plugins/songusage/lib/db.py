@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -56,7 +56,9 @@ def init_schema(url):
         Column(u'title', types.Unicode(255), nullable=False),
         Column(u'authors', types.Unicode(255), nullable=False),
         Column(u'copyright', types.Unicode(255)),
-        Column(u'ccl_number', types.Unicode(65))
+        Column(u'ccl_number', types.Unicode(65)),
+        Column(u'plugin_name', types.Unicode(20)),
+        Column(u'source', types.Unicode(10))
     )
 
     mapper(SongUsageItem, songusage_table)

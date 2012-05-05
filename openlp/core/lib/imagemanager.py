@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -36,7 +36,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte
+from openlp.core.lib import resize_image, image_to_byte, Receiver
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -100,12 +100,14 @@ class Image(object):
     variables ``image`` and ``image_bytes`` to ``None`` and add the image object
     to the queue of images to process.
     """
-    def __init__(self, name='', path=''):
+    def __init__(self, name, path, source, background):
         self.name = name
         self.path = path
         self.image = None
         self.image_bytes = None
         self.priority = Priority.Normal
+        self.source = source
+        self.background = background
 
 
 class PriorityQueue(Queue.PriorityQueue):
@@ -151,6 +153,8 @@ class ImageManager(QtCore.QObject):
         self._cache = {}
         self._imageThread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.process_updates)
 
     def update_display(self):
         """
@@ -162,12 +166,42 @@ class ImageManager(QtCore.QObject):
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._conversion_queue = PriorityQueue()
-        for key, image in self._cache.iteritems():
-            image.priority = Priority.Normal
-            image.image = None
-            image.image_bytes = None
-            self._conversion_queue.put((image.priority, image))
+        for image in self._cache.values():
+            self._reset_image(image)
+
+    def update_images(self, image_type, background):
+        """
+        Border has changed so update all the images affected.
+        """
+        log.debug(u'update_images')
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
+        for image in self._cache.values():
+            if image.source == image_type:
+                image.background = background
+                self._reset_image(image)
+
+    def update_image(self, name, image_type, background):
+        """
+        Border has changed so update the image affected.
+        """
+        log.debug(u'update_images')
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
+        for image in self._cache.values():
+            if image.source == image_type and image.name == name:
+                image.background = background
+                self._reset_image(image)
+
+    def _reset_image(self, image):
+        image.image = None
+        image.image_bytes = None
+        self._conversion_queue.modify_priority(image, Priority.Normal)
+
+    def process_updates(self):
+        """
+        Flush the queue to updated any data to update
+        """
         # We want only one thread.
         if not self._imageThread.isRunning():
             self._imageThread.start()
@@ -181,6 +215,8 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image is None:
             self._conversion_queue.modify_priority(image, Priority.High)
+            # make sure we are running and if not give it a kick
+            self.process_updates()
             while image.image is None:
                 log.debug(u'get_image - waiting')
                 time.sleep(0.1)
@@ -201,6 +237,8 @@ class ImageManager(QtCore.QObject):
         image = self._cache[name]
         if image.image_bytes is None:
             self._conversion_queue.modify_priority(image, Priority.Urgent)
+            # make sure we are running and if not give it a kick
+            self.process_updates()
             while image.image_bytes is None:
                 log.debug(u'get_image_bytes - waiting')
                 time.sleep(0.1)
@@ -215,13 +253,13 @@ class ImageManager(QtCore.QObject):
             self._conversion_queue.remove(self._cache[name])
             del self._cache[name]
 
-    def add_image(self, name, path):
+    def add_image(self, name, path, source, background):
         """
         Add image to cache if it is not already there.
         """
         log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
-            image = Image(name, path)
+            image = Image(name, path, source, background)
             self._cache[name] = image
             self._conversion_queue.put((image.priority, image))
         else:
@@ -247,7 +285,8 @@ class ImageManager(QtCore.QObject):
         image = self._conversion_queue.get()[1]
         # Generate the QImage for the image.
         if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height)
+            image.image = resize_image(image.path, self.width, self.height,
+                image.background)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:

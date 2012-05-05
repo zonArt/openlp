@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -30,11 +30,12 @@ The :mod:`importer` modules provides the general song import functionality.
 import logging
 
 from opensongimport import OpenSongImport
-from easislidesimport import EasiSlidesImport
+from easyslidesimport import EasySlidesImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
 from cclifileimport import CCLIFileImport
+from dreambeamimport import DreamBeamImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
@@ -68,20 +69,21 @@ class SongFormat(object):
     """
     _format_availability = {}
     Unknown = -1
-    OpenLP2 = 0
-    OpenLP1 = 1
-    OpenLyrics = 2
-    OpenSong = 3
-    WordsOfWorship = 4
-    CCLI = 5
-    SongsOfFellowship = 6
-    Generic = 7
-    EasiSlides = 8
-    EasyWorship = 9
+    OpenLyrics = 0
+    OpenLP2 = 1
+    OpenLP1 = 2
+    Generic = 3
+    CCLI = 4
+    DreamBeam = 5
+    EasySlides = 6
+    EasyWorship = 7
+    FoilPresenter = 8
+    OpenSong = 9
     SongBeamer = 10
     SongShowPlus = 11
-    FoilPresenter = 12
-    #CSV = 13
+    SongsOfFellowship = 12
+    WordsOfWorship = 13
+    #CSV = 14
 
     @staticmethod
     def get_class(format):
@@ -107,8 +109,10 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
-        elif format == SongFormat.EasiSlides:
-            return EasiSlidesImport
+        elif format == SongFormat.DreamBeam:
+            return DreamBeamImport
+        elif format == SongFormat.EasySlides:
+            return EasySlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
@@ -125,19 +129,20 @@ class SongFormat(object):
         Return a list of the supported song formats.
         """
         return [
+            SongFormat.OpenLyrics,
             SongFormat.OpenLP2,
             SongFormat.OpenLP1,
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.WordsOfWorship,
-            SongFormat.CCLI,
-            SongFormat.SongsOfFellowship,
             SongFormat.Generic,
-            SongFormat.EasiSlides,
+            SongFormat.CCLI,
+            SongFormat.DreamBeam, 
+            SongFormat.EasySlides,
             SongFormat.EasyWorship,
+            SongFormat.FoilPresenter,
+            SongFormat.OpenSong,
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
-            SongFormat.FoilPresenter
+            SongFormat.SongsOfFellowship,
+            SongFormat.WordsOfWorship
         ]
 
     @staticmethod

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,7 +29,7 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
@@ -57,16 +57,16 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     def exec_(self):
         # load all the settings
         self.settingListWidget.clear()
-        for tabIndex in range(0, self.stackedLayout.count() + 1):
-            # take at 0 and the rest shuffell up.
+        while self.stackedLayout.count():
+            # take at 0 and the rest shuffle up.
             self.stackedLayout.takeAt(0)
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
         self.insertTab(self.themesTab, 1, PluginStatus.Active)
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
         count = 3
         for plugin in self.plugins:
-            if plugin.settings_tab:
-                self.insertTab(plugin.settings_tab, count, plugin.status)
+            if plugin.settingsTab:
+                self.insertTab(plugin.settingsTab, count, plugin.status)
                 count += 1
         self.settingListWidget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
@@ -80,7 +80,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         pos = self.stackedLayout.addWidget(tab)
         if is_active:
             item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
-            icon = build_icon(tab.icon_path)
+            icon = build_icon(tab.iconPath)
             item_name.setIcon(icon)
             self.settingListWidget.insertItem(location, item_name)
         else:
@@ -92,7 +92,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.stackedLayout.count()):
+        for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
@@ -102,7 +102,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        for tabIndex in range(0, self.stackedLayout.count()):
+        for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
@@ -114,5 +114,12 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.themesTab.postSetUp()
         self.advancedTab.postSetUp()
         for plugin in self.plugins:
-            if plugin.settings_tab:
-                plugin.settings_tab.postSetUp()
+            if plugin.settingsTab:
+                plugin.settingsTab.postSetUp()
+
+    def tabChanged(self, tabIndex):
+        """
+        A different settings tab is selected
+        """
+        self.stackedLayout.setCurrentIndex(tabIndex)
+        self.stackedLayout.currentWidget().tabVisible()

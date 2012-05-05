@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -34,7 +34,6 @@ import struct
 import re
 
 from openlp.core.lib import translate
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
@@ -50,28 +49,28 @@ def strip_rtf(blob, encoding):
     control = False
     clear_text = []
     control_word = []
-    
-    # workaround for \tx bug: remove one pair of curly braces 
+
+    # workaround for \tx bug: remove one pair of curly braces
     # if \tx is encountered
     match = RTF_STRIPPING_REGEX.search(blob)
     if match:
         # start and end indices of match are curly braces - filter them out
-        blob = ''.join([blob[i] for i in xrange(len(blob)) 
+        blob = ''.join([blob[i] for i in xrange(len(blob))
             if i != match.start() and i !=match.end()])
-    
+
     for c in blob:
         if control:
             # for delimiters, set control to False
             if c == '{':
-                if len(control_word) > 0:
+                if control_word:
                     depth += 1
                 control = False
             elif c == '}':
-                if len(control_word) > 0:
+                if control_word:
                     depth -= 1
                 control = False
             elif c == '\\':
-                new_control = (len(control_word) > 0)
+                new_control = bool(control_word)
                 control = False
             elif c.isspace():
                 control = False
@@ -80,7 +79,7 @@ def strip_rtf(blob, encoding):
                 if len(control_word) == 3 and control_word[0] == '\'':
                     control = False
             if not control:
-                if len(control_word) == 0:
+                if not control_word:
                     if c == '{' or c == '}' or c == '\\':
                         clear_text.append(c)
                 else:
@@ -156,24 +155,24 @@ class EasyWorshipSongImport(SongImport):
     def __init__(self, manager, **kwargs):
         SongImport.__init__(self, manager, **kwargs)
 
-    def do_import(self):
+    def doImport(self):
         # Open the DB and MB files if they exist
-        import_source_mb = self.import_source.replace('.DB', '.MB')
-        if not os.path.isfile(self.import_source):
+        import_source_mb = self.importSource.replace('.DB', '.MB')
+        if not os.path.isfile(self.importSource):
             return
         if not os.path.isfile(import_source_mb):
             return
-        db_size = os.path.getsize(self.import_source)
+        db_size = os.path.getsize(self.importSource)
         if db_size < 0x800:
             return
-        db_file = open(self.import_source, 'rb')
-        self.memo_file = open(import_source_mb, 'rb')
+        db_file = open(self.importSource, 'rb')
+        self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
         record_size, header_size, block_size, first_block, num_fields \
             = struct.unpack('<hhxb8xh17xh', db_file.read(35))
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
-            self.memo_file.close()
+            self.memoFile.close()
             return
         # Take a stab at how text is encoded
         self.encoding = u'cp1252'
@@ -205,7 +204,7 @@ class EasyWorshipSongImport(SongImport):
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.import_wizard.progressBar.setMaximum(total_blocks)
+        self.importWizard.progressBar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -219,16 +218,16 @@ class EasyWorshipSongImport(SongImport):
                 field_info, i * 2)
             field_descs.append(FieldDescEntry(field_name, field_type,
                 field_size))
-        self.set_record_struct(field_descs)
+        self.setRecordStruct(field_descs)
         # Pick out the field description indexes we will need
         try:
             success = True
-            fi_title = self.find_field(u'Title')
-            fi_author = self.find_field(u'Author')
-            fi_copy = self.find_field(u'Copyright')
-            fi_admin = self.find_field(u'Administrator')
-            fi_words = self.find_field(u'Words')
-            fi_ccli = self.find_field(u'Song Number')
+            fi_title = self.findField(u'Title')
+            fi_author = self.findField(u'Author')
+            fi_copy = self.findField(u'Copyright')
+            fi_admin = self.findField(u'Administrator')
+            fi_words = self.findField(u'Words')
+            fi_ccli = self.findField(u'Song Number')
         except IndexError:
             # This is the wrong table
             success = False
@@ -240,18 +239,18 @@ class EasyWorshipSongImport(SongImport):
             rec_count = (rec_count + record_size) / record_size
             # Loop through each record within the current block
             for i in range(rec_count):
-                if self.stop_import_flag:
+                if self.stopImportFlag:
                     break
                 raw_record = db_file.read(record_size)
-                self.fields = self.record_struct.unpack(raw_record)
-                self.set_defaults()
-                self.title = self.get_field(fi_title)
+                self.fields = self.recordStruct.unpack(raw_record)
+                self.setDefaults()
+                self.title = self.getField(fi_title)
                 # Get remaining fields.
-                copy = self.get_field(fi_copy)
-                admin = self.get_field(fi_admin)
-                ccli = self.get_field(fi_ccli)
-                authors = self.get_field(fi_author)
-                words = self.get_field(fi_words)
+                copy = self.getField(fi_copy)
+                admin = self.getField(fi_admin)
+                ccli = self.getField(fi_ccli)
+                authors = self.getField(fi_author)
+                words = self.getField(fi_words)
                 # Set the SongImport object members.
                 if copy:
                     self.copyright = copy
@@ -262,7 +261,7 @@ class EasyWorshipSongImport(SongImport):
                         unicode(translate('SongsPlugin.EasyWorshipSongImport',
                             'Administered by %s')) % admin
                 if ccli:
-                    self.ccli_number = ccli
+                    self.ccliNumber = ccli
                 if authors:
                     # Split up the authors
                     author_list = authors.split(u'/')
@@ -271,7 +270,7 @@ class EasyWorshipSongImport(SongImport):
                     if len(author_list) < 2:
                         author_list = authors.split(u',')
                     for author_name in author_list:
-                        self.add_author(author_name.strip())
+                        self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
                     words = strip_rtf(words, self.encoding)
@@ -282,9 +281,9 @@ class EasyWorshipSongImport(SongImport):
                             continue
                         verse_split = verse.split(u'\n', 1)
                         first_line_is_tag = False
-                        # EW tags: verse, chorus, pre-chorus, bridge, tag, 
+                        # EW tags: verse, chorus, pre-chorus, bridge, tag,
                         # intro, ending, slide
-                        for type in VerseType.Names+[u'tag', u'slide']: 
+                        for type in VerseType.Names+[u'tag', u'slide']:
                             type = type.lower()
                             ew_tag = verse_split[0].strip().lower()
                             if ew_tag.startswith(type):
@@ -294,7 +293,7 @@ class EasyWorshipSongImport(SongImport):
                                 first_line_is_tag = True
                                 number_found = False
                                 # check if tag is followed by number and/or note
-                                if len(ew_tag) > len(type): 
+                                if len(ew_tag) > len(type):
                                     match = NUMBER_REGEX.search(ew_tag)
                                     if match:
                                         number = match.group()
@@ -306,26 +305,27 @@ class EasyWorshipSongImport(SongImport):
                                 if not number_found:
                                     verse_type += u'1'
                                 break
-                        self.add_verse(
-                            verse_split[-1].strip() if first_line_is_tag else verse, 
+                        self.addVerse(
+                            verse_split[-1].strip() \
+                                if first_line_is_tag else verse,
                             verse_type)
                 if len(self.comments) > 5:
                     self.comments += unicode(
                         translate('SongsPlugin.EasyWorshipSongImport',
                         '\n[above are Song Tags with notes imported from \
                         EasyWorship]'))
-                if self.stop_import_flag:
+                if self.stopImportFlag:
                     break
                 if not self.finish():
-                    self.log_error(self.import_source)
+                    self.logError(self.importSource)
         db_file.close()
-        self.memo_file.close()
+        self.memoFile.close()
 
-    def find_field(self, field_name):
-        return [i for i, x in enumerate(self.field_descs)
+    def findField(self, field_name):
+        return [i for i, x in enumerate(self.fieldDescs)
             if x.name == field_name][0]
 
-    def set_record_struct(self, field_descs):
+    def setRecordStruct(self, field_descs):
         # Begin with empty field struct list
         fsl = ['>']
         for field_desc in field_descs:
@@ -352,15 +352,15 @@ class EasyWorshipSongImport(SongImport):
                 fsl.append('Q')
             else:
                 fsl.append('%ds' % field_desc.size)
-        self.record_struct = struct.Struct(''.join(fsl))
-        self.field_descs = field_descs
+        self.recordStruct = struct.Struct(''.join(fsl))
+        self.fieldDescs = field_descs
 
-    def get_field(self, field_desc_index):
+    def getField(self, field_desc_index):
         field = self.fields[field_desc_index]
-        field_desc = self.field_descs[field_desc_index]
+        field_desc = self.fieldDescs[field_desc_index]
         # Return None in case of 'blank' entries
         if isinstance(field, str):
-            if len(field.rstrip('\0')) == 0:
+            if not field.rstrip('\0'):
                 return None
         elif field == 0:
             return None
@@ -383,18 +383,18 @@ class EasyWorshipSongImport(SongImport):
                 struct.unpack_from('<II', field, len(field)-10)
             sub_block = block_start & 0xff
             block_start &= ~0xff
-            self.memo_file.seek(block_start)
-            memo_block_type, = struct.unpack('b', self.memo_file.read(1))
+            self.memoFile.seek(block_start)
+            memo_block_type, = struct.unpack('b', self.memoFile.read(1))
             if memo_block_type == 2:
-                self.memo_file.seek(8, os.SEEK_CUR)
+                self.memoFile.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
                 if sub_block > 63:
                     return u''
-                self.memo_file.seek(11 + (5 * sub_block), os.SEEK_CUR)
-                sub_block_start, = struct.unpack('B', self.memo_file.read(1))
-                self.memo_file.seek(block_start + (sub_block_start * 16))
+                self.memoFile.seek(11 + (5 * sub_block), os.SEEK_CUR)
+                sub_block_start, = struct.unpack('B', self.memoFile.read(1))
+                self.memoFile.seek(block_start + (sub_block_start * 16))
             else:
                 return u''
-            return self.memo_file.read(blob_size)
+            return self.memoFile.read(blob_size)
         else:
             return 0

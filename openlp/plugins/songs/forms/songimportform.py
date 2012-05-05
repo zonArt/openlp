@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -57,7 +57,7 @@ class SongImportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        self.clipboard = plugin.formparent.clipboard
+        self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
             u':/wizards/wizard_importsong.bmp')
 
@@ -129,6 +129,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.ccliRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onCCLIRemoveButtonClicked)
+        QtCore.QObject.connect(self.dreamBeamAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onDreamBeamAddButtonClicked)
+        QtCore.QObject.connect(self.dreamBeamRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onDreamBeamRemoveButtonClicked)
         QtCore.QObject.connect(self.songsOfFellowshipAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongsOfFellowshipAddButtonClicked)
@@ -141,9 +147,9 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.genericRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericRemoveButtonClicked)
-        QtCore.QObject.connect(self.easiSlidesBrowseButton,
+        QtCore.QObject.connect(self.easySlidesBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onEasiSlidesBrowseButtonClicked)
+            self.onEasySlidesBrowseButtonClicked)
         QtCore.QObject.connect(self.ewBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onEWBrowseButtonClicked)
@@ -191,32 +197,34 @@ class SongImportForm(OpenLPWizard):
             QtGui.QSizePolicy.Expanding)
         self.formatStack = QtGui.QStackedLayout()
         self.formatStack.setObjectName(u'FormatStack')
+        # OpenLyrics
+        self.addFileSelectItem(u'openLyrics', u'OpenLyrics', True)
         # OpenLP 2.0
         self.addFileSelectItem(u'openLP2', single_select=True)
         # openlp.org 1.x
         self.addFileSelectItem(u'openLP1', None, True, True)
-        # OpenLyrics
-        self.addFileSelectItem(u'openLyrics', u'OpenLyrics', True)
-        # Open Song
-        self.addFileSelectItem(u'openSong', u'OpenSong')
-        # Words of Worship
-        self.addFileSelectItem(u'wordsOfWorship')
-        # CCLI File import
-        self.addFileSelectItem(u'ccli')
-        # Songs of Fellowship
-        self.addFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
         self.addFileSelectItem(u'generic', None, True)
+        # CCLI File import
+        self.addFileSelectItem(u'ccli')
+        # DreamBeam
+        self.addFileSelectItem(u'dreamBeam')
         # EasySlides
-        self.addFileSelectItem(u'easiSlides', single_select=True)
+        self.addFileSelectItem(u'easySlides', single_select=True)
         # EasyWorship
         self.addFileSelectItem(u'ew', single_select=True)
-        # Words of Worship
+        # Foilpresenter
+        self.addFileSelectItem(u'foilPresenter')
+        # Open Song
+        self.addFileSelectItem(u'openSong', u'OpenSong')
+        # SongBeamer
         self.addFileSelectItem(u'songBeamer')
         # Song Show Plus
         self.addFileSelectItem(u'songShowPlus')
-        # Foilpresenter
-        self.addFileSelectItem(u'foilPresenter')
+        # Songs of Fellowship
+        self.addFileSelectItem(u'songsOfFellowship', None, True)
+        # Words of Worship
+        self.addFileSelectItem(u'wordsOfWorship')
 #        Commented out for future use.
 #        self.addFileSelectItem(u'csv', u'CSV', single_select=True)
         self.sourceLayout.addLayout(self.formatStack)
@@ -238,29 +246,32 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
+        self.formatComboBox.setItemText(SongFormat.OpenLyrics,
+            translate('SongsPlugin.ImportWizardForm',
+            'OpenLyrics or OpenLP 2.0 Exported Song'))
         self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings().OLPV2)
         self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings().OLPV1)
-        self.formatComboBox.setItemText(
-            SongFormat.OpenLyrics, WizardStrings.OL)
-        self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
-        self.formatComboBox.setItemText(
-            SongFormat.WordsOfWorship, WizardStrings.WoW)
-        self.formatComboBox.setItemText(SongFormat.CCLI, WizardStrings.CCLI)
-        self.formatComboBox.setItemText(
-            SongFormat.SongsOfFellowship, WizardStrings.SoF)
         self.formatComboBox.setItemText(SongFormat.Generic,
             translate('SongsPlugin.ImportWizardForm',
             'Generic Document/Presentation'))
+        self.formatComboBox.setItemText(SongFormat.CCLI, WizardStrings.CCLI)
         self.formatComboBox.setItemText(
-            SongFormat.EasiSlides, WizardStrings.ES)
+            SongFormat.DreamBeam, WizardStrings.DB)
+        self.formatComboBox.setItemText(
+            SongFormat.EasySlides, WizardStrings.ES)
         self.formatComboBox.setItemText(
             SongFormat.EasyWorship, WizardStrings.EW)
+        self.formatComboBox.setItemText(
+            SongFormat.FoilPresenter, WizardStrings.FP)
+        self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(
             SongFormat.SongBeamer, WizardStrings.SB)
         self.formatComboBox.setItemText(
             SongFormat.SongShowPlus, WizardStrings.SSP)
         self.formatComboBox.setItemText(
-            SongFormat.FoilPresenter, WizardStrings.FP)
+            SongFormat.SongsOfFellowship, WizardStrings.SoF)
+        self.formatComboBox.setItemText(
+            SongFormat.WordsOfWorship, WizardStrings.WoW)
 #        self.formatComboBox.setItemText(SongFormat.CSV, WizardStrings.CSV)
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -290,6 +301,10 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.ccliRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.dreamBeamAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.dreamBeamRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
         self.songsOfFellowshipAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songsOfFellowshipRemoveButton.setText(
@@ -306,9 +321,9 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'access OpenOffice or LibreOffice.'))
-        self.easiSlidesFilenameLabel.setText(
+        self.easySlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.easiSlidesBrowseButton.setText(UiStrings().Browse)
+        self.easySlidesBrowseButton.setText(UiStrings().Browse)
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(UiStrings().Browse)
@@ -358,6 +373,8 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.sourcePage:
             source_format = self.formatComboBox.currentIndex()
+            QtCore.QSettings().setValue(u'songs/last import type',
+                source_format)
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
                     critical_error_message_box(UiStrings().NFSs,
@@ -394,6 +411,12 @@ class SongImportForm(OpenLPWizard):
                         WizardStrings.YouSpecifyFile % WizardStrings.CCLI)
                     self.ccliAddButton.setFocus()
                     return False
+            elif source_format == SongFormat.DreamBeam:
+                if self.dreamBeamFileListWidget.count() == 0:
+                    critical_error_message_box(UiStrings().NFSp,
+                        WizardStrings.YouSpecifyFile % WizardStrings.DB)
+                    self.dreamBeamAddButton.setFocus()
+                    return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
                     critical_error_message_box(UiStrings().NFSp,
@@ -408,11 +431,11 @@ class SongImportForm(OpenLPWizard):
                         'presentation file to import from.'))
                     self.genericAddButton.setFocus()
                     return False
-            elif source_format == SongFormat.EasiSlides:
-                if self.easiSlidesFilenameEdit.text().isEmpty():
+            elif source_format == SongFormat.EasySlides:
+                if self.easySlidesFilenameEdit.text().isEmpty():
                     critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.ES)
-                    self.easiSlidesBrowseButton.setFocus()
+                    self.easySlidesBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
@@ -430,7 +453,7 @@ class SongImportForm(OpenLPWizard):
                 if self.songShowPlusFileListWidget.count() == 0:
                     critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.SSP)
-                    self.wordsOfWorshipAddButton.setFocus()
+                    self.songShowPlusAddButton.setFocus()
                     return False
             elif source_format == SongFormat.FoilPresenter:
                 if self.foilPresenterFileListWidget.count() == 0:
@@ -508,7 +531,8 @@ class SongImportForm(OpenLPWizard):
         Get OpenLyrics song database files
         """
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.OL,
-            self.openLyricsFileListWidget)
+            self.openLyricsFileListWidget, u'%s (*.xml)' %
+            translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'))
 
     def onOpenLyricsRemoveButtonClicked(self):
         """
@@ -550,13 +574,31 @@ class SongImportForm(OpenLPWizard):
         Get CCLI song database files
         """
         self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.CCLI,
-            self.ccliFileListWidget)
+            self.ccliFileListWidget,  u'%s (*.usr *.txt)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'CCLI SongSelect Files'))
 
     def onCCLIRemoveButtonClicked(self):
         """
         Remove selected CCLI files from the import list
         """
         self.removeSelectedItems(self.ccliFileListWidget)
+
+    def onDreamBeamAddButtonClicked(self):
+        """
+        Get DreamBeam song database files
+        """
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.DB,
+            self.dreamBeamFileListWidget, u'%s (*.xml)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'DreamBeam Song Files')
+        )
+
+    def onDreamBeamRemoveButtonClicked(self):
+        """
+        Remove selected DreamBeam files from the import list
+        """
+        self.removeSelectedItems(self.dreamBeamFileListWidget)
 
     def onSongsOfFellowshipAddButtonClicked(self):
         """
@@ -590,16 +632,23 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.genericFileListWidget)
 
-    def onEasiSlidesBrowseButtonClicked(self):
+    def onEasySlidesBrowseButtonClicked(self):
+        """
+        Get EasySlides song database file
+        """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.ES,
-            self.easiSlidesFilenameEdit)
+            self.easySlidesFilenameEdit, u'%s (*.xml)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'EasySlides XML File'))
 
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
         """
         self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.EW,
-            self.ewFilenameEdit)
+            self.ewFilenameEdit, u'%s (*.db)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'EasyWorship Song Database'))
 
     def onSongBeamerAddButtonClicked(self):
         """
@@ -655,16 +704,22 @@ class SongImportForm(OpenLPWizard):
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        self.formatComboBox.setCurrentIndex(0)
+        last_import_type = QtCore.QSettings().value(
+            u'songs/last import type').toInt()[0]
+        if last_import_type < 0 or \
+            last_import_type >= self.formatComboBox.count():
+            last_import_type = 0
+        self.formatComboBox.setCurrentIndex(last_import_type)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
         self.openLyricsFileListWidget.clear()
         self.openSongFileListWidget.clear()
         self.wordsOfWorshipFileListWidget.clear()
         self.ccliFileListWidget.clear()
+        self.dreamBeamFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
-        self.easiSlidesFilenameEdit.setText(u'')
+        self.easySlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
         self.songShowPlusFileListWidget.clear()
@@ -686,7 +741,7 @@ class SongImportForm(OpenLPWizard):
     def performWizard(self):
         """
         Perform the actual import. This method pulls in the correct importer
-        class, and then runs the ``do_import`` method of the importer to do
+        class, and then runs the ``doImport`` method of the importer to do
         the actual importing.
         """
         source_format = self.formatComboBox.currentIndex()
@@ -699,7 +754,8 @@ class SongImportForm(OpenLPWizard):
         elif source_format == SongFormat.OpenLP1:
             # Import an openlp.org database
             importer = self.plugin.importSongs(SongFormat.OpenLP1,
-                filename=unicode(self.openLP1FilenameEdit.text())
+                filename=unicode(self.openLP1FilenameEdit.text()),
+                plugin=self.plugin
             )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
@@ -722,6 +778,12 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.CCLI,
                 filenames=self.getListOfFiles(self.ccliFileListWidget)
             )
+        elif source_format == SongFormat.DreamBeam:
+            # Import DreamBeam songs
+            importer = self.plugin.importSongs(SongFormat.DreamBeam,
+                filenames=self.getListOfFiles(
+                    self.dreamBeamFileListWidget)
+            )
         elif source_format == SongFormat.SongsOfFellowship:
             # Import a Songs of Fellowship RTF file
             importer = self.plugin.importSongs(SongFormat.SongsOfFellowship,
@@ -733,10 +795,10 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
             )
-        elif source_format == SongFormat.EasiSlides:
-            # Import an EasiSlides export file
-            importer = self.plugin.importSongs(SongFormat.EasiSlides,
-                filename=unicode(self.easiSlidesFilenameEdit.text())
+        elif source_format == SongFormat.EasySlides:
+            # Import an EasySlides export file
+            importer = self.plugin.importSongs(SongFormat.EasySlides,
+                filename=unicode(self.easySlidesFilenameEdit.text())
             )
         elif source_format == SongFormat.EasyWorship:
             # Import an EasyWorship database
@@ -758,8 +820,8 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
-        importer.do_import()
-        if importer.error_log:
+        importer.doImport()
+        if importer.errorLog:
             self.progressLabel.setText(translate(
                 'SongsPlugin.SongImportForm', 'Your song import failed.'))
         else:

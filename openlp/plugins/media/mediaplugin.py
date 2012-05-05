@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -26,9 +26,8 @@
 ###############################################################################
 
 import logging
-import mimetypes
 
-from PyQt4.phonon import Phonon
+from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
@@ -39,58 +38,29 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', plugin_helpers,
-            MediaMediaItem, MediaTab)
+        Plugin.__init__(self, u'media', plugin_helpers,
+            MediaMediaItem)
         self.weight = -6
-        self.icon_path = u':/plugins/plugin_media.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.iconPath)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.additional_extensions = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-ms-wmv': [u'.wmv']}
-        self.audio_extensions_list = []
-        self.video_extensions_list = []
-        mimetypes.init()
-        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
-            mimetype = unicode(mimetype)
-            if mimetype.startswith(u'audio/'):
-                self._addToList(self.audio_extensions_list, mimetype)
-            elif mimetype.startswith(u'video/'):
-                self._addToList(self.video_extensions_list, mimetype)
+        self.audio_extensions_list = \
+            self.mediaController.get_audio_extensions_list()
+        for ext in self.audio_extensions_list:
+            self.serviceManager.supportedSuffixes(ext[2:])
+        self.video_extensions_list = \
+            self.mediaController.get_video_extensions_list()
+        for ext in self.video_extensions_list:
+            self.serviceManager.supportedSuffixes(ext[2:])
 
-    def _addToList(self, list, mimetype):
-        # Add all extensions which mimetypes provides us for supported types.
-        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
-        for extension in extensions:
-            ext = u'*%s' % extension
-            if ext not in list:
-                list.append(ext)
-                self.serviceManager.supportedSuffixes(extension[1:])
-        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
-            u' '.join(extensions)))
-        # Add extensions for this mimetype from self.additional_extensions.
-        # This hack clears mimetypes' and operating system's shortcomings
-        # by providing possibly missing extensions.
-        if mimetype in self.additional_extensions.keys():
-            for extension in self.additional_extensions[mimetype]:
-                ext = u'*%s' % extension
-                if ext not in list:
-                    list.append(ext)
-                    self.serviceManager.supportedSuffixes(extension[1:])
-            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
-                u' '.join(self.additional_extensions[mimetype])))
+    def createSettingsTab(self, parent):
+        """
+        Create the settings Tab
+        """
+        visible_name = self.getString(StringContent.VisibleName)
+        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
+            self.mediaController.mediaPlayers, self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -123,3 +93,55 @@ class MediaPlugin(Plugin):
                 'Add the selected media to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'Media Finalising')
+        self.mediaController.finalise()
+        Plugin.finalise(self)
+
+    def getDisplayCss(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        return self.mediaController.get_media_display_css()
+
+    def getDisplayJavaScript(self):
+        """
+        Add javascript functions to htmlbuilder
+        """
+        return self.mediaController.get_media_display_javascript()
+
+    def getDisplayHtml(self):
+        """
+        Add html code to htmlbuilder
+        """
+        return self.mediaController.get_media_display_html()
+
+    def appStartup(self):
+        """
+        Do a couple of things when the app starts up. In this particular case
+        we want to check if we have the old "Use Phonon" setting, and convert
+        it to "enable Phonon" and "make it the first one in the list".
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        if settings.contains(u'use phonon'):
+            log.info(u'Found old Phonon setting')
+            players = self.mediaController.mediaPlayers.keys()
+            has_phonon = u'phonon' in players
+            if settings.value(u'use phonon').toBool() and has_phonon:
+                log.debug(u'Converting old setting to new setting')
+                new_players = []
+                if players:
+                    new_players = [player for player in players \
+                        if player != u'phonon']
+                new_players.insert(0, u'phonon')
+                self.mediaController.mediaPlayers[u'phonon'].isActive = True
+                settings.setValue(u'players', \
+                    QtCore.QVariant(u','.join(new_players)))
+                self.settingsTab.load()
+            settings.remove(u'use phonon')
+        settings.endGroup()
