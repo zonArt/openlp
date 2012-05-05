@@ -336,7 +336,7 @@ class OpenLyrics(object):
                 verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "optional" verses.
             optional_verses = cgi.escape(verse[1])
-            optional_verses = optional_verses.split(u'[---]')
+            optional_verses = optional_verses.split(u'\n[---]\n')
             start_tags = u''
             end_tags = u''
             for index, optional_verse in enumerate(optional_verses):
