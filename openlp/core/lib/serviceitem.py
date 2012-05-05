@@ -195,8 +195,7 @@ class ServiceItem(object):
         # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
-        self.foot_text = \
-            u'<br>'.join([footer for footer in self.raw_footer if footer])
+        self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
 
     def add_from_image(self, path, title, background=None):
         """
@@ -300,6 +299,7 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
+        log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.name = header[u'name']
@@ -325,7 +325,10 @@ class ServiceItem(object):
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if u'background_audio' in header:
-            self.background_audio = header[u'background_audio']
+            self.background_audio = []
+            for filename in header[u'background_audio']:
+                # Give them real file paths
+                self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:

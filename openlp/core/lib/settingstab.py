@@ -47,7 +47,7 @@ class SettingsTab(QtGui.QWidget):
         self.tabTitleVisible = visible_title
         self.settingsSection = self.tabTitle.lower()
         if icon_path:
-            self.icon_path = icon_path
+            self.iconPath = icon_path
         self.setupUi()
         self.retranslateUi()
         self.initialise()
@@ -112,7 +112,7 @@ class SettingsTab(QtGui.QWidget):
 
     def cancel(self):
         """
-        Reset any settings if cancel pressed
+        Reset any settings if cancel triggered
         """
         self.load()
 

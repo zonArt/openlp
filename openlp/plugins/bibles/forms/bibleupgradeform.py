@@ -371,7 +371,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Perform the actual upgrade.
         """
-        self.include_webbible = False
+        self.includeWebBible = False
         proxy_server = None
         if not self.files:
             self.progressLabel.setText(
@@ -383,14 +383,14 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, file in enumerate(self.files):
             if self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 max_bibles += 1
-        oldBible = None
+        old_bible = None
         for number, filename in enumerate(self.files):
             # Close the previous bible's connection.
-            if oldBible is not None:
-                oldBible.close_connection()
+            if old_bible is not None:
+                old_bible.close_connection()
                 # Set to None to make obvious that we have already closed the
                 # database.
-                oldBible = None
+                old_bible = None
             if self.stop_import_flag:
                 self.success[number] = False
                 break
@@ -398,7 +398,7 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.success[number] = False
                 continue
             self.progressBar.reset()
-            oldBible = OldBibleDB(self.mediaItem, path=self.temp_dir,
+            old_bible = OldBibleDB(self.mediaItem, path=self.temp_dir,
                 file=filename[0])
             name = filename[1]
             self.progressLabel.setText(unicode(translate(
@@ -408,33 +408,38 @@ class BibleUpgradeForm(OpenLPWizard):
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name, file=filename[0])
             self.newbibles[number].register(self.plugin.upgrade_wizard)
-            metadata = oldBible.get_metadata()
-            webbible = False
+            metadata = old_bible.get_metadata()
+            web_bible = False
             meta_data = {}
             for meta in metadata:
+                # Upgrade the names of the metadata keys
+                if meta[u'key'] == u'Version':
+                    meta[u'key'] = u'name'
+                if meta[u'key'] == u'Bookname language':
+                    meta[u'key'] = 'book_name_language'
+                meta[u'key'] = meta[u'key'].lower().replace(' ', '_')
+                # Copy the metadata
                 meta_data[meta[u'key']] = meta[u'value']
-                if not meta[u'key'] == u'Version' and not meta[u'key'] == \
-                    u'dbversion':
-                    self.newbibles[number].create_meta(meta[u'key'],
+                if meta[u'key'] != u'name' and meta[u'key'] != u'dbversion':
+                    self.newbibles[number].save_meta(meta[u'key'],
                         meta[u'value'])
-                if meta[u'key'] == u'download source':
-                    webbible = True
-                    self.include_webbible = True
-                if meta.has_key(u'proxy server'):
-                    proxy_server = meta[u'proxy server']
-            if webbible:
-                if meta_data[u'download source'].lower() == u'crosswalk':
+                if meta[u'key'] == u'download_source':
+                    web_bible = True
+                    self.includeWebBible = True
+                proxy_server = meta.get(u'proxy_server')
+            if web_bible:
+                if meta_data[u'download_source'].lower() == u'crosswalk':
                     handler = CWExtract(proxy_server)
-                elif meta_data[u'download source'].lower() == u'biblegateway':
+                elif meta_data[u'download_source'].lower() == u'biblegateway':
                     handler = BGExtract(proxy_server)
-                elif meta_data[u'download source'].lower() == u'bibleserver':
+                elif meta_data[u'download_source'].lower() == u'bibleserver':
                     handler = BSExtract(proxy_server)
-                books = handler.get_books_from_http(meta_data[u'download name'])
+                books = handler.get_books_from_http(meta_data[u'download_name'])
                 if not books:
                     log.error(u'Upgrading books from %s - download '\
                         u'name: "%s" failed' % (
-                        meta_data[u'download source'],
-                        meta_data[u'download name']))
+                        meta_data[u'download_source'],
+                        meta_data[u'download_name']))
                     self.newbibles[number].session.close()
                     del self.newbibles[number]
                     critical_error_message_box(
@@ -451,11 +456,11 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.success[number] = False
                     continue
                 bible = BiblesResourcesDB.get_webbible(
-                    meta_data[u'download name'],
-                    meta_data[u'download source'].lower())
+                    meta_data[u'download_name'],
+                    meta_data[u'download_source'].lower())
                 if bible and bible[u'language_id']:
                     language_id = bible[u'language_id']
-                    self.newbibles[number].create_meta(u'language_id',
+                    self.newbibles[number].save_meta(u'language_id',
                         language_id)
                 else:
                     language_id = self.newbibles[number].get_language(name)
@@ -485,8 +490,8 @@ class BibleUpgradeForm(OpenLPWizard):
                     if not book_ref_id:
                         log.warn(u'Upgrading books from %s - download '\
                             u'name: "%s" aborted by user' % (
-                            meta_data[u'download source'],
-                            meta_data[u'download name']))
+                            meta_data[u'download_source'],
+                            meta_data[u'download_name']))
                         self.newbibles[number].session.close()
                         del self.newbibles[number]
                         self.success[number] = False
@@ -495,9 +500,9 @@ class BibleUpgradeForm(OpenLPWizard):
                     db_book = self.newbibles[number].create_book(book,
                         book_ref_id, book_details[u'testament_id'])
                     # Try to import already downloaded verses.
-                    oldbook = oldBible.get_book(book)
+                    oldbook = old_bible.get_book(book)
                     if oldbook:
-                        verses = oldBible.get_verses(oldbook[u'id'])
+                        verses = old_bible.get_verses(oldbook[u'id'])
                         if not verses:
                             log.warn(u'No verses found to import for book '
                                 u'"%s"', book)
@@ -527,7 +532,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.progressBar.maximum() - self.progressBar.value())
                     self.success[number] = False
                     continue
-                books = oldBible.get_books()
+                books = old_bible.get_books()
                 self.progressBar.setMaximum(len(books))
                 for book in books:
                     if self.stop_import_flag:
@@ -551,7 +556,7 @@ class BibleUpgradeForm(OpenLPWizard):
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     db_book = self.newbibles[number].create_book(book[u'name'],
                         book_ref_id, book_details[u'testament_id'])
-                    verses = oldBible.get_verses(book[u'id'])
+                    verses = old_bible.get_verses(book[u'id'])
                     if not verses:
                         log.warn(u'No verses found to import for book '
                             u'"%s"', book[u'name'])
@@ -566,7 +571,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             int(verse[u'verse']), unicode(verse[u'text']))
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
-            if self.success.has_key(number) and not self.success[number]:
+            if not self.success.get(number, True):
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\nFailed')) %
@@ -574,17 +579,17 @@ class BibleUpgradeForm(OpenLPWizard):
                     self.progressBar.maximum() - self.progressBar.value())
             else:
                 self.success[number] = True
-                self.newbibles[number].create_meta(u'Version', name)
+                self.newbibles[number].save_meta(u'name', name)
                 self.incrementProgressBar(unicode(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
                     'Complete')) %
                     (number + 1, max_bibles, name))
-            if self.newbibles.has_key(number):
+            if number in self.newbibles:
                 self.newbibles[number].session.close()
         # Close the last bible's connection if possible.
-        if oldBible is not None:
-            oldBible.close_connection()
+        if old_bible is not None:
+            old_bible.close_connection()
 
     def postWizard(self):
         """
@@ -593,7 +598,7 @@ class BibleUpgradeForm(OpenLPWizard):
         successful_import = 0
         failed_import = 0
         for number, filename in enumerate(self.files):
-            if self.success.has_key(number) and self.success[number]:
+            if self.success.get(number):
                 successful_import += 1
             elif self.checkBox[number].checkState() == QtCore.Qt.Checked:
                 failed_import += 1
@@ -608,7 +613,7 @@ class BibleUpgradeForm(OpenLPWizard):
         else:
             failed_import_text = u''
         if successful_import > 0:
-            if self.include_webbible:
+            if self.includeWebBible:
                 self.progressLabel.setText(unicode(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
                     'Bible(s): %s successful%s\nPlease note that verses from '

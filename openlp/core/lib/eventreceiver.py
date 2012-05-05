@@ -112,6 +112,9 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay.
 
+    ``slidecontroller_update_slide_limits``
+        Updates the slide_limits variable from the saved settings.
+
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display.
 
@@ -213,6 +216,9 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_service_load``
         Ask the plugin to process an individual service item after it has been
         loaded.
+
+    ``{plugin}_config_updated``
+        The config has changed so tell the plugin about it.
 
     ``alerts_text``
         Displays an alert message.

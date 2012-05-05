@@ -43,7 +43,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        QtGui.QDialog.__init__(self, plugin.formparent)
+        QtGui.QDialog.__init__(self, plugin.formParent)
         self.setupUi(self)
         QtCore.QObject.connect(self.displayButton,
             QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
@@ -101,7 +101,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.alertTextEdit.setText(u'')
 
     def onNewClick(self):
-        if len(self.alertTextEdit.text()) == 0:
+        if not self.alertTextEdit.text():
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '

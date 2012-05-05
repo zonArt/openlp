@@ -75,10 +75,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.setFocus()
 
     def onSplitButtonClicked(self):
-        verse_type_index = self.verseTypeComboBox.currentIndex()
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
-        self.verseTextEdit.insertPlainText(u'[---]')
+        text = self.verseTextEdit.toPlainText()
+        position = self.verseTextEdit.textCursor().position()
+        insert_string = u'[---]'
+        if position and text[position-1] != u'\n':
+             insert_string = u'\n' + insert_string
+        if position ==  len(text) or text[position] != u'\n':
+             insert_string += u'\n'
+        self.verseTextEdit.insertPlainText(insert_string)
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
@@ -113,8 +117,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 verse_num = int(match.group(2))
             except ValueError:
                 verse_num = 1
-            verse_type_index = VerseType.from_loose_input(verse_tag, None)
-            if verse_type_index is not None:
+            if VerseType.from_loose_input(verse_tag, False):
                 self.verseNumberBox.setValue(verse_num)
 
     def onCursorPositionChanged(self):
@@ -188,13 +191,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         else:
             log.debug(unicode(self.getVerse()[0]).split(u'\n'))
             value = unicode(self.getVerse()[0]).split(u'\n')[1]
-            if len(value) == 0:
+            if not value:
                 lines = unicode(self.getVerse()[0]).split(u'\n')
                 index = 2
-                while index < len(lines) and len(value) == 0:
+                while index < len(lines) and not value:
                     value = lines[index]
                     index += 1
-        if len(value) == 0:
+        if not value:
             critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type some text in to the verse.'))

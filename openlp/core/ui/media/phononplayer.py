@@ -57,12 +57,14 @@ ADDITIONAL_EXT = {
 
 class PhononPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a Phonon 
+    A specialised version of the MediaPlayer class, which provides a Phonon
     display.
     """
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'phonon')
+        self.original_name = u'Phonon'
+        self.display_name = u'&Phonon'
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
@@ -154,7 +156,7 @@ class PhononPlayer(MediaPlayer):
                 int(display.mediaObject.totalTime()/1000)
             controller.seekSlider.setMaximum(controller.media_info.length*1000)
             self.state = MediaState.Playing
-            display.phononWidget.raise_()            
+            display.phononWidget.raise_()
             return True
         else:
             return False
@@ -190,6 +192,9 @@ class PhononPlayer(MediaPlayer):
             display.phononWidget.setVisible(status)
 
     def update_ui(self, display):
+        if display.mediaObject.state() == Phonon.PausedState and \
+            self.state != MediaState.Paused:
+            self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
             if display.mediaObject.currentTime() > \

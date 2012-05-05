@@ -126,7 +126,6 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout.addWidget(self.optionsGroupBox)
 
         self.retranslateUi(printServiceDialog)
-        QtCore.QMetaObject.connectSlotsByName(printServiceDialog)
         QtCore.QObject.connect(self.optionsButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 

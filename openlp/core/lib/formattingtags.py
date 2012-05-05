@@ -47,7 +47,6 @@ class FormattingTags(object):
         Provide access to the html_expands list.
         """
         # Load user defined tags otherwise user defined tags are not present.
-        FormattingTags.load_tags()
         return FormattingTags.html_expands
 
     @staticmethod
