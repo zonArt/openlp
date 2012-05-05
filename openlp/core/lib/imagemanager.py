@@ -100,6 +100,7 @@ class Image(object):
     variables ``image`` and ``image_bytes`` to ``None`` and add the image object
     to the queue of images to process.
     """
+    NUMBER = 0
     def __init__(self, name, path, source, background):
         self.name = name
         self.path = path
@@ -108,11 +109,24 @@ class Image(object):
         self.priority = Priority.Normal
         self.source = source
         self.background = background
+        self._number = Image.NUMBER
+        Image.NUMBER += 1
 
 
 class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
+
+    Each item in the queue must be tuple with three values. The fist value
+    is the priority, the second value the image's ``_number`` attribute. The
+    last value the :class:`image` instance itself::
+
+        (Priority.Normal, image._number, image)
+
+    Doing this, the :class:`Queue.PriorityQueue` will sort the images according
+    to their priorities, but also according to there number. However, the number
+    only has an impact on the result if there are more images with the same
+    priority. In such case the image which has been added earlier is privileged.
     """
     def modify_priority(self, image, new_priority):
         """
@@ -126,7 +140,7 @@ class PriorityQueue(Queue.PriorityQueue):
         """
         self.remove(image)
         image.priority = new_priority
-        self.put((image.priority, image))
+        self.put((image.priority, image._number, image))
 
     def remove(self, image):
         """
@@ -135,8 +149,8 @@ class PriorityQueue(Queue.PriorityQueue):
         ``image``
             The image to remove. This should be an ``Image`` instance.
         """
-        if (image.priority, image) in self.queue:
-            self.queue.remove((image.priority, image))
+        if (image.priority, image._number, image) in self.queue:
+            self.queue.remove((image.priority, image._number, image))
 
 
 class ImageManager(QtCore.QObject):
@@ -261,7 +275,7 @@ class ImageManager(QtCore.QObject):
         if not name in self._cache:
             image = Image(name, path, source, background)
             self._cache[name] = image
-            self._conversion_queue.put((image.priority, image))
+            self._conversion_queue.put((image.priority, image._number, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
@@ -282,7 +296,7 @@ class ImageManager(QtCore.QObject):
         Actually does the work.
         """
         log.debug(u'_process_cache')
-        image = self._conversion_queue.get()[1]
+        image = self._conversion_queue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height,
