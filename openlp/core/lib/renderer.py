@@ -131,7 +131,6 @@ class Renderer(object):
 
         ``override_levels``
             Used to force the theme data passed in to be used.
-
         """
         log.debug(u'set override theme to %s', override_theme)
         theme_level = self.theme_level
@@ -500,12 +499,15 @@ class Renderer(object):
         raw_tags.sort(key=lambda tag: tag[0])
         html_tags.sort(key=lambda tag: tag[0])
         # Create a list with closing tags for the raw_text.
-        end_tags = [tag[2] for tag in raw_tags]
+        end_tags = []
+        start_tags = []
+        for tag in raw_tags:
+            start_tags.append(tag[1])
+            end_tags.append(tag[2])
         end_tags.reverse()
         # Remove the indexes.
-        raw_tags = [tag[1] for tag in raw_tags]
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(raw_tags), \
+        return raw_text + u''.join(end_tags),  u''.join(start_tags), \
             u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,

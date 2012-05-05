@@ -90,7 +90,7 @@ class CategoryActionList(object):
 
     def append(self, name):
         weight = 0
-        if len(self.actions) > 0:
+        if self.actions:
             weight = self.actions[-1][0] + 1
         self.add(name, weight)
 
@@ -156,7 +156,7 @@ class CategoryList(object):
 
     def append(self, name, actions=None):
         weight = 0
-        if len(self.categories) > 0:
+        if self.categories:
             weight = self.categories[-1].weight + 1
         if actions:
             self.add(name, weight, actions)
