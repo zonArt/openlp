@@ -342,7 +342,7 @@ class OpenLyrics(object):
             for index, optional_verse in enumerate(optional_verses):
                 # Fix up missing end and start tags such as {r} or {/r}.
                 optional_verse = start_tags + optional_verse
-                start_tags, end_tags = self._get_start_tags(optional_verse)
+                start_tags, end_tags = self._get_missing_tags(optional_verse)
                 optional_verse += end_tags
                 # Add formatting tags to text
                 lines_element = self._add_text_with_tags_to_lines(verse_element,
@@ -352,7 +352,7 @@ class OpenLyrics(object):
                     lines_element.set(u'break', u'optional')
         return self._extract_xml(song_xml)
 
-    def _get_start_tags(self, text):
+    def _get_missing_tags(self, text):
         """
         Tests the given text for not closed formatting tags and returns a tuple
         consisting of two unicode strings::
