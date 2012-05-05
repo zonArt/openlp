@@ -127,7 +127,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
-        for i in range(0, self.slideListView.count()):
+        for i in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.slideListView.item(i).text()))
             count += 1
@@ -170,7 +170,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Edits all slides.
         """
         slide_list = u''
-        for row in range(0, self.slideListView.count()):
+        for row in range(self.slideListView.count()):
             item = self.slideListView.item(row)
             slide_list += item.text()
             if row != self.slideListView.count() - 1:
@@ -206,7 +206,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             old_row = self.slideListView.currentRow()
             # Create a list with all (old/unedited) slides.
             old_slides = [self.slideListView.item(row).text() for row in \
-                range(0, self.slideListView.count())]
+                range(self.slideListView.count())]
             self.slideListView.clear()
             old_slides.pop(old_row)
             # Insert all slides to make the old_slides list complete.
@@ -254,7 +254,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Checks whether a custom is valid or not.
         """
         # We must have a title.
-        if len(self.titleEdit.displayText()) == 0:
+        if not self.titleEdit.displayText():
             self.titleEdit.setFocus()
             critical_error_message_box(
                 message=translate('CustomPlugin.EditCustomForm',

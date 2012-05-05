@@ -230,7 +230,7 @@ def get_application_version():
             if code != 0:
                 raise Exception(u'Error running bzr tags')
             lines = output.splitlines()
-            if len(lines) == 0:
+            if not lines:
                 tag = u'0.0.0'
                 revision = u'0'
             else:
