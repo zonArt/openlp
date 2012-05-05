@@ -51,7 +51,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
-    def __init__(self, serviceManager, parent=None, name=None):
+    def __init__(self, serviceManager, parent=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.serviceManager = serviceManager
 
@@ -101,7 +101,6 @@ class ServiceManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.mainwindow = mainwindow
         self.serviceItems = []
-        self.serviceName = u''
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False

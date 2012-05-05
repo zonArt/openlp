@@ -125,7 +125,7 @@ class Renderer(object):
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
 
-        ``theme``
+        ``override_theme``
             The name of the song-level theme. None means the service
             item wants to use the given value.
 
