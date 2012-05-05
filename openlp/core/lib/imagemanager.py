@@ -133,10 +133,11 @@ class PriorityQueue(Queue.PriorityQueue):
         Modifies the priority of the given ``image``.
 
         ``image``
-            The image to remove. This should be an ``Image`` instance.
+            The image to remove. This should be an :class:`Image` instance.
 
         ``new_priority``
-            The image's new priority.
+            The image's new priority. See the :class:`Priority` class for
+            priorities.
         """
         self.remove(image)
         image.priority = new_priority
