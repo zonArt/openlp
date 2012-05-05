@@ -33,7 +33,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <song version="1.0">
         <lyrics>
             <verse type="c" label="1" lang="en">
-                <![CDATA[Chorus virtual slide 1[---]Chorus  virtual slide 2]]>
+                <![CDATA[Chorus optional split 1[---]Chorus optional split 2]]>
             </verse>
         </lyrics>
     </song>
@@ -135,7 +135,7 @@ class SongXML(object):
         The returned list has the following format::
 
             [[{'type': 'v', 'label': '1'},
-            u"virtual slide 1[---]virtual slide 2"],
+            u"optional slide split 1[---]optional slide split 2"],
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
@@ -334,7 +334,7 @@ class OpenLyrics(object):
                 self._add_text_to_element(u'verse', lyrics, None, verse_def)
             if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
-            # Create a list with all "virtual" verses.
+            # Create a list with all "optional" verses.
             optional_verses = cgi.escape(verse[1])
             optional_verses = optional_verses.split(u'[---]')
             start_tags = u''
