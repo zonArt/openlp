@@ -335,16 +335,56 @@ class OpenLyrics(object):
             if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
             # Create a list with all "virtual" verses.
-            virtual_verses = cgi.escape(verse[1])
-            virtual_verses = virtual_verses.split(u'[---]')
-            for index, virtual_verse in enumerate(virtual_verses):
+            optional_verses = cgi.escape(verse[1])
+            optional_verses = optional_verses.split(u'[---]')
+            start_tags = u''
+            end_tags = u''
+            for index, optional_verse in enumerate(optional_verses):
+                optional_verse = start_tags + optional_verse
+                start_tags, end_tags = self._get_start_tags(optional_verse)
+                optional_verse += end_tags
                 # Add formatting tags to text
                 lines_element = self._add_text_with_tags_to_lines(verse_element,
-                    virtual_verse, tags_element)
+                    optional_verse, tags_element)
                 # Do not add the break attribute to the last lines element.
-                if index < len(virtual_verses) - 1:
+                if index < len(optional_verses) - 1:
                     lines_element.set(u'break', u'optional')
         return self._extract_xml(song_xml)
+
+    def _get_start_tags(self, text):
+        """
+        Tests the given text for not closed formatting tags and returns a tuple
+        consisting of two unicode strings::
+
+            (u'{st}{r}', u'{/r}{/st}')
+
+        The first unicode string are the start tags (for the next slide). The
+        second unicode string are the end tags.
+
+        ``text``
+            The text to test. The text must **not** contain html tags, only
+            OpenLP formatting tags are allowed::
+
+                {st}{r}Text text text
+        """
+        tags = []
+        for tag in FormattingTags.get_html_tags():
+            if tag[u'start tag'] == u'{br}':
+                continue
+            if text.count(tag[u'start tag']) != text.count(tag[u'end tag']):
+                tags.append((text.find(tag[u'start tag']),
+                    tag[u'start tag'], tag[u'end tag']))
+        # Sort the lists, so that the tags which were opened first on the first
+        # slide (the text we are checking) will be opened first on the next
+        # slide as well.
+        tags.sort(key=lambda tag: tag[0])
+        end_tags = []
+        start_tags = []
+        for tag in tags:
+            start_tags.append(tag[1])
+            end_tags.append(tag[2])
+        end_tags.reverse()
+        return u''.join(start_tags), u''.join(end_tags)
 
     def xml_to_song(self, xml, parse_and_temporary_save=False):
         """
