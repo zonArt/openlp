@@ -340,6 +340,7 @@ class OpenLyrics(object):
             start_tags = u''
             end_tags = u''
             for index, optional_verse in enumerate(optional_verses):
+                # Fix up missing end and start tags such as {r} or {/r}.
                 optional_verse = start_tags + optional_verse
                 start_tags, end_tags = self._get_start_tags(optional_verse)
                 optional_verse += end_tags
