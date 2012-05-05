@@ -119,7 +119,7 @@ class PriorityQueue(Queue.PriorityQueue):
 
     Each item in the queue must be tuple with three values. The fist value
     is the priority, the second value the image's ``_number`` attribute. The
-    last value the :class:`image` instance itself::
+    last value the :class:`Image` instance itself::
 
         (Priority.Normal, image._number, image)
 
