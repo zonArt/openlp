@@ -316,7 +316,7 @@ def clean_song(manager, song):
                 verse_type,
                 verse[0][u'label'],
                 verse[1],
-                verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+                verse[0].get(u'lang')
             )
             compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
                 ).upper())

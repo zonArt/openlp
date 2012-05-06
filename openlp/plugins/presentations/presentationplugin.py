@@ -54,16 +54,16 @@ class PresentationPlugin(Plugin):
         self.controllers = {}
         Plugin.__init__(self, u'presentations', plugin_helpers)
         self.weight = -8
-        self.icon_path = u':/plugins/plugin_presentations.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_presentations.png'
+        self.icon = build_icon(self.iconPath)
 
     def createSettingsTab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settings_tab = PresentationTab(parent, self.name,
-            visible_name[u'title'], self.controllers, self.icon_path)
+        self.settingsTab = PresentationTab(parent, self.name,
+            visible_name[u'title'], self.controllers, self.iconPath)
 
     def initialise(self):
         """
@@ -99,7 +99,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.mediadock.media_dock, self, self.icon, self.controllers)
+            self.mediaDock.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """
@@ -134,10 +134,7 @@ class PresentationPlugin(Plugin):
         for controller_class in controller_classes:
             controller = controller_class(self)
             self.registerControllers(controller)
-        if self.controllers:
-            return True
-        else:
-            return False
+        return bool(self.controllers)
 
     def about(self):
         """

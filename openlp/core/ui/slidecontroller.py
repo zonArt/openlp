@@ -373,7 +373,7 @@ class SlideController(Controller):
                 u'text': translate('OpenLP.SlideController', 'Go to "Ending"')},
                 {u'key': u'O', u'configurable': True,
                 u'text': translate('OpenLP.SlideController', 'Go to "Other"')}]
-            shortcuts += [{u'key': unicode(number)} for number in range(0, 10)]
+            shortcuts += [{u'key': unicode(number)} for number in range(10)]
             self.previewListWidget.addActions([create_action(self,
                 u'shortcutAction_%s' % s[u'key'], text=s.get(u'text'),
                 shortcuts=[QtGui.QKeySequence(s[u'key'])],
@@ -555,7 +555,7 @@ class SlideController(Controller):
         Process the service item request queue.  The key presses can arrive
         faster than the processing so implement a FIFO queue.
         """
-        if len(self.keypress_queue):
+        if self.keypress_queue:
             while len(self.keypress_queue) and not self.keypress_loop:
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
@@ -648,8 +648,8 @@ class SlideController(Controller):
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
-        slideno = self.slideList[request]
-        self.__updatePreviewSelection(slideno)
+        slide_no = self.slideList[request]
+        self.__updatePreviewSelection(slide_no)
         self.slideSelected()
 
     def receiveSpinDelay(self, value):
@@ -663,7 +663,7 @@ class SlideController(Controller):
         Updates the Slide Limits variable from the settings.
         """
         self.slide_limits = QtCore.QSettings().value(
-            self.parent().advancedlSettingsSection + u'/slide limits',
+            self.parent().advancedSettingsSection + u'/slide limits',
             QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
     def enableToolBar(self, item):
@@ -694,7 +694,7 @@ class SlideController(Controller):
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
-                QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
+                QtCore.QVariant(True)).toBool() and self.slideList:
                 self.songMenu.show()
         if item.is_capable(ItemCapabilities.CanLoop) and \
             len(item.get_frames()) > 1:

@@ -57,7 +57,7 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_custom_form = EditCustomForm(self, self.plugin.formparent,
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent,
             self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
@@ -258,7 +258,7 @@ class CustomMediaItem(MediaManagerItem):
         search_length = 2
         if len(text) > search_length:
             self.onSearchTextButtonClicked()
-        elif len(text) == 0:
+        elif not text:
             self.onClearTextButtonClick()
 
     def onClearTextButtonClick(self):

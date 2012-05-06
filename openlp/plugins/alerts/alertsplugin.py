@@ -117,8 +117,8 @@ class AlertsPlugin(Plugin):
         Plugin.__init__(self, u'alerts', plugin_helpers,
             settings_tab_class=AlertsTab)
         self.weight = -3
-        self.icon_path = u':/plugins/plugin_alerts.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_alerts.png'
+        self.icon = build_icon(self.iconPath)
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self)
@@ -197,10 +197,10 @@ class AlertsPlugin(Plugin):
         """
         Add CSS to the main display.
         """
-        align = VerticalType.Names[self.settings_tab.location]
-        return CSS % (align, self.settings_tab.font_face,
-            self.settings_tab.font_size, self.settings_tab.font_color,
-            self.settings_tab.bg_color)
+        align = VerticalType.Names[self.settingsTab.location]
+        return CSS % (align, self.settingsTab.font_face,
+            self.settingsTab.font_size, self.settingsTab.font_color,
+            self.settingsTab.bg_color)
 
     def getDisplayHtml(self):
         """
@@ -215,7 +215,7 @@ class AlertsPlugin(Plugin):
         ``frame``
             The Web frame holding the page.
         """
-        align = VerticalType.Names[self.settings_tab.location]
+        align = VerticalType.Names[self.settingsTab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
-            (align, self.settings_tab.font_face, self.settings_tab.font_size,
-            self.settings_tab.font_color, self.settings_tab.bg_color))
+            (align, self.settingsTab.font_face, self.settingsTab.font_size,
+            self.settingsTab.font_color, self.settingsTab.bg_color))

@@ -77,6 +77,8 @@ try:
     UNO_VERSION = node.getByName(u'ooSetupVersion')
 except ImportError:
     UNO_VERSION = u'-'
+except:
+    UNO_VERSION = u'- (Possible non-standard UNO installation)'
 try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
