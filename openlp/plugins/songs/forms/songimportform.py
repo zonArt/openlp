@@ -28,6 +28,7 @@
 The song import functions for OpenLP.
 """
 import codecs
+import fnmatch
 import logging
 import os
 
@@ -399,7 +400,8 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.PowerSong:
                 if self.powerSongFilenameEdit.text().isEmpty() or \
-                    not os.path.isdir(self.powerSongFilenameEdit.text()):
+                    not self.isPowerSongFolder(
+                    self.powerSongFilenameEdit.text()):
                     critical_error_message_box(UiStrings().NFdSs,
                         WizardStrings.YouSpecifyFolder % WizardStrings.PS)
                     self.powerSongBrowseButton.setFocus()
@@ -481,6 +483,16 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.progressPage:
             return True
+
+    def isPowerSongFolder(self, dir):
+        """
+        Checks if a folder is a PowerSong 1.0 folder
+        """
+        if os.path.isdir(dir):
+            for file in os.listdir(dir):
+                if fnmatch.fnmatch(file, u'*.song'):
+                    return True
+        return False
 
     def getFiles(self, title, listbox, filters=u''):
         """
