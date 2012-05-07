@@ -1329,7 +1329,7 @@ class ServiceManager(QtGui.QWidget):
             (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
-        serviceItem = 0
+        serviceItem = -1
         serviceItemChild = -1
         for item in items:
             parentitem = item.parent()
