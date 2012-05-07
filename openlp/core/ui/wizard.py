@@ -254,7 +254,7 @@ class OpenLPWizard(QtGui.QWizard):
             The title of the dialog (unicode).
 
         ``editbox``
-            A editbox (QLineEdit).
+            An editbox (QLineEdit).
 
         ``filters``
             The file extension filters. It should contain the file description
@@ -265,11 +265,28 @@ class OpenLPWizard(QtGui.QWizard):
         if filters:
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+        filename = unicode(QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            self.plugin.settingsSection, 1)), filters))
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
                 filename, 1)
 
+    def getFolder(self, title, editbox):
+        """
+        Opens a QFileDialog and saves the selected folder to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            An editbox (QLineEdit).
+        """
+        folder = unicode(QtGui.QFileDialog.getExistingDirectory(self, title,
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)), QtGui.QFileDialog.ShowDirsOnly))
+        if folder:
+            editbox.setText(folder)
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
+                folder, 1)
