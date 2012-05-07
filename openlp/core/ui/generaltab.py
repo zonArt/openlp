@@ -43,7 +43,7 @@ class GeneralTab(SettingsTab):
         Initialise the general settings tab
         """
         self.screens = ScreenList.get_instance()
-        self.icon_path = u':/icon/openlp-logo-16x16.png'
+        self.iconPath = u':/icon/openlp-logo-16x16.png'
         generalTranslated = translate('OpenLP.GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
 

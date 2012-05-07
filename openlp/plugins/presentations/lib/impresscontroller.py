@@ -42,6 +42,9 @@ import time
 if os.name == u'nt':
     from win32com.client import Dispatch
     import pywintypes
+    # Declare an empty exception to match the exception imported from UNO
+    class ErrorCodeIOException(Exception):
+        pass
 else:
     try:
         import uno
@@ -339,7 +342,6 @@ class ImpressDocument(PresentationDocument):
         Returns true if a presentation is loaded
         """
         log.debug(u'is loaded OpenOffice')
-        #print "is_loaded "
         if self.presentation is None or self.document is None:
             log.debug("is_loaded: no presentation or document")
             return False
@@ -357,14 +359,9 @@ class ImpressDocument(PresentationDocument):
         Returns true if a presentation is active and running
         """
         log.debug(u'is active OpenOffice')
-        #print "is_active "
         if not self.is_loaded():
-            #print "False "
             return False
-        #print "self.con ", self.control
-        if self.control is None:
-            return False
-        return True
+        return self.control is not None
 
     def unblank_screen(self):
         """

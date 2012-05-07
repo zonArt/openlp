@@ -51,7 +51,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
-    def __init__(self, serviceManager, parent=None, name=None):
+    def __init__(self, serviceManager, parent=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.serviceManager = serviceManager
 
@@ -101,7 +101,6 @@ class ServiceManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.mainwindow = mainwindow
         self.serviceItems = []
-        self.serviceName = u''
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
@@ -272,7 +271,7 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
-            self.mainwindow.servicemanagerSettingsSection + u'/service theme',
+            self.mainwindow.serviceManagerSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
@@ -411,7 +410,7 @@ class ServiceManager(QtGui.QWidget):
                 self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
                 SettingsManager.get_last_dir(
-                self.mainwindow.servicemanagerSettingsSection),
+                self.mainwindow.serviceManagerSettingsSection),
                 translate('OpenLP.ServiceManager',
                 'OpenLP Service Files (*.osz)')))
             if not fileName:
@@ -419,7 +418,7 @@ class ServiceManager(QtGui.QWidget):
         else:
             fileName = loadFile
         SettingsManager.set_last_dir(
-            self.mainwindow.servicemanagerSettingsSection,
+            self.mainwindow.serviceManagerSettingsSection,
             split_filename(fileName)[0])
         self.loadFile(fileName)
 
@@ -469,7 +468,7 @@ class ServiceManager(QtGui.QWidget):
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(
-            self.mainwindow.servicemanagerSettingsSection,
+            self.mainwindow.serviceManagerSettingsSection,
             path)
         service = []
         write_list = []
@@ -483,7 +482,7 @@ class ServiceManager(QtGui.QWidget):
             service_item = item[u'service_item'].get_service_repr()
             # Get all the audio files, and ready them for embedding in the
             # service file.
-            if len(service_item[u'header'][u'background_audio']) > 0:
+            if service_item[u'header'][u'background_audio']:
                 for i, filename in \
                     enumerate(service_item[u'header'][u'background_audio']):
                     new_file = os.path.join(u'audio',
@@ -622,7 +621,7 @@ class ServiceManager(QtGui.QWidget):
         else:
             default_filename = u''
         directory = unicode(SettingsManager.get_last_dir(
-            self.mainwindow.servicemanagerSettingsSection))
+            self.mainwindow.serviceManagerSettingsSection))
         path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService, path,
@@ -822,7 +821,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by the SlideController to select the next service item.
         """
-        if len(self.serviceManagerList.selectedItems()) == 0:
+        if not self.serviceManagerList.selectedItems():
             return
         selected = self.serviceManagerList.selectedItems()[0]
         lookFor = 0
@@ -840,7 +839,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Called by the SlideController to select the previous service item.
         """
-        if len(self.serviceManagerList.selectedItems()) == 0:
+        if not self.serviceManagerList.selectedItems():
             return
         selected = self.serviceManagerList.selectedItems()[0]
         prevItem = None
@@ -1107,7 +1106,7 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
-            self.mainwindow.servicemanagerSettingsSection +
+            self.mainwindow.serviceManagerSettingsSection +
                 u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems(True)

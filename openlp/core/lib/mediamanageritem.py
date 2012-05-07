@@ -373,12 +373,12 @@ class MediaManagerItem(QtGui.QWidget):
         Process a list for files either from the File Dialog or from Drag and
         Drop
 
-         ``files``
-         The files to be loaded
+        ``files``
+            The files to be loaded.
         """
         names = []
         fullList = []
-        for count in range(0, self.listView.count()):
+        for count in range(self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
             fullList.append(unicode(self.listView.item(count).
                 data(QtCore.Qt.UserRole).toString()))
@@ -582,7 +582,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
-        serviceItem.add_icon(self.plugin.icon_path)
+        serviceItem.add_icon(self.plugin.iconPath)
         if self.generateSlideData(serviceItem, item, xmlVersion, remote):
             return serviceItem
         else:

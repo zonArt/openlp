@@ -42,8 +42,8 @@ class ImagePlugin(Plugin):
         Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
             ImageTab)
         self.weight = -7
-        self.icon_path = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_images.png'
+        self.icon = build_icon(self.iconPath)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'image_updated'), self.image_updated)
 

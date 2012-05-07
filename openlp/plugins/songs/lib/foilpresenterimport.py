@@ -413,7 +413,7 @@ class FoilPresenter(object):
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {
+        verse_count = {
             VerseType.Tags[VerseType.Verse]: 1,
             VerseType.Tags[VerseType.Chorus]: 1,
             VerseType.Tags[VerseType.Bridge]: 1,
@@ -463,8 +463,8 @@ class FoilPresenter(object):
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
-                verse_number = unicode(versenumber[verse_type])
-                versenumber[verse_type] += 1
+                verse_number = unicode(verse_count[verse_type])
+                verse_count[verse_type] += 1
             else:
                 # test if foilpresenter have the same versenumber two times with
                 # different parts raise the verse number
@@ -508,13 +508,13 @@ class FoilPresenter(object):
         song.song_number = u''
         try:
             for bucheintrag in foilpresenterfolie.buch.bucheintrag:
-                bookname = self._child(bucheintrag.name)
-                if bookname:
+                book_name = self._child(bucheintrag.name)
+                if book_name:
                     book = self.manager.get_object_filtered(Book,
-                        Book.name == bookname)
+                        Book.name == book_name)
                     if book is None:
                         # We need to create a book, because it does not exist.
-                        book = Book.populate(name=bookname, publisher=u'')
+                        book = Book.populate(name=book_name, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     try:
@@ -537,12 +537,12 @@ class FoilPresenter(object):
         ``song``
             The song object.
         """
-        for titelstring in foilpresenterfolie.titel.titelstring:
+        for title_string in foilpresenterfolie.titel.titelstring:
             if not song.title:
-                song.title = self._child(titelstring)
+                song.title = self._child(title_string)
                 song.alternate_title = u''
             else:
-                song.alternate_title = self._child(titelstring)
+                song.alternate_title = self._child(title_string)
 
     def _process_topics(self, foilpresenterfolie, song):
         """
@@ -556,13 +556,13 @@ class FoilPresenter(object):
         """
         try:
             for name in foilpresenterfolie.kategorien.name:
-                topictext = self._child(name)
-                if topictext:
+                topic_text = self._child(name)
+                if topic_text:
                     topic = self.manager.get_object_filtered(Topic,
-                        Topic.name == topictext)
+                        Topic.name == topic_text)
                     if topic is None:
                         # We need to create a topic, because it does not exist.
-                        topic = Topic.populate(name=topictext)
+                        topic = Topic.populate(name=topic_text)
                         self.manager.save_object(topic)
                     song.topics.append(topic)
         except AttributeError:

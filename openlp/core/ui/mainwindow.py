@@ -554,9 +554,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
-        self.advancedlSettingsSection = u'advanced'
+        self.advancedSettingsSection = u'advanced'
         self.shortcutsSettingsSection = u'shortcuts'
-        self.servicemanagerSettingsSection = u'servicemanager'
+        self.serviceManagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
         self.displayTagsSection = u'displayTags'
@@ -568,8 +568,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
-        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.pluginManager = PluginManager(pluginpath)
+        plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
+        self.pluginManager = PluginManager(plugin_path)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
         self.mediaController = MediaController(self)
@@ -661,7 +661,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginHelpers[u'pluginmanager'] = self.pluginManager
         self.pluginHelpers[u'formparent'] = self
         self.pluginHelpers[u'mediacontroller'] = self.mediaController
-        self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
+        self.pluginManager.find_plugins(plugin_path, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
@@ -730,7 +730,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if len(self.arguments):
+        if self.arguments:
             args = []
             for a in self.arguments:
                 args.extend([a])
@@ -944,10 +944,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
-        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.advancedSettingsSection])
         setting_sections.extend([self.uiSettingsSection])
         setting_sections.extend([self.shortcutsSettingsSection])
-        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.serviceManagerSettingsSection])
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         setting_sections.extend([self.headerSection])
@@ -1027,10 +1027,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
-        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.advancedSettingsSection])
         setting_sections.extend([self.uiSettingsSection])
         setting_sections.extend([self.shortcutsSettingsSection])
-        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.serviceManagerSettingsSection])
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         # Add plugin sections.
@@ -1314,10 +1314,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             u'/enable slide loop'):
             if QtCore.QSettings().value(self.generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
-                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                QtCore.QSettings().setValue(self.advancedSettingsSection +
                     u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
             else:
-                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                QtCore.QSettings().setValue(self.advancedSettingsSection +
                     u'/slide limits', QtCore.QVariant(SlideLimits.End))
             QtCore.QSettings().remove(self.generalSettingsSection +
                 u'/enable slide loop')

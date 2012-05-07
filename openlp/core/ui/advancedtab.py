@@ -59,7 +59,7 @@ class AdvancedTab(SettingsTab):
             '#strftime-strptime-behavior for more information.'))
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
-        self.icon_path = u':/system/system_settings.png'
+        self.iconPath = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
 

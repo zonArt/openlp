@@ -62,6 +62,7 @@ class ServiceItemAction(object):
     PreviousLastSlide = 2
     Next = 3
 
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -82,6 +83,7 @@ def translate(context, text, comment=None,
         within the same context.
     """
     return translate(context, text, comment, encoding, n)
+
 
 def get_text_file_string(text_file):
     """
@@ -111,6 +113,7 @@ def get_text_file_string(text_file):
             file_handle.close()
     return content_string
 
+
 def str_to_bool(stringvalue):
     """
     Convert a string version of a boolean into a real boolean.
@@ -121,6 +124,7 @@ def str_to_bool(stringvalue):
     if isinstance(stringvalue, bool):
         return stringvalue
     return unicode(stringvalue).strip().lower() in (u'true', u'yes', u'y')
+
 
 def build_icon(icon):
     """
@@ -148,6 +152,7 @@ def build_icon(icon):
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
+
 def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and returns
@@ -165,6 +170,7 @@ def image_to_byte(image):
     log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
+
 
 def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
@@ -201,6 +207,7 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     # Fallback for files with animation support.
     return build_icon(unicode(image_path))
 
+
 def validate_thumb(file_path, thumb_path):
     """
     Validates whether an file's thumb still exists and if is up to date.
@@ -218,6 +225,7 @@ def validate_thumb(file_path, thumb_path):
     image_date = os.stat(file_path).st_mtime
     thumb_date = os.stat(thumb_path).st_mtime
     return image_date <= thumb_date
+
 
 def resize_image(image_path, width, height, background=u'#000000'):
     """
@@ -266,6 +274,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
+
 def check_item_selected(list_widget, message):
     """
     Check if a list item is selected so an action may be performed on it
@@ -282,6 +291,7 @@ def check_item_selected(list_widget, message):
         return False
     return True
 
+
 def clean_tags(text):
     """
     Remove Tags from text for display
@@ -294,6 +304,7 @@ def clean_tags(text):
         text = text.replace(tag[u'end tag'], u'')
     return text
 
+
 def expand_tags(text):
     """
     Expand tags HTML for display
@@ -302,6 +313,7 @@ def expand_tags(text):
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
+
 
 def check_directory_exists(dir):
     """
@@ -316,6 +328,7 @@ def check_directory_exists(dir):
             os.makedirs(dir)
     except IOError:
         pass
+
 
 def create_separated_list(stringlist):
     """
@@ -344,6 +357,7 @@ def create_separated_list(stringlist):
             u'Locale list separator: middle').arg(stringlist[index], merged))
         return unicode(translate('OpenLP.core.lib', '%1, %2',
             u'Locale list separator: start').arg(stringlist[0], merged))
+
 
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD

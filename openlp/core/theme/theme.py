@@ -209,7 +209,7 @@ class Theme(object):
                             val = int(element_text[1:], 16)
                         except ValueError: # nope
                             pass
-                    elif DELPHI_COLORS.has_key(element_text):
+                    elif element_text in DELPHI_COLORS:
                         val = DELPHI_COLORS[element_text]
                         delphi_color_change = True
                     else:

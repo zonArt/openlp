@@ -164,12 +164,12 @@ class BibleManager(object):
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_object(BibleMeta,
-                u'download source')
+                u'download_source')
             if source:
                 download_name = self.db_cache[name].get_object(BibleMeta,
-                    u'download name').value
+                    u'download_name').value
                 meta_proxy = self.db_cache[name].get_object(BibleMeta,
-                    u'proxy url')
+                    u'proxy_server')
                 web_bible = HTTPBible(self.parent, path=self.path,
                     file=filename, download_source=source.value,
                     download_name=download_name)
@@ -330,7 +330,7 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = self.get_meta_data(bible, u'Bookname language')
+        language_selection = self.get_meta_data(bible, u'book_name_language')
         if language_selection:
             language_selection = int(language_selection.value)
         if language_selection is None or language_selection == -1:
@@ -377,7 +377,7 @@ class BibleManager(object):
             Unicode. The Bible to get the language selection from.
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
-        language_selection = self.get_meta_data(bible, u'Bookname language')
+        language_selection = self.get_meta_data(bible, u'book_name_language')
         if language_selection and language_selection.value != u'None':
             return int(language_selection.value)
         if language_selection is None or  language_selection.value == u'None':
@@ -410,17 +410,17 @@ class BibleManager(object):
             return None
         # Check if the bible or second_bible is a web bible.
         webbible = self.db_cache[bible].get_object(BibleMeta,
-            u'download source')
+            u'download_source')
         second_webbible = u''
         if second_bible:
             second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
-                u'download source')
+                u'download_source')
         if webbible or second_webbible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'Web Bible cannot be used'),
+                    'Web Bible cannot be used'),
                 u'message': translate('BiblesPlugin.BibleManager',
-                'Text Search is not available with Web Bibles.')
+                    'Text Search is not available with Web Bibles.')
                 })
             return None
         if text:
@@ -428,27 +428,27 @@ class BibleManager(object):
         else:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'Scripture Reference Error'),
+                    'Scripture Reference Error'),
                 u'message': translate('BiblesPlugin.BibleManager',
-                'You did not enter a search keyword.\n'
-                'You can separate different keywords by a space to search for '
-                'all of your keywords and you can separate them by a comma to '
-                'search for one of them.')
+                    'You did not enter a search keyword.\n'
+                    'You can separate different keywords by a space to '
+                    'search for all of your keywords and you can separate '
+                    'them by a comma to search for one of them.')
                 })
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions, 
-        bookname_language=None):
+        book_name_language=None):
         """
         Saves the bibles meta data.
         """
         log.debug(u'save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
-        self.db_cache[bible].save_meta(u'Version', version)
-        self.db_cache[bible].save_meta(u'Copyright', copyright)
-        self.db_cache[bible].save_meta(u'Permissions', permissions)
-        self.db_cache[bible].save_meta(u'Bookname language',
-            bookname_language)
+        self.db_cache[bible].save_meta(u'name', version)
+        self.db_cache[bible].save_meta(u'copyright', copyright)
+        self.db_cache[bible].save_meta(u'permissions', permissions)
+        self.db_cache[bible].save_meta(u'book_name_language',
+            book_name_language)
 
     def get_meta_data(self, bible, key):
         """

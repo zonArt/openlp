@@ -35,6 +35,8 @@ from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
 from cclifileimport import CCLIFileImport
+from dreambeamimport import DreamBeamImport
+from powersongimport import PowerSongImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
@@ -73,20 +75,22 @@ class SongFormat(object):
     OpenLP1 = 2
     Generic = 3
     CCLI = 4
-    EasySlides = 5
-    EasyWorship = 6
-    FoilPresenter = 7
-    OpenSong = 8
-    SongBeamer = 9
-    SongShowPlus = 10
-    SongsOfFellowship = 11
-    WordsOfWorship = 12
-    #CSV = 13
+    DreamBeam = 5
+    EasySlides = 6
+    EasyWorship = 7
+    FoilPresenter = 8
+    OpenSong = 9
+    PowerSong = 10
+    SongBeamer = 11
+    SongShowPlus = 12
+    SongsOfFellowship = 13
+    WordsOfWorship = 14
+    #CSV = 15
 
     @staticmethod
     def get_class(format):
         """
-        Return the appropriate imeplementation class.
+        Return the appropriate implementation class.
 
         ``format``
             The song format.
@@ -107,6 +111,10 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
+        elif format == SongFormat.DreamBeam:
+            return DreamBeamImport
+        elif format == SongFormat.PowerSong:
+            return PowerSongImport
         elif format == SongFormat.EasySlides:
             return EasySlidesImport
         elif format == SongFormat.EasyWorship:
@@ -130,10 +138,12 @@ class SongFormat(object):
             SongFormat.OpenLP1,
             SongFormat.Generic,
             SongFormat.CCLI,
+            SongFormat.DreamBeam, 
             SongFormat.EasySlides,
             SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
             SongFormat.OpenSong,
+            SongFormat.PowerSong,
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,

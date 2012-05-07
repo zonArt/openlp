@@ -61,8 +61,8 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
-        self.icon_path = u':/plugins/plugin_songs.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_songs.png'
+        self.icon = build_icon(self.iconPath)
 
     def checkPreConditions(self):
         return self.manager.session is not None
@@ -144,7 +144,7 @@ class SongsPlugin(Plugin):
             return
         progressDialog = QtGui.QProgressDialog(
             translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
-            0, maxSongs, self.formparent)
+            0, maxSongs, self.formParent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
         for number, song in enumerate(songs):
@@ -239,9 +239,9 @@ class SongsPlugin(Plugin):
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
-        if len(song_dbs) == 0:
+        if not song_dbs:
             return
-        progress = QtGui.QProgressDialog(self.formparent)
+        progress = QtGui.QProgressDialog(self.formParent)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
         progress.setCancelButton(None)
