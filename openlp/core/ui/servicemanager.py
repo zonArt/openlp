@@ -298,17 +298,14 @@ class ServiceManager(QtGui.QWidget):
         self.timeAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
-        self.deleteAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', '&Delete From Service'),
-            icon=u':/general/general_delete.png',
-            triggers=self.onDeleteFromService)
+        # Add already existing delete action to the menu.
+        self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
-        self.liveAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', 'Show &Live'),
-            icon=u':/general/general_live.png', triggers=self.makeLive)
+        # Add already existing make live action to the menu.
+        self.menu.addAction(self.serviceManagerList.makeLive)
         self.menu.addSeparator()
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
