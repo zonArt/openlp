@@ -398,7 +398,8 @@ class SongImportForm(OpenLPWizard):
                     self.openLP1BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.PowerSong:
-                if self.powerSongFilenameEdit.text().isEmpty():
+                if self.powerSongFilenameEdit.text().isEmpty() or \
+                    not os.path.isdir(self.powerSongFilenameEdit.text()):
                     critical_error_message_box(UiStrings().NFdSs,
                         WizardStrings.YouSpecifyFolder % WizardStrings.PS)
                     self.powerSongBrowseButton.setFocus()

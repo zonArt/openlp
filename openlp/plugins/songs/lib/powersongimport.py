@@ -29,8 +29,12 @@ The :mod:`powersongimport` module provides the functionality for importing
 PowerSong songs into the OpenLP database.
 """
 import logging
+import glob
+import os
+import fnmatch
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -71,11 +75,22 @@ class PowerSongImport(SongImport):
 
     def doImport(self):
         """
-        Receive a list of files to import.
+        Receive either a list of files or a folder (unicode) to import.
         """
-        if not isinstance(self.importSource, list):
+        if isinstance(self.importSource, unicode):
+            if os.path.isdir(self.importSource):
+                dir = self.importSource
+                self.importSource = []
+                for file in os.listdir(dir):
+                    if fnmatch.fnmatch(file, u'*.song'):
+                        self.importSource.append(os.path.join(dir, file))
+            else:
+                self.importSource = u''
+        if not self.importSource or not isinstance(self.importSource, list):
             self.logError(unicode(translate('SongsPlugin.PowerSongImport',
-                'No files to import.')))
+                'No songs to import.')),
+                unicode(translate('SongsPlugin.PowerSongImport',
+                'No %s files found.' % WizardStrings.PS)))
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -92,9 +107,10 @@ class PowerSongImport(SongImport):
                         field = self._readString(song_data)
                     except ValueError:
                         parse_error = True
-                        self.logError(file, unicode(
+                        self.logError(os.path.basename(file), unicode(
                             translate('SongsPlugin.PowerSongImport',
-                            'Invalid PowerSong file. Unexpected byte value.')))
+                            'Invalid %s file. Unexpected byte value.'
+                            % WizardStrings.PS)))
                         break
                     else:
                         if label == u'TITLE':
@@ -110,26 +126,26 @@ class PowerSongImport(SongImport):
                 continue
             # Check that file had TITLE field
             if not self.title:
-                self.logError(file, unicode(
+                self.logError(os.path.basename(file), unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    'Invalid PowerSong file. Missing "TITLE" header.')))
+                    'Invalid %s file. Missing "TITLE" header.'
+                    % WizardStrings.PS)))
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
-                self.logError(file, unicode(
+                self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    '"%s" Invalid PowerSong file. Missing "COPYRIGHTLINE" '
-                    'header.' % self.title)))
+                    'Invalid %s file. Missing "COPYRIGHTLINE" '
+                    'header.' % WizardStrings.PS)))
                 continue
             # Check that file had at least one verse
             if not self.verses:
-                self.logError(file, unicode(
+                self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    '"%s" Verses not found. Missing "PART" header.'
-                    % self.title)))
+                    'Verses not found. Missing "PART" header.')))
                 continue
             if not self.finish():
-                self.logError(file)
+                self.logError(self.title)
 
     def _readString(self, file_object):
         """
