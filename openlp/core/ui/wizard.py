@@ -72,11 +72,14 @@ class WizardStrings(object):
         'importer, you will need to install the "python-sqlite" '
         'module.')
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    OpenTypeFolder = unicode(translate('OpenLP.Ui', 'Open %s Folder'))
     PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
     YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
         'least one %s file to import from.', 'A file type e.g. OpenSong'))
+    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify a '
+        '%s folder to import from.', 'A file type e.g. OpenSong'))
 
 
 class OpenLPWizard(QtGui.QWizard):
