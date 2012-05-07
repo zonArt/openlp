@@ -29,9 +29,8 @@ The :mod:`powersongimport` module provides the functionality for importing
 PowerSong songs into the OpenLP database.
 """
 import logging
-import glob
-import os
 import fnmatch
+import os
 
 from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
