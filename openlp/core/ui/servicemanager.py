@@ -64,6 +64,10 @@ class ServiceManagerList(QtGui.QTreeWidget):
             elif event.key() == QtCore.Qt.Key_Down:
                 self.serviceManager.onMoveSelectionDown()
                 event.accept()
+            elif event.key() == QtCore.Qt.Key_Delete:
+                self.serviceManager.onDeleteFromService()
+                event.accept()
+            print "Key event " + unicode(event.key())
             event.ignore()
         else:
             event.ignore()
@@ -218,6 +222,7 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
+            shortcuts=[QtCore.Qt.Key_Delete], category=UiStrings().Service,
             triggers=self.onDeleteFromService)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.expand = self.orderToolbar.addToolbarAction(
