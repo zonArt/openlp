@@ -1344,31 +1344,6 @@ class ServiceManager(QtGui.QWidget):
             break
         return serviceItem, serviceItemChild
 
-    def findServiceItems(self):
-        """
-        Finds all selected ServiceItems in the list and returns the position of
-        the serviceitem and its selected child item. For example, if the third
-        child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
-
-            (1, 2)
-        """
-        items = self.serviceManagerList.selectedItems()
-        serviceItem = 0
-        serviceItemChild = -1
-        for item in items:
-            parentitem = item.parent()
-            if parentitem is None:
-                serviceItem = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-            else:
-                serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-                serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-                # Adjust for zero based arrays.
-            serviceItem -= 1
-            # Only process the first item on the list for this method.
-            break
-        return serviceItem, serviceItemChild
-
     def dragEnterEvent(self, event):
         """
         Accept Drag events
