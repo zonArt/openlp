@@ -128,9 +128,9 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         # Check if we have a different data location.
-        if QtCore.QSettings().contains("advanced/data path"):
+        if QtCore.QSettings().contains(u'advanced/data path'):
             path = unicode(QtCore.QSettings().value(
-                u'advanced/data path', QtCore.QVariant(u'')).toString())
+                u'advanced/data path').toString())
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)

@@ -160,14 +160,14 @@ class AdvancedTab(SettingsTab):
         # Data Directory
         self.dataDirectoryGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.dataDirectoryGroupBox.setObjectName(u'dataDirectoryGroupBox')
-        self.dataDirectoryLayout =QtGui.QFormLayout(self.dataDirectoryGroupBox)
+        self.dataDirectoryLayout = QtGui.QFormLayout(self.dataDirectoryGroupBox)
         self.dataDirectoryLayout.setObjectName(u'dataDirectoryLayout')
-        self.dataDirectoryCurrentLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryCurrentLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
         self.dataDirectoryCurrentLabel.setObjectName(
             u'dataDirectoryCurrentLabel')
-        self.dataDirectoryLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
         self.dataDirectoryLabel.setObjectName(u'dataDirectoryLabel')
-        self.dataDirectoryNewLabel= QtGui.QLabel(self.dataDirectoryGroupBox)
+        self.dataDirectoryNewLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
         self.dataDirectoryNewLabel.setObjectName(u'dataDirectoryCurrentLabel')
         self.newDataDirectoryEdit = QtGui.QLineEdit(self.dataDirectoryGroupBox)
         self.newDataDirectoryEdit.setObjectName(u'newDataDirectoryEdit')
@@ -512,12 +512,12 @@ class AdvancedTab(SettingsTab):
         # Since data location can be changed, make sure the path is present.
         self.currentDataPath = AppLocation.get_data_path()
         if not os.path.exists(self.currentDataPath):
-            log.exception(u'Data path not found %s' % self.currentDataPath)
+            log.error(u'Data path not found %s' % self.currentDataPath)
             answer = QtGui.QMessageBox.critical(self,
                 translate('OpenLP.AdvancedTab',
                 'Data Directory Error'),
                 translate('OpenLP.AdvancedTab',
-                'OpenLP data directory was not found \n\n %s \n\n'
+                'OpenLP data directory was not found\n\n%s\n\n'
                 'This data directory was previously changed from the OpenLP '
                 'default location.  If the new location was on removable '
                 'media, that media needs to be made available.\n\n'
@@ -530,13 +530,13 @@ class AdvancedTab(SettingsTab):
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
-                log.exception(u'User requested termination')
+                log.info(u'User requested termination')
                 Receiver.send_message(u'cleanup')
                 sys.exit()
             # Set data location to default.
             settings.remove(u'advanced/data path')
             self.currentDataPath = AppLocation.get_data_path()
-            log.exception(u'User requested data path set to default %s'
+            log.warning(u'User requested data path set to default %s'
                 % self.currentDataPath)
         self.dataDirectoryLabel.setText(os.path.abspath(
             os.path.join(self.currentDataPath, u'..')))
@@ -654,12 +654,12 @@ class AdvancedTab(SettingsTab):
         """
         Browse for a new data directory location.
         """
-        old_root_path = unicode(str(self.dataDirectoryLabel.text()))
+        old_root_path = unicode(self.dataDirectoryLabel.text())
         # Get the new directory location.
         new_path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.AdvancedTab',
             'Select Data Directory Location'), old_root_path,
-            options=QtGui.QFileDialog.ShowDirsOnly))
+            options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
         new_data_path = os.path.join(new_path, 'openlp_data')
         if new_path:
@@ -673,7 +673,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
             translate('OpenLP.AdvancedTab',
                 'Are you sure you want to change the location of the OpenLP '
-                'data directory to:\n\n %s \n\n'
+                'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
                 % new_path),
             QtGui.QMessageBox.StandardButtons(
@@ -700,7 +700,7 @@ class AdvancedTab(SettingsTab):
                 translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
                 translate('OpenLP.AdvancedTab',
                 'Are you sure you want to change the location of the OpenLP '
-                'data directory to the default location?  \n\n'
+                'data directory to the default location?\n\n'
                 'This location will be used after OpenLP is closed.'),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
@@ -737,7 +737,7 @@ class AdvancedTab(SettingsTab):
                 translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
                 translate('OpenLP.AdvancedTab',
                 'WARNING: \n\n'
-                'The location you have selected \n\n %s \n\n'
+                'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
                 % os.path.abspath(os.path.join(data_path, u'..'))), 

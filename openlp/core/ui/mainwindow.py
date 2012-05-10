@@ -1479,7 +1479,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def changeDataDirectory(self):
         log.info(u'Changing data path to %s' % self.newDataPath )
-        old_data_path = unicode(str(AppLocation.get_data_path()))
+        old_data_path = unicode(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
         if self.copyData:
             log.info(u'Copying data to new path')
@@ -1495,12 +1495,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
                 Receiver.send_message(u'cursor_normal')
-                log.exception(u'Data copy failed %s' % unicode(str(why)))
+                log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
-                    'OpenLP Data directory copy failed \n\n %s'
-                    % unicode(str(why))),
+                    'OpenLP Data directory copy failed\n\n%s'
+                    % unicode(why)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok))
                 return False
