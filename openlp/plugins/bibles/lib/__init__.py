@@ -34,6 +34,7 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import translate
+from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -185,7 +186,7 @@ def update_reference_separators():
         ':|v|V|verse|verses;;-|to;;,|and;;end',
         'Double-semicolon delimited separators for parsing references. '
         'Consult the developers for further information.')).split(u';;')
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [
         unicode(settings.value(u'verse separator').toString()),

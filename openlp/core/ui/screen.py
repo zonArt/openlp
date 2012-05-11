@@ -34,6 +34,7 @@ import copy
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -241,7 +242,7 @@ class ScreenList(object):
         """
         Loads the screen size and the monitor number from the settings.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'general')
         self.set_current_display(settings.value(u'monitor',
             QtCore.QVariant(self.display_count - 1)).toInt()[0])

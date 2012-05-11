@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 
 class PresentationTab(SettingsTab):
     """
@@ -102,10 +103,10 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setChecked(QtCore.QSettings().value(
+            checkbox.setChecked(Settings().value(
                 self.settingsSection + u'/' + controller.name,
                 QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
-        self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
+        self.OverrideAppCheckBox.setChecked(Settings().value(
             self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
@@ -123,19 +124,19 @@ class PresentationTab(SettingsTab):
             if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if QtCore.QSettings().value(setting_key) != \
+                if Settings().value(setting_key) != \
                     checkbox.checkState():
                     changed = True
-                    QtCore.QSettings().setValue(setting_key,
+                    Settings().setValue(setting_key,
                         QtCore.QVariant(checkbox.checkState()))
                     if checkbox.isChecked():
                         controller.start_process()
                     else:
                         controller.kill()
         setting_key = self.settingsSection + u'/override app'
-        if QtCore.QSettings().value(setting_key) != \
+        if Settings().value(setting_key) != \
             self.OverrideAppCheckBox.checkState():
-            QtCore.QSettings().setValue(setting_key,
+            Settings().setValue(setting_key,
                 QtCore.QVariant(self.OverrideAppCheckBox.checkState()))
             changed = True
         if changed:

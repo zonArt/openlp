@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
     translate, build_icon, build_html, PluginManager, ServiceItem
 from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -236,7 +237,7 @@ class SlideController(Controller):
                 text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
                 category=self.category, triggers=self.onPlaySlidesOnce)
-            if QtCore.QSettings().value(self.parent().generalSettingsSection +
+            if Settings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
             else:
@@ -662,7 +663,7 @@ class SlideController(Controller):
         """
         Updates the Slide Limits variable from the settings.
         """
-        self.slide_limits = QtCore.QSettings().value(
+        self.slide_limits = Settings().value(
             self.parent().advancedSettingsSection + u'/slide limits',
             QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
@@ -692,7 +693,7 @@ class SlideController(Controller):
         self.playSlidesLoop.setChecked(False)
         self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
-            if QtCore.QSettings().value(
+            if Settings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and self.slideList:
                 self.songMenu.show()
@@ -813,11 +814,11 @@ class SlideController(Controller):
                     QtCore.QObject.connect(action,
                         QtCore.SIGNAL(u'triggered(bool)'),
                         self.onTrackTriggered)
-                self.display.audioPlayer.repeat = QtCore.QSettings().value(
+                self.display.audioPlayer.repeat = Settings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio repeat list',
                     QtCore.QVariant(False)).toBool()
-                if QtCore.QSettings().value(
+                if Settings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio start paused',
                     QtCore.QVariant(True)).toBool():
@@ -930,7 +931,7 @@ class SlideController(Controller):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
-        display_type = QtCore.QSettings().value(
+        display_type = Settings().value(
             self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
         if self.screens.which_screen(self.window()) != \
@@ -971,11 +972,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(False)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'blanked'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
@@ -992,11 +993,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(checked)
         self.desktopScreen.setChecked(False)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'themed'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
@@ -1013,11 +1014,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(checked)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'hidden'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
@@ -1311,7 +1312,7 @@ class SlideController(Controller):
         """
         triggered by clicking the Preview slide items
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
+        if Settings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
             # Live and Preview have issues if we have video or presentations
             # playing in both at the same time.

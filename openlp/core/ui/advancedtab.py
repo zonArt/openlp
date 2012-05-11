@@ -36,6 +36,7 @@ import os
 import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import get_images_filter, AppLocation
 from openlp.core.lib import SlideLimits
 
@@ -449,12 +450,12 @@ class AdvancedTab(SettingsTab):
         """
         Load settings from disk.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
-        self.recentSpinBox.setMaximum(QtCore.QSettings().value(
+        self.recentSpinBox.setMaximum(Settings().value(
             u'max recent files', QtCore.QVariant(20)).toInt()[0])
         self.recentSpinBox.setValue(settings.value(u'recent file count',
             QtCore.QVariant(4)).toInt()[0])
@@ -547,7 +548,7 @@ class AdvancedTab(SettingsTab):
         """
         Save settings to disk.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'default service enabled',
             self.serviceNameCheckBox.isChecked())

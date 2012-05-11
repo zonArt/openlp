@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui, QtNetwork
 
 from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib.settings import Settings
 
 ZERO_URL = u'0.0.0.0'
 
@@ -149,12 +150,12 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.portSpinBox.setValue(
-            QtCore.QSettings().value(self.settingsSection + u'/port',
+            Settings().value(self.settingsSection + u'/port',
                 QtCore.QVariant(4316)).toInt()[0])
         self.addressEdit.setText(
-            QtCore.QSettings().value(self.settingsSection + u'/ip address',
+            Settings().value(self.settingsSection + u'/ip address',
                 QtCore.QVariant(ZERO_URL)).toString())
-        self.twelveHour = QtCore.QSettings().value(
+        self.twelveHour = Settings().value(
             self.settingsSection + u'/twelve hour',
             QtCore.QVariant(True)).toBool()
         self.twelveHourCheckBox.setChecked(self.twelveHour)
@@ -162,16 +163,16 @@ class RemoteTab(SettingsTab):
 
     def save(self):
         changed = False
-        if QtCore.QSettings().value(self.settingsSection + u'/ip address',
+        if Settings().value(self.settingsSection + u'/ip address',
             QtCore.QVariant(ZERO_URL).toString() != self.addressEdit.text() or
-            QtCore.QSettings().value(self.settingsSection + u'/port',
+            Settings().value(self.settingsSection + u'/port',
             QtCore.QVariant(4316).toInt()[0]) != self.portSpinBox.value()):
             changed = True
-        QtCore.QSettings().setValue(self.settingsSection + u'/port',
+        Settings().setValue(self.settingsSection + u'/port',
             QtCore.QVariant(self.portSpinBox.value()))
-        QtCore.QSettings().setValue(self.settingsSection + u'/ip address',
+        Settings().setValue(self.settingsSection + u'/ip address',
             QtCore.QVariant(self.addressEdit.text()))
-        QtCore.QSettings().setValue(self.settingsSection + u'/twelve hour',
+        Settings().setValue(self.settingsSection + u'/twelve hour',
             QtCore.QVariant(self.twelveHour))
         if changed:
             Receiver.send_message(u'remotes_config_updated')
