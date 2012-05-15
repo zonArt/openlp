@@ -264,7 +264,7 @@ def main(args=None):
         # Get location OpenLPPortable.ini
         app_path = AppLocation.get_directory(AppLocation.AppDir)
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
-            u'..', u'Data', u'settings', u'OpenLPPortable.ini'))
+            u'..', u'Data', u'settings', u'OpenLP.ini'))
         # Make this our settings file
         log.info(u'INI file: %s' % portable_settings_file)
         Settings.setFilename(portable_settings_file)
@@ -275,6 +275,7 @@ def main(args=None):
         log.info(u'Data path: %s' % data_path)
         # Point to our data path
         portable_settings.setValue(u'advanced/data path',data_path)
+        portable_settings.setValue(u'advanced/is portable',True)
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')

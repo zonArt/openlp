@@ -543,6 +543,9 @@ class AdvancedTab(SettingsTab):
             os.path.join(self.currentDataPath, u'..')))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
+        # Don't allow data directory change if running portable
+        if Settings().contains(u'advanced/is portable'):
+            self.dataDirectoryGroupBox.hide()
 
     def save(self):
         """
