@@ -427,28 +427,25 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Handle the display and state of the Position page.
         """
-        # Get the QRect of a screen
-        screen = QtGui.QDesktopWidget().availableGeometry()
         # Main Area
         self.mainPositionCheckBox.setChecked(not self.theme.font_main_override)
         self.setField(u'mainPositionX', QtCore.QVariant(self.theme.font_main_x))
         self.setField(u'mainPositionY', QtCore.QVariant(self.theme.font_main_y))
         self.setField(u'mainPositionHeight',
-            QtCore.QVariant(screen.height() - 110))
+            QtCore.QVariant(self.theme.font_main_height))
         self.setField(u'mainPositionWidth',
-            QtCore.QVariant(screen.width() - 20))
+            QtCore.QVariant(self.theme.font_main_width))
         # Footer
         self.footerPositionCheckBox.setChecked(
             not self.theme.font_footer_override)
         self.setField(u'footerPositionX',
             QtCore.QVariant(self.theme.font_footer_x))
         self.setField(u'footerPositionY',
-            QtCore.QVariant(screen.height() - 100))
+            QtCore.QVariant(self.theme.font_footer_y))
         self.setField(u'footerPositionHeight',
-            QtCore.QVariant(120))
-
+            QtCore.QVariant(self.theme.font_footer_height))
         self.setField(u'footerPositionWidth',
-            QtCore.QVariant(screen.width() - 20))
+            QtCore.QVariant(self.theme.font_footer_width))
 
     def setAlignmentPageValues(self):
         """

@@ -43,7 +43,7 @@ from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
-from openlp.core.ui import FileRenameForm, ThemeForm
+from openlp.core.ui import FileRenameForm, ThemeForm, ScreenList
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -255,6 +255,11 @@ class ThemeManager(QtGui.QWidget):
         editing form for the user to make their customisations.
         """
         theme = ThemeXML()
+        screens = ScreenList.get_instance()
+        primary_screen = screens.current
+        theme.set_default_header_footer(primary_screen[u'size'].width()-20,
+            primary_screen[u'size'].height() - 100,
+            primary_screen[u'size'].width()-20, 70)
         self.themeForm.theme = theme
         self.themeForm.exec_()
 
