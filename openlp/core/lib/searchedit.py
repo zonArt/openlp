@@ -185,7 +185,7 @@ class SearchEdit(QtGui.QLineEdit):
             A :class:`~PyQt4.QtCore.QString` instance which represents the text
             in the line edit.
         """
-        self.clearButton.setVisible(not text.isEmpty())
+        self.clearButton.setVisible(bool(text))
 
     def _onClearButtonClicked(self):
         """

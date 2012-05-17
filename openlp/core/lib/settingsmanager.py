@@ -98,7 +98,6 @@ class SettingsManager(object):
         """
         settings = Settings()
         settings.beginGroup(section)
-        #TODO: check if [0] is needed.
         old_count = settings.value(u'%s count' % name, 0)
         new_count = len(list)
         settings.setValue(u'%s count' % name, new_count)
@@ -127,8 +126,7 @@ class SettingsManager(object):
         list = []
         if list_count:
             for counter in range(list_count):
-                # TODO: Check
-                item = settings.value(u'%s %d' % (name, counter))
+                item = settings.value(u'%s %d' % (name, counter), u'')
                 if item:
                     list.append(item)
         settings.endGroup()

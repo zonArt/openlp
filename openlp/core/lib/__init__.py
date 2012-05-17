@@ -82,6 +82,7 @@ class Settings(QtCore.QSettings):
             return setting.toStringList()
         if isinstance(defaultValue, QtCore.QPoint):
             return setting.toPoint()
+        # TODO: add <datetime.date>
         print u'No!', type(defaultValue)
         return setting
 
