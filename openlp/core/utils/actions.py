@@ -28,6 +28,8 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
+from openlp.core.lib import Settings
+
 from PyQt4 import QtCore, QtGui
 
 class ActionCategory(object):
@@ -226,10 +228,9 @@ class ActionList(object):
         else:
             self.categories[category].actions.add(action, weight)
         # Load the shortcut from the config.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'shortcuts')
-        shortcuts = settings.value(action.objectName(),
-            QtCore.QVariant(action.shortcuts())).toStringList()
+        shortcuts = settings.value(action.objectName(), action.shortcuts())
         settings.endGroup()
         if not shortcuts:
             action.setShortcuts([])

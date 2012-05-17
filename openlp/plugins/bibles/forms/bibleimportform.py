@@ -33,7 +33,7 @@ import locale
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, Settings
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -590,32 +590,26 @@ class BibleImportForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.plugin.settingsSection)
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        self.setField(u'source_format', QtCore.QVariant(0))
-        self.setField(u'osis_location', QtCore.QVariant(''))
-        self.setField(u'csv_booksfile', QtCore.QVariant(''))
-        self.setField(u'csv_versefile', QtCore.QVariant(''))
-        self.setField(u'opensong_file', QtCore.QVariant(''))
-        self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
+        self.setField(u'source_format', 0)
+        self.setField(u'osis_location', '')
+        self.setField(u'csv_booksfile', '')
+        self.setField(u'csv_versefile', '')
+        self.setField(u'opensong_file', '')
+        self.setField(u'web_location', WebDownload.Crosswalk)
         self.setField(u'web_biblename',
-            QtCore.QVariant(self.webTranslationComboBox.currentIndex()))
-        self.setField(u'proxy_server',
-            settings.value(u'proxy address', QtCore.QVariant(u'')))
-        self.setField(u'proxy_username',
-            settings.value(u'proxy username', QtCore.QVariant(u'')))
-        self.setField(u'proxy_password',
-            settings.value(u'proxy password', QtCore.QVariant(u'')))
-        self.setField(u'openlp1_location', QtCore.QVariant(''))
-        self.setField(u'license_version',
-            QtCore.QVariant(self.versionNameEdit.text()))
-        self.setField(u'license_copyright',
-            QtCore.QVariant(self.copyrightEdit.text()))
-        self.setField(u'license_permissions',
-            QtCore.QVariant(self.permissionsEdit.text()))
+            self.webTranslationComboBox.currentIndex())
+        self.setField(u'proxy_server', settings.value(u'proxy address', u''))
+        self.setField(u'proxy_username', settings.value(u'proxy username', u''))
+        self.setField(u'proxy_password', settings.value(u'proxy password', u''))
+        self.setField(u'openlp1_location', '')
+        self.setField(u'license_version', self.versionNameEdit.text())
+        self.setField(u'license_copyright', self.copyrightEdit.text())
+        self.setField(u'license_permissions', self.permissionsEdit.text())
         self.onWebSourceComboBoxIndexChanged(WebDownload.Crosswalk)
         settings.endGroup()
 

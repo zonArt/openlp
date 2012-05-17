@@ -293,13 +293,13 @@ class MediaMediaItem(MediaManagerItem):
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(CLAPPERBOARD))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             else:
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 #TODO: add the appropriate Icon
                 #item_name.setIcon(build_icon(DVD_ICON))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
 

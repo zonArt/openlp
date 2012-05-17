@@ -63,6 +63,22 @@ class ServiceItemAction(object):
     Next = 3
 
 
+class Settings(QtCore.QSettings):
+    def __init__(self, *args):
+        QtCore.QSettings.__init__(self, *args)
+        import copy
+        self.value_ = copy.deepcopy(self.value)
+        self.value = copy.deepcopy(self.value2)
+
+    def value2(self, key, defaultValue):
+        setting = self.value_(key, defaultValue)
+        if isinstance(defaultValue, int):
+            return setting.toInt()[0]
+        if isinstance(defaultValue, basestring):
+            return setting.toString()
+        if isinstance(defaultValue, bool):
+            return setting.toBool()
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):

@@ -38,7 +38,7 @@ from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 
@@ -179,13 +179,12 @@ class Manager(object):
             The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
+        db_type = unicode(settings.value(u'db type', u'sqlite'))
         if db_type == u'sqlite':
             if db_file_name:
                 self.db_url = u'sqlite:///%s/%s' % (
@@ -196,13 +195,12 @@ class Manager(object):
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(unicode(settings.value(u'db username').toString())),
-                urlquote(unicode(settings.value(u'db password').toString())),
-                urlquote(unicode(settings.value(u'db hostname').toString())),
-                urlquote(unicode(settings.value(u'db database').toString())))
+                urlquote(unicode(settings.value(u'db username'))),
+                urlquote(unicode(settings.value(u'db password'))),
+                urlquote(unicode(settings.value(u'db hostname'))),
+                urlquote(unicode(settings.value(u'db database'))))
             if db_type == u'mysql':
-                db_encoding = unicode(
-                    settings.value(u'db encoding', u'utf8').toString())
+                db_encoding = unicode(settings.value(u'db encoding', u'utf8'))
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:

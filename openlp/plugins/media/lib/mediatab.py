@@ -27,7 +27,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings, create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 class MediaQCheckBox(QtGui.QCheckBox):
@@ -186,9 +186,8 @@ class MediaTab(SettingsTab):
             else:
                 checkbox.setChecked(False)
         self.updatePlayerList()
-        self.overridePlayerCheckBox.setChecked(QtCore.QSettings().value(
-            self.settingsSection + u'/override player',
-            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
+        self.overridePlayerCheckBox.setChecked(Settings().value(
+            self.settingsSection + u'/override player', QtCore.Qt.Unchecked))
 
     def save(self):
         override_changed = False
@@ -200,10 +199,10 @@ class MediaTab(SettingsTab):
             player_string_changed = True
             override_changed = True
         setting_key = self.settingsSection + u'/override player'
-        if QtCore.QSettings().value(setting_key).toInt()[0] != \
+        if Settings().value(setting_key).toInt()[0] != \
             self.overridePlayerCheckBox.checkState():
-            QtCore.QSettings().setValue(setting_key,
-                QtCore.QVariant(self.overridePlayerCheckBox.checkState()))
+            Settings().setValue(setting_key,
+                self.overridePlayerCheckBox.checkState())
             override_changed = True
         if override_changed:
             Receiver.send_message(u'mediaitem_media_rebuild')

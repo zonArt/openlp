@@ -37,6 +37,8 @@ import sys
 import time
 import urllib2
 
+from openlp.core.lib import Settings
+
 from PyQt4 import QtGui, QtCore
 
 if sys.platform != u'win32' and sys.platform != u'darwin':
@@ -281,12 +283,12 @@ def check_latest_version(current_version):
     """
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
-        QtCore.QVariant(datetime.now().date())).toString())
+        datetime.now().date()))
     this_test = unicode(datetime.now().date())
-    settings.setValue(u'last version test', QtCore.QVariant(this_test))
+    settings.setValue(u'last version test', this_test)
     settings.endGroup()
     if last_test != this_test:
         if current_version[u'build']:

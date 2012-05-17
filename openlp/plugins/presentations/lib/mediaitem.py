@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
-    validate_thumb
+    validate_thumb, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.plugins.presentations.lib import MessageListener
@@ -149,8 +149,8 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override app',
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+        if Settings().value(self.settingsSection + u'/override app',
+            QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:
             self.presentationWidget.hide()
@@ -211,7 +211,7 @@ class PresentationMediaItem(MediaManagerItem):
                         'This type of presentation is not supported.'))
                     continue
             item_name = QtGui.QListWidgetItem(filename)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            item_name.setData(QtCore.Qt.UserRole, file)
             item_name.setIcon(icon)
             item_name.setToolTip(file)
             self.listView.addItem(item_name)

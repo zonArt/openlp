@@ -34,6 +34,7 @@ import os
 
 from PyQt4 import QtCore
 
+from openlp.core.lib import Settings
 from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
@@ -58,9 +59,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        last_dir = unicode(QtCore.QSettings().value(
-            section + u'/' + name, QtCore.QVariant(u'')).toString())
-        return last_dir
+        return unicode(Settings().value(section + u'/' + name, u''))
 
     @staticmethod
     def set_last_dir(section, directory, num=None):
@@ -81,8 +80,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        QtCore.QSettings().setValue(
-            section + u'/' + name, QtCore.QVariant(directory))
+        Settings().setValue(section + u'/' + name, directory)
 
     @staticmethod
     def set_list(section, name, list):
@@ -98,15 +96,14 @@ class SettingsManager(object):
         ``list``
             The list of values to save.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(section)
-        old_count = settings.value(
-            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
+        #TODO: check if [0] is needed.
+        old_count = settings.value(u'%s count' % name, 0)
         new_count = len(list)
-        settings.setValue(u'%s count' % name, QtCore.QVariant(new_count))
+        settings.setValue(u'%s count' % name, new_count)
         for counter in range(new_count):
-            settings.setValue(
-                u'%s %d' % (name, counter), QtCore.QVariant(list[counter-1]))
+            settings.setValue(u'%s %d' % (name, counter), list[counter - 1])
         if old_count > new_count:
             # Tidy up any old list items
             for counter in range(new_count, old_count):
@@ -124,15 +121,13 @@ class SettingsManager(object):
         ``name``
             The name of the list.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(section)
-        list_count = settings.value(
-            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
+        list_count = settings.value(u'%s count' % name, 0)
         list = []
         if list_count:
             for counter in range(list_count):
-                item = unicode(
-                    settings.value(u'%s %d' % (name, counter)).toString())
+                item = unicode(settings.value(u'%s %d' % (name, counter)))
                 if item:
                     list.append(item)
         settings.endGroup()

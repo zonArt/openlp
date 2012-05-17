@@ -332,9 +332,8 @@ class MediaController(object):
             display.frame.evaluateJavaScript(u'show_video( \
             "setBackBoard", null, null, null,"visible");')
         # now start playing
-        if controller.isLive and \
-            (QtCore.QSettings().value(u'general/auto unblank',
-            QtCore.QVariant(False)).toBool() or \
+        if controller.isLive and (Settings().value(
+            u'general/auto unblank', False) or
             controller.media_info.is_background == True) or \
             controller.isLive == False:
             if not self.video_play([controller]):

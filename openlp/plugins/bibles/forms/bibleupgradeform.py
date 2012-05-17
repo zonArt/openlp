@@ -34,7 +34,7 @@ from tempfile import gettempdir
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate, \
-    check_directory_exists
+    check_directory_exists, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file
@@ -341,7 +341,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Set default values for the wizard pages.
         """
         log.debug(u'BibleUpgrade setDefaults')
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.plugin.settingsSection)
         self.stop_import_flag = False
         self.success.clear()

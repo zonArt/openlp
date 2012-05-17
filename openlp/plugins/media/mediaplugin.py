@@ -29,7 +29,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -126,7 +127,7 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')
@@ -140,8 +141,7 @@ class MediaPlugin(Plugin):
                         if player != u'phonon']
                 new_players.insert(0, u'phonon')
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
-                settings.setValue(u'players', \
-                    QtCore.QVariant(u','.join(new_players)))
+                settings.setValue(u'players', u','.join(new_players))
                 self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

@@ -30,7 +30,7 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, SettingsManager, translate, Settings
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
@@ -125,9 +125,8 @@ class BibleManager(object):
         self.web = u'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.proxy_name = unicode(
-            QtCore.QSettings().value(self.settingsSection + u'/proxy name',
-            QtCore.QVariant(u'')).toString())
+        self.proxy_name = unicode(Settings().value(
+            self.settingsSection + u'/proxy name', u''))
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -334,9 +333,8 @@ class BibleManager(object):
         if language_selection:
             language_selection = int(language_selection.value)
         if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+            language_selection = Settings().value(
+                self.settingsSection + u'/bookname language', 0)
         reflist = parse_reference(versetext, self.db_cache[bible],
             language_selection, book_ref_id)
         if reflist:
@@ -381,9 +379,8 @@ class BibleManager(object):
         if language_selection and language_selection.value != u'None':
             return int(language_selection.value)
         if language_selection is None or  language_selection.value == u'None':
-            return QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+            return Settings().value(
+                self.settingsSection + u'/bookname language', 0)
 
     def verse_search(self, bible, second_bible, text):
         """
@@ -437,7 +434,7 @@ class BibleManager(object):
                 })
             return None
 
-    def save_meta_data(self, bible, version, copyright, permissions, 
+    def save_meta_data(self, bible, version, copyright, permissions,
         book_name_language=None):
         """
         Saves the bibles meta data.
@@ -456,7 +453,7 @@ class BibleManager(object):
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
-    
+
     def update_book(self, bible, book):
         """
         Update a book of the bible.

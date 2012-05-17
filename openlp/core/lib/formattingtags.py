@@ -31,7 +31,7 @@ import cPickle
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 
 
 class FormattingTags(object):
@@ -68,8 +68,8 @@ class FormattingTags(object):
                     if isinstance(tag[element], unicode):
                         tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
-        QtCore.QSettings().setValue(u'displayTags/html_tags',
-            QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
+        Settings().setValue(u'displayTags/html_tags',
+            cPickle.dumps(tags) if tags else u'')
 
     @staticmethod
     def load_tags():
@@ -164,8 +164,7 @@ class FormattingTags(object):
         FormattingTags.add_html_tags(temporary_tags)
 
         # Formatting Tags were also known as display tags.
-        user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
-            QtCore.QVariant(u'')).toString()
+        user_expands = Settings().value(u'displayTags/html_tags', u'')
         # cPickle only accepts str not unicode strings
         user_expands_string = str(user_expands)
         if user_expands_string:

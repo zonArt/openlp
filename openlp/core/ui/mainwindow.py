@@ -37,7 +37,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib import SlideLimits
+from openlp.core.lib import SlideLimits, Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
@@ -99,13 +99,13 @@ class Ui_MainWindow(object):
         # Create slide controllers
         self.previewController = SlideController(self)
         self.liveController = SlideController(self, True)
-        previewVisible = QtCore.QSettings().value(
-            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
+        previewVisible = Settings().value(
+            u'user interface/preview panel', True)
         self.previewController.panel.setVisible(previewVisible)
-        liveVisible = QtCore.QSettings().value(u'user interface/live panel',
-            QtCore.QVariant(True)).toBool()
-        panelLocked = QtCore.QSettings().value(u'user interface/lock panel',
-            QtCore.QVariant(False)).toBool()
+        liveVisible = Settings().value(u'user interface/live panel',
+            True)
+        panelLocked = Settings().value(u'user interface/lock panel',
+            False)
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -684,10 +684,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
-        if QtCore.QSettings().value(u'advanced/save current plugin',
-            QtCore.QVariant(False)).toBool():
-            savedPlugin = QtCore.QSettings().value(
-                u'advanced/current media plugin', QtCore.QVariant()).toInt()[0]
+        if Settings().value(u'advanced/save current plugin', False):
+            savedPlugin = Settings().value(
+                u'advanced/current media plugin', )
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
@@ -738,12 +737,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if not isinstance(filename, unicode):
                 filename = unicode(filename, sys.getfilesystemencoding())
             self.serviceManagerContents.loadFile(filename)
-        elif QtCore.QSettings().value(
+        elif Settings().value(
             self.generalSettingsSection + u'/auto open',
-            QtCore.QVariant(False)).toBool():
+            False):
             self.serviceManagerContents.loadLastFile()
-        view_mode = QtCore.QSettings().value(u'%s/view mode' % \
-            self.generalSettingsSection, u'default').toString()
+        view_mode = Settings().value(u'%s/view mode' % \
+            self.generalSettingsSection, u'default') 
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -820,12 +819,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Check and display message if screen blank on setup.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         self.liveController.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
-            QtCore.QVariant(False)).toBool():
+            False):
             if settings.value(u'%s/blank warning' % self.generalSettingsSection,
-                QtCore.QVariant(False)).toBool():
+                False):
                 QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow',
                         'OpenLP Main Display Blanked'),
@@ -954,8 +953,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
-        settings = QtCore.QSettings()
-        import_settings = QtCore.QSettings(import_file_name,
+        settings = Settings()
+        import_settings = Settings(import_file_name,
             QtCore.QSettings.IniFormat)
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
@@ -985,11 +984,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # We have a good file, import it.
         for section_key in import_keys:
             value = import_settings.value(section_key)
-            settings.setValue(u'%s' % (section_key),
-                QtCore.QVariant(value))
+            settings.setValue(u'%s' % (section_key), value)
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue(u'file_imported', QtCore.QVariant(import_file_name))
+        settings.setValue(u'file_imported', import_file_name)
         settings.setValue(u'file_date_imported',
             now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
@@ -1041,11 +1039,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             os.remove(temp_file)
         if os.path.exists(export_file_name):
             os.remove(export_file_name)
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        export_settings = QtCore.QSettings(temp_file,
+        export_settings = Settings(temp_file,
             QtCore.QSettings.IniFormat)
         # Add a header section.
         # This is to insure it's our conf file for import.
@@ -1104,7 +1102,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Set OpenLP to a different view mode.
         """
         if mode:
-            settings = QtCore.QSettings()
+            settings = Settings()
             settings.setValue(u'%s/view mode' % self.generalSettingsSection,
                 mode)
         self.mediaManagerDock.setVisible(media)
@@ -1149,8 +1147,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            if QtCore.QSettings().value(u'advanced/enable exit confirmation',
-                QtCore.QVariant(True)).toBool():
+            if Settings().value(u'advanced/enable exit confirmation',
+                True):
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),
                     translate('OpenLP.MainWindow',
@@ -1174,10 +1172,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
-        if QtCore.QSettings().value(u'advanced/save current plugin',
-            QtCore.QVariant(False)).toBool():
-            QtCore.QSettings().setValue(u'advanced/current media plugin',
-                QtCore.QVariant(self.mediaToolBox.currentIndex()))
+        if Settings().value(u'advanced/save current plugin',
+            False):
+            Settings().setValue(u'advanced/current media plugin',
+                self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.pluginManager.finalise_plugins()
@@ -1254,8 +1252,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.previewController.panel.setVisible(visible)
-        QtCore.QSettings().setValue(u'user interface/preview panel',
-            QtCore.QVariant(visible))
+        Settings().setValue(u'user interface/preview panel', visible)
         self.viewPreviewPanel.setChecked(visible)
 
     def setLockPanel(self, lock):
@@ -1286,8 +1283,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.viewThemeManagerItem.setEnabled(True)
             self.viewPreviewPanel.setEnabled(True)
             self.viewLivePanel.setEnabled(True)
-        QtCore.QSettings().setValue(u'user interface/lock panel',
-            QtCore.QVariant(lock))
+        Settings().setValue(u'user interface/lock panel', lock)
 
     def setLivePanelVisibility(self, visible):
         """
@@ -1300,8 +1296,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.liveController.panel.setVisible(visible)
-        QtCore.QSettings().setValue(u'user interface/live panel',
-            QtCore.QVariant(visible))
+        Settings().setValue(u'user interface/live panel', visible)
         self.viewLivePanel.setChecked(visible)
 
     def loadSettings(self):
@@ -1310,19 +1305,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
        # Migrate Wrap Settings to Slide Limits Settings
-        if QtCore.QSettings().contains(self.generalSettingsSection +
+        if Settings().contains(self.generalSettingsSection +
             u'/enable slide loop'):
-            if QtCore.QSettings().value(self.generalSettingsSection +
-                u'/enable slide loop', QtCore.QVariant(True)).toBool():
-                QtCore.QSettings().setValue(self.advancedSettingsSection +
-                    u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
+            if Settings().value(self.generalSettingsSection +
+                u'/enable slide loop', True):
+                Settings().setValue(self.advancedSettingsSection +
+                    u'/slide limits', SlideLimits.Wrap)
             else:
-                QtCore.QSettings().setValue(self.advancedSettingsSection +
-                    u'/slide limits', QtCore.QVariant(SlideLimits.End))
-            QtCore.QSettings().remove(self.generalSettingsSection +
+                Settings().setValue(self.advancedSettingsSection +
+                    u'/slide limits', SlideLimits.End)
+            Settings().remove(self.generalSettingsSection +
                 u'/enable slide loop')
             Receiver.send_message(u'slidecontroller_update_slide_limits')
-        settings = QtCore.QSettings()
+        settings = Settings()
         # Remove obsolete entries.
         settings.remove(u'custom slide')
         settings.remove(u'service')
@@ -1331,7 +1326,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         self.move(settings.value(u'main window position',
-            QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
+            QtCore.QPoint(0, 0))).toPoint()
         self.restoreGeometry(
             settings.value(u'main window geometry').toByteArray())
         self.restoreState(settings.value(u'main window state').toByteArray())
@@ -1351,25 +1346,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.settingsImported:
             return
         log.debug(u'Saving QSettings')
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.generalSettingsSection)
-        recentFiles = QtCore.QVariant(self.recentFiles) \
-            if self.recentFiles else QtCore.QVariant()
+        recentFiles = self.recentFiles if self.recentFiles else u''
         settings.setValue(u'recent files', recentFiles)
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
-        settings.setValue(u'main window position',
-            QtCore.QVariant(self.pos()))
-        settings.setValue(u'main window state',
-            QtCore.QVariant(self.saveState()))
-        settings.setValue(u'main window geometry',
-            QtCore.QVariant(self.saveGeometry()))
+        settings.setValue(u'main window position', self.pos())
+        settings.setValue(u'main window state', self.saveState())
+        settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry',
-            QtCore.QVariant(self.liveController.splitter.saveState()))
+            self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry',
-            QtCore.QVariant(self.previewController.splitter.saveState()))
+            self.previewController.splitter.saveState())
         settings.setValue(u'mainwindow splitter geometry',
-            QtCore.QVariant(self.controlSplitter.saveState()))
+            self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):
@@ -1377,8 +1368,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files
         accessed.
         """
-        recentFileCount = QtCore.QSettings().value(
-            u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
+        recentFileCount = Settings().value(
+            u'advanced/recent file count', 4)
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
@@ -1410,8 +1401,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # The maxRecentFiles value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
         # always be used.
-        maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
-            QtCore.QVariant(20)).toInt()[0]
+        maxRecentFiles = Settings().value(
+            u'advanced/max recent files', 20)
         if filename:
             # Add some cleanup to reduce duplication in the recent file list
             filename = os.path.abspath(filename)
@@ -1422,7 +1413,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             position = self.recentFiles.indexOf(filename)
             if position != -1:
                 self.recentFiles.removeAt(position)
-            self.recentFiles.insert(0, QtCore.QString(filename))
+            self.recentFiles.insert(0, filename)
             while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()

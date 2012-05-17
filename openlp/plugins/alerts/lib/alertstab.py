@@ -27,7 +27,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings
 from openlp.core.ui import AlertLocation
 from openlp.core.lib.ui import UiStrings, create_valign_selection_widgets
 
@@ -152,19 +152,15 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
-        self.font_color = unicode(settings.value(
-            u'font color', QtCore.QVariant(u'#ffffff')).toString())
-        self.font_size = settings.value(
-            u'font size', QtCore.QVariant(40)).toInt()[0]
-        self.bg_color = unicode(settings.value(
-            u'background color', QtCore.QVariant(u'#660000')).toString())
+        self.timeout = settings.value(u'timeout', 5)
+        self.font_color = unicode(settings.value(u'font color', u'#ffffff'))
+        self.font_size = settings.value(u'font size', 40)
+        self.bg_color = unicode(settings.value(u'background color', u'#660000'))
         self.font_face = unicode(settings.value(
-            u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
-        self.location = settings.value(
-            u'location', QtCore.QVariant(AlertLocation.Bottom)).toInt()[0]
+            u'font face', QtGui.QFont().family()))
+        self.location = settings.value(u'location', AlertLocation.Bottom)
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)
         self.timeoutSpinBox.setValue(self.timeout)
@@ -180,20 +176,20 @@ class AlertsTab(SettingsTab):
         self.changed = False
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         # Check value has changed as no event handles this field
-        if settings.value(u'location', QtCore.QVariant(1)).toInt()[0] != \
+        if settings.value(u'location', 1) != \
             self.verticalComboBox.currentIndex():
             self.changed = True
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
-        settings.setValue(u'font color', QtCore.QVariant(self.font_color))
-        settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'background color', self.bg_color)
+        settings.setValue(u'font color', self.font_color)
+        settings.setValue(u'font size', self.font_size)
         self.font_face = self.fontComboBox.currentFont().family()
-        settings.setValue(u'font face', QtCore.QVariant(self.font_face))
-        settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'font face', self.font_face)
+        settings.setValue(u'timeout', self.timeout)
         self.location = self.verticalComboBox.currentIndex()
-        settings.setValue(u'location', QtCore.QVariant(self.location))
+        settings.setValue(u'location', self.location)
         settings.endGroup()
         if self.changed:
             Receiver.send_message(u'update_display_css')

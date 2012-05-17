@@ -34,7 +34,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
-    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD, Settings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
@@ -462,8 +462,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
-            QtCore.QVariant(False)).toBool():
+        if Settings().value(u'advanced/double click live', False):
             self.onLiveClick()
         else:
             self.onPreviewClick()
@@ -472,8 +471,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if QtCore.QSettings().value(u'advanced/single click preview',
-            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
+        if Settings().value(u'advanced/single click preview',
+            False) and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() \
             and self.autoSelectId == -1:
             self.onPreviewClick(True)
@@ -521,7 +520,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
-        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
+        item.setData(QtCore.Qt.UserRole, item_id)
         return item
 
     def onAddClick(self):

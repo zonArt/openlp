@@ -31,7 +31,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import SettingsManager, translate, Receiver, \
+from openlp.core.lib import Receiver, Settings, SettingsManager, translate, \
     check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
@@ -59,12 +59,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
-        toDate = QtCore.QSettings().value(
-            u'songusage/to date',
-            QtCore.QVariant(QtCore.QDate(year, 8, 31))).toDate()
-        fromDate = QtCore.QSettings().value(
+        toDate = Settings().value(
+            u'songusage/to date', QtCore.QDate(year, 8, 31)).toDate()
+        fromDate = Settings().value(
             u'songusage/from date',
-            QtCore.QVariant(QtCore.QDate(year - 1, 9, 1))).toDate()
+            QtCore.QDate(year - 1, 9, 1)).toDate()
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
         self.fileLineEdit.setText(
@@ -103,10 +102,10 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             'usage_detail_%s_%s.txt')) % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        QtCore.QSettings().setValue(u'songusage/from date',
-            QtCore.QVariant(self.fromDate.selectedDate()))
-        QtCore.QSettings().setValue(u'songusage/to date',
-            QtCore.QVariant(self.toDate.selectedDate()))
+        Settings().setValue(u'songusage/from date',
+            self.fromDate.selectedDate())
+        Settings().setValue(u'songusage/to date',
+            self.toDate.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),

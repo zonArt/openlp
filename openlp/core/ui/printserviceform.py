@@ -31,7 +31,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver
+from openlp.core.lib import translate, get_text_file_string, Receiver, Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
@@ -120,20 +120,18 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         self.slideTextCheckBox.setChecked(settings.value(
-            u'print slide text', QtCore.QVariant(False)).toBool())
+            u'print slide text', False))
         self.pageBreakAfterText.setChecked(settings.value(
-            u'add page break', QtCore.QVariant(False)).toBool())
+            u'add page break', False))
         if not self.slideTextCheckBox.isChecked():
             self.pageBreakAfterText.setDisabled(True)
         self.metaDataCheckBox.setChecked(settings.value(
-            u'print file meta data', QtCore.QVariant(False)).toBool())
-        self.notesCheckBox.setChecked(settings.value(
-            u'print notes', QtCore.QVariant(False)).toBool())
-        self.zoomComboBox.setCurrentIndex(settings.value(
-            u'display size', QtCore.QVariant(0)).toInt()[0])
+            u'print file meta data', False))
+        self.notesCheckBox.setChecked(settings.value(u'print notes', False))
+        self.zoomComboBox.setCurrentIndex(settings.value(u'display size', 0))
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton,
@@ -318,9 +316,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         elif display == ZoomSize.TwentyFive:
             self.previewWidget.fitToWidth()
             self.previewWidget.zoomIn(0.25)
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
-        settings.setValue(u'display size', QtCore.QVariant(display))
+        settings.setValue(u'display size', display)
         settings.endGroup()
 
     def copyText(self):
@@ -389,16 +387,15 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Save the settings and close the dialog.
         """
         # Save the settings for this dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
-            QtCore.QVariant(self.slideTextCheckBox.isChecked()))
+            self.slideTextCheckBox.isChecked())
         settings.setValue(u'add page break',
-            QtCore.QVariant(self.pageBreakAfterText.isChecked()))
+            self.pageBreakAfterText.isChecked())
         settings.setValue(u'print file meta data',
-            QtCore.QVariant(self.metaDataCheckBox.isChecked()))
-        settings.setValue(u'print notes',
-            QtCore.QVariant(self.notesCheckBox.isChecked()))
+            self.metaDataCheckBox.isChecked())
+        settings.setValue(u'print notes', self.notesCheckBox.isChecked())
         settings.endGroup()
 
     def update_song_usage(self):

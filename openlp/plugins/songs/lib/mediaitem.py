@@ -34,8 +34,9 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus, create_separated_list
+from openlp.core.lib import MediaManagerItem, Receiver, Settings, \
+    ItemCapabilities, translate, check_item_selected, PluginStatus, \
+    create_separated_list
 from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
@@ -131,15 +132,13 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = QtCore.QSettings().value(
-            self.settingsSection + u'/search as type',
-            QtCore.QVariant(u'False')).toBool()
-        self.updateServiceOnEdit = QtCore.QSettings().value(
-            self.settingsSection + u'/update service on edit',
-            QtCore.QVariant(u'False')).toBool()
-        self.addSongFromService = QtCore.QSettings().value(
-            self.settingsSection + u'/add song from service',
-            QtCore.QVariant(u'True')).toBool()
+        # TODO: Check .toBool()
+        self.searchAsYouType = bool(Settings().value(
+            self.settingsSection + u'/search as type', False))
+        self.updateServiceOnEdit = bool(Settings().value(
+            self.settingsSection + u'/update service on edit', False))
+        self.addSongFromService = bool(Settings().value(
+            self.settingsSection + u'/add song from service', True))
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -168,16 +167,14 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
-            u'%s/last search type' % self.settingsSection,
-            QtCore.QVariant(SongSearch.Entire)).toInt()[0])
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
+            u'%s/last search type' % self.settingsSection, SongSearch.Entire))
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
-            self.settingsSection,
-            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+        Settings().setValue(u'%s/last search type' %
+            self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
@@ -271,7 +268,7 @@ class SongMediaItem(MediaManagerItem):
             song_detail = u'%s (%s)' % (song_title,
                 create_separated_list(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
-            song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+            song_name.setData(QtCore.Qt.UserRole, song.id)
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
             if song.id == self.autoSelectId:
@@ -288,7 +285,7 @@ class SongMediaItem(MediaManagerItem):
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
-                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.listView.addItem(song_name)
 
     def displayResultsBook(self, searchresults, song_number=False):
@@ -306,7 +303,7 @@ class SongMediaItem(MediaManagerItem):
                 song_detail = u'%s - %s (%s)' % (book.name, song.song_number,
                     song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
-                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.listView.addItem(song_name)
 
     def onClearTextButtonClick(self):
@@ -516,12 +513,10 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if QtCore.QSettings().value(u'general/ccli number',
-            QtCore.QVariant(u'')).toString():
+        if Settings().value(u'general/ccli number', u''):
             service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                QtCore.QSettings().value(u'general/ccli number',
-                QtCore.QVariant(u'')).toString()))
+                Settings().value(u'general/ccli number', u'')))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]

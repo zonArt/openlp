@@ -26,6 +26,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import sip
+sip.setapi(u'QString', 2)
 # Import uuid now, to avoid the rare bug described in the support system:
 # http://support.openlp.org/issues/102
 # If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be

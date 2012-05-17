@@ -131,7 +131,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 author_name = QtGui.QListWidgetItem(
                     u' '.join([author.first_name, author.last_name]))
-            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+            author_name.setData(QtCore.Qt.UserRole, author.id)
             self.authorsListWidget.addItem(author_name)
 
     def resetTopics(self):
@@ -142,7 +142,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
         for topic in topics:
             topic_name = QtGui.QListWidgetItem(topic.name)
-            topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+            topic_name.setData(QtCore.Qt.UserRole, topic.id)
             self.topicsListWidget.addItem(topic_name)
 
     def resetBooks(self):
@@ -154,7 +154,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         for book in books:
             book_name = QtGui.QListWidgetItem(u'%s (%s)' % (book.name,
                 book.publisher))
-            book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
+            book_name.setData(QtCore.Qt.UserRole, book.id)
             self.booksListWidget.addItem(book_name)
 
     def checkAuthor(self, new_author, edit=False):

@@ -365,6 +365,7 @@ def create_action(parent, name, **kwargs):
     ``separator``
         True in case the action will be considered a separator.
 
+    #FIXME: check
     ``data``
         Data which is set as QVariant type.
 
@@ -400,7 +401,7 @@ def create_action(parent, name, **kwargs):
     if kwargs.pop(u'separator', False):
         action.setSeparator(True)
     if u'data' in kwargs:
-        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
+        action.setData(kwargs.pop(u'data'))
     if kwargs.get(u'shortcuts'):
         action.setShortcuts(kwargs.pop(u'shortcuts'))
     if u'context' in kwargs:

@@ -38,7 +38,7 @@ from ConfigParser import SafeConfigParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
-    check_directory_exists
+    check_directory_exists, Settings
 from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -62,7 +62,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
                 os.path.join(gettempdir(), u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+            item.setData(QtCore.Qt.UserRole, filename)
             item.setCheckState(QtCore.Qt.Unchecked)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
@@ -113,8 +113,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         check_directory_exists(os.path.join(gettempdir(), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = QtCore.QSettings().value(
-            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        self.hasRunWizard = Settings().value(
+            u'general/has run wizard', False)
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
@@ -125,7 +125,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 filename = unicode(self.config.get(
                     u'songs_%s' % song, u'filename'), u'utf8')
                 item = QtGui.QListWidgetItem(title, self.songsListWidget)
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                item.setData(QtCore.Qt.UserRole, filename)
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             bible_languages = self.config.get(u'bibles', u'languages')
@@ -133,8 +133,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for lang in bible_languages:
                 language = unicode(self.config.get(
                     u'bibles_%s' % lang, u'title'), u'utf8')
+                # FIXME
                 langItem = QtGui.QTreeWidgetItem(
-                    self.biblesTreeWidget, QtCore.QStringList(language))
+                    self.biblesTreeWidget, language)
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
@@ -142,10 +143,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         u'bible_%s' % bible, u'title'), u'utf8')
                     filename = unicode(self.config.get(
                         u'bible_%s' % bible, u'filename'))
-                    item = QtGui.QTreeWidgetItem(
-                        langItem, QtCore.QStringList(title))
-                    item.setData(0, QtCore.Qt.UserRole,
-                        QtCore.QVariant(filename))
+                    # FIXME
+                    item = QtGui.QTreeWidgetItem(langItem, title)
+                    item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
@@ -206,9 +206,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
-                default_theme = unicode(QtCore.QSettings().value(
-                    u'themes/global theme',
-                    QtCore.QVariant(u'')).toString())
+                default_theme = unicode(Settings().value(
+                    u'themes/global theme', u''))
                 # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)
@@ -257,8 +256,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._performWizard()
         Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_normal')
-        QtCore.QSettings().setValue(u'general/has run wizard',
-            QtCore.QVariant(True))
+        Settings().setValue(u'general/has run wizard', True)
         self.close()
 
     def urlGetFile(self, url, fpath):
@@ -296,7 +294,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
             for index in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(index)
-                if item.data(QtCore.Qt.UserRole) == QtCore.QVariant(filename):
+                if item.data(QtCore.Qt.UserRole) == filename:
                     break
             item.setIcon(build_icon(
                 os.path.join(gettempdir(), u'openlp', screenshot)))
@@ -456,16 +454,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'General/monitor',
-                QtCore.QVariant(self.displayComboBox.currentIndex()))
+            Settings().setValue(u'General/monitor',
+                self.displayComboBox.currentIndex())
             self.screens.set_current_display(
-                 self.displayComboBox.currentIndex())
+                self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'themes/global theme',
-                QtCore.QVariant(self.themeComboBox.currentText()))
+            Settings().setValue(u'themes/global theme',
+                self.themeComboBox.currentText())
 
     def _setPluginStatus(self, field, tag):
-        status = PluginStatus.Active if field.checkState() \
-            == QtCore.Qt.Checked else PluginStatus.Inactive
-        QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
+        status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked\
+            else PluginStatus.Inactive
+        Settings().setValue(tag, status)

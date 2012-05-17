@@ -36,7 +36,7 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
-    Receiver, SettingsManager, translate, check_item_selected, \
+    Receiver, Settings, SettingsManager, translate, check_item_selected, \
     check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
@@ -164,9 +164,8 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
+        self.global_theme = Settings().value(
+            self.settingsSection + u'/global theme', u'')
 
     def checkListState(self, item):
         """
@@ -244,9 +243,8 @@ class ThemeManager(QtGui.QWidget):
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % self.global_theme
                 self.themeListWidget.item(count).setText(name)
-                QtCore.QSettings().setValue(
-                    self.settingsSection + u'/global theme',
-                    QtCore.QVariant(self.global_theme))
+                Settings().setValue(
+                    self.settingsSection + u'/global theme', self.global_theme)
                 Receiver.send_message(u'theme_update_global',
                     self.global_theme)
                 self._pushThemes()
@@ -448,9 +446,8 @@ class ThemeManager(QtGui.QWidget):
                 theme = ThemeXML()
                 theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
-                QtCore.QSettings().setValue(
-                    self.settingsSection + u'/global theme',
-                    QtCore.QVariant(theme.theme_name))
+                Settings().setValue(
+                    self.settingsSection + u'/global theme', theme.theme_name)
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific characters.
@@ -475,7 +472,7 @@ class ThemeManager(QtGui.QWidget):
                 else:
                     icon = create_thumb(theme, thumb)
                 item_name.setIcon(icon)
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(text_name))
+                item_name.setData(QtCore.Qt.UserRole, text_name)
                 self.themeListWidget.addItem(item_name)
                 self.theme_list.append(text_name)
         self._pushThemes()
@@ -767,9 +764,8 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
+        self.global_theme = unicode(Settings().value(
+            self.settingsSection + u'/global theme', u''))
         if check_item_selected(self.themeListWidget, select_text):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())

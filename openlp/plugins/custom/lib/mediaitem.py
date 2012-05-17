@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate
+    check_item_selected, translate, Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
@@ -99,9 +99,8 @@ class CustomMediaItem(MediaManagerItem):
         ])
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
-            u'%s/last search type' % self.settingsSection,
-            QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
+            u'%s/last search type' % self.settingsSection, CustomSearch.Titles))
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
@@ -113,8 +112,7 @@ class CustomMediaItem(MediaManagerItem):
             cmp=locale.strcoll, key=lambda custom: custom.title.lower())
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
-            custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
+            custom_name.setData(QtCore.Qt.UserRole, custom_slide.id)
             self.listView.addItem(custom_name)
             # Auto-select the custom.
             if custom_slide.id == self.autoSelectId:
@@ -218,8 +216,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if QtCore.QSettings().value(self.settingsSection + u'/display footer',
-            QtCore.QVariant(True)).toBool() or credit:
+        if Settings().value(self.settingsSection + u'/display footer',
+            True) or credit:
             raw_footer.append(title + u' ' + credit)
         else:
             raw_footer.append(u'')
@@ -228,9 +226,8 @@ class CustomMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
-            self.settingsSection,
-            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+        Settings().setValue(u'%s/last search type' %
+            self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []

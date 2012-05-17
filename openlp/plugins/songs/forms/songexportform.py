@@ -218,8 +218,9 @@ class SongExportForm(OpenLPWizard):
             # Add the songs to the list of selected songs.
             for item in items:
                 song = QtGui.QListWidgetItem(item.text())
+                # TODO: check toPyObject()
                 song.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(item.data(QtCore.Qt.UserRole).toPyObject()))
+                    item.data(QtCore.Qt.UserRole).toPyObject())
                 song.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.selectedListWidget.addItem(song)
             return True
@@ -260,7 +261,7 @@ class SongExportForm(OpenLPWizard):
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
+            item.setData(QtCore.Qt.UserRole, song)
             item.setFlags(QtCore.Qt.ItemIsSelectable|
                 QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -308,8 +309,9 @@ class SongExportForm(OpenLPWizard):
         ``text``
             The text to search for. (unicode string)
         """
+        #TODO: check if unicode() can be removed.
         return [item for item in listWidget.findItems(
-            QtCore.QString(unicode(text)), QtCore.Qt.MatchContains)
+            unicode(text), QtCore.Qt.MatchContains)
         ]
 
     def onItemActivated(self, item):
@@ -333,6 +335,8 @@ class SongExportForm(OpenLPWizard):
         ``text``
             The text of the *searchLineEdit*. (QString)
         """
+        #TODO: check if unicode() can be removed.
+        print type(text)
         search_result = [
             song for song in self._findListWidgetItems(
             self.availableListWidget, unicode(text))

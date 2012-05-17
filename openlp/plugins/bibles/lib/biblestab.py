@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsTab, translate
+from openlp.core.lib import Receiver, SettingsTab, translate, Settings
 from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     update_reference_separators, get_reference_separator, LanguageSelection
@@ -414,18 +414,14 @@ class BiblesTab(SettingsTab):
                     self.getGreyTextPalette(True))
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.show_new_chapters = settings.value(
-            u'display new chapter', QtCore.QVariant(False)).toBool()
-        self.display_style = settings.value(
-            u'display brackets', QtCore.QVariant(0)).toInt()[0]
-        self.layout_style = settings.value(
-            u'verse layout style', QtCore.QVariant(0)).toInt()[0]
-        self.bible_theme = unicode(
-            settings.value(u'bible theme', QtCore.QVariant(u'')).toString())
-        self.second_bibles = settings.value(
-            u'second bibles', QtCore.QVariant(True)).toBool()
+        self.show_new_chapters = settings.value(u'display new chapter', False)
+        self.display_style = settings.value(u'display brackets', 0)
+        self.layout_style = settings.value(u'verse layout style', 0)
+        #TODO: Check
+        self.bible_theme = unicode(settings.value(u'bible theme', u''))
+        self.second_bibles = settings.value(u'second bibles', True)
         self.newChaptersCheckBox.setChecked(self.show_new_chapters)
         self.displayStyleComboBox.setCurrentIndex(self.display_style)
         self.layoutStyleComboBox.setCurrentIndex(self.layout_style)
@@ -482,24 +478,19 @@ class BiblesTab(SettingsTab):
             self.endSeparatorLineEdit.setPalette(
                 self.getGreyTextPalette(False))
             self.endSeparatorCheckBox.setChecked(True)
-        self.language_selection = settings.value(
-            u'book name language', QtCore.QVariant(0)).toInt()[0]
+        self.language_selection = settings.value(u'book name language', 0)
         self.languageSelectionComboBox.setCurrentIndex(self.language_selection)
         settings.endGroup()
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'display new chapter',
-            QtCore.QVariant(self.show_new_chapters))
-        settings.setValue(u'display brackets',
-            QtCore.QVariant(self.display_style))
-        settings.setValue(u'verse layout style',
-            QtCore.QVariant(self.layout_style))
-        settings.setValue(u'book name language',
-            QtCore.QVariant(self.language_selection))
-        settings.setValue(u'second bibles', QtCore.QVariant(self.second_bibles))
-        settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))
+        settings.setValue(u'display new chapter', self.show_new_chapters)
+        settings.setValue(u'display brackets', self.display_style)
+        settings.setValue(u'verse layout style', self.layout_style)
+        settings.setValue(u'book name language', self.language_selection)
+        settings.setValue(u'second bibles', self.second_bibles)
+        settings.setValue(u'bible theme', self.bible_theme)
         if self.verseSeparatorCheckBox.isChecked():
             settings.setValue(u'verse separator',
                 self.verseSeparatorLineEdit.text())

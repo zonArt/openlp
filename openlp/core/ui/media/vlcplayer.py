@@ -33,7 +33,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, Settings
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
 
@@ -114,8 +114,7 @@ class VlcPlayer(MediaPlayer):
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if QtCore.QSettings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool() and \
+        if Settings().value(u'advanced/hide mouse', False) and \
             display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)

@@ -27,7 +27,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate
 
 class ImageTab(SettingsTab):
     """
@@ -82,19 +82,18 @@ class ImageTab(SettingsTab):
                 u'background-color: %s' % self.bg_color)
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.bg_color = unicode(settings.value(
-            u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.bg_color = unicode(settings.value(u'background color', u'#000000'))
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(
             u'background-color: %s' % self.bg_color)
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         if self.initial_color != self.bg_color:
             Receiver.send_message(u'image_updated')

@@ -145,8 +145,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for author in authors:
             row = self.authorsComboBox.count()
             self.authorsComboBox.addItem(author.display_name)
-            self.authorsComboBox.setItemData(
-                row, QtCore.QVariant(author.id))
+            self.authorsComboBox.setItemData(row, author.id)
             self.authors.append(author.display_name)
         set_case_insensitive_completer(self.authors, self.authorsComboBox)
 
@@ -166,7 +165,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             row = combo.count()
             combo.addItem(object.name)
             cache.append(object.name)
-            combo.setItemData(row, QtCore.QVariant(object.id))
+            combo.setItemData(row, object.id)
         set_case_insensitive_completer(cache, combo)
 
     def loadThemes(self, theme_list):
@@ -280,7 +279,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+                item.setData(QtCore.Qt.UserRole, verse_def)
                 self.verseListWidget.setItem(count, 0, item)
         else:
             verses = self.song.lyrics.split(u'\n\n')
@@ -290,7 +289,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 item = QtGui.QTableWidgetItem(verse)
                 verse_def = u'%s%s' % \
                     (VerseType.Tags[VerseType.Verse], unicode(count + 1))
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+                item.setData(QtCore.Qt.UserRole, verse_def)
                 self.verseListWidget.setItem(count, 0, item)
         if self.song.verse_order:
             # we translate verse order
@@ -312,20 +311,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.authorsListView.clear()
         for author in self.song.authors:
             author_name = QtGui.QListWidgetItem(unicode(author.display_name))
-            author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+            author_name.setData(QtCore.Qt.UserRole, author.id)
             self.authorsListView.addItem(author_name)
         # clear the results
         self.topicsListView.clear()
         for topic in self.song.topics:
             topic_name = QtGui.QListWidgetItem(unicode(topic.name))
-            topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+            topic_name.setData(QtCore.Qt.UserRole, topic.id)
             self.topicsListView.addItem(topic_name)
         self.audioListWidget.clear()
         for media in self.song.media_files:
             media_file = QtGui.QListWidgetItem(
                 os.path.split(media.file_name)[1])
-            media_file.setData(QtCore.Qt.UserRole,
-                QtCore.QVariant(media.file_name))
+            media_file.setData(QtCore.Qt.UserRole, media.file_name)
             self.audioListWidget.addItem(media_file)
         self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # Hide or show the preview button.
@@ -396,7 +394,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Add an author to the author list.
         """
         author_item = QtGui.QListWidgetItem(unicode(author.display_name))
-        author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+        author_item.setData(QtCore.Qt.UserRole, author.id)
         self.authorsListView.addItem(author_item)
 
     def onAuthorsListViewClicked(self):
@@ -422,8 +420,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 topic = Topic.populate(name=text)
                 self.manager.save_object(topic)
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
-                topic_item.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(topic.id))
+                topic_item.setData(QtCore.Qt.UserRole, topic.id)
                 self.topicsListView.addItem(topic_item)
                 self.loadTopics()
                 self.topicsComboBox.setCurrentIndex(0)
@@ -439,8 +436,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     'This topic is already in the list.'))
             else:
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
-                topic_item.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(topic.id))
+                topic_item.setData(QtCore.Qt.UserRole, topic.id)
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
@@ -469,7 +465,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             after_text, verse_tag, verse_num = self.verseForm.getVerse()
             verse_def = u'%s%s' % (verse_tag, verse_num)
             item = QtGui.QTableWidgetItem(after_text)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+            item.setData(QtCore.Qt.UserRole, verse_def)
             item.setText(after_text)
             self.verseListWidget.setRowCount(
                 self.verseListWidget.rowCount() + 1)
@@ -488,7 +484,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             if self.verseForm.exec_():
                 after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+                item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
                 # number of lines has changed, repaint the list moving the data
                 if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
@@ -557,8 +553,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         if parts.endswith(u'\n'):
                             parts = parts.rstrip(u'\n')
                         item = QtGui.QTableWidgetItem(parts)
-                        item.setData(QtCore.Qt.UserRole,
-                            QtCore.QVariant(verse_def))
+                        item.setData(QtCore.Qt.UserRole, verse_def)
                         self.verseListWidget.setRowCount(
                             self.verseListWidget.rowCount() + 1)
                         self.verseListWidget.setItem(
@@ -733,8 +728,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         filters = u'%s (*)' % UiStrings().AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self,
-            translate('SongsPlugin.EditSongForm', 'Open File(s)'),
-            QtCore.QString(), filters)
+            translate('SongsPlugin.EditSongForm', 'Open File(s)'), u'', filters)
         for filename in filenames:
             item = QtGui.QListWidgetItem(os.path.split(unicode(filename))[1])
             item.setData(QtCore.Qt.UserRole, filename)

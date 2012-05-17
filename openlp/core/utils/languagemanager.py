@@ -34,7 +34,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 
 log = logging.getLogger(__name__)
 
@@ -75,13 +75,16 @@ class LanguageManager(object):
             AppLocation.LanguageDir))
         trans_dir = QtCore.QDir(AppLocation.get_directory(
             AppLocation.LanguageDir))
-        file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
-                QtCore.QDir.Files, QtCore.QDir.Name)
+        file_names = trans_dir.entryList(
+            u'*.qm', QtCore.QDir.Files, QtCore.QDir.Name)
         # Remove qm files from the list which start with "qt_".
-        file_names = file_names.filter(QtCore.QRegExp("^(?!qt_)"))
+        file_names = filter(
+            lambda file_: not file_.startswith(u'qt_'), file_names)
+        names = []
         for name in file_names:
-            file_names.replaceInStrings(name, trans_dir.filePath(name))
-        return file_names
+            names.append(trans_dir.filePath(name))
+            #file_names.replaceInStrings(name, trans_dir.filePath(name))
+        return names
 
     @staticmethod
     def language_name(qm_file):
@@ -101,9 +104,8 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = QtCore.QSettings()
-        language = unicode(settings.value(
-            u'general/language', QtCore.QVariant(u'[en]')).toString())
+        settings = Settings()
+        language = unicode(settings.value(u'general/language', u'[en]'))
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         reg_ex = QtCore.QRegExp("^\[(.*)\]")
         if reg_ex.exactMatch(language):
@@ -133,8 +135,7 @@ class LanguageManager(object):
                 language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        QtCore.QSettings().setValue(
-            u'general/language', QtCore.QVariant(language))
+        Settings().setValue(u'general/language', language)
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:
             QtGui.QMessageBox.information(None,

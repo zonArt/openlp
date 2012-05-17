@@ -40,7 +40,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib import Receiver, Settings, check_directory_exists, Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -78,7 +78,6 @@ QToolBar
 }
 """
 
-
 class OpenLP(QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
@@ -98,6 +97,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -111,16 +111,14 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList(self.desktop())
         # First time checks in settings
-        has_run_wizard = QtCore.QSettings().value(
-            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        has_run_wizard = Settings().value(
+            u'general/has run wizard', False)
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                QtCore.QSettings().setValue(u'general/has run wizard',
-                    QtCore.QVariant(True))
+                Settings().setValue(u'general/has run wizard', True)
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        show_splash = QtCore.QSettings().value(
-            u'general/show splash', QtCore.QVariant(True)).toBool()
+        show_splash = Settings().value(u'general/show splash', True)
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -139,8 +137,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.mainWindow.firstTime()
-        update_check = QtCore.QSettings().value(
-            u'general/update check', QtCore.QVariant(True)).toBool()
+        update_check = Settings().value(u'general/update check', True)
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
@@ -264,8 +261,7 @@ def main(args=None):
         if app.isAlreadyRunning():
             sys.exit()
     # First time checks in settings
-    if not QtCore.QSettings().value(u'general/has run wizard',
-        QtCore.QVariant(False)).toBool():
+    if not Settings().value(u'general/has run wizard', False):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()

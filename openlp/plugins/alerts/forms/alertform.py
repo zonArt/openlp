@@ -77,7 +77,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             order_by_ref=AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
+            item_name.setData(QtCore.Qt.UserRole, alert.id)
             self.alertListWidget.addItem(item_name)
 
     def onDisplayClicked(self):

@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver, create_thumb, validate_thumb
+    Receiver, create_thumb, validate_thumb, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -141,7 +141,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
+            item_name.setData(QtCore.Qt.UserRole, imageFile)
             self.listView.addItem(item_name)
             if not initialLoad:
                 self.plugin.formParent.incrementProgressBar()
@@ -151,8 +151,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
-            + u'/background color', QtCore.QVariant(u'#000000')))
+        background = QtGui.QColor(Settings().value(self.settingsSection
+            + u'/background color', u'#000000'))
         if item:
             items = [item]
         else:
@@ -220,9 +220,8 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
-            background = QtGui.QColor(QtCore.QSettings().value(
-                self.settingsSection + u'/background color',
-                QtCore.QVariant(u'#000000')))
+            background = QtGui.QColor(Settings().value(
+                self.settingsSection + u'/background color', u'#000000'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
