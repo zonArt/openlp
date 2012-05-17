@@ -29,7 +29,7 @@ import logging
 import os
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
