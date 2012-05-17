@@ -966,7 +966,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
         settings = Settings()
-        import_settings = Settings(import_file_name,
+        import_settings = QtCore.QSettings(import_file_name,
             Settings.IniFormat)
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
