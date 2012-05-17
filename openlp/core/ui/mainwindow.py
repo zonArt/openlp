@@ -1358,7 +1358,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
-        self.clearRecentFileMenu()
         self.recentFilesMenu.clear()
         for fileId, filename in enumerate(recentFilesToDisplay):
             log.debug('Recent file name: %s', filename)
