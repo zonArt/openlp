@@ -839,10 +839,11 @@ class BibleMediaItem(MediaManagerItem):
         items = []
         language_selection = self.plugin.manager.get_language_selection(bible)
         for count, verse in enumerate(search_results):
+            book = None
             if language_selection == LanguageSelection.Bible:
                 book = verse.book.name
             elif language_selection == LanguageSelection.Application:
-                book_names = BibleStrings().Booknames
+                book_names = BibleStrings().BookNames
                 data = BiblesResourcesDB.get_book_by_id(
                 verse.book.book_reference_id)
                 book = unicode(book_names[data[u'abbreviation']])
