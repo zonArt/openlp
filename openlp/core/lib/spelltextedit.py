@@ -200,5 +200,4 @@ class SpellAction(QtGui.QAction):
 
     def __init__(self, *args):
         QtGui.QAction.__init__(self, *args)
-        self.triggered.connect(lambda x: self.correct.emit(
-            unicode(self.text())))
+        self.triggered.connect(lambda x: self.correct.emit(self.text()))
