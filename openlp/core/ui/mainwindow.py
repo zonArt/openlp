@@ -99,13 +99,10 @@ class Ui_MainWindow(object):
         # Create slide controllers
         self.previewController = SlideController(self)
         self.liveController = SlideController(self, True)
-        previewVisible = Settings().value(
-            u'user interface/preview panel', True)
+        previewVisible = Settings().value(u'user interface/preview panel', True)
         self.previewController.panel.setVisible(previewVisible)
-        liveVisible = Settings().value(u'user interface/live panel',
-            True)
-        panelLocked = Settings().value(u'user interface/lock panel',
-            False)
+        liveVisible = Settings().value(u'user interface/live panel', True)
+        panelLocked = Settings().value(u'user interface/lock panel', False)
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -685,8 +682,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin', False):
-            savedPlugin = Settings().value(
-                u'advanced/current media plugin', )
+            savedPlugin = Settings().value(u'advanced/current media plugin', -1)
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
@@ -738,10 +734,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 filename = unicode(filename, sys.getfilesystemencoding())
             self.serviceManagerContents.loadFile(filename)
         elif Settings().value(
-            self.generalSettingsSection + u'/auto open',
-            False):
+            self.generalSettingsSection + u'/auto open', False):
             self.serviceManagerContents.loadLastFile()
-        view_mode = Settings().value(u'%s/view mode' % \
+        view_mode = Settings().value(u'%s/view mode' %
             self.generalSettingsSection, u'default')
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
@@ -954,8 +949,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
         settings = Settings()
-        import_settings = Settings(import_file_name,
-            QtCore.QSettings.IniFormat)
+        import_settings = Settings(import_file_name, QtCore.QSettings.IniFormat)
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
             # We need to handle the really bad files.
@@ -988,8 +982,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         now = datetime.now()
         settings.beginGroup(self.headerSection)
         settings.setValue(u'file_imported', import_file_name)
-        settings.setValue(u'file_date_imported',
-            now.strftime("%Y-%m-%d %H:%M"))
+        settings.setValue(u'file_date_imported', now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
         settings.sync()
         # We must do an immediate restart or current configuration will
@@ -1043,8 +1036,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        export_settings = Settings(temp_file,
-            QtCore.QSettings.IniFormat)
+        export_settings = Settings(temp_file, QtCore.QSettings.IniFormat)
         # Add a header section.
         # This is to insure it's our conf file for import.
         now = datetime.now()
@@ -1147,8 +1139,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            if Settings().value(u'advanced/enable exit confirmation',
-                True):
+            if Settings().value(u'advanced/enable exit confirmation', True):
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),
                     translate('OpenLP.MainWindow',
@@ -1172,8 +1163,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
-        if Settings().value(u'advanced/save current plugin',
-            False):
+        if Settings().value(u'advanced/save current plugin', False):
             Settings().setValue(u'advanced/current media plugin',
                 self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
@@ -1368,8 +1358,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files
         accessed.
         """
-        recentFileCount = Settings().value(
-            u'advanced/recent file count', 4)
+        recentFileCount = Settings().value(u'advanced/recent file count', 4)
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
@@ -1401,8 +1390,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # The maxRecentFiles value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
         # always be used.
-        maxRecentFiles = Settings().value(
-            u'advanced/max recent files', 20)
+        maxRecentFiles = Settings().value(u'advanced/max recent files', 20)
         if filename:
             # Add some cleanup to reduce duplication in the recent file list
             filename = os.path.abspath(filename)

@@ -348,28 +348,20 @@ class AdvancedTab(SettingsTab):
         # 20 will always be used.
         self.recentSpinBox.setMaximum(Settings().value(
             u'max recent files', 20))
-        self.recentSpinBox.setValue(settings.value(u'recent file count',
-            4))
+        self.recentSpinBox.setValue(settings.value(u'recent file count', 4))
         self.mediaPluginCheckBox.setChecked(
-            settings.value(u'save current plugin',
-            False))
+            settings.value(u'save current plugin', False))
         self.doubleClickLiveCheckBox.setChecked(
-            settings.value(u'double click live',
-            False))
+            settings.value(u'double click live', False))
         self.singleClickPreviewCheckBox.setChecked(
-            settings.value(u'single click preview',
-            False))
+            settings.value(u'single click preview', False))
         self.expandServiceItemCheckBox.setChecked(
-            settings.value(u'expand service item',
-            False))
+            settings.value(u'expand service item', False))
         self.enableAutoCloseCheckBox.setChecked(
-            settings.value(u'enable exit confirmation',
-            True))
-        self.hideMouseCheckBox.setChecked(
-            settings.value(u'hide mouse', False))
+            settings.value(u'enable exit confirmation', True))
+        self.hideMouseCheckBox.setChecked(settings.value(u'hide mouse', False))
         self.serviceNameDay.setCurrentIndex(
-            settings.value(u'default service day',
-            self.defaultServiceDay))
+            settings.value(u'default service day', self.defaultServiceDay))
         self.serviceNameTime.setTime(QtCore.QTime(
             settings.value(u'default service hour', self.defaultServiceHour),
             settings.value(u'default service minute',

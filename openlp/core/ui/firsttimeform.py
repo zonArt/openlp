@@ -113,8 +113,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         check_directory_exists(os.path.join(gettempdir(), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = Settings().value(
-            u'general/has run wizard', False)
+        self.hasRunWizard = Settings().value(u'general/has run wizard', False)
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')

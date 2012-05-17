@@ -280,18 +280,14 @@ class GeneralTab(SettingsTab):
         self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank',
             False))
         self.displayOnMonitorCheck.setChecked(self.screens.display)
-        self.warningCheckBox.setChecked(settings.value(u'blank warning',
-            False))
-        self.autoOpenCheckBox.setChecked(settings.value(u'auto open',
-            False))
-        self.showSplashCheckBox.setChecked(settings.value(u'show splash',
-            True))
+        self.warningCheckBox.setChecked(settings.value(u'blank warning', False))
+        self.autoOpenCheckBox.setChecked(settings.value(u'auto open', False))
+        self.showSplashCheckBox.setChecked(settings.value(u'show splash', True))
         self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
             True))
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             False))
-        self.timeoutSpinBox.setValue(settings.value(u'loop delay',
-           5))
+        self.timeoutSpinBox.setValue(settings.value(u'loop delay', 5))
         self.monitorRadioButton.setChecked(
             not settings.value(u'override position',
             False))

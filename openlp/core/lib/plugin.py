@@ -190,7 +190,6 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        #TODO: check if [0] is needed.
         self.status = Settings().value(
             self.settingsSection + u'/status', PluginStatus.Inactive)
 

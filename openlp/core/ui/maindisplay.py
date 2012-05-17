@@ -198,8 +198,7 @@ class MainDisplay(Display):
                 u':/graphics/openlp-splash-screen.png')
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(
-                u'advanced/default color',
-                u'#ffffff'))
+                u'advanced/default color', u'#ffffff'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
@@ -350,8 +349,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(
-                        u'general/display on monitor', True):
+                    if Settings().value(u'general/display on monitor', True):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -399,8 +397,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if Settings().value(u'general/auto unblank',
-                False):
+            if Settings().value(u'general/auto unblank', False):
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
                 self.hideDisplay(self.hideMode)
@@ -423,8 +420,7 @@ class MainDisplay(Display):
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                True):
+            if not Settings().value(u'general/display on monitor', True):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -448,8 +444,7 @@ class MainDisplay(Display):
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                True):
+            if not Settings().value(u'general/display on monitor', True):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
@@ -463,8 +458,7 @@ class MainDisplay(Display):
         """
         Hide mouse cursor when moved over display.
         """
-        if Settings().value(u'advanced/hide mouse',
-            False):
+        if Settings().value(u'advanced/hide mouse', False):
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:

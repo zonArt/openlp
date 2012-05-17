@@ -78,6 +78,7 @@ QToolBar
 }
 """
 
+
 class OpenLP(QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
@@ -97,7 +98,6 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -111,8 +111,7 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(
-            u'general/has run wizard', False)
+        has_run_wizard = Settings().value(u'general/has run wizard', False)
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue(u'general/has run wizard', True)
