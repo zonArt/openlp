@@ -352,8 +352,8 @@ class ServiceManager(QtGui.QWidget):
         self._fileName = unicode(fileName)
         self.mainwindow.setServiceModified(self.isModified(),
             self.shortFileName())
-        QtCore.QSettings(). \
-            setValue(u'servicemanager/last file',QtCore.QVariant(fileName))
+        QtCore.QSettings().setValue(
+            u'servicemanager/last file',QtCore.QVariant(fileName))
 
     def fileName(self):
         """
@@ -372,8 +372,7 @@ class ServiceManager(QtGui.QWidget):
         Triggered when Config dialog is updated.
         """
         self.expandTabs = QtCore.QSettings().value(
-            u'advanced/expand service item',
-            QtCore.QVariant(u'False')).toBool()
+            u'advanced/expand service item', QtCore.QVariant(u'False')).toBool()
 
     def supportedSuffixes(self, suffix):
         self.suffixes.append(suffix)
@@ -444,8 +443,8 @@ class ServiceManager(QtGui.QWidget):
         self.setFileName(u'')
         self.serviceId += 1
         self.setModified(False)
-        QtCore.QSettings(). \
-            setValue(u'servicemanager/last file',QtCore.QVariant(u''))
+        QtCore.QSettings().setValue(
+            u'servicemanager/last file',QtCore.QVariant(u''))
         Receiver.send_message(u'servicemanager_new_service')
 
     def saveFile(self):
@@ -469,8 +468,7 @@ class ServiceManager(QtGui.QWidget):
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(
-            self.mainwindow.serviceManagerSettingsSection,
-            path)
+            self.mainwindow.serviceManagerSettingsSection, path)
         service = []
         write_list = []
         audio_files = []
@@ -561,14 +559,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            # Add this line in after the release to notify the user that saving
-            # their file failed. Commented out due to string freeze.
-            #Receiver.send_message(u'openlp_error_message', {
-            #    u'title': translate(u'OpenLP.ServiceManager',
-            #        u'Error Saving File'),
-            #    u'message': translate(u'OpenLP.ServiceManager',
-            #        u'There was an error saving your file.')
-            #})
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                u'There was an error saving your file.')
+            })
             success = False
         finally:
             if zip:
@@ -734,8 +730,8 @@ class ServiceManager(QtGui.QWidget):
         service was last closed. Can be blank if there was no service
         present.
         """
-        fileName = QtCore.QSettings(). \
-            value(u'servicemanager/last file',QtCore.QVariant(u'')).toString()
+        fileName = QtCore.QSettings().value(
+            u'servicemanager/last file',QtCore.QVariant(u'')).toString()
         if fileName:
             self.loadFile(fileName)
 
@@ -752,7 +748,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         self.timeAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanEdit)\
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanEdit) \
             and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
@@ -1107,8 +1103,7 @@ class ServiceManager(QtGui.QWidget):
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
-            self.mainwindow.serviceManagerSettingsSection +
-                u'/service theme',
+            self.mainwindow.serviceManagerSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems(True)
 
