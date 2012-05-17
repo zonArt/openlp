@@ -64,20 +64,33 @@ class ServiceItemAction(object):
 
 
 class Settings(QtCore.QSettings):
+    type_list = []
     def __init__(self, *args):
         QtCore.QSettings.__init__(self, *args)
-        import copy
-        self.value_ = copy.deepcopy(self.value)
-        self.value = copy.deepcopy(self.value2)
 
-    def value2(self, key, defaultValue):
-        setting = self.value_(key, defaultValue)
+    def value(self, key, defaultValue):
+        setting = super(Settings, self).value(key, defaultValue)
+        if isinstance(defaultValue, bool):
+            return setting.toBool()
+        if isinstance(defaultValue, QtCore.QByteArray):
+            return setting.toByteArray()
         if isinstance(defaultValue, int):
             return setting.toInt()[0]
         if isinstance(defaultValue, basestring):
             return setting.toString()
-        if isinstance(defaultValue, bool):
-            return setting.toBool()
+        if isinstance(defaultValue, list):
+            return setting.toStringList()
+        if isinstance(defaultValue, QtCore.QPoint):
+            return setting.toPoint()
+        print u'No!'
+        return setting
+
+    def setValue(self, key, value):
+        super(Settings, self).setValue(key, value)
+        if type(value) not in Settings.type_list:
+            Settings.type_list.append(type(value))
+            print Settings.type_list
+
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,

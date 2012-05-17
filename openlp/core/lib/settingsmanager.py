@@ -59,7 +59,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        return unicode(Settings().value(section + u'/' + name, u''))
+        return Settings().value(section + u'/' + name, u'')
 
     @staticmethod
     def set_last_dir(section, directory, num=None):
@@ -127,7 +127,8 @@ class SettingsManager(object):
         list = []
         if list_count:
             for counter in range(list_count):
-                item = unicode(settings.value(u'%s %d' % (name, counter)))
+                # TODO: Check
+                item = settings.value(u'%s %d' % (name, counter))
                 if item:
                     list.append(item)
         settings.endGroup()

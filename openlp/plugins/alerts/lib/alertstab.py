@@ -155,11 +155,11 @@ class AlertsTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.timeout = settings.value(u'timeout', 5)
-        self.font_color = unicode(settings.value(u'font color', u'#ffffff'))
+        self.font_color = settings.value(u'font color', u'#ffffff')
         self.font_size = settings.value(u'font size', 40)
-        self.bg_color = unicode(settings.value(u'background color', u'#660000'))
-        self.font_face = unicode(settings.value(
-            u'font face', QtGui.QFont().family()))
+        self.bg_color = settings.value(u'background color', u'#660000')
+        # TODO: isinstance needed?
+        self.font_face = settings.value(u'font face', QtGui.QFont().family())
         self.location = settings.value(u'location', AlertLocation.Bottom)
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)

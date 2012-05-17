@@ -285,8 +285,7 @@ def check_latest_version(current_version):
     # set to prod in the distribution config file.
     settings = Settings()
     settings.beginGroup(u'general')
-    last_test = unicode(settings.value(u'last version test',
-        datetime.now().date()))
+    last_test = settings.value(u'last version test', datetime.now().date())
     this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
     settings.endGroup()

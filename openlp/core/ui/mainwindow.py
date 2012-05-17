@@ -566,7 +566,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm = SettingsForm(self, self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
-        self.recentFiles = QtCore.QStringList()
+        self.recentFiles = []
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(plugin_path)
@@ -742,7 +742,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             False):
             self.serviceManagerContents.loadLastFile()
         view_mode = Settings().value(u'%s/view mode' % \
-            self.generalSettingsSection, u'default') 
+            self.generalSettingsSection, u'default')
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -1322,20 +1322,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(u'custom slide')
         settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
-        self.recentFiles = settings.value(u'recent files').toStringList()
+        self.recentFiles = settings.value(u'recent files', list())
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
-        self.move(settings.value(u'main window position',
-            QtCore.QPoint(0, 0))).toPoint()
+        self.move(settings.value(u'main window position', QtCore.QPoint(0, 0)))
         self.restoreGeometry(
-            settings.value(u'main window geometry').toByteArray())
-        self.restoreState(settings.value(u'main window state').toByteArray())
+            settings.value(u'main window geometry', QtCore.QByteArray()))
+        self.restoreState(
+            settings.value(u'main window state', QtCore.QByteArray()))
         self.liveController.splitter.restoreState(
-            settings.value(u'live splitter geometry').toByteArray())
+            settings.value(u'live splitter geometry', QtCore.QByteArray()))
         self.previewController.splitter.restoreState(
-            settings.value(u'preview splitter geometry').toByteArray())
-        self.controlSplitter.restoreState(
-            settings.value(u'mainwindow splitter geometry').toByteArray())
+            settings.value(u'preview splitter geometry', QtCore.QByteArray()))
+        self.controlSplitter.restoreState(settings.value(
+            u'mainwindow splitter geometry', QtCore.QByteArray()))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1373,7 +1373,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
-        self.recentFilesMenu.clear()
+        self.clearRecentFileMenu()
         for fileId, filename in enumerate(recentFilesToDisplay):
             log.debug('Recent file name: %s', filename)
             action = create_action(self, u'',
@@ -1386,10 +1386,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             'Clear List of recent files'),
             statustip=translate('OpenLP.MainWindow',
             'Clear the list of recent files.'),
-            enabled=not self.recentFiles.isEmpty(),
-            triggers=self.recentFiles.clear)
+            enabled=bool(self.recentFiles),
+            triggers=self.clearRecentFileMenu)
         add_actions(self.recentFilesMenu, (None, clearRecentFilesAction))
-        clearRecentFilesAction.setEnabled(not self.recentFiles.isEmpty())
+        clearRecentFilesAction.setEnabled(bool(self.recentFiles))
 
     def addRecentFile(self, filename):
         """
@@ -1417,6 +1417,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()
+
+    def clearRecentFileMenu(self):
+        """
+        Clears the recent files.
+        """
+        self.recentFiles = []
 
     def displayProgressBar(self, size):
         """

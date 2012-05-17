@@ -80,7 +80,7 @@ def get_media_players():
         Here an special media player is chosen for all media actions.
     """
     log.debug(u'get_media_players')
-    players = Settings().value(u'media/players')
+    players = Settings().value(u'media/players', u'')
     if not players:
         players = u'webkit'
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")

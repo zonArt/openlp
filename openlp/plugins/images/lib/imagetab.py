@@ -84,7 +84,7 @@ class ImageTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.bg_color = unicode(settings.value(u'background color', u'#000000'))
+        self.bg_color = settings.value(u'background color', u'#000000')
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(

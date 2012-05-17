@@ -764,8 +764,8 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = unicode(Settings().value(
-            self.settingsSection + u'/global theme', u''))
+        self.global_theme = Settings().value(
+            self.settingsSection + u'/global theme', u'')
         if check_item_selected(self.themeListWidget, select_text):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())

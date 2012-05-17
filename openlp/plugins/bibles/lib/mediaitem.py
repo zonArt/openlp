@@ -386,8 +386,7 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedVersionComboBox.addItems(bibles)
         self.advancedSecondComboBox.addItems(bibles)
         # set the default value
-        bible = Settings().value(
-            self.settingsSection + u'/advanced bible', u'')
+        bible = Settings().value(self.settingsSection + u'/advanced bible', u'')
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))

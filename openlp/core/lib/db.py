@@ -184,7 +184,7 @@ class Manager(object):
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = unicode(settings.value(u'db type', u'sqlite'))
+        db_type = settings.value(u'db type', u'sqlite')
         if db_type == u'sqlite':
             if db_file_name:
                 self.db_url = u'sqlite:///%s/%s' % (
@@ -195,12 +195,12 @@ class Manager(object):
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(unicode(settings.value(u'db username'))),
-                urlquote(unicode(settings.value(u'db password'))),
-                urlquote(unicode(settings.value(u'db hostname'))),
-                urlquote(unicode(settings.value(u'db database'))))
+                urlquote(settings.value(u'db username', u'')),
+                urlquote(settings.value(u'db password', u'')),
+                urlquote(settings.value(u'db hostname', u'')),
+                urlquote(settings.value(u'db database', u'')))
             if db_type == u'mysql':
-                db_encoding = unicode(settings.value(u'db encoding', u'utf8'))
+                db_encoding = settings.value(u'db encoding', u'utf8')
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:

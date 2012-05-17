@@ -162,7 +162,6 @@ class FormattingTags(object):
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-
         # Formatting Tags were also known as display tags.
         user_expands = Settings().value(u'displayTags/html_tags', u'')
         # cPickle only accepts str not unicode strings

@@ -133,12 +133,12 @@ class SongMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         # TODO: Check .toBool()
-        self.searchAsYouType = bool(Settings().value(
-            self.settingsSection + u'/search as type', False))
-        self.updateServiceOnEdit = bool(Settings().value(
-            self.settingsSection + u'/update service on edit', False))
-        self.addSongFromService = bool(Settings().value(
-            self.settingsSection + u'/add song from service', True))
+        self.searchAsYouType = Settings().value(
+            self.settingsSection + u'/search as type', False)
+        self.updateServiceOnEdit = Settings().value(
+            self.settingsSection + u'/update service on edit', False)
+        self.addSongFromService = Settings().value(
+            self.settingsSection + u'/add song from service', True)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -515,8 +515,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.copyright)
         if Settings().value(u'general/ccli number', u''):
             service_item.raw_footer.append(unicode(
-                translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number', u'')))
+                translate('SongsPlugin.MediaItem', 'CCLI License: ')) +
+                Settings().value(u'general/ccli number', u''))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]

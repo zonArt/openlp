@@ -125,8 +125,8 @@ class BibleManager(object):
         self.web = u'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.proxy_name = unicode(Settings().value(
-            self.settingsSection + u'/proxy name', u''))
+        self.proxy_name = Settings().value(
+            self.settingsSection + u'/proxy name', u'')
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()

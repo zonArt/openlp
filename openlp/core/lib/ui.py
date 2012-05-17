@@ -365,7 +365,6 @@ def create_action(parent, name, **kwargs):
     ``separator``
         True in case the action will be considered a separator.
 
-    #FIXME: check
     ``data``
         Data which is set as QVariant type.
 

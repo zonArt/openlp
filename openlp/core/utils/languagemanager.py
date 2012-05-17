@@ -105,7 +105,7 @@ class LanguageManager(object):
         Retrieve a saved language to use from settings
         """
         settings = Settings()
-        language = unicode(settings.value(u'general/language', u'[en]'))
+        language = settings.value(u'general/language', u'[en]')
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         reg_ex = QtCore.QRegExp("^\[(.*)\]")
         if reg_ex.exactMatch(language):

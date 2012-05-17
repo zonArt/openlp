@@ -420,13 +420,13 @@ class BiblesTab(SettingsTab):
         self.display_style = settings.value(u'display brackets', 0)
         self.layout_style = settings.value(u'verse layout style', 0)
         #TODO: Check
-        self.bible_theme = unicode(settings.value(u'bible theme', u''))
+        self.bible_theme = settings.value(u'bible theme', u'')
         self.second_bibles = settings.value(u'second bibles', True)
         self.newChaptersCheckBox.setChecked(self.show_new_chapters)
         self.displayStyleComboBox.setCurrentIndex(self.display_style)
         self.layoutStyleComboBox.setCurrentIndex(self.layout_style)
         self.bibleSecondCheckBox.setChecked(self.second_bibles)
-        verse_separator = unicode(settings.value(u'verse separator').toString())
+        verse_separator = settings.value(u'verse separator', u'')
         if (verse_separator.strip(u'|') == u'') or \
             (verse_separator == get_reference_separator(u'sep_v_default')):
             self.verseSeparatorLineEdit.setText(
@@ -439,7 +439,7 @@ class BiblesTab(SettingsTab):
             self.verseSeparatorLineEdit.setPalette(
                 self.getGreyTextPalette(False))
             self.verseSeparatorCheckBox.setChecked(True)
-        range_separator = unicode(settings.value(u'range separator').toString())
+        range_separator = settings.value(u'range separator', u'')
         if (range_separator.strip(u'|') == u'') or \
             (range_separator == get_reference_separator(u'sep_r_default')):
             self.rangeSeparatorLineEdit.setText(
@@ -452,31 +452,28 @@ class BiblesTab(SettingsTab):
             self.rangeSeparatorLineEdit.setPalette(
                 self.getGreyTextPalette(False))
             self.rangeSeparatorCheckBox.setChecked(True)
-        list_separator = unicode(settings.value(u'list separator').toString())
+        list_separator = settings.value(u'list separator', u'')
         if (list_separator.strip(u'|') == u'') or \
             (list_separator == get_reference_separator(u'sep_l_default')):
             self.listSeparatorLineEdit.setText(
                 get_reference_separator(u'sep_l_default'))
-            self.listSeparatorLineEdit.setPalette(
-                self.getGreyTextPalette(True))
+            self.listSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
             self.listSeparatorCheckBox.setChecked(False)
         else:
             self.listSeparatorLineEdit.setText(list_separator)
             self.listSeparatorLineEdit.setPalette(
                 self.getGreyTextPalette(False))
             self.listSeparatorCheckBox.setChecked(True)
-        end_separator = unicode(settings.value(u'end separator').toString())
+        end_separator = settings.value(u'end separator', u'')
         if (end_separator.strip(u'|') == u'') or \
             (end_separator == get_reference_separator(u'sep_e_default')):
             self.endSeparatorLineEdit.setText(
                 get_reference_separator(u'sep_e_default'))
-            self.endSeparatorLineEdit.setPalette(
-                self.getGreyTextPalette(True))
+            self.endSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
             self.endSeparatorCheckBox.setChecked(False)
         else:
             self.endSeparatorLineEdit.setText(end_separator)
-            self.endSeparatorLineEdit.setPalette(
-                self.getGreyTextPalette(False))
+            self.endSeparatorLineEdit.setPalette(self.getGreyTextPalette(False))
             self.endSeparatorCheckBox.setChecked(True)
         self.language_selection = settings.value(u'book name language', 0)
         self.languageSelectionComboBox.setCurrentIndex(self.language_selection)
