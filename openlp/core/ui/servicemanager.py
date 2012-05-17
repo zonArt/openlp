@@ -64,6 +64,9 @@ class ServiceManagerList(QtGui.QTreeWidget):
             elif event.key() == QtCore.Qt.Key_Down:
                 self.serviceManager.onMoveSelectionDown()
                 event.accept()
+            elif event.key() == QtCore.Qt.Key_Delete:
+                self.serviceManager.onDeleteFromService()
+                event.accept()
             event.ignore()
         else:
             event.ignore()
@@ -218,6 +221,7 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
+            shortcuts=[QtCore.Qt.Key_Delete],
             triggers=self.onDeleteFromService)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.expand = self.orderToolbar.addToolbarAction(
@@ -1314,15 +1318,15 @@ class ServiceManager(QtGui.QWidget):
 
     def findServiceItem(self):
         """
-        Finds the selected ServiceItem in the list and returns the position of
-        the serviceitem and its selected child item. For example, if the third
-        child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the
+        position of the serviceitem and its selected child item. For example,
+        if the third child item (in the Slidecontroller known as slide) in the
+        second service item is selected this will return::
 
             (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
-        serviceItem = 0
+        serviceItem = -1
         serviceItemChild = -1
         for item in items:
             parentitem = item.parent()
@@ -1331,8 +1335,10 @@ class ServiceManager(QtGui.QWidget):
             else:
                 serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        # Adjust for zero based arrays.
-        serviceItem -= 1
+            # Adjust for zero based arrays.
+            serviceItem -= 1
+            # Only process the first item on the list for this method.
+            break
         return serviceItem, serviceItemChild
 
     def dragEnterEvent(self, event):
