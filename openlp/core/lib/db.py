@@ -208,11 +208,11 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    unicode(translate('OpenLP.Manager', 'The database being '
+                    translate('OpenLP.Manager', 'The database being '
                         'loaded was created in a more recent version of '
                         'OpenLP. The database is version %d, while OpenLP '
                         'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s')) % \
+                        '\n\nDatabase: %s') % \
                         (db_ver, up_ver, self.db_url)
                 )
                 return
@@ -222,8 +222,8 @@ class Manager(object):
             log.exception(u'Error loading database: %s', self.db_url)
             critical_error_message_box(
                 translate('OpenLP.Manager', 'Database Error'),
-                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
-                    'database.\n\nDatabase: %s')) % self.db_url
+                translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s') % self.db_url
             )
 
     def save_object(self, object_instance, commit=True):

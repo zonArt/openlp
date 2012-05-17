@@ -128,7 +128,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
+                actionText = REMOVE_AMPERSAND.sub('', action.text())
                 actionItem = QtGui.QTreeWidgetItem([actionText])
                 actionItem.setIcon(0, action.icon())
                 actionItem.setData(0, QtCore.Qt.UserRole, action)
@@ -441,9 +441,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             Receiver.send_message(u'openlp_warning_message', {
                 u'title': translate('OpenLP.ShortcutListDialog',
                 'Duplicate Shortcut'),
-                u'message': unicode(translate('OpenLP.ShortcutListDialog',
+                u'message': translate('OpenLP.ShortcutListDialog',
                 'The shortcut "%s" is already assigned to another action, '
-                'please use a different shortcut.')) % key_sequence.toString()
+                'please use a different shortcut.') % key_sequence.toString()
             })
         return is_valid
 

@@ -52,12 +52,12 @@ class AdvancedTab(SettingsTab):
         # 11 o'clock is the most popular time for morning service.
         self.defaultServiceHour = 11
         self.defaultServiceMinute = 0
-        self.defaultServiceName = unicode(translate('OpenLP.AdvancedTab',
+        self.defaultServiceName = translate('OpenLP.AdvancedTab',
             'Service %Y-%m-%d %H-%M',
             'This may not contain any of the following characters: '
             '/\\?*|<>\[\]":+\n'
             'See http://docs.python.org/library/datetime.html'
-            '#strftime-strptime-behavior for more information.'))
+            '#strftime-strptime-behavior for more information.')
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
         self.iconPath = u':/system/system_settings.png'
@@ -299,9 +299,9 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', 'Name:'))
         self.serviceNameEdit.setToolTip(translate('OpenLP.AdvancedTab',
             'Consult the OpenLP manual for usage.'))
-        self.serviceNameRevertButton.setToolTip(unicode(
+        self.serviceNameRevertButton.setToolTip(
             translate('OpenLP.AdvancedTab',
-            'Revert to the default service name "%s".')) %
+            'Revert to the default service name "%s".') %
             self.defaultServiceName)
         self.serviceNameExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
@@ -397,7 +397,7 @@ class AdvancedTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'default service enabled',
             self.serviceNameCheckBox.isChecked())
-        service_name = unicode(self.serviceNameEdit.text())
+        service_name = self.serviceNameEdit.text()
         preset_is_valid = self.generateServiceNameExample()[0]
         if service_name == self.defaultServiceName or not preset_is_valid:
             settings.remove(u'default service name')

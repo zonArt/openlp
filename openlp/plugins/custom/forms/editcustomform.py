@@ -129,12 +129,12 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         count = 1
         for i in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
-                unicode(self.slideListView.item(i).text()))
+                self.slideListView.item(i).text())
             count += 1
-        self.customSlide.title = unicode(self.titleEdit.text())
+        self.customSlide.title = self.titleEdit.text()
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
-        self.customSlide.credits = unicode(self.creditEdit.text())
-        self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
+        self.customSlide.credits = self.creditEdit.text()
+        self.customSlide.theme_name = self.themeComboBox.currentText()
         success = self.manager.save_object(self.customSlide)
         self.mediaitem.autoSelectId = self.customSlide.id
         return success

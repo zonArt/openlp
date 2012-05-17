@@ -473,9 +473,8 @@ class BibleImportForm(OpenLPWizard):
                     return False
             return True
         elif self.currentPage() == self.licenseDetailsPage:
-            license_version = unicode(self.field(u'license_version').toString())
-            license_copyright = \
-                unicode(self.field(u'license_copyright').toString())
+            license_version = self.field(u'license_version').toString()
+            license_copyright = self.field(u'license_copyright').toString()
             path = AppLocation.get_section_data_path(u'bibles')
             if not license_version:
                 critical_error_message_box(UiStrings().EmptyField,
@@ -658,50 +657,48 @@ class BibleImportForm(OpenLPWizard):
         Perform the actual import.
         """
         bible_type = self.field(u'source_format').toInt()[0]
-        license_version = unicode(self.field(u'license_version').toString())
-        license_copyright = unicode(self.field(u'license_copyright').toString())
-        license_permissions = \
-            unicode(self.field(u'license_permissions').toString())
+        license_version = self.field(u'license_version').toString()
+        license_copyright = self.field(u'license_copyright').toString()
+        license_permissions = self.field(u'license_permissions').toString()
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible.
             importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=license_version,
-                filename=unicode(self.field(u'osis_location').toString())
+                filename=self.field(u'osis_location').toString()
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version,
-                booksfile=unicode(self.field(u'csv_booksfile').toString()),
-                versefile=unicode(self.field(u'csv_versefile').toString())
+                booksfile=self.field(u'csv_booksfile').toString(),
+                versefile=self.field(u'csv_versefile').toString()
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible.
             importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=license_version,
-                filename=unicode(self.field(u'opensong_file').toString())
+                filename=self.field(u'opensong_file').toString()
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web.
             self.progressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
-            bible_version = unicode(self.webTranslationComboBox.currentText())
+            bible_version = self.webTranslationComboBox.currentText()
             bible = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload, name=license_version,
                 download_source=WebDownload.Names[download_location],
                 download_name=bible,
-                proxy_server=unicode(self.field(u'proxy_server').toString()),
-                proxy_username=\
-                    unicode(self.field(u'proxy_username').toString()),
-                proxy_password=unicode(self.field(u'proxy_password').toString())
+                proxy_server=self.field(u'proxy_server').toString(),
+                proxy_username=self.field(u'proxy_username').toString(),
+                proxy_password=self.field(u'proxy_password').toString()
             )
         elif bible_type == BibleFormat.OpenLP1:
             # Import an openlp.org 1.x bible.
             importer = self.manager.import_bible(BibleFormat.OpenLP1,
                 name=license_version,
-                filename=unicode(self.field(u'openlp1_location').toString())
+                filename=self.field(u'openlp1_location').toString()
             )
         if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version,

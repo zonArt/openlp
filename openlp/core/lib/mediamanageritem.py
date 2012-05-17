@@ -336,7 +336,7 @@ class MediaManagerItem(QtGui.QWidget):
             self, self.onNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
             self.onNewFileMasks)
-        log.info(u'New files(s) %s', unicode(files))
+        log.info(u'New files(s) %s', files)
         if files:
             Receiver.send_message(u'cursor_busy')
             self.validateAndLoad(files)
@@ -359,9 +359,8 @@ class MediaManagerItem(QtGui.QWidget):
                     critical_error_message_box(
                         translate('OpenLP.MediaManagerItem',
                         'Invalid File Type'),
-                        unicode(translate('OpenLP.MediaManagerItem',
-                        'Invalid File %s.\nSuffix not supported'))
-                        % file)
+                        translate('OpenLP.MediaManagerItem',
+                        'Invalid File %s.\nSuffix not supported') % file)
                     errorShown = True
             else:
                 newFiles.append(file)
@@ -379,9 +378,9 @@ class MediaManagerItem(QtGui.QWidget):
         names = []
         fullList = []
         for count in range(self.listView.count()):
-            names.append(unicode(self.listView.item(count).text()))
-            fullList.append(unicode(self.listView.item(count).
-                data(QtCore.Qt.UserRole).toString()))
+            names.append(self.listView.item(count).text())
+            fullList.append(self.listView.item(count).
+                data(QtCore.Qt.UserRole).toString())
         duplicatesFound = False
         filesAdded = False
         for file in files:
@@ -401,8 +400,8 @@ class MediaManagerItem(QtGui.QWidget):
         if duplicatesFound:
             critical_error_message_box(
                 UiStrings().Duplicate,
-                unicode(translate('OpenLP.MediaManagerItem',
-                'Duplicate files were found on import and were ignored.')))
+                translate('OpenLP.MediaManagerItem',
+                'Duplicate files were found on import and were ignored.'))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
@@ -421,7 +420,7 @@ class MediaManagerItem(QtGui.QWidget):
         filelist = []
         while count < self.listView.count():
             bitem = self.listView.item(count)
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole).toString()
             filelist.append(filename)
             count += 1
         return filelist
@@ -573,8 +572,8 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'Invalid Service Item'),
-                    unicode(translate('OpenLP.MediaManagerItem',
-                        'You must select a %s service item.')) % self.title)
+                    translate('OpenLP.MediaManagerItem',
+                        'You must select a %s service item.') % self.title)
 
     def buildServiceItem(self, item=None, xmlVersion=False, remote=False):
         """

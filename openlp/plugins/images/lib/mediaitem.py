@@ -110,8 +110,7 @@ class ImageMediaItem(MediaManagerItem):
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
-                    delete_file(os.path.join(self.servicePath,
-                        unicode(text.text())))
+                    delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.plugin.formParent.incrementProgressBar()
             SettingsManager.set_list(self.settingsSection,
@@ -169,7 +168,7 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole).toString()
             if not os.path.exists(filename):
                 missing_items.append(bitem)
                 missing_items_filenames.append(filename)
@@ -180,22 +179,22 @@ class ImageMediaItem(MediaManagerItem):
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'The following image(s) no longer exist: %s')) %
+                    translate('ImagePlugin.MediaItem',
+                    'The following image(s) no longer exist: %s') %
                     u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items and QtGui.QMessageBox.question(self,
             translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-            unicode(translate('ImagePlugin.MediaItem', 'The following '
+            translate('ImagePlugin.MediaItem', 'The following '
             'image(s) no longer exist: %s\nDo you want to add the other '
-            'images anyway?')) % u'\n'.join(missing_items_filenames),
+            'images anyway?') % u'\n'.join(missing_items_filenames),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole).toString()
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
@@ -224,7 +223,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection + u'/background color', u'#000000'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole).toString()
             if os.path.exists(filename):
                 name = os.path.split(filename)[1]
                 if self.plugin.liveController.display.directImage(name,
@@ -236,9 +235,9 @@ class ImageMediaItem(MediaManagerItem):
                         'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    unicode(translate('ImagePlugin.MediaItem',
+                    translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.')) % filename)
+                    'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')

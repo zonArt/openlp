@@ -96,7 +96,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         and the cursor's position.
         """
         position = self.verseTextEdit.textCursor().position()
-        text = unicode(self.verseTextEdit.toPlainText())
+        text = self.verseTextEdit.toPlainText()
         verse_name = VerseType.TranslatedNames[
             self.verseTypeComboBox.currentIndex()]
         if not text:
@@ -126,7 +126,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         position and adjusts the ComboBox and SpinBox to these values.
         """
         position = self.verseTextEdit.textCursor().position()
-        text = unicode(self.verseTextEdit.toPlainText())
+        text = self.verseTextEdit.toPlainText()
         if not text:
             return
         if text.rfind(u'[', 0, position) > text.rfind(u']', 0, position) and \

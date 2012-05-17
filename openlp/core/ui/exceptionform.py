@@ -110,10 +110,10 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def _createReport(self):
         openlp_version = get_application_version()
-        description = unicode(self.descriptionTextEdit.toPlainText())
-        traceback = unicode(self.exceptionTextEdit.toPlainText())
-        system = unicode(translate('OpenLP.ExceptionForm',
-            'Platform: %s\n')) % platform.platform()
+        description = self.descriptionTextEdit.toPlainText()
+        traceback = self.exceptionTextEdit.toPlainText()
+        system = translate('OpenLP.ExceptionForm',
+            'Platform: %s\n') % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
             u'Qt4: %s\n' % Qt.qVersion() + \
             u'Phonon: %s\n' % PHONON_VERSION + \
@@ -139,13 +139,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Saving exception log and system informations to a file.
         """
-        report_text = unicode(translate('OpenLP.ExceptionForm',
+        report_text = translate('OpenLP.ExceptionForm',
             '**OpenLP Bug Report**\n'
             'Version: %s\n\n'
             '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n'))
+            '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             SettingsManager.get_last_dir(self.settingsSection),
@@ -176,7 +176,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and
         system informations.
         """
-        body = unicode(translate('OpenLP.ExceptionForm',
+        body = translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
             '--- Details of the Exception. ---\n\n%s\n\n '
@@ -184,7 +184,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n',
             'Please add the information that bug reports are favoured written '
-            'in English.'))
+            'in English.')
         content = self._createReport()
         source = u''
         exception = u''
@@ -209,8 +209,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         else:
             self.__buttonState(False)
         self.descriptionWordCount.setText(
-            unicode(translate('OpenLP.ExceptionDialog',
-            'Description characters to enter : %s')) % count)
+            translate('OpenLP.ExceptionDialog',
+            'Description characters to enter : %s') % count)
 
     def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(

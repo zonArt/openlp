@@ -286,8 +286,7 @@ class SongExportForm(OpenLPWizard):
             song.data(QtCore.Qt.UserRole).toPyObject()
             for song in self._findListWidgetItems(self.selectedListWidget)
         ]
-        exporter = OpenLyricsExport(
-            self, songs, unicode(self.directoryLineEdit.text()))
+        exporter = OpenLyricsExport(self, songs, self.directoryLineEdit.text())
         if exporter.do_export():
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm', 'Finished export. To '
@@ -309,9 +308,8 @@ class SongExportForm(OpenLPWizard):
         ``text``
             The text to search for. (unicode string)
         """
-        #TODO: check if unicode() can be removed.
-        return [item for item in listWidget.findItems(
-            unicode(text), QtCore.Qt.MatchContains)
+        return [
+            item for item in listWidget.findItems(text, QtCore.Qt.MatchContains)
         ]
 
     def onItemActivated(self, item):
@@ -333,13 +331,11 @@ class SongExportForm(OpenLPWizard):
         will be hidden, but not unchecked!
 
         ``text``
-            The text of the *searchLineEdit*. (QString)
+            The text of the *searchLineEdit*.
         """
-        #TODO: check if unicode() can be removed.
-        print type(text)
         search_result = [
             song for song in self._findListWidgetItems(
-            self.availableListWidget, unicode(text))
+            self.availableListWidget, text)
         ]
         for item in self._findListWidgetItems(self.availableListWidget):
             item.setHidden(item not in search_result)
@@ -367,11 +363,11 @@ class SongExportForm(OpenLPWizard):
         Called when the *directoryButton* was clicked. Opens a dialog and writes
         the path to *directoryLineEdit*.
         """
-        path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
+        path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongsPlugin.ExportWizardForm',
             'Select Destination Folder'),
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
-            options=QtGui.QFileDialog.ShowDirsOnly))
+            options=QtGui.QFileDialog.ShowDirsOnly)
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
         self.directoryLineEdit.setText(path)
 

@@ -71,22 +71,19 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
             if plugin.status == PluginStatus.Disabled:
-                status_text = unicode(
-                    translate('OpenLP.PluginForm', '%s (Disabled)'))
+                status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
             elif plugin.status == PluginStatus.Active:
-                status_text = unicode(
-                    translate('OpenLP.PluginForm', '%s (Active)'))
+                status_text = translate('OpenLP.PluginForm', '%s (Active)')
             else:
                 # PluginStatus.Inactive
-                status_text = unicode(
-                    translate('OpenLP.PluginForm', '%s (Inactive)'))
+                status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
             item.setText(status_text % plugin.nameStrings[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) %
+                translate('OpenLP.PluginForm', '%s (Inactive)') %
                 plugin.nameStrings[u'singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth +
             self.pluginListWidget.iconSize().width() + 48)
@@ -136,16 +133,12 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self.activePlugin.appStartup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
-        status_text = unicode(
-            translate('OpenLP.PluginForm', '%s (Inactive)'))
+        status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         if self.activePlugin.status == PluginStatus.Active:
-            status_text = unicode(
-                translate('OpenLP.PluginForm', '%s (Active)'))
+            status_text = translate('OpenLP.PluginForm', '%s (Active)')
         elif self.activePlugin.status == PluginStatus.Inactive:
-            status_text = unicode(
-                translate('OpenLP.PluginForm', '%s (Inactive)'))
+            status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         elif self.activePlugin.status == PluginStatus.Disabled:
-            status_text = unicode(
-                translate('OpenLP.PluginForm', '%s (Disabled)'))
+            status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
         self.pluginListWidget.currentItem().setText(
             status_text % self.activePlugin.nameStrings[u'singular'])

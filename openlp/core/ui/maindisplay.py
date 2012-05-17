@@ -257,7 +257,7 @@ class MainDisplay(Display):
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                alert_height = int(height)
+                alert_height = int(height.toString())
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:

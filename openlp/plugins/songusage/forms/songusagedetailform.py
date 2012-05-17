@@ -59,11 +59,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
-        toDate = Settings().value(
-            u'songusage/to date', QtCore.QDate(year, 8, 31)).toDate()
-        fromDate = Settings().value(
-            u'songusage/from date',
-            QtCore.QDate(year - 1, 9, 1)).toDate()
+        # TODO: check toDate()
+        toDate = Settings().value(self.plugin.settingsSection +
+            u'/to date', QtCore.QDate(year, 8, 31)).toDate()
+        fromDate = Settings().value(self.plugin.settingsSection +
+            u'/from date', QtCore.QDate(year - 1, 9, 1)).toDate()
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
         self.fileLineEdit.setText(
@@ -87,25 +87,25 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         Ok was triggered so lets save the data and run the report
         """
         log.debug(u'accept')
-        path = unicode(self.fileLineEdit.text())
-        if path == u'':
+        path = self.fileLineEdit.text()
+        if not path:
             Receiver.send_message(u'openlp_error_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDetailForm',
                 'Output Path Not Selected'),
-                u'message': unicode(translate(
+                u'message': translate(
                 'SongUsagePlugin.SongUsageDetailForm', 'You have not set a '
                 'valid output location for your song usage report. Please '
-                'select an existing path on your computer.'))})
+                'select an existing path on your computer.')})
             return
         check_directory_exists(path)
-        filename = unicode(translate('SongUsagePlugin.SongUsageDetailForm',
-            'usage_detail_%s_%s.txt')) % (
+        filename = translate('SongUsagePlugin.SongUsageDetailForm',
+            'usage_detail_%s_%s.txt') % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        Settings().setValue(u'songusage/from date',
-            self.fromDate.selectedDate())
-        Settings().setValue(u'songusage/to date',
-            self.toDate.selectedDate())
+        Settings().setValue(self.plugin.settingsSection +
+            u'/from date', self.fromDate.selectedDate())
+        Settings().setValue(self.plugin.settingsSection +
+            u'/to date', self.toDate.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
@@ -125,9 +125,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDetailForm',
                 'Report Creation'),
-                u'message': unicode(translate(
+                u'message': translate(
                 'SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
-                'has been successfully created. ')) % outname})
+                'has been successfully created. ') % outname})
         except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:

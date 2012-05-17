@@ -194,7 +194,7 @@ class OpenLP(QtGui.QApplication):
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
             log.debug(u'Got open file event for %s!', file_name)
-            self.args.insert(0, unicode(file_name))
+            self.args.insert(0, file_name)
             return True
         else:
             return QtGui.QApplication.event(self, event)

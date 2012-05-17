@@ -94,16 +94,15 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (
+        self.onNewFileMasks = translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;%s (*)') % (
             u' '.join(self.plugin.video_extensions_list),
             u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
-        self.automatic = translate('MediaPlugin.MediaItem',
-            'Automatic')
+        self.automatic = translate('MediaPlugin.MediaItem', 'Automatic')
         self.displayTypeLabel.setText(
             translate('MediaPlugin.MediaItem', 'Use Player:'))
 
@@ -171,7 +170,7 @@ class MediaMediaItem(MediaManagerItem):
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
-            filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+            filename = item.data(QtCore.Qt.UserRole).toString()
             if os.path.exists(filename):
                 if self.plugin.liveController.mediaController.video( \
                     self.plugin.liveController, filename, True, True):
@@ -182,9 +181,9 @@ class MediaMediaItem(MediaManagerItem):
                         'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    unicode(translate('MediaPlugin.MediaItem',
+                    translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the media file "%s" no longer exists.')) % filename)
+                    'the media file "%s" no longer exists.') % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
@@ -192,14 +191,14 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             if item is None:
                 return False
-        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+        filename = item.data(QtCore.Qt.UserRole).toString()
         if not os.path.exists(filename):
             if not remote:
                 # File is no longer present
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                        unicode(translate('MediaPlugin.MediaItem',
-                            'The file %s no longer exists.')) % filename)
+                    translate('MediaPlugin.MediaItem',
+                    'The file %s no longer exists.') % filename)
             return False
         self.mediaLength = 0
         if self.plugin.mediaController.video( \
@@ -234,8 +233,8 @@ class MediaMediaItem(MediaManagerItem):
         the settings
         """
         self.populateDisplayTypes()
-        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (
+        self.onNewFileMasks = translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;%s (*)') % (
             u' '.join(self.plugin.video_extensions_list),
             u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
 

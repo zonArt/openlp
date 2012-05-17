@@ -74,8 +74,8 @@ class PowerSongImport(SongImport):
         Receive a list of files to import.
         """
         if not isinstance(self.importSource, list):
-            self.logError(unicode(translate('SongsPlugin.PowerSongImport',
-                'No files to import.')))
+            self.logError(translate('SongsPlugin.PowerSongImport',
+                'No files to import.'))
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:

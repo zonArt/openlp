@@ -116,9 +116,9 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         Exit Dialog and save data
         """
         log.debug(u'BibleEditForm.accept')
-        version = unicode(self.versionNameEdit.text())
-        copyright = unicode(self.copyrightEdit.text())
-        permissions = unicode(self.permissionsEdit.text())
+        version = self.versionNameEdit.text()
+        copyright = self.copyrightEdit.text()
+        permissions = self.permissionsEdit.text()
         book_name_language = self.languageSelectionComboBox.currentIndex() - 1
         if book_name_language == -1:
             book_name_language = None
@@ -128,7 +128,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             custom_names = {}
             for abbr, book in self.books.iteritems():
                 if book:
-                    custom_names[abbr] = unicode(self.bookNameEdit[abbr].text())
+                    custom_names[abbr] = self.bookNameEdit[abbr].text()
                     if book.name != custom_names[abbr]:
                         if not self.validateBook(custom_names[abbr], abbr):
                             return
@@ -183,29 +183,29 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         if not new_book_name:
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
-                unicode(translate('BiblesPlugin.BibleEditForm',
-                'You need to specify a book name for "%s".')) %
+                translate('BiblesPlugin.BibleEditForm',
+                'You need to specify a book name for "%s".') %
                 self.book_names[abbreviation])
             return False
         elif not book_regex.match(new_book_name):
             self.bookNameEdit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
-                unicode(translate('BiblesPlugin.BibleEditForm',
+                translate('BiblesPlugin.BibleEditForm',
                 'The book name "%s" is not correct.\nNumbers can only be used '
                 'at the beginning and must\nbe followed by one or more '
-                'non-numeric characters.')) % new_book_name)
+                'non-numeric characters.') % new_book_name)
             return False
         for abbr, book in self.books.iteritems():
             if book:
                 if abbr == abbreviation:
                     continue
-                if unicode(self.bookNameEdit[abbr].text()) == new_book_name:
+                if self.bookNameEdit[abbr].text() == new_book_name:
                     self.bookNameEdit[abbreviation].setFocus()
                     critical_error_message_box(
                         translate('BiblesPlugin.BibleEditForm',
                         'Duplicate Book Name'),
-                        unicode(translate('BiblesPlugin.BibleEditForm',
-                        'The Book Name "%s" has been entered more than once.'))
+                        translate('BiblesPlugin.BibleEditForm',
+                        'The Book Name "%s" has been entered more than once.')
                         % new_book_name)
                     return False
         return True

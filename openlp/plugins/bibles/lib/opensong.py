@@ -90,9 +90,9 @@ class OpenSongBible(BibleDB):
                             int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
                             unicode(verse.text))
-                    self.wizard.incrementProgressBar(unicode(translate(
+                    self.wizard.incrementProgressBar(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...')) %
+                        'Importing <book name> <chapter>...') %
                         (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')

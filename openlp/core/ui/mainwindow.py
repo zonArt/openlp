@@ -173,7 +173,7 @@ class Ui_MainWindow(object):
             self.themeManagerDock)
         # Create the menu items
         action_list = ActionList.get_instance()
-        action_list.add_category(unicode(UiStrings().File),
+        action_list.add_category(UiStrings().File,
             CategoryOrder.standardMenu)
         self.fileNewItem = create_action(mainWindow, u'fileNewItem',
             icon=u':/general/general_new.png',
@@ -202,19 +202,19 @@ class Ui_MainWindow(object):
             icon=u':/system/system_exit.png',
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
             category=UiStrings().File, triggers=mainWindow.close)
-        action_list.add_category(unicode(UiStrings().Import),
+        action_list.add_category(UiStrings().Import,
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
             u'importThemeItem', category=UiStrings().Import)
         self.importLanguageItem = create_action(mainWindow,
             u'importLanguageItem')#, category=UiStrings().Import)
-        action_list.add_category(unicode(UiStrings().Export),
+        action_list.add_category(UiStrings().Export,
             CategoryOrder.standardMenu)
         self.exportThemeItem = create_action(mainWindow,
             u'exportThemeItem', category=UiStrings().Export)
         self.exportLanguageItem = create_action(mainWindow,
             u'exportLanguageItem')#, category=UiStrings().Export)
-        action_list.add_category(unicode(UiStrings().View),
+        action_list.add_category(UiStrings().View,
             CategoryOrder.standardMenu)
         self.viewMediaManagerItem = create_action(mainWindow,
             u'viewMediaManagerItem', shortcuts=[QtGui.QKeySequence(u'F8')],
@@ -239,7 +239,7 @@ class Ui_MainWindow(object):
             category=UiStrings().View, triggers=self.setLivePanelVisibility)
         self.lockPanel = create_action(mainWindow, u'lockPanel',
             checked=panelLocked, triggers=self.setLockPanel)
-        action_list.add_category(unicode(UiStrings().ViewMode),
+        action_list.add_category(UiStrings().ViewMode,
             CategoryOrder.standardMenu)
         self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem',
             checked=False, category=UiStrings().ViewMode)
@@ -252,8 +252,7 @@ class Ui_MainWindow(object):
         self.modeGroup.addAction(self.modeSetupItem)
         self.modeGroup.addAction(self.modeLiveItem)
         self.modeDefaultItem.setChecked(True)
-        action_list.add_category(unicode(UiStrings().Tools),
-            CategoryOrder.standardMenu)
+        action_list.add_category(UiStrings().Tools, CategoryOrder.standardMenu)
         self.toolsAddToolItem = create_action(mainWindow,
             u'toolsAddToolItem', icon=u':/tools/tools_add.png',
             category=UiStrings().Tools)
@@ -265,7 +264,7 @@ class Ui_MainWindow(object):
             category=UiStrings().Tools)
         self.updateThemeImages = create_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
-        action_list.add_category(unicode(UiStrings().Settings),
+        action_list.add_category(UiStrings().Settings,
             CategoryOrder.standardMenu)
         self.settingsPluginListItem = create_action(mainWindow,
             u'settingsPluginListItem',
@@ -300,8 +299,7 @@ class Ui_MainWindow(object):
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = create_action(mainWindow,
            u'settingsExportItem', category=UiStrings().Settings)
-        action_list.add_category(unicode(UiStrings().Help),
-            CategoryOrder.standardMenu)
+        action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
         self.aboutItem = create_action(mainWindow, u'aboutItem',
             icon=u':/system/system_about.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+F1')],
@@ -497,8 +495,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.languageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(unicode(translate('OpenLP.MainWindow',
-                'Set the interface language to %s')) % item.objectName())
+            item.setStatusTip(translate('OpenLP.MainWindow',
+                'Set the interface language to %s') % item.objectName())
         self.autoLanguageItem.setText(
             translate('OpenLP.MainWindow', '&Autodetect'))
         self.autoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -709,10 +707,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Notifies the user that a newer version of OpenLP is available.
         Triggered by delay thread.
         """
-        version_text = unicode(translate('OpenLP.MainWindow',
+        version_text = translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from http://openlp.org/.'))
+            'version from http://openlp.org/.')
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, get_application_version()[u'full']))
@@ -928,11 +926,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        import_file_name = unicode(QtGui.QFileDialog.getOpenFileName(self,
-                translate('OpenLP.MainWindow', 'Open File'),
-                '',
+        import_file_name = QtGui.QFileDialog.getOpenFileName(self,
+                translate('OpenLP.MainWindow', 'Open File'), '',
                 translate('OpenLP.MainWindow',
-                'OpenLP Export Settings Files (*.conf)')))
+                'OpenLP Export Settings Files (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
@@ -1003,10 +1000,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Export settings to a .conf file in INI format
         """
-        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+        export_file_name = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.MainWindow', 'Export Settings File'), '',
             translate('OpenLP.MainWindow',
-                'OpenLP Export Settings File (*.conf)')))
+            'OpenLP Export Settings File (*.conf)'))
         if not export_file_name:
             return
         # Make sure it's a .conf file.
@@ -1218,8 +1215,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.defaultThemeLabel.setText(
-            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
-                theme)
+            translate('OpenLP.MainWindow', 'Default Theme: %s') % theme)
 
     def toggleMediaManager(self):
         self.mediaManagerDock.setVisible(not self.mediaManagerDock.isVisible())

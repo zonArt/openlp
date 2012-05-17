@@ -172,8 +172,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         html_data = self._addElement(u'html')
         self._addElement(u'head', parent=html_data)
-        self._addElement(u'title', unicode(self.titleLineEdit.text()),
-            html_data.head)
+        self._addElement(u'title', self.titleLineEdit.text(), html_data.head)
         css_path = os.path.join(
             AppLocation.get_data_path(), u'service_print.css')
         custom_css = get_text_file_string(css_path)
@@ -182,7 +181,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'style', custom_css, html_data.head,
             attribute=(u'type', u'text/css'))
         self._addElement(u'body', parent=html_data)
-        self._addElement(u'h1', cgi.escape(unicode(self.titleLineEdit.text())),
+        self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
             html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
@@ -241,7 +240,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     translate('OpenLP.ServiceManager', 'Notes: '), p,
                     classId=u'itemNotesTitle')
                 self._addElement(u'span',
-                    cgi.escape(unicode(item.notes)).replace(u'\n', u'<br>'), p,
+                    cgi.escape(item.notes).replace(u'\n', u'<br>'), p,
                     classId=u'itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.metaDataCheckBox.isChecked():

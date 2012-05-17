@@ -65,9 +65,8 @@ class OpenLyricsExport(object):
             Receiver.send_message(u'openlp_process_events')
             if self.parent.stop_export_flag:
                 return False
-            self.parent.incrementProgressBar(unicode(translate(
-                'SongsPlugin.OpenLyricsExport', 'Exporting "%s"...')) %
-                song.title)
+            self.parent.incrementProgressBar(translate(
+            'SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))
             filename = u'%s (%s)' % (song.title,

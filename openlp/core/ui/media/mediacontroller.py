@@ -324,8 +324,7 @@ class MediaController(object):
             # Media could not be loaded correctly
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem',
-                'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.isLive and not controller.media_info.is_background:
@@ -339,8 +338,7 @@ class MediaController(object):
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    unicode(translate('MediaPlugin.MediaItem',
-                    'Unsupported File')))
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])

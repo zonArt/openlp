@@ -101,7 +101,7 @@ class OSISBible(BibleDB):
             osis = codecs.open(self.filename, u'r', details['encoding'])
             repl = replacement
             language_id = False
-            # Decide if the bible propably contains only NT or AT and NT or 
+            # Decide if the bible propably contains only NT or AT and NT or
             # AT, NT and Apocrypha
             if lines_in_file < 11500:
                 book_count = 27
@@ -157,9 +157,9 @@ class OSISBible(BibleDB):
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(unicode(translate(
+                        self.wizard.incrementProgressBar(translate(
                             'BiblesPlugin.OsisImport', 'Importing %s %s...',
-                            'Importing <book name> <chapter>...')) %
+                            'Importing <book name> <chapter>...') %
                             (book_details[u'name'], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis

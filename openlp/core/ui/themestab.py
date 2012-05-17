@@ -168,7 +168,7 @@ class ThemesTab(SettingsTab):
         self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
-        self.global_theme = unicode(self.DefaultComboBox.currentText())
+        self.global_theme = self.DefaultComboBox.currentText()
         self.mainwindow.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         self.__previewGlobalTheme()

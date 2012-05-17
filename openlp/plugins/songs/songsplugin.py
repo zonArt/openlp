@@ -74,10 +74,9 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.songImportItem, unicode(UiStrings().Import))
-        action_list.add_action(self.songExportItem, unicode(UiStrings().Export))
-        action_list.add_action(self.toolsReindexItem,
-            unicode(UiStrings().Tools))
+        action_list.add_action(self.songImportItem, UiStrings().Import)
+        action_list.add_action(self.songExportItem, UiStrings().Export)
+        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_new_service'),
         self.clearTemporarySongs)
@@ -268,12 +267,9 @@ class SongsPlugin(Plugin):
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem,
-            unicode(UiStrings().Import))
-        action_list.remove_action(self.songExportItem,
-            unicode(UiStrings().Export))
-        action_list.remove_action(self.toolsReindexItem,
-            unicode(UiStrings().Tools))
+        action_list.remove_action(self.songImportItem, UiStrings().Import)
+        action_list.remove_action(self.songExportItem, UiStrings().Export)
+        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)
 
     def clearTemporarySongs(self):

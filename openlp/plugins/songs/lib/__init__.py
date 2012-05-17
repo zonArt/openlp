@@ -60,13 +60,13 @@ class VerseType(object):
     Tags = [name[0].lower() for name in Names]
 
     TranslatedNames = [
-        unicode(translate('SongsPlugin.VerseType', 'Verse')),
-        unicode(translate('SongsPlugin.VerseType', 'Chorus')),
-        unicode(translate('SongsPlugin.VerseType', 'Bridge')),
-        unicode(translate('SongsPlugin.VerseType', 'Pre-Chorus')),
-        unicode(translate('SongsPlugin.VerseType', 'Intro')),
-        unicode(translate('SongsPlugin.VerseType', 'Ending')),
-        unicode(translate('SongsPlugin.VerseType', 'Other'))]
+        translate('SongsPlugin.VerseType', 'Verse'),
+        translate('SongsPlugin.VerseType', 'Chorus'),
+        translate('SongsPlugin.VerseType', 'Bridge'),
+        translate('SongsPlugin.VerseType', 'Pre-Chorus'),
+        translate('SongsPlugin.VerseType', 'Intro'),
+        translate('SongsPlugin.VerseType', 'Ending'),
+        translate('SongsPlugin.VerseType', 'Other')]
     TranslatedTags = [name[0].lower() for name in TranslatedNames]
 
     @staticmethod

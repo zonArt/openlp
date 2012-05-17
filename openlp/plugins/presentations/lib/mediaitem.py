@@ -87,8 +87,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.plugin.serviceManager.supportedSuffixes(type)
-        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
-            'Presentations (%s)')) % fileType
+        self.onNewFileMasks = translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)') % fileType
 
     def requiredIcons(self):
         """
@@ -258,15 +258,15 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.title = unicode(self.displayTypeComboBox.currentText())
-        service_item.shortname = unicode(self.displayTypeComboBox.currentText())
+        service_item.title = self.displayTypeComboBox.currentText()
+        service_item.shortname = self.displayTypeComboBox.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if not shortname:
             return False
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole).toString()
             if os.path.exists(filename):
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)
@@ -292,10 +292,9 @@ class PresentationMediaItem(MediaManagerItem):
                         critical_error_message_box(
                             translate('PresentationPlugin.MediaItem',
                             'Missing Presentation'),
-                            unicode(translate(
-                            'PresentationPlugin.MediaItem',
+                            translate('PresentationPlugin.MediaItem',
                             'The presentation %s is incomplete,'
-                            ' please reload.')) % filename)
+                            ' please reload.') % filename)
                     return False
             else:
                 # File is no longer present
@@ -303,8 +302,8 @@ class PresentationMediaItem(MediaManagerItem):
                     critical_error_message_box(
                         translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
-                        unicode(translate('PresentationPlugin.MediaItem',
-                        'The presentation %s no longer exists.')) % filename)
+                        translate('PresentationPlugin.MediaItem',
+                        'The presentation %s no longer exists.') % filename)
                 return False
 
     def findControllerByType(self, filename):

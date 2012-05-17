@@ -348,7 +348,7 @@ class BibleManager(object):
                 Receiver.send_message(u'openlp_information_message', {
                     u'title': translate('BiblesPlugin.BibleManager',
                     'Scripture Reference Error'),
-                    u'message': unicode(translate('BiblesPlugin.BibleManager',
+                    u'message': translate('BiblesPlugin.BibleManager',
                     'Your scripture reference is either not supported by '
                     'OpenLP or is invalid. Please make sure your reference '
                     'conforms to one of the following patterns or consult the '
@@ -363,7 +363,7 @@ class BibleManager(object):
                     'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
                     'Please pay attention to the appended "s" of the wildcards '
                     'and refrain from translating the words inside the '
-                    'names in the brackets.')) % reference_seperators
+                    'names in the brackets.') % reference_seperators
                     })
             return None
 

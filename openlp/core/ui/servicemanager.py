@@ -174,7 +174,7 @@ class ServiceManager(QtGui.QWidget):
         self.orderToolbar = OpenLPToolbar(self)
         action_list = ActionList.get_instance()
         action_list.add_category(
-            unicode(UiStrings().Service), CategoryOrder.standardToolbar)
+            UiStrings().Service, CategoryOrder.standardToolbar)
         self.serviceManagerList.moveTop = self.orderToolbar.addToolbarAction(
             u'moveTop', text=translate('OpenLP.ServiceManager', 'Move to &top'),
             icon=u':/services/service_top.png', tooltip=translate(
@@ -405,13 +405,13 @@ class ServiceManager(QtGui.QWidget):
             elif result == QtGui.QMessageBox.Save:
                 self.saveFile()
         if not loadFile:
-            fileName = unicode(QtGui.QFileDialog.getOpenFileName(
+            fileName = QtGui.QFileDialog.getOpenFileName(
                 self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
                 SettingsManager.get_last_dir(
                 self.mainwindow.serviceManagerSettingsSection),
                 translate('OpenLP.ServiceManager',
-                'OpenLP Service Files (*.osz)')))
+                'OpenLP Service Files (*.osz)'))
             if not fileName:
                 return False
         else:
@@ -503,11 +503,11 @@ class ServiceManager(QtGui.QWidget):
                 if not os.path.exists(path_from):
                     if not skipMissing:
                         Receiver.send_message(u'cursor_normal')
-                        title = unicode(translate('OpenLP.ServiceManager',
-                            'Service File Missing'))
-                        message = unicode(translate('OpenLP.ServiceManager',
+                        title = translate('OpenLP.ServiceManager',
+                            'Service File Missing')
+                        message = translate('OpenLP.ServiceManager',
                             'File missing from service\n\n %s \n\n'
-                            'Continue saving?' % path_from ))
+                            'Continue saving?' % path_from )
                         answer = QtGui.QMessageBox.critical(self, title,
                             message,
                             QtGui.QMessageBox.StandardButtons(
@@ -621,9 +621,9 @@ class ServiceManager(QtGui.QWidget):
         directory = SettingsManager.get_last_dir(
             self.mainwindow.serviceManagerSettingsSection)
         path = os.path.join(directory, default_filename)
-        fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
+        fileName = QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService, path,
-            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)'))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':
@@ -1043,16 +1043,16 @@ class ServiceManager(QtGui.QWidget):
             tips = []
             if serviceitem.temporary_edit:
                 tips.append(u'<strong>%s:</strong> <em>%s</em>' %
-                    (unicode(translate('OpenLP.ServiceManager', 'Edit')),
-                    (unicode(translate('OpenLP.ServiceManager',
-                    'Service copy only')))))
+                    (translate('OpenLP.ServiceManager', 'Edit'),
+                    (translate('OpenLP.ServiceManager',
+                    'Service copy only'))))
             if serviceitem.theme and serviceitem.theme != -1:
                 tips.append(u'<strong>%s:</strong> <em>%s</em>' %
-                    (unicode(translate('OpenLP.ServiceManager', 'Slide theme')),
-                    serviceitem.theme))
+                    (translate('OpenLP.ServiceManager', 'Slide theme')),
+                    serviceitem.theme)
             if serviceitem.notes:
                 tips.append(u'<strong>%s: </strong> %s' %
-                    (unicode(translate('OpenLP.ServiceManager', 'Notes')),
+                    (translate('OpenLP.ServiceManager', 'Notes'),
                     cgi.escape(unicode(serviceitem.notes))))
             if item[u'service_item'] \
                 .is_capable(ItemCapabilities.HasVariableStartTime):
@@ -1099,7 +1099,7 @@ class ServiceManager(QtGui.QWidget):
         Set the theme for the current service.
         """
         log.debug(u'onThemeComboBoxSelected')
-        self.service_theme = unicode(self.themeComboBox.currentText())
+        self.service_theme = self.themeComboBox.currentText()
         self.mainwindow.renderer.set_service_theme(self.service_theme)
         Settings().setValue(
             self.mainwindow.serviceManagerSettingsSection +
@@ -1358,11 +1358,11 @@ class ServiceManager(QtGui.QWidget):
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
             for url in link.urls():
-                filename = unicode(url.toLocalFile())
+                filename = url.toLocalFile()
                 if filename.endswith(u'.osz'):
                     self.onLoadServiceClicked(filename)
         elif link.hasText():
-            plugin = unicode(link.text())
+            plugin = link.text()
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
@@ -1434,7 +1434,7 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
-        theme = unicode(self.sender().objectName())
+        theme = self.sender().objectName()
         # No object name means that the "Default" theme is supposed to be used.
         if not theme:
             theme = None

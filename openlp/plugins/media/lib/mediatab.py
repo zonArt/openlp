@@ -122,9 +122,8 @@ class MediaTab(SettingsTab):
             if player.available:
                 checkbox.setText(player.display_name)
             else:
-                checkbox.setText(
-                    unicode(translate('MediaPlugin.MediaTab',
-                    '%s (unavailable)')) % player.display_name)
+                checkbox.setText(translate('MediaPlugin.MediaTab',
+                    '%s (unavailable)') % player.display_name)
         self.playerOrderGroupBox.setTitle(
             translate('MediaPlugin.MediaTab', 'Player Order'))
         self.advancedGroupBox.setTitle(UiStrings().Advanced)

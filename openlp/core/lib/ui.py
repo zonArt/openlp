@@ -66,7 +66,7 @@ class UiStrings(object):
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
         self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
-        self.Default = unicode(translate('OpenLP.Ui', 'Default'))
+        self.Default = translate('OpenLP.Ui', 'Default')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
         self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
@@ -127,7 +127,7 @@ class UiStrings(object):
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
-        self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
             'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui',

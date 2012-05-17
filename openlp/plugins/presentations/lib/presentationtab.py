@@ -92,8 +92,8 @@ class PresentationTab(SettingsTab):
             checkbox.setText(controller.name)
         else:
             checkbox.setText(
-                unicode(translate('PresentationPlugin.PresentationTab',
-                '%s (unavailable)')) % controller.name)
+                translate('PresentationPlugin.PresentationTab',
+                '%s (unavailable)') % controller.name)
 
     def load(self):
         """

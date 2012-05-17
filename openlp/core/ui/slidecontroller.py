@@ -446,7 +446,7 @@ class SlideController(Controller):
             SONGS_PLUGIN_AVAILABLE = True
         except ImportError:
             SONGS_PLUGIN_AVAILABLE = False
-        sender_name = unicode(self.sender().objectName())
+        sender_name = self.sender().objectName()
         verse_type = sender_name[15:] \
             if sender_name[:15] == u'shortcutAction_' else u''
         if SONGS_PLUGIN_AVAILABLE:
@@ -647,7 +647,7 @@ class SlideController(Controller):
                         framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
-        request = unicode(self.sender().text())
+        request = self.sender().text()
         slide_no = self.slideList[request]
         self.__updatePreviewSelection(slide_no)
         self.slideSelected()

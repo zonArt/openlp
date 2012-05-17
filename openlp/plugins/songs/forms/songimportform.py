@@ -516,7 +516,7 @@ class SongImportForm(OpenLPWizard):
         """
         Return a list of file from the listbox
         """
-        return [unicode(listbox.item(i).text()) for i in range(listbox.count())]
+        return [listbox.item(i).text() for i in range(listbox.count())]
 
     def removeSelectedItems(self, listbox):
         """
@@ -786,12 +786,12 @@ class SongImportForm(OpenLPWizard):
         if source_format == SongFormat.OpenLP2:
             # Import an OpenLP 2.0 database
             importer = self.plugin.importSongs(SongFormat.OpenLP2,
-                filename=unicode(self.openLP2FilenameEdit.text())
+                filename=self.openLP2FilenameEdit.text()
             )
         elif source_format == SongFormat.OpenLP1:
             # Import an openlp.org database
             importer = self.plugin.importSongs(SongFormat.OpenLP1,
-                filename=unicode(self.openLP1FilenameEdit.text()),
+                filename=self.openLP1FilenameEdit.text(),
                 plugin=self.plugin
             )
         elif source_format == SongFormat.OpenLyrics:
@@ -841,12 +841,12 @@ class SongImportForm(OpenLPWizard):
         elif source_format == SongFormat.EasySlides:
             # Import an EasySlides export file
             importer = self.plugin.importSongs(SongFormat.EasySlides,
-                filename=unicode(self.easySlidesFilenameEdit.text())
+                filename=self.easySlidesFilenameEdit.text()
             )
         elif source_format == SongFormat.EasyWorship:
             # Import an EasyWorship database
             importer = self.plugin.importSongs(SongFormat.EasyWorship,
-                filename=unicode(self.ewFilenameEdit.text())
+                filename=self.ewFilenameEdit.text()
             )
         elif source_format == SongFormat.SongBeamer:
             # Import SongBeamer songs

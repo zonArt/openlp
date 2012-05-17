@@ -304,7 +304,7 @@ class BibleUpgradeForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.backupPage:
             if not self.noBackupCheckBox.checkState() == QtCore.Qt.Checked:
-                backup_path = unicode(self.backupDirectoryEdit.text())
+                backup_path = self.backupDirectoryEdit.text()
                 if not backup_path:
                     critical_error_message_box(UiStrings().EmptyField,
                         translate('BiblesPlugin.UpgradeWizardForm',
@@ -401,9 +401,9 @@ class BibleUpgradeForm(OpenLPWizard):
             old_bible = OldBibleDB(self.mediaItem, path=self.temp_dir,
                 file=filename[0])
             name = filename[1]
-            self.progressLabel.setText(unicode(translate(
+            self.progressLabel.setText(translate(
                 'BiblesPlugin.UpgradeWizardForm',
-                'Upgrading Bible %s of %s: "%s"\nUpgrading ...')) %
+                'Upgrading Bible %s of %s: "%s"\nUpgrading ...') %
                 (number + 1, max_bibles, name))
             self.newbibles[number] = BibleDB(self.mediaItem, path=self.path,
                 name=name, file=filename[0])
@@ -448,9 +448,9 @@ class BibleUpgradeForm(OpenLPWizard):
                         translate('BiblesPlugin.UpgradeWizardForm',
                         'To upgrade your Web Bibles an Internet connection is '
                         'required.'))
-                    self.incrementProgressBar(unicode(translate(
+                    self.incrementProgressBar(translate(
                         'BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nFailed')) %
+                        'Upgrading Bible %s of %s: "%s"\nFailed') %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
                     self.success[number] = False
@@ -468,9 +468,9 @@ class BibleUpgradeForm(OpenLPWizard):
                     log.warn(u'Upgrading from "%s" failed' % filename[0])
                     self.newbibles[number].session.close()
                     del self.newbibles[number]
-                    self.incrementProgressBar(unicode(translate(
+                    self.incrementProgressBar(translate(
                         'BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nFailed')) %
+                        'Upgrading Bible %s of %s: "%s"\nFailed') %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
                     self.success[number] = False
@@ -480,10 +480,10 @@ class BibleUpgradeForm(OpenLPWizard):
                     if self.stop_import_flag:
                         self.success[number] = False
                         break
-                    self.incrementProgressBar(unicode(translate(
+                    self.incrementProgressBar(translate(
                         'BiblesPlugin.UpgradeWizardForm',
                         'Upgrading Bible %s of %s: "%s"\n'
-                        'Upgrading %s ...')) %
+                        'Upgrading %s ...') %
                         (number + 1, max_bibles, name, book))
                     book_ref_id = self.newbibles[number].\
                         get_book_ref_id_by_name(book, len(books), language_id)
@@ -525,9 +525,9 @@ class BibleUpgradeForm(OpenLPWizard):
                     log.warn(u'Upgrading books from "%s" failed' % name)
                     self.newbibles[number].session.close()
                     del self.newbibles[number]
-                    self.incrementProgressBar(unicode(translate(
+                    self.incrementProgressBar(translate(
                         'BiblesPlugin.UpgradeWizardForm',
-                        'Upgrading Bible %s of %s: "%s"\nFailed')) %
+                        'Upgrading Bible %s of %s: "%s"\nFailed') %
                         (number + 1, max_bibles, name),
                         self.progressBar.maximum() - self.progressBar.value())
                     self.success[number] = False
@@ -538,10 +538,10 @@ class BibleUpgradeForm(OpenLPWizard):
                     if self.stop_import_flag:
                         self.success[number] = False
                         break
-                    self.incrementProgressBar(unicode(translate(
+                    self.incrementProgressBar(translate(
                         'BiblesPlugin.UpgradeWizardForm',
                         'Upgrading Bible %s of %s: "%s"\n'
-                        'Upgrading %s ...')) %
+                        'Upgrading %s ...') %
                         (number + 1, max_bibles, name, book[u'name']))
                     book_ref_id = self.newbibles[number].\
                         get_book_ref_id_by_name(book[u'name'], len(books),
@@ -572,18 +572,18 @@ class BibleUpgradeForm(OpenLPWizard):
                         Receiver.send_message(u'openlp_process_events')
                     self.newbibles[number].session.commit()
             if not self.success.get(number, True):
-                self.incrementProgressBar(unicode(translate(
+                self.incrementProgressBar(translate(
                     'BiblesPlugin.UpgradeWizardForm',
-                    'Upgrading Bible %s of %s: "%s"\nFailed')) %
+                    'Upgrading Bible %s of %s: "%s"\nFailed') %
                     (number + 1, max_bibles, name),
                     self.progressBar.maximum() - self.progressBar.value())
             else:
                 self.success[number] = True
                 self.newbibles[number].save_meta(u'name', name)
-                self.incrementProgressBar(unicode(translate(
+                self.incrementProgressBar(translate(
                     'BiblesPlugin.UpgradeWizardForm',
                     'Upgrading Bible %s of %s: "%s"\n'
-                    'Complete')) %
+                    'Complete') %
                     (number + 1, max_bibles, name))
             if number in self.newbibles:
                 self.newbibles[number].session.close()
@@ -607,23 +607,22 @@ class BibleUpgradeForm(OpenLPWizard):
                 # Copy not upgraded bible back.
                 shutil.move(os.path.join(self.temp_dir, filename[0]), self.path)
         if failed_import > 0:
-            failed_import_text = unicode(translate(
-                'BiblesPlugin.UpgradeWizardForm',
-                ', %s failed')) % failed_import
+            failed_import_text = translate('BiblesPlugin.UpgradeWizardForm',
+                ', %s failed') % failed_import
         else:
             failed_import_text = u''
         if successful_import > 0:
             if self.includeWebBible:
-                self.progressLabel.setText(unicode(
+                self.progressLabel.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
                     'Bible(s): %s successful%s\nPlease note that verses from '
                     'Web Bibles will be downloaded on demand and so an '
-                    'Internet connection is required.')) %
+                    'Internet connection is required.') %
                     (successful_import, failed_import_text))
             else:
-                self.progressLabel.setText(unicode(
+                self.progressLabel.setText(
                     translate('BiblesPlugin.UpgradeWizardForm', 'Upgrading '
-                    'Bible(s): %s successful%s')) % (successful_import,
+                    'Bible(s): %s successful%s') % (successful_import,
                     failed_import_text))
         else:
             self.progressLabel.setText(translate(

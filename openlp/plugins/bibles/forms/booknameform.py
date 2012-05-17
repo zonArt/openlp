@@ -125,7 +125,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.correspondingComboBox.setFocus()
             return False
         else:
-            cor_book = unicode(self.correspondingComboBox.currentText())
+            cor_book = self.correspondingComboBox.currentText()
             for character in u'\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, u'\\' + character)
             books = filter(lambda key:

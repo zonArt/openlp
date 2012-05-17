@@ -181,10 +181,10 @@ def update_reference_separators():
     Updates separators and matches for parsing and formating scripture
     references.
     """
-    default_separators = unicode(translate('BiblesPlugin',
+    default_separators = translate('BiblesPlugin',
         ':|v|V|verse|verses;;-|to;;,|and;;end',
         'Double-semicolon delimited separators for parsing references. '
-        'Consult the developers for further information.')).split(u';;')
+        'Consult the developers for further information.').split(u';;')
     settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [

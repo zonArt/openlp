@@ -146,7 +146,7 @@ class AlertsPlugin(Plugin):
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.toolsAlertItem, unicode(UiStrings().Tools))
+        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
 
     def finalise(self):
         """

@@ -87,8 +87,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
         self.downloadCanceled = False
-        self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading %s...'))
+        self.downloading = translate('OpenLP.FirstTimeWizard',
+            'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
         QtCore.QObject.connect(self.noInternetFinishButton,
@@ -435,7 +435,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             while bibles_iterator.value():
                 item = bibles_iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                    bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                    bible = item.data(0, QtCore.Qt.UserRole).toString()
                     self._incrementProgressBar(self.downloading % bible, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, bible),
@@ -445,7 +445,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for i in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                    theme = item.data(QtCore.Qt.UserRole).toString()
                     self._incrementProgressBar(self.downloading % theme, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, theme),

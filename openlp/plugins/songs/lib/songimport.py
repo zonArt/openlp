@@ -98,8 +98,7 @@ class SongImport(QtCore.QObject):
         self.verseOrderList = []
         self.verses = []
         self.verseCounts = {}
-        self.copyrightString = unicode(translate(
-            'SongsPlugin.SongImport', 'copyright'))
+        self.copyrightString = translate('SongsPlugin.SongImport', 'copyright')
 
     def logError(self, filepath, reason=SongStrings.SongIncomplete):
         """

@@ -229,7 +229,7 @@ class CustomMediaItem(MediaManagerItem):
         Settings().setValue(u'%s/last search type' %
             self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
-        search_keywords = unicode(self.searchTextEdit.displayText())
+        search_keywords = self.searchTextEdit.displayText()
         search_results = []
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:

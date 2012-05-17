@@ -208,8 +208,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Updates the lines on a page on the wizard
         """
-        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm',
-            '(approximately %d lines per slide)')) % int(lines))
+        self.mainLineCountLabel.setText(translate('OpenLP.ThemeForm',
+            '(approximately %d lines per slide)') % int(lines))
 
     def resizeEvent(self, event=None):
         """
@@ -319,8 +319,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.themeNameEdit.setVisible(not edit)
         self.edit_mode = edit
         if edit:
-            self.setWindowTitle(unicode(translate('OpenLP.ThemeWizard',
-                'Edit Theme - %s')) % self.theme.theme_name)
+            self.setWindowTitle(translate('OpenLP.ThemeWizard',
+                'Edit Theme - %s') % self.theme.theme_name)
             self.next()
         else:
             self.setWindowTitle(UiStrings().NewTheme)
@@ -550,23 +550,20 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             return
         log.debug(u'updateTheme')
         # main page
-        self.theme.font_main_name = \
-            unicode(self.mainFontComboBox.currentFont().family())
-        self.theme.font_main_size = \
-            self.field(u'mainSizeSpinBox').toInt()[0]
+        self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
+        self.theme.font_main_size = self.field(u'mainSizeSpinBox').toInt()[0]
         self.theme.font_main_line_adjustment = \
             self.field(u'lineSpacingSpinBox').toInt()[0]
         self.theme.font_main_outline_size = \
             self.field(u'outlineSizeSpinBox').toInt()[0]
         self.theme.font_main_shadow_size = \
             self.field(u'shadowSizeSpinBox').toInt()[0]
-        self.theme.font_main_bold = \
-            self.field(u'mainBoldCheckBox').toBool()
+        self.theme.font_main_bold = self.field(u'mainBoldCheckBox').toBool()
         self.theme.font_main_italics = \
             self.field(u'mainItalicsCheckBox').toBool()
         # footer page
         self.theme.font_footer_name = \
-            unicode(self.footerFontComboBox.currentFont().family())
+            self.footerFontComboBox.currentFont().family()
         self.theme.font_footer_size = \
             self.field(u'footerSizeSpinBox').toInt()[0]
         # position page
@@ -594,7 +591,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Lets save the theme as Finish has been triggered
         """
         # Save the theme name
-        self.theme.theme_name = unicode(self.field(u'name').toString())
+        self.theme.theme_name = self.field(u'name').toString()
         if not self.theme.theme_name:
             critical_error_message_box(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
