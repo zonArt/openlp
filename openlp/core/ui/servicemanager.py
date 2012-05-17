@@ -593,15 +593,14 @@ class ServiceManager(QtGui.QWidget):
         default_service_enabled = Settings().value(
             u'advanced/default service enabled', True)
         if default_service_enabled:
-            service_day = Settings().value(
-                u'advanced/default service day', 7).toInt()[0]
+            service_day = Settings().value(u'advanced/default service day', 7)
             if service_day == 7:
                 time = datetime.now()
             else:
                 service_hour = Settings().value(
-                    u'advanced/default service hour', 11).toInt()[0]
+                    u'advanced/default service hour', 11)
                 service_minute = Settings().value(
-                    u'advanced/default service minute', 0).toInt()[0]
+                    u'advanced/default service minute', 0)
                 now = datetime.now()
                 day_delta = service_day - now.weekday()
                 if day_delta < 0:

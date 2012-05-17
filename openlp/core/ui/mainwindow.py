@@ -1334,8 +1334,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Saving QSettings')
         settings = Settings()
         settings.beginGroup(self.generalSettingsSection)
-        recentFiles = self.recentFiles if self.recentFiles else u''
-        settings.setValue(u'recent files', recentFiles)
+        settings.setValue(
+            u'recent files', self.recentFiles if self.recentFiles else list())
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         settings.setValue(u'main window position', self.pos())
@@ -1359,6 +1359,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
         self.clearRecentFileMenu()
+        self.recentFilesMenu.clear()
         for fileId, filename in enumerate(recentFilesToDisplay):
             log.debug('Recent file name: %s', filename)
             action = create_action(self, u'',
@@ -1394,13 +1395,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # in the given filename which then causes duplication.
             if filename[1:3] == ':\\':
                 filename = filename[0].upper() + filename[1:]
-            position = self.recentFiles.indexOf(filename)
-            if position != -1:
-                self.recentFiles.removeAt(position)
+            if filename in self.recentFiles:
+                self.recentFiles.remove(filename)
             self.recentFiles.insert(0, filename)
-            while self.recentFiles.count() > maxRecentFiles:
-                # Don't care what API says takeLast works, removeLast doesn't!
-                self.recentFiles.takeLast()
+            while len(self.recentFiles) > maxRecentFiles:
+                self.recentFiles.pop()
 
     def clearRecentFileMenu(self):
         """
