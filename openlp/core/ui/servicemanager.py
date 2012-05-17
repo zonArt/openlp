@@ -738,10 +738,10 @@ class ServiceManager(QtGui.QWidget):
         item = self.serviceManagerList.itemAt(point)
         if item is None:
             return
-        if item.parent() is None:
-            pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        else:
+        if item.parent():
             pos = item.parent().data(0, QtCore.Qt.UserRole).toInt()[0]
+        else:
+            pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
         serviceItem = self.serviceItems[pos - 1]
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
@@ -750,13 +750,12 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanEdit)\
             and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
-        if serviceItem[u'service_item']\
-            .is_capable(ItemCapabilities.CanMaintain):
+        if serviceItem[u'service_item'].is_capable(
+            ItemCapabilities.CanMaintain):
             self.maintainAction.setVisible(True)
-        if item.parent() is None:
-            self.notesAction.setVisible(True)
-        if serviceItem[u'service_item']\
-            .is_capable(ItemCapabilities.HasVariableStartTime):
+        self.notesAction.setVisible(item.parent() is None)
+        if serviceItem[u'service_item'].is_capable(
+            ItemCapabilities.HasVariableStartTime):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.

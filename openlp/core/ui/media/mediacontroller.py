@@ -352,8 +352,7 @@ class MediaController(object):
         if overriddenPlayer and overriddenPlayer != u'auto':
             usedPlayers = [overriddenPlayer]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % \
-                controller.media_info.file_info.suffix().toLower()
+            suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if suffix in player.video_extensions_list:
