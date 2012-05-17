@@ -82,7 +82,7 @@ class Settings(QtCore.QSettings):
             return setting.toStringList()
         if isinstance(defaultValue, QtCore.QPoint):
             return setting.toPoint()
-        print u'No!'
+        print u'No!', type(defaultValue)
         return setting
 
     def setValue(self, key, value):

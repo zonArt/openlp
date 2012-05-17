@@ -274,9 +274,9 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
-        self.service_theme = unicode(Settings().value(
+        self.service_theme = Settings().value(
             self.mainwindow.serviceManagerSettingsSection + u'/service theme',
-            u''))
+            u'')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
@@ -608,18 +608,18 @@ class ServiceManager(QtGui.QWidget):
                     day_delta += 7
                 time = now + timedelta(days=day_delta)
                 time = time.replace(hour=service_hour, minute=service_minute)
-            default_pattern = unicode(Settings().value(
+            default_pattern = Settings().value(
                 u'advanced/default service name',
                 translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
                     'This may not contain any of the following characters: '
                     '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
                     'datetime.html#strftime-strptime-behavior for more '
-                    'information.')))
+                    'information.'))
             default_filename = time.strftime(default_pattern)
         else:
             default_filename = u''
-        directory = unicode(SettingsManager.get_last_dir(
-            self.mainwindow.serviceManagerSettingsSection))
+        directory = SettingsManager.get_last_dir(
+            self.mainwindow.serviceManagerSettingsSection)
         path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService, path,

@@ -67,8 +67,7 @@ class MediaTab(SettingsTab):
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
         self.playerOrderLayout = QtGui.QHBoxLayout(self.playerOrderGroupBox)
         self.playerOrderLayout.setObjectName(u'playerOrderLayout')
-        self.playerOrderlistWidget = QtGui.QListWidget( \
-            self.playerOrderGroupBox)
+        self.playerOrderlistWidget = QtGui.QListWidget(self.playerOrderGroupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -76,11 +75,11 @@ class MediaTab(SettingsTab):
         sizePolicy.setHeightForWidth(self.playerOrderlistWidget. \
             sizePolicy().hasHeightForWidth())
         self.playerOrderlistWidget.setSizePolicy(sizePolicy)
-        self.playerOrderlistWidget.setVerticalScrollBarPolicy( \
+        self.playerOrderlistWidget.setVerticalScrollBarPolicy(
             QtCore.Qt.ScrollBarAsNeeded)
-        self.playerOrderlistWidget.setHorizontalScrollBarPolicy( \
+        self.playerOrderlistWidget.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.playerOrderlistWidget.setEditTriggers( \
+        self.playerOrderlistWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.playerOrderlistWidget.setObjectName(u'playerOrderlistWidget')
         self.playerOrderLayout.addWidget(self.playerOrderlistWidget)
@@ -199,13 +198,12 @@ class MediaTab(SettingsTab):
             player_string_changed = True
             override_changed = True
         setting_key = self.settingsSection + u'/override player'
-        if Settings().value(setting_key).toInt()[0] != \
+        if Settings().value(setting_key, QtCore.Qt.Unchecked) != \
             self.overridePlayerCheckBox.checkState():
             Settings().setValue(setting_key,
                 self.overridePlayerCheckBox.checkState())
             override_changed = True
-        if override_changed:
-            Receiver.send_message(u'mediaitem_media_rebuild')
-        if player_string_changed:
-            Receiver.send_message(u'mediaitem_media_rebuild')
+        if player_string_changed or override_changed:
+            if override_changed:
+                Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
