@@ -255,8 +255,7 @@ class ThemeManager(QtGui.QWidget):
         editing form for the user to make their customisations.
         """
         theme = ThemeXML()
-        screens = ScreenList.get_instance()
-        theme.set_default_header_footer(screens.current)
+        theme.set_default_header_footer(ScreenList.get_instance().current)
         self.themeForm.theme = theme
         self.themeForm.exec_()
 
