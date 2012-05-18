@@ -444,16 +444,15 @@ class ThemeXML(object):
         element.appendChild(child)
         return child
 
-    def set_default_header_footer(self, main_width, main_height, footer_width,
-        footer_height):
+    def set_default_header_footer(self, current_screen):
         """
         Set the header and footer size into the current primary screen
         """
-        self.font_main_width = main_width
-        self.font_main_height = main_height
-        self.font_footer_width = footer_width
-        self.font_footer_y = main_height+20
-        self.font_footer_height = footer_height
+        self.font_main_width = current_screen[u'size'].width()-20
+        self.font_main_height = current_screen[u'size'].height()-100
+        self.font_footer_width = current_screen[u'size'].width()-20
+        self.font_footer_y = current_screen[u'size'].height()-80
+        self.font_footer_height = 70
 
     def dump_xml(self):
         """

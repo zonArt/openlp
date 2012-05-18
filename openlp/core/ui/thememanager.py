@@ -256,10 +256,7 @@ class ThemeManager(QtGui.QWidget):
         """
         theme = ThemeXML()
         screens = ScreenList.get_instance()
-        primary_screen = screens.current
-        theme.set_default_header_footer(primary_screen[u'size'].width()-20,
-            primary_screen[u'size'].height() - 100,
-            primary_screen[u'size'].width()-20, 70)
+        theme.set_default_header_footer(screens.current)
         self.themeForm.theme = theme
         self.themeForm.exec_()
 
