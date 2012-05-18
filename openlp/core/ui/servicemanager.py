@@ -558,14 +558,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            # Add this line in after the release to notify the user that saving
-            # their file failed. Commented out due to string freeze.
-            #Receiver.send_message(u'openlp_error_message', {
-            #    u'title': translate(u'OpenLP.ServiceManager',
-            #        u'Error Saving File'),
-            #    u'message': translate(u'OpenLP.ServiceManager',
-            #        u'There was an error saving your file.')
-            #})
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                u'There was an error saving your file.')
+            })
             success = False
         finally:
             if zip:
