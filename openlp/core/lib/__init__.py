@@ -28,6 +28,7 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+import datetime
 import logging
 import os
 
@@ -63,17 +64,58 @@ class ServiceItemAction(object):
     Next = 3
 
 
+class MissingTypeConversion(Exception):
+    """
+    A exception class which is used when a setting is not converted.
+    """
+    def __init__(self, msg):
+        """
+        Constructor
+        """
+        self.msg = msg
+
+    def __str__(self):
+        """
+        Returns a string representation.
+        """
+        return repr(self.msg)
+
+
 class Settings(QtCore.QSettings):
-    type_list = []
+    """
+    This class customises the ``QSettings`` class. You must use this class
+    instead of the ``QSettings`` class.
+    """
     def __init__(self, *args):
+        """
+        Construct a ``QSettings`` object.
+        """
         QtCore.QSettings.__init__(self, *args)
 
     def value(self, key, defaultValue):
+        """
+        Returns the value for the given ``key``. The returned ``value`` is
+        of the same type as the ``defaultValue``.
+
+        ``key``
+            The key to return the value from.
+
+        ``defaultValue``
+            The value to be returned if the given ``key`` is not present in the
+            config. Note, the ``defaultValue``'s type defines the type the
+            returned is converted to. In other words, if the ``defaultValue`` is
+            a boolean, then the returned value will be converted to a boolean.
+
+            **Note**, this method only converts a few types and might need to be
+            extended if a certain type is missing!
+        """
         setting = super(Settings, self).value(key, defaultValue)
+        # Convert the setting to the correct type.
         if isinstance(defaultValue, bool):
             return setting.toBool()
         if isinstance(defaultValue, QtCore.QByteArray):
             return setting.toByteArray()
+        # Enumerations are also taken care of.
         if isinstance(defaultValue, int):
             return setting.toInt()[0]
         if isinstance(defaultValue, basestring):
@@ -82,15 +124,10 @@ class Settings(QtCore.QSettings):
             return setting.toStringList()
         if isinstance(defaultValue, QtCore.QPoint):
             return setting.toPoint()
-        # TODO: add <datetime.date>
+        if isinstance(defaultValue, datetime.date):
+            return setting.toDate()
         print u'No!', type(defaultValue)
-        return setting
-
-    def setValue(self, key, value):
-        super(Settings, self).setValue(key, value)
-        if type(value) not in Settings.type_list:
-            Settings.type_list.append(type(value))
-            print Settings.type_list
+        raise MissingTypeConversion(u'Setting could not be converted')
 
 
 def translate(context, text, comment=None,
