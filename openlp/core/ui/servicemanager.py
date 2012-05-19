@@ -1044,8 +1044,8 @@ class ServiceManager(QtGui.QWidget):
                     'Service copy only'))))
             if serviceitem.theme and serviceitem.theme != -1:
                 tips.append(u'<strong>%s:</strong> <em>%s</em>' %
-                    (translate('OpenLP.ServiceManager', 'Slide theme')),
-                    serviceitem.theme)
+                    (translate('OpenLP.ServiceManager', 'Slide theme'),
+                    serviceitem.theme))
             if serviceitem.notes:
                 tips.append(u'<strong>%s: </strong> %s' %
                     (translate('OpenLP.ServiceManager', 'Notes'),
