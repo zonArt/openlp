@@ -104,6 +104,7 @@ class Settings(QtCore.QSettings):
             return int(setting)
         return setting
 
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
