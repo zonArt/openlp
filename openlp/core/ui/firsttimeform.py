@@ -132,7 +132,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for lang in bible_languages:
                 language = unicode(self.config.get(
                     u'bibles_%s' % lang, u'title'), u'utf8')
-                # FIXME
                 langItem = QtGui.QTreeWidgetItem(
                     self.biblesTreeWidget, language)
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')

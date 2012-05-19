@@ -419,7 +419,6 @@ class BiblesTab(SettingsTab):
         self.show_new_chapters = settings.value(u'display new chapter', False)
         self.display_style = settings.value(u'display brackets', 0)
         self.layout_style = settings.value(u'verse layout style', 0)
-        #TODO: Check
         self.bible_theme = settings.value(u'bible theme', u'')
         self.second_bibles = settings.value(u'second bibles', True)
         self.newChaptersCheckBox.setChecked(self.show_new_chapters)

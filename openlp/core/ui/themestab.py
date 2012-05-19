@@ -135,7 +135,6 @@ class ThemesTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.theme_level = settings.value(u'theme level', ThemeLevel.Song)
-        # TODO: check empty string (logic).
         self.global_theme = settings.value(u'global theme', u'')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:

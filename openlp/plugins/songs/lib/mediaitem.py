@@ -132,7 +132,6 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        # TODO: Check .toBool()
         self.searchAsYouType = Settings().value(
             self.settingsSection + u'/search as type', False)
         self.updateServiceOnEdit = Settings().value(

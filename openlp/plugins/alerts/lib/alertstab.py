@@ -158,7 +158,6 @@ class AlertsTab(SettingsTab):
         self.font_color = settings.value(u'font color', u'#ffffff')
         self.font_size = settings.value(u'font size', 40)
         self.bg_color = settings.value(u'background color', u'#660000')
-        # TODO: isinstance needed?
         self.font_face = settings.value(u'font face', QtGui.QFont().family())
         self.location = settings.value(u'location', AlertLocation.Bottom)
         settings.endGroup()

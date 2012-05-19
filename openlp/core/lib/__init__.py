@@ -124,7 +124,7 @@ class Settings(QtCore.QSettings):
             return setting.toStringList()
         if isinstance(defaultValue, QtCore.QPoint):
             return setting.toPoint()
-        if isinstance(defaultValue, datetime.date):
+        if isinstance(defaultValue, (datetime.date, QtCore.QDate)):
             return setting.toDate()
         print u'No!', type(defaultValue)
         raise MissingTypeConversion(u'Setting could not be converted')
