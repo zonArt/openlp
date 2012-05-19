@@ -448,6 +448,7 @@ class ThemeXML(object):
         """
         Set the header and footer size into the current primary screen
         """
+        #10 px border set round display
         self.font_main_y = 0;
         self.font_main_width = current_screen[u'size'].width() - 20
         self.font_main_height = current_screen[u'size'].height() * 9 / 10
