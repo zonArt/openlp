@@ -145,8 +145,7 @@ class VlcPlayer(MediaPlayer):
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
-        file_path = str(
-            controller.media_info.file_info.absoluteFilePath().toUtf8())
+        file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
         display.vlcMedia = display.vlcInstance.media_new_path(path)

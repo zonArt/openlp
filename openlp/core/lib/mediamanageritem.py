@@ -379,8 +379,7 @@ class MediaManagerItem(QtGui.QWidget):
         fullList = []
         for count in range(self.listView.count()):
             names.append(self.listView.item(count).text())
-            fullList.append(self.listView.item(count).
-                data(QtCore.Qt.UserRole))
+            fullList.append(self.listView.item(count).data(QtCore.Qt.UserRole))
         duplicatesFound = False
         filesAdded = False
         for file in files:
