@@ -218,8 +218,7 @@ class SongExportForm(OpenLPWizard):
             # Add the songs to the list of selected songs.
             for item in items:
                 song = QtGui.QListWidgetItem(item.text())
-                song.setData(QtCore.Qt.UserRole,
-                    item.data(QtCore.Qt.UserRole).toPyObject())
+                song.setData(QtCore.Qt.UserRole, item.data(QtCore.Qt.UserRole))
                 song.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.selectedListWidget.addItem(song)
             return True
@@ -282,7 +281,7 @@ class SongExportForm(OpenLPWizard):
         and calls the *do_export* method.
         """
         songs = [
-            song.data(QtCore.Qt.UserRole).toPyObject()
+            song.data(QtCore.Qt.UserRole)
             for song in self._findListWidgetItems(self.selectedListWidget)
         ]
         exporter = OpenLyricsExport(self, songs, self.directoryLineEdit.text())

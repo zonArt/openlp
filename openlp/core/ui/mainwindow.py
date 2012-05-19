@@ -1308,7 +1308,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(u'custom slide')
         settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
-        self.recentFiles = settings.value(u'recent files', list())
+        self.recentFiles = settings.value(u'recent files', self.recentFiles)
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         self.move(settings.value(u'main window position', QtCore.QPoint(0, 0)))
@@ -1334,8 +1334,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Saving QSettings')
         settings = Settings()
         settings.beginGroup(self.generalSettingsSection)
-        settings.setValue(
-            u'recent files', self.recentFiles if self.recentFiles else list())
+        settings.setValue(u'recent files', self.recentFiles)
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
         settings.setValue(u'main window position', self.pos())

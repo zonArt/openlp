@@ -233,7 +233,7 @@ class HttpConnection(object):
         Initialise the http connection. Listen out for socket signals.
         """
         log.debug(u'Initialise HttpConnection: %s' %
-            socket.peerAddress().toString())
+            socket.peerAddress())
         self.socket = socket
         self.parent = parent
         self.routes = [

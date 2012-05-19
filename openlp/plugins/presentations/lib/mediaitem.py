@@ -231,8 +231,7 @@ class PresentationMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(row_list))
             for item in items:
-                filepath = unicode(item.data(
-                    QtCore.Qt.UserRole).toString())
+                filepath = unicode(item.data(QtCore.Qt.UserRole))
                 for cidx in self.controllers:
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
@@ -266,7 +265,7 @@ class PresentationMediaItem(MediaManagerItem):
         if not shortname:
             return False
         for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole).toString()
+            filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)

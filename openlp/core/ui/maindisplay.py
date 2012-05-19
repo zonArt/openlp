@@ -257,7 +257,7 @@ class MainDisplay(Display):
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                alert_height = int(height.toString())
+                alert_height = int(height)
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
@@ -335,7 +335,7 @@ class MainDisplay(Display):
             if self.serviceItem.themedata and \
                 self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                    .toString() == u'false':
+                     == u'false':
                     Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !

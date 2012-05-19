@@ -92,18 +92,17 @@ class Settings(QtCore.QSettings):
             **Note**, this method only converts a few types and might need to be
             extended if a certain type is missing!
         """
-        # FIXME
-        if key == u'recent files':
-            return []
         setting =  super(Settings, self).value(key, defaultValue)
+        # An empty list saved to the settings results ins a None type being
+        # returned.
+        if setting is None:
+            return []
         # Convert the setting to the correct type.
         if isinstance(defaultValue, bool):
-            return bool(setting)
-        # Enumerations are also taken care of.
+            return setting == u'true'
         if isinstance(defaultValue, int):
             return int(setting)
         return setting
-
 
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,

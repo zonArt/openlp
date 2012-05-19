@@ -412,7 +412,7 @@ class WebkitPlayer(MediaPlayer):
                 u'show_flash("length");')
         else:
             if display.frame.evaluateJavaScript( \
-                u'show_video("isEnded");').toString() == 'true':
+                u'show_video("isEnded");') == 'true':
                 self.stop(display)
             (currentTime, ok) = display.frame.evaluateJavaScript( \
                 u'show_video("currentTime");').toFloat()

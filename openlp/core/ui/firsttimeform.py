@@ -133,7 +133,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 language = unicode(self.config.get(
                     u'bibles_%s' % lang, u'title'), u'utf8')
                 langItem = QtGui.QTreeWidgetItem(
-                    self.biblesTreeWidget, language)
+                    self.biblesTreeWidget, [language])
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
@@ -141,7 +141,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         u'bible_%s' % bible, u'title'), u'utf8')
                     filename = unicode(self.config.get(
                         u'bible_%s' % bible, u'filename'))
-                    item = QtGui.QTreeWidgetItem(langItem, title)
+                    item = QtGui.QTreeWidgetItem(langItem, [title])
                     item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -332,7 +332,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         for i in xrange(self.songsListWidget.count()):
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole).toString()
+                filename = item.data(QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
@@ -340,7 +340,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         while iterator.value():
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                filename = item.data(0, QtCore.Qt.UserRole).toString()
+                filename = item.data(0, QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
             iterator += 1
@@ -348,7 +348,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         for i in xrange(self.themesListWidget.count()):
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole).toString()
+                filename = item.data(QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
         if self.max_progress:
@@ -421,7 +421,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for i in xrange(self.songsListWidget.count()):
                 item = self.songsListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    filename = item.data(QtCore.Qt.UserRole).toString()
+                    filename = item.data(QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % filename, 0)
                     self.previous_size = 0
                     destination = os.path.join(songs_destination,
@@ -433,7 +433,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             while bibles_iterator.value():
                 item = bibles_iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                    bible = item.data(0, QtCore.Qt.UserRole).toString()
+                    bible = item.data(0, QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % bible, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, bible),
@@ -443,7 +443,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for i in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    theme = item.data(QtCore.Qt.UserRole).toString()
+                    theme = item.data(QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % theme, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, theme),

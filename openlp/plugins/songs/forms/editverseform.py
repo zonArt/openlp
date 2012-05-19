@@ -180,19 +180,19 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def getVerseAll(self):
         text = self.verseTextEdit.toPlainText()
-        if not text.startsWith(u'---['):
+        if not text.startswith(u'---['):
             text = u'---[%s:1]---\n%s' % \
                 (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
 
     def accept(self):
         if self.hasSingleVerse:
-            value = unicode(self.getVerse()[0])
+            value = self.getVerse()[0]
         else:
-            log.debug(unicode(self.getVerse()[0]).split(u'\n'))
-            value = unicode(self.getVerse()[0]).split(u'\n')[1]
+            log.debug(self.getVerse()[0].split(u'\n'))
+            value = self.getVerse()[0].split(u'\n')[1]
             if not value:
-                lines = unicode(self.getVerse()[0]).split(u'\n')
+                lines = self.getVerse()[0].split(u'\n')
                 index = 2
                 while index < len(lines) and not value:
                     value = lines[index]

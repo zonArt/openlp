@@ -555,10 +555,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.font_main_line_adjustment = self.field(u'lineSpacingSpinBox')
         self.theme.font_main_outline_size = self.field(u'outlineSizeSpinBox')
         self.theme.font_main_shadow_size = self.field(u'shadowSizeSpinBox')
-        self.theme.font_main_bold = self.field(u'mainBoldCheckBox').toBool()
+        self.theme.font_main_bold = self.field(u'mainBoldCheckBox') 
         # FIXME ?
         self.theme.font_main_italics = \
-            self.field(u'mainItalicsCheckBox').toBool()
+            self.field(u'mainItalicsCheckBox') 
         # footer page
         self.theme.font_footer_name = \
             self.footerFontComboBox.currentFont().family()
@@ -578,14 +578,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.horizontalComboBox.currentIndex()
         self.theme.display_vertical_align = self.verticalComboBox.currentIndex()
         # TODO Check
-        self.theme.display_slide_transition = self.field(u'slideTransition').toBool()
+        self.theme.display_slide_transition = self.field(u'slideTransition') 
 
     def accept(self):
         """
         Lets save the theme as Finish has been triggered
         """
         # Save the theme name
-        self.theme.theme_name = self.field(u'name').toString()
+        self.theme.theme_name = self.field(u'name')
         if not self.theme.theme_name:
             critical_error_message_box(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),

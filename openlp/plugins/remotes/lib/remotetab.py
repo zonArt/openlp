@@ -138,7 +138,7 @@ class RemoteTab(SettingsTab):
                     ip = addr.ip()
                     if ip.protocol() == 0 and \
                         ip != QtNetwork.QHostAddress.LocalHost:
-                        ipAddress = ip.toString()
+                        ipAddress = ip
                         break
         else:
             ipAddress = self.addressEdit.text()
@@ -149,11 +149,9 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.portSpinBox.setValue(
-            Settings().value(self.settingsSection + u'/port',
-                4316))
+            Settings().value(self.settingsSection + u'/port', 4316))
         self.addressEdit.setText(
-            Settings().value(self.settingsSection + u'/ip address',
-            ZERO_URL))
+            Settings().value(self.settingsSection + u'/ip address', ZERO_URL))
         self.twelveHour = Settings().value(
             self.settingsSection + u'/twelve hour', True)
         self.twelveHourCheckBox.setChecked(self.twelveHour)
@@ -161,10 +159,9 @@ class RemoteTab(SettingsTab):
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address',
-            ZERO_URL != self.addressEdit.text() or
-            Settings().value(self.settingsSection + u'/port',
-            4316) != self.portSpinBox.value()):
+        if Settings().value(self.settingsSection + u'/ip address', ZERO_URL !=
+            self.addressEdit.text() or Settings().value(self.settingsSection +
+            u'/port', 4316) != self.portSpinBox.value()):
             changed = True
         Settings().setValue(self.settingsSection + u'/port',
             self.portSpinBox.value())

@@ -170,7 +170,7 @@ class MediaMediaItem(MediaManagerItem):
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
-            filename = item.data(QtCore.Qt.UserRole).toString()
+            filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 if self.plugin.liveController.mediaController.video( \
                     self.plugin.liveController, filename, True, True):
@@ -191,7 +191,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             if item is None:
                 return False
-        filename = item.data(QtCore.Qt.UserRole).toString()
+        filename = item.data(QtCore.Qt.UserRole)
         if not os.path.exists(filename):
             if not remote:
                 # File is no longer present

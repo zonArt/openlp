@@ -99,11 +99,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def _decodeQtObject(self, bitem, key):
         reference = bitem.data(QtCore.Qt.UserRole)
-        if isinstance(reference, QtCore.QVariant):
-            reference = reference.toPyObject()
         obj = reference[unicode(key)]
-        if isinstance(obj, QtCore.QVariant):
-            obj = obj.toPyObject()
         return unicode(obj).strip()
 
     def requiredIcons(self):
@@ -624,7 +620,7 @@ class BibleMediaItem(MediaManagerItem):
         self.initialiseChapterVerse(
             self.advancedVersionComboBox.currentText(),
             self.advancedBookComboBox.currentText(),
-            self.advancedBookComboBox.itemData(item).toString())
+            self.advancedBookComboBox.itemData(item))
 
     def onAdvancedFromVerse(self):
         chapter_from = int(self.advancedFromChapter.currentText())
@@ -632,7 +628,7 @@ class BibleMediaItem(MediaManagerItem):
         if chapter_from == chapter_to:
             bible = self.advancedVersionComboBox.currentText()
             book_ref_id = self.advancedBookComboBox.itemData(
-                int(self.advancedBookComboBox.currentIndex())).toString()
+                int(self.advancedBookComboBox.currentIndex()))
             verse_from = int(self.advancedFromVerse.currentText())
             verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(
                 bible, book_ref_id, chapter_to)
@@ -642,7 +638,7 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedToChapter(self):
         bible = self.advancedVersionComboBox.currentText()
         book_ref_id = self.advancedBookComboBox.itemData(
-            int(self.advancedBookComboBox.currentIndex())).toString()
+            int(self.advancedBookComboBox.currentIndex()))
         chapter_from = int(self.advancedFromChapter.currentText())
         chapter_to = int(self.advancedToChapter.currentText())
         verse_from = int(self.advancedFromVerse.currentText())
@@ -657,7 +653,7 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedFromChapter(self):
         bible = self.advancedVersionComboBox.currentText()
         book_ref_id = self.advancedBookComboBox.itemData(
-            int(self.advancedBookComboBox.currentIndex())).toString()
+            int(self.advancedBookComboBox.currentIndex()))
         chapter_from = int(self.advancedFromChapter.currentText())
         chapter_to = int(self.advancedToChapter.currentText())
         verse_count = self.plugin.manager.get_verse_count_by_book_ref_id(bible,
@@ -711,7 +707,7 @@ class BibleMediaItem(MediaManagerItem):
         second_bible = self.advancedSecondComboBox.currentText()
         book = self.advancedBookComboBox.currentText()
         book_ref_id = self.advancedBookComboBox.itemData(
-            int(self.advancedBookComboBox.currentIndex())).toString()
+            int(self.advancedBookComboBox.currentIndex()))
         chapter_from = self.advancedFromChapter.currentText()
         chapter_to = self.advancedToChapter.currentText()
         verse_from = self.advancedFromVerse.currentText()

@@ -168,7 +168,7 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole).toString()
+            filename = bitem.data(QtCore.Qt.UserRole)
             if not os.path.exists(filename):
                 missing_items.append(bitem)
                 missing_items_filenames.append(filename)
@@ -194,7 +194,7 @@ class ImageMediaItem(MediaManagerItem):
             return False
         # Continue with the existing images.
         for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole).toString()
+            filename = bitem.data(QtCore.Qt.UserRole)
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
@@ -223,7 +223,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection + u'/background color', u'#000000'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
-            filename = bitem.data(QtCore.Qt.UserRole).toString()
+            filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 name = os.path.split(filename)[1]
                 if self.plugin.liveController.display.directImage(name,

@@ -29,6 +29,7 @@ The :mod:`languagemanager` module provides all the translation settings and
 language file loading for OpenLP.
 """
 import logging
+import re
 import sys
 
 from PyQt4 import QtCore, QtGui
@@ -104,13 +105,12 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = Settings()
-        language = settings.value(u'general/language', u'[en]')
+        language = Settings().value(u'general/language', u'[en]')
+        language = str(language)
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
-        reg_ex = QtCore.QRegExp("^\[(.*)\]")
-        if reg_ex.exactMatch(language):
+        if re.match(r'[[].*[]]', language):
             LanguageManager.auto_language = True
-            language = reg_ex.cap(1)
+            language = re.sub(r'[\[\]]', '', language)
         return language
 
     @staticmethod

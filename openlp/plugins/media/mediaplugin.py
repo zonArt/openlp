@@ -133,7 +133,7 @@ class MediaPlugin(Plugin):
             log.info(u'Found old Phonon setting')
             players = self.mediaController.mediaPlayers.keys()
             has_phonon = u'phonon' in players
-            if settings.value(u'use phonon').toBool() and has_phonon:
+            if settings.value(u'use phonon')  and has_phonon:
                 log.debug(u'Converting old setting to new setting')
                 new_players = []
                 if players:
