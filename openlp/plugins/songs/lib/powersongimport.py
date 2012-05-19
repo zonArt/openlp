@@ -72,6 +72,21 @@ class PowerSongImport(SongImport):
         * .song
     """
 
+    @staticmethod
+    def isValidSource(**kwargs):
+        """
+        Checks if source is a PowerSong 1.0 folder:
+            * is a directory
+            * contains at least one *.song file
+        """
+        if u'folder' in kwargs:
+            dir = kwargs[u'folder']
+            if os.path.isdir(dir):
+                for file in os.listdir(dir):
+                    if fnmatch.fnmatch(file, u'*.song'):
+                        return True
+        return False
+
     def doImport(self):
         """
         Receive either a list of files or a folder (unicode) to import.

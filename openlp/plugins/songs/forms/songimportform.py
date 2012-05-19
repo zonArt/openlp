@@ -386,6 +386,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             QtCore.QSettings().setValue(u'songs/last import type',
                 source_format)
+            import_class = SongFormat.get_class(source_format)
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
                     critical_error_message_box(UiStrings().NFSs,
@@ -400,8 +401,8 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.PowerSong:
                 if self.powerSongFilenameEdit.text().isEmpty() or \
-                    not self.isPowerSongFolder(
-                    self.powerSongFilenameEdit.text()):
+                    not import_class.isValidSource(
+                    folder=self.powerSongFilenameEdit.text()):
                     critical_error_message_box(UiStrings().NFdSs,
                         WizardStrings.YouSpecifyFolder % WizardStrings.PS)
                     self.powerSongBrowseButton.setFocus()
@@ -483,16 +484,6 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.progressPage:
             return True
-
-    def isPowerSongFolder(self, dir):
-        """
-        Checks if a folder is a PowerSong 1.0 folder
-        """
-        if os.path.isdir(dir):
-            for file in os.listdir(dir):
-                if fnmatch.fnmatch(file, u'*.song'):
-                    return True
-        return False
 
     def getFiles(self, title, listbox, filters=u''):
         """
@@ -797,7 +788,7 @@ class SongImportForm(OpenLPWizard):
         elif source_format == SongFormat.PowerSong:
             # Import PowerSong folder
             importer = self.plugin.importSongs(SongFormat.PowerSong,
-                filename=unicode(self.powerSongFilenameEdit.text())
+                folder=unicode(self.powerSongFilenameEdit.text())
             )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
@@ -863,11 +854,7 @@ class SongImportForm(OpenLPWizard):
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
         importer.doImport()
-        if importer.errorLog:
-            self.progressLabel.setText(translate(
-                'SongsPlugin.SongImportForm', 'Your song import failed.'))
-        else:
-            self.progressLabel.setText(WizardStrings.FinishedImport)
+        self.progressLabel.setText(WizardStrings.FinishedImport)
 
     def onErrorCopyToButtonClicked(self):
         """
