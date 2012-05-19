@@ -406,24 +406,22 @@ class WebkitPlayer(MediaPlayer):
     def update_ui(self, display):
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript( \
+            currentTime = display.frame.evaluateJavaScript(
                 u'show_flash("currentTime");')
-            length = display.frame.evaluateJavaScript( \
-                u'show_flash("length");')
+            length = display.frame.evaluateJavaScript( u'show_flash("length");')
         else:
-            if display.frame.evaluateJavaScript( \
+            if display.frame.evaluateJavaScript(
                 u'show_video("isEnded");') == 'true':
                 self.stop(display)
-            (currentTime, ok) = display.frame.evaluateJavaScript( \
-                u'show_video("currentTime");').toFloat()
+            currentTime = display.frame.evaluateJavaScript(
+                u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and currentTime != float('inf'):
-                currentTime = int(currentTime*1000)
-            (length, ok) = display.frame.evaluateJavaScript( \
-                u'show_video("length");').toFloat()
+            if isinstance(currentTime, float) and currentTime != float('inf'):
+                currentTime = int(currentTime * 1000)
+            length = display.frame.evaluateJavaScript( u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and length != float('inf'):
-                length = int(length*1000)
+            if isinstance(length, float) and length != float('inf'):
+                length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length
             controller.seekSlider.setMaximum(length)
