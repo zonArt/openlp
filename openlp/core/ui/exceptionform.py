@@ -214,8 +214,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(
-            self,translate('ImagePlugin.ExceptionDialog',
-            'Select Attachment'),
+            self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
             SettingsManager.get_last_dir(u'exceptions'),
             u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
