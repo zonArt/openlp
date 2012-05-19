@@ -448,11 +448,12 @@ class ThemeXML(object):
         """
         Set the header and footer size into the current primary screen
         """
-        self.font_main_width = current_screen[u'size'].width()-20
-        self.font_main_height = current_screen[u'size'].height()-100
-        self.font_footer_width = current_screen[u'size'].width()-20
-        self.font_footer_y = current_screen[u'size'].height()-80
-        self.font_footer_height = 70
+        self.font_main_y = 0;
+        self.font_main_width = current_screen[u'size'].width() - 20
+        self.font_main_height = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_width = current_screen[u'size'].width() - 20
+        self.font_footer_y = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_height = current_screen[u'size'].height() / 10
 
     def dump_xml(self):
         """
