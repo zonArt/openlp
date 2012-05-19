@@ -218,7 +218,6 @@ class SongExportForm(OpenLPWizard):
             # Add the songs to the list of selected songs.
             for item in items:
                 song = QtGui.QListWidgetItem(item.text())
-                # TODO: check toPyObject()
                 song.setData(QtCore.Qt.UserRole,
                     item.data(QtCore.Qt.UserRole).toPyObject())
                 song.setFlags(QtCore.Qt.ItemIsEnabled)

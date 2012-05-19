@@ -141,7 +141,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         u'bible_%s' % bible, u'title'), u'utf8')
                     filename = unicode(self.config.get(
                         u'bible_%s' % bible, u'filename'))
-                    # FIXME
                     item = QtGui.QTreeWidgetItem(langItem, title)
                     item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
