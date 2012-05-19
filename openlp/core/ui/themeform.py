@@ -551,40 +551,34 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         log.debug(u'updateTheme')
         # main page
         self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
-        self.theme.font_main_size = self.field(u'mainSizeSpinBox').toInt()[0]
-        self.theme.font_main_line_adjustment = \
-            self.field(u'lineSpacingSpinBox').toInt()[0]
-        self.theme.font_main_outline_size = \
-            self.field(u'outlineSizeSpinBox').toInt()[0]
-        self.theme.font_main_shadow_size = \
-            self.field(u'shadowSizeSpinBox').toInt()[0]
+        self.theme.font_main_size = self.field(u'mainSizeSpinBox')
+        self.theme.font_main_line_adjustment = self.field(u'lineSpacingSpinBox')
+        self.theme.font_main_outline_size = self.field(u'outlineSizeSpinBox')
+        self.theme.font_main_shadow_size = self.field(u'shadowSizeSpinBox')
         self.theme.font_main_bold = self.field(u'mainBoldCheckBox').toBool()
+        # FIXME ?
         self.theme.font_main_italics = \
             self.field(u'mainItalicsCheckBox').toBool()
         # footer page
         self.theme.font_footer_name = \
             self.footerFontComboBox.currentFont().family()
-        self.theme.font_footer_size = \
-            self.field(u'footerSizeSpinBox').toInt()[0]
+        self.theme.font_footer_size = self.field(u'footerSizeSpinBox')
         # position page
-        self.theme.font_main_x = self.field(u'mainPositionX').toInt()[0]
-        self.theme.font_main_y = self.field(u'mainPositionY').toInt()[0]
-        self.theme.font_main_height = \
-            self.field(u'mainPositionHeight').toInt()[0]
-        self.theme.font_main_width = self.field(u'mainPositionWidth').toInt()[0]
-        self.theme.font_footer_x = self.field(u'footerPositionX').toInt()[0]
-        self.theme.font_footer_y = self.field(u'footerPositionY').toInt()[0]
-        self.theme.font_footer_height = \
-            self.field(u'footerPositionHeight').toInt()[0]
-        self.theme.font_footer_width = \
-            self.field(u'footerPositionWidth').toInt()[0]
+        self.theme.font_main_x = self.field(u'mainPositionX')
+        self.theme.font_main_y = self.field(u'mainPositionY')
+        self.theme.font_main_height = self.field(u'mainPositionHeight')
+        self.theme.font_main_width = self.field(u'mainPositionWidth')
+        #print self.field(u'footerPositionX')
+        self.theme.font_footer_x = self.field(u'footerPositionX')
+        self.theme.font_footer_y = self.field(u'footerPositionY')
+        self.theme.font_footer_height = self.field(u'footerPositionHeight')
+        self.theme.font_footer_width = self.field(u'footerPositionWidth')
         # position page
         self.theme.display_horizontal_align = \
             self.horizontalComboBox.currentIndex()
-        self.theme.display_vertical_align = \
-            self.verticalComboBox.currentIndex()
-        self.theme.display_slide_transition = \
-            self.field(u'slideTransition').toBool()
+        self.theme.display_vertical_align = self.verticalComboBox.currentIndex()
+        # TODO Check
+        self.theme.display_slide_transition = self.field(u'slideTransition').toBool()
 
     def accept(self):
         """

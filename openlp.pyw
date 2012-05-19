@@ -28,6 +28,7 @@
 
 import sip
 sip.setapi(u'QString', 2)
+sip.setapi(u'QVariant', 2)
 
 from openlp.core import main
 

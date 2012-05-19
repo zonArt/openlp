@@ -121,7 +121,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         menu = self.menuButton.menu()
         for action in menu.actions():
-            if identifier == action.data().toInt()[0]:
+            if identifier == action.data():
                 # setPlaceholderText has been implemented in Qt 4.7 and in at
                 # least PyQt 4.9 (I am not sure, if it was implemented in
                 # PyQt 4.8).
@@ -209,7 +209,7 @@ class SearchEdit(QtGui.QLineEdit):
         for action in self.menuButton.menu().actions():
             action.setChecked(False)
         self.menuButton.setDefaultAction(sender)
-        self._currentSearchType = sender.data().toInt()[0]
+        self._currentSearchType = sender.data()
         # setPlaceholderText has been implemented in Qt 4.7 and in at least
         # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
         try:

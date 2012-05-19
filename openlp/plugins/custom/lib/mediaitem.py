@@ -160,7 +160,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
@@ -184,7 +184,7 @@ class CustomMediaItem(MediaManagerItem):
                 return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
-            id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
+            id_list = [(item.data(QtCore.Qt.UserRole))
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)

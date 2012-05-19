@@ -98,7 +98,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def _getCurrentItemId(self, listWidget):
         item = listWidget.currentItem()
         if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = (item.data(QtCore.Qt.UserRole))
             return item_id
         else:
             return -1

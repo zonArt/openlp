@@ -737,9 +737,9 @@ class ServiceManager(QtGui.QWidget):
         if item is None:
             return
         if item.parent():
-            pos = item.parent().data(0, QtCore.Qt.UserRole).toInt()[0]
+            pos = item.parent().data(0, QtCore.Qt.UserRole)
         else:
-            pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+            pos = item.data(0, QtCore.Qt.UserRole)
         serviceItem = self.serviceItems[pos - 1]
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
@@ -841,7 +841,7 @@ class ServiceManager(QtGui.QWidget):
         while serviceIterator.value():
             if serviceIterator.value() == selected:
                 if message == u'last slide' and prevItemLastSlide:
-                    pos = prevItem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    pos = prevItem.data(0, QtCore.Qt.UserRole)
                     check_expanded = self.serviceItems[pos - 1][u'expanded']
                     self.serviceManagerList.setCurrentItem(prevItemLastSlide)
                     if not check_expanded:
@@ -908,7 +908,7 @@ class ServiceManager(QtGui.QWidget):
         Record if an item is collapsed. Used when repainting the list to get the
         correct state.
         """
-        pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        pos = item.data(0, QtCore.Qt.UserRole)
         self.serviceItems[pos - 1][u'expanded'] = False
 
     def onExpandAll(self):
@@ -924,7 +924,7 @@ class ServiceManager(QtGui.QWidget):
         Record if an item is collapsed. Used when repainting the list to get the
         correct state.
         """
-        pos = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+        pos = item.data(0, QtCore.Qt.UserRole)
         self.serviceItems[pos - 1][u'expanded'] = True
 
     def onServiceTop(self):
@@ -1133,10 +1133,9 @@ class ServiceManager(QtGui.QWidget):
                 serviceIterator += 1
             if selectedItem is not None:
                 if selectedItem.parent() is None:
-                    pos = selectedItem.data(0, QtCore.Qt.UserRole).toInt()[0]
+                    pos = selectedItem.data(0, QtCore.Qt.UserRole)
                 else:
-                    pos = selectedItem.parent().data(0, QtCore.Qt.UserRole). \
-                        toInt()[0]
+                    pos = selectedItem.parent().data(0, QtCore.Qt.UserRole)
                 self.serviceItems[pos - 1][u'selected'] = True
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
@@ -1321,10 +1320,10 @@ class ServiceManager(QtGui.QWidget):
         for item in items:
             parentitem = item.parent()
             if parentitem is None:
-                serviceItem = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                serviceItem = item.data(0, QtCore.Qt.UserRole)
             else:
-                serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
-                serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
+                serviceItem = parentitem.data(0, QtCore.Qt.UserRole)
+                serviceItemChild = item.data(0, QtCore.Qt.UserRole)
             # Adjust for zero based arrays.
             serviceItem -= 1
             # Only process the first item on the list for this method.
@@ -1441,9 +1440,9 @@ class ServiceManager(QtGui.QWidget):
     def _getParentItemData(self, item):
         parentitem = item.parent()
         if parentitem is None:
-            return item.data(0, QtCore.Qt.UserRole).toInt()[0]
+            return item.data(0, QtCore.Qt.UserRole)
         else:
-            return parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
+            return parentitem.data(0, QtCore.Qt.UserRole)
 
     def printServiceOrder(self):
         """

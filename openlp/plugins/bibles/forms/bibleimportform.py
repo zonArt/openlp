@@ -432,13 +432,13 @@ class BibleImportForm(OpenLPWizard):
         if self.currentPage() == self.welcomePage:
             return True
         elif self.currentPage() == self.selectPage:
-            if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
+            if self.field(u'source_format') == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
+            elif self.field(u'source_format') == BibleFormat.CSV:
                 if not self.field(u'csv_booksfile').toString():
                     critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
@@ -453,19 +453,19 @@ class BibleImportForm(OpenLPWizard):
                         'verses to import.'))
                     self.csvVersesEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == \
+            elif self.field(u'source_format') == \
                 BibleFormat.OpenSong:
                 if not self.field(u'opensong_file').toString():
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == \
+            elif self.field(u'source_format') == \
                 BibleFormat.WebDownload:
                 self.versionNameEdit.setText(
                     self.webTranslationComboBox.currentText())
                 return True
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
+            elif self.field(u'source_format') == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
@@ -643,7 +643,7 @@ class BibleImportForm(OpenLPWizard):
         Prepare the UI for the import.
         """
         OpenLPWizard.preWizard(self)
-        bible_type = self.field(u'source_format').toInt()[0]
+        bible_type = self.field(u'source_format')
         if bible_type == BibleFormat.WebDownload:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm',
@@ -656,7 +656,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Perform the actual import.
         """
-        bible_type = self.field(u'source_format').toInt()[0]
+        bible_type = self.field(u'source_format')
         license_version = self.field(u'license_version').toString()
         license_copyright = self.field(u'license_copyright').toString()
         license_permissions = self.field(u'license_permissions').toString()
@@ -683,7 +683,7 @@ class BibleImportForm(OpenLPWizard):
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web.
             self.progressBar.setMaximum(1)
-            download_location = self.field(u'web_location').toInt()[0]
+            download_location = self.field(u'web_location')
             bible_version = self.webTranslationComboBox.currentText()
             bible = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(

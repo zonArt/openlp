@@ -93,7 +93,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         item = self.alertListWidget.currentItem()
         if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
             self.manager.delete_object(AlertItem, item_id)
             row = self.alertListWidget.row(item)
             self.alertListWidget.takeItem(row)
@@ -147,7 +147,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         bitem = self.alertListWidget.item(item.row())
         self.triggerAlert(bitem.text())
         self.alertTextEdit.setText(bitem.text())
-        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.item_id = bitem.data(QtCore.Qt.UserRole)
         self.saveButton.setEnabled(False)
 
     def onSingleClick(self):
@@ -158,7 +158,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         item = self.alertListWidget.selectedIndexes()[0]
         bitem = self.alertListWidget.item(item.row())
         self.alertTextEdit.setText(bitem.text())
-        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.item_id = bitem.data(QtCore.Qt.UserRole)
         # If the alert does not contain '<>' we clear the ParameterEdit field.
         if self.alertTextEdit.text().find(u'<>') == -1:
             self.parameterEdit.setText(u'')

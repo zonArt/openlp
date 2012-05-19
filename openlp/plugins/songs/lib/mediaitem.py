@@ -381,7 +381,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onEditClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
@@ -406,7 +406,7 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(items))
             for item in items:
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile,
                     MediaFile.song_id == item_id)
                 for media_file in media_files:
@@ -435,7 +435,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onCloneClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
             new_song = self.openLyrics.xml_to_song(song_xml)

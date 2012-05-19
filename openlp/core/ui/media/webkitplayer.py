@@ -407,9 +407,9 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             currentTime = display.frame.evaluateJavaScript( \
-                u'show_flash("currentTime");').toInt()[0]
+                u'show_flash("currentTime");')
             length = display.frame.evaluateJavaScript( \
-                u'show_flash("length");').toInt()[0]
+                u'show_flash("length");')
         else:
             if display.frame.evaluateJavaScript( \
                 u'show_video("isEnded");').toString() == 'true':

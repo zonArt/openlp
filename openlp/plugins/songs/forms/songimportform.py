@@ -741,7 +741,7 @@ class SongImportForm(OpenLPWizard):
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
         last_import_type = Settings().value(
-            u'songs/last import type').toInt()[0]
+            u'songs/last import type')
         if last_import_type < 0 or \
             last_import_type >= self.formatComboBox.count():
             last_import_type = 0

@@ -622,11 +622,11 @@ class MediaManagerItem(QtGui.QWidget):
                 item = self.listView.currentItem()
                 if item is None:
                     return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole)
             else:
                 item_id = remoteItem
         else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
         return item_id
 
     def saveAutoSelectId(self):
@@ -637,7 +637,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.autoSelectId = item.data(QtCore.Qt.UserRole).toInt()[0]
+                self.autoSelectId = item.data(QtCore.Qt.UserRole)
 
     def search(self, string, showError=True):
         """

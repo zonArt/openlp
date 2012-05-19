@@ -64,23 +64,6 @@ class ServiceItemAction(object):
     Next = 3
 
 
-class MissingTypeConversion(Exception):
-    """
-    A exception class which is used when a setting is not converted.
-    """
-    def __init__(self, msg):
-        """
-        Constructor
-        """
-        self.msg = msg
-
-    def __str__(self):
-        """
-        Returns a string representation.
-        """
-        return repr(self.msg)
-
-
 class Settings(QtCore.QSettings):
     """
     This class customises the ``QSettings`` class. You must use this class
@@ -109,25 +92,17 @@ class Settings(QtCore.QSettings):
             **Note**, this method only converts a few types and might need to be
             extended if a certain type is missing!
         """
-        setting = super(Settings, self).value(key, defaultValue)
+        # FIXME
+        if key == u'recent files':
+            return []
+        setting =  super(Settings, self).value(key, defaultValue)
         # Convert the setting to the correct type.
         if isinstance(defaultValue, bool):
-            return setting.toBool()
-        if isinstance(defaultValue, QtCore.QByteArray):
-            return setting.toByteArray()
+            return bool(setting)
         # Enumerations are also taken care of.
         if isinstance(defaultValue, int):
-            return setting.toInt()[0]
-        if isinstance(defaultValue, basestring):
-            return setting.toString()
-        if isinstance(defaultValue, list):
-            return setting.toStringList()
-        if isinstance(defaultValue, QtCore.QPoint):
-            return setting.toPoint()
-        if isinstance(defaultValue, (datetime.date, QtCore.QDate)):
-            return setting.toDate()
-        print u'No!', type(defaultValue)
-        raise MissingTypeConversion(u'Setting could not be converted')
+            return int(setting)
+        return setting
 
 
 def translate(context, text, comment=None,
