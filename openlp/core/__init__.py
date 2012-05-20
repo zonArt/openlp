@@ -127,7 +127,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow = MainWindow(self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -146,6 +146,7 @@ class OpenLP(QtGui.QApplication):
         Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
         # Skip exec_() for gui tests
+        self.eventLoopIsActive = True
         if not testing:
             return self.exec_()
 
