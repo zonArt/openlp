@@ -36,6 +36,7 @@ from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
 
+
 log = logging.getLogger(__name__)
 
 BLANK_THEME_XML = \
@@ -444,12 +445,14 @@ class ThemeXML(object):
         element.appendChild(child)
         return child
 
-    def set_default_header_footer(self, current_screen):
+    def set_default_header_footer(self):
         """
         Set the header and footer size into the current primary screen
         """
         #10 px border set round display
-        self.font_main_y = 0;
+        from openlp.core.ui import ScreenList
+        current_screen = ScreenList.get_instance().current
+        self.font_main_y = 0
         self.font_main_width = current_screen[u'size'].width() - 20
         self.font_main_height = current_screen[u'size'].height() * 9 / 10
         self.font_footer_width = current_screen[u'size'].width() - 20
