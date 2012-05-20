@@ -164,13 +164,14 @@ class ServiceItem(object):
         obtains the display information from the renderer. At this point all
         slides are built for the given display size.
         """
+        import time
+        import datetime
+        start = time.time()
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        theme = self.theme if self.theme else None
-        self.main, self.footer = \
-            self.renderer.set_override_theme(theme, use_override)
-        self.themedata = self.renderer.theme_data
+        self.renderer.set_override_theme(self.theme)
+        self.themedata, self.main, self.footer = self.renderer.post_render(use_override)
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
@@ -196,6 +197,7 @@ class ServiceItem(object):
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
+        print unicode(datetime.timedelta(seconds=(time.time() - start)))
 
     def add_from_image(self, path, title, background=None):
         """

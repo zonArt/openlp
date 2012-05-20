@@ -250,6 +250,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Generate layout preview and display the form.
         """
         self.updateTheme()
+        screen_size = self.screens.current[u'size']
         width = self.thememanager.mainwindow.renderer.width
         height = self.thememanager.mainwindow.renderer.height
         pixmap = QtGui.QPixmap(width, height)
