@@ -28,7 +28,6 @@
 The song import functions for OpenLP.
 """
 import codecs
-import fnmatch
 import logging
 import os
 
