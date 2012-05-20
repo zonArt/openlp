@@ -51,7 +51,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
-    def __init__(self, serviceManager, parent=None, name=None):
+    def __init__(self, serviceManager, parent=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.serviceManager = serviceManager
 
@@ -63,6 +63,9 @@ class ServiceManagerList(QtGui.QTreeWidget):
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
                 self.serviceManager.onMoveSelectionDown()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Delete:
+                self.serviceManager.onDeleteFromService()
                 event.accept()
             event.ignore()
         else:
@@ -101,7 +104,6 @@ class ServiceManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.mainwindow = mainwindow
         self.serviceItems = []
-        self.serviceName = u''
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
@@ -219,6 +221,7 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
+            shortcuts=[QtCore.Qt.Key_Delete],
             triggers=self.onDeleteFromService)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.expand = self.orderToolbar.addToolbarAction(
@@ -299,17 +302,14 @@ class ServiceManager(QtGui.QWidget):
         self.timeAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
-        self.deleteAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', '&Delete From Service'),
-            icon=u':/general/general_delete.png',
-            triggers=self.onDeleteFromService)
+        # Add already existing delete action to the menu.
+        self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
-        self.liveAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', 'Show &Live'),
-            icon=u':/general/general_live.png', triggers=self.makeLive)
+        # Add already existing make live action to the menu.
+        self.menu.addAction(self.serviceManagerList.makeLive)
         self.menu.addSeparator()
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
@@ -561,14 +561,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            # Add this line in after the release to notify the user that saving
-            # their file failed. Commented out due to string freeze.
-            #Receiver.send_message(u'openlp_error_message', {
-            #    u'title': translate(u'OpenLP.ServiceManager',
-            #        u'Error Saving File'),
-            #    u'message': translate(u'OpenLP.ServiceManager',
-            #        u'There was an error saving your file.')
-            #})
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                u'There was an error saving your file.')
+            })
             success = False
         finally:
             if zip:
@@ -1318,15 +1316,15 @@ class ServiceManager(QtGui.QWidget):
 
     def findServiceItem(self):
         """
-        Finds the selected ServiceItem in the list and returns the position of
-        the serviceitem and its selected child item. For example, if the third
-        child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the
+        position of the serviceitem and its selected child item. For example,
+        if the third child item (in the Slidecontroller known as slide) in the
+        second service item is selected this will return::
 
             (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
-        serviceItem = 0
+        serviceItem = -1
         serviceItemChild = -1
         for item in items:
             parentitem = item.parent()
@@ -1335,8 +1333,10 @@ class ServiceManager(QtGui.QWidget):
             else:
                 serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        # Adjust for zero based arrays.
-        serviceItem -= 1
+            # Adjust for zero based arrays.
+            serviceItem -= 1
+            # Only process the first item on the list for this method.
+            break
         return serviceItem, serviceItemChild
 
     def dragEnterEvent(self, event):

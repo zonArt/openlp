@@ -330,13 +330,7 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection:
-            language_selection = int(language_selection.value)
-        if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.get_language_selection(bible)
         reflist = parse_reference(versetext, self.db_cache[bible],
             language_selection, book_ref_id)
         if reflist:
@@ -378,12 +372,16 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
         language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection and language_selection.value != u'None':
-            return int(language_selection.value)
-        if language_selection is None or  language_selection.value == u'None':
-            return QtCore.QSettings().value(
+        if language_selection:
+            try:
+                language_selection = int(language_selection.value)
+            except (ValueError, TypeError):
+                language_selection = LanguageSelection.Application
+        if language_selection is None or language_selection == -1:
+            language_selection = QtCore.QSettings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
+        return language_selection
 
     def verse_search(self, bible, second_bible, text):
         """
