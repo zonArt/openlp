@@ -247,8 +247,7 @@ class ThemeManager(QtGui.QWidget):
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
-                Receiver.send_message(u'theme_update_global',
-                    self.global_theme)
+                Receiver.send_message(u'theme_update_global', self.global_theme)
                 self._pushThemes()
 
     def onAddTheme(self):
@@ -667,6 +666,7 @@ class ThemeManager(QtGui.QWidget):
                 u'theme', QtGui.QColor(theme.background_border_color))
             self.mainwindow.imageManager.process_updates()
         self.loadThemes()
+        #self.mainwindow.renderer.update_theme()
 
     def _writeTheme(self, theme, image_from, image_to):
         """

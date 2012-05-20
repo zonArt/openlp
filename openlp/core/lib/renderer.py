@@ -77,8 +77,10 @@ class Renderer(object):
         self.force_page = False
         self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
-        self.theme_dimensions = {}
+        self._theme_dimensions = {}
         self._calculate_default()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
 
     def update_display(self):
         """
@@ -92,23 +94,29 @@ class Renderer(object):
         self.bg_frame = None
         self._calculate_default()
 
-    def set_theme(self, theme_name):
+    def update_theme(self):
+        self._theme_dimensions = {}
+
+    def _set_theme(self, theme_name):
         """
+        Helper method to save theme names and theme data.
         """
-        if theme_name not in self.theme_dimensions:
+        if theme_name not in self._theme_dimensions:
             theme_data = self.themeManager.getThemeData(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
-            self.theme_dimensions[theme_name] = [theme_data, main_rect, footer_rect]
+            self._theme_dimensions[theme_name] = \
+                [theme_data, main_rect, footer_rect]
         else:
-            theme_data, main_rect, footer_rect = self.theme_dimensions[theme_name]
+            theme_data, main_rect, footer_rect = \
+                self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
             self.imageManager.add_image(theme_data.theme_name,
                 theme_data.background_filename, u'theme',
                 QtGui.QColor(theme_data.background_border_color))
 
-    def post_render(self, override_theme_data):
+    def post_render(self, override_theme_data=None):
         """
         """
         # Just assume we use the global theme.
@@ -120,35 +128,44 @@ class Renderer(object):
                 theme_to_use = self.service_theme
         elif self.theme_level == ThemeLevel.Song and self.item_theme:
             theme_to_use = self.item_theme
-        theme_data, main_rect, footer_rect = self.theme_dimensions[theme_to_use]
-        if override_theme_data:
+        if override_theme_data is None:
+            theme_data, main_rect, footer_rect = \
+                self._theme_dimensions[theme_to_use]
+        else:
+            # Ignore everything and use own theme data.
             theme_data = override_theme_data
+            main_rect = self.get_main_rectangle(override_theme_data)
+            footer_rect = self.get_footer_rectangle(override_theme_data)
         self._set_text_rectangle(theme_data, main_rect, footer_rect)
         return theme_data, self._rect, self._rect_footer
 
     def set_theme_level(self, theme_level):
         """
+        Sets the theme level.
+
+        ``theme_level``
+            The theme level to be used.
         """
         self.theme_level = theme_level
 
     def set_global_theme(self, global_theme_name):
         """
-        Set the global-level theme and the theme level.
+        Set the global-level theme name.
 
-        ``global_theme``
-            The global-level theme to be set.
+        ``global_theme_name``
+            The global-level theme's name.
         """
-        self.set_theme(global_theme_name)
+        self._set_theme(global_theme_name)
         self.global_theme = global_theme_name
 
     def set_service_theme(self, service_theme_name):
         """
         Set the service-level theme.
 
-        ``service_theme``
-            The service-level theme to be set.
+        ``service_theme_name``
+            The service level theme's name.
         """
-        self.set_theme(service_theme_name)
+        self._set_theme(service_theme_name)
         self.service_theme = service_theme_name
 
     def set_override_theme(self, override_theme_name):
@@ -160,7 +177,7 @@ class Renderer(object):
             The name of the song-level theme. None means the service
             item wants to use the given value.
         """
-        self.set_theme(override_theme_name)
+        self._set_theme(override_theme_name)
         self.item_theme = override_theme_name
 
     def generate_preview(self, theme_data, force_page=False):
@@ -178,8 +195,6 @@ class Renderer(object):
         self.force_page = force_page
         # build a service item to generate preview
         serviceItem = ServiceItem()
-        serviceItem.theme = theme_data.theme_name
-        #self.set_override_theme(theme_data)
         if self.force_page:
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
@@ -188,7 +203,16 @@ class Renderer(object):
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
-        serviceItem.render(theme_data)
+        # if No file do not update cache
+        if theme_data.background_filename:
+            self.imageManager.add_image(theme_data.theme_name,
+                theme_data.background_filename, u'theme',
+                QtGui.QColor(theme_data.background_border_color))
+        theme_data, main, footer = self.post_render(theme_data)
+        serviceItem.themedata = theme_data
+        serviceItem.main = main
+        serviceItem.footer = footer
+        serviceItem.render(True)
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)

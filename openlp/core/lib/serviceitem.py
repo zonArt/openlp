@@ -28,7 +28,7 @@
 The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
-
+import time
 import cgi
 import datetime
 import logging
@@ -38,6 +38,9 @@ import uuid
 from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
 
 log = logging.getLogger(__name__)
+
+COUNT = 0
+TIME_ = datetime.timedelta()
 
 class ServiceItemType(object):
     """
@@ -158,20 +161,19 @@ class ServiceItem(object):
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self, use_override=False):
+    def render(self, provides_own_theme_data=False):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderer. At this point all
         slides are built for the given display size.
         """
-        import time
-        import datetime
         start = time.time()
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        self.renderer.set_override_theme(self.theme)
-        self.themedata, self.main, self.footer = self.renderer.post_render(use_override)
+        if not provides_own_theme_data:
+            self.renderer.set_override_theme(self.theme)
+            self.themedata, self.main, self.footer = self.renderer.post_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
@@ -197,7 +199,13 @@ class ServiceItem(object):
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
-        print unicode(datetime.timedelta(seconds=(time.time() - start)))
+        global COUNT
+        COUNT += 1
+        global TIME_
+        TIME_ += datetime.timedelta(seconds=(time.time() - start))
+        print u'%s (average %s)' % (
+            unicode(datetime.timedelta(seconds=(time.time() - start))),
+            unicode(TIME_ / COUNT))
 
     def add_from_image(self, path, title, background=None):
         """
