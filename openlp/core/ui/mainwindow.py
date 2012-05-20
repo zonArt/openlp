@@ -1200,9 +1200,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.finalise_plugins()
         # Save settings
         self.saveSettings()
-        # Check if we need to change the data directory
-        if self.newDataPath:
-            self.changeDataDirectory()
         # Close down the display
         self.liveController.display.close()
 
@@ -1484,38 +1481,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def setCopyData(self, copy_data):
         self.copyData = copy_data
 
-    def changeDataDirectory(self):
-        log.info(u'Changing data path to %s' % self.newDataPath )
-        old_data_path = unicode(AppLocation.get_data_path())
-        # Copy OpenLP data to new location if requested.
-        if self.copyData:
-            log.info(u'Copying data to new path')
-            try:
-                Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'cursor_busy')
-                self.showStatusMessage(
-                    translate('OpenLP.MainWindow',
-                    'Copying OpenLP data to new data directory location - %s '
-                    '- Please wait for copy to finish'
-                    % os.path.abspath(os.path.join(self.newDataPath, u'..'))))
-                dir_util.copy_tree(old_data_path, self.newDataPath)
-                log.info(u'Copy sucessful')
-            except (IOError, os.error, DistutilsFileError),  why:
-                Receiver.send_message(u'cursor_normal')
-                log.exception(u'Data copy failed %s' % unicode(why))
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                    translate('OpenLP.MainWindow',
-                    'OpenLP Data directory copy failed\n\n%s'
-                    % unicode(why)),
-                QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok))
-                return False
-        else:
-            log.info(u'No data copy requested')
-        # Change the location of data directory in config file.
-        settings = Settings()
-        settings.setValue(u'advanced/data path', self.newDataPath)
-        # Check if the new data path is our default.
-        if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
-            settings.remove(u'advanced/data path')
