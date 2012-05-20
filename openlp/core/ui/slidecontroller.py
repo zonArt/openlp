@@ -83,7 +83,7 @@ class SlideController(Controller):
         Set up the Slide Controller.
         """
         Controller.__init__(self, parent, isLive)
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
                 float(self.screens.current[u'size'].height())
