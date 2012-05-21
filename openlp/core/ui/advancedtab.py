@@ -539,7 +539,7 @@ class AdvancedTab(SettingsTab):
             log.warning(u'User requested data path set to default %s'
                 % self.currentDataPath)
         self.dataDirectoryLabel.setText(os.path.abspath(
-            os.path.join(self.currentDataPath, u'..')))
+            self.currentDataPath))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
 
@@ -656,13 +656,12 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = unicode(self.dataDirectoryLabel.text())
         # Get the new directory location.
-        new_path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
+        new_data_path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.AdvancedTab',
             'Select Data Directory Location'), old_root_path,
             options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
-        new_data_path = os.path.join(new_path, 'openlp_data')
-        if new_path:
+        if new_data_path:
             if self.currentDataPath.lower() == new_data_path.lower():
                 self.onDataDirectoryCancelButtonClicked()
                 return
@@ -675,7 +674,7 @@ class AdvancedTab(SettingsTab):
                 'Are you sure you want to change the location of the OpenLP '
                 'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
-                % new_path),
+                % new_data_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
@@ -686,7 +685,7 @@ class AdvancedTab(SettingsTab):
         self.checkDataOverwrite(new_data_path)
         # Save the new location.
         Receiver.send_message(u'set_new_data_path', new_data_path)
-        self.newDataDirectoryEdit.setText(new_path)
+        self.newDataDirectoryEdit.setText(new_data_path)
         self.dataDirectoryCancelButton.show()
 
     def onDataDirectoryDefaultButtonClicked(self):
@@ -711,8 +710,7 @@ class AdvancedTab(SettingsTab):
             self.checkDataOverwrite(new_data_path)
             # Save the new location.
             Receiver.send_message(u'set_new_data_path', new_data_path)
-            self.newDataDirectoryEdit.setText(os.path.abspath(
-                os.path.join(new_data_path, u'..')))
+            self.newDataDirectoryEdit.setText(os.path.abspath(new_data_path))
             self.dataDirectoryCancelButton.show()
         else:
             # We cancel the change in case user changed their mind.
@@ -740,7 +738,7 @@ class AdvancedTab(SettingsTab):
                 'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
-                % os.path.abspath(os.path.join(data_path, u'..'))), 
+                % os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),

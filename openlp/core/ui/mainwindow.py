@@ -1490,7 +1490,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                     'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish'
-                    % os.path.abspath(os.path.join(self.newDataPath, u'..'))))
+                    % self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
