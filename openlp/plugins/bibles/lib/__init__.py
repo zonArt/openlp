@@ -31,8 +31,6 @@ plugin.
 import logging
 import re
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import translate
 from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
