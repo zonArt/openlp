@@ -49,7 +49,7 @@ from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager, VersionThread,\
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
     get_application_version
 
 

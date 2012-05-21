@@ -57,6 +57,14 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             self.close)
+        QtCore.QObject.connect(self.descriptionLineEdit,
+            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.tagLineEdit,
+            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.startTagLineEdit,
+            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.endTagLineEdit,
+            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
 
@@ -65,7 +73,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
-        self._resetTable()
+        self._reloadTable()
         self.selected = -1
         return QtGui.QDialog.exec_(self)
 
@@ -73,9 +81,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Table Row selected so display items and set field state.
         """
-        row = self.tagTableWidget.currentRow()
-        html = FormattingTags.html_expands[row]
-        self.selected = row
+        self.savePushButton.setEnabled(False)
+        self.selected = self.tagTableWidget.currentRow()
+        html = FormattingTags.get_html_tags()[self.selected]
         self.descriptionLineEdit.setText(html[u'desc'])
         self.tagLineEdit.setText(self._strip(html[u'start tag']))
         self.startTagLineEdit.setText(html[u'start html'])
@@ -85,21 +93,26 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             self.tagLineEdit.setEnabled(False)
             self.startTagLineEdit.setEnabled(False)
             self.endTagLineEdit.setEnabled(False)
-            self.savePushButton.setEnabled(False)
             self.deletePushButton.setEnabled(False)
         else:
             self.descriptionLineEdit.setEnabled(True)
             self.tagLineEdit.setEnabled(True)
             self.startTagLineEdit.setEnabled(True)
             self.endTagLineEdit.setEnabled(True)
-            self.savePushButton.setEnabled(True)
             self.deletePushButton.setEnabled(True)
+
+    def onTextEdited(self, text):
+        """
+        Enable the ``savePushButton`` when any of the selected tag's properties
+        has been changed.
+        """
+        self.savePushButton.setEnabled(True)
 
     def onNewClicked(self):
         """
         Add a new tag to list only if it is not a duplicate.
         """
-        for html in FormattingTags.html_expands:
+        for html in FormattingTags.get_html_tags():
             if self._strip(html[u'start tag']) == u'n':
                 critical_error_message_box(
                     translate('OpenLP.FormattingTagForm', 'Update Error'),
@@ -117,11 +130,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             u'temporary': False
         }
         FormattingTags.add_html_tags([tag])
-        self._resetTable()
+        FormattingTags.save_html_tags()
+        self._reloadTable()
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
         self.tagTableWidget.scrollToBottom()
+        #self.savePushButton.setEnabled(False)
 
     def onDeleteClicked(self):
         """
@@ -130,14 +145,14 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         if self.selected != -1:
             FormattingTags.remove_html_tag(self.selected)
             self.selected = -1
-        self._resetTable()
-        FormattingTags.save_html_tags()
+            FormattingTags.save_html_tags()
+            self._reloadTable()
 
     def onSavedClicked(self):
         """
         Update Custom Tag details if not duplicate and save the data.
         """
-        html_expands = FormattingTags.html_expands
+        html_expands = FormattingTags.get_html_tags()
         if self.selected != -1:
             html = html_expands[self.selected]
             tag = unicode(self.tagLineEdit.text())
@@ -157,14 +172,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             # Keep temporary tags when the user changes one.
             html[u'temporary'] = False
             self.selected = -1
-        self._resetTable()
         FormattingTags.save_html_tags()
+        self._reloadTable()
 
-    def _resetTable(self):
+    def _reloadTable(self):
         """
         Reset List for loading.
         """
-        FormattingTags.load_tags()
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
         self.newPushButton.setEnabled(True)

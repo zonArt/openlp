@@ -107,11 +107,11 @@ class SongImport(QtCore.QObject):
 
         ``filepath``
             This should be the file path if ``self.importSource`` is a list
-            with different files. If it is not a list, but a  single file (for
+            with different files. If it is not a list, but a single file (for
             instance a database), then this should be the song's title.
 
         ``reason``
-            The reason, why the import failed. The string should be as
+            The reason why the import failed. The string should be as
             informative as possible.
         """
         self.setDefaults()

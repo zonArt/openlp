@@ -29,8 +29,6 @@ import logging
 import os
 import sys
 import shutil
-from distutils import dir_util
-from distutils.errors import DistutilsFileError
 from tempfile import gettempdir
 from datetime import datetime
 
@@ -583,8 +581,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
-        self.newDataPath = u''
-        self.copyData = False
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem,
             QtCore.SIGNAL(u'triggered()'),
@@ -637,8 +633,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'cleanup'), self.cleanUp)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox,
             QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -651,10 +645,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
@@ -1019,24 +1009,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.cleanUp()
         QtCore.QCoreApplication.exit()
 
-    def onSettingsExportItemClicked(self, export_file = None):
+    def onSettingsExportItemClicked(self):
         """
-        Export settings to a .conf file in INI format.  If no filename is,
-        get one from the user.  A filename is passed from self.cleanup if
-        OpenLP is running as a portable app.
+        Export settings to a .conf file in INI format
         """
-        if not export_file:
-            export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
-                translate('OpenLP.MainWindow', 'Export Settings File'), '',
-                translate('OpenLP.MainWindow',
-                    'OpenLP Export Settings File (*.conf)')))
-            if not export_file_name:
-                return
+        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+            translate('OpenLP.MainWindow', 'Export Settings File'), '',
+            translate('OpenLP.MainWindow',
+                'OpenLP Export Settings File (*.conf)')))
+        if not export_file_name:
+            return
             # Make sure it's a .conf file.
-            if not export_file_name.endswith(u'conf'):
-                export_file_name = export_file_name + u'.conf'
-        else:
-            export_file_name = unicode(export_file)
+        if not export_file_name.endswith(u'conf'):
+            export_file_name = export_file_name + u'.conf'
         temp_file = os.path.join(unicode(gettempdir()),
             u'openlp', u'exportConf.tmp')
         self.saveSettings()
@@ -1190,7 +1175,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
-        settings = Settings()
         if Settings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
             Settings().setValue(u'advanced/current media plugin',
@@ -1474,10 +1458,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.timer_id = 0
             self.loadProgressBar.hide()
             Receiver.send_message(u'openlp_process_events')
-
-    def setNewDataPath(self, new_data_path):
-        self.newDataPath = new_data_path
-
-    def setCopyData(self, copy_data):
-        self.copyData = copy_data
-

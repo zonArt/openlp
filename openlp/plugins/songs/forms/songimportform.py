@@ -172,6 +172,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.foilPresenterRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onFoilPresenterRemoveButtonClicked)
+        QtCore.QObject.connect(self.powerSongAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onPowerSongAddButtonClicked)
+        QtCore.QObject.connect(self.powerSongRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onPowerSongRemoveButtonClicked)
 
     def addCustomPages(self):
         """
@@ -218,6 +224,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'foilPresenter')
         # Open Song
         self.addFileSelectItem(u'openSong', u'OpenSong')
+        # PowerSong
+        self.addFileSelectItem(u'powerSong')
         # SongBeamer
         self.addFileSelectItem(u'songBeamer')
         # Song Show Plus
@@ -266,6 +274,8 @@ class SongImportForm(OpenLPWizard):
             SongFormat.FoilPresenter, WizardStrings.FP)
         self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(
+            SongFormat.PowerSong, WizardStrings.PS)
+        self.formatComboBox.setItemText(
             SongFormat.SongBeamer, WizardStrings.SB)
         self.formatComboBox.setItemText(
             SongFormat.SongShowPlus, WizardStrings.SSP)
@@ -305,6 +315,10 @@ class SongImportForm(OpenLPWizard):
         self.dreamBeamAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.dreamBeamRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.powerSongAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.powerSongRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
         self.songsOfFellowshipAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
@@ -417,6 +431,12 @@ class SongImportForm(OpenLPWizard):
                     critical_error_message_box(UiStrings().NFSp,
                         WizardStrings.YouSpecifyFile % WizardStrings.DB)
                     self.dreamBeamAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.PowerSong:
+                if self.powerSongFileListWidget.count() == 0:
+                    critical_error_message_box(UiStrings().NFSp,
+                        WizardStrings.YouSpecifyFile % WizardStrings.PS)
+                    self.powerSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
@@ -601,6 +621,22 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.dreamBeamFileListWidget)
 
+    def onPowerSongAddButtonClicked(self):
+        """
+        Get PowerSong song database files
+        """
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.PS,
+            self.powerSongFileListWidget, u'%s (*.song)'
+            % translate('SongsPlugin.ImportWizardForm',
+                'PowerSong 1.0 Song Files')
+        )
+
+    def onPowerSongRemoveButtonClicked(self):
+        """
+        Remove selected PowerSong files from the import list
+        """
+        self.removeSelectedItems(self.powerSongFileListWidget)
+
     def onSongsOfFellowshipAddButtonClicked(self):
         """
         Get Songs of Fellowship song database files
@@ -718,6 +754,7 @@ class SongImportForm(OpenLPWizard):
         self.wordsOfWorshipFileListWidget.clear()
         self.ccliFileListWidget.clear()
         self.dreamBeamFileListWidget.clear()
+        self.powerSongFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
         self.easySlidesFilenameEdit.setText(u'')
@@ -784,6 +821,12 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.DreamBeam,
                 filenames=self.getListOfFiles(
                     self.dreamBeamFileListWidget)
+            )
+        elif source_format == SongFormat.PowerSong:
+            # Import PowerSong songs
+            importer = self.plugin.importSongs(SongFormat.PowerSong,
+                filenames=self.getListOfFiles(
+                    self.powerSongFileListWidget)
             )
         elif source_format == SongFormat.SongsOfFellowship:
             # Import a Songs of Fellowship RTF file
