@@ -260,7 +260,7 @@ def main(args=None):
     if options.portable:
         log.info(u'Running portable')
         app.setApplicationName(u'OpenLPPortable')
-        QtCore.QSettings.setDefaultFormat(QtCore.QSettings.IniFormat)
+        Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
         app_path = AppLocation.get_directory(AppLocation.AppDir)
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
