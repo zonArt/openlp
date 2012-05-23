@@ -93,7 +93,7 @@ class Renderer(object):
         self.display.setup()
         self._calculate_default()
 
-    def update_theme(self, theme_name, old_theme_name=None):
+    def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
         """
         This method updates the theme in ``_theme_dimensions`` when a theme
         has been edited or renamed.
@@ -104,13 +104,17 @@ class Renderer(object):
         ``old_theme_name``
             The old theme name. Has only to be passed, when the theme has been
             renamed. Defaults to *None*.
+
+        ``only_delete``
+            a
         """
         if old_theme_name is not None and \
             old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]
         if theme_name in self._theme_dimensions:
             del self._theme_dimensions[theme_name]
-        self._set_theme(theme_name)
+        if not only_delete:
+            self._set_theme(theme_name)
 
     def _set_theme(self, theme_name):
         """
@@ -233,7 +237,7 @@ class Renderer(object):
             self.imageManager.add_image(theme_data.theme_name,
                 theme_data.background_filename, u'theme',
                 QtGui.QColor(theme_data.background_border_color))
-        theme_data, main, footer = self.post_render(theme_data)
+        theme_data, main, footer = self.pre_render(theme_data)
         serviceItem.themedata = theme_data
         serviceItem.main = main
         serviceItem.footer = footer

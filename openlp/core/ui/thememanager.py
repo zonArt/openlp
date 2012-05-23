@@ -349,6 +349,7 @@ class ThemeManager(QtGui.QWidget):
             # As we do not reload the themes, push out the change. Reload the
             # list as the internal lists and events need to be triggered.
             self._pushThemes()
+            self.mainwindow.renderer.update_theme(theme, only_delete=True)
 
     def deleteTheme(self, theme):
         """
@@ -668,7 +669,6 @@ class ThemeManager(QtGui.QWidget):
                 u'theme', QtGui.QColor(theme.background_border_color))
             self.mainwindow.imageManager.process_updates()
         self.loadThemes()
-        #self.mainwindow.renderer.update_theme()
 
     def _writeTheme(self, theme, image_from, image_to):
         """
