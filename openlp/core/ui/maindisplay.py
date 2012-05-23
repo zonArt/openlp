@@ -119,7 +119,7 @@ class MainDisplay(Display):
     def __init__(self, parent, imageManager, live, controller):
         Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.plugins = PluginManager.get_instance().plugins
         self.rebuildCSS = False
         self.hideMode = None
