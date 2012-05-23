@@ -70,7 +70,7 @@ class Renderer(object):
         self.themeManager = themeManager
         self.imageManager = imageManager
         self.screens = ScreenList.get_instance()
-        self.service_theme = u''
+        self.service_theme_name = u''
         self.theme_level = u''
         self.override_background = None
         self.bg_frame = None
@@ -94,12 +94,31 @@ class Renderer(object):
         self.bg_frame = None
         self._calculate_default()
 
-    def update_theme(self):
-        self._theme_dimensions = {}
+    def update_theme(self, theme_name, old_theme_name=None):
+        """
+        This method updates the theme in ``_theme_dimensions`` when a theme
+        has been edited or renamed.
+
+        ``theme_name``
+            The current theme name.
+
+        ``old_theme_name``
+            The old theme name. Has only to be passed, when the theme has been
+            renamed. Defaults to *None*.
+        """
+        if old_theme_name is not None and \
+            old_theme_name in self._theme_dimensions:
+            del self._theme_dimensions[old_theme_name]
+        if theme_name in self._theme_dimensions:
+            del self._theme_dimensions[theme_name]
+        self._set_theme(theme_name)
 
     def _set_theme(self, theme_name):
         """
         Helper method to save theme names and theme data.
+
+        ``theme_name``
+            The theme name.
         """
         if theme_name not in self._theme_dimensions:
             theme_data = self.themeManager.getThemeData(theme_name)
@@ -116,18 +135,25 @@ class Renderer(object):
                 theme_data.background_filename, u'theme',
                 QtGui.QColor(theme_data.background_border_color))
 
-    def post_render(self, override_theme_data=None):
+    def pre_render(self, override_theme_data=None):
         """
+        Set up the theme to be used before rendering an item.
+
+        ``override_theme_data``
+            The theme data should be passed, when we want to use our own theme
+            data, regardless of the theme level. This should for example be used
+            in the theme manager. **Note**, this is **not** to be mixed up with
+            the ``set_item_theme`` method.
         """
         # Just assume we use the global theme.
-        theme_to_use = self.global_theme
+        theme_to_use = self.global_theme_name
         if self.theme_level == ThemeLevel.Service:
             # When the theme level is at Service and we actually have a service
             # theme then use it.
-            if self.service_theme:
-                theme_to_use = self.service_theme
-        elif self.theme_level == ThemeLevel.Song and self.item_theme:
-            theme_to_use = self.item_theme
+            if self.service_theme_name:
+                theme_to_use = self.service_theme_name
+        elif self.theme_level == ThemeLevel.Song and self.item_theme_name:
+            theme_to_use = self.item_theme_name
         if override_theme_data is None:
             theme_data, main_rect, footer_rect = \
                 self._theme_dimensions[theme_to_use]
@@ -156,7 +182,7 @@ class Renderer(object):
             The global-level theme's name.
         """
         self._set_theme(global_theme_name)
-        self.global_theme = global_theme_name
+        self.global_theme_name = global_theme_name
 
     def set_service_theme(self, service_theme_name):
         """
@@ -166,9 +192,9 @@ class Renderer(object):
             The service level theme's name.
         """
         self._set_theme(service_theme_name)
-        self.service_theme = service_theme_name
+        self.service_theme_name = service_theme_name
 
-    def set_override_theme(self, override_theme_name):
+    def set_item_theme(self, item_theme_name):
         """
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
@@ -177,8 +203,8 @@ class Renderer(object):
             The name of the song-level theme. None means the service
             item wants to use the given value.
         """
-        self._set_theme(override_theme_name)
-        self.item_theme = override_theme_name
+        self._set_theme(item_theme_name)
+        self.item_theme_name = item_theme_name
 
     def generate_preview(self, theme_data, force_page=False):
         """

@@ -166,14 +166,17 @@ class ServiceItem(object):
         The render method is what generates the frames for the screen and
         obtains the display information from the renderer. At this point all
         slides are built for the given display size.
+
+        ``provides_own_theme_data``
+
         """
         start = time.time()
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
         if not provides_own_theme_data:
-            self.renderer.set_override_theme(self.theme)
-            self.themedata, self.main, self.footer = self.renderer.post_render()
+            self.renderer.set_item_theme(self.theme)
+            self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
