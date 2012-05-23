@@ -28,7 +28,6 @@
 The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
-import time
 import cgi
 import datetime
 import logging
@@ -38,9 +37,6 @@ import uuid
 from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
 
 log = logging.getLogger(__name__)
-
-COUNT = 0
-TIME_ = datetime.timedelta()
 
 class ServiceItemType(object):
     """
@@ -170,7 +166,6 @@ class ServiceItem(object):
         ``provides_own_theme_data``
 
         """
-        start = time.time()
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
@@ -202,13 +197,6 @@ class ServiceItem(object):
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
-        global COUNT
-        COUNT += 1
-        global TIME_
-        TIME_ += datetime.timedelta(seconds=(time.time() - start))
-        print u'%s (average %s)' % (
-            unicode(datetime.timedelta(seconds=(time.time() - start))),
-            unicode(TIME_ / COUNT))
 
     def add_from_image(self, path, title, background=None):
         """
