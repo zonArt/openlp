@@ -91,6 +91,7 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
+        self.eventLoopIsActive = True
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
@@ -98,6 +99,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        self.eventLoopIsActive = False
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -146,7 +148,6 @@ class OpenLP(QtGui.QApplication):
         Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
         # Skip exec_() for gui tests
-        self.eventLoopIsActive = True
         if not testing:
             return self.exec_()
 
