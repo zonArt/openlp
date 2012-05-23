@@ -796,7 +796,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if answer == QtGui.QMessageBox.No:
             return
         Receiver.send_message(u'cursor_busy')
-        screens = ScreenList.get_instance()
+        screens = ScreenList()
         FirstTimeForm(screens, self).exec_()
         self.firstTime()
         for plugin in self.pluginManager.plugins:
