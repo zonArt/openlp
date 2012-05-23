@@ -70,10 +70,10 @@ class Renderer(object):
         self.themeManager = themeManager
         self.imageManager = imageManager
         self.screens = ScreenList()
+        self.theme_level = ThemeLevel.Global
         self.service_theme_name = u''
-        self.theme_level = u''
-        self.override_background = None
-        self.bg_frame = None
+        self.service_theme_name = u''
+        self.item_theme_name = u''
         self.force_page = False
         self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
@@ -91,7 +91,6 @@ class Renderer(object):
             self.display.close()
         self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
-        self.bg_frame = None
         self._calculate_default()
 
     def update_theme(self, theme_name, old_theme_name=None):
@@ -343,7 +342,6 @@ class Renderer(object):
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
-
     def get_main_rectangle(self, theme_data):
         """
         Calculates the placement and size of the main rectangle.
@@ -357,24 +355,27 @@ class Renderer(object):
             return QtCore.QRect(theme_data.font_main_x, theme_data.font_main_y,
                 theme_data.font_main_width - 1, theme_data.font_main_height - 1)
 
-    def get_footer_rectangle(self, theme):
+    def get_footer_rectangle(self, theme_data):
         """
         Calculates the placement and size of the footer rectangle.
 
-        ``theme``
-            The theme information
+        ``theme_data``
+            The theme data.
         """
-        if not theme.font_footer_override:
+        if not theme_data.font_footer_override:
             return QtCore.QRect(10, self.footer_start, self.width - 20,
                 self.height - self.footer_start)
         else:
-            return QtCore.QRect(theme.font_footer_x,
-                theme.font_footer_y, theme.font_footer_width - 1,
-                theme.font_footer_height - 1)
+            return QtCore.QRect(theme_data.font_footer_x,
+                theme_data.font_footer_y, theme_data.font_footer_width - 1,
+                theme_data.font_footer_height - 1)
 
     def _set_text_rectangle(self, theme_data, rect_main, rect_footer):
         """
         Sets the rectangle within which text should be rendered.
+
+        ``theme_data``
+            The theme data.
 
         ``rect_main``
             The main text block.
