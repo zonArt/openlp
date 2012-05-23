@@ -165,7 +165,10 @@ class ServiceItem(object):
         slides are built for the given display size.
 
         ``provides_own_theme_data``
-
+            This switch disables the usage of the item's theme. However, this is
+            disabled by default. If this is used, it has to be taken care, that
+            the renderer knows the correct theme data. However, this is needed
+            for the theme manager.
         """
         log.debug(u'Render called')
         self._display_frames = []
