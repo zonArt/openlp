@@ -28,6 +28,7 @@
 The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
+
 import cgi
 import datetime
 import logging
