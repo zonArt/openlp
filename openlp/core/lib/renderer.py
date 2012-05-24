@@ -92,6 +92,7 @@ class Renderer(object):
         self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
         self._calculate_default()
+        self._theme_dimensions = {}
 
     def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
         """
@@ -106,7 +107,8 @@ class Renderer(object):
             renamed. Defaults to *None*.
 
         ``only_delete``
-            a
+            Only remove the given ``theme_name`` from the ``_theme_dimensions``
+            list. This can be used when a theme is permanently deleted.
         """
         if old_theme_name is not None and \
             old_theme_name in self._theme_dimensions:
@@ -150,14 +152,21 @@ class Renderer(object):
         """
         # Just assume we use the global theme.
         theme_to_use = self.global_theme_name
-        if self.theme_level == ThemeLevel.Service:
+        # The theme level is either set to Service or Item. Use the service
+        # theme if one is set. We also have to use the service theme, even when
+        # the theme level is set to Item, because the item does not necessarily
+        # have to have a theme.
+        if self.theme_level != ThemeLevel.Global:
             # When the theme level is at Service and we actually have a service
             # theme then use it.
             if self.service_theme_name:
                 theme_to_use = self.service_theme_name
-        elif self.theme_level == ThemeLevel.Song and self.item_theme_name:
+        # If we have Item level and have an item theme then use it.
+        if self.theme_level == ThemeLevel.Song and self.item_theme_name:
             theme_to_use = self.item_theme_name
         if override_theme_data is None:
+            if theme_to_use not in self._theme_dimensions:
+                self._set_theme(theme_to_use)
             theme_data, main_rect, footer_rect = \
                 self._theme_dimensions[theme_to_use]
         else:
