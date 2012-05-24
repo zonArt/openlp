@@ -87,11 +87,11 @@ class Renderer(object):
         Updates the renderer's information about the current screen.
         """
         log.debug(u'Update Display')
+        self._calculate_default()
         if self.display:
             self.display.close()
         self.display = MainDisplay(None, self.imageManager, False, self)
         self.display.setup()
-        self._calculate_default()
         self._theme_dimensions = {}
 
     def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
@@ -208,12 +208,11 @@ class Renderer(object):
 
     def set_item_theme(self, item_theme_name):
         """
-        Set the appropriate theme depending on the theme level.
-        Called by the service item when building a display frame
+        Set the item-level theme. **Note**, this has to be done for each item we
+        are rendering.
 
-        ``override_theme``
-            The name of the song-level theme. None means the service
-            item wants to use the given value.
+        ``item_theme_name``
+            The item theme's name.
         """
         self._set_theme(item_theme_name)
         self.item_theme_name = item_theme_name
