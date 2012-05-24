@@ -42,8 +42,8 @@ class Settings(QtCore.QSettings):
     * Exposes all the methods of QSettings.
     * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
       ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
-      then the Settings constructor will create a Settings object for accessing
-      settings stored in that Ini file.
+      then the Settings constructor (without any arguments) will create a Settings
+      object for accessing settings stored in that Ini file.
     """
 
     FilePath = u''
@@ -56,11 +56,10 @@ class Settings(QtCore.QSettings):
         Does not affect existing Settings objects.
         """
         Settings.FilePath = filepath
-        log.info(u'Set Settings file: %s' % filepath)
 
     def __init__(self, *args):
-        if Settings.FilePath and (Settings.defaultFormat() ==
-                                  Settings.IniFormat):
+        if not args and Settings.FilePath and (Settings.defaultFormat() ==
+                                               Settings.IniFormat):
             QtCore.QSettings.__init__(self, Settings.FilePath,
                 Settings.IniFormat)
         else:
