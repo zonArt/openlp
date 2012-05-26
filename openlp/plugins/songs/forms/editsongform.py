@@ -865,12 +865,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in xrange(self.authorsListView.count()):
             item = self.authorsListView.item(row)
             authorId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.song.authors.append(self.manager.get_object(Author, authorId))
+            author = self.manager.get_object(Author, authorId)
+            if author is not None:
+                self.song.authors.append(author)
         self.song.topics = []
         for row in xrange(self.topicsListView.count()):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.song.topics.append(self.manager.get_object(Topic, topicId))
+            topic = self.manager.get_object(Topic, topicId)
+            if topic is not None:
+                self.song.topics.append(topic)
         # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
