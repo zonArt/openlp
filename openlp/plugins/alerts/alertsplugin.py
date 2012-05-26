@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,7 +31,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import icon_action, UiStrings
+from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
@@ -117,8 +117,8 @@ class AlertsPlugin(Plugin):
         Plugin.__init__(self, u'alerts', plugin_helpers,
             settings_tab_class=AlertsTab)
         self.weight = -3
-        self.icon_path = u':/plugins/plugin_alerts.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_alerts.png'
+        self.icon = build_icon(self.iconPath)
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self)
@@ -133,16 +133,12 @@ class AlertsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsAlertItem = icon_action(tools_menu, u'toolsAlertItem',
-            u':/plugins/plugin_alerts.png')
-        self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
-        self.toolsAlertItem.setStatusTip(
-            translate('AlertsPlugin', 'Show an alert message.'))
-        self.toolsAlertItem.setShortcut(u'F7')
+        self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
+            text=translate('AlertsPlugin', '&Alert'),
+            icon=u':/plugins/plugin_alerts.png',
+            statustip=translate('AlertsPlugin', 'Show an alert message.'),
+            visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
         self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
-        QtCore.QObject.connect(self.toolsAlertItem,
-            QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
-        self.toolsAlertItem.setVisible(False)
 
     def initialise(self):
         log.info(u'Alerts Initialising')
@@ -201,10 +197,10 @@ class AlertsPlugin(Plugin):
         """
         Add CSS to the main display.
         """
-        align = VerticalType.Names[self.settings_tab.location]
-        return CSS % (align, self.settings_tab.font_face,
-            self.settings_tab.font_size, self.settings_tab.font_color,
-            self.settings_tab.bg_color)
+        align = VerticalType.Names[self.settingsTab.location]
+        return CSS % (align, self.settingsTab.font_face,
+            self.settingsTab.font_size, self.settingsTab.font_color,
+            self.settingsTab.bg_color)
 
     def getDisplayHtml(self):
         """
@@ -219,7 +215,7 @@ class AlertsPlugin(Plugin):
         ``frame``
             The Web frame holding the page.
         """
-        align = VerticalType.Names[self.settings_tab.location]
+        align = VerticalType.Names[self.settingsTab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
-            (align, self.settings_tab.font_face, self.settings_tab.font_size,
-            self.settings_tab.font_color, self.settings_tab.bg_color))
+            (align, self.settingsTab.font_face, self.settingsTab.font_size,
+            self.settingsTab.font_color, self.settingsTab.bg_color))

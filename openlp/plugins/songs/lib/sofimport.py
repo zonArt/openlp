@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -345,7 +345,7 @@ class SofImport(OooImport):
                 u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS',
                 u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH',
                 u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S',
-                u'FATHER\'S', u'ELIJAH' u'MARTHA', u'CHRISTMAS', u'ALPHA', 
+                u'FATHER\'S', u'ELIJAH' u'MARTHA', u'CHRISTMAS', u'ALPHA',
                 u'OMEGA'):
                 textarr[i] = textarr[i].capitalize()
             else:

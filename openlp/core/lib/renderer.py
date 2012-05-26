@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -69,7 +69,7 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
@@ -125,13 +125,12 @@ class Renderer(object):
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
 
-        ``theme``
+        ``override_theme``
             The name of the song-level theme. None means the service
             item wants to use the given value.
 
         ``override_levels``
             Used to force the theme data passed in to be used.
-
         """
         log.debug(u'set override theme to %s', override_theme)
         theme_level = self.theme_level
@@ -236,26 +235,30 @@ class Renderer(object):
                     # the first two slides (and neglect the last for now).
                     if len(slides) == 3:
                         html_text = expand_tags(u'\n'.join(slides[:2]))
-                    # We check both slides to determine if the virtual break is
-                    # needed (there is only one virtual break).
+                    # We check both slides to determine if the optional split is
+                    # needed (there is only one optional split).
                     else:
                         html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
                     if self._text_fits_on_slide(html_text):
-                        # The first two virtual slides fit (as a whole) on one
+                        # The first two optional slides fit (as a whole) on one
                         # slide. Replace the first occurrence of [---].
                         text = text.replace(u'\n[---]', u'', 1)
                     else:
-                        # The first virtual slide fits, which means we have to
-                        # render the first virtual slide.
-                        text_contains_break = u'[---]' in text
-                        if text_contains_break:
+                        # The first optional slide fits, which means we have to
+                        # render the first optional slide.
+                        text_contains_split = u'[---]' in text
+                        if text_contains_split:
                             try:
                                 text_to_render, text = \
                                     text.split(u'\n[---]\n', 1)
                             except:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
+                            text_to_render, raw_tags, html_tags = \
+                                self._get_start_tags(text_to_render)
+                            if text:
+                                text = raw_tags + text
                         else:
                             text_to_render = text
                             text = u''
@@ -264,7 +267,7 @@ class Renderer(object):
                         if len(slides) > 1 and text:
                             # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
-                            if  text_contains_break:
+                            if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
                                 text = slides[-1] + u'\n'+ text
@@ -289,7 +292,7 @@ class Renderer(object):
 
     def _calculate_default(self):
         """
-        Calculate the default dimentions of the screen.
+        Calculate the default dimensions of the screen.
         """
         screen_size = self.screens.current[u'size']
         self.width = screen_size.width()
@@ -364,7 +367,7 @@ class Renderer(object):
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
-        # Adjust width and height to account for shadow. outline done in css
+        # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');
@@ -380,6 +383,7 @@ class Renderer(object):
             (build_lyrics_format_css(self.theme_data, self.page_width,
             self.page_height), build_lyrics_outline_css(self.theme_data))
         self.web.setHtml(html)
+        self.empty_height = self.web_frame.contentsSize().height()
 
     def _paginate_slide(self, lines, line_end):
         """
@@ -492,19 +496,22 @@ class Renderer(object):
                     (raw_text.find(tag[u'start tag']), tag[u'start tag'],
                     tag[u'end tag']))
                 html_tags.append(
-                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
+                        (raw_text.find(tag[u'start tag']), tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.
         raw_tags.sort(key=lambda tag: tag[0])
         html_tags.sort(key=lambda tag: tag[0])
         # Create a list with closing tags for the raw_text.
-        end_tags = [tag[2] for tag in raw_tags]
+        end_tags = []
+        start_tags = []
+        for tag in raw_tags:
+            start_tags.append(tag[1])
+            end_tags.append(tag[2])
         end_tags.reverse()
         # Remove the indexes.
-        raw_tags = [tag[1] for tag in raw_tags]
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(raw_tags), \
+        return raw_text + u''.join(end_tags),  u''.join(start_tags), \
             u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
@@ -600,7 +607,7 @@ class Renderer(object):
         """
         self.web_frame.evaluateJavaScript(u'show_text("%s")' %
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
-        return self.web_frame.contentsSize().height() <= self.page_height
+        return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):
         """

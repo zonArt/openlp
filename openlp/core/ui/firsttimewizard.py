@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -233,14 +233,14 @@ class Ui_FirstTimeWizard(object):
         self.noInternetText = translate('OpenLP.FirstTimeWizard',
             'No Internet connection was found. The First Time Wizard needs an '
             'Internet connection in order to be able to download sample '
-            'songs, Bibles and themes.  Press the Finish button now to start '
+            'songs, Bibles and themes.  Click the Finish button now to start '
             'OpenLP with initial settings and no sample data.\n\nTo re-run the '
             'First Time Wizard and import this sample data at a later time, '
             'check your Internet connection and re-run this wizard by '
             'selecting "Tools/Re-run First Time Wizard" from OpenLP.')
         self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
             '\n\nTo cancel the First Time Wizard completely (and not start '
-            'OpenLP), press the Cancel button now.')
+            'OpenLP), click the Cancel button now.')
         self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Sample Songs'))
         self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
@@ -263,5 +263,5 @@ class Ui_FirstTimeWizard(object):
             'Select default theme:'))
         self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Starting configuration process...'))
-        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1, 
+        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1,
             translate('OpenLP.FirstTimeWizard', 'Finish'))

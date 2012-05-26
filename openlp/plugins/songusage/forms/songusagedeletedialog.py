@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 class Ui_SongUsageDeleteDialog(object):
     def setupUi(self, songUsageDeleteDialog):
@@ -47,10 +48,8 @@ class Ui_SongUsageDeleteDialog(object):
             QtGui.QCalendarWidget.NoVerticalHeader)
         self.deleteCalendar.setObjectName(u'deleteCalendar')
         self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = QtGui.QDialogButtonBox(songUsageDeleteDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(songUsageDeleteDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDeleteDialog)
 

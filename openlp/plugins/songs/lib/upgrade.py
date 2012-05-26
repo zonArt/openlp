@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -32,8 +32,6 @@ backend for the Songs plugin
 from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
 from migrate.changeset.constraint import ForeignKeyConstraint
-
-from openlp.plugins.songs.lib.db import Song
 
 __version__ = 3
 
@@ -77,6 +75,7 @@ def upgrade_1(session, metadata, tables):
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
             table=tables[u'media_files']).create()
 
+
 def upgrade_2(session, metadata, tables):
     """
     Version 2 upgrade.
@@ -87,6 +86,7 @@ def upgrade_2(session, metadata, tables):
         .create(table=tables[u'songs'])
     Column(u'last_modified', types.DateTime(), default=func.now())\
         .create(table=tables[u'songs'])
+
 
 def upgrade_3(session, metadata, tables):
     """

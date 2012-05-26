@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -64,7 +64,7 @@ class MediaDockManager(object):
         visible_title = media_item.plugin.getString(StringContent.VisibleName)
         log.debug(u'Inserting %s dock' % visible_title[u'title'])
         match = False
-        for dock_index in range(0, self.media_dock.count()):
+        for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
                 media_item.plugin.name:
                 match = True
@@ -81,7 +81,7 @@ class MediaDockManager(object):
         """
         visible_title = media_item.plugin.getString(StringContent.VisibleName)
         log.debug(u'remove %s dock' % visible_title[u'title'])
-        for dock_index in range(0, self.media_dock.count()):
+        for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settingsSection == \
                     media_item.plugin.name:

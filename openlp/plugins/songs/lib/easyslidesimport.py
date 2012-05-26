@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -35,12 +35,12 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class EasiSlidesImport(SongImport):
+class EasySlidesImport(SongImport):
     """
-    Import songs exported from EasiSlides
+    Import songs exported from EasySlides
 
     The format example is here:
-    http://wiki.openlp.org/Development:EasiSlides_-_Song_Data_Format
+    http://wiki.openlp.org/Development:EasySlides_-_Song_Data_Format
     """
     def __init__(self, manager, **kwargs):
         """
@@ -56,7 +56,7 @@ class EasiSlidesImport(SongImport):
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        log.info(u'Importing EasiSlides XML file %s', self.importSource)
+        log.info(u'Importing EasySlides XML file %s', self.importSource)
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(self.importSource, parser)
         xml = unicode(etree.tostring(parsed_file))
@@ -162,22 +162,19 @@ class EasiSlidesImport(SongImport):
         separatorlines = 0
         for line in lines:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 continue
             elif line[1:7] == u'region':
                 # this is region separator, probably [region 2]
                 region = self._extractRegion(line)
-                if regionlines.has_key(region):
-                    regionlines[region] = regionlines[region] + 1
-                else:
-                    regionlines[region] = 1
+                regionlines[region] = 1 + regionlines.get(region, 0)
             elif line[0] == u'[':
                 separatorlines = separatorlines + 1
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
         if len(regionlines) > 1:
-            log.info(u'EasiSlidesImport: the file contained a song named "%s"'
+            log.info(u'EasySlidesImport: the file contained a song named "%s"'
                 u'with more than two regions, but only two regions are',
                 u'tested, encountered regions were: %s',
                 self.title, u','.join(regionlines.keys()))
@@ -206,7 +203,7 @@ class EasiSlidesImport(SongImport):
 
         for line in lines:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 if separators:
                     # separators are used, so empty line means slide break
                     # inside verse
@@ -215,15 +212,11 @@ class EasiSlidesImport(SongImport):
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'
-                    if verses[reg].has_key(vt):
-                        vn = len(verses[reg][vt].keys())+1
-                    else:
-                        vn = u'1'
+                    vn = len(verses[reg].get(vt, {})) + 1
                     inst = 1
             elif line[0:7] == u'[region':
                 reg = self._extractRegion(line)
-                if not verses.has_key(reg):
-                    verses[reg] = {}
+                verses.setdefault(reg, {})
                 if not regionsInVerses:
                     vt = u'V'
                     vn = u'1'
@@ -238,28 +231,19 @@ class EasiSlidesImport(SongImport):
                 if match:
                     marker = match.group(1).strip()
                     vn = match.group(2)
-                if len(marker) == 0:
-                    vt = u'V'
-                elif MarkTypes.has_key(marker):
-                    vt = MarkTypes[marker]
-                else:
-                    vt = u'O'
+                vt = MarkTypes.get(marker, u'O') if marker else u'V'
                 if regionsInVerses:
                     region = defaultregion
                 inst = 1
                 if self._listHas(verses, [reg, vt, vn, inst]):
-                    inst = len(verses[reg][vt][vn])+1
+                    inst = len(verses[reg][vt][vn]) + 1
             else:
                 if not [reg, vt, vn, inst] in our_verse_order:
                     our_verse_order.append([reg, vt, vn, inst])
-                if not verses[reg].has_key(vt):
-                    verses[reg][vt] = {}
-                if not verses[reg][vt].has_key(vn):
-                    verses[reg][vt][vn] = {}
-                if not verses[reg][vt][vn].has_key(inst):
-                    verses[reg][vt][vn][inst] = []
-                words = self.tidyText(line)
-                verses[reg][vt][vn][inst].append(words)
+                verses[reg].setdefault(vt, {})
+                verses[reg][vt].setdefault(vn, {})
+                verses[reg][vt][vn].setdefault(inst, [])
+                verses[reg][vt][vn][inst].append(self.tidyText(line))
         # done parsing
 
         versetags = []
@@ -286,11 +270,11 @@ class EasiSlidesImport(SongImport):
         try:
             order = unicode(song.Sequence).strip().split(u',')
             for tag in order:
-                if len(tag) == 0:
+                if not tag:
                     continue
                 elif tag[0].isdigit():
                     tag = u'V' + tag
-                elif SeqTypes.has_key(tag.lower()):
+                elif tag.lower() in SeqTypes:
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
@@ -307,9 +291,7 @@ class EasiSlidesImport(SongImport):
 
     def _listHas(self, lst, subitems):
         for subitem in subitems:
-            if isinstance(lst, dict) and lst.has_key(subitem):
-                lst = lst[subitem]
-            elif isinstance(lst, list) and subitem in lst:
+            if subitem in lst:
                 lst = lst[subitem]
             else:
                 return False

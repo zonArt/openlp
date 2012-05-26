@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -41,8 +41,8 @@ class MediaPlugin(Plugin):
         Plugin.__init__(self, u'media', plugin_helpers,
             MediaMediaItem)
         self.weight = -6
-        self.icon_path = u':/plugins/plugin_media.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.iconPath)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.audio_extensions_list = \
@@ -59,8 +59,8 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
-            self.mediaController.mediaPlayers, self.icon_path)
+        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
+            self.mediaController.mediaPlayers, self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -142,6 +142,6 @@ class MediaPlugin(Plugin):
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
                 settings.setValue(u'players', \
                     QtCore.QVariant(u','.join(new_players)))
-                self.settings_tab.load()
+                self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

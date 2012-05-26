@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -84,7 +84,7 @@ class AlertsManager(QtCore.QObject):
         if not self.alertList:
             return
         text = self.alertList.pop(0)
-        alertTab = self.parent().settings_tab
+        alertTab = self.parent().settingsTab
         self.parent().liveController.display.alert(text, alertTab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
@@ -100,7 +100,7 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            alertTab = self.parent().settings_tab
+            alertTab = self.parent().settingsTab
             self.parent().liveController.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0

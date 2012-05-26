@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -49,7 +49,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version, DelayStartThread
+    get_application_version
 
 
 __all__ = [u'OpenLP', u'main']
@@ -109,7 +109,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
-        screens = ScreenList(self.desktop())
+        screens = ScreenList.create(self.desktop())
         # First time checks in settings
         has_run_wizard = QtCore.QSettings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
@@ -145,7 +145,6 @@ class OpenLP(QtGui.QApplication):
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
-        DelayStartThread(self.mainWindow).start()
         # Skip exec_() for gui tests
         if not testing:
             return self.exec_()

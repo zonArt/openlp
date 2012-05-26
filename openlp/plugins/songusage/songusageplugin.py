@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import base_action, shortcut_action
+from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -73,24 +73,24 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.setTitle(translate(
             'SongUsagePlugin', '&Song Usage Tracking'))
         # SongUsage Delete
-        self.songUsageDelete = base_action(tools_menu, u'songUsageDelete')
-        self.songUsageDelete.setText(translate('SongUsagePlugin',
-            '&Delete Tracking Data'))
-        self.songUsageDelete.setStatusTip(translate('SongUsagePlugin',
-            'Delete song usage data up to a specified date.'))
+        self.songUsageDelete = create_action(tools_menu, u'songUsageDelete',
+            text=translate('SongUsagePlugin', '&Delete Tracking Data'),
+            statustip=translate('SongUsagePlugin',
+            'Delete song usage data up to a specified date.'),
+            triggers=self.onSongUsageDelete)
         # SongUsage Report
-        self.songUsageReport = base_action(tools_menu, u'songUsageReport')
-        self.songUsageReport.setText(
-            translate('SongUsagePlugin', '&Extract Tracking Data'))
-        self.songUsageReport.setStatusTip(
-            translate('SongUsagePlugin', 'Generate a report on song usage.'))
+        self.songUsageReport = create_action(tools_menu, u'songUsageReport',
+            text=translate('SongUsagePlugin', '&Extract Tracking Data'),
+            statustip=translate('SongUsagePlugin',
+            'Generate a report on song usage.'),
+            triggers=self.onSongUsageReport)
         # SongUsage activation
-        self.songUsageStatus = shortcut_action(tools_menu, u'songUsageStatus',
-            [QtCore.Qt.Key_F4], self.toggleSongUsageState, checked=False)
-        self.songUsageStatus.setText(translate(
-            'SongUsagePlugin', 'Toggle Tracking'))
-        self.songUsageStatus.setStatusTip(translate('SongUsagePlugin',
-            'Toggle the tracking of song usage.'))
+        self.songUsageStatus = create_action(tools_menu, u'songUsageStatus',
+            text=translate('SongUsagePlugin', 'Toggle Tracking'),
+            statustip=translate('SongUsagePlugin',
+            'Toggle the tracking of song usage.'), checked=False,
+            shortcuts=[QtCore.Qt.Key_F4],
+            triggers=self.toggleSongUsageState)
         # Add Menus together
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
         self.songUsageMenu.addAction(self.songUsageStatus)
@@ -98,13 +98,13 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.addAction(self.songUsageReport)
         self.songUsageMenu.addAction(self.songUsageDelete)
         self.songUsageActiveButton = QtGui.QToolButton(
-            self.formparent.statusBar)
+            self.formParent.statusBar)
         self.songUsageActiveButton.setCheckable(True)
         self.songUsageActiveButton.setAutoRaise(True)
         self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin',
             'Toggle the tracking of song usage.'))
         self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
-        self.formparent.statusBar.insertPermanentWidget(1,
+        self.formParent.statusBar.insertPermanentWidget(1,
             self.songUsageActiveButton)
         self.songUsageActiveButton.hide()
         # Signals and slots
@@ -114,10 +114,6 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(self.songUsageActiveButton,
             QtCore.SIGNAL(u'toggled(bool)'),
             self.toggleSongUsageState)
-        QtCore.QObject.connect(self.songUsageDelete,
-            QtCore.SIGNAL(u'triggered()'), self.onSongUsageDelete)
-        QtCore.QObject.connect(self.songUsageReport,
-            QtCore.SIGNAL(u'triggered()'), self.onSongUsageReport)
         self.songUsageMenu.menuAction().setVisible(False)
 
     def initialise(self):
@@ -142,8 +138,8 @@ class SongUsagePlugin(Plugin):
         action_list.add_action(self.songUsageReport,
             unicode(translate('SongUsagePlugin', 'Song Usage')))
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
-            self.formparent)
-        self.songUsageDetailForm = SongUsageDetailForm(self, self.formparent)
+            self.formParent)
+        self.songUsageDetailForm = SongUsageDetailForm(self, self.formParent)
         self.songUsageMenu.menuAction().setVisible(True)
         self.songUsageActiveButton.show()
 

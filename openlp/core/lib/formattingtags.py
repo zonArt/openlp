@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -46,14 +46,36 @@ class FormattingTags(object):
         """
         Provide access to the html_expands list.
         """
-        # Load user defined tags otherwise user defined tags are not present.
-        FormattingTags.load_tags()
         return FormattingTags.html_expands
 
     @staticmethod
-    def reset_html_tags():
+    def save_html_tags():
         """
-        Resets the html_expands list.
+        Saves all formatting tags except protected ones.
+        """
+        tags = []
+        for tag in FormattingTags.html_expands:
+            if not tag[u'protected'] and not tag.get(u'temporary'):
+                # Using dict ensures that copy is made and encoding of values
+                # a little later does not affect tags in the original list
+                tags.append(dict(tag))
+                tag = tags[-1]
+                # Remove key 'temporary' from tags.
+                # It is not needed to be saved.
+                if u'temporary' in tag:
+                    del tag[u'temporary']
+                for element in tag:
+                    if isinstance(tag[element], unicode):
+                        tag[element] = tag[element].encode('utf8')
+        # Formatting Tags were also known as display tags.
+        QtCore.QSettings().setValue(u'displayTags/html_tags',
+            QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
+
+    @staticmethod
+    def load_tags():
+        """
+        Load the Tags from store so can be used in the system or used to
+        update the display.
         """
         temporary_tags = [tag for tag in FormattingTags.html_expands
             if tag.get(u'temporary')]
@@ -141,38 +163,6 @@ class FormattingTags(object):
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
 
-    @staticmethod
-    def save_html_tags():
-        """
-        Saves all formatting tags except protected ones.
-        """
-        tags = []
-        for tag in FormattingTags.html_expands:
-            if not tag[u'protected'] and not tag.get(u'temporary'):
-                # Using dict ensures that copy is made and encoding of values
-                # a little later does not affect tags in the original list
-                tags.append(dict(tag))
-                tag = tags[-1]
-                # Remove key 'temporary' from tags.
-                # It is not needed to be saved.
-                if u'temporary' in tag:
-                    del tag[u'temporary']
-                for element in tag:
-                    if isinstance(tag[element], unicode):
-                        tag[element] = tag[element].encode('utf8')
-        # Formatting Tags were also known as display tags.
-        QtCore.QSettings().setValue(u'displayTags/html_tags',
-            QtCore.QVariant(cPickle.dumps(tags) if tags else u''))
-
-    @staticmethod
-    def load_tags():
-        """
-        Load the Tags from store so can be used in the system or used to
-        update the display. If Cancel was selected this is needed to reset the
-        dsiplay to the correct version.
-        """
-        # Initial Load of the Tags
-        FormattingTags.reset_html_tags()
         # Formatting Tags were also known as display tags.
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
@@ -188,16 +178,12 @@ class FormattingTags(object):
             FormattingTags.add_html_tags(user_tags)
 
     @staticmethod
-    def add_html_tags(tags, save=False):
+    def add_html_tags(tags):
         """
         Add a list of tags to the list.
 
         ``tags``
             The list with tags to add.
-
-        ``save``
-            Defaults to ``False``. If set to ``True`` the given ``tags`` are
-            saved to the config.
 
         Each **tag** has to be a ``dict`` and should have the following keys:
 
@@ -226,8 +212,6 @@ class FormattingTags(object):
             displaying text containing the tag. It has to be a ``boolean``.
         """
         FormattingTags.html_expands.extend(tags)
-        if save:
-            FormattingTags.save_html_tags()
 
     @staticmethod
     def remove_html_tag(tag_id):

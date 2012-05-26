@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 
 class Ui_ThemeLayoutDialog(object):
@@ -35,34 +36,30 @@ class Ui_ThemeLayoutDialog(object):
         themeLayoutDialog.setObjectName(u'themeLayoutDialogDialog')
         #themeLayoutDialog.resize(300, 200)
         self.previewLayout = QtGui.QVBoxLayout(themeLayoutDialog)
-        self.previewLayout.setObjectName(u'PreviewLayout')
+        self.previewLayout.setObjectName(u'previewLayout')
         self.previewArea = QtGui.QWidget(themeLayoutDialog)
-        self.previewArea.setObjectName(u'PreviewArea')
+        self.previewArea.setObjectName(u'previewArea')
         self.previewAreaLayout = QtGui.QGridLayout(self.previewArea)
         self.previewAreaLayout.setMargin(0)
         self.previewAreaLayout.setColumnStretch(0, 1)
         self.previewAreaLayout.setRowStretch(0, 1)
-        self.previewAreaLayout.setObjectName(u'PreviewAreaLayout')
+        self.previewAreaLayout.setObjectName(u'previewAreaLayout')
         self.themeDisplayLabel = QtGui.QLabel(self.previewArea)
         self.themeDisplayLabel.setFrameShape(QtGui.QFrame.Box)
         self.themeDisplayLabel.setScaledContents(True)
-        self.themeDisplayLabel.setObjectName(u'ThemeDisplayLabel')
+        self.themeDisplayLabel.setObjectName(u'themeDisplayLabel')
         self.previewAreaLayout.addWidget(self.themeDisplayLabel)
         self.previewLayout.addWidget(self.previewArea)
         self.mainColourLabel = QtGui.QLabel(self.previewArea)
-        self.mainColourLabel.setObjectName(u'MainColourLabel')
+        self.mainColourLabel.setObjectName(u'mainColourLabel')
         self.previewLayout.addWidget(self.mainColourLabel)
         self.footerColourLabel = QtGui.QLabel(self.previewArea)
-        self.footerColourLabel.setObjectName(u'FooterColourLabel')
+        self.footerColourLabel.setObjectName(u'footerColourLabel')
         self.previewLayout.addWidget(self.footerColourLabel)
-        self.buttonBox = QtGui.QDialogButtonBox(themeLayoutDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'ButtonBox')
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            themeLayoutDialog.accept)
+        self.buttonBox = create_button_box(themeLayoutDialog, u'buttonBox',
+            [u'ok'])
         self.previewLayout.addWidget(self.buttonBox)
         self.retranslateUi(themeLayoutDialog)
-        QtCore.QMetaObject.connectSlotsByName(themeLayoutDialog)
 
     def retranslateUi(self, themeLayoutDialog):
         themeLayoutDialog.setWindowTitle(
