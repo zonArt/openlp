@@ -73,6 +73,7 @@ class Controller(QtGui.QWidget):
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 
+
 class SlideController(Controller):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -577,8 +578,7 @@ class SlideController(Controller):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self)
+        self.display = MainDisplay(self, self.imageManager, self.isLive, self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
