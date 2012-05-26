@@ -36,6 +36,7 @@ from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from dreambeamimport import DreamBeamImport
+from powersongimport import PowerSongImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
@@ -79,16 +80,17 @@ class SongFormat(object):
     EasyWorship = 7
     FoilPresenter = 8
     OpenSong = 9
-    SongBeamer = 10
-    SongShowPlus = 11
-    SongsOfFellowship = 12
-    WordsOfWorship = 13
-    #CSV = 14
+    PowerSong = 10
+    SongBeamer = 11
+    SongShowPlus = 12
+    SongsOfFellowship = 13
+    WordsOfWorship = 14
+    #CSV = 15
 
     @staticmethod
     def get_class(format):
         """
-        Return the appropriate imeplementation class.
+        Return the appropriate implementation class.
 
         ``format``
             The song format.
@@ -111,6 +113,8 @@ class SongFormat(object):
             return CCLIFileImport
         elif format == SongFormat.DreamBeam:
             return DreamBeamImport
+        elif format == SongFormat.PowerSong:
+            return PowerSongImport
         elif format == SongFormat.EasySlides:
             return EasySlidesImport
         elif format == SongFormat.EasyWorship:
@@ -139,6 +143,7 @@ class SongFormat(object):
             SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
             SongFormat.OpenSong,
+            SongFormat.PowerSong,
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,

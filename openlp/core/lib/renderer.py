@@ -69,7 +69,7 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
@@ -125,7 +125,7 @@ class Renderer(object):
         Set the appropriate theme depending on the theme level.
         Called by the service item when building a display frame
 
-        ``theme``
+        ``override_theme``
             The name of the song-level theme. None means the service
             item wants to use the given value.
 
@@ -235,8 +235,8 @@ class Renderer(object):
                     # the first two slides (and neglect the last for now).
                     if len(slides) == 3:
                         html_text = expand_tags(u'\n'.join(slides[:2]))
-                    # We check both slides to determine if the optional break is
-                    # needed (there is only one optional break).
+                    # We check both slides to determine if the optional split is
+                    # needed (there is only one optional split).
                     else:
                         html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
@@ -247,14 +247,18 @@ class Renderer(object):
                     else:
                         # The first optional slide fits, which means we have to
                         # render the first optional slide.
-                        text_contains_break = u'[---]' in text
-                        if text_contains_break:
+                        text_contains_split = u'[---]' in text
+                        if text_contains_split:
                             try:
                                 text_to_render, text = \
                                     text.split(u'\n[---]\n', 1)
                             except:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
+                            text_to_render, raw_tags, html_tags = \
+                                self._get_start_tags(text_to_render)
+                            if text:
+                                text = raw_tags + text
                         else:
                             text_to_render = text
                             text = u''
@@ -263,7 +267,7 @@ class Renderer(object):
                         if len(slides) > 1 and text:
                             # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
-                            if  text_contains_break:
+                            if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
                                 text = slides[-1] + u'\n'+ text
@@ -492,7 +496,7 @@ class Renderer(object):
                     (raw_text.find(tag[u'start tag']), tag[u'start tag'],
                     tag[u'end tag']))
                 html_tags.append(
-                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
+                        (raw_text.find(tag[u'start tag']), tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.

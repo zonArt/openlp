@@ -52,9 +52,8 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         if icon:
             self.setWindowIcon(build_icon(icon))
         # Sort out the minimum width.
-        screens = ScreenList.get_instance()
-        screen_width = screens.current[u'size'].width()
-        mainwindow_docbars = screen_width / 5
+        screens = ScreenList()
+        mainwindow_docbars = screens.current[u'size'].width() / 5
         if mainwindow_docbars > 300:
             self.setMinimumWidth(300)
         else:
