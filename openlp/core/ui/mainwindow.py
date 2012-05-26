@@ -548,9 +548,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.application = lambda: application
-        self.clipboard = self.application().clipboard()
-        self.arguments = self.application().args
+        self.application = application
+        self.clipboard = self.application.clipboard()
+        self.arguments = self.application.args
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -1135,7 +1135,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # The MainApplication did not even enter the event loop (this happens
         # when OpenLP is not fully loaded). Just ignore the event.
-        if not self.application().eventLoopIsActive:
+        if not self.application.eventLoopIsActive:
             event.ignore()
             return
         # If we just did a settings import, close without saving changes.
