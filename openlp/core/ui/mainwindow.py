@@ -30,6 +30,7 @@ import os
 import sys
 import shutil
 from tempfile import gettempdir
+import time
 from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
@@ -1134,6 +1135,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # If we just did a settings import, close without saving changes.
         if self.settingsImported:
+            self.cleanUp(False)
             event.accept()
         if self.serviceManagerContents.isModified():
             ret = self.serviceManagerContents.saveModifiedService()
@@ -1156,8 +1158,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                         'Are you sure you want to close OpenLP?'),
                     QtGui.QMessageBox.StandardButtons(
-                        QtGui.QMessageBox.Yes |
-                        QtGui.QMessageBox.No),
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
                     self.cleanUp()
@@ -1168,23 +1169,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.cleanUp()
                 event.accept()
 
-    def cleanUp(self):
+
+    def cleanUp(self, save_settings=True):
         """
-        Runs all the cleanup code before OpenLP shuts down
+        Runs all the cleanup code before OpenLP shuts down.
+
+        ``save_settings``
+            Switch to prevent saving settings. Defaults to **True**.
         """
-        # Clean temporary files used by services
-        self.serviceManagerContents.cleanUp()
-        if QtCore.QSettings().value(u'advanced/save current plugin',
-            QtCore.QVariant(False)).toBool():
-            QtCore.QSettings().setValue(u'advanced/current media plugin',
-                QtCore.QVariant(self.mediaToolBox.currentIndex()))
-        # Call the cleanup method to shutdown plugins.
-        log.info(u'cleanup plugins')
-        self.pluginManager.finalise_plugins()
-        # Save settings
-        self.saveSettings()
-        # Close down the display
-        self.liveController.display.close()
+        self.imageManager.stop_manager = True
+        while self.imageManager.imageThread.isRunning():
+            time.sleep(0.1)
+        if save_settings:
+            # Clean temporary files used by services
+            self.serviceManagerContents.cleanUp()
+            if QtCore.QSettings().value(u'advanced/save current plugin',
+                QtCore.QVariant(False)).toBool():
+                QtCore.QSettings().setValue(u'advanced/current media plugin',
+                    QtCore.QVariant(self.mediaToolBox.currentIndex()))
+            # Call the cleanup method to shutdown plugins.
+            log.info(u'cleanup plugins')
+            self.pluginManager.finalise_plugins()
+            # Save settings
+            self.saveSettings()
+            # Close down the display
+            self.liveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

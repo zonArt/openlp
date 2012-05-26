@@ -167,8 +167,9 @@ class ImageManager(QtCore.QObject):
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
-        self._imageThread = ImageThread(self)
+        self.imageThread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
+        self.stop_manager = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.process_updates)
 
@@ -219,8 +220,8 @@ class ImageManager(QtCore.QObject):
         Flush the queue to updated any data to update
         """
         # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        if not self.imageThread.isRunning():
+            self.imageThread.start()
 
     def get_image(self, name):
         """
@@ -282,15 +283,15 @@ class ImageManager(QtCore.QObject):
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        if not self.imageThread.isRunning():
+            self.imageThread.start()
 
     def _process(self):
         """
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        while not self._conversion_queue.empty():
+        while not self._conversion_queue.empty() and not self.stop_manager:
             self._process_cache()
         log.debug(u'_process - ended')
 
