@@ -87,7 +87,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.onBooksListRowChanged)
 
-    def exec_(self):
+    def exec_(self, from_song_edit=False):
+        """
+        Show the dialog.
+
+        ``from_song_edit``
+            Indicates if the maintenance dialog has been opened from song edit
+            or from the media manager. Defaults to **False**.
+        """
+        self.from_song_edit = from_song_edit
         self.typeListWidget.setCurrentRow(0)
         self.resetAuthors()
         self.resetTopics()
@@ -275,7 +283,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.checkAuthor(author, True):
                 if self.manager.save_object(author):
                     self.resetAuthors()
-                    Receiver.send_message(u'songs_load_list')
+                    if not self.from_song_edit:
+                        Receiver.send_message(u'songs_load_list')
                 else:
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
@@ -373,7 +382,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Receiver.send_message(u'cursor_busy')
         merge(dbObject)
         reset()
-        Receiver.send_message(u'songs_load_list')
+        if not self.from_song_edit:
+            Receiver.send_message(u'songs_load_list')
         Receiver.send_message(u'cursor_normal')
 
     def mergeAuthors(self, old_author):
