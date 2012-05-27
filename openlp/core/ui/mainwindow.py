@@ -1185,22 +1185,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.imageManager.stop_manager = True
         while self.imageManager.imageThread.isRunning():
             time.sleep(0.1)
+        # Clean temporary files used by services
+        self.serviceManagerContents.cleanUp()
         if save_settings:
-            # Clean temporary files used by services
-            self.serviceManagerContents.cleanUp()
             if QtCore.QSettings().value(u'advanced/save current plugin',
                 QtCore.QVariant(False)).toBool():
                 QtCore.QSettings().setValue(u'advanced/current media plugin',
                     QtCore.QVariant(self.mediaToolBox.currentIndex()))
-            # Call the cleanup method to shutdown plugins.
-            log.info(u'cleanup plugins')
-            self.pluginManager.finalise_plugins()
+        # Call the cleanup method to shutdown plugins.
+        log.info(u'cleanup plugins')
+        self.pluginManager.finalise_plugins()
+        if save_settings:
             # Save settings
             self.saveSettings()
-            # Close down the display
-            if self.liveController.display:
-                self.liveController.display.close()
-                self.liveController.display = None
+        # Close down the display
+        if self.liveController.display:
+            self.liveController.display.close()
+            self.liveController.display = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
