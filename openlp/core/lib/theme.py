@@ -36,7 +36,6 @@ from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
 
-
 log = logging.getLogger(__name__)
 
 BLANK_THEME_XML = \
