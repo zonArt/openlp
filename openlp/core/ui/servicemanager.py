@@ -302,17 +302,14 @@ class ServiceManager(QtGui.QWidget):
         self.timeAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
-        self.deleteAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', '&Delete From Service'),
-            icon=u':/general/general_delete.png',
-            triggers=self.onDeleteFromService)
+        # Add already existing delete action to the menu.
+        self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
-        self.liveAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', 'Show &Live'),
-            icon=u':/general/general_live.png', triggers=self.makeLive)
+        # Add already existing make live action to the menu.
+        self.menu.addAction(self.serviceManagerList.makeLive)
         self.menu.addSeparator()
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
@@ -564,14 +561,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            # Add this line in after the release to notify the user that saving
-            # their file failed. Commented out due to string freeze.
-            #Receiver.send_message(u'openlp_error_message', {
-            #    u'title': translate(u'OpenLP.ServiceManager',
-            #        u'Error Saving File'),
-            #    u'message': translate(u'OpenLP.ServiceManager',
-            #        u'There was an error saving your file.')
-            #})
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                u'There was an error saving your file.')
+            })
             success = False
         finally:
             if zip:

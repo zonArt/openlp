@@ -34,7 +34,6 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
-import time
 import urllib2
 
 from PyQt4 import QtGui, QtCore
@@ -69,7 +68,7 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(1)
+        self.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
