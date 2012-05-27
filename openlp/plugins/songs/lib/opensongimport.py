@@ -31,6 +31,7 @@ import re
 from lxml import objectify
 from lxml.etree import Error, LxmlError
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
@@ -128,6 +129,12 @@ class OpenSongImport(SongImport):
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
+        if root.tag != u'song':
+            self.logError(file.name, unicode(
+                translate('SongsPlugin.OpenSongImport',
+                ('Invalid OpenSong song file. Missing '
+                'song tag.'))))
+            return
         fields = dir(root)
         decode = {
             u'copyright': self.addCopyright,
@@ -167,7 +174,7 @@ class OpenSongImport(SongImport):
             if semicolon >= 0:
                 this_line = this_line[:semicolon]
             this_line = this_line.strip()
-            if not len(this_line):
+            if not this_line:
                 continue
             # skip guitar chords and page and column breaks
             if this_line.startswith(u'.') or this_line.startswith(u'---') \
@@ -190,15 +197,12 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                if len(verse_tag) == 0:
-                    verse_index = 0
-                else:
-                    verse_index = VerseType.from_loose_input(verse_tag)
+                verse_index = VerseType.from_loose_input(verse_tag) \
+                    if verse_tag else 0
                 verse_tag = VerseType.Tags[verse_index]
                 inst = 1
                 if [verse_tag, verse_num, inst] in our_verse_order \
-                    and verses.has_key(verse_tag) \
-                    and verses[verse_tag].has_key(verse_num):
+                    and verse_num in verses.get(verse_tag, {}):
                     inst = len(verses[verse_tag][verse_num]) + 1
                 continue
             # number at start of line.. it's verse number
@@ -206,11 +210,9 @@ class OpenSongImport(SongImport):
                 verse_num = this_line[0]
                 this_line = this_line[1:].strip()
                 our_verse_order.append([verse_tag, verse_num, inst])
-            if not verses.has_key(verse_tag):
-                verses[verse_tag] = {}
-            if not verses[verse_tag].has_key(verse_num):
-                verses[verse_tag][verse_num] = {}
-            if not verses[verse_tag][verse_num].has_key(inst):
+            verses.setdefault(verse_tag, {})
+            verses[verse_tag].setdefault(verse_num, {})
+            if inst not in verses[verse_tag][verse_num]:
                 verses[verse_tag][verse_num][inst] = []
                 our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
@@ -220,9 +222,17 @@ class OpenSongImport(SongImport):
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
+        verse_joints = {}
         for (verse_tag, verse_num, inst) in our_verse_order:
-            verse_def = u'%s%s' % (verse_tag, verse_num)
             lines = u'\n'.join(verses[verse_tag][verse_num][inst])
+            length = 0
+            while(length < len(verse_num) and verse_num[length].isnumeric()):
+                length += 1
+            verse_def = u'%s%s' % (verse_tag, verse_num[:length])
+            verse_joints[verse_def] = \
+                u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+                if verse_def in verse_joints else lines
+        for verse_def, lines in verse_joints.iteritems():
             self.addVerse(lines, verse_def)
         if not self.verses:
             self.addVerse('')
@@ -237,15 +247,14 @@ class OpenSongImport(SongImport):
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
-                    if not len(verse_tag):
+                    if not verse_tag:
                         verse_tag = VerseType.Tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def
                     verse_num = u'1'
                 verse_def = u'%s%s' % (verse_tag, verse_num)
-                if verses.has_key(verse_tag) and \
-                    verses[verse_tag].has_key(verse_num):
+                if verse_num in verses.get(verse_tag, {}):
                     self.verseOrderList.append(verse_def)
                 else:
                     log.info(u'Got order %s but not in verse tags, dropping'

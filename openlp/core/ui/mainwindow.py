@@ -372,7 +372,6 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         QtCore.QObject.connect(self.fileMenu,
             QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
-        QtCore.QMetaObject.connectSlotsByName(mainWindow)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
         self.importLanguageItem.setVisible(False)
@@ -543,21 +542,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, clipboard, arguments):
+    def __init__(self, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.clipboard = clipboard
-        self.arguments = arguments
+        self.application = application
+        self.clipboard = self.application.clipboard()
+        self.arguments = self.application.args
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
-        self.advancedlSettingsSection = u'advanced'
+        self.advancedSettingsSection = u'advanced'
         self.shortcutsSettingsSection = u'shortcuts'
-        self.servicemanagerSettingsSection = u'servicemanager'
+        self.serviceManagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
         self.displayTagsSection = u'displayTags'
@@ -569,8 +569,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
-        pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.pluginManager = PluginManager(pluginpath)
+        plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
+        self.pluginManager = PluginManager(plugin_path)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
         self.mediaController = MediaController(self)
@@ -662,7 +662,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginHelpers[u'pluginmanager'] = self.pluginManager
         self.pluginHelpers[u'formparent'] = self
         self.pluginHelpers[u'mediacontroller'] = self.mediaController
-        self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
+        self.pluginManager.find_plugins(plugin_path, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
@@ -731,7 +731,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if len(self.arguments):
+        if self.arguments:
             args = []
             for a in self.arguments:
                 args.extend([a])
@@ -796,7 +796,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if answer == QtGui.QMessageBox.No:
             return
         Receiver.send_message(u'cursor_busy')
-        screens = ScreenList.get_instance()
+        screens = ScreenList()
         FirstTimeForm(screens, self).exec_()
         self.firstTime()
         for plugin in self.pluginManager.plugins:
@@ -831,7 +831,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                         'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow',
-                         'The Main Display has been blanked out'))
+                        'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
         Receiver.send_message(u'close_splash')
@@ -945,10 +945,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
-        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.advancedSettingsSection])
         setting_sections.extend([self.uiSettingsSection])
         setting_sections.extend([self.shortcutsSettingsSection])
-        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.serviceManagerSettingsSection])
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         setting_sections.extend([self.headerSection])
@@ -986,11 +986,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # We have a good file, import it.
         for section_key in import_keys:
             value = import_settings.value(section_key)
-            settings.setValue(u'%s' % (section_key) ,
+            settings.setValue(u'%s' % (section_key),
                 QtCore.QVariant(value))
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue( u'file_imported' , QtCore.QVariant(import_file_name))
+        settings.setValue(u'file_imported', QtCore.QVariant(import_file_name))
         settings.setValue(u'file_date_imported',
             now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
@@ -1028,10 +1028,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
-        setting_sections.extend([self.advancedlSettingsSection])
+        setting_sections.extend([self.advancedSettingsSection])
         setting_sections.extend([self.uiSettingsSection])
         setting_sections.extend([self.shortcutsSettingsSection])
-        setting_sections.extend([self.servicemanagerSettingsSection])
+        setting_sections.extend([self.serviceManagerSettingsSection])
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         # Add plugin sections.
@@ -1133,6 +1133,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
+        # The MainApplication did not even enter the event loop (this happens
+        # when OpenLP is not fully loaded). Just ignore the event.
+        if not self.application.eventLoopIsActive:
+            event.ignore()
+            return
         # If we just did a settings import, close without saving changes.
         if self.settingsImported:
             event.accept()
@@ -1185,7 +1190,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Save settings
         self.saveSettings()
         # Close down the display
-        self.liveController.display.close()
+        if self.liveController.display:
+            self.liveController.display.close()
+            self.liveController.display = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -1311,16 +1318,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'Loading QSettings')
        # Migrate Wrap Settings to Slide Limits Settings
-        if QtCore.QSettings().contains(self.generalSettingsSection + 
+        if QtCore.QSettings().contains(self.generalSettingsSection +
             u'/enable slide loop'):
             if QtCore.QSettings().value(self.generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
-                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                QtCore.QSettings().setValue(self.advancedSettingsSection +
                     u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
             else:
-                QtCore.QSettings().setValue(self.advancedlSettingsSection +
+                QtCore.QSettings().setValue(self.advancedSettingsSection +
                     u'/slide limits', QtCore.QVariant(SlideLimits.End))
-            QtCore.QSettings().remove(self.generalSettingsSection + 
+            QtCore.QSettings().remove(self.generalSettingsSection +
                 u'/enable slide loop')
             Receiver.send_message(u'slidecontroller_update_slide_limits')
         settings = QtCore.QSettings()

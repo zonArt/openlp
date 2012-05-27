@@ -50,8 +50,8 @@ class CustomPlugin(Plugin):
             CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
-        self.icon_path = u':/plugins/plugin_custom.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_custom.png'
+        self.icon = build_icon(self.iconPath)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin'

@@ -260,7 +260,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.menu.addActions(self.listView.actions())
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onClickPressed)
+            self.onDoubleClicked)
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onSelectionChange)
@@ -295,9 +295,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
         QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClicked)
         QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'clicked()'), self.onSearchTextButtonClicked)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
@@ -373,12 +373,12 @@ class MediaManagerItem(QtGui.QWidget):
         Process a list for files either from the File Dialog or from Drag and
         Drop
 
-         ``files``
-         The files to be loaded
+        ``files``
+            The files to be loaded.
         """
         names = []
         fullList = []
-        for count in range(0, self.listView.count()):
+        for count in range(self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
             fullList.append(unicode(self.listView.item(count).
                 data(QtCore.Qt.UserRole).toString()))
@@ -458,7 +458,7 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
-    def onClickPressed(self):
+    def onDoubleClicked(self):
         """
         Allows the list click action to be determined dynamically
         """
@@ -582,7 +582,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
-        serviceItem.add_icon(self.plugin.icon_path)
+        serviceItem.add_icon(self.plugin.iconPath)
         if self.generateSlideData(serviceItem, item, xmlVersion, remote):
             return serviceItem
         else:

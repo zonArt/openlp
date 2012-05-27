@@ -88,7 +88,7 @@ class BibleStrings(object):
         """
         These strings should need a good reason to be retranslated elsewhere.
         """
-        self.Booknames = {
+        self.BookNames = {
             u'Gen': translate('BiblesPlugin', 'Genesis'),
             u'Exod': translate('BiblesPlugin', 'Exodus'),
             u'Lev': translate('BiblesPlugin', 'Leviticus'),
@@ -236,7 +236,7 @@ def get_reference_separator(separator_type):
     ``separator_type``
         The role and format of the separator.
     """
-    if len(REFERENCE_SEPARATORS) == 0:
+    if not REFERENCE_SEPARATORS:
         update_reference_separators()
     return REFERENCE_SEPARATORS[separator_type]
 
@@ -247,7 +247,7 @@ def get_reference_match(match_type):
     ``match_type``
         The type of match is ``range_separator``, ``range`` or ``full``.
     """
-    if len(REFERENCE_MATCHES) == 0:
+    if not REFERENCE_MATCHES:
         update_reference_separators()
     return REFERENCE_MATCHES[match_type]
 
@@ -259,14 +259,14 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
 
     ``reference``
         A string. The Bible reference to parse.
-    
+
     ``bible``
         A object. The Bible database object.
-    
+
     ``language_selection``
         An int. The language selection the user has choosen in settings
         section.
-    
+
     ``book_ref_id``
         A string. The book reference id.
 
@@ -355,7 +355,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
         if not book_ref_id:
-            booknames = BibleStrings().Booknames
+            book_names = BibleStrings().BookNames
             # escape reserved characters
             book_escaped = book
             for character in u'\\.^$*+?{}[]()':
@@ -368,37 +368,26 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                 if db_book:
                     book_ref_id = db_book.book_reference_id
             elif language_selection == LanguageSelection.Application:
-                book_list = []
-                for key, value in booknames.iteritems():
-                    if regex_book.match(unicode(value)):
-                        book_list.append(key)
-                books = []
-                if book_list:
-                    for value in book_list:
-                        item = BiblesResourcesDB.get_book(value)
-                        if item:
-                            books.append(item)
-                if books:
-                    for value in books:        
-                        if bible.get_book_by_book_ref_id(value[u'id']):
-                            book_ref_id = value[u'id']
-                            break
+                books = filter(lambda key:
+                    regex_book.match(unicode(book_names[key])), book_names.keys())
+                books = filter(None, map(BiblesResourcesDB.get_book, books))
+                for value in books:
+                    if bible.get_book_by_book_ref_id(value[u'id']):
+                        book_ref_id = value[u'id']
+                        break
             elif language_selection == LanguageSelection.English:
                 books = BiblesResourcesDB.get_books_like(book)
                 if books:
-                    book_list = []
-                    for value in books:
-                        if regex_book.match(value[u'name']):
-                            book_list.append(value)
+                    book_list = filter(
+                        lambda value: regex_book.match(value[u'name']), books)
                     if not book_list:
                         book_list = books
-                    for value in book_list:        
+                    for value in book_list:
                         if bible.get_book_by_book_ref_id(value[u'id']):
                             book_ref_id = value[u'id']
                             break
-        else:
-            if not bible.get_book_by_book_ref_id(book_ref_id):
-                book_ref_id = False
+        elif not bible.get_book_by_book_ref_id(book_ref_id):
+            book_ref_id = False
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)
         ref_list = []

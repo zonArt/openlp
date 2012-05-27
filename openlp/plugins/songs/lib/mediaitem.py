@@ -68,7 +68,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.editSongForm = EditSongForm(self, self.plugin.formparent,
+        self.editSongForm = EditSongForm(self, self.plugin.formParent,
             self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
@@ -119,7 +119,7 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self.onSearchTextButtonClick)
+            self.onSearchTextButtonClicked)
 
     def addCustomContextActions(self):
         create_widget_action(self.listView, separator=True)
@@ -151,23 +151,29 @@ class SongMediaItem(MediaManagerItem):
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
             (SongSearch.Entire, u':/songs/song_search_all.png',
-                translate('SongsPlugin.MediaItem', 'Entire Song')),
+                translate('SongsPlugin.MediaItem', 'Entire Song'),
+                translate('SongsPlugin.MediaItem', 'Search Entire Song...')),
             (SongSearch.Titles, u':/songs/song_search_title.png',
-                translate('SongsPlugin.MediaItem', 'Titles')),
+                translate('SongsPlugin.MediaItem', 'Titles'),
+                translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (SongSearch.Lyrics, u':/songs/song_search_lyrics.png',
-                translate('SongsPlugin.MediaItem', 'Lyrics')),
+                translate('SongsPlugin.MediaItem', 'Lyrics'),
+                translate('SongsPlugin.MediaItem', 'Search Lyrics...')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
-                SongStrings.Authors),
+                SongStrings.Authors,
+                translate('SongsPlugin.MediaItem', 'Search Authors...')),
             (SongSearch.Books, u':/songs/song_book_edit.png',
-                 SongStrings.SongBooks),
-            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
+                SongStrings.SongBooks,
+                translate('SongsPlugin.MediaItem', 'Search Song Books...')),
+            (SongSearch.Themes, u':/slides/slide_theme.png',
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
-    def onSearchTextButtonClick(self):
+    def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
         QtCore.QSettings().setValue(u'%s/last search type' %
             self.settingsSection,
@@ -245,7 +251,7 @@ class SongMediaItem(MediaManagerItem):
             item = self.buildServiceItem(self.editItem)
             self.plugin.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
         log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
@@ -289,9 +295,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Book')
         self.listView.clear()
         for book in searchresults:
-            songs = sorted(book.songs, key=lambda song: int(
-                re.sub(r'[^0-9]', u' ', song.song_number).partition(' ')[0])
-                if len(re.sub(r'[^\w]', ' ', song.song_number)) else 0)
+            songs = sorted(book.songs, key=lambda song:
+                int(re.match(r'[0-9]+', u'0' + song.song_number).group()))
             for song in songs:
                 # Do not display temporary songs
                 if song.temporary:
@@ -309,7 +314,7 @@ class SongMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.searchTextEdit.clear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
 
     def onSearchTextEditChanged(self, text):
         """
@@ -324,8 +329,8 @@ class SongMediaItem(MediaManagerItem):
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
                 search_length = 3
             if len(text) > search_length:
-                self.onSearchTextButtonClick()
-            elif len(text) == 0:
+                self.onSearchTextButtonClicked()
+            elif not text:
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
@@ -402,6 +407,8 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(items))
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -420,7 +427,10 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-            self.onSearchTextButtonClick()
+                self.plugin.formParent.incrementProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
+            self.onSearchTextButtonClicked()
 
     def onCloneClick(self):
         """
@@ -480,7 +490,7 @@ class SongMediaItem(MediaManagerItem):
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
-                    if len(order) == 0:
+                    if not order:
                         break
                     for verse in verseList:
                         if verse[0][u'type'][0].lower() == order[0] and \
@@ -519,7 +529,7 @@ class SongMediaItem(MediaManagerItem):
             u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         # Add the audio file to the service item.
-        if len(song.media_files) > 0:
+        if song.media_files:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
             service_item.background_audio = \
                 [m.file_name for m in song.media_files]
@@ -564,20 +574,20 @@ class SongMediaItem(MediaManagerItem):
                     editId = song.id
                     break
                 # If there's any backing tracks, copy them over.
-                if len(item.background_audio) > 0:
+                if item.background_audio:
                     self._updateBackgroundAudio(song, item)
         if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
         elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             temporary = True

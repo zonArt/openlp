@@ -25,8 +25,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`wowimport` module provides the functionality for importing Words of
-Worship songs into the OpenLP database.
+The :mod:`songshowplusimport` module provides the functionality for importing 
+SongShow Plus songs into the OpenLP database.
 """
 import os
 import logging
@@ -204,7 +204,7 @@ class SongShowPlusImport(SongImport):
         elif verse_type == "pre-chorus":
             verse_tag = VerseType.Tags[VerseType.PreChorus]
         else:
-            if not self.otherList.has_key(verse_name):
+            if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
                 self.otherCount = self.otherCount + 1

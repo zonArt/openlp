@@ -59,7 +59,7 @@ class AdvancedTab(SettingsTab):
             '#strftime-strptime-behavior for more information.'))
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
-        self.icon_path = u':/system/system_settings.png'
+        self.iconPath = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
 
@@ -195,33 +195,20 @@ class AdvancedTab(SettingsTab):
         # Service Item Slide Limits
         self.slideGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.slideGroupBox.setObjectName(u'slideGroupBox')
-        self.slideLayout = QtGui.QFormLayout(self.slideGroupBox)
-        self.slideLayout.setLabelAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.slideLayout.setFormAlignment(
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.slideLayout = QtGui.QVBoxLayout(self.slideGroupBox)
         self.slideLayout.setObjectName(u'slideLayout')
+        self.slideLabel = QtGui.QLabel(self.slideGroupBox)
+        self.slideLabel.setWordWrap(True)
+        self.slideLayout.addWidget(self.slideLabel)
         self.endSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
         self.endSlideRadioButton.setObjectName(u'endSlideRadioButton')
-        self.endSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.endSlideLabel.setWordWrap(True)
-        self.endSlideLabel.setObjectName(u'endSlideLabel')
-        self.slideLayout.addRow(self.endSlideRadioButton, self.endSlideLabel)
+        self.slideLayout.addWidget(self.endSlideRadioButton)
         self.wrapSlideRadioButton = QtGui.QRadioButton(self.slideGroupBox)
         self.wrapSlideRadioButton.setObjectName(u'wrapSlideRadioButton')
-        self.wrapSlideLabel = QtGui.QLabel(self.slideGroupBox)
-        self.wrapSlideLabel.setWordWrap(True)
-        self.wrapSlideLabel.setObjectName(u'wrapSlideLabel')
-        self.slideLayout.addRow(self.wrapSlideRadioButton,
-            self.wrapSlideLabel)
+        self.slideLayout.addWidget(self.wrapSlideRadioButton)
         self.nextItemRadioButton = QtGui.QRadioButton(self.slideGroupBox)
-        self.nextItemRadioButton.setChecked(True)
         self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
-        self.nextItemLabel = QtGui.QLabel(self.slideGroupBox)
-        self.nextItemLabel.setWordWrap(True)
-        self.nextItemLabel.setObjectName(u'nextItemLabel')
-        self.slideLayout.addRow(self.nextItemRadioButton,
-            self.nextItemLabel)
+        self.slideLayout.addWidget(self.nextItemRadioButton)
         self.rightLayout.addWidget(self.slideGroupBox)
         self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
         self.x11GroupBox.setObjectName(u'x11GroupBox')
@@ -246,22 +233,22 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'textChanged(QString)'),
             self.updateServiceNameExample)
         QtCore.QObject.connect(self.serviceNameRevertButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onServiceNameRevertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onServiceNameRevertButtonClicked)
         QtCore.QObject.connect(self.defaultColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultColorButtonClicked)
         QtCore.QObject.connect(self.defaultBrowseButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultBrowseButtonClicked)
         QtCore.QObject.connect(self.defaultRevertButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDefaultRevertButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
         QtCore.QObject.connect(self.endSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEndSlideButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEndSlideButtonClicked)
         QtCore.QObject.connect(self.wrapSlideRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onWrapSlideButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onWrapSlideButtonClicked)
         QtCore.QObject.connect(self.nextItemRadioButton,
-            QtCore.SIGNAL(u'pressed()'), self.onnextItemButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onnextItemButtonClicked)
 
     def retranslateUi(self):
         """
@@ -340,22 +327,14 @@ class AdvancedTab(SettingsTab):
         # Slide Limits
         self.slideGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
+        self.slideLabel.setText(translate('OpenLP.GeneralTab',
+            'Behavior of next/previous on the last/first slide:'))
         self.endSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&End Slide'))
-        self.endSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'stop at the top and bottom slides of each Service Item.'))
+            translate('OpenLP.GeneralTab', '&Remain on Slide'))
         self.wrapSlideRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Wrap Slide'))
-        self.wrapSlideLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'wrap around at the top and bottom slides of each Service Item.'))
-        self.nextItemRadioButton.setText(
-            translate('OpenLP.GeneralTab', '&Next Item'))
-        self.nextItemLabel.setText(
-            translate('OpenLP.GeneralTab', 'Up and down arrow keys '
-            'advance to the next or previous Service Item from the '
-            'top and bottom slides of each Service Item.'))
+            translate('OpenLP.GeneralTab', '&Wrap around'))
+        self.nextItemRadioButton.setText(translate('OpenLP.GeneralTab',
+            '&Move to next/previous service item'))
 
     def load(self):
         """
@@ -506,11 +485,11 @@ class AdvancedTab(SettingsTab):
         self.serviceNameTime.setEnabled(service_day is not 7)
         self.updateServiceNameExample(None)
 
-    def onServiceNameRevertButtonPressed(self):
+    def onServiceNameRevertButtonClicked(self):
         self.serviceNameEdit.setText(self.defaultServiceName)
         self.serviceNameEdit.setFocus()
 
-    def onDefaultColorButtonPressed(self):
+    def onDefaultColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.defaultColor), self)
         if new_color.isValid():
@@ -518,7 +497,7 @@ class AdvancedTab(SettingsTab):
             self.defaultColorButton.setStyleSheet(
                 u'background-color: %s' % self.defaultColor)
 
-    def onDefaultBrowseButtonPressed(self):
+    def onDefaultBrowseButtonClicked(self):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
             UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
@@ -528,7 +507,7 @@ class AdvancedTab(SettingsTab):
             self.defaultFileEdit.setText(filename)
         self.defaultFileEdit.setFocus()
 
-    def onDefaultRevertButtonPressed(self):
+    def onDefaultRevertButtonClicked(self):
         self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
         self.defaultFileEdit.setFocus()
 
@@ -541,11 +520,11 @@ class AdvancedTab(SettingsTab):
         """
         self.displayChanged = True
 
-    def onEndSlideButtonPressed(self):
+    def onEndSlideButtonClicked(self):
         self.slide_limits = SlideLimits.End
 
-    def onWrapSlideButtonPressed(self):
+    def onWrapSlideButtonClicked(self):
         self.slide_limits = SlideLimits.Wrap
 
-    def onnextItemButtonPressed(self):
+    def onnextItemButtonClicked(self):
         self.slide_limits = SlideLimits.Next

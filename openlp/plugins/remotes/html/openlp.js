@@ -203,9 +203,17 @@ window.OpenLP = {
   },
   blankDisplay: function (event) {
     event.preventDefault();
-    $.getJSON("/api/display/hide");
+    $.getJSON("/api/display/blank");
   },
-  unblankDisplay: function (event) {
+  themeDisplay: function (event) {
+    event.preventDefault();
+    $.getJSON("/api/display/theme");
+  },
+  desktopDisplay: function (event) {
+    event.preventDefault();
+    $.getJSON("/api/display/desktop");
+  },
+  showDisplay: function (event) {
     event.preventDefault();
     $.getJSON("/api/display/show");
   },
@@ -238,9 +246,8 @@ window.OpenLP = {
         else {
             $.each(data.results.items, function (idx, value) {
               ul.append($("<li>").append($("<a>").attr("href", "#options")
-                  .attr("data-rel", "dialog").attr("data-transition", "pop")
-                  .attr("value", value[0]).click(OpenLP.showOptions)
-                  .text(value[1])));
+                  .attr("data-rel", "dialog").attr("value", value[0])
+                  .click(OpenLP.showOptions).text(value[1])));
             });
         }
         ul.listview("refresh");
@@ -276,30 +283,53 @@ window.OpenLP = {
       "/api/" + $("#search-plugin").val() + "/add",
       {"data": text},
       function () {
-        history.back();
+        $("#options").dialog("close");
       }
     );
-    $("#options").dialog("close");
-    $.mobile.changePage("#service-manager");
+  },
+  addAndGoToService: function (event) {
+    event.preventDefault();
+    var id = $("#selected-item").val();
+    if (typeof id !== "number") {
+        id = "\"" + id + "\"";
+    }
+    var text = "{\"request\": {\"id\": " + id + "}}";
+    $.getJSON(
+      "/api/" + $("#search-plugin").val() + "/add",
+      {"data": text},
+      function () {
+        //$("#options").dialog("close");
+        $.mobile.changePage("#service-manager");
+      }
+    );
   },
   escapeString: function (string) { 
     return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
+// Initial jQueryMobile options
+$(document).bind("mobileinit", function(){
+  $.mobile.defaultDialogTransition = "none";
+  $.mobile.defaultPageTransition = "none";
+});
 // Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#service-refresh").live("click", OpenLP.loadService);
-$("#service-top-next, #service-btm-next").live("click", OpenLP.nextItem);
-$("#service-top-previous, #service-btm-previous").live("click", OpenLP.previousItem);
-$("#service-top-blank, #service-btm-blank").live("click", OpenLP.blankDisplay);
-$("#service-top-unblank, #service-btm-unblank").live("click", OpenLP.unblankDisplay);
+$("#service-next").live("click", OpenLP.nextItem);
+$("#service-previous").live("click", OpenLP.previousItem);
+$("#service-blank").live("click", OpenLP.blankDisplay);
+$("#service-theme").live("click", OpenLP.themeDisplay);
+$("#service-desktop").live("click", OpenLP.desktopDisplay);
+$("#service-show").live("click", OpenLP.showDisplay);
 // Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 $("#controller-refresh").live("click", OpenLP.loadController);
-$("#controller-top-next, #controller-btm-next").live("click", OpenLP.nextSlide);
-$("#controller-top-previous, #controller-btm-previous").live("click", OpenLP.previousSlide);
-$("#controller-top-blank, #controller-btm-blank").live("click", OpenLP.blankDisplay);
-$("#controller-top-unblank, #controller-btm-unblank").live("click", OpenLP.unblankDisplay);
+$("#controller-next").live("click", OpenLP.nextSlide);
+$("#controller-previous").live("click", OpenLP.previousSlide);
+$("#controller-blank").live("click", OpenLP.blankDisplay);
+$("#controller-theme").live("click", OpenLP.themeDisplay);
+$("#controller-desktop").live("click", OpenLP.desktopDisplay);
+$("#controller-show").live("click", OpenLP.showDisplay);
 // Alerts
 $("#alert-submit").live("click", OpenLP.showAlert);
 // Search
@@ -312,6 +342,7 @@ $("#search-text").live("keypress", function(event) {
 });
 $("#go-live").live("click", OpenLP.goLive);
 $("#add-to-service").live("click", OpenLP.addToService);
+$("#add-and-go-to-service").live("click", OpenLP.addAndGoToService);
 // Poll the server twice a second to get any updates.
 $.ajaxSetup({cache: false});
 $("#search").live("pageinit", function (event) {

@@ -100,6 +100,7 @@ class Image(object):
     variables ``image`` and ``image_bytes`` to ``None`` and add the image object
     to the queue of images to process.
     """
+    secondary_priority = 0
     def __init__(self, name, path, source, background):
         self.name = name
         self.path = path
@@ -108,25 +109,40 @@ class Image(object):
         self.priority = Priority.Normal
         self.source = source
         self.background = background
+        self.secondary_priority = Image.secondary_priority
+        Image.secondary_priority += 1
 
 
 class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
+
+    Each item in the queue must be tuple with three values. The first value
+    is the :class:`Image`'s ``priority`` attribute, the second value
+    the :class:`Image`'s ``secondary_priority`` attribute. The last value the
+    :class:`Image` instance itself::
+
+        (image.priority, image.secondary_priority, image)
+
+    Doing this, the :class:`Queue.PriorityQueue` will sort the images according
+    to their priorities, but also according to there number. However, the number
+    only has an impact on the result if there are more images with the same
+    priority. In such case the image which has been added earlier is privileged.
     """
     def modify_priority(self, image, new_priority):
         """
         Modifies the priority of the given ``image``.
 
         ``image``
-            The image to remove. This should be an ``Image`` instance.
+            The image to remove. This should be an :class:`Image` instance.
 
         ``new_priority``
-            The image's new priority.
+            The image's new priority. See the :class:`Priority` class for
+            priorities.
         """
         self.remove(image)
         image.priority = new_priority
-        self.put((image.priority, image))
+        self.put((image.priority, image.secondary_priority, image))
 
     def remove(self, image):
         """
@@ -135,8 +151,8 @@ class PriorityQueue(Queue.PriorityQueue):
         ``image``
             The image to remove. This should be an ``Image`` instance.
         """
-        if (image.priority, image) in self.queue:
-            self.queue.remove((image.priority, image))
+        if (image.priority, image.secondary_priority, image) in self.queue:
+            self.queue.remove((image.priority, image.secondary_priority, image))
 
 
 class ImageManager(QtCore.QObject):
@@ -147,7 +163,7 @@ class ImageManager(QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        current_screen = ScreenList.get_instance().current
+        current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
@@ -161,7 +177,7 @@ class ImageManager(QtCore.QObject):
         Screen has changed size so rebuild the cache to new size.
         """
         log.debug(u'update_display')
-        current_screen = ScreenList.get_instance().current
+        current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
@@ -261,7 +277,8 @@ class ImageManager(QtCore.QObject):
         if not name in self._cache:
             image = Image(name, path, source, background)
             self._cache[name] = image
-            self._conversion_queue.put((image.priority, image))
+            self._conversion_queue.put(
+                (image.priority, image.secondary_priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
@@ -282,7 +299,7 @@ class ImageManager(QtCore.QObject):
         Actually does the work.
         """
         log.debug(u'_process_cache')
-        image = self._conversion_queue.get()[1]
+        image = self._conversion_queue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height,

@@ -31,7 +31,6 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
@@ -141,7 +140,8 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.settingsSection, self.suffix)
+        files = SettingsManager.get_files(self.settingsSection,
+            self.suffix)
         if u'alternative_book_names.sqlite' in files:
             files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
@@ -164,12 +164,12 @@ class BibleManager(object):
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_object(BibleMeta,
-                u'download source')
+                u'download_source')
             if source:
                 download_name = self.db_cache[name].get_object(BibleMeta,
-                    u'download name').value
+                    u'download_name').value
                 meta_proxy = self.db_cache[name].get_object(BibleMeta,
-                    u'proxy url')
+                    u'proxy_server')
                 web_bible = HTTPBible(self.parent, path=self.path,
                     file=filename, download_source=source.value,
                     download_name=download_name)
@@ -203,6 +203,27 @@ class BibleManager(object):
         name = importer.register(self.import_wizard)
         self.db_cache[name] = importer
         return importer
+
+    def delete_bible(self, name):
+        """
+        Delete a bible completly.
+
+        ``name``
+            The name of the bible.
+        """
+        log.debug(u'BibleManager.delete_bible("%s")', name)
+        files = SettingsManager.get_files(self.settingsSection,
+            self.suffix)
+        if u'alternative_book_names.sqlite' in files:
+            files.remove(u'alternative_book_names.sqlite')
+        for filename in files:
+            bible = BibleDB(self.parent, path=self.path, file=filename)
+            # Remove the bible files
+            if name == bible.get_name():
+                bible.session.close()
+                if delete_file(os.path.join(self.path, filename)):
+                    return True
+        return False
 
     def get_bibles(self):
         """
@@ -293,7 +314,7 @@ class BibleManager(object):
                 - Genesis 1:1-10,15-20
                 - Genesis 1:1-2:10
                 - Genesis 1:1-10,2:1-10
-        
+
         ``book_ref_id``
             Unicode. The book referece id from the book in versetext.
             For second bible this is necessary.
@@ -309,9 +330,7 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = QtCore.QSettings().value(
-            self.settingsSection + u'/bookname language',
-            QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.get_language_selection(bible)
         reflist = parse_reference(versetext, self.db_cache[bible],
             language_selection, book_ref_id)
         if reflist:
@@ -344,6 +363,26 @@ class BibleManager(object):
                     })
             return None
 
+    def get_language_selection(self, bible):
+        """
+        Returns the language selection of a bible.
+
+        ``bible``
+            Unicode. The Bible to get the language selection from.
+        """
+        log.debug(u'BibleManager.get_language_selection("%s")', bible)
+        language_selection = self.get_meta_data(bible, u'book_name_language')
+        if language_selection:
+            try:
+                language_selection = int(language_selection.value)
+            except (ValueError, TypeError):
+                language_selection = LanguageSelection.Application
+        if language_selection is None or language_selection == -1:
+            language_selection = QtCore.QSettings().value(
+                self.settingsSection + u'/bookname language',
+                QtCore.QVariant(0)).toInt()[0]
+        return language_selection
+
     def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
@@ -369,17 +408,17 @@ class BibleManager(object):
             return None
         # Check if the bible or second_bible is a web bible.
         webbible = self.db_cache[bible].get_object(BibleMeta,
-            u'download source')
+            u'download_source')
         second_webbible = u''
         if second_bible:
             second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
-                u'download source')
+                u'download_source')
         if webbible or second_webbible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'Web Bible cannot be used'),
+                    'Web Bible cannot be used'),
                 u'message': translate('BiblesPlugin.BibleManager',
-                'Text Search is not available with Web Bibles.')
+                    'Text Search is not available with Web Bibles.')
                 })
             return None
         if text:
@@ -387,24 +426,27 @@ class BibleManager(object):
         else:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'Scripture Reference Error'),
+                    'Scripture Reference Error'),
                 u'message': translate('BiblesPlugin.BibleManager',
-                'You did not enter a search keyword.\n'
-                'You can separate different keywords by a space to search for '
-                'all of your keywords and you can separate them by a comma to '
-                'search for one of them.')
+                    'You did not enter a search keyword.\n'
+                    'You can separate different keywords by a space to '
+                    'search for all of your keywords and you can separate '
+                    'them by a comma to search for one of them.')
                 })
             return None
 
-    def save_meta_data(self, bible, version, copyright, permissions):
+    def save_meta_data(self, bible, version, copyright, permissions, 
+        book_name_language=None):
         """
         Saves the bibles meta data.
         """
-        log.debug(u'save_meta data %s,%s, %s,%s',
+        log.debug(u'save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
-        self.db_cache[bible].create_meta(u'Version', version)
-        self.db_cache[bible].create_meta(u'Copyright', copyright)
-        self.db_cache[bible].create_meta(u'Permissions', permissions)
+        self.db_cache[bible].save_meta(u'name', version)
+        self.db_cache[bible].save_meta(u'copyright', copyright)
+        self.db_cache[bible].save_meta(u'permissions', permissions)
+        self.db_cache[bible].save_meta(u'book_name_language',
+            book_name_language)
 
     def get_meta_data(self, bible, key):
         """
@@ -412,6 +454,13 @@ class BibleManager(object):
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
+    
+    def update_book(self, bible, book):
+        """
+        Update a book of the bible.
+        """
+        log.debug(u'BibleManager.update_book("%s", "%s")', bible, book.name)
+        self.db_cache[bible].update_book(book)
 
     def exists(self, name):
         """

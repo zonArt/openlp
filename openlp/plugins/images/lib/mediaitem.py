@@ -105,26 +105,30 @@ class ImageMediaItem(MediaManagerItem):
             'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
                     delete_file(os.path.join(self.servicePath,
                         unicode(text.text())))
                 self.listView.takeItem(row)
+                self.plugin.formParent.incrementProgressBar()
             SettingsManager.set_list(self.settingsSection,
                 u'images', self.getFileList())
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
-            self.plugin.formparent.displayProgressBar(len(images))
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(images))
         # Sort the themes by its filename considering language specific
         # characters. lower() is needed for windows!
         images.sort(cmp=locale.strcoll,
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for imageFile in images:
-            if not initialLoad:
-                self.plugin.formparent.incrementProgressBar()
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if not os.path.exists(unicode(imageFile)):
@@ -139,8 +143,11 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setToolTip(imageFile)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
+            if not initialLoad:
+                self.plugin.formParent.incrementProgressBar()
         if not initialLoad:
-            self.plugin.formparent.finishedProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):

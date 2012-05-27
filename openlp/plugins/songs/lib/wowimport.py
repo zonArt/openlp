@@ -53,7 +53,7 @@ class WowImport(SongImport):
     * A block can be a verse, chorus or bridge.
 
     File Header:
-        Bytes are counted from one, i.e. the first byte is byte 1. The first 19 
+        Bytes are counted from one, i.e. the first byte is byte 1. The first 19
         bytes should be "WoW File \\nSong Words" The bytes after this and up to
         the 56th byte, can change but no real meaning has been found. The
         56th byte specifies how many blocks there are. The first block starts
@@ -71,7 +71,7 @@ class WowImport(SongImport):
         * ``SOH`` (0x01) - Chorus
         * ``STX`` (0x02) - Bridge
 
-        Blocks are seperated by two bytes. The first byte is 0x01, and the
+        Blocks are separated by two bytes. The first byte is 0x01, and the
         second byte is 0x80.
 
     Lines:
@@ -126,7 +126,7 @@ class WowImport(SongImport):
                         ('Invalid Words of Worship song file. Missing '
                             '"CSongDoc::CBlock" string.'))))
                     continue
-                # Seek to the beging of the first block
+                # Seek to the beginning of the first block
                 song_data.seek(82)
                 for block in range(no_of_blocks):
                     self.linesToRead = ord(song_data.read(4)[:1])
@@ -140,7 +140,7 @@ class WowImport(SongImport):
                         block_text += self.lineText
                         self.linesToRead -= 1
                     block_type = BLOCK_TYPES[ord(song_data.read(4)[:1])]
-                    # Blocks are seperated by 2 bytes, skip them, but not if
+                    # Blocks are separated by 2 bytes, skip them, but not if
                     # this is the last block!
                     if block + 1 < no_of_blocks:
                         song_data.seek(2, os.SEEK_CUR)

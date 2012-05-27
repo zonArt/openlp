@@ -220,6 +220,8 @@ class ThemeManager(QtGui.QWidget):
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % new_name
                 self.themeListWidget.item(count).setText(name)
+                self.deleteToolbarAction.setVisible(
+                    item not in self.themeListWidget.selectedItems())
 
     def changeGlobalFromScreen(self, index=-1):
         """
@@ -443,7 +445,7 @@ class ThemeManager(QtGui.QWidget):
             self.firstTime()
             files = SettingsManager.get_files(self.settingsSection, u'.png')
             # No themes have been found so create one
-            if len(files) == 0:
+            if not files:
                 theme = ThemeXML()
                 theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
