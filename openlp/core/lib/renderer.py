@@ -111,7 +111,6 @@ class Renderer(object):
         self.theme_data = None
         self._cache_background_image(self.global_theme_data)
 
-
     def set_service_theme(self, service_theme):
         """
         Set the service-level theme.
@@ -123,7 +122,6 @@ class Renderer(object):
         self.theme_data = None
         self._cache_background_image(self.themeManager.getThemeData
             (service_theme))
-
 
     def _cache_background_image(self,temp_theme):
         """
@@ -137,7 +135,6 @@ class Renderer(object):
             self.imageManager.add_image(temp_theme.theme_name,
                 temp_theme.background_filename, u'theme',
                 QtGui.QColor(temp_theme.background_border_color))
-
 
     def set_override_theme(self, override_theme, override_levels=False):
         """
