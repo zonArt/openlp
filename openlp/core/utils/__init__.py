@@ -34,7 +34,6 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
-import time
 import urllib2
 
 from openlp.core.lib.settings import Settings
@@ -71,7 +70,7 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(1)
+        self.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):

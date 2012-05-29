@@ -69,7 +69,7 @@ class Renderer(object):
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None

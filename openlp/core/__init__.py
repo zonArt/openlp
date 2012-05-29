@@ -92,6 +92,7 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
+        self.eventLoopIsActive = True
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
@@ -99,6 +100,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        self.eventLoopIsActive = False
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -110,7 +112,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
-        screens = ScreenList(self.desktop())
+        screens = ScreenList.create(self.desktop())
         # First time checks in settings
         has_run_wizard = Settings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
@@ -128,7 +130,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow = MainWindow(self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen

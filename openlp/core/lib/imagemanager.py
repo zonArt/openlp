@@ -163,7 +163,7 @@ class ImageManager(QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        current_screen = ScreenList.get_instance().current
+        current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         self._cache = {}
@@ -177,7 +177,7 @@ class ImageManager(QtCore.QObject):
         Screen has changed size so rebuild the cache to new size.
         """
         log.debug(u'update_display')
-        current_screen = ScreenList.get_instance().current
+        current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte

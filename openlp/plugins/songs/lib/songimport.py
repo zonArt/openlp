@@ -50,6 +50,13 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
+    @staticmethod
+    def isValidSource(**kwargs):
+        """
+        Override this method to validate the source prior to import.
+        """
+        pass
+
     def __init__(self, manager, **kwargs):
         """
         Initialise and create defaults for properties
@@ -65,14 +72,16 @@ class SongImport(QtCore.QObject):
             self.importSource = kwargs[u'filename']
         elif u'filenames' in kwargs:
             self.importSource = kwargs[u'filenames']
+        elif u'folder' in kwargs:
+            self.importSource = kwargs[u'folder']
         else:
-            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+            raise KeyError(
+                u'Keyword arguments "filename[s]" or "folder" not supplied.')
         log.debug(self.importSource)
         self.importWizard = None
         self.song = None
         self.stopImportFlag = False
         self.setDefaults()
-        self.errorLog = []
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stopImport)
 

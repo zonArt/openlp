@@ -42,36 +42,40 @@ class ScreenList(object):
     """
     Wrapper to handle the parameters of the display screen.
 
-    To get access to the screen list call ``ScreenList.get_instance()``.
+    To get access to the screen list call ``ScreenList()``.
     """
     log.info(u'Screen loaded')
-    instance = None
+    __instance__ = None
 
-    @staticmethod
-    def get_instance():
-        return ScreenList.instance
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = object.__new__(cls)
+        return cls.__instance__
 
-    def __init__(self, desktop):
+    @classmethod
+    def create(cls, desktop):
         """
         Initialise the screen list.
 
         ``desktop``
             A ``QDesktopWidget`` object.
         """
-        ScreenList.instance = self
-        self.desktop = desktop
-        self.preview = None
-        self.current = None
-        self.override = None
-        self.screen_list = []
-        self.display_count = 0
-        self.screen_count_changed()
-        self._load_screen_settings()
+        screen_list = cls()
+        screen_list.desktop = desktop
+        screen_list.preview = None
+        screen_list.current = None
+        screen_list.override = None
+        screen_list.screen_list = []
+        screen_list.display_count = 0
+        screen_list.screen_count_changed()
+        screen_list._load_screen_settings()
         QtCore.QObject.connect(desktop,
-            QtCore.SIGNAL(u'resized(int)'), self.screen_resolution_changed)
+            QtCore.SIGNAL(u'resized(int)'),
+            screen_list.screen_resolution_changed)
         QtCore.QObject.connect(desktop,
             QtCore.SIGNAL(u'screenCountChanged(int)'),
-            self.screen_count_changed)
+            screen_list.screen_count_changed)
+        return screen_list
 
     def screen_resolution_changed(self, number):
         """
@@ -234,8 +238,8 @@ class ScreenList(object):
         y = window.y() + (window.height() / 2)
         for screen in self.screen_list:
             size = screen[u'size']
-            if x >= size.x() and x <= (size.x() + size.width()) \
-                and y >= size.y() and y <= (size.y() + size.height()):
+            if x >= size.x() and x <= (size.x() + size.width()) and \
+                y >= size.y() and y <= (size.y() + size.height()):
                 return screen[u'number']
 
     def _load_screen_settings(self):
