@@ -130,13 +130,13 @@ class SongFormatAttr(object):
         * ``availability`` Whether song format is available.
         * ``select_mode`` Whether format accepts single file, multiple files, or
           single folder.
-        * ``filter`` File extension filter for Open File/Folder dialog.
+        * ``filter`` File extension filter for QFileDialog.
 
     Optional/custom text values for SongImportForm widgets:
        * ``combo_box_text`` Combo box selector (default is format name).
        * ``disabled_label_text`` Required for disablable song formats.
-       * ``get_files_title`` Title for Open File/Folder dialog (default includes
-         format name).
+       * ``get_files_title`` Title for QFileDialog (default includes format
+         name).
        * ``invalid_source_msg`` Message shown when source does not validate.
     """
     # Required attributes
@@ -339,7 +339,7 @@ class SongFormatAttr(object):
     @staticmethod
     def set(format, attribute, value):
         """
-        Set specified song format attribute to supplied value.
+        Set specified song format attribute to the supplied value.
         """
         SongFormat._attributes[format][attribute] = value
 

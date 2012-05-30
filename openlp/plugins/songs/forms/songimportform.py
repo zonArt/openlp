@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.plugins.songs.lib.importer import (SongFormat, SongFormatAttr,
-    SongFormatSelect)
+from openlp.plugins.songs.lib.importer import SongFormat, SongFormatAttr, \
+    SongFormatSelect
 
 log = logging.getLogger(__name__)
 
@@ -59,8 +59,6 @@ class SongImportForm(OpenLPWizard):
             The songs plugin.
         """
         self.clipboard = plugin.formParent.clipboard
-        self.activeFormat = None
-        self.formatWidgets = dict([(f, {}) for f in SongFormat.get_format_list()])
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
             u':/wizards/wizard_importsong.bmp')
 
@@ -68,6 +66,8 @@ class SongImportForm(OpenLPWizard):
         """
         Set up the song wizard UI.
         """
+        self.formatWidgets = dict([(format, {}) for format in
+            SongFormat.get_format_list()])
         OpenLPWizard.setupUi(self, image)
         self.activeFormat = SongFormat.OpenLyrics
         self.formatStack.setCurrentIndex(self.activeFormat)
@@ -82,7 +82,7 @@ class SongImportForm(OpenLPWizard):
         button.
         """
         self.activeFormat = index
-        self.formatStack.setCurrentIndex(self.activeFormat)
+        self.formatStack.setCurrentIndex(index)
         next_button = self.button(QtGui.QWizard.NextButton)
         next_button.setEnabled(SongFormatAttr.get(self.activeFormat,
             SongFormatAttr.availability))
@@ -92,8 +92,7 @@ class SongImportForm(OpenLPWizard):
         Song wizard specific initialisation.
         """
         for format in SongFormat.get_format_list():
-            if not SongFormatAttr.get(format,
-                SongFormatAttr.availability):
+            if not SongFormatAttr.get(format, SongFormatAttr.availability):
                 self.formatWidgets[format][u'disabledWidget'].setVisible(True)
                 self.formatWidgets[format][u'importWidget'].setVisible(False)
 
@@ -102,8 +101,7 @@ class SongImportForm(OpenLPWizard):
         Song wizard specific signals.
         """
         for format in SongFormat.get_format_list():
-            select_mode = SongFormatAttr.get(format,
-                SongFormatAttr.select_mode)
+            select_mode = SongFormatAttr.get(format, SongFormatAttr.select_mode)
             if select_mode == SongFormatSelect.MultipleFiles:
                 QtCore.QObject.connect(self.formatWidgets[format][u'addButton'],
                     QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
@@ -156,13 +154,12 @@ class SongImportForm(OpenLPWizard):
             translate('OpenLP.Ui', 'Welcome to the Song Import Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ImportWizardForm',
-                'This wizard will help you to import songs from a variety of '
-                'formats. Click the next button below to start the process by '
-                'selecting a format to import from.'))
+            'This wizard will help you to import songs from a variety of '
+            'formats. Click the next button below to start the process by '
+            'selecting a format to import from.'))
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-
         for format in SongFormat.get_format_list():
             format_name, custom_combo_text, select_mode = SongFormatAttr.get(
                 format, SongFormatAttr.name, SongFormatAttr.combo_box_text,
@@ -176,19 +173,17 @@ class SongImportForm(OpenLPWizard):
                 self.formatWidgets[format][u'removeButton'].setText(
                     translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
             else:
+                self.formatWidgets[format][u'browseButton'].setText(
+                    UiStrings().Browse)
                 if select_mode == SongFormatSelect.SingleFile:
                     f_label = 'Filename:'
                 elif select_mode == SongFormatSelect.SingleFolder:
                     f_label = 'Folder:'
-                self.formatWidgets[format][u'browseButton'].setText(
-                    UiStrings().Browse)
                 self.formatWidgets[format][u'filepathLabel'].setText(
                         translate('SongsPlugin.ImportWizardForm', f_label))
         for format in self.disablableFormats:
             self.formatWidgets[format][u'disabledLabel'].setText(
-                SongFormatAttr.get(format,
-                SongFormatAttr.disabled_label_text))
-
+                SongFormatAttr.get(format, SongFormatAttr.disabled_label_text))
         self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
@@ -200,8 +195,9 @@ class SongImportForm(OpenLPWizard):
         self.errorSaveToButton.setText(translate('SongsPlugin.ImportWizardForm',
             'Save to File'))
         # Align all QFormLayouts towards each other.
+        filepathLabel = self.formatWidgets[SongFormat.OpenLP2][u'filepathLabel']
         width = max(self.formatLabel.minimumSizeHint().width(),
-            self.openLP2FilenameLabel.minimumSizeHint().width())
+            filepathLabel.minimumSizeHint().width())
         self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
 
@@ -233,7 +229,6 @@ class SongImportForm(OpenLPWizard):
                 fileListWidget = self.formatWidgets[format][u'fileListWidget']
                 if fileListWidget.count() == 0 or not class_.isValidSource(
                     filenames=self.getListOfFiles(fileListWidget)):
-                    error_msg = error_msg if error_msg else WizardStrings.YouSpecifyFiles % format_name
                     critical_error_message_box(UiStrings().NFSp,
                         error_msg(WizardStrings.YouSpecifyFiles))
                     self.formatWidgets[format][u'addButton'].setFocus()
@@ -301,25 +296,22 @@ class SongImportForm(OpenLPWizard):
 
     def onBrowseButtonClicked(self):
         format = self.activeFormat
-        select_mode = SongFormatAttr.get(format,
-            SongFormatAttr.select_mode)
-        name = SongFormatAttr.get(format,
-            SongFormatAttr.name)
-        filter = SongFormatAttr.get(format,
+        select_mode, format_name, filter = SongFormatAttr.get(format,
+            SongFormatAttr.select_mode, SongFormatAttr.name,
             SongFormatAttr.filter)
         filepathEdit = self.formatWidgets[format][u'filepathEdit']
         if select_mode == SongFormatSelect.SingleFile:
-            self.getFileName(WizardStrings.OpenTypeFile % name, filepathEdit,
-                filter)
+            self.getFileName(WizardStrings.OpenTypeFile % format_name,
+                filepathEdit, filter)
         elif select_mode == SongFormatSelect.SingleFolder:
-            self.getFolder(WizardStrings.OpenTypeFile % name, filepathEdit)
+            self.getFolder(WizardStrings.OpenTypeFolder % format_name,
+                filepathEdit)
 
     def onAddButtonClicked(self):
         format = self.activeFormat
-        select_mode, format_name, filter, custom_title = \
-        SongFormatAttr.get(format, SongFormatAttr.select_mode,
-            SongFormatAttr.name, SongFormatAttr.filter,
-            SongFormatAttr.get_files_title)
+        select_mode, format_name, filter, custom_title = SongFormatAttr.get(
+            format, SongFormatAttr.select_mode, SongFormatAttr.name,
+            SongFormatAttr.filter, SongFormatAttr.get_files_title)
         title = custom_title if custom_title \
             else WizardStrings.OpenTypeFile % format_name
         if select_mode == SongFormatSelect.MultipleFiles:
@@ -344,8 +336,7 @@ class SongImportForm(OpenLPWizard):
             last_import_type = 0
         self.formatComboBox.setCurrentIndex(last_import_type)
         for format in SongFormat.get_format_list():
-            select_mode = SongFormatAttr.get(format,
-                SongFormatAttr.select_mode)
+            select_mode = SongFormatAttr.get(format, SongFormatAttr.select_mode)
             if select_mode == SongFormatSelect.MultipleFiles:
                 self.formatWidgets[format][u'fileListWidget'].clear()
             else:
@@ -407,13 +398,9 @@ class SongImportForm(OpenLPWizard):
 
     def addFileSelectItem(self):
         format = self.activeFormat
-        prefix = SongFormatAttr.get(format, SongFormatAttr.prefix)
-        obj_prefix = SongFormatAttr.get(format,
-            SongFormatAttr.obj_prefix)
-        can_disable = SongFormatAttr.get(format,
-            SongFormatAttr.can_disable)
-        select_mode = SongFormatAttr.get(format,
-            SongFormatAttr.select_mode)
+        prefix, obj_prefix, can_disable, select_mode = SongFormatAttr.get(
+            format, SongFormatAttr.prefix, SongFormatAttr.obj_prefix,
+            SongFormatAttr.can_disable, SongFormatAttr.select_mode)
         if not obj_prefix:
             obj_prefix = prefix
         page = QtGui.QWidget()
@@ -473,7 +460,6 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.addItem(u'')
 
     def disablableWidget(self, page, obj_prefix):
-        format = self.activeFormat
         self.disablableFormats.append(format)
         layout = QtGui.QVBoxLayout(page)
         layout.setMargin(0)
@@ -494,6 +480,7 @@ class SongImportForm(OpenLPWizard):
         importWidget = QtGui.QWidget(page)
         importWidget.setObjectName(obj_prefix + u'ImportWidget')
         layout.addWidget(importWidget)
+        format = self.activeFormat
         self.formatWidgets[format][u'layout'] = layout
         self.formatWidgets[format][u'disabledWidget'] = disabledWidget
         self.formatWidgets[format][u'disabledLayout'] = disabledLayout
