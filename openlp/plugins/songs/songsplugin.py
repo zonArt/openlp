@@ -39,7 +39,7 @@ from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
     SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
-from openlp.plugins.songs.lib.importer import SongFormatAttribute
+from openlp.plugins.songs.lib.importer import SongFormatAttr
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
@@ -194,7 +194,7 @@ class SongsPlugin(Plugin):
             self.manager.save_object(song)
 
     def importSongs(self, format, **kwargs):
-        class_ = SongFormatAttribute.get(format, SongFormatAttribute.class_)
+        class_ = SongFormatAttr.get(format, SongFormatAttr.class_)
         importer = class_(self.manager, **kwargs)
         importer.register(self.mediaItem.importWizard)
         return importer

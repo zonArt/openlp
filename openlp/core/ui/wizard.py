@@ -44,20 +44,9 @@ class WizardStrings(object):
     # Applications/Formats we import from or export to. These get used in
     # multiple places but do not need translating unless you find evidence of
     # the writers translating their own product name.
-    CCLI = u'CCLI/SongSelect'
     CSV = u'CSV'
-    DB = u'DreamBeam'
-    EW = u'EasyWorship'
-    ES = u'EasySlides'
-    FP = u'Foilpresenter'
-    OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
-    PS = u'PowerSong 1.0'
-    SB = u'SongBeamer'
-    SoF = u'Songs of Fellowship'
-    SSP = u'SongShow Plus'
-    WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
@@ -76,10 +65,12 @@ class WizardStrings(object):
     PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
+    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify one '
+        '%s file to import from.', 'A file type e.g. OpenSong'))
+    YouSpecifyFiles = unicode(translate('OpenLP.Ui', 'You need to specify at '
         'least one %s file to import from.', 'A file type e.g. OpenSong'))
-    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify a '
-        '%s folder to import from.', 'A file type e.g. OpenSong'))
+    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify one '
+        '%s folder to import from.', 'A song format e.g. PowerSong'))
 
 
 class OpenLPWizard(QtGui.QWizard):
