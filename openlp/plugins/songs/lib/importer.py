@@ -29,6 +29,7 @@ The :mod:`importer` modules provides the general song import functionality.
 """
 import logging
 
+from openlp.core.lib import translate
 from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.wizard import WizardStrings
 from opensongimport import OpenSongImport
@@ -109,6 +110,14 @@ class SongFormat(object):
             SongFormat.SongsOfFellowship,
             SongFormat.WordsOfWorship
         ]
+
+class SongFormatSelect(object):
+    """
+    This is a special enumeration class listing available file selection modes.
+    """
+    SingleFile = 0
+    MultipleFiles = 1
+    SingleFolder = 2
 
 class SongFormatAttr(object):
     """
@@ -194,7 +203,6 @@ class SongFormatAttr(object):
                 'SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
         },
         SongFormat.OpenLP1: {
-            class_: OpenLP1SongImport,
             name: UiStrings().OLPV1,
             prefix: u'openLP1',
             can_disable: True,
@@ -204,7 +212,6 @@ class SongFormatAttr(object):
             disabled_label_text: WizardStrings.NoSqlite
         },
         SongFormat.Generic: {
-            class_: OooImport,
             name: translate('SongsPlugin.ImportWizardForm',
                 'Generic Document/Presentation'),
             prefix: u'generic',
@@ -282,7 +289,6 @@ class SongFormatAttr(object):
                 'SongShow Plus Song Files')
         },
         SongFormat.SongsOfFellowship: {
-            class_: SofImport,
             name: u'Songs of Fellowship',
             prefix: u'songsOfFellowship',
             can_disable: True,
@@ -325,15 +331,17 @@ class SongFormatAttr(object):
             * >1 : Return tuple of requested attribute values.
         """
         if not attributes:
-            return SongFormat._attributes.get(format)
+            return SongFormatAttr._attributes.get(format)
         elif len(attributes) == 1:
-            default = _defaults.get(attributes[0])
-            return SongFormat._attributes[format].get(attributes[0], default)
+            default = SongFormatAttr._defaults.get(attributes[0])
+            return SongFormatAttr._attributes[format].get(attributes[0],
+                default)
         else:
             values = []
             for attr in attributes:
-                default = _defaults.get(attr)
-                values.append(SongFormat._attributes[format].get(attr, default))
+                default = SongFormatAttr._defaults.get(attr)
+                values.append(SongFormatAttr._attributes[format].get(attr,
+                    default))
             return tuple(values)
 
     @staticmethod
@@ -341,22 +349,21 @@ class SongFormatAttr(object):
         """
         Set specified song format attribute to the supplied value.
         """
-        SongFormat._attributes[format][attribute] = value
+        SongFormatAttr._attributes[format][attribute] = value
 
-class SongFormatSelect(object):
-    """
-    This is a special enumeration class listing available file selection modes.
-    """
-    SingleFile = 0
-    MultipleFiles = 1
-    SingleFolder = 2
+SongFormatAttr.set(SongFormat.OpenLP1, SongFormatAttr.availability, HAS_OPENLP1)
+if HAS_OPENLP1:
+    SongFormatAttr.set(SongFormat.OpenLP1, SongFormatAttr.class_,
+        OpenLP1SongImport)
+SongFormatAttr.set(SongFormat.SongsOfFellowship, SongFormatAttr.availability,
+    HAS_SOF)
+if HAS_SOF:
+    SongFormatAttr.set(SongFormat.SongsOfFellowship, SongFormatAttr.class_,
+        SofImport)
+SongFormatAttr.set(SongFormat.Generic, SongFormatAttr.availability, HAS_OOO)
+if HAS_OOO:
+    SongFormatAttr.set(SongFormat.Generic, SongFormatAttr.class_,
+        OooImport)
 
-SongFormatAttr.set(
-    SongFormat.OpenLP1, SongFormatAttr.availability, HAS_OPENLP1)
-SongFormatAttr.set(
-    SongFormat.SongsOfFellowship, SongFormatAttr.availability, HAS_SOF)
-SongFormatAttr.set(
-    SongFormat.Generic, SongFormatAttr.availability, HAS_OOO)
-
-__all__ = [u'SongFormat', u'SongFormatAttr', u'SongFormatSelect']
+__all__ = [u'SongFormat', u'SongFormatSelect', u'SongFormatAttr']
 

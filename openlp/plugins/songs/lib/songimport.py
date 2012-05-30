@@ -55,7 +55,7 @@ class SongImport(QtCore.QObject):
         """
         Override this method to validate the source prior to import.
         """
-        pass
+        return True
 
     def __init__(self, manager, **kwargs):
         """

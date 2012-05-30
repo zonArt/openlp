@@ -34,7 +34,6 @@ import os
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib.importer import SongFormat, SongFormatAttr
 
 log = logging.getLogger(__name__)
 
@@ -71,7 +70,6 @@ class PowerSongImport(SongImport):
 
         * .song
     """
-
     @staticmethod
     def isValidSource(**kwargs):
         """
@@ -91,6 +89,7 @@ class PowerSongImport(SongImport):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
+        from importer import SongFormat, SongFormatAttr
         PS_string = SongFormatAttr.get(SongFormat.PowerSong,
             SongFormatAttr.name)
         if isinstance(self.importSource, unicode):
