@@ -123,7 +123,7 @@ class Renderer(object):
         self._cache_background_image(self.themeManager.getThemeData
             (service_theme))
 
-    def _cache_background_image(self,temp_theme):
+    def _cache_background_image(self, temp_theme):
         """
         Adds a background image to the image cache if necessary.
 
