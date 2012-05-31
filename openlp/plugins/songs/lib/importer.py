@@ -133,8 +133,6 @@ class SongFormatAttr(object):
           See ``SongImportForm.addFileSelectItem()``.
 
     Optional attributes for each song format:
-        * ``obj_prefix`` Alternate prefix for objects.
-          See ``SongImportForm.addFileSelectItem()``.
         * ``can_disable`` Whether song format is disablable.
         * ``availability`` Whether song format is available.
         * ``select_mode`` Whether format accepts single file, multiple files, or
@@ -154,11 +152,10 @@ class SongFormatAttr(object):
     name = 1
     prefix = 2
     # Optional attributes
-    obj_prefix = 10
-    can_disable = 11
-    availability = 12
-    select_mode = 13
-    filter = 14
+    can_disable = 10
+    availability = 11
+    select_mode = 12
+    filter = 13
     # Optional/custom text values
     combo_box_text = 20
     disabled_label_text = 21
@@ -167,7 +164,6 @@ class SongFormatAttr(object):
 
     # Set optional attribute defaults
     _defaults = {
-        obj_prefix: None,
         can_disable: False,
         availability: True,
         select_mode: SongFormatSelect.MultipleFiles,
@@ -184,16 +180,10 @@ class SongFormatAttr(object):
             class_: OpenLyricsImport,
             name: u'OpenLyrics',
             prefix: u'openLyrics',
-            obj_prefix: u'OpenLyrics',
-            can_disable: True,
             filter: u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
                 'OpenLyrics Files'),
             combo_box_text: translate('SongsPlugin.ImportWizardForm',
-                'OpenLyrics or OpenLP 2.0 Exported Song'),
-            disabled_label_text: translate('SongsPlugin.ImportWizardForm',
-                'The OpenLyrics importer has not yet been developed, but as '
-                'you can see, we are still intending to do so. Hopefully it '
-                'will be in the next release.')
+                'OpenLyrics or OpenLP 2.0 Exported Song')
         },
         SongFormat.OpenLP2: {
             class_: OpenLPSongImport,
@@ -263,8 +253,7 @@ class SongFormatAttr(object):
         SongFormat.OpenSong: {
             class_: OpenSongImport,
             name: WizardStrings.OS,
-            prefix: u'openSong',
-            obj_prefix: u'OpenSong'
+            prefix: u'openSong'
         },
         SongFormat.PowerSong: {
             class_: PowerSongImport,
@@ -309,7 +298,6 @@ class SongFormatAttr(object):
 #            class_: CSVImport,
 #            name: WizardStrings.CSV,
 #            prefix: u'csv',
-#            obj_prefix: u'CSV',
 #            select_mode: SongFormatSelect.SingleFile
         }
     }

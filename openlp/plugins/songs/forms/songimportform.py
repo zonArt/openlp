@@ -401,36 +401,34 @@ class SongImportForm(OpenLPWizard):
 
     def addFileSelectItem(self):
         format = self.currentFormat
-        prefix, obj_prefix, can_disable, select_mode = SongFormatAttr.get(
-            format, SongFormatAttr.prefix, SongFormatAttr.obj_prefix,
-            SongFormatAttr.can_disable, SongFormatAttr.select_mode)
-        if not obj_prefix:
-            obj_prefix = prefix
+        prefix, can_disable, select_mode = SongFormatAttr.get(
+            format, SongFormatAttr.prefix, SongFormatAttr.can_disable,
+            SongFormatAttr.select_mode)
         page = QtGui.QWidget()
-        page.setObjectName(obj_prefix + u'Page')
+        page.setObjectName(prefix + u'Page')
         if can_disable:
-            importWidget = self.disablableWidget(page, obj_prefix)
+            importWidget = self.disablableWidget(page, prefix)
         else:
             importWidget = page
         importLayout = QtGui.QVBoxLayout(importWidget)
         importLayout.setMargin(0)
-        importLayout.setObjectName(obj_prefix + u'ImportLayout')
+        importLayout.setObjectName(prefix + u'ImportLayout')
         if select_mode == SongFormatSelect.SingleFile or \
             select_mode == SongFormatSelect.SingleFolder:
             filepathLayout = QtGui.QHBoxLayout()
-            filepathLayout.setObjectName(obj_prefix + u'FilepathLayout')
+            filepathLayout.setObjectName(prefix + u'FilepathLayout')
             filepathLabel = QtGui.QLabel(importWidget)
-            filepathLabel.setObjectName(obj_prefix + u'FilepathLabel')
+            filepathLabel.setObjectName(prefix + u'FilepathLabel')
             filepathLayout.addWidget(filepathLabel)
             filepathSpacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Fixed,
                 QtGui.QSizePolicy.Fixed)
             filepathLayout.addSpacerItem(filepathSpacer)
             filepathEdit = QtGui.QLineEdit(importWidget)
-            filepathEdit.setObjectName(obj_prefix + u'FilepathEdit')
+            filepathEdit.setObjectName(prefix + u'FilepathEdit')
             filepathLayout.addWidget(filepathEdit)
             browseButton = QtGui.QToolButton(importWidget)
             browseButton.setIcon(self.openIcon)
-            browseButton.setObjectName(obj_prefix + u'BrowseButton')
+            browseButton.setObjectName(prefix + u'BrowseButton')
             filepathLayout.addWidget(browseButton)
             importLayout.addLayout(filepathLayout)
             importLayout.addSpacerItem(self.stackSpacer)
@@ -443,18 +441,18 @@ class SongImportForm(OpenLPWizard):
             fileListWidget = QtGui.QListWidget(importWidget)
             fileListWidget.setSelectionMode(
                 QtGui.QAbstractItemView.ExtendedSelection)
-            fileListWidget.setObjectName(obj_prefix + u'FileListWidget')
+            fileListWidget.setObjectName(prefix + u'FileListWidget')
             importLayout.addWidget(fileListWidget)
             buttonLayout = QtGui.QHBoxLayout()
-            buttonLayout.setObjectName(obj_prefix + u'ButtonLayout')
+            buttonLayout.setObjectName(prefix + u'ButtonLayout')
             addButton = QtGui.QPushButton(importWidget)
             addButton.setIcon(self.openIcon)
-            addButton.setObjectName(obj_prefix + u'AddButton')
+            addButton.setObjectName(prefix + u'AddButton')
             buttonLayout.addWidget(addButton)
             buttonLayout.addStretch()
             removeButton = QtGui.QPushButton(importWidget)
             removeButton.setIcon(self.deleteIcon)
-            removeButton.setObjectName(obj_prefix + u'RemoveButton')
+            removeButton.setObjectName(prefix + u'RemoveButton')
             buttonLayout.addWidget(removeButton)
             importLayout.addLayout(buttonLayout)
             self.formatWidgets[format][u'fileListWidget'] = fileListWidget
@@ -466,27 +464,27 @@ class SongImportForm(OpenLPWizard):
         self.formatWidgets[format][u'importLayout'] = importLayout
         self.formatComboBox.addItem(u'')
 
-    def disablableWidget(self, page, obj_prefix):
+    def disablableWidget(self, page, prefix):
         format = self.currentFormat
         self.disablableFormats.append(format)
         layout = QtGui.QVBoxLayout(page)
         layout.setMargin(0)
         layout.setSpacing(0)
-        layout.setObjectName(obj_prefix + u'Layout')
+        layout.setObjectName(prefix + u'Layout')
         disabledWidget = QtGui.QWidget(page)
         disabledWidget.setVisible(False)
-        disabledWidget.setObjectName(obj_prefix + u'DisabledWidget')
+        disabledWidget.setObjectName(prefix + u'DisabledWidget')
         disabledLayout = QtGui.QVBoxLayout(disabledWidget)
         disabledLayout.setMargin(0)
-        disabledLayout.setObjectName(obj_prefix + u'DisabledLayout')
+        disabledLayout.setObjectName(prefix + u'DisabledLayout')
         disabledLabel = QtGui.QLabel(disabledWidget)
         disabledLabel.setWordWrap(True)
-        disabledLabel.setObjectName(obj_prefix + u'DisabledLabel')
+        disabledLabel.setObjectName(prefix + u'DisabledLabel')
         disabledLayout.addWidget(disabledLabel)
         disabledLayout.addSpacerItem(self.stackSpacer)
         layout.addWidget(disabledWidget)
         importWidget = QtGui.QWidget(page)
-        importWidget.setObjectName(obj_prefix + u'ImportWidget')
+        importWidget.setObjectName(prefix + u'ImportWidget')
         layout.addWidget(importWidget)
         self.formatWidgets[format][u'layout'] = layout
         self.formatWidgets[format][u'disabledWidget'] = disabledWidget
