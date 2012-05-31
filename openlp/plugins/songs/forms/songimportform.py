@@ -177,7 +177,7 @@ class SongImportForm(OpenLPWizard):
                     UiStrings().Browse)
                 f_label = 'Filename:'
                 if select_mode == SongFormatSelect.SingleFolder:
-                    f_label = 'Folders:'
+                    f_label = 'Folder:'
                 self.formatWidgets[format][u'filepathLabel'].setText(
                         translate('SongsPlugin.ImportWizardForm', f_label))
         for format in self.disablableFormats:
