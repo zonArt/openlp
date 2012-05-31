@@ -146,7 +146,8 @@ class SongFormatAttr(object):
        * ``disabled_label_text`` Required for disablable song formats.
        * ``get_files_title`` Title for QFileDialog (default includes format
          name).
-       * ``invalid_source_msg`` Message shown when source does not validate.
+       * ``invalid_source_msg`` Message shown when source does not validate with
+         class_.isValidSource().
     """
     # Required attributes
     class_ = 0
@@ -220,10 +221,7 @@ class SongFormatAttr(object):
                 'The generic document/presentation importer has been disabled '
                 'because OpenLP cannot access OpenOffice or LibreOffice.'),
             get_files_title: translate('SongsPlugin.ImportWizardForm',
-                'Select Document/Presentation Files'),
-            invalid_source_msg: translate('SongsPlugin.ImportWizardForm',
-                'You need to specify at least one document or presentation '
-                'file to import from.')
+                'Select Document/Presentation Files')
         },
         SongFormat.CCLI: {
             class_: CCLIFileImport,
@@ -272,7 +270,9 @@ class SongFormatAttr(object):
             class_: PowerSongImport,
             name: u'PowerSong 1.0',
             prefix: u'powerSong',
-            select_mode: SongFormatSelect.SingleFolder
+            select_mode: SongFormatSelect.SingleFolder,
+            invalid_source_msg: translate('SongsPlugin.ImportWizardForm',
+                'You need to specify a valid PowerSong 1.0 database folder.')
         },
         SongFormat.SongBeamer: {
             class_: SongBeamerImport,
@@ -366,4 +366,3 @@ if HAS_OOO:
         OooImport)
 
 __all__ = [u'SongFormat', u'SongFormatSelect', u'SongFormatAttr']
-
