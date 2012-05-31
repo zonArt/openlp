@@ -177,7 +177,7 @@ class SongImportForm(OpenLPWizard):
                     UiStrings().Browse)
                 f_label = 'Filename:'
                 if select_mode == SongFormatSelect.SingleFolder:
-                    f_label = 'Folder:'
+                    f_label = 'Folders:'
                 self.formatWidgets[format][u'filepathLabel'].setText(
                         translate('SongsPlugin.ImportWizardForm', f_label))
         for format in self.disablableFormats:
@@ -194,11 +194,19 @@ class SongImportForm(OpenLPWizard):
         self.errorSaveToButton.setText(translate('SongsPlugin.ImportWizardForm',
             'Save to File'))
         # Align all QFormLayouts towards each other.
-        filepathLabel = self.formatWidgets[SongFormat.OpenLP2][u'filepathLabel']
-        width = max(self.formatLabel.minimumSizeHint().width(),
-            filepathLabel.minimumSizeHint().width())
-        self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
+        formats = filter(lambda f: u'filepathLabel' in
+            self.formatWidgets[f], SongFormat.get_format_list())
+        labels = [self.formatWidgets[f][u'filepathLabel'] for f in formats]
+        # Get max width of all labels
+        max_label_width = max(self.formatLabel.minimumSizeHint().width(),
+            max([label.minimumSizeHint().width() for label in labels]))
+        self.formatSpacer.changeSize(max_label_width, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        spacers = [self.formatWidgets[f][u'filepathSpacer'] for f in formats]
+        for index, spacer in enumerate(spacers):
+            spacer.changeSize(
+                max_label_width - labels[index].minimumSizeHint().width(), 0,
+                QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
 
     def customPageChanged(self, pageId):
         """
@@ -211,8 +219,8 @@ class SongImportForm(OpenLPWizard):
         """
         Validate the current page before moving on to the next page.
 
-        For sourcePage, provide the song format class with a chance to validate
-        its input via isValidSource().
+        Provides each song format class with a chance to validate its input by
+        overriding isValidSource().
         """
         if self.currentPage() == self.welcomePage:
             return True
@@ -414,6 +422,9 @@ class SongImportForm(OpenLPWizard):
             filepathLabel = QtGui.QLabel(importWidget)
             filepathLabel.setObjectName(obj_prefix + u'FilepathLabel')
             filepathLayout.addWidget(filepathLabel)
+            filepathSpacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Fixed,
+                QtGui.QSizePolicy.Fixed)
+            filepathLayout.addSpacerItem(filepathSpacer)
             filepathEdit = QtGui.QLineEdit(importWidget)
             filepathEdit.setObjectName(obj_prefix + u'FilepathEdit')
             filepathLayout.addWidget(filepathEdit)
@@ -424,6 +435,7 @@ class SongImportForm(OpenLPWizard):
             importLayout.addLayout(filepathLayout)
             importLayout.addSpacerItem(self.stackSpacer)
             self.formatWidgets[format][u'filepathLabel'] = filepathLabel
+            self.formatWidgets[format][u'filepathSpacer'] = filepathSpacer
             self.formatWidgets[format][u'filepathLayout'] = filepathLayout
             self.formatWidgets[format][u'filepathEdit'] = filepathEdit
             self.formatWidgets[format][u'browseButton'] = browseButton
