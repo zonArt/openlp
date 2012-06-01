@@ -177,27 +177,27 @@ class AdvancedTab(SettingsTab):
         self.newDataDirectoryHasFilesLabel.setObjectName(
             u'newDataDirectoryHasFilesLabel')
         self.newDataDirectoryHasFilesLabel.setWordWrap(True)
-        self.newDataDirectoryLabelHBox = QtGui.QHBoxLayout()
-        self.newDataDirectoryLabelHBox.setObjectName(
-            u'newDataDirectoryLabelHBox')
-        self.dataDirectoryBrowseButton = QtGui.QPushButton(
+        self.dataDirectoryBrowseButton = QtGui.QToolButton(
             self.dataDirectoryGroupBox)
         self.dataDirectoryBrowseButton.setObjectName(
             u'dataDirectoryBrowseButton')
         self.dataDirectoryBrowseButton.setIcon(
             build_icon(u':/general/general_open.png'))
-        self.dataDirectoryDefaultButton = QtGui.QPushButton(
+        self.dataDirectoryDefaultButton = QtGui.QToolButton(
             self.dataDirectoryGroupBox)
         self.dataDirectoryDefaultButton.setObjectName(
             u'dataDirectoryDefaultButton')
         self.dataDirectoryDefaultButton.setIcon(
             build_icon(u':/general/general_revert.png'))
-        self.dataDirectoryCancelButton = QtGui.QPushButton(
+        self.dataDirectoryCancelButton = QtGui.QToolButton(
             self.dataDirectoryGroupBox)
         self.dataDirectoryCancelButton.setObjectName(
             u'dataDirectoryCancelButton')
         self.dataDirectoryCancelButton.setIcon(
             build_icon(u':/general/general_delete.png'))
+        self.newDataDirectoryLabelHBox = QtGui.QHBoxLayout()
+        self.newDataDirectoryLabelHBox.setObjectName(
+            u'newDataDirectoryLabelHBox')
         self.newDataDirectoryLabelHBox.addWidget(self.newDataDirectoryEdit)
         self.newDataDirectoryLabelHBox.addWidget(
             self.dataDirectoryBrowseButton)
@@ -212,6 +212,7 @@ class AdvancedTab(SettingsTab):
             u'dataDirectoryCopyCheckBox')
         self.dataDirectoryCopyCheckHBox.addWidget(
             self.dataDirectoryCopyCheckBox)
+        self.dataDirectoryCopyCheckHBox.addStretch()
         self.dataDirectoryCopyCheckHBox.addWidget(
             self.dataDirectoryCancelButton)
         self.dataDirectoryLayout.addRow(self.dataDirectoryCurrentLabel,
@@ -404,9 +405,9 @@ class AdvancedTab(SettingsTab):
         self.defaultRevertButton.setToolTip(translate('OpenLP.AdvancedTab',
             'Revert to the default OpenLP logo.'))
         self.dataDirectoryCurrentLabel.setText(translate('OpenLP.AdvancedTab',
-            'Current:'))
+            'Current path:'))
         self.dataDirectoryNewLabel.setText(translate('OpenLP.AdvancedTab',
-            'New:'))
+            'Custom path:'))
         self.dataDirectoryBrowseButton.setToolTip(
             translate('OpenLP.AdvancedTab',
             'Browse for new data file location.'))
@@ -415,7 +416,7 @@ class AdvancedTab(SettingsTab):
             'Set the data location to the default.'))
         self.dataDirectoryCancelButton.setText(
             translate('OpenLP.AdvancedTab',
-            'Cancel Location Change'))
+            'Cancel'))
         self.dataDirectoryCancelButton.setToolTip(
             translate('OpenLP.AdvancedTab',
             'Cancel OpenLP data directory location change.'))
@@ -427,7 +428,7 @@ class AdvancedTab(SettingsTab):
             'Copy the OpenLP data files to the new location.'))
         self.newDataDirectoryHasFilesLabel.setText(
             translate('OpenLP.AdvancedTab',
-            '<strong>WARNING:</strong> New data directory location contains' 
+            '<strong>WARNING:</strong> New data directory location contains '
             'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'X11'))
