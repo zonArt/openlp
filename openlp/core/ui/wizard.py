@@ -108,7 +108,7 @@ class OpenLPWizard(QtGui.QWizard):
 
     def setupUi(self, image):
         """
-        Set up the wizard UI
+        Set up the wizard UI.
         """
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)

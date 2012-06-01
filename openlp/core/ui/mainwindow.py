@@ -542,14 +542,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, clipboard, arguments):
+    def __init__(self, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
-        self.clipboard = clipboard
-        self.arguments = arguments
+        self.application = application
+        self.clipboard = self.application.clipboard()
+        self.arguments = self.application.args
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -830,7 +831,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                         'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow',
-                         'The Main Display has been blanked out'))
+                        'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
         Receiver.send_message(u'close_splash')
@@ -1132,6 +1133,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
+        # The MainApplication did not even enter the event loop (this happens
+        # when OpenLP is not fully loaded). Just ignore the event.
+        if not self.application.eventLoopIsActive:
+            event.ignore()
+            return
         # If we just did a settings import, close without saving changes.
         if self.settingsImported:
             event.accept()
@@ -1184,7 +1190,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Save settings
         self.saveSettings()
         # Close down the display
-        self.liveController.display.close()
+        if self.liveController.display:
+            self.liveController.display.close()
+            self.liveController.display = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

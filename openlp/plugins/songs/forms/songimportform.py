@@ -370,7 +370,7 @@ class SongImportForm(OpenLPWizard):
 
     def customPageChanged(self, pageId):
         """
-        Called when changing to a page other than the progress page
+        Called when changing to a page other than the progress page.
         """
         if self.page(pageId) == self.sourcePage:
             self.onCurrentIndexChanged(self.formatStack.currentIndex())
