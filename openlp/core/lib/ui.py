@@ -80,6 +80,10 @@ class UiStrings(object):
         self.Help = translate('OpenLP.Ui', 'Help')
         self.Hours = translate('OpenLP.Ui', 'h',
             'The abbreviated unit for hours')
+        self.IFdSs = translate('OpenLP.Ui', 'Invalid Folder Selected',
+            'Singular')
+        self.IFSs = translate('OpenLP.Ui', 'Invalid File Selected', 'Singular')
+        self.IFSp = translate('OpenLP.Ui', 'Invalid Files Selected', 'Plural')
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
