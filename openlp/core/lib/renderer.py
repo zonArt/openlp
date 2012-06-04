@@ -55,12 +55,12 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, imageManager, themeManager):
+    def __init__(self, image_manager, themeManager):
         """
         Initialise the renderer.
 
-        ``imageManager``
-            A imageManager instance which takes care of e. g. caching and
+        ``image_manager``
+            A image_manager instance which takes care of e. g. caching and
             resizing images.
 
         ``themeManager``
@@ -68,14 +68,14 @@ class Renderer(object):
         """
         log.debug(u'Initialisation started')
         self.themeManager = themeManager
-        self.imageManager = imageManager
+        self.image_manager = image_manager
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
-        self.service_theme_name = u''
+        self.global_theme_name = u''
         self.service_theme_name = u''
         self.item_theme_name = u''
         self.force_page = False
-        self.display = MainDisplay(None, self.imageManager, False, self)
+        self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
@@ -90,7 +90,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False, self)
+        self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
         self._theme_dimensions = {}
 
@@ -136,7 +136,7 @@ class Renderer(object):
                 self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
-            self.imageManager.add_image(theme_data.theme_name,
+            self.image_manager.addImage(theme_data.theme_name,
                 theme_data.background_filename, u'theme',
                 QtGui.QColor(theme_data.background_border_color))
 
@@ -152,6 +152,7 @@ class Renderer(object):
         """
         # Just assume we use the global theme.
         theme_to_use = self.global_theme_name
+        print self.global_theme_name
         # The theme level is either set to Service or Item. Use the service
         # theme if one is set. We also have to use the service theme, even when
         # the theme level is set to Item, because the item does not necessarily
@@ -236,13 +237,13 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
-            self.imageManager.del_image(theme_data.theme_name)
+            self.image_manager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.imageManager.add_image(theme_data.theme_name,
+            self.image_manager.addImage(theme_data.theme_name,
                 theme_data.background_filename, u'theme',
                 QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
