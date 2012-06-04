@@ -55,7 +55,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, image_manager, themeManager):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the renderer.
 
@@ -63,11 +63,11 @@ class Renderer(object):
             A image_manager instance which takes care of e. g. caching and
             resizing images.
 
-        ``themeManager``
-            The themeManager instance, used to get the current theme details.
+        ``theme_manager``
+            The theme_manager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
-        self.themeManager = themeManager
+        self.theme_manager = theme_manager
         self.image_manager = image_manager
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
@@ -126,7 +126,7 @@ class Renderer(object):
             The theme name.
         """
         if theme_name not in self._theme_dimensions:
-            theme_data = self.themeManager.getThemeData(theme_name)
+            theme_data = self.theme_manager.getThemeData(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
             self._theme_dimensions[theme_name] = \
