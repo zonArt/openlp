@@ -111,20 +111,20 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             return -1
 
-    def _deleteItem(self, item_class, list_widget, reset_func, dlg_title,
+    def _deleteItem(self, itemClass, listWidget, resetFunc, dlgTitle,
         del_text, err_text):
-        item_id = self._getCurrentItemId(list_widget)
+        item_id = self._getCurrentItemId(listWidget)
         if item_id != -1:
-            item = self.manager.get_object(item_class, item_id)
+            item = self.manager.get_object(itemClass, item_id)
             if item and not item.songs:
-                if critical_error_message_box(dlg_title, del_text, self,
+                if critical_error_message_box(dlgTitle, del_text, self,
                     True) == QtGui.QMessageBox.Yes:
-                    self.manager.delete_object(item_class, item.id)
-                    reset_func()
+                    self.manager.delete_object(itemClass, item.id)
+                    resetFunc()
             else:
-                critical_error_message_box(dlg_title, err_text)
+                critical_error_message_box(dlgTitle, err_text)
         else:
-            critical_error_message_box(dlg_title, UiStrings().NISs)
+            critical_error_message_box(dlgTitle, UiStrings().NISs)
 
     def resetAuthors(self):
         """
@@ -165,34 +165,34 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
             self.booksListWidget.addItem(book_name)
 
-    def checkAuthor(self, new_author, edit=False):
+    def checkAuthor(self, newAuthor, edit=False):
         """
         Returns *False* if the given Author already exists, otherwise *True*.
         """
         authors = self.manager.get_all_objects(Author,
-            and_(Author.first_name == new_author.first_name,
-                Author.last_name == new_author.last_name,
-                Author.display_name == new_author.display_name))
-        return self.__checkObject(authors, new_author, edit)
+            and_(Author.first_name == newAuthor.first_name,
+                Author.last_name == newAuthor.last_name,
+                Author.display_name == newAuthor.display_name))
+        return self.__checkObject(authors, newAuthor, edit)
 
-    def checkTopic(self, new_topic, edit=False):
+    def checkTopic(self, newTopic, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
         """
         topics = self.manager.get_all_objects(Topic,
-            Topic.name == new_topic.name)
-        return self.__checkObject(topics, new_topic, edit)
+            Topic.name == newTopic.name)
+        return self.__checkObject(topics, newTopic, edit)
 
-    def checkBook(self, new_book, edit=False):
+    def checkBook(self, newBook, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
         """
         books = self.manager.get_all_objects(Book,
-            and_(Book.name == new_book.name,
-                Book.publisher == new_book.publisher))
-        return self.__checkObject(books, new_book, edit)
+            and_(Book.name == newBook.name,
+                Book.publisher == newBook.publisher))
+        return self.__checkObject(books, newBook, edit)
 
-    def __checkObject(self, objects, new_object, edit):
+    def __checkObject(self, objects, newObject, edit):
         """
         Utility method to check for an existing object.
 
@@ -204,7 +204,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed.
             if edit:
                 for object in objects:
-                    if object.id != new_object.id:
+                    if object.id != newObject.id:
                         return False
                 return True
             else:
@@ -386,72 +386,72 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             Receiver.send_message(u'songs_load_list')
         Receiver.send_message(u'cursor_normal')
 
-    def mergeAuthors(self, old_author):
+    def mergeAuthors(self, oldAuthor):
         """
         Merges two authors into one author.
 
-        ``old_author``
+        ``oldAuthor``
             The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_author = self.manager.get_object_filtered(Author,
-            and_(Author.first_name == old_author.first_name,
-                Author.last_name == old_author.last_name,
-                Author.display_name == old_author.display_name,
-                Author.id != old_author.id))
-        # Find the songs, which have the old_author as author.
+            and_(Author.first_name == oldAuthor.first_name,
+                Author.last_name == oldAuthor.last_name,
+                Author.display_name == oldAuthor.display_name,
+                Author.id != oldAuthor.id))
+        # Find the songs, which have the oldAuthor as author.
         songs = self.manager.get_all_objects(Song,
-            Song.authors.contains(old_author))
+            Song.authors.contains(oldAuthor))
         for song in songs:
             # We check if the song has already existing_author as author. If
             # that is not the case we add it.
             if existing_author not in song.authors:
                 song.authors.append(existing_author)
-            song.authors.remove(old_author)
+            song.authors.remove(oldAuthor)
             self.manager.save_object(song)
-        self.manager.delete_object(Author, old_author.id)
+        self.manager.delete_object(Author, oldAuthor.id)
 
-    def mergeTopics(self, old_topic):
+    def mergeTopics(self, oldTopic):
         """
         Merges two topics into one topic.
 
-        ``old_topic``
+        ``oldTopic``
             The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_topic = self.manager.get_object_filtered(Topic,
-            and_(Topic.name == old_topic.name, Topic.id != old_topic.id))
-        # Find the songs, which have the old_topic as topic.
+            and_(Topic.name == oldTopic.name, Topic.id != oldTopic.id))
+        # Find the songs, which have the oldTopic as topic.
         songs = self.manager.get_all_objects(Song,
-            Song.topics.contains(old_topic))
+            Song.topics.contains(oldTopic))
         for song in songs:
             # We check if the song has already existing_topic as topic. If that
             # is not the case we add it.
             if existing_topic not in song.topics:
                 song.topics.append(existing_topic)
-            song.topics.remove(old_topic)
+            song.topics.remove(oldTopic)
             self.manager.save_object(song)
-        self.manager.delete_object(Topic, old_topic.id)
+        self.manager.delete_object(Topic, oldTopic.id)
 
-    def mergeBooks(self, old_book):
+    def mergeBooks(self, oldBook):
         """
         Merges two books into one book.
 
-        ``old_book``
+        ``oldBook``
             The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_book = self.manager.get_object_filtered(Book,
-            and_(Book.name == old_book.name,
-                Book.publisher == old_book.publisher,
-                Book.id != old_book.id))
-        # Find the songs, which have the old_book as book.
+            and_(Book.name == oldBook.name,
+                Book.publisher == oldBook.publisher,
+                Book.id != oldBook.id))
+        # Find the songs, which have the oldBook as book.
         songs = self.manager.get_all_objects(Song,
-            Song.song_book_id == old_book.id)
+            Song.song_book_id == oldBook.id)
         for song in songs:
             song.song_book_id = existing_book.id
             self.manager.save_object(song)
-        self.manager.delete_object(Book, old_book.id)
+        self.manager.delete_object(Book, oldBook.id)
 
     def onAuthorDeleteButtonClicked(self):
         """
