@@ -46,21 +46,21 @@ class Settings(QtCore.QSettings):
       object for accessing settings stored in that Ini file.
     """
 
-    FilePath = u''
+    filePath = u''
 
     @staticmethod
-    def setFilename(filepath):
+    def setFilename(iniFile):
         """
         Sets the complete path to an Ini file to be used by Settings objects.
 
         Does not affect existing Settings objects.
         """
-        Settings.FilePath = filepath
+        Settings.filePath = iniFile
 
     def __init__(self, *args):
-        if not args and Settings.FilePath and (Settings.defaultFormat() ==
+        if not args and Settings.filePath and (Settings.defaultFormat() ==
                                                Settings.IniFormat):
-            QtCore.QSettings.__init__(self, Settings.FilePath,
+            QtCore.QSettings.__init__(self, Settings.filePath,
                 Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
