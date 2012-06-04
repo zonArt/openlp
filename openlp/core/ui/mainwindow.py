@@ -1122,7 +1122,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'screenChanged')
         Receiver.send_message(u'cursor_busy')
-        self.imageManager.update_display()
+        self.imageManager.updateDisplay()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
@@ -1182,7 +1182,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``save_settings``
             Switch to prevent saving settings. Defaults to **True**.
         """
-        self.imageManager.stop_manager = True
+        self.imageManager.stopManager = True
         while self.imageManager.imageThread.isRunning():
             time.sleep(0.1)
         # Clean temporary files used by services

@@ -132,7 +132,7 @@ class Renderer(object):
         """
         # if No file do not update cache
         if temp_theme.background_filename:
-            self.imageManager.add_image(temp_theme.theme_name,
+            self.imageManager.addImage(temp_theme.theme_name,
                 temp_theme.background_filename, u'theme',
                 QtGui.QColor(temp_theme.background_border_color))
 
@@ -204,7 +204,7 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
-            self.imageManager.del_image(theme_data.theme_name)
+            self.imageManager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER

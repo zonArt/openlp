@@ -859,8 +859,8 @@ class SlideController(Controller):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.imageManager.get_image_bytes(frame[u'title'])
-                    image = self.imageManager.get_image(frame[u'title'])
+                            self.imageManager.getImageBytes(frame[u'title'])
+                    image = self.imageManager.getImage(frame[u'title'])
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio

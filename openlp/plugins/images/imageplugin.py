@@ -96,4 +96,4 @@ class ImagePlugin(Plugin):
         """
         background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
-        self.liveController.imageManager.update_images(u'image', background)
+        self.liveController.imageManager.updateImages(u'image', background)
