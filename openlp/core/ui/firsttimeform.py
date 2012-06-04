@@ -56,6 +56,9 @@ class ThemeScreenshotThread(QtCore.QThread):
         themes = themes.split(u',')
         config = self.parent().config
         for theme in themes:
+            # Stop if the wizard has been cancelled.
+            if self.parent().downloadCancelled:
+                return
             title = config.get(u'theme_%s' % theme, u'title')
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
@@ -86,7 +89,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
-        self.downloadCanceled = False
+        self.downloadCancelled = False
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
@@ -242,11 +245,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Process the triggering of the cancel button.
         """
         if self.lastId == FirstTimePage.NoInternet or \
-            (self.lastId <= FirstTimePage.Plugins and \
-            not self.hasRunWizard):
+            (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.downloadCanceled = True
+        self.downloadCancelled = True
+        while self.themeScreenshotThread.isRunning():
+            time.sleep(0.1)
         Receiver.send_message(u'cursor_normal')
 
     def onNoInternetFinishButtonClicked(self):
@@ -272,7 +276,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         filesize = urlfile.headers["Content-Length"]
         filename = open(fpath, "wb")
         # Download until finished or canceled.
-        while not self.downloadCanceled:
+        while not self.downloadCancelled:
             data = urlfile.read(block_size)
             if not data:
                 break
@@ -280,8 +284,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             block_count += 1
             self._downloadProgress(block_count, block_size, filesize)
         filename.close()
-        # Delete file if canceled, it may be a partial file.
-        if self.downloadCanceled:
+        # Delete file if cancelled, it may be a partial file.
+        if self.downloadCancelled:
             os.remove(fpath)
 
     def _buildThemeScreenshots(self):
