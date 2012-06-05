@@ -515,10 +515,10 @@ class SongImportSourcePage(QtGui.QWizardPage):
             else:
                 filepath = wizard.formatWidgets[format][u'filepathEdit'].text()
                 if not filepath.isEmpty():
-                    if select_mode == SongFormatSelect.SingleFile\
-                    and os.path.isfile(filepath):
+                    if select_mode == SongFormatSelect.SingleFile \
+                        and os.path.isfile(filepath):
                         return True
-                    elif select_mode == SongFormatSelect.SingleFolder\
-                    and os.path.isdir(filepath):
+                    elif select_mode == SongFormatSelect.SingleFolder \
+                        and os.path.isdir(filepath):
                         return True
         return False
