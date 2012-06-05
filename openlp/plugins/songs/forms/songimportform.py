@@ -496,8 +496,11 @@ class SongImportSourcePage(QtGui.QWizardPage):
 
     def isComplete(self):
         """
-        Returns True if an available format is selected, and the
-        file/folder/files widget is not empty.
+        Returns True if:
+            * an available format is selected, and
+            * if MultipleFiles mode, at least one file is selected
+            * or if SingleFile mode, the specified file exists
+            * or if SingleFolder mode, the specified folder exists
 
         When this method returns True, the wizard's Next button is enabled.
         """
@@ -510,7 +513,12 @@ class SongImportSourcePage(QtGui.QWizardPage):
                 if wizard.formatWidgets[format][u'fileListWidget'].count() > 0:
                     return True
             else:
-                filepathEdit = wizard.formatWidgets[format][u'filepathEdit']
-                if not filepathEdit.text().isEmpty():
-                    return True
+                filepath = wizard.formatWidgets[format][u'filepathEdit'].text()
+                if not filepath.isEmpty():
+                    if select_mode == SongFormatSelect.SingleFile\
+                    and os.path.isfile(filepath):
+                        return True
+                    elif select_mode == SongFormatSelect.SingleFolder\
+                    and os.path.isdir(filepath):
+                        return True
         return False
