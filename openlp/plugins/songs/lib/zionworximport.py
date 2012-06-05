@@ -73,46 +73,72 @@ class ZionWorxImport(SongImport):
         * Note: This is the default format of the Python ``csv`` module.
 
     """
-
     def doImport(self):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        if not os.path.isfile(self.importSource):
-            self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
-                'No songs to import.')),
-                unicode(translate('SongsPlugin.ZionWorxImport',
-                    'No %s CSV file found.' % WizardStrings.ZW)))
-            return
         with open(self.importSource, 'rb') as songs_file:
-            songs_reader = csv.reader(songs_file)
-            try:
-                num_records = sum(1 for _ in songs_reader)
-            except csv.Error, e:
-                self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Error reading CSV file.')),
-                    unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s' % songs_reader.line_num, e)))
-            log.debug(u'%s records found in CSV file' % num_records)
-            self.importWizard.progressBar.setMaximum(num_records)
             fieldnames = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
                 u'Writer', u'Copyright', u'Keywords', u'DefaultStyle']
-            songs_reader_dict= csv.DictReader(songs_file, fieldnames)
+            songs_reader = csv.DictReader(songs_file, fieldnames)
             try:
-                for record in songs_reader_dict:
-                    if self.stopImportFlag:
-                        return
-                    self.setDefaults()
-                    self.title = unicode(record[u'Title1'])
-                    if record[u'Title2']:
-                        self.alternateTitle = unicode(record[u'Title2'])
-                    self.parseAuthor(unicode(record[u'Writer']))
-                    self.addCopyright(unicode(record[u'Copyright']))
-                    self.processSongText(unicode(record[u'Lyrics']))
-                    if not self.finish():
-                        self.logError(self.title)
+                records = list(songs_reader)
             except csv.Error, e:
                 self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
                     'Error reading CSV file.')),
                     unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s' % songs_reader_dict.line_num, e)))
+                    'Line %d: %s' % (songs_reader.line_num, e))))
+            else:
+                num_records = len(records)
+                log.info(u'%s records found in CSV file' % num_records)
+                self.importWizard.progressBar.setMaximum(num_records)
+                try:
+                    for index, record in enumerate(records, 1):
+                        if self.stopImportFlag:
+                            return
+                        self.setDefaults()
+                        try:
+                            self.title = self._decode(record[u'Title1'])
+                            if record[u'Title2']:
+                                self.alternateTitle = self._decode(
+                                    record[u'Title2'])
+                            self.parseAuthor(self._decode(record[u'Writer']))
+                            self.addCopyright(self._decode(
+                                record[u'Copyright']))
+                            lyrics = self._decode(record[u'Lyrics'])
+                        except UnicodeDecodeError, e:
+                            self.logError(unicode(translate(
+                                'SongsPlugin.ZionWorxImport',
+                                'Decoding error.')),
+                                unicode(translate('SongsPlugin.ZionWorxImport',
+                                'Record %d: %s' % (index, e))))
+                        else:
+                            verse = u''
+                            for line in lyrics.splitlines():
+                                if line and not line.isspace():
+                                    verse += line + u'\n'
+                                elif verse:
+                                    self.addVerse(verse)
+                                    verse = u''
+                            if verse:
+                                self.addVerse(verse)
+                            title = self.title
+                            if not self.finish():
+                                self.logError(unicode(translate(
+                                    'SongsPlugin.ZionWorxImport',
+                                    'Record %d' % index))
+                                    + (u': "' + title + u'"' if title else u''))
+                except TypeError, e:
+                    self.logError(unicode(translate(
+                        'SongsPlugin.ZionWorxImport',
+                        'File not valid ZionWorx CSV format.')),
+                        u'TypeError: %s' % e)
+
+    def _decode(self, str):
+        """
+        Decodes CSV input to unicode.
+
+        This encoding choice seems OK. ZionWorx has no option for setting the
+        encoding for its songs, so we assume encoding is always the same.
+        """
+        return unicode(str, u'cp1252')

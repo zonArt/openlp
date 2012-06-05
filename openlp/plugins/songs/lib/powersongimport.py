@@ -87,9 +87,8 @@ class PowerSongImport(SongImport):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
-        from importer import SongFormat, SongFormatAttr
-        PS_string = SongFormatAttr.get(SongFormat.PowerSong,
-            SongFormatAttr.name)
+        from importer import SongFormat
+        PS_string = SongFormat.get(SongFormat.PowerSong, SongFormat.Name)
         if isinstance(self.importSource, unicode):
             if os.path.isdir(self.importSource):
                 dir = self.importSource
