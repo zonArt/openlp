@@ -79,28 +79,47 @@ class SongFormat(object):
     song formats handled by the importer, the attributes of each song format,
     and a few helper functions.
 
-
     Required attributes for each song format:
-    * ``Class`` Import class, e.g. OpenLyricsImport
-    * ``Name`` Name of the format, e.g. u'OpenLyrics'
-    * ``Prefix`` Prefix for Qt objects. Use camelCase, e.g. u'openLyrics'
-      See ``SongImportForm.addFileSelectItem()``.
+
+    ``Class``
+        Import class, e.g. ``OpenLyricsImport``
+    ``Name``
+        Name of the format, e.g. ``u'OpenLyrics'``
+    ``Prefix``
+        Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
+        See ``SongImportForm.addFileSelectItem()``
 
     Optional attributes for each song format:
-    * ``CanDisable`` Whether song format importer is disablable.
-    * ``Availability`` Whether song format importer is available.
-    * ``SelectMode`` Whether format accepts single file, multiple files, or
-      single folder (as per SongFormatSelect options).
-    * ``Filter`` File extension filter for QFileDialog.
 
-    Optional/custom text Strings for SongImportForm widgets:
-    * ``ComboBoxText`` Combo box selector (default value is format Name).
-    * ``DisabledLabelText`` Required for disablable song formats.
-    * ``GetFilesTitle`` Title for QFileDialog (default includes format Name).
-    * ``InvalidSourceMsg`` Message displayed when source does not validate with
-      Class.isValidSource().
+    ``CanDisable``
+        Whether song format importer is disablable.
+    ``Availability``
+        Whether song format importer is available.
+    ``SelectMode``
+        Whether format accepts single file, multiple files, or single folder
+        (as per ``SongFormatSelect`` options).
+    ``Filter``
+        File extension filter for ``QFileDialog``.
+
+    Optional/custom text Strings for ``SongImportForm`` widgets:
+
+    ``ComboBoxText``
+        Combo box selector (default value is the format's ``Name``).
+    ``DisabledLabelText``
+        Required for disablable song formats.
+    ``GetFilesTitle``
+        Title for ``QFileDialog`` (default includes the format's ``Name``).
+    ``InvalidSourceMsg``
+        Message displayed if ``Class.isValidSource()`` returns ``False``.
     """
-    # Song Formats
+    # Enumeration of song formats and their attributes
+    # * Numerical order of song formats is significant as it determines the
+    #   order used by formatComboBox.
+    # * Attribute ints are negative so they don't clash with song format ints.
+    # * Each group of attribute values increments by 10 to facilitate addition
+    #   of more attributes in future.
+
+    # Song formats (ordered alphabetically after Generic)
     Unknown = -1
     OpenLyrics = 0
     OpenLP2 = 1
@@ -309,9 +328,9 @@ class SongFormat(object):
             Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
-            * 0 : Return dict containing all defined attributes for the format.
-            * 1 : Return the attribute value.
-            * >1 : Return tuple of requested attribute values.
+        :0: Return dict containing all defined attributes for the format.
+        :1: Return the attribute value.
+        :>1: Return tuple of requested attribute values.
         """
         if not attributes:
             return SongFormat._attributes.get(format)

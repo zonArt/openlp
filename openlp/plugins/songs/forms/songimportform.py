@@ -217,8 +217,7 @@ class SongImportForm(OpenLPWizard):
     def validateCurrentPage(self):
         """
         Validate the current page before moving on to the next page.
-
-        Provides each song format class with a chance to validate its input by
+        Provide each song format class with a chance to validate its input by
         overriding isValidSource().
         """
         if self.currentPage() == self.welcomePage:
@@ -491,16 +490,16 @@ class SongImportForm(OpenLPWizard):
 
 class SongImportSourcePage(QtGui.QWizardPage):
     """
-    Subclass QtGui.QWizardPage in order to reimplement isComplete().
+    Subclass of QtGui.QWizardPage to override isComplete() for Source Page.
     """
-
     def isComplete(self):
         """
-        Returns True if:
-            * an available format is selected, and
-            * if MultipleFiles mode, at least one file is selected
-            * or if SingleFile mode, the specified file exists
-            * or if SingleFolder mode, the specified folder exists
+        Return True if:
+
+        * an available format is selected, and
+        * if MultipleFiles mode, at least one file is selected
+        * or if SingleFile mode, the specified file exists
+        * or if SingleFolder mode, the specified folder exists
 
         When this method returns True, the wizard's Next button is enabled.
         """
