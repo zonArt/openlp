@@ -300,8 +300,8 @@ class SongFormat(object):
                 'ZionWorx (CSV)'),
             DescriptionText: translate('SongsPlugin.ImportWizardForm',
                 'First dump your ZionWorx database to a CSV text file, using '
-                'freeware tool TdbDataX "TurboDB Data Exchange" from dataWeb '
-                '(see the User Manual).')
+                'freeware utility TdbDataX "TurboDB Data Exchange" from '
+                'dataWeb (see the User Manual).')
 #        },
 #        CSV: {
 #            class_: CSVImport,
