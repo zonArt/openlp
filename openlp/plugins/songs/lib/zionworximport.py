@@ -43,14 +43,14 @@ class ZionWorxImport(SongImport):
 
     ZionWorx song database fields:
 
-        * ``SongNum`` Song ID. Discarded by importer.
-        * ``Title1`` Main Title.
-        * ``Title2`` Alternate Title.
-        * ``Lyrics`` Song verses, separated by blank lines.
-        * ``Writer`` Song author(s).
-        * ``Copyright`` Copyright information
-        * ``Keywords`` Discarded by importer.
-        * ``DefaultStyle`` Discarded by importer.
+    * ``SongNum`` Song ID. (Discarded by importer)
+    * ``Title1`` Main Title.
+    * ``Title2`` Alternate Title.
+    * ``Lyrics`` Song verses, separated by blank lines.
+    * ``Writer`` Song author(s).
+    * ``Copyright`` Copyright information
+    * ``Keywords`` (Discarded by importer)
+    * ``DefaultStyle`` (Discarded by importer)
 
     ZionWorx has no native export function; it uses the proprietary TurboDB
     database engine. The TurboDB vendor, dataWeb, provides tools which can
@@ -60,17 +60,17 @@ class ZionWorxImport(SongImport):
 
     ``tdbdatax MainTable.dat songstable.csv -fsdf -s, -qd``
 
-        * ``-f`` Table format: ``sdf`` denotes text file.
-        * ``-s`` Separator character between fields.
-        * ``-q`` Quote character surrounding fields. ``d`` denotes double-quote.
+    * -f  Table format: ``sdf`` denotes text file.
+    * -s  Separator character between fields.
+    * -q  Quote character surrounding fields. ``d`` denotes double-quote.
 
     CSV format expected by importer:
 
-        * Fields separated by comma ``,``
-        * Fields surrounded by double-quotes ``"``. This enables fields (such as
-          Lyrics) to include new-lines and commas. Double-quotes within a field
-          are denoted by two double-quotes ``""``
-        * Note: This is the default format of the Python ``csv`` module.
+    * Field separator character is comma ``,``
+    * Fields surrounded by double-quotes ``"``. This enables fields (such as
+      Lyrics) to include new-lines and commas. Double-quotes within a field
+      are denoted by two double-quotes ``""``
+    * Note: This is the default format of the Python ``csv`` module.
 
     """
     def doImport(self):

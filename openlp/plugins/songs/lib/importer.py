@@ -299,8 +299,8 @@ class SongFormat(object):
             ComboBoxText: translate('SongsPlugin.ImportWizardForm',
                 'ZionWorx (CSV)'),
             DescriptionText: translate('SongsPlugin.ImportWizardForm',
-                'First dump your ZionWorx database to a CSV file, using '
-                'freeware tool "TurboDB Data Exchange" (TdbDataX) from dataWeb '
+                'First dump your ZionWorx database to a CSV text file, using '
+                'freeware tool TdbDataX "TurboDB Data Exchange" from dataWeb '
                 '(see the User Manual).')
 #        },
 #        CSV: {

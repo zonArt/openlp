@@ -163,11 +163,11 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
         for format in SongFormat.get_format_list():
-            format_name, custom_combo_text, description_text, select_mode = SongFormat.get(
-                format, SongFormat.Name, SongFormat.ComboBoxText, SongFormat.DescriptionText,
-                SongFormat.SelectMode)
-            combo_box_text = custom_combo_text if custom_combo_text \
-                else format_name
+            format_name, custom_combo_text, description_text, select_mode = \
+                SongFormat.get(format, SongFormat.Name, SongFormat.ComboBoxText,
+                SongFormat.DescriptionText, SongFormat.SelectMode)
+            combo_box_text = (custom_combo_text if custom_combo_text else
+                format_name)
             self.formatComboBox.setItemText(format, combo_box_text)
             if description_text is not None:
                 self.formatWidgets[format][u'descriptionLabel'].setText(
@@ -249,8 +249,8 @@ class SongImportForm(OpenLPWizard):
             else:
                 import_source = \
                     self.formatWidgets[format][u'filepathEdit'].text()
-                error_title = UiStrings().IFSs if select_mode == \
-                    SongFormatSelect.SingleFile else UiStrings().IFdSs
+                error_title = (UiStrings().IFSs if select_mode ==
+                    SongFormatSelect.SingleFile else UiStrings().IFdSs)
                 focus_button = self.formatWidgets[format][u'browseButton']
             if not class_.isValidSource(import_source):
                 critical_error_message_box(error_title, error_msg)
