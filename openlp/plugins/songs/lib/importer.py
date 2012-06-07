@@ -112,6 +112,8 @@ class SongFormat(object):
         Title for ``QFileDialog`` (default includes the format's ``Name``).
     ``InvalidSourceMsg``
         Message displayed if ``Class.isValidSource()`` returns ``False``.
+    ``DescriptionText``
+        Short description (1-2 lines) about the song format.
     """
     # Enumeration of song formats and their attributes
     # * Numerical order of song formats is significant as it determines the
@@ -154,6 +156,7 @@ class SongFormat(object):
     DisabledLabelText = -31
     GetFilesTitle = -32
     InvalidSourceMsg = -33
+    DescriptionText = -34
 
     # Set optional attribute defaults
     _defaults = {
@@ -164,7 +167,8 @@ class SongFormat(object):
         ComboBoxText: None,
         DisabledLabelText: u'',
         GetFilesTitle: None,
-        InvalidSourceMsg: None
+        InvalidSourceMsg: None,
+        DescriptionText: None
     }
 
     # Set attribute values for each Song Format
@@ -293,7 +297,11 @@ class SongFormat(object):
             Prefix: u'zionWorx',
             SelectMode: SongFormatSelect.SingleFile,
             ComboBoxText: translate('SongsPlugin.ImportWizardForm',
-                'ZionWorx (CSV database dump)')
+                'ZionWorx (CSV)'),
+            DescriptionText: translate('SongsPlugin.ImportWizardForm',
+                'First dump your ZionWorx database to a CSV file, using '
+                'freeware tool "TurboDB Data Exchange" (TdbDataX) from dataWeb '
+                '(see the User Manual).')
 #        },
 #        CSV: {
 #            class_: CSVImport,

@@ -133,6 +133,9 @@ class SongImportForm(OpenLPWizard):
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.formatSpacer)
         self.sourceLayout.addLayout(self.formatLayout)
+        self.formatHSpacing = self.formatLayout.horizontalSpacing()
+        self.formatVSpacing = self.formatLayout.verticalSpacing()
+        self.formatLayout.setVerticalSpacing(0)
         self.stackSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Expanding)
         self.formatStack = QtGui.QStackedLayout()
@@ -160,12 +163,15 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
         for format in SongFormat.get_format_list():
-            format_name, custom_combo_text, select_mode = SongFormat.get(
-                format, SongFormat.Name, SongFormat.ComboBoxText,
+            format_name, custom_combo_text, description_text, select_mode = SongFormat.get(
+                format, SongFormat.Name, SongFormat.ComboBoxText, SongFormat.DescriptionText,
                 SongFormat.SelectMode)
             combo_box_text = custom_combo_text if custom_combo_text \
                 else format_name
             self.formatComboBox.setItemText(format, combo_box_text)
+            if description_text is not None:
+                self.formatWidgets[format][u'descriptionLabel'].setText(
+                    description_text)
             if select_mode == SongFormatSelect.MultipleFiles:
                 self.formatWidgets[format][u'addButton'].setText(
                     translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
@@ -206,6 +212,12 @@ class SongImportForm(OpenLPWizard):
             spacer.changeSize(
                 max_label_width - labels[index].minimumSizeHint().width(), 0,
                 QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        # Align descriptionLabels with rest of layout
+        for format in SongFormat.get_format_list():
+            if SongFormat.get(format, SongFormat.DescriptionText) is not None:
+                self.formatWidgets[format][u'descriptionSpacer'].changeSize(
+                    max_label_width + self.formatHSpacing, 0,
+                    QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
 
     def customPageChanged(self, pageId):
         """
@@ -397,8 +409,9 @@ class SongImportForm(OpenLPWizard):
 
     def addFileSelectItem(self):
         format = self.currentFormat
-        prefix, can_disable, select_mode = SongFormat.get(format,
-            SongFormat.Prefix, SongFormat.CanDisable, SongFormat.SelectMode)
+        prefix, can_disable, description_text, select_mode = SongFormat.get(
+            format, SongFormat.Prefix, SongFormat.CanDisable,
+            SongFormat.DescriptionText, SongFormat.SelectMode)
         page = QtGui.QWidget()
         page.setObjectName(prefix + u'Page')
         if can_disable:
@@ -408,10 +421,24 @@ class SongImportForm(OpenLPWizard):
         importLayout = QtGui.QVBoxLayout(importWidget)
         importLayout.setMargin(0)
         importLayout.setObjectName(prefix + u'ImportLayout')
+        if description_text is not None:
+            descriptionLayout = QtGui.QHBoxLayout()
+            descriptionLayout.setObjectName(prefix + u'DescriptionLayout')
+            descriptionSpacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Fixed,
+                QtGui.QSizePolicy.Fixed)
+            descriptionLayout.addSpacerItem(descriptionSpacer)
+            descriptionLabel = QtGui.QLabel(importWidget)
+            descriptionLabel.setWordWrap(True)
+            descriptionLabel.setObjectName(prefix + u'DescriptionLabel')
+            descriptionLayout.addWidget(descriptionLabel)
+            importLayout.addLayout(descriptionLayout)
+            self.formatWidgets[format][u'descriptionLabel'] = descriptionLabel
+            self.formatWidgets[format][u'descriptionSpacer'] = descriptionSpacer
         if select_mode == SongFormatSelect.SingleFile or \
             select_mode == SongFormatSelect.SingleFolder:
             filepathLayout = QtGui.QHBoxLayout()
             filepathLayout.setObjectName(prefix + u'FilepathLayout')
+            filepathLayout.setContentsMargins(0, self.formatVSpacing, 0, 0)
             filepathLabel = QtGui.QLabel(importWidget)
             filepathLabel.setObjectName(prefix + u'FilepathLabel')
             filepathLayout.addWidget(filepathLabel)
