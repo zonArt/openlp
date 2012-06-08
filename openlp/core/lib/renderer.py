@@ -152,7 +152,6 @@ class Renderer(object):
         """
         # Just assume we use the global theme.
         theme_to_use = self.global_theme_name
-        print self.global_theme_name
         # The theme level is either set to Service or Item. Use the service
         # theme if one is set. We also have to use the service theme, even when
         # the theme level is set to Item, because the item does not necessarily

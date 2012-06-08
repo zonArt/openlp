@@ -204,7 +204,6 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanSoftBreak)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
-        service_item.title = title
         credit = customSlide.credits
         service_item.edit_id = item_id
         theme = customSlide.theme_name
@@ -213,6 +212,7 @@ class CustomMediaItem(MediaManagerItem):
         customXML = CustomXMLParser(customSlide.text)
         verseList = customXML.get_verses()
         raw_slides = [verse[1] for verse in verseList]
+        service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
         if QtCore.QSettings().value(self.settingsSection + u'/display footer',
