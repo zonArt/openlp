@@ -278,9 +278,9 @@ class SongFormat(object):
             u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
                 'ZionWorx (CSV)'),
             u'descriptionText': translate('SongsPlugin.ImportWizardForm',
-                'First dump your ZionWorx database to a CSV text file, using '
-                'freeware utility TdbDataX "TurboDB Data Exchange" from '
-                'dataWeb (see the User Manual).')
+                'First convert your ZionWorx database to a CSV text file, as '
+                'explained in the <a href="http://manual.openlp.org/songs.html'
+                '#importing-from-zionworx">User Manual</a>.')
 #        },
 #        CSV: {
 #            u'class': CSVImport,

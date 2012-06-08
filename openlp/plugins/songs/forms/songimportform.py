@@ -427,6 +427,7 @@ class SongImportForm(OpenLPWizard):
             descriptionLayout.addSpacerItem(descriptionSpacer)
             descriptionLabel = QtGui.QLabel(importWidget)
             descriptionLabel.setWordWrap(True)
+            descriptionLabel.setOpenExternalLinks(True)
             descriptionLabel.setObjectName(prefix + u'DescriptionLabel')
             descriptionLayout.addWidget(descriptionLabel)
             importLayout.addLayout(descriptionLayout)
