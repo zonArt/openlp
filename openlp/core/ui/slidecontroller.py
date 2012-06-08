@@ -73,6 +73,7 @@ class Controller(QtGui.QWidget):
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 
+
 class SlideController(Controller):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -83,7 +84,7 @@ class SlideController(Controller):
         Set up the Slide Controller.
         """
         Controller.__init__(self, parent, isLive)
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
                 float(self.screens.current[u'size'].height())
@@ -577,8 +578,7 @@ class SlideController(Controller):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self)
+        self.display = MainDisplay(self, self.imageManager, self.isLive, self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -859,8 +859,8 @@ class SlideController(Controller):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.imageManager.get_image_bytes(frame[u'title'])
-                    image = self.imageManager.get_image(frame[u'title'])
+                            self.imageManager.getImageBytes(frame[u'title'])
+                    image = self.imageManager.getImage(frame[u'title'])
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent().renderer.screen_ratio

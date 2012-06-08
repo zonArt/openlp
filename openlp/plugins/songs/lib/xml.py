@@ -33,7 +33,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <song version="1.0">
         <lyrics>
             <verse type="c" label="1" lang="en">
-                <![CDATA[Chorus virtual slide 1[---]Chorus  virtual slide 2]]>
+                <![CDATA[Chorus optional split 1[---]Chorus optional split 2]]>
             </verse>
         </lyrics>
     </song>
@@ -135,7 +135,7 @@ class SongXML(object):
         The returned list has the following format::
 
             [[{'type': 'v', 'label': '1'},
-            u"virtual slide 1[---]virtual slide 2"],
+            u"optional slide split 1[---]optional slide split 2"],
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
@@ -317,9 +317,7 @@ class OpenLyrics(object):
         tags_element = None
         match = re.search(u'\{/?\w+\}', song.lyrics, re.UNICODE)
         if match:
-            # Reset available tags.
-            FormattingTags.reset_html_tags()
-            # Named 'formatting' - 'format' is built-in fuction in Python.
+            # Named 'format_' - 'format' is built-in fuction in Python.
             format_ = etree.SubElement(song_xml, u'format')
             tags_element = etree.SubElement(format_, u'tags')
             tags_element.set(u'application', u'OpenLP')
@@ -334,17 +332,58 @@ class OpenLyrics(object):
                 self._add_text_to_element(u'verse', lyrics, None, verse_def)
             if u'lang' in verse[0]:
                 verse_element.set(u'lang', verse[0][u'lang'])
-            # Create a list with all "virtual" verses.
-            virtual_verses = cgi.escape(verse[1])
-            virtual_verses = virtual_verses.split(u'[---]')
-            for index, virtual_verse in enumerate(virtual_verses):
+            # Create a list with all "optional" verses.
+            optional_verses = cgi.escape(verse[1])
+            optional_verses = optional_verses.split(u'\n[---]\n')
+            start_tags = u''
+            end_tags = u''
+            for index, optional_verse in enumerate(optional_verses):
+                # Fix up missing end and start tags such as {r} or {/r}.
+                optional_verse = start_tags + optional_verse
+                start_tags, end_tags = self._get_missing_tags(optional_verse)
+                optional_verse += end_tags
                 # Add formatting tags to text
                 lines_element = self._add_text_with_tags_to_lines(verse_element,
-                    virtual_verse, tags_element)
+                    optional_verse, tags_element)
                 # Do not add the break attribute to the last lines element.
-                if index < len(virtual_verses) - 1:
+                if index < len(optional_verses) - 1:
                     lines_element.set(u'break', u'optional')
         return self._extract_xml(song_xml)
+
+    def _get_missing_tags(self, text):
+        """
+        Tests the given text for not closed formatting tags and returns a tuple
+        consisting of two unicode strings::
+
+            (u'{st}{r}', u'{/r}{/st}')
+
+        The first unicode string are the start tags (for the next slide). The
+        second unicode string are the end tags.
+
+        ``text``
+            The text to test. The text must **not** contain html tags, only
+            OpenLP formatting tags are allowed::
+
+                {st}{r}Text text text
+        """
+        tags = []
+        for tag in FormattingTags.get_html_tags():
+            if tag[u'start tag'] == u'{br}':
+                continue
+            if text.count(tag[u'start tag']) != text.count(tag[u'end tag']):
+                tags.append((text.find(tag[u'start tag']),
+                    tag[u'start tag'], tag[u'end tag']))
+        # Sort the lists, so that the tags which were opened first on the first
+        # slide (the text we are checking) will be opened first on the next
+        # slide as well.
+        tags.sort(key=lambda tag: tag[0])
+        end_tags = []
+        start_tags = []
+        for tag in tags:
+            start_tags.append(tag[1])
+            end_tags.append(tag[2])
+        end_tags.reverse()
+        return u''.join(start_tags), u''.join(end_tags)
 
     def xml_to_song(self, xml, parse_and_temporary_save=False):
         """
@@ -572,7 +611,8 @@ class OpenLyrics(object):
             for tag in FormattingTags.get_html_tags()]
         new_tags = [tag for tag in found_tags
             if tag[u'start tag'] not in existing_tag_ids]
-        FormattingTags.add_html_tags(new_tags, True)
+        FormattingTags.add_html_tags(new_tags)
+        FormattingTags.save_html_tags()
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """

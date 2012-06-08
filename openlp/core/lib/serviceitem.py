@@ -211,7 +211,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.imageManager.add_image(title, path, u'image',
+        self.renderer.imageManager.addImage(title, path, u'image',
             self.image_border)
         self._new_item()
 
@@ -313,17 +313,12 @@ class ServiceItem(object):
         self.from_plugin = header[u'from_plugin']
         self.capabilities = header[u'capabilities']
         # Added later so may not be present in older services.
-        if u'search' in header:
-            self.search_string = header[u'search']
-            self.data_string = header[u'data']
-        if u'xml_version' in header:
-            self.xml_version = header[u'xml_version']
-        if u'start_time' in header:
-            self.start_time = header[u'start_time']
-        if u'end_time' in header:
-            self.end_time = header[u'end_time']
-        if u'media_length' in header:
-            self.media_length = header[u'media_length']
+        self.search_string = header.get(u'search', u'')
+        self.data_string = header.get(u'data', u'')
+        self.xml_version = header.get(u'xml_version')
+        self.start_time = header.get(u'start_time', 0)
+        self.end_time = header.get(u'end_time', 0)
+        self.media_length = header.get(u'media_length', 0)
         if u'background_audio' in header:
             self.background_audio = []
             for filename in header[u'background_audio']:

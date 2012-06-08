@@ -105,6 +105,9 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.openLP1BrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenLP1BrowseButtonClicked)
+        QtCore.QObject.connect(self.powerSongBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onPowerSongBrowseButtonClicked)
         QtCore.QObject.connect(self.openLyricsAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenLyricsAddButtonClicked)
@@ -217,6 +220,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'foilPresenter')
         # Open Song
         self.addFileSelectItem(u'openSong', u'OpenSong')
+        # PowerSong
+        self.addFileSelectItem(u'powerSong', single_select=True)
         # SongBeamer
         self.addFileSelectItem(u'songBeamer')
         # Song Show Plus
@@ -265,6 +270,8 @@ class SongImportForm(OpenLPWizard):
             SongFormat.FoilPresenter, WizardStrings.FP)
         self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
         self.formatComboBox.setItemText(
+            SongFormat.PowerSong, WizardStrings.PS)
+        self.formatComboBox.setItemText(
             SongFormat.SongBeamer, WizardStrings.SB)
         self.formatComboBox.setItemText(
             SongFormat.SongShowPlus, WizardStrings.SSP)
@@ -280,6 +287,9 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.openLP1BrowseButton.setText(UiStrings().Browse)
         self.openLP1DisabledLabel.setText(WizardStrings.NoSqlite)
+        self.powerSongFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Folder:'))
+        self.powerSongBrowseButton.setText(UiStrings().Browse)
         self.openLyricsAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.openLyricsRemoveButton.setText(
@@ -375,6 +385,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             QtCore.QSettings().setValue(u'songs/last import type',
                 source_format)
+            import_class = SongFormat.get_class(source_format)
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
                     critical_error_message_box(UiStrings().NFSs,
@@ -386,6 +397,14 @@ class SongImportForm(OpenLPWizard):
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
                     self.openLP1BrowseButton.setFocus()
+                    return False
+            elif source_format == SongFormat.PowerSong:
+                if self.powerSongFilenameEdit.text().isEmpty() or \
+                    not import_class.isValidSource(
+                    folder=self.powerSongFilenameEdit.text()):
+                    critical_error_message_box(UiStrings().NFdSs,
+                        WizardStrings.YouSpecifyFolder % WizardStrings.PS)
+                    self.powerSongBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
@@ -525,6 +544,13 @@ class SongImportForm(OpenLPWizard):
             % translate('SongsPlugin.ImportWizardForm',
             'openlp.org v1.x Databases')
         )
+
+    def onPowerSongBrowseButtonClicked(self):
+        """
+        Get PowerSong song database folder
+        """
+        self.getFolder(WizardStrings.OpenTypeFolder % WizardStrings.PS,
+            self.powerSongFilenameEdit)
 
     def onOpenLyricsAddButtonClicked(self):
         """
@@ -712,6 +738,7 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.setCurrentIndex(last_import_type)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
+        self.powerSongFilenameEdit.setText(u'')
         self.openLyricsFileListWidget.clear()
         self.openSongFileListWidget.clear()
         self.wordsOfWorshipFileListWidget.clear()
@@ -756,6 +783,11 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.OpenLP1,
                 filename=unicode(self.openLP1FilenameEdit.text()),
                 plugin=self.plugin
+            )
+        elif source_format == SongFormat.PowerSong:
+            # Import PowerSong folder
+            importer = self.plugin.importSongs(SongFormat.PowerSong,
+                folder=unicode(self.powerSongFilenameEdit.text())
             )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
@@ -821,11 +853,7 @@ class SongImportForm(OpenLPWizard):
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
         importer.doImport()
-        if importer.errorLog:
-            self.progressLabel.setText(translate(
-                'SongsPlugin.SongImportForm', 'Your song import failed.'))
-        else:
-            self.progressLabel.setText(WizardStrings.FinishedImport)
+        self.progressLabel.setText(WizardStrings.FinishedImport)
 
     def onErrorCopyToButtonClicked(self):
         """

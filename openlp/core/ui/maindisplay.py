@@ -119,7 +119,7 @@ class MainDisplay(Display):
     def __init__(self, parent, imageManager, live, controller):
         Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.plugins = PluginManager.get_instance().plugins
         self.rebuildCSS = False
         self.hideMode = None
@@ -277,7 +277,7 @@ class MainDisplay(Display):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.add_image(name, path, u'image', background)
+        self.imageManager.addImage(name, path, u'image', background)
         if hasattr(self, u'serviceItem'):
             self.override[u'image'] = name
             self.override[u'theme'] = self.serviceItem.themedata.theme_name
@@ -297,7 +297,7 @@ class MainDisplay(Display):
             The name of the image to be displayed.
         """
         log.debug(u'image to display')
-        image = self.imageManager.get_image_bytes(name)
+        image = self.imageManager.getImageBytes(name)
         self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
 
@@ -382,14 +382,14 @@ class MainDisplay(Display):
             else:
                 # replace the background
                 background = self.imageManager. \
-                    get_image_bytes(self.override[u'image'])
+                    getImageBytes(self.override[u'image'])
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
-                get_image_bytes(self.serviceItem.themedata.theme_name)
+                getImageBytes(self.serviceItem.themedata.theme_name)
         if image:
-            image_bytes = self.imageManager.get_image_bytes(image)
+            image_bytes = self.imageManager.getImageBytes(image)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,
