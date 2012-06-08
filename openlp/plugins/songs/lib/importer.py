@@ -82,47 +82,42 @@ class SongFormat(object):
 
     Required attributes for each song format:
 
-    ``Class``
+    ``u'class'``
         Import class, e.g. ``OpenLyricsImport``
-    ``Name``
+    ``u'name'``
         Name of the format, e.g. ``u'OpenLyrics'``
-    ``Prefix``
+    ``u'prefix'``
         Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
         See ``SongImportForm.addFileSelectItem()``
 
     Optional attributes for each song format:
 
-    ``CanDisable``
+    ``u'canDisable'``
         Whether song format importer is disablable.
-    ``Availability``
+    ``u'availability'``
         Whether song format importer is available.
-    ``SelectMode``
+    ``u'selectMode'``
         Whether format accepts single file, multiple files, or single folder
         (as per ``SongFormatSelect`` options).
-    ``Filter``
+    ``u'filter'``
         File extension filter for ``QFileDialog``.
 
     Optional/custom text Strings for ``SongImportForm`` widgets:
 
-    ``ComboBoxText``
-        Combo box selector (default value is the format's ``Name``).
-    ``DisabledLabelText``
+    ``u'comboBoxText'``
+        Combo box selector (default value is the format's ``u'name'``).
+    ``u'disabledLabelText'``
         Required for disablable song formats.
-    ``GetFilesTitle``
-        Title for ``QFileDialog`` (default includes the format's ``Name``).
-    ``InvalidSourceMsg``
-        Message displayed if ``Class.isValidSource()`` returns ``False``.
-    ``DescriptionText``
+    ``u'getFilesTitle'``
+        Title for ``QFileDialog`` (default includes the format's ``u'name'``).
+    ``u'invalidSourceMsg'``
+        Message displayed if ``isValidSource()`` returns ``False``.
+    ``u'descriptionText'``
         Short description (1-2 lines) about the song format.
     """
-    # Enumeration of song formats and their attributes
+    # Song formats (ordered alphabetically after Generic)
     # * Numerical order of song formats is significant as it determines the
     #   order used by formatComboBox.
-    # * Attribute ints are negative so they don't clash with song format ints.
-    # * Each group of attribute values increments by 10 to facilitate addition
-    #   of more attributes in future.
-
-    # Song formats (ordered alphabetically after Generic)
     Unknown = -1
     OpenLyrics = 0
     OpenLP2 = 1
@@ -142,172 +137,156 @@ class SongFormat(object):
     ZionWorx = 15
     #CSV = 16
 
-    # Required attributes
-    Class = -10
-    Name = -11
-    Prefix = -12
-    # Optional attributes
-    CanDisable = -20
-    Availability = -21
-    SelectMode = -22
-    Filter = -23
-    # Optional/custom text values
-    ComboBoxText = -30
-    DisabledLabelText = -31
-    GetFilesTitle = -32
-    InvalidSourceMsg = -33
-    DescriptionText = -34
-
     # Set optional attribute defaults
-    _defaults = {
-        CanDisable: False,
-        Availability: True,
-        SelectMode: SongFormatSelect.MultipleFiles,
-        Filter: u'',
-        ComboBoxText: None,
-        DisabledLabelText: u'',
-        GetFilesTitle: None,
-        InvalidSourceMsg: None,
-        DescriptionText: None
+    __defaults__ = {
+        u'canDisable': False,
+        u'availability': True,
+        u'selectMode': SongFormatSelect.MultipleFiles,
+        u'filter': u'',
+        u'comboBoxText': None,
+        u'disabledLabelText': u'',
+        u'getFilesTitle': None,
+        u'invalidSourceMsg': None,
+        u'descriptionText': None
     }
 
     # Set attribute values for each Song Format
-    _attributes = {
+    __attributes__ = {
         OpenLyrics: {
-            Class: OpenLyricsImport,
-            Name: u'OpenLyrics',
-            Prefix: u'openLyrics',
-            Filter: u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
+            u'class': OpenLyricsImport,
+            u'name': u'OpenLyrics',
+            u'prefix': u'openLyrics',
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
                 'OpenLyrics Files'),
-            ComboBoxText: translate('SongsPlugin.ImportWizardForm',
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
                 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
         OpenLP2: {
-            Class: OpenLPSongImport,
-            Name: UiStrings().OLPV2,
-            Prefix: u'openLP2',
-            SelectMode: SongFormatSelect.SingleFile,
-            Filter: u'%s (*.sqlite)' % (translate(
+            u'class': OpenLPSongImport,
+            u'name': UiStrings().OLPV2,
+            u'prefix': u'openLP2',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.sqlite)' % (translate(
                 'SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
         },
         OpenLP1: {
-            Name: UiStrings().OLPV1,
-            Prefix: u'openLP1',
-            CanDisable: True,
-            SelectMode: SongFormatSelect.SingleFile,
-            Filter: u'%s (*.olp)' % translate('SongsPlugin.ImportWizardForm',
+            u'name': UiStrings().OLPV1,
+            u'prefix': u'openLP1',
+            u'canDisable': True,
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.olp)' % translate('SongsPlugin.ImportWizardForm',
                 'openlp.org v1.x Databases'),
-            DisabledLabelText: WizardStrings.NoSqlite
+            u'disabledLabelText': WizardStrings.NoSqlite
         },
         Generic: {
-            Name: translate('SongsPlugin.ImportWizardForm',
+            u'name': translate('SongsPlugin.ImportWizardForm',
                 'Generic Document/Presentation'),
-            Prefix: u'generic',
-            CanDisable: True,
-            DisabledLabelText: translate('SongsPlugin.ImportWizardForm',
+            u'prefix': u'generic',
+            u'canDisable': True,
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The generic document/presentation importer has been disabled '
                 'because OpenLP cannot access OpenOffice or LibreOffice.'),
-            GetFilesTitle: translate('SongsPlugin.ImportWizardForm',
+            u'getFilesTitle': translate('SongsPlugin.ImportWizardForm',
                 'Select Document/Presentation Files')
         },
         CCLI: {
-            Class: CCLIFileImport,
-            Name: u'CCLI/SongSelect',
-            Prefix: u'ccli',
-            Filter: u'%s (*.usr *.txt)' % translate(
+            u'class': CCLIFileImport,
+            u'name': u'CCLI/SongSelect',
+            u'prefix': u'ccli',
+            u'filter': u'%s (*.usr *.txt)' % translate(
                 'SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
         },
         DreamBeam: {
-            Class: DreamBeamImport,
-            Name: u'DreamBeam',
-            Prefix: u'dreamBeam',
-            Filter: u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
+            u'class': DreamBeamImport,
+            u'name': u'DreamBeam',
+            u'prefix': u'dreamBeam',
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
                 'DreamBeam Song Files')
         },
         EasySlides: {
-            Class: EasySlidesImport,
-            Name: u'EasySlides',
-            Prefix: u'easySlides',
-            SelectMode: SongFormatSelect.SingleFile,
-            Filter: u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
+            u'class': EasySlidesImport,
+            u'name': u'EasySlides',
+            u'prefix': u'easySlides',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
                 'EasySlides XML File')
         },
         EasyWorship: {
-            Class: EasyWorshipSongImport,
-            Name: u'EasyWorship',
-            Prefix: u'ew',
-            SelectMode: SongFormatSelect.SingleFile,
-            Filter: u'%s (*.db)' % translate('SongsPlugin.ImportWizardForm',
+            u'class': EasyWorshipSongImport,
+            u'name': u'EasyWorship',
+            u'prefix': u'ew',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.db)' % translate('SongsPlugin.ImportWizardForm',
                 'EasyWorship Song Database')
         },
         FoilPresenter: {
-            Class: FoilPresenterImport,
-            Name: u'Foilpresenter',
-            Prefix: u'foilPresenter',
-            Filter: u'%s (*.foil)' % translate('SongsPlugin.ImportWizardForm',
-                'Foilpresenter Song Files')
+            u'class': FoilPresenterImport,
+            u'name': u'Foilpresenter',
+            u'prefix': u'foilPresenter',
+            u'filter': u'%s (*.foil)' % translate(
+                'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
         OpenSong: {
-            Class: OpenSongImport,
-            Name: WizardStrings.OS,
-            Prefix: u'openSong'
+            u'class': OpenSongImport,
+            u'name': WizardStrings.OS,
+            u'prefix': u'openSong'
         },
         PowerSong: {
-            Class: PowerSongImport,
-            Name: u'PowerSong 1.0',
-            Prefix: u'powerSong',
-            SelectMode: SongFormatSelect.SingleFolder,
-            InvalidSourceMsg: translate('SongsPlugin.ImportWizardForm',
+            u'class': PowerSongImport,
+            u'name': u'PowerSong 1.0',
+            u'prefix': u'powerSong',
+            u'selectMode': SongFormatSelect.SingleFolder,
+            u'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm',
                 'You need to specify a valid PowerSong 1.0 database folder.')
         },
         SongBeamer: {
-            Class: SongBeamerImport,
-            Name: u'SongBeamer',
-            Prefix: u'songBeamer',
-            Filter: u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
+            u'class': SongBeamerImport,
+            u'name': u'SongBeamer',
+            u'prefix': u'songBeamer',
+            u'filter': u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
                 'SongBeamer Files')
         },
         SongShowPlus: {
-            Class: SongShowPlusImport,
-            Name: u'SongShow Plus',
-            Prefix: u'songShowPlus',
-            Filter: u'%s (*.sbsong)' % translate('SongsPlugin.ImportWizardForm',
-                'SongShow Plus Song Files')
+            u'class': SongShowPlusImport,
+            u'name': u'SongShow Plus',
+            u'prefix': u'songShowPlus',
+            u'filter': u'%s (*.sbsong)' % translate(
+                'SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
         },
         SongsOfFellowship: {
-            Name: u'Songs of Fellowship',
-            Prefix: u'songsOfFellowship',
-            CanDisable: True,
-            Filter: u'%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm',
+            u'name': u'Songs of Fellowship',
+            u'prefix': u'songsOfFellowship',
+            u'canDisable': True,
+            u'filter': u'%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm',
                 'Songs Of Fellowship Song Files'),
-            DisabledLabelText: translate('SongsPlugin.ImportWizardForm',
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The Songs of Fellowship importer has been disabled because '
                 'OpenLP cannot access OpenOffice or LibreOffice.')
         },
         WordsOfWorship: {
-            Class: WowImport,
-            Name: u'Words of Worship',
-            Prefix: u'wordsOfWorship',
-            Filter: u'%s (*.wsg *.wow-song)' % translate(
+            u'class': WowImport,
+            u'name': u'Words of Worship',
+            u'prefix': u'wordsOfWorship',
+            u'filter': u'%s (*.wsg *.wow-song)' % translate(
                 'SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
         ZionWorx: {
-            Class: ZionWorxImport,
-            Name: u'ZionWorx',
-            Prefix: u'zionWorx',
-            SelectMode: SongFormatSelect.SingleFile,
-            ComboBoxText: translate('SongsPlugin.ImportWizardForm',
+            u'class': ZionWorxImport,
+            u'name': u'ZionWorx',
+            u'prefix': u'zionWorx',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
                 'ZionWorx (CSV)'),
-            DescriptionText: translate('SongsPlugin.ImportWizardForm',
+            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
                 'First dump your ZionWorx database to a CSV text file, using '
                 'freeware utility TdbDataX "TurboDB Data Exchange" from '
                 'dataWeb (see the User Manual).')
 #        },
 #        CSV: {
-#            class_: CSVImport,
-#            name: WizardStrings.CSV,
-#            prefix: u'csv',
-#            select_mode: SongFormatSelect.SingleFile
+#            u'class': CSVImport,
+#            u'name': WizardStrings.CSV,
+#            u'prefix': u'csv',
+#            u'selectMode': SongFormatSelect.SingleFile
         }
     }
 
@@ -352,16 +331,16 @@ class SongFormat(object):
         :>1: Return tuple of requested attribute values.
         """
         if not attributes:
-            return SongFormat._attributes.get(format)
+            return SongFormat.__attributes__.get(format)
         elif len(attributes) == 1:
-            default = SongFormat._defaults.get(attributes[0])
-            return SongFormat._attributes[format].get(attributes[0],
+            default = SongFormat.__defaults__.get(attributes[0])
+            return SongFormat.__attributes__[format].get(attributes[0],
                 default)
         else:
             values = []
             for attr in attributes:
-                default = SongFormat._defaults.get(attr)
-                values.append(SongFormat._attributes[format].get(attr,
+                default = SongFormat.__defaults__.get(attr)
+                values.append(SongFormat.__attributes__[format].get(attr,
                     default))
             return tuple(values)
 
@@ -370,16 +349,16 @@ class SongFormat(object):
         """
         Set specified song format attribute to the supplied value.
         """
-        SongFormat._attributes[format][attribute] = value
+        SongFormat.__attributes__[format][attribute] = value
 
-SongFormat.set(SongFormat.OpenLP1, SongFormat.Availability, HAS_OPENLP1)
+SongFormat.set(SongFormat.OpenLP1, u'availability', HAS_OPENLP1)
 if HAS_OPENLP1:
-    SongFormat.set(SongFormat.OpenLP1, SongFormat.Class, OpenLP1SongImport)
-SongFormat.set(SongFormat.SongsOfFellowship, SongFormat.Availability, HAS_SOF)
+    SongFormat.set(SongFormat.OpenLP1, u'class', OpenLP1SongImport)
+SongFormat.set(SongFormat.SongsOfFellowship, u'availability', HAS_SOF)
 if HAS_SOF:
-    SongFormat.set(SongFormat.SongsOfFellowship, SongFormat.Class, SofImport)
-SongFormat.set(SongFormat.Generic, SongFormat.Availability, HAS_OOO)
+    SongFormat.set(SongFormat.SongsOfFellowship, u'class', SofImport)
+SongFormat.set(SongFormat.Generic, u'availability', HAS_OOO)
 if HAS_OOO:
-    SongFormat.set(SongFormat.Generic, SongFormat.Class, OooImport)
+    SongFormat.set(SongFormat.Generic, u'class', OooImport)
 
 __all__ = [u'SongFormat', u'SongFormatSelect']
