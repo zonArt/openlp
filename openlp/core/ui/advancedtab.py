@@ -590,6 +590,10 @@ class AdvancedTab(SettingsTab):
             self.displayChanged = False
         Receiver.send_message(u'slidecontroller_update_slide_limits')
 
+    def cancel(self):
+        # Dialogue was cancelled, remove any pending data path change.
+        self.onDataDirectoryCancelButtonClicked()
+
     def serviceNameCheckBoxToggled(self, default_service_enabled):
         self.serviceNameDay.setEnabled(default_service_enabled)
         time_enabled = default_service_enabled and \
