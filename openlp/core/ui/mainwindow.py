@@ -1192,7 +1192,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if Settings().value(u'advanced/save current plugin',
                 QtCore.QVariant(False)).toBool():
                 Settings().setValue(u'advanced/current media plugin',
-                QtCore.QVariant(self.mediaToolBox.currentIndex()))
+                    QtCore.QVariant(self.mediaToolBox.currentIndex()))
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.pluginManager.finalise_plugins()
