@@ -593,6 +593,7 @@ class AdvancedTab(SettingsTab):
     def cancel(self):
         # Dialogue was cancelled, remove any pending data path change.
         self.onDataDirectoryCancelButtonClicked()
+        SettingsTab.cancel(self)
 
     def serviceNameCheckBoxToggled(self, default_service_enabled):
         self.serviceNameDay.setEnabled(default_service_enabled)
