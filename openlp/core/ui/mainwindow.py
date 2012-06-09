@@ -29,6 +29,8 @@ import logging
 import os
 import sys
 import shutil
+from distutils import dir_util
+from distutils.errors import DistutilsFileError
 from tempfile import gettempdir
 import time
 from datetime import datetime
@@ -583,6 +585,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
+        self.newDataPath = u''
+        self.copyData = False
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem,
             QtCore.SIGNAL(u'triggered()'),
@@ -635,6 +639,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cleanup'), self.cleanUp)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox,
             QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -647,6 +653,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
@@ -1199,6 +1209,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if save_settings:
             # Save settings
             self.saveSettings()
+        # Check if we need to change the data directory
+        if self.newDataPath:
+            self.changeDataDirectory()
         # Close down the display
         if self.liveController.display:
             self.liveController.display.close()
@@ -1475,3 +1488,45 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.timer_id = 0
             self.loadProgressBar.hide()
             Receiver.send_message(u'openlp_process_events')
+
+    def setNewDataPath(self, new_data_path):
+        self.newDataPath = new_data_path
+
+    def setCopyData(self, copy_data):
+        self.copyData = copy_data
+
+    def changeDataDirectory(self):
+        log.info(u'Changing data path to %s' % self.newDataPath )
+        old_data_path = unicode(AppLocation.get_data_path())
+        # Copy OpenLP data to new location if requested.
+        if self.copyData:
+            log.info(u'Copying data to new path')
+            try:
+                Receiver.send_message(u'openlp_process_events')
+                Receiver.send_message(u'cursor_busy')
+                self.showStatusMessage(
+                    translate('OpenLP.MainWindow',
+                    'Copying OpenLP data to new data directory location - %s '
+                    '- Please wait for copy to finish'
+                    % self.newDataPath))
+                dir_util.copy_tree(old_data_path, self.newDataPath)
+                log.info(u'Copy sucessful')
+            except (IOError, os.error, DistutilsFileError),  why:
+                Receiver.send_message(u'cursor_normal')
+                log.exception(u'Data copy failed %s' % unicode(why))
+                QtGui.QMessageBox.critical(self,
+                    translate('OpenLP.MainWindow', 'New Data Directory Error'),
+                    translate('OpenLP.MainWindow',
+                    'OpenLP Data directory copy failed\n\n%s'
+                    % unicode(why)),
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Ok))
+                return False
+        else:
+            log.info(u'No data copy requested')
+        # Change the location of data directory in config file.
+        settings = QtCore.QSettings()
+        settings.setValue(u'advanced/data path', self.newDataPath)
+        # Check if the new data path is our default.
+        if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
+            settings.remove(u'advanced/data path')

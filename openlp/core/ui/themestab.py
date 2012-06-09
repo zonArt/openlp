@@ -152,8 +152,8 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'theme level', QtCore.QVariant(self.theme_level))
         settings.setValue(u'global theme', QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.mainwindow.renderer.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.mainwindow.renderer.set_theme_level(self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
@@ -170,8 +170,8 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.mainwindow.renderer.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.mainwindow.renderer.set_theme_level(self.theme_level)
         self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
@@ -190,8 +190,8 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderer.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.mainwindow.renderer.set_theme_level(self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
 

@@ -89,7 +89,7 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-
+    
     # Base path where data/config/cache dir is located
     BaseDir = None
 

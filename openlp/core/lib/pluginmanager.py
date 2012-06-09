@@ -41,13 +41,13 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     log.info(u'Plugin manager loaded')
-
+    __instance__ = None
     @staticmethod
     def get_instance():
         """
         Obtain a single instance of class.
         """
-        return PluginManager.instance
+        return PluginManager.__instance__
 
     def __init__(self, plugin_dir):
         """
@@ -58,7 +58,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
-        PluginManager.instance = self
+        PluginManager.__instance__ = self
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)

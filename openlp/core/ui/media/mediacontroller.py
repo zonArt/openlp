@@ -336,8 +336,7 @@ class MediaController(object):
         if controller.isLive and \
             (Settings().value(u'general/auto unblank',
             QtCore.QVariant(False)).toBool() or \
-            controller.media_info.is_background == True) or \
-            controller.isLive == False:
+            controller.media_info.is_background) or not controller.isLive:
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
@@ -496,7 +495,7 @@ class MediaController(object):
             return
         controller = self.parent.liveController
         for display in self.curDisplayMediaPlayer.keys():
-            if display.controller != controller or  \
+            if display.controller != controller or \
                 self.curDisplayMediaPlayer[display].state != MediaState.Playing:
                 continue
             self.curDisplayMediaPlayer[display].pause(display)

@@ -581,10 +581,7 @@ class ServiceManager(QtGui.QWidget):
                 return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
-        try:
-            delete_file(temp_file_name)
-        except:
-            pass
+        delete_file(temp_file_name)
         return success
 
     def saveFileAs(self):

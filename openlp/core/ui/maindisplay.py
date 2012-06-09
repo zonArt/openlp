@@ -101,9 +101,8 @@ class Display(QtGui.QGraphicsView):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
 
-    def resizeEvent(self, ev):
-        self.webView.setGeometry(0, 0,
-            self.width(), self.height())
+    def resizeEvent(self, event):
+        self.webView.setGeometry(0, 0, self.width(), self.height())
 
     def isWebLoaded(self):
         """
@@ -121,7 +120,6 @@ class MainDisplay(Display):
         Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
         self.screens = ScreenList()
-        self.plugins = PluginManager.get_instance().plugins
         self.rebuildCSS = False
         self.hideMode = None
         self.override = {}
