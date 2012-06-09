@@ -172,17 +172,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
         self.themeComboBox.addItem(u'')
-        self.themes = []
-        for theme in theme_list:
-            self.themeComboBox.addItem(theme)
-            self.themes.append(theme)
+        self.themes = theme_list
+        self.themeComboBox.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
         self.audioAddFromMediaButton.setVisible(False)
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.name == u'media' and \
-                plugin.status == PluginStatus.Active:
+            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(
                     plugin.mediaItem.getList(MediaType.Audio))
