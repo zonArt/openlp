@@ -211,7 +211,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.imageManager.add_image(title, path, u'image',
+        self.renderer.imageManager.addImage(title, path, u'image',
             self.image_border)
         self._new_item()
 

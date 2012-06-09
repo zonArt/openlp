@@ -109,6 +109,7 @@ class Renderer(object):
         self.global_theme_data = \
             self.themeManager.getThemeData(self.global_theme)
         self.theme_data = None
+        self._cache_background_image(self.global_theme_data)
 
     def set_service_theme(self, service_theme):
         """
@@ -119,6 +120,21 @@ class Renderer(object):
         """
         self.service_theme = service_theme
         self.theme_data = None
+        self._cache_background_image(self.themeManager.getThemeData
+            (service_theme))
+
+    def _cache_background_image(self, temp_theme):
+        """
+        Adds a background image to the image cache if necessary.
+
+        ``temp_theme``
+            The theme object containing the theme data.
+        """
+        # if No file do not update cache
+        if temp_theme.background_filename:
+            self.imageManager.addImage(temp_theme.theme_name,
+                temp_theme.background_filename, u'theme',
+                QtGui.QColor(temp_theme.background_border_color))
 
     def set_override_theme(self, override_theme, override_levels=False):
         """
@@ -163,11 +179,7 @@ class Renderer(object):
             self.theme_data = self.themeManager.getThemeData(theme)
         self._calculate_default()
         self._build_text_rectangle(self.theme_data)
-        # if No file do not update cache
-        if self.theme_data.background_filename:
-            self.imageManager.add_image(self.theme_data.theme_name,
-                self.theme_data.background_filename, u'theme',
-                QtGui.QColor(self.theme_data.background_border_color))
+        self._cache_background_image(self.theme_data)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -192,7 +204,7 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
-            self.imageManager.del_image(theme_data.theme_name)
+            self.imageManager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER

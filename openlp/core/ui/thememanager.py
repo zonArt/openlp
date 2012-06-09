@@ -258,6 +258,7 @@ class ThemeManager(QtGui.QWidget):
         editing form for the user to make their customisations.
         """
         theme = ThemeXML()
+        theme.set_default_header_footer()
         self.themeForm.theme = theme
         self.themeForm.exec_()
 
@@ -664,9 +665,9 @@ class ThemeManager(QtGui.QWidget):
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
-            self.mainwindow.imageManager.update_image(theme.theme_name,
+            self.mainwindow.imageManager.updateImage(theme.theme_name,
                 u'theme', QtGui.QColor(theme.background_border_color))
-            self.mainwindow.imageManager.process_updates()
+            self.mainwindow.imageManager.processUpdates()
         self.loadThemes()
 
     def _writeTheme(self, theme, image_from, image_to):
