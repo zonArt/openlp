@@ -87,7 +87,7 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-
+    
     # Base path where data/config/cache dir is located
     BaseDir = None
 
@@ -126,8 +126,13 @@ class AppLocation(object):
         """
         Return the path OpenLP stores all its data under.
         """
-        path = AppLocation.get_directory(AppLocation.DataDir)
-        check_directory_exists(path)
+        # Check if we have a different data location.
+        if QtCore.QSettings().contains(u'advanced/data path'):
+            path = unicode(QtCore.QSettings().value(
+                u'advanced/data path').toString())
+        else:
+            path = AppLocation.get_directory(AppLocation.DataDir)
+            check_directory_exists(path)
         return path
 
     @staticmethod
