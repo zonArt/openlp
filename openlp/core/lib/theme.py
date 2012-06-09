@@ -444,6 +444,20 @@ class ThemeXML(object):
         element.appendChild(child)
         return child
 
+    def set_default_header_footer(self):
+        """
+        Set the header and footer size into the current primary screen.
+        10 px on each side is removed to allow for a border.
+        """
+        from openlp.core.ui import ScreenList
+        current_screen = ScreenList().current
+        self.font_main_y = 0
+        self.font_main_width = current_screen[u'size'].width() - 20
+        self.font_main_height = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_width = current_screen[u'size'].width() - 20
+        self.font_footer_y = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_height = current_screen[u'size'].height() / 10
+
     def dump_xml(self):
         """
         Dump the XML to file used for debugging
