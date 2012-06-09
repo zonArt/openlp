@@ -38,21 +38,21 @@ from openlp.core.ui.media import MediaState
 log = logging.getLogger(__name__)
 
 ADDITIONAL_EXT = {
-            u'audio/ac3': [u'.ac3'],
-            u'audio/flac': [u'.flac'],
-            u'audio/x-m4a': [u'.m4a'],
-            u'audio/midi': [u'.mid', u'.midi'],
-            u'audio/x-mp3': [u'.mp3'],
-            u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-            u'audio/qcelp': [u'.qcp'],
-            u'audio/x-wma': [u'.wma'],
-            u'audio/x-ms-wma': [u'.wma'],
-            u'video/x-flv': [u'.flv'],
-            u'video/x-matroska': [u'.mpv', u'.mkv'],
-            u'video/x-wmv': [u'.wmv'],
-            u'video/x-mpg': [u'.mpg'],
-            u'video/mpeg' : [u'.mp4', u'.mts'],
-            u'video/x-ms-wmv': [u'.wmv']}
+        u'audio/ac3': [u'.ac3'],
+        u'audio/flac': [u'.flac'],
+        u'audio/x-m4a': [u'.m4a'],
+        u'audio/midi': [u'.mid', u'.midi'],
+        u'audio/x-mp3': [u'.mp3'],
+        u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+        u'audio/qcelp': [u'.qcp'],
+        u'audio/x-wma': [u'.wma'],
+        u'audio/x-ms-wma': [u'.wma'],
+        u'video/x-flv': [u'.flv'],
+        u'video/x-matroska': [u'.mpv', u'.mkv'],
+        u'video/x-wmv': [u'.wmv'],
+        u'video/x-mpg': [u'.mpg'],
+        u'video/mpeg' : [u'.mp4', u'.mts'],
+        u'video/x-ms-wmv': [u'.wmv']}
 
 
 class PhononPlayer(MediaPlayer):
@@ -101,7 +101,7 @@ class PhononPlayer(MediaPlayer):
         display.mediaObject = Phonon.MediaObject(display)
         Phonon.createPath(display.mediaObject, display.phononWidget)
         if display.hasAudio:
-            display.audio = Phonon.AudioOutput( \
+            display.audio = Phonon.AudioOutput(
                 Phonon.VideoCategory, display.mediaObject)
             Phonon.createPath(display.mediaObject, display.audio)
         display.phononWidget.raise_()
@@ -148,18 +148,17 @@ class PhononPlayer(MediaPlayer):
             controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.mediaObject.play()
-        if self.media_state_wait(display, Phonon.PlayingState):
-            if start_time > 0:
-                self.seek(display, controller.media_info.start_time*1000)
-            self.volume(display, controller.media_info.volume)
-            controller.media_info.length = \
-                int(display.mediaObject.totalTime()/1000)
-            controller.seekSlider.setMaximum(controller.media_info.length*1000)
-            self.state = MediaState.Playing
-            display.phononWidget.raise_()
-            return True
-        else:
+        if not self.media_state_wait(display, Phonon.PlayingState):
             return False
+        if start_time > 0:
+            self.seek(display, controller.media_info.start_time * 1000)
+        self.volume(display, controller.media_info.volume)
+        controller.media_info.length = \
+            int(display.mediaObject.totalTime() / 1000)
+        controller.seekSlider.setMaximum(controller.media_info.length * 1000)
+        self.state = MediaState.Playing
+        display.phononWidget.raise_()
+        return True
 
     def pause(self, display):
         display.mediaObject.pause()
@@ -198,9 +197,9 @@ class PhononPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.end_time > 0:
             if display.mediaObject.currentTime() > \
-                controller.media_info.end_time*1000:
+                controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition( \
+            controller.seekSlider.setSliderPosition(
                 display.mediaObject.currentTime())
