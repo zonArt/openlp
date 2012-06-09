@@ -863,7 +863,7 @@ class SlideController(Controller):
                     image = self.imageManager.getImage(frame[u'title'])
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent().renderer.screen_ratio
+                slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))

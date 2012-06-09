@@ -197,9 +197,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        raw_footer = []
-        slide = None
-        theme = None
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
@@ -220,10 +217,9 @@ class CustomMediaItem(MediaManagerItem):
             service_item.add_from_text(slide[:30], slide)
         if QtCore.QSettings().value(self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool() or credit:
-            raw_footer.append(title + u' ' + credit)
+            service_item.raw_footer.append(u' '.join([title, credit]))
         else:
-            raw_footer.append(u'')
-        service_item.raw_footer = raw_footer
+            service_item.raw_footer.append(u'')
         return True
 
     def onSearchTextButtonClicked(self):
