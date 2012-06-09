@@ -51,11 +51,11 @@ class SongImport(QtCore.QObject):
     as necessary
     """
     @staticmethod
-    def isValidSource(**kwargs):
+    def isValidSource(import_source):
         """
         Override this method to validate the source prior to import.
         """
-        pass
+        return True
 
     def __init__(self, manager, **kwargs):
         """
