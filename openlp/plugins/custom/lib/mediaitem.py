@@ -214,7 +214,7 @@ class CustomMediaItem(MediaManagerItem):
         raw_slides = [verse[1] for verse in verseList]
         service_item.title = title
         for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
+            service_item.add_from_text(slide)
         if QtCore.QSettings().value(self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool() or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))

@@ -485,8 +485,7 @@ class SongMediaItem(MediaManagerItem):
                         verse_index = VerseType.from_tag(verse_tag)
                     verse_tag = VerseType.TranslatedTags[verse_index].upper()
                     verse_def = u'%s%s' % (verse_tag, verse[0][u'label'])
-                    service_item.add_from_text(
-                        verse[1][:30], unicode(verse[1]), verse_def)
+                    service_item.add_from_text(unicode(verse[1]), verse_def)
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
@@ -505,12 +504,11 @@ class SongMediaItem(MediaManagerItem):
                             verse_tag = VerseType.TranslatedTags[verse_index]
                             verse_def = u'%s%s' % (verse_tag,
                                 verse[0][u'label'])
-                            service_item.add_from_text(
-                                verse[1][:30], verse[1], verse_def)
+                            service_item.add_from_text(verse[1], verse_def)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
-                service_item.add_from_text(slide[:30], unicode(slide))
+                service_item.add_from_text(unicode(slide))
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
         service_item.raw_footer.append(song.title)
