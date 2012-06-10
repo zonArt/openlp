@@ -276,8 +276,8 @@ def main(args=None):
             u'..', u'..', u'Data',))
         log.info(u'Data path: %s' % data_path)
         # Point to our data path
-        portable_settings.setValue(u'advanced/data path',data_path)
-        portable_settings.setValue(u'advanced/is portable',True)
+        portable_settings.setValue(u'advanced/data path', data_path)
+        portable_settings.setValue(u'advanced/is portable', True)
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')

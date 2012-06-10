@@ -59,7 +59,7 @@ class Settings(QtCore.QSettings):
 
     def __init__(self, *args):
         if not args and Settings.filePath and (Settings.defaultFormat() ==
-                                               Settings.IniFormat):
+            Settings.IniFormat):
             QtCore.QSettings.__init__(self, Settings.filePath,
                 Settings.IniFormat)
         else:
