@@ -189,8 +189,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if self.hasSingleVerse:
             value = unicode(self.getVerse()[0])
         else:
-            log.debug(unicode(self.getVerse()[0]).split(u'\n'))
-            value = unicode(self.getVerse()[0]).split(u'\n')[1]
+            lines = unicode(self.getVerse()[0]).split(u'\n')
+            log.debug(lines)
+            if len(lines) <= 1:
+                critical_error_message_box(
+                    message=translate('SongsPlugin.EditSongForm',
+                    'Invalid entry, you need a verse splitter and some text.'))
+                return False
+            value = lines[1]
             if not value:
                 lines = unicode(self.getVerse()[0]).split(u'\n')
                 index = 2
