@@ -238,7 +238,7 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 self.session.add(object_instance)
                 if commit:
@@ -253,7 +253,7 @@ class Manager(object):
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
                 self.session.rollback()
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
@@ -273,7 +273,7 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 self.session.add_all(object_list)
                 if commit:
@@ -288,7 +288,7 @@ class Manager(object):
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
@@ -311,7 +311,7 @@ class Manager(object):
         if not key:
             return object_class()
         else:
-            for tryCount in range(3):
+            for try_count in range(3):
                 try:
                     return self.session.query(object_class).get(key)
                 except OperationalError:
@@ -321,7 +321,7 @@ class Manager(object):
                     # However, other dbms can raise it, usually in a non-recoverable
                     # way. So we only retry 3 times.
                     log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
-                    if tryCount >= 2:
+                    if try_count >= 2:
                         raise
 
     def get_object_filtered(self, object_class, filter_clause):
@@ -334,7 +334,7 @@ class Manager(object):
         ``filter_clause``
             The criteria to select the object by
         """
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 return self.session.query(object_class).filter(filter_clause).first()
             except OperationalError:
@@ -344,7 +344,7 @@ class Manager(object):
                 # However, other dbms can raise it, usually in a non-recoverable
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
 
     def get_all_objects(self, object_class, filter_clause=None,
@@ -369,7 +369,7 @@ class Manager(object):
             query = query.order_by(*order_by_ref)
         elif order_by_ref is not None:
             query = query.order_by(order_by_ref)
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 return query.all()
             except OperationalError:
@@ -379,7 +379,7 @@ class Manager(object):
                 # However, other dbms can raise it, usually in a non-recoverable
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
 
     def get_object_count(self, object_class, filter_clause=None):
@@ -396,7 +396,7 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 return query.count()
             except OperationalError:
@@ -406,7 +406,7 @@ class Manager(object):
                 # However, other dbms can raise it, usually in a non-recoverable
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
 
     def delete_object(self, object_class, key):
@@ -421,7 +421,7 @@ class Manager(object):
         """
         if key != 0:
             object_instance = self.get_object(object_class, key)
-            for tryCount in range(3):
+            for try_count in range(3):
                 try:
                     self.session.delete(object_instance)
                     self.session.commit()
@@ -435,7 +435,7 @@ class Manager(object):
                     # way. So we only retry 3 times.
                     log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                     self.session.rollback()
-                    if tryCount >= 2:
+                    if try_count >= 2:
                         raise
                 except InvalidRequestError:
                     self.session.rollback()
@@ -461,7 +461,7 @@ class Manager(object):
             The filter governing selection of objects to return. Defaults to
             None.
         """
-        for tryCount in range(3):
+        for try_count in range(3):
             try:
                 query = self.session.query(object_class)
                 if filter_clause is not None:
@@ -478,7 +478,7 @@ class Manager(object):
                 # way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
-                if tryCount >= 2:
+                if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
