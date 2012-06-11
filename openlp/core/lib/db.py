@@ -41,6 +41,7 @@ from sqlalchemy.pool import NullPool
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -179,7 +180,7 @@ class Manager(object):
             The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False

@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib.settings import Settings
 
 class SongsTab(SettingsTab):
     """
@@ -110,7 +111,7 @@ class SongsTab(SettingsTab):
             self.update_load = True
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.song_search = settings.value(
             u'search as type', QtCore.QVariant(False)).toBool()
@@ -127,7 +128,7 @@ class SongsTab(SettingsTab):
         settings.endGroup()
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.tool_bar))

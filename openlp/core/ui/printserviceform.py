@@ -33,6 +33,7 @@ from lxml import html
 
 from openlp.core.lib import translate, get_text_file_string, Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -120,7 +121,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
@@ -318,7 +319,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         elif display == ZoomSize.TwentyFive:
             self.previewWidget.fitToWidth()
             self.previewWidget.zoomIn(0.25)
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'display size', QtCore.QVariant(display))
         settings.endGroup()
@@ -389,7 +390,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Save the settings and close the dialog.
         """
         # Save the settings for this dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
             QtCore.QVariant(self.slideTextCheckBox.isChecked()))

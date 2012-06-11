@@ -38,6 +38,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
     translate, PluginManager, expand_tags
 from openlp.core.lib.theme import BackgroundType
+from openlp.core.lib.settings import Settings
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -132,7 +133,7 @@ class MainDisplay(Display):
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
                 QtCore.Qt.WindowStaysOnTopHint
-        if QtCore.QSettings().value(u'advanced/x11 bypass wm',
+        if Settings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
@@ -193,11 +194,11 @@ class MainDisplay(Display):
         Display.setup(self)
         if self.isLive:
             # Build the initial frame.
-            image_file = QtCore.QSettings().value(u'advanced/default image',
+            image_file = Settings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
             background_color = QtGui.QColor()
-            background_color.setNamedColor(QtCore.QSettings().value(
+            background_color.setNamedColor(Settings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
@@ -350,7 +351,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if QtCore.QSettings().value(u'general/display on monitor',
+                    if Settings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():
                         self.setVisible(True)
                 else:
@@ -399,7 +400,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if QtCore.QSettings().value(u'general/auto unblank',
+            if Settings().value(u'general/auto unblank',
                 QtCore.QVariant(False)).toBool():
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
@@ -423,7 +424,7 @@ class MainDisplay(Display):
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not QtCore.QSettings().value(u'general/display on monitor',
+            if not Settings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
         if mode == HideMode.Screen:
@@ -448,7 +449,7 @@ class MainDisplay(Display):
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not QtCore.QSettings().value(u'general/display on monitor',
+            if not Settings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
@@ -463,7 +464,7 @@ class MainDisplay(Display):
         """
         Hide mouse cursor when moved over display.
         """
-        if QtCore.QSettings().value(u'advanced/hide mouse',
+        if Settings().value(u'advanced/hide mouse',
             QtCore.QVariant(False)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')

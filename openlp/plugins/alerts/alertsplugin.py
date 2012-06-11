@@ -32,6 +32,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
@@ -160,7 +161,7 @@ class AlertsPlugin(Plugin):
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
-        QtCore.QSettings().setValue(self.settingsSection + u'/active',
+        Settings().setValue(self.settingsSection + u'/active',
             QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):

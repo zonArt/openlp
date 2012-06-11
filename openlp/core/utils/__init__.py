@@ -36,6 +36,8 @@ from subprocess import Popen, PIPE
 import sys
 import urllib2
 
+from openlp.core.lib.settings import Settings
+
 from PyQt4 import QtGui, QtCore
 
 if sys.platform != u'win32' and sys.platform != u'darwin':
@@ -127,8 +129,8 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         # Check if we have a different data location.
-        if QtCore.QSettings().contains(u'advanced/data path'):
-            path = unicode(QtCore.QSettings().value(
+        if Settings().contains(u'advanced/data path'):
+            path = unicode(Settings().value(
                 u'advanced/data path').toString())
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
@@ -285,7 +287,7 @@ def check_latest_version(current_version):
     """
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
         QtCore.QVariant(datetime.now().date())).toString())
