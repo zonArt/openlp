@@ -190,7 +190,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             value = unicode(self.getVerse()[0])
         else:
             lines = unicode(self.getVerse()[0]).split(u'\n')
-            log.debug(lines)
             if len(lines) <= 1:
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
