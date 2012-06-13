@@ -293,7 +293,7 @@ class MainDisplay(Display):
         Add an image as the background. The image has already been added
         to the cache.
 
-        ``Image``
+        ``name``
             The name of the image to be displayed.
         """
         log.debug(u'image to display')
