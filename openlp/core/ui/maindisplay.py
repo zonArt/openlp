@@ -133,7 +133,7 @@ class MainDisplay(Display):
         self.webLoaded = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-                QtCore.Qt.WindowStaysOnTopHint
+            QtCore.Qt.WindowStaysOnTopHint
         if Settings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
@@ -195,27 +195,27 @@ class MainDisplay(Display):
         Display.setup(self)
         if self.isLive:
             # Build the initial frame.
-            backgroundColor = QtGui.QColor()
-            backgroundColor.setNamedColor(Settings().value(
+            background_color = QtGui.QColor()
+            background_color.setNamedColor(Settings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
-            if not backgroundColor.isValid():
-                backgroundColor = QtCore.Qt.white
-            imageFile = Settings().value(u'advanced/default image',
+            if not background_color.isValid():
+                background_color = QtCore.Qt.white
+            image_file = Settings().value(u'advanced/default image',
                 QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
                 .toString()
-            splashImage = QtGui.QImage(imageFile)
+            splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
                 self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
-            painterImage = QtGui.QPainter()
-            painterImage.begin(self.initialFrame)
-            painterImage.fillRect(self.initialFrame.rect(), backgroundColor)
-            painterImage.drawImage(
-                (self.screen[u'size'].width() - splashImage.width()) / 2,
-                (self.screen[u'size'].height() - splashImage.height()) / 2,
-                splashImage)
+            painter_image = QtGui.QPainter()
+            painter_image.begin(self.initialFrame)
+            painter_image.fillRect(self.initialFrame.rect(), background_color)
+            painter_image.drawImage(
+                (self.screen[u'size'].width() - splash_image.width()) / 2,
+                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
@@ -248,27 +248,27 @@ class MainDisplay(Display):
         log.debug(u'alert to display')
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
-        textPrepared = expand_tags(
+        text_prepared = expand_tags(
             cgi.escape(text)).replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
         if self.height() != self.screen[u'size'].height() or not \
             self.isVisible():
             shrink = True
-            js = u'show_alert("%s", "%s")' % (textPrepared, u'top')
+            js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
             shrink = False
-            js = u'show_alert("%s", "")' % textPrepared
+            js = u'show_alert("%s", "")' % text_prepared
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                alertHeight = int(height.toString())
-                self.resize(self.width(), alertHeight)
+                alert_height = int(height.toString())
+                self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
                     self.move(self.screen[u'size'].left(),
-                        (self.screen[u'size'].height() - alertHeight) / 2)
+                    (self.screen[u'size'].height() - alert_height) / 2)
                 elif location == AlertLocation.Bottom:
                     self.move(self.screen[u'size'].left(),
-                        self.screen[u'size'].height() - alertHeight)
+                        self.screen[u'size'].height() - alert_height)
             else:
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
@@ -290,8 +290,8 @@ class MainDisplay(Display):
 
     def image(self, name):
         """
-        Add an image as the background. The image has already been added
-        to the cache.
+        Add an image as the background. The image has already been added to the
+        cache.
 
         ``name``
             The name of the image to be displayed.
@@ -361,8 +361,8 @@ class MainDisplay(Display):
 
     def buildHtml(self, serviceItem, image=None):
         """
-        Store the serviceItem and build the new HTML from it. Add the HTML to
-        the display.
+        Store the serviceItem and build the new HTML from it. Add the
+        HTML to the display
         """
         log.debug(u'buildHtml')
         self.webLoaded = False
@@ -389,11 +389,11 @@ class MainDisplay(Display):
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 getImageBytes(self.serviceItem.themedata.theme_name)
         if image:
-            imageBytes = self.imageManager.getImageBytes(image)
+            image_bytes = self.imageManager.getImageBytes(image)
         else:
-            imageBytes = None
+            image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,
-            background, imageBytes, self.plugins)
+            background, image_bytes, self.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
