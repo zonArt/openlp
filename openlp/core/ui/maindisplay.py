@@ -130,9 +130,10 @@ class MainDisplay(Display):
         else:
             self.audioPlayer = None
         self.firstTime = True
+        self.webLoaded = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-                QtCore.Qt.WindowStaysOnTopHint
+            QtCore.Qt.WindowStaysOnTopHint
         if Settings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
@@ -194,15 +195,15 @@ class MainDisplay(Display):
         Display.setup(self)
         if self.isLive:
             # Build the initial frame.
-            image_file = Settings().value(u'advanced/default image',
-                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
-                .toString()
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
+            image_file = Settings().value(u'advanced/default image',
+                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+                .toString()
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
@@ -289,10 +290,10 @@ class MainDisplay(Display):
 
     def image(self, name):
         """
-        Add an image as the background. The image has already been added
-        to the cache.
+        Add an image as the background. The image has already been added to the
+        cache.
 
-        ``Image``
+        ``name``
             The name of the image to be displayed.
         """
         log.debug(u'image to display')
