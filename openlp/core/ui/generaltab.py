@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class GeneralTab(SettingsTab):
         """
         Initialise the general settings tab
         """
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         self.iconPath = u':/icon/openlp-logo-16x16.png'
         generalTranslated = translate('OpenLP.GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', generalTranslated)
@@ -265,7 +266,7 @@ class GeneralTab(SettingsTab):
         """
         Load the settings to populate the form
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
         self.monitorComboBox.addItems(self.screens.get_screen_list())
@@ -327,7 +328,7 @@ class GeneralTab(SettingsTab):
         """
         Save the settings from the form
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'monitor',
             QtCore.QVariant(self.monitorComboBox.currentIndex()))

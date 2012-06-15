@@ -40,6 +40,7 @@ from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
@@ -164,7 +165,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
+        self.global_theme = unicode(Settings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
 
@@ -244,11 +245,10 @@ class ThemeManager(QtGui.QWidget):
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % self.global_theme
                 self.themeListWidget.item(count).setText(name)
-                QtCore.QSettings().setValue(
+                Settings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
-                Receiver.send_message(u'theme_update_global',
-                    self.global_theme)
+                Receiver.send_message(u'theme_update_global', self.global_theme)
                 self._pushThemes()
 
     def onAddTheme(self):
@@ -257,6 +257,7 @@ class ThemeManager(QtGui.QWidget):
         editing form for the user to make their customisations.
         """
         theme = ThemeXML()
+        theme.set_default_header_footer()
         self.themeForm.theme = theme
         self.themeForm.exec_()
 
@@ -284,6 +285,8 @@ class ThemeManager(QtGui.QWidget):
                         if plugin.usesTheme(old_theme_name):
                             plugin.renameTheme(old_theme_name, new_theme_name)
                     self.loadThemes()
+                    self.mainwindow.renderer.update_theme(
+                        new_theme_name, old_theme_name)
 
     def onCopyTheme(self):
         """
@@ -320,9 +323,8 @@ class ThemeManager(QtGui.QWidget):
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
-        if check_item_selected(self.themeListWidget,
-            translate('OpenLP.ThemeManager',
-            'You must select a theme to edit.')):
+        if check_item_selected(self.themeListWidget, translate(
+            'OpenLP.ThemeManager', 'You must select a theme to edit.')):
             item = self.themeListWidget.currentItem()
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
@@ -331,6 +333,7 @@ class ThemeManager(QtGui.QWidget):
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
             self.old_background_image = None
+            self.mainwindow.renderer.update_theme(theme.theme_name)
 
     def onDeleteTheme(self):
         """
@@ -348,6 +351,7 @@ class ThemeManager(QtGui.QWidget):
             # As we do not reload the themes, push out the change. Reload the
             # list as the internal lists and events need to be triggered.
             self._pushThemes()
+            self.mainwindow.renderer.update_theme(theme, only_delete=True)
 
     def deleteTheme(self, theme):
         """
@@ -448,7 +452,7 @@ class ThemeManager(QtGui.QWidget):
                 theme = ThemeXML()
                 theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
-                QtCore.QSettings().setValue(
+                Settings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(theme.theme_name))
                 self.configUpdated()
@@ -663,9 +667,9 @@ class ThemeManager(QtGui.QWidget):
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
-            self.mainwindow.imageManager.update_image(theme.theme_name,
+            self.mainwindow.imageManager.updateImage(theme.theme_name,
                 u'theme', QtGui.QColor(theme.background_border_color))
-            self.mainwindow.imageManager.process_updates()
+            self.mainwindow.imageManager.processUpdates()
         self.loadThemes()
 
     def _writeTheme(self, theme, image_from, image_to):
@@ -767,7 +771,7 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
+        self.global_theme = unicode(Settings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         if check_item_selected(self.themeListWidget, select_text):

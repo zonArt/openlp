@@ -55,29 +55,32 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, imageManager, themeManager):
+    def __init__(self, image_manager, theme_manager):
         """
         Initialise the renderer.
 
-    ``imageManager``
-        A imageManager instance which takes care of e. g. caching and resizing
-        images.
+        ``image_manager``
+            A image_manager instance which takes care of e. g. caching and
+            resizing images.
 
-    ``themeManager``
-        The themeManager instance, used to get the current theme details.
+        ``theme_manager``
+            The theme_manager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
-        self.themeManager = themeManager
-        self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
-        self.service_theme = u''
-        self.theme_level = u''
-        self.override_background = None
-        self.theme_data = None
-        self.bg_frame = None
+        self.theme_manager = theme_manager
+        self.image_manager = image_manager
+        self.screens = ScreenList()
+        self.theme_level = ThemeLevel.Global
+        self.global_theme_name = u''
+        self.service_theme_name = u''
+        self.item_theme_name = u''
         self.force_page = False
-        self.display = MainDisplay(None, self.imageManager, False, self)
+        self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
+        self._theme_dimensions = {}
+        self._calculate_default()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
 
     def update_display(self):
         """
@@ -87,88 +90,132 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.imageManager, False, self)
+        self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
-        self.bg_frame = None
-        self.theme_data = None
+        self._theme_dimensions = {}
 
-    def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
+    def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
         """
-        Set the global-level theme and the theme level.
+        This method updates the theme in ``_theme_dimensions`` when a theme
+        has been edited or renamed.
 
-        ``global_theme``
-            The global-level theme to be set.
+        ``theme_name``
+            The current theme name.
+
+        ``old_theme_name``
+            The old theme name. Has only to be passed, when the theme has been
+            renamed. Defaults to *None*.
+
+        ``only_delete``
+            Only remove the given ``theme_name`` from the ``_theme_dimensions``
+            list. This can be used when a theme is permanently deleted.
+        """
+        if old_theme_name is not None and \
+            old_theme_name in self._theme_dimensions:
+            del self._theme_dimensions[old_theme_name]
+        if theme_name in self._theme_dimensions:
+            del self._theme_dimensions[theme_name]
+        if not only_delete:
+            self._set_theme(theme_name)
+
+    def _set_theme(self, theme_name):
+        """
+        Helper method to save theme names and theme data.
+
+        ``theme_name``
+            The theme name.
+        """
+        if theme_name not in self._theme_dimensions:
+            theme_data = self.theme_manager.getThemeData(theme_name)
+            main_rect = self.get_main_rectangle(theme_data)
+            footer_rect = self.get_footer_rectangle(theme_data)
+            self._theme_dimensions[theme_name] = \
+                [theme_data, main_rect, footer_rect]
+        else:
+            theme_data, main_rect, footer_rect = \
+                self._theme_dimensions[theme_name]
+        # if No file do not update cache
+        if theme_data.background_filename:
+            self.image_manager.addImage(theme_data.theme_name,
+                theme_data.background_filename, u'theme',
+                QtGui.QColor(theme_data.background_border_color))
+
+    def pre_render(self, override_theme_data=None):
+        """
+        Set up the theme to be used before rendering an item.
+
+        ``override_theme_data``
+            The theme data should be passed, when we want to use our own theme
+            data, regardless of the theme level. This should for example be used
+            in the theme manager. **Note**, this is **not** to be mixed up with
+            the ``set_item_theme`` method.
+        """
+        # Just assume we use the global theme.
+        theme_to_use = self.global_theme_name
+        # The theme level is either set to Service or Item. Use the service
+        # theme if one is set. We also have to use the service theme, even when
+        # the theme level is set to Item, because the item does not necessarily
+        # have to have a theme.
+        if self.theme_level != ThemeLevel.Global:
+            # When the theme level is at Service and we actually have a service
+            # theme then use it.
+            if self.service_theme_name:
+                theme_to_use = self.service_theme_name
+        # If we have Item level and have an item theme then use it.
+        if self.theme_level == ThemeLevel.Song and self.item_theme_name:
+            theme_to_use = self.item_theme_name
+        if override_theme_data is None:
+            if theme_to_use not in self._theme_dimensions:
+                self._set_theme(theme_to_use)
+            theme_data, main_rect, footer_rect = \
+                self._theme_dimensions[theme_to_use]
+        else:
+            # Ignore everything and use own theme data.
+            theme_data = override_theme_data
+            main_rect = self.get_main_rectangle(override_theme_data)
+            footer_rect = self.get_footer_rectangle(override_theme_data)
+        self._set_text_rectangle(theme_data, main_rect, footer_rect)
+        return theme_data, self._rect, self._rect_footer
+
+    def set_theme_level(self, theme_level):
+        """
+        Sets the theme level.
 
         ``theme_level``
-            Defaults to ``ThemeLevel.Global``. The theme level, can be
-            ``ThemeLevel.Global``, ``ThemeLevel.Service`` or
-            ``ThemeLevel.Song``.
+            The theme level to be used.
         """
-        self.global_theme = global_theme
         self.theme_level = theme_level
-        self.global_theme_data = \
-            self.themeManager.getThemeData(self.global_theme)
-        self.theme_data = None
 
-    def set_service_theme(self, service_theme):
+    def set_global_theme(self, global_theme_name):
+        """
+        Set the global-level theme name.
+
+        ``global_theme_name``
+            The global-level theme's name.
+        """
+        self._set_theme(global_theme_name)
+        self.global_theme_name = global_theme_name
+
+    def set_service_theme(self, service_theme_name):
         """
         Set the service-level theme.
 
-        ``service_theme``
-            The service-level theme to be set.
+        ``service_theme_name``
+            The service level theme's name.
         """
-        self.service_theme = service_theme
-        self.theme_data = None
+        self._set_theme(service_theme_name)
+        self.service_theme_name = service_theme_name
 
-    def set_override_theme(self, override_theme, override_levels=False):
+    def set_item_theme(self, item_theme_name):
         """
-        Set the appropriate theme depending on the theme level.
-        Called by the service item when building a display frame
+        Set the item-level theme. **Note**, this has to be done for each item we
+        are rendering.
 
-        ``theme``
-            The name of the song-level theme. None means the service
-            item wants to use the given value.
-
-        ``override_levels``
-            Used to force the theme data passed in to be used.
+        ``item_theme_name``
+            The item theme's name.
         """
-        log.debug(u'set override theme to %s', override_theme)
-        theme_level = self.theme_level
-        if override_levels:
-            theme_level = ThemeLevel.Song
-        if theme_level == ThemeLevel.Global:
-            theme = self.global_theme
-        elif theme_level == ThemeLevel.Service:
-            if self.service_theme == u'':
-                theme = self.global_theme
-            else:
-                theme = self.service_theme
-        else:
-            # Images have a theme of -1
-            if override_theme and override_theme != -1:
-                theme = override_theme
-            elif theme_level == ThemeLevel.Song or \
-                theme_level == ThemeLevel.Service:
-                if self.service_theme == u'':
-                    theme = self.global_theme
-                else:
-                    theme = self.service_theme
-            else:
-                theme = self.global_theme
-        log.debug(u'theme is now %s', theme)
-        # Force the theme to be the one passed in.
-        if override_levels:
-            self.theme_data = override_theme
-        else:
-            self.theme_data = self.themeManager.getThemeData(theme)
-        self._calculate_default()
-        self._build_text_rectangle(self.theme_data)
-        # if No file do not update cache
-        if self.theme_data.background_filename:
-            self.imageManager.add_image(self.theme_data.theme_name,
-                self.theme_data.background_filename, u'theme',
-                QtGui.QColor(self.theme_data.background_border_color))
-        return self._rect, self._rect_footer
+        self._set_theme(item_theme_name)
+        self.item_theme_name = item_theme_name
 
     def generate_preview(self, theme_data, force_page=False):
         """
@@ -183,27 +230,31 @@ class Renderer(object):
         log.debug(u'generate preview')
         # save value for use in format_slide
         self.force_page = force_page
-        # set the default image size for previews
-        self._calculate_default()
         # build a service item to generate preview
         serviceItem = ServiceItem()
-        serviceItem.theme = theme_data
         if self.force_page:
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
         else:
-            self.imageManager.del_image(theme_data.theme_name)
+            self.image_manager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
+        # if No file do not update cache
+        if theme_data.background_filename:
+            self.image_manager.addImage(theme_data.theme_name,
+                theme_data.background_filename, u'theme',
+                QtGui.QColor(theme_data.background_border_color))
+        theme_data, main, footer = self.pre_render(theme_data)
+        serviceItem.themedata = theme_data
+        serviceItem.main = main
+        serviceItem.footer = footer
         serviceItem.render(True)
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
             self.display.text(raw_html)
             preview = self.display.preview()
-            # Reset the real screen size for subsequent render requests
-            self._calculate_default()
             return preview
         self.force_page = False
 
@@ -235,8 +286,8 @@ class Renderer(object):
                     # the first two slides (and neglect the last for now).
                     if len(slides) == 3:
                         html_text = expand_tags(u'\n'.join(slides[:2]))
-                    # We check both slides to determine if the optional break is
-                    # needed (there is only one optional break).
+                    # We check both slides to determine if the optional split is
+                    # needed (there is only one optional split).
                     else:
                         html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
@@ -247,14 +298,18 @@ class Renderer(object):
                     else:
                         # The first optional slide fits, which means we have to
                         # render the first optional slide.
-                        text_contains_break = u'[---]' in text
-                        if text_contains_break:
+                        text_contains_split = u'[---]' in text
+                        if text_contains_split:
                             try:
                                 text_to_render, text = \
                                     text.split(u'\n[---]\n', 1)
-                            except:
+                            except ValueError:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
+                            text_to_render, raw_tags, html_tags = \
+                                self._get_start_tags(text_to_render)
+                            if text:
+                                text = raw_tags + text
                         else:
                             text_to_render = text
                             text = u''
@@ -263,7 +318,7 @@ class Renderer(object):
                         if len(slides) > 1 and text:
                             # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
-                            if  text_contains_break:
+                            if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
                                 text = slides[-1] + u'\n'+ text
@@ -299,51 +354,40 @@ class Renderer(object):
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
-    def _build_text_rectangle(self, theme):
-        """
-        Builds a text block using the settings in ``theme``
-        and the size of the display screen.height.
-        Note the system has a 10 pixel border round the screen
-
-        ``theme``
-            The theme to build a text block for.
-        """
-        log.debug(u'_build_text_rectangle')
-        main_rect = self.get_main_rectangle(theme)
-        footer_rect = self.get_footer_rectangle(theme)
-        self._set_text_rectangle(main_rect, footer_rect)
-
-    def get_main_rectangle(self, theme):
+    def get_main_rectangle(self, theme_data):
         """
         Calculates the placement and size of the main rectangle.
 
-        ``theme``
+        ``theme_data``
             The theme information
         """
-        if not theme.font_main_override:
-            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+        if not theme_data.font_main_override:
+            return QtCore.QRect(10, 0, self.width, self.footer_start)
         else:
-            return QtCore.QRect(theme.font_main_x, theme.font_main_y,
-                theme.font_main_width - 1, theme.font_main_height - 1)
+            return QtCore.QRect(theme_data.font_main_x, theme_data.font_main_y,
+                theme_data.font_main_width - 1, theme_data.font_main_height - 1)
 
-    def get_footer_rectangle(self, theme):
+    def get_footer_rectangle(self, theme_data):
         """
         Calculates the placement and size of the footer rectangle.
 
-        ``theme``
-            The theme information
+        ``theme_data``
+            The theme data.
         """
-        if not theme.font_footer_override:
+        if not theme_data.font_footer_override:
             return QtCore.QRect(10, self.footer_start, self.width - 20,
                 self.height - self.footer_start)
         else:
-            return QtCore.QRect(theme.font_footer_x,
-                theme.font_footer_y, theme.font_footer_width - 1,
-                theme.font_footer_height - 1)
+            return QtCore.QRect(theme_data.font_footer_x,
+                theme_data.font_footer_y, theme_data.font_footer_width - 1,
+                theme_data.font_footer_height - 1)
 
-    def _set_text_rectangle(self, rect_main, rect_footer):
+    def _set_text_rectangle(self, theme_data, rect_main, rect_footer):
         """
         Sets the rectangle within which text should be rendered.
+
+        ``theme_data``
+            The theme data.
 
         ``rect_main``
             The main text block.
@@ -356,9 +400,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self.theme_data.font_main_shadow:
-            self.page_width -= int(self.theme_data.font_main_shadow_size)
-            self.page_height -= int(self.theme_data.font_main_shadow_size)
+        if theme_data.font_main_shadow:
+            self.page_width -= int(theme_data.font_main_shadow_size)
+            self.page_height -= int(theme_data.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -376,8 +420,8 @@ class Renderer(object):
             </script><style>*{margin: 0; padding: 0; border: 0;}
             #main {position: absolute; top: 0px; %s %s}</style></head><body>
             <div id="main"></div></body></html>""" % \
-            (build_lyrics_format_css(self.theme_data, self.page_width,
-            self.page_height), build_lyrics_outline_css(self.theme_data))
+            (build_lyrics_format_css(theme_data, self.page_width,
+            self.page_height), build_lyrics_outline_css(theme_data))
         self.web.setHtml(html)
         self.empty_height = self.web_frame.contentsSize().height()
 
@@ -492,7 +536,7 @@ class Renderer(object):
                     (raw_text.find(tag[u'start tag']), tag[u'start tag'],
                     tag[u'end tag']))
                 html_tags.append(
-                        (raw_text.find(tag[u'start tag']),  tag[u'start html']))
+                        (raw_text.find(tag[u'start tag']), tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.

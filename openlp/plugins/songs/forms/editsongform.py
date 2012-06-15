@@ -97,7 +97,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseOrderTextChanged)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.mediaitem.plugin.renderer.themeManager.onAddTheme)
+            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.audioAddFromFileButton,
@@ -172,17 +172,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
         self.themeComboBox.addItem(u'')
-        self.themes = []
-        for theme in theme_list:
-            self.themeComboBox.addItem(theme)
-            self.themes.append(theme)
+        self.themes = theme_list
+        self.themeComboBox.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
         self.audioAddFromMediaButton.setVisible(False)
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.name == u'media' and \
-                plugin.status == PluginStatus.Active:
+            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(
                     plugin.mediaItem.getList(MediaType.Audio))
@@ -707,7 +704,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if item == 0 and text:
             temp_song_book = text
-        self.mediaitem.songMaintenanceForm.exec_()
+        self.mediaitem.songMaintenanceForm.exec_(True)
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()
@@ -865,12 +862,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in xrange(self.authorsListView.count()):
             item = self.authorsListView.item(row)
             authorId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.song.authors.append(self.manager.get_object(Author, authorId))
+            author = self.manager.get_object(Author, authorId)
+            if author is not None:
+                self.song.authors.append(author)
         self.song.topics = []
         for row in xrange(self.topicsListView.count()):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.song.topics.append(self.manager.get_object(Topic, topicId))
+            topic = self.manager.get_object(Topic, topicId)
+            if topic is not None:
+                self.song.topics.append(topic)
         # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)

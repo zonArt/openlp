@@ -34,8 +34,9 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
-import time
 import urllib2
+
+from openlp.core.lib.settings import Settings
 
 from PyQt4 import QtGui, QtCore
 
@@ -69,7 +70,7 @@ class VersionThread(QtCore.QThread):
         """
         Run the thread.
         """
-        time.sleep(1)
+        self.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
@@ -88,7 +89,7 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-
+    
     # Base path where data/config/cache dir is located
     BaseDir = None
 
@@ -127,8 +128,13 @@ class AppLocation(object):
         """
         Return the path OpenLP stores all its data under.
         """
-        path = AppLocation.get_directory(AppLocation.DataDir)
-        check_directory_exists(path)
+        # Check if we have a different data location.
+        if Settings().contains(u'advanced/data path'):
+            path = unicode(Settings().value(
+                u'advanced/data path').toString())
+        else:
+            path = AppLocation.get_directory(AppLocation.DataDir)
+            check_directory_exists(path)
         return path
 
     @staticmethod
@@ -281,7 +287,7 @@ def check_latest_version(current_version):
     """
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
         QtCore.QVariant(datetime.now().date())).toString())

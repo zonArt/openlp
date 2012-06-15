@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.forms import BibleUpgradeForm
@@ -91,7 +92,7 @@ class BiblePlugin(Plugin):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'bookname language'):
             settings.setValue(u'book name language', settings.value(
