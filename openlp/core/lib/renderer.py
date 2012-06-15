@@ -303,7 +303,7 @@ class Renderer(object):
                             try:
                                 text_to_render, text = \
                                     text.split(u'\n[---]\n', 1)
-                            except:
+                            except ValueError:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
                             text_to_render, raw_tags, html_tags = \

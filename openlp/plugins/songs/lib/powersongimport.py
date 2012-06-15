@@ -33,7 +33,6 @@ import fnmatch
 import os
 
 from openlp.core.lib import translate
-from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -71,26 +70,25 @@ class PowerSongImport(SongImport):
 
         * .song
     """
-
     @staticmethod
-    def isValidSource(**kwargs):
+    def isValidSource(import_source):
         """
         Checks if source is a PowerSong 1.0 folder:
             * is a directory
             * contains at least one *.song file
         """
-        if u'folder' in kwargs:
-            dir = kwargs[u'folder']
-            if os.path.isdir(dir):
-                for file in os.listdir(dir):
-                    if fnmatch.fnmatch(file, u'*.song'):
-                        return True
+        if os.path.isdir(import_source):
+            for file in os.listdir(import_source):
+                if fnmatch.fnmatch(file, u'*.song'):
+                    return True
         return False
 
     def doImport(self):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
+        from importer import SongFormat
+        PS_string = SongFormat.get(SongFormat.PowerSong, u'name')
         if isinstance(self.importSource, unicode):
             if os.path.isdir(self.importSource):
                 dir = self.importSource
@@ -104,7 +102,7 @@ class PowerSongImport(SongImport):
             self.logError(unicode(translate('SongsPlugin.PowerSongImport',
                 'No songs to import.')),
                 unicode(translate('SongsPlugin.PowerSongImport',
-                'No %s files found.' % WizardStrings.PS)))
+                'No %s files found.' % PS_string)))
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -124,7 +122,7 @@ class PowerSongImport(SongImport):
                         self.logError(os.path.basename(file), unicode(
                             translate('SongsPlugin.PowerSongImport',
                             'Invalid %s file. Unexpected byte value.'
-                            % WizardStrings.PS)))
+                            % PS_string)))
                         break
                     else:
                         if label == u'TITLE':
@@ -142,15 +140,14 @@ class PowerSongImport(SongImport):
             if not self.title:
                 self.logError(os.path.basename(file), unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    'Invalid %s file. Missing "TITLE" header.'
-                    % WizardStrings.PS)))
+                    'Invalid %s file. Missing "TITLE" header.' % PS_string)))
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
                 self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
                     'Invalid %s file. Missing "COPYRIGHTLINE" '
-                    'header.' % WizardStrings.PS)))
+                    'header.' % PS_string)))
                 continue
             # Check that file had at least one verse
             if not self.verses:
