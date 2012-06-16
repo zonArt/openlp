@@ -535,6 +535,7 @@ class ThemeManager(QtGui.QWidget):
         zip = None
         out_file = None
         file_xml = None
+        abort_import = True
         try:
             zip = zipfile.ZipFile(file_name)
             xml_file = filter(lambda name:
