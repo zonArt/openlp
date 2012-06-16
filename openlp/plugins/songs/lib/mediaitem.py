@@ -37,6 +37,7 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list
 from openlp.core.lib.ui import UiStrings, create_widget_action
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -131,13 +132,13 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = QtCore.QSettings().value(
+        self.searchAsYouType = Settings().value(
             self.settingsSection + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
-        self.updateServiceOnEdit = QtCore.QSettings().value(
+        self.updateServiceOnEdit = Settings().value(
             self.settingsSection + u'/update service on edit',
             QtCore.QVariant(u'False')).toBool()
-        self.addSongFromService = QtCore.QSettings().value(
+        self.addSongFromService = Settings().value(
             self.settingsSection + u'/add song from service',
             QtCore.QVariant(u'True')).toBool()
 
@@ -168,14 +169,14 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
+        Settings().setValue(u'%s/last search type' %
             self.settingsSection,
             QtCore.QVariant(self.searchTextEdit.currentSearchType()))
         # Reload the list considering the new search type.
@@ -514,11 +515,11 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if QtCore.QSettings().value(u'general/ccli number',
+        if Settings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
             service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                QtCore.QSettings().value(u'general/ccli number',
+                Settings().value(u'general/ccli number',
                 QtCore.QVariant(u'')).toString()))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)

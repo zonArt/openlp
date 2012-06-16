@@ -32,6 +32,7 @@ import logging
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -190,7 +191,7 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = QtCore.QSettings().value(
+        self.status = Settings().value(
             self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
@@ -199,7 +200,7 @@ class Plugin(QtCore.QObject):
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        QtCore.QSettings().setValue(
+        Settings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
         if new_status == PluginStatus.Active:
             self.initialise()

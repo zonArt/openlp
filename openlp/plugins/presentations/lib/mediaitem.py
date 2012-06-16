@@ -36,6 +36,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
+from openlp.core.lib.settings import Settings
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -149,7 +150,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override app',
+        if Settings().value(self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:

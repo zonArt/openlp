@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 
@@ -236,7 +237,7 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.sourcePage:
             format = self.currentFormat
-            QtCore.QSettings().setValue(u'songs/last import type',
+            Settings().setValue(u'songs/last import type',
                 format)
             select_mode, class_, error_msg = SongFormat.get(format,
                 u'selectMode', u'class', u'invalidSourceMsg')
@@ -342,7 +343,7 @@ class SongImportForm(OpenLPWizard):
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        last_import_type = QtCore.QSettings().value(
+        last_import_type = Settings().value(
             u'songs/last import type').toInt()[0]
         if last_import_type < 0 or \
             last_import_type >= self.formatComboBox.count():
@@ -513,6 +514,7 @@ class SongImportForm(OpenLPWizard):
         self.formatWidgets[format][u'disabledLabel'] = disabledLabel
         self.formatWidgets[format][u'importWidget'] = importWidget
         return importWidget
+
 
 class SongImportSourcePage(QtGui.QWizardPage):
     """

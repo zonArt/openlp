@@ -32,6 +32,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation, delete_file
+from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -126,7 +127,7 @@ class BibleManager(object):
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.proxy_name = unicode(
-            QtCore.QSettings().value(self.settingsSection + u'/proxy name',
+            Settings().value(self.settingsSection + u'/proxy name',
             QtCore.QVariant(u'')).toString())
         self.suffix = u'.sqlite'
         self.import_wizard = None
@@ -378,7 +379,7 @@ class BibleManager(object):
             except (ValueError, TypeError):
                 language_selection = LanguageSelection.Application
         if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
+            language_selection = Settings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
         return language_selection
