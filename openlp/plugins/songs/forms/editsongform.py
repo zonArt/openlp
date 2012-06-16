@@ -256,8 +256,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verse_tags_translated = False
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXML()
-            verseList = songXML.get_verses(self.song.lyrics)
-            for count, verse in enumerate(verseList):
+            verse_list = songXML.get_verses(self.song.lyrics)
+            for count, verse in enumerate(verse_list):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
                 # This silently migrates from localized verse type markup.
@@ -479,27 +479,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditButtonClicked(self):
         item = self.verseListWidget.currentItem()
         if item:
-            tempText = item.text()
+            temp_text = item.text()
             verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.verseForm.setVerse(tempText, True, verseId)
+            self.verseForm.setVerse(temp_text, True, verseId)
             if self.verseForm.exec_():
                 after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 item.setText(after_text)
                 # number of lines has changed, repaint the list moving the data
-                if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
-                    tempList = {}
-                    tempId = {}
+                if len(temp_text.split(u'\n')) != len(after_text.split(u'\n')):
+                    temp_list = []
+                    temp_ids = []
                     for row in range(self.verseListWidget.rowCount()):
-                        tempList[row] = self.verseListWidget.item(row, 0)\
-                            .text()
-                        tempId[row] = self.verseListWidget.item(row, 0)\
-                            .data(QtCore.Qt.UserRole)
+                        item = self.verseListWidget.item(row, 0)
+                        temp_list.append(item.text())
+                        temp_ids.append(item.data(QtCore.Qt.UserRole))
                     self.verseListWidget.clear()
-                    for row in range (0, len(tempList)):
-                        item = QtGui.QTableWidgetItem(tempList[row], 0)
-                        item.setData(QtCore.Qt.UserRole, tempId[row])
+                    for row, entry in enumerate(temp_list):
+                        item = QtGui.QTableWidgetItem(entry, 0)
+                        item.setData(QtCore.Qt.UserRole, temp_ids[row])
                         self.verseListWidget.setItem(row, 0, item)
         self.tagRows()
         # Check if all verse tags are used.

@@ -465,14 +465,14 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            verseList = SongXML().get_verses(song.lyrics)
+            verse_list = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             verse_tags_translated = False
             if VerseType.from_translated_string(unicode(
-                verseList[0][0][u'type'])) is not None:
+                verse_list[0][0][u'type'])) is not None:
                 verse_tags_translated = True
             if not song.verse_order.strip():
-                for verse in verseList:
+                for verse in verse_list:
                     # We cannot use from_loose_input() here, because database
                     # is supposed to contain English lowercase singlechar tags.
                     verse_tag = verse[0][u'type']
@@ -492,7 +492,7 @@ class SongMediaItem(MediaManagerItem):
                 for order in song.verse_order.lower().split():
                     if not order:
                         break
-                    for verse in verseList:
+                    for verse in verse_list:
                         if verse[0][u'type'][0].lower() == order[0] and \
                             (verse[0][u'label'].lower() == order[1:] or \
                             not order[1:]):
