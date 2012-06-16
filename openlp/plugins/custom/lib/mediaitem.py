@@ -210,8 +210,8 @@ class CustomMediaItem(MediaManagerItem):
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme
-        customXML = CustomXMLParser(customSlide.text)
-        verse_list = customXML.get_verses()
+        custom_xml = CustomXMLParser(customSlide.text)
+        verse_list = custom_xml.get_verses()
         raw_slides = [verse[1] for verse in verse_list]
         service_item.title = title
         for slide in raw_slides:
