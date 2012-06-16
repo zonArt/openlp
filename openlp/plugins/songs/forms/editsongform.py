@@ -480,8 +480,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = self.verseListWidget.currentItem()
         if item:
             temp_text = item.text()
-            verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.verseForm.setVerse(temp_text, True, verseId)
+            verse_id = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.verseForm.setVerse(temp_text, True, verse_id)
             if self.verseForm.exec_():
                 after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
@@ -922,9 +922,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             multiple = []
             for i in range(self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
-                verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-                verse_tag = verseId[0]
-                verse_num = verseId[1:]
+                verse_id = unicode(item.data(QtCore.Qt.UserRole).toString())
+                verse_tag = verse_id[0]
+                verse_num = verse_id[1:]
                 sxml.add_verse_to_lyrics(verse_tag, verse_num,
                     unicode(item.text()))
                 if verse_num > u'1' and verse_tag not in multiple:
