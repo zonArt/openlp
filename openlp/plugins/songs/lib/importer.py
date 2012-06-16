@@ -66,6 +66,7 @@ except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
 
+
 class SongFormatSelect(object):
     """
     This is a special enumeration class listing available file selection modes.
@@ -73,6 +74,7 @@ class SongFormatSelect(object):
     SingleFile = 0
     MultipleFiles = 1
     SingleFolder = 2
+
 
 class SongFormat(object):
     """
@@ -84,8 +86,10 @@ class SongFormat(object):
 
     ``u'class'``
         Import class, e.g. ``OpenLyricsImport``
+
     ``u'name'``
         Name of the format, e.g. ``u'OpenLyrics'``
+
     ``u'prefix'``
         Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
         See ``SongImportForm.addFileSelectItem()``
@@ -94,11 +98,14 @@ class SongFormat(object):
 
     ``u'canDisable'``
         Whether song format importer is disablable.
+
     ``u'availability'``
         Whether song format importer is available.
+
     ``u'selectMode'``
         Whether format accepts single file, multiple files, or single folder
         (as per ``SongFormatSelect`` options).
+
     ``u'filter'``
         File extension filter for ``QFileDialog``.
 
@@ -106,14 +113,19 @@ class SongFormat(object):
 
     ``u'comboBoxText'``
         Combo box selector (default value is the format's ``u'name'``).
+
     ``u'disabledLabelText'``
         Required for disablable song formats.
+
     ``u'getFilesTitle'``
         Title for ``QFileDialog`` (default includes the format's ``u'name'``).
+
     ``u'invalidSourceMsg'``
         Message displayed if ``isValidSource()`` returns ``False``.
+
     ``u'descriptionText'``
         Short description (1-2 lines) about the song format.
+        Message displayed if ``isValidSource()`` returns ``False``.
     """
     # Song formats (ordered alphabetically after Generic)
     # * Numerical order of song formats is significant as it determines the
@@ -313,7 +325,7 @@ class SongFormat(object):
             SongFormat.WordsOfWorship,
             SongFormat.ZionWorx
         ]
-    
+
     @staticmethod
     def get(format, *attributes):
         """
@@ -326,6 +338,7 @@ class SongFormat(object):
             Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
+
         :0: Return dict containing all defined attributes for the format.
         :1: Return the attribute value.
         :>1: Return tuple of requested attribute values.
