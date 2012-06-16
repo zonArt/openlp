@@ -125,7 +125,6 @@ class SongFormat(object):
 
     ``u'descriptionText'``
         Short description (1-2 lines) about the song format.
-        Message displayed if ``isValidSource()`` returns ``False``.
     """
     # Song formats (ordered alphabetically after Generic)
     # * Numerical order of song formats is significant as it determines the
