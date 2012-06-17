@@ -195,6 +195,7 @@ class SongsPlugin(Plugin):
 
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get(format, u'class')
+        kwargs[u'plugin'] = self
         importer = class_(self.manager, **kwargs)
         importer.register(self.mediaItem.importWizard)
         return importer

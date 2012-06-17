@@ -515,6 +515,7 @@ class SongImportForm(OpenLPWizard):
         self.formatWidgets[format][u'importWidget'] = importWidget
         return importWidget
 
+
 class SongImportSourcePage(QtGui.QWizardPage):
     """
     Subclass of QtGui.QWizardPage to override isComplete() for Source Page.
