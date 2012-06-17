@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,7 +27,8 @@
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib.settings import Settings
 
 ZERO_URL = u'0.0.0.0'
 
@@ -57,6 +58,9 @@ class RemoteTab(SettingsTab):
         QtCore.QObject.connect(self.addressEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.setUrls)
         self.serverSettingsLayout.addRow(self.addressLabel, self.addressEdit)
+        self.twelveHourCheckBox = QtGui.QCheckBox(self.serverSettingsGroupBox)
+        self.twelveHourCheckBox.setObjectName(u'twelveHourCheckBox')
+        self.serverSettingsLayout.addRow(self.twelveHourCheckBox)
         self.portLabel = QtGui.QLabel(self.serverSettingsGroupBox)
         self.portLabel.setObjectName(u'portLabel')
         self.portSpinBox = QtGui.QSpinBox(self.serverSettingsGroupBox)
@@ -78,8 +82,27 @@ class RemoteTab(SettingsTab):
         self.stageUrl.setOpenExternalLinks(True)
         self.serverSettingsLayout.addRow(self.stageUrlLabel, self.stageUrl)
         self.leftLayout.addWidget(self.serverSettingsGroupBox)
+        self.androidAppGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.androidAppGroupBox.setObjectName(u'androidAppGroupBox')
+        self.rightLayout.addWidget(self.androidAppGroupBox)
+        self.qrLayout = QtGui.QVBoxLayout(self.androidAppGroupBox)
+        self.qrLayout.setObjectName(u'qrLayout')
+        self.qrCodeLabel = QtGui.QLabel(self.androidAppGroupBox)
+        self.qrCodeLabel.setPixmap(QtGui.QPixmap(
+            u':/remotes/android_app_qr.png'))
+        self.qrCodeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.qrCodeLabel.setObjectName(u'qrCodeLabel')
+        self.qrLayout.addWidget(self.qrCodeLabel)
+        self.qrDescriptionLabel = QtGui.QLabel(self.androidAppGroupBox)
+        self.qrDescriptionLabel.setObjectName(u'qrDescriptionLabel')
+        self.qrDescriptionLabel.setOpenExternalLinks(True)
+        self.qrDescriptionLabel.setWordWrap(True)
+        self.qrLayout.addWidget(self.qrDescriptionLabel)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
+        QtCore.QObject.connect(self.twelveHourCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onTwelveHourCheckBoxChanged)
 
     def retranslateUi(self):
         self.serverSettingsGroupBox.setTitle(
@@ -92,6 +115,15 @@ class RemoteTab(SettingsTab):
             'Remote URL:'))
         self.stageUrlLabel.setText(translate('RemotePlugin.RemoteTab',
             'Stage view URL:'))
+        self.twelveHourCheckBox.setText(
+            translate('RemotePlugin.RemoteTab',
+            'Display stage time in 12h format'))
+        self.androidAppGroupBox.setTitle(
+            translate('RemotePlugin.RemoteTab', 'Android App'))
+        self.qrDescriptionLabel.setText(translate('RemotePlugin.RemoteTab',
+            'Scan the QR code or click <a '
+            'href="https://market.android.com/details?id=org.openlp.android">'
+            'download</a> to install the Android app from the Market.'))
 
     def setUrls(self):
         ipAddress = u'localhost'
@@ -118,15 +150,35 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.portSpinBox.setValue(
-            QtCore.QSettings().value(self.settingsSection + u'/port',
+            Settings().value(self.settingsSection + u'/port',
                 QtCore.QVariant(4316)).toInt()[0])
         self.addressEdit.setText(
-            QtCore.QSettings().value(self.settingsSection + u'/ip address',
+            Settings().value(self.settingsSection + u'/ip address',
                 QtCore.QVariant(ZERO_URL)).toString())
+        self.twelveHour = Settings().value(
+            self.settingsSection + u'/twelve hour',
+            QtCore.QVariant(True)).toBool()
+        self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
-        QtCore.QSettings().setValue(self.settingsSection + u'/port',
+        changed = False
+        if Settings().value(self.settingsSection + u'/ip address',
+            QtCore.QVariant(ZERO_URL).toString() != self.addressEdit.text() or
+            Settings().value(self.settingsSection + u'/port',
+            QtCore.QVariant(4316).toInt()[0]) != self.portSpinBox.value()):
+            changed = True
+        Settings().setValue(self.settingsSection + u'/port',
             QtCore.QVariant(self.portSpinBox.value()))
-        QtCore.QSettings().setValue(self.settingsSection + u'/ip address',
+        Settings().setValue(self.settingsSection + u'/ip address',
             QtCore.QVariant(self.addressEdit.text()))
+        Settings().setValue(self.settingsSection + u'/twelve hour',
+            QtCore.QVariant(self.twelveHour))
+        if changed:
+            Receiver.send_message(u'remotes_config_updated')
+
+    def onTwelveHourCheckBoxChanged(self, check_state):
+        self.twelveHour = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.twelveHour = True

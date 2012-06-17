@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -34,6 +34,7 @@ import copy
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -41,36 +42,40 @@ class ScreenList(object):
     """
     Wrapper to handle the parameters of the display screen.
 
-    To get access to the screen list call ``ScreenList.get_instance()``.
+    To get access to the screen list call ``ScreenList()``.
     """
     log.info(u'Screen loaded')
-    instance = None
+    __instance__ = None
 
-    @staticmethod
-    def get_instance():
-        return ScreenList.instance
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = object.__new__(cls)
+        return cls.__instance__
 
-    def __init__(self, desktop):
+    @classmethod
+    def create(cls, desktop):
         """
         Initialise the screen list.
 
         ``desktop``
             A ``QDesktopWidget`` object.
         """
-        ScreenList.instance = self
-        self.desktop = desktop
-        self.preview = None
-        self.current = None
-        self.override = None
-        self.screen_list = []
-        self.display_count = 0
-        self.screen_count_changed()
-        self._load_screen_settings()
+        screen_list = cls()
+        screen_list.desktop = desktop
+        screen_list.preview = None
+        screen_list.current = None
+        screen_list.override = None
+        screen_list.screen_list = []
+        screen_list.display_count = 0
+        screen_list.screen_count_changed()
+        screen_list._load_screen_settings()
         QtCore.QObject.connect(desktop,
-            QtCore.SIGNAL(u'resized(int)'), self.screen_resolution_changed)
+            QtCore.SIGNAL(u'resized(int)'),
+            screen_list.screen_resolution_changed)
         QtCore.QObject.connect(desktop,
             QtCore.SIGNAL(u'screenCountChanged(int)'),
-            self.screen_count_changed)
+            screen_list.screen_count_changed)
+        return screen_list
 
     def screen_resolution_changed(self, number):
         """
@@ -106,13 +111,13 @@ class ScreenList(object):
         """
         # Do not log at start up.
         if changed_screen != -1:
-            log.info(u'screen_count_changed %d' % self.desktop.numScreens())
+            log.info(u'screen_count_changed %d' % self.desktop.screenCount())
         # Remove unplugged screens.
         for screen in copy.deepcopy(self.screen_list):
-            if screen[u'number'] == self.desktop.numScreens():
+            if screen[u'number'] == self.desktop.screenCount():
                 self.remove_screen(screen[u'number'])
         # Add new screens.
-        for number in xrange(0, self.desktop.numScreens()):
+        for number in xrange(self.desktop.screenCount()):
             if not self.screen_exists(number):
                 self.add_screen({
                     u'number': number,
@@ -222,11 +227,26 @@ class ScreenList(object):
         log.debug(u'reset_current_display')
         self.set_current_display(self.current[u'number'])
 
+    def which_screen(self, window):
+        """
+        Return the screen number that the centre of the passed window is in.
+
+        ``window``
+            A QWidget we are finding the location of.
+        """
+        x = window.x() + (window.width() / 2)
+        y = window.y() + (window.height() / 2)
+        for screen in self.screen_list:
+            size = screen[u'size']
+            if x >= size.x() and x <= (size.x() + size.width()) and \
+                y >= size.y() and y <= (size.y() + size.height()):
+                return screen[u'number']
+
     def _load_screen_settings(self):
         """
         Loads the screen size and the monitor number from the settings.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'general')
         self.set_current_display(settings.value(u'monitor',
             QtCore.QVariant(self.display_count - 1)).toInt()[0])

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,17 +28,7 @@
 The :mod:`cvsbible` modules provides a facility to import bibles from a set of
 CSV files.
 
-The module expects two mandatory files containing the books and the verses and
-will accept an optional third file containing the testaments.
-
-The format of the testament file is:
-
-    <testament_id>,<testament_name>
-
-    For example:
-
-        1,Old Testament
-        2,New Testament
+The module expects two mandatory files containing the books and the verses.
 
 The format of the books file is:
 
@@ -83,7 +73,7 @@ class CSVBible(BibleDB):
 
     def __init__(self, parent, **kwargs):
         """
-        Loads a Bible from a set of CVS files.
+        Loads a Bible from a set of CSV files.
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """
@@ -110,12 +100,16 @@ class CSVBible(BibleDB):
         try:
             details = get_file_encoding(self.booksfile)
             books_file = open(self.booksfile, 'r')
+            if not books_file.read(3) == '\xEF\xBB\xBF':
+                # no BOM was found
+                books_file.seek(0)
             books_reader = csv.reader(books_file, delimiter=',', quotechar='"')
             for line in books_reader:
                 if self.stop_import_flag:
                     break
                 self.wizard.incrementProgressBar(unicode(
-                    translate('BibleDB.Wizard', 'Importing books... %s')) %
+                    translate('BiblesPlugin.CSVBible',
+                    'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
                 book_ref_id = self.get_book_ref_id_by_name(
                     unicode(line[2], details['encoding']), 67, language_id)
@@ -143,6 +137,9 @@ class CSVBible(BibleDB):
             book_ptr = None
             details = get_file_encoding(self.versesfile)
             verse_file = open(self.versesfile, 'rb')
+            if not verse_file.read(3) == '\xEF\xBB\xBF':
+                # no BOM was found
+                verse_file.seek(0)
             verse_reader = csv.reader(verse_file, delimiter=',', quotechar='"')
             for line in verse_reader:
                 if self.stop_import_flag:
@@ -155,7 +152,7 @@ class CSVBible(BibleDB):
                     book = self.get_book(line_book)
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(unicode(translate(
-                        'BibleDB.Wizard', 'Importing verses from %s...',
+                        'BiblesPlugin.CSVBible', 'Importing verses from %s...',
                         'Importing verses from <book name>...')) % book.name)
                     self.session.commit()
                 try:
@@ -163,7 +160,7 @@ class CSVBible(BibleDB):
                 except UnicodeError:
                     verse_text = unicode(line[3], u'cp1252')
                 self.create_verse(book.id, line[1], line[2], verse_text)
-            self.wizard.incrementProgressBar(translate('BibleDB.Wizard',
+            self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible',
                 'Importing verses... done.'))
             Receiver.send_message(u'openlp_process_events')
             self.session.commit()

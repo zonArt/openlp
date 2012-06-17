@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -39,10 +39,10 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', plugin_helpers,
+        Plugin.__init__(self, u'remotes', plugin_helpers,
             settings_tab_class=RemoteTab)
-        self.icon_path = u':/plugins/plugin_remote.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_remote.png'
+        self.icon = build_icon(self.iconPath)
         self.weight = -1
         self.server = None
 
@@ -86,3 +86,11 @@ class RemotesPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
+
+    def configUpdated(self):
+        """
+        Called when Config is changed to restart the server on new address or
+        port
+        """
+        self.finalise()
+        self.initialise()

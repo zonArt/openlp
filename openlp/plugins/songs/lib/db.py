@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,8 +29,9 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
-from sqlalchemy import Column, ForeignKey, Index, Table, types
+from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation
+from sqlalchemy.sql.expression import func
 
 from openlp.core.lib.db import BaseModel, init_db
 
@@ -69,7 +70,6 @@ class Topic(BaseModel):
     Topic model
     """
     pass
-
 
 def init_schema(url):
     """
@@ -110,10 +110,6 @@ def init_schema(url):
         * id
         * file_name
         * type
-
-    **media_files_songs Table**
-        * media_file_id
-        * song_id
 
     **song_books Table**
         The *song_books* table holds a list of books that a congregation gets
@@ -162,7 +158,7 @@ def init_schema(url):
 
     # Definition of the "authors" table
     authors_table = Table(u'authors', metadata,
-        Column(u'id', types.Integer, primary_key=True),
+        Column(u'id', types.Integer(), primary_key=True),
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
         Column(u'display_name', types.Unicode(255), index=True, nullable=False)
@@ -170,22 +166,25 @@ def init_schema(url):
 
     # Definition of the "media_files" table
     media_files_table = Table(u'media_files', metadata,
-        Column(u'id', types.Integer, primary_key=True),
+        Column(u'id', types.Integer(), primary_key=True),
+        Column(u'song_id', types.Integer(), ForeignKey(u'songs.id'),
+            default=None),
         Column(u'file_name', types.Unicode(255), nullable=False),
-        Column(u'type', types.Unicode(64), nullable=False, default=u'audio')
+        Column(u'type', types.Unicode(64), nullable=False, default=u'audio'),
+        Column(u'weight', types.Integer(), default=0)
     )
 
     # Definition of the "song_books" table
     song_books_table = Table(u'song_books', metadata,
-        Column(u'id', types.Integer, primary_key=True),
+        Column(u'id', types.Integer(), primary_key=True),
         Column(u'name', types.Unicode(128), nullable=False),
         Column(u'publisher', types.Unicode(128))
     )
 
     # Definition of the "songs" table
     songs_table = Table(u'songs', metadata,
-        Column(u'id', types.Integer, primary_key=True),
-        Column(u'song_book_id', types.Integer,
+        Column(u'id', types.Integer(), primary_key=True),
+        Column(u'song_book_id', types.Integer(),
             ForeignKey(u'song_books.id'), default=None),
         Column(u'title', types.Unicode(255), nullable=False),
         Column(u'alternate_title', types.Unicode(255)),
@@ -197,36 +196,32 @@ def init_schema(url):
         Column(u'song_number', types.Unicode(64)),
         Column(u'theme_name', types.Unicode(128)),
         Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, nullable=False)
+        Column(u'search_lyrics', types.UnicodeText, nullable=False),
+        Column(u'create_date', types.DateTime(), default=func.now()),
+        Column(u'last_modified', types.DateTime(), default=func.now(),
+            onupdate=func.now()),
+        Column(u'temporary', types.Boolean(), default=False)
     )
 
     # Definition of the "topics" table
     topics_table = Table(u'topics', metadata,
-        Column(u'id', types.Integer, primary_key=True),
+        Column(u'id', types.Integer(), primary_key=True),
         Column(u'name', types.Unicode(128), index=True, nullable=False)
     )
 
     # Definition of the "authors_songs" table
     authors_songs_table = Table(u'authors_songs', metadata,
-        Column(u'author_id', types.Integer,
+        Column(u'author_id', types.Integer(),
             ForeignKey(u'authors.id'), primary_key=True),
-        Column(u'song_id', types.Integer,
-            ForeignKey(u'songs.id'), primary_key=True)
-    )
-
-    # Definition of the "media_files_songs" table
-    media_files_songs_table = Table(u'media_files_songs', metadata,
-        Column(u'media_file_id', types.Integer,
-            ForeignKey(u'media_files.id'), primary_key=True),
-        Column(u'song_id', types.Integer,
+        Column(u'song_id', types.Integer(),
             ForeignKey(u'songs.id'), primary_key=True)
     )
 
     # Definition of the "songs_topics" table
     songs_topics_table = Table(u'songs_topics', metadata,
-        Column(u'song_id', types.Integer,
+        Column(u'song_id', types.Integer(),
             ForeignKey(u'songs.id'), primary_key=True),
-        Column(u'topic_id', types.Integer,
+        Column(u'topic_id', types.Integer(),
             ForeignKey(u'topics.id'), primary_key=True)
     )
 
@@ -239,7 +234,7 @@ def init_schema(url):
                 secondary=authors_songs_table, lazy=False),
             'book': relation(Book, backref='songs'),
             'media_files': relation(MediaFile, backref='songs',
-                secondary=media_files_songs_table),
+                order_by=media_files_table.c.weight),
             'topics': relation(Topic, backref='songs',
                 secondary=songs_topics_table)
         })

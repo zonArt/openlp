@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -102,9 +102,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.versionNumberLabel.setText(self.activePlugin.version)
         self.aboutTextBrowser.setHtml(self.activePlugin.about())
         self.programaticChange = True
-        status = 1
+        status = PluginStatus.Active
         if self.activePlugin.status == PluginStatus.Active:
-            status = 0
+            status = PluginStatus.Inactive
         self.statusComboBox.setCurrentIndex(status)
         self.statusComboBox.setEnabled(True)
         self.programaticChange = False
@@ -117,18 +117,19 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
         self.activePlugin = None
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.nameStrings[u'singular'] == plugin_name_singular:
-                self.activePlugin = plugin
-                break
+            if plugin.status != PluginStatus.Disabled:
+                if plugin.nameStrings[u'singular'] == plugin_name_singular:
+                    self.activePlugin = plugin
+                    break
         if self.activePlugin:
             self._setDetails()
         else:
             self._clearDetails()
 
     def onStatusComboBoxChanged(self, status):
-        if self.programaticChange:
+        if self.programaticChange or status == PluginStatus.Disabled:
             return
-        if status == 0:
+        if status == PluginStatus.Inactive:
             Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
             Receiver.send_message(u'cursor_normal')

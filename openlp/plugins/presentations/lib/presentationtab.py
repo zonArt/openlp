@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 
 class PresentationTab(SettingsTab):
     """
@@ -40,6 +41,7 @@ class PresentationTab(SettingsTab):
         """
         self.controllers = controllers
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        self.activated = False
 
     def setupUi(self):
         """
@@ -55,7 +57,6 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = QtGui.QCheckBox(self.ControllersGroupBox)
-            checkbox.setEnabled(controller.available)
             checkbox.setObjectName(controller.name + u'CheckBox')
             self.PresenterCheckboxes[controller.name] = checkbox
             self.ControllersLayout.addWidget(checkbox)
@@ -81,16 +82,19 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            if controller.available:
-                checkbox.setText(controller.name)
-            else:
-                checkbox.setText(
-                    unicode(translate('PresentationPlugin.PresentationTab',
-                    '%s (unavailable)')) % controller.name)
+            self.setControllerText(checkbox, controller)
         self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
-            'Allow presentation application to be overriden'))
+            'Allow presentation application to be overridden'))
+
+    def setControllerText(self, checkbox, controller):
+        if checkbox.isEnabled():
+            checkbox.setText(controller.name)
+        else:
+            checkbox.setText(
+                unicode(translate('PresentationPlugin.PresentationTab',
+                '%s (unavailable)')) % controller.name)
 
     def load(self):
         """
@@ -99,37 +103,52 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setChecked(QtCore.QSettings().value(
+            checkbox.setChecked(Settings().value(
                 self.settingsSection + u'/' + controller.name,
                 QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
-        self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
+        self.OverrideAppCheckBox.setChecked(Settings().value(
             self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
         """
-        Save the settings.
+        Save the settings. If the tab hasn't been made visible to the user
+        then there is nothing to do, so exit. This removes the need to
+        start presentation applications unnecessarily.
         """
+        if not self.activated:
+            return
         changed = False
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.available:
+            if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if QtCore.QSettings().value(setting_key) != \
+                if Settings().value(setting_key) != \
                     checkbox.checkState():
                     changed = True
-                    QtCore.QSettings().setValue(setting_key,
+                    Settings().setValue(setting_key,
                         QtCore.QVariant(checkbox.checkState()))
                     if checkbox.isChecked():
                         controller.start_process()
                     else:
                         controller.kill()
         setting_key = self.settingsSection + u'/override app'
-        if QtCore.QSettings().value(setting_key) != \
+        if Settings().value(setting_key) != \
             self.OverrideAppCheckBox.checkState():
-            QtCore.QSettings().setValue(setting_key,
+            Settings().setValue(setting_key,
                 QtCore.QVariant(self.OverrideAppCheckBox.checkState()))
             changed = True
         if changed:
             Receiver.send_message(u'mediaitem_presentation_rebuild')
+
+    def tabVisible(self):
+        """
+        Tab has just been made visible to the user
+        """
+        self.activated = True
+        for key in self.controllers:
+            controller = self.controllers[key]
+            checkbox = self.PresenterCheckboxes[controller.name]
+            checkbox.setEnabled(controller.is_available())
+            self.setControllerText(checkbox, controller)

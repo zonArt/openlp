@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -37,6 +37,8 @@ from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
+VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
+
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.
@@ -60,7 +62,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
@@ -74,10 +75,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.setFocus()
 
     def onSplitButtonClicked(self):
-        verse_type_index = self.verseTypeComboBox.currentIndex()
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
-        self.verseTextEdit.insertPlainText(u'[---]')
+        text = self.verseTextEdit.toPlainText()
+        position = self.verseTextEdit.textCursor().position()
+        insert_string = u'[---]'
+        if position and text[position-1] != u'\n':
+             insert_string = u'\n' + insert_string
+        if position ==  len(text) or text[position] != u'\n':
+             insert_string += u'\n'
+        self.verseTextEdit.insertPlainText(insert_string)
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
@@ -105,15 +110,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_tag = match.group(1)
             try:
                 verse_num = int(match.group(2))
             except ValueError:
                 verse_num = 1
-            verse_type_index = VerseType.from_loose_input(verse_tag)
-            if verse_type_index is not None:
+            if VerseType.from_loose_input(verse_tag, False):
                 self.verseNumberBox.setValue(verse_num)
 
     def onCursorPositionChanged(self):
@@ -136,10 +140,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if position == -1:
             return
         text = text[:position + 4]
-        match = self.verse_regex.match(text)
+        match = VERSE_REGEX.match(text)
         if match:
             verse_type = match.group(1)
-            verse_type_index = VerseType.from_loose_input(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type, None)
             try:
                 verse_number = int(match.group(2))
             except ValueError:
@@ -152,7 +156,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
         self.hasSingleVerse = single
         if single:
-            verse_type_index = VerseType.from_tag(tag[0])
+            verse_type_index = VerseType.from_tag(tag[0], None)
             verse_number = tag[1:]
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
@@ -187,13 +191,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         else:
             log.debug(unicode(self.getVerse()[0]).split(u'\n'))
             value = unicode(self.getVerse()[0]).split(u'\n')[1]
-            if len(value) == 0:
+            if not value:
                 lines = unicode(self.getVerse()[0]).split(u'\n')
                 index = 2
-                while index < len(lines) and len(value) == 0:
+                while index < len(lines) and not value:
                     value = lines[index]
                     index += 1
-        if len(value) == 0:
+        if not value:
             critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type some text in to the verse.'))

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_button_box
 
 class CaptureShortcutButton(QtGui.QPushButton):
     """
@@ -108,22 +109,15 @@ class Ui_ShortcutListDialog(object):
         self.alternateLabel.setObjectName(u'alternateLabel')
         self.detailsLayout.addWidget(self.alternateLabel, 0, 2, 1, 1)
         self.shortcutListLayout.addLayout(self.detailsLayout)
-        self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(shortcutListDialog, u'buttonBox',
+            [u'cancel', u'ok', u'defaults'])
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults)
         self.shortcutListLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            shortcutListDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            shortcutListDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(shortcutListDialog)
 
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
-            translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
+            translate('OpenLP.ShortcutListDialog', 'Configure Shortcuts'))
         self.descriptionLabel.setText(translate('OpenLP.ShortcutListDialog',
             'Select an action and click one of the buttons below to start '
             'capturing a new primary or alternate shortcut, respectively.'))

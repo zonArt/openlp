@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -25,10 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_TopicsDialog(object):
     def setupUi(self, topicsDialog):
@@ -45,11 +45,11 @@ class Ui_TopicsDialog(object):
         self.nameLabel.setBuddy(self.nameEdit)
         self.nameLayout.addRow(self.nameLabel, self.nameEdit)
         self.dialogLayout.addLayout(self.nameLayout)
-        self.dialogLayout.addWidget(
-            create_accept_reject_button_box(topicsDialog))
+        self.buttonBox = create_button_box(topicsDialog, u'buttonBox',
+            [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(topicsDialog)
         topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(topicsDialog)
 
     def retranslateUi(self, topicsDialog):
         topicsDialog.setWindowTitle(

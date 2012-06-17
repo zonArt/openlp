@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -36,11 +36,9 @@ class SplashScreen(QtGui.QSplashScreen):
             QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
-        self.setObjectName(u'splash_screen')
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setObjectName(u'splashScreen')
         self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.setPixmap(splash_image)
         self.setMask(splash_image.mask())
         self.resize(370, 370)
-        QtCore.QMetaObject.connectSlotsByName(self)

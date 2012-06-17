@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -57,19 +57,17 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self.firstNameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def onFirstNameEditTextEdited(self, text):
+    def onFirstNameEditTextEdited(self, display_name):
         if not self._autoDisplayName:
             return
-        display_name = text
-        if self.lastNameEdit.text() != u'':
+        if not self.lastNameEdit.text():
             display_name = display_name + u' ' + self.lastNameEdit.text()
         self.displayEdit.setText(display_name)
 
-    def onLastNameEditTextEdited(self, text):
+    def onLastNameEditTextEdited(self, display_name):
         if not self._autoDisplayName:
             return
-        display_name = text
-        if self.firstNameEdit.text() != u'':
+        if not self.firstNameEdit.text():
             display_name = self.firstNameEdit.text() + u' ' + display_name
         self.displayEdit.setText(display_name)
 

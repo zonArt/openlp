@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,6 +33,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import SettingsManager, translate, Receiver, \
     check_directory_exists
+from openlp.core.lib.settings import Settings
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -59,10 +60,10 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
-        toDate = QtCore.QSettings().value(
+        toDate = Settings().value(
             u'songusage/to date',
             QtCore.QVariant(QtCore.QDate(year, 8, 31))).toDate()
-        fromDate = QtCore.QSettings().value(
+        fromDate = Settings().value(
             u'songusage/from date',
             QtCore.QVariant(QtCore.QDate(year - 1, 9, 1))).toDate()
         self.fromDate.setSelectedDate(fromDate)
@@ -72,7 +73,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         """
-        Triggered when the Directory selection button is pressed
+        Triggered when the Directory selection button is clicked
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm',
@@ -85,7 +86,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         """
-        Ok was pressed so lets save the data and run the report
+        Ok was triggered so lets save the data and run the report
         """
         log.debug(u'accept')
         path = unicode(self.fileLineEdit.text())
@@ -103,9 +104,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             'usage_detail_%s_%s.txt')) % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        QtCore.QSettings().setValue(u'songusage/from date',
+        Settings().setValue(u'songusage/from date',
             QtCore.QVariant(self.fromDate.selectedDate()))
-        QtCore.QSettings().setValue(u'songusage/to date',
+        Settings().setValue(u'songusage/to date',
             QtCore.QVariant(self.toDate.selectedDate()))
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
@@ -117,9 +118,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         try:
             fileHandle = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
-                    instance.usagedate, instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number, instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
+                    u'\"%s\",\"%s\"\n' % (instance.usagedate,
+                    instance.usagetime, instance.title, instance.copyright,
+                    instance.ccl_number, instance.authors,
+                    instance.plugin_name, instance.source)
                 fileHandle.write(record.encode(u'utf-8'))
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDetailForm',

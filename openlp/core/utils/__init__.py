@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -27,14 +27,16 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
+from datetime import datetime
+from distutils.version import LooseVersion
 import logging
 import os
 import re
-import sys
-import time
-import urllib2
-from datetime import datetime
 from subprocess import Popen, PIPE
+import sys
+import urllib2
+
+from openlp.core.lib.settings import Settings
 
 from PyQt4 import QtGui, QtCore
 
@@ -53,6 +55,8 @@ APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
+INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
 
 class VersionThread(QtCore.QThread):
     """
@@ -61,58 +65,16 @@ class VersionThread(QtCore.QThread):
     """
     def __init__(self, parent):
         QtCore.QThread.__init__(self, parent)
-        self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
     def run(self):
         """
         Run the thread.
         """
-        time.sleep(1)
+        self.sleep(1)
         app_version = get_application_version()
         version = check_latest_version(app_version)
-        remote_version = {}
-        local_version = {}
-        match = self.version_splitter.match(version)
-        if match:
-            remote_version[u'major'] = int(match.group(1))
-            remote_version[u'minor'] = int(match.group(2))
-            remote_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3 and match.group(4):
-                remote_version[u'revision'] = int(match.group(4))
-        else:
-            return
-        match = self.version_splitter.match(app_version[u'full'])
-        if match:
-            local_version[u'major'] = int(match.group(1))
-            local_version[u'minor'] = int(match.group(2))
-            local_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3 and match.group(4):
-                local_version[u'revision'] = int(match.group(4))
-        else:
-            return
-        if remote_version[u'major'] > local_version[u'major'] or \
-            remote_version[u'minor'] > local_version[u'minor'] or \
-            remote_version[u'release'] > local_version[u'release']:
+        if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
             Receiver.send_message(u'openlp_version_check', u'%s' % version)
-        elif remote_version.get(u'revision') and \
-            local_version.get(u'revision') and \
-            remote_version[u'revision'] > local_version[u'revision']:
-            Receiver.send_message(u'openlp_version_check', u'%s' % version)
-
-
-class DelayStartThread(QtCore.QThread):
-    """
-    A special Qt thread class to build things after OpenLP has started
-    """
-    def __init__(self, parent):
-        QtCore.QThread.__init__(self, parent)
-
-    def run(self):
-        """
-        Run the thread.
-        """
-        Receiver.send_message(u'openlp_phonon_creation')
 
 
 class AppLocation(object):
@@ -127,6 +89,9 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
+    
+    # Base path where data/config/cache dir is located
+    BaseDir = None
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -153,6 +118,8 @@ class AppLocation(object):
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
+        elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
+            return os.path.join(AppLocation.BaseDir, 'data')
         else:
             return _get_os_dir_path(dir_type)
 
@@ -161,8 +128,13 @@ class AppLocation(object):
         """
         Return the path OpenLP stores all its data under.
         """
-        path = AppLocation.get_directory(AppLocation.DataDir)
-        check_directory_exists(path)
+        # Check if we have a different data location.
+        if Settings().contains(u'advanced/data path'):
+            path = unicode(Settings().value(
+                u'advanced/data path').toString())
+        else:
+            path = AppLocation.get_directory(AppLocation.DataDir)
+            check_directory_exists(path)
         return path
 
     @staticmethod
@@ -174,6 +146,7 @@ class AppLocation(object):
         path = os.path.join(data_path, section)
         check_directory_exists(path)
         return path
+
 
 def _get_os_dir_path(dir_type):
     """
@@ -214,6 +187,7 @@ def _get_os_dir_path(dir_type):
                 u'.openlp', u'data')
         return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
+
 def _get_frozen_path(frozen_option, non_frozen_option):
     """
     Return a path based on the system status.
@@ -221,6 +195,7 @@ def _get_frozen_path(frozen_option, non_frozen_option):
     if hasattr(sys, u'frozen') and sys.frozen == 1:
         return frozen_option
     return non_frozen_option
+
 
 def get_application_version():
     """
@@ -261,7 +236,7 @@ def get_application_version():
             if code != 0:
                 raise Exception(u'Error running bzr tags')
             lines = output.splitlines()
-            if len(lines) == 0:
+            if not lines:
                 tag = u'0.0.0'
                 revision = u'0'
             else:
@@ -301,6 +276,7 @@ def get_application_version():
         log.info(u'Openlp version %s' % APPLICATION_VERSION[u'version'])
     return APPLICATION_VERSION
 
+
 def check_latest_version(current_version):
     """
     Check the latest version of OpenLP against the version file on the OpenLP
@@ -311,7 +287,7 @@ def check_latest_version(current_version):
     """
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
         QtCore.QVariant(datetime.now().date())).toString())
@@ -334,6 +310,7 @@ def check_latest_version(current_version):
             version_string = remote_version
     return version_string
 
+
 def add_actions(target, actions):
     """
     Adds multiple actions to a menu or toolbar in one command.
@@ -351,6 +328,7 @@ def add_actions(target, actions):
         else:
             target.addAction(action)
 
+
 def get_filesystem_encoding():
     """
     Returns the name of the encoding used to convert Unicode filenames into
@@ -360,6 +338,7 @@ def get_filesystem_encoding():
     if encoding is None:
         encoding = sys.getdefaultencoding()
     return encoding
+
 
 def get_images_filter():
     """
@@ -377,6 +356,7 @@ def get_images_filter():
             visible_formats, actual_formats)
     return IMAGES_FILTER
 
+
 def split_filename(path):
     """
     Return a list of the parts in a given path.
@@ -386,6 +366,19 @@ def split_filename(path):
         return path, u''
     else:
         return os.path.split(path)
+
+
+def clean_filename(filename):
+    """
+    Removes invalid characters from the given ``filename``.
+
+    ``filename``
+        The "dirty" file name to clean.
+    """
+    if not isinstance(filename, unicode):
+        filename = unicode(filename, u'utf-8')
+    return INVALID_FILE_CHARS.sub(u'_', CONTROL_CHARS.sub(u'', filename))
+
 
 def delete_file(file_path_name):
     """
@@ -403,6 +396,7 @@ def delete_file(file_path_name):
     except (IOError, OSError):
         log.exception("Unable to delete file %s" % file_path_name)
         return False
+
 
 def get_web_page(url, header=None, update_openlp=False):
     """
@@ -440,44 +434,6 @@ def get_web_page(url, header=None, update_openlp=False):
     log.debug(page)
     return page
 
-def file_is_unicode(filename):
-    """
-    Checks if a file is valid unicode and returns the unicode decoded file or
-    None.
-
-    ``filename``
-        File to check is valid unicode.
-    """
-    if not filename:
-        return None
-    ucsfile = None
-    try:
-        ucsfile = filename.decode(u'utf-8')
-    except UnicodeDecodeError:
-        log.exception(u'Filename "%s" is not valid UTF-8' %
-            filename.decode(u'utf-8', u'replace'))
-    if not ucsfile:
-        return None
-    return ucsfile
-
-def string_is_unicode(test_string):
-    """
-    Makes sure a string is unicode.
-
-    ``test_string``
-        The string to confirm is unicode.
-    """
-    return_string = u''
-    if not test_string:
-        return return_string
-    if isinstance(test_string, unicode):
-        return_string = test_string
-    if not isinstance(test_string, unicode):
-        try:
-            return_string = unicode(test_string, u'utf-8')
-        except UnicodeError:
-            log.exception("Error encoding string to unicode")
-    return return_string
 
 def get_uno_command():
     """
@@ -490,6 +446,7 @@ def get_uno_command():
     else:
         CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"'
     return u'%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
+
 
 def get_uno_instance(resolver):
     """
@@ -511,5 +468,5 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
-    u'ActionList', u'get_web_page', u'file_is_unicode', u'string_is_unicode',
-    u'get_uno_command', u'get_uno_instance', u'delete_file']
+    u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
+    u'delete_file', u'clean_filename']

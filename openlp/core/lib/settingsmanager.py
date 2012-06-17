@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -34,6 +34,7 @@ import os
 
 from PyQt4 import QtCore
 
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
@@ -58,7 +59,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        last_dir = unicode(QtCore.QSettings().value(
+        last_dir = unicode(Settings().value(
             section + u'/' + name, QtCore.QVariant(u'')).toString())
         return last_dir
 
@@ -81,7 +82,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        QtCore.QSettings().setValue(
+        Settings().setValue(
             section + u'/' + name, QtCore.QVariant(directory))
 
     @staticmethod
@@ -98,13 +99,13 @@ class SettingsManager(object):
         ``list``
             The list of values to save.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(section)
         old_count = settings.value(
             u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         new_count = len(list)
         settings.setValue(u'%s count' % name, QtCore.QVariant(new_count))
-        for counter in range (0, new_count):
+        for counter in range(new_count):
             settings.setValue(
                 u'%s %d' % (name, counter), QtCore.QVariant(list[counter-1]))
         if old_count > new_count:
@@ -124,13 +125,13 @@ class SettingsManager(object):
         ``name``
             The name of the list.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(section)
         list_count = settings.value(
             u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
         list = []
         if list_count:
-            for counter in range(0, list_count):
+            for counter in range(list_count):
                 item = unicode(
                     settings.value(u'%s %d' % (name, counter)).toString())
                 if item:

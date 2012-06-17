@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -36,7 +36,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte
+from openlp.core.lib import resize_image, image_to_byte, Receiver
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -100,29 +100,59 @@ class Image(object):
     variables ``image`` and ``image_bytes`` to ``None`` and add the image object
     to the queue of images to process.
     """
-    def __init__(self, name='', path=''):
+    secondary_priority = 0
+    def __init__(self, name, path, source, background):
         self.name = name
         self.path = path
         self.image = None
         self.image_bytes = None
         self.priority = Priority.Normal
+        self.source = source
+        self.background = background
+        self.secondary_priority = Image.secondary_priority
+        Image.secondary_priority += 1
 
 
 class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
+
+    Each item in the queue must be tuple with three values. The first value
+    is the :class:`Image`'s ``priority`` attribute, the second value
+    the :class:`Image`'s ``secondary_priority`` attribute. The last value the
+    :class:`Image` instance itself::
+
+        (image.priority, image.secondary_priority, image)
+
+    Doing this, the :class:`Queue.PriorityQueue` will sort the images according
+    to their priorities, but also according to there number. However, the number
+    only has an impact on the result if there are more images with the same
+    priority. In such case the image which has been added earlier is privileged.
     """
-    def remove(self, item):
+    def modify_priority(self, image, new_priority):
         """
-        Removes the given ``item`` from the queue.
+        Modifies the priority of the given ``image``.
 
-        ``item``
-            The item to remove. This should be a tuple::
+        ``image``
+            The image to remove. This should be an :class:`Image` instance.
 
-                ``(Priority, Image)``
+        ``new_priority``
+            The image's new priority. See the :class:`Priority` class for
+            priorities.
         """
-        if item in self.queue:
-            self.queue.remove(item)
+        self.remove(image)
+        image.priority = new_priority
+        self.put((image.priority, image.secondary_priority, image))
+
+    def remove(self, image):
+        """
+        Removes the given ``image`` from the queue.
+
+        ``image``
+            The image to remove. This should be an ``Image`` instance.
+        """
+        if (image.priority, image.secondary_priority, image) in self.queue:
+            self.queue.remove((image.priority, image.secondary_priority, image))
 
 
 class ImageManager(QtCore.QObject):
@@ -133,123 +163,159 @@ class ImageManager(QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        current_screen = ScreenList.get_instance().current
-        self.width = current_screen[u'size'].width()
-        self.height = current_screen[u'size'].height()
+        currentScreen = ScreenList().current
+        self.width = currentScreen[u'size'].width()
+        self.height = currentScreen[u'size'].height()
         self._cache = {}
-        self._imageThread = ImageThread(self)
-        self._conversion_queue = PriorityQueue()
+        self.imageThread = ImageThread(self)
+        self._conversionQueue = PriorityQueue()
+        self.stopManager = False
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.processUpdates)
 
-    def update_display(self):
+    def updateDisplay(self):
         """
         Screen has changed size so rebuild the cache to new size.
         """
-        log.debug(u'update_display')
-        current_screen = ScreenList.get_instance().current
-        self.width = current_screen[u'size'].width()
-        self.height = current_screen[u'size'].height()
+        log.debug(u'updateDisplay')
+        currentScreen = ScreenList().current
+        self.width = currentScreen[u'size'].width()
+        self.height = currentScreen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
-        self._conversion_queue = PriorityQueue()
-        for key, image in self._cache.iteritems():
-            image.priority = Priority.Normal
-            image.image = None
-            image.image_bytes = None
-            self._conversion_queue.put((image.priority, image))
-        # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        for image in self._cache.values():
+            self._resetImage(image)
 
-    def get_image(self, name):
+    def updateImages(self, imageType, background):
+        """
+        Border has changed so update all the images affected.
+        """
+        log.debug(u'updateImages')
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
+        for image in self._cache.values():
+            if image.source == imageType:
+                image.background = background
+                self._resetImage(image)
+
+    def updateImage(self, name, imageType, background):
+        """
+        Border has changed so update the image affected.
+        """
+        log.debug(u'updateImage')
+        # Mark the images as dirty for a rebuild by setting the image and byte
+        # stream to None.
+        for image in self._cache.values():
+            if image.source == imageType and image.name == name:
+                image.background = background
+                self._resetImage(image)
+
+    def _resetImage(self, image):
+        image.image = None
+        image.image_bytes = None
+        self._conversionQueue.modify_priority(image, Priority.Normal)
+
+    def processUpdates(self):
+        """
+        Flush the queue to updated any data to update
+        """
+        # We want only one thread.
+        if not self.imageThread.isRunning():
+            self.imageThread.start()
+
+    def getImage(self, name):
         """
         Return the ``QImage`` from the cache. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'get_image %s' % name)
+        log.debug(u'getImage %s' % name)
         image = self._cache[name]
         if image.image is None:
-            self._conversion_queue.remove((image.priority, image))
-            image.priority = Priority.High
-            self._conversion_queue.put((image.priority, image))
+            self._conversionQueue.modify_priority(image, Priority.High)
+            # make sure we are running and if not give it a kick
+            self.processUpdates()
             while image.image is None:
-                log.debug(u'get_image - waiting')
+                log.debug(u'getImage - waiting')
                 time.sleep(0.1)
+        elif image.image_bytes is None:
+            # Set the priority to Low, because the image was requested but the
+            # byte stream was not generated yet. However, we only need to do
+            # this, when the image was generated before it was requested
+            # (otherwise this is already taken care of).
+            self._conversionQueue.modify_priority(image, Priority.Low)
         return image.image
 
-    def get_image_bytes(self, name):
+    def getImageBytes(self, name):
         """
         Returns the byte string for an image. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'get_image_bytes %s' % name)
+        log.debug(u'getImageBytes %s' % name)
         image = self._cache[name]
         if image.image_bytes is None:
-            self._conversion_queue.remove((image.priority, image))
-            image.priority = Priority.Urgent
-            self._conversion_queue.put((image.priority, image))
+            self._conversionQueue.modify_priority(image, Priority.Urgent)
+            # make sure we are running and if not give it a kick
+            self.processUpdates()
             while image.image_bytes is None:
-                log.debug(u'get_image_bytes - waiting')
+                log.debug(u'getImageBytes - waiting')
                 time.sleep(0.1)
         return image.image_bytes
 
-    def del_image(self, name):
+    def deleteImage(self, name):
         """
         Delete the Image from the cache.
         """
-        log.debug(u'del_image %s' % name)
+        log.debug(u'deleteImage %s' % name)
         if name in self._cache:
-            self._conversion_queue.remove(
-                (self._cache[name].priority, self._cache[name]))
+            self._conversionQueue.remove(self._cache[name])
             del self._cache[name]
 
-    def add_image(self, name, path):
+    def addImage(self, name, path, source, background):
         """
         Add image to cache if it is not already there.
         """
-        log.debug(u'add_image %s:%s' % (name, path))
+        log.debug(u'addImage %s:%s' % (name, path))
         if not name in self._cache:
-            image = Image(name, path)
+            image = Image(name, path, source, background)
             self._cache[name] = image
-            self._conversion_queue.put((image.priority, image))
+            self._conversionQueue.put(
+                (image.priority, image.secondary_priority, image))
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
-        if not self._imageThread.isRunning():
-            self._imageThread.start()
+        if not self.imageThread.isRunning():
+            self.imageThread.start()
 
     def _process(self):
         """
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        while not self._conversion_queue.empty():
-            self._process_cache()
+        while not self._conversionQueue.empty() and not self.stopManager:
+            self._processCache()
         log.debug(u'_process - ended')
 
-    def _process_cache(self):
+    def _processCache(self):
         """
         Actually does the work.
         """
-        log.debug(u'_process_cache')
-        image = self._conversion_queue.get()[1]
+        log.debug(u'_processCache')
+        image = self._conversionQueue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height)
+            image.image = resize_image(image.path, self.width, self.height,
+                image.background)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:
-                self._conversion_queue.remove((image.priority, image))
-                image.priority = Priority.Lowest
-                self._conversion_queue.put((image.priority, image))
+                self._conversionQueue.modify_priority(image, Priority.Lowest)
                 return
             # For image with high priority we set the priority to Low, as the
             # byte stream might be needed earlier the byte stream of image with
             # Normal priority. We stop here as we need to process more important
             # images first.
             elif image.priority == Priority.High:
-                self._conversion_queue.remove((image.priority, image))
-                image.priority = Priority.Low
-                self._conversion_queue.put((image.priority, image))
+                self._conversionQueue.modify_priority(image, Priority.Low)
                 return
         # Generate the byte stream for the image.
         if image.image_bytes is None:

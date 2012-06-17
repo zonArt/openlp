@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -30,7 +30,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
+from openlp.core.lib.ui import critical_error_message_box, \
+    find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -55,20 +56,20 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.previewButton,
-            QtCore.SIGNAL(u'pressed()'), self.onPreviewButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onPreviewButtonClicked)
         QtCore.QObject.connect(self.addButton,
-            QtCore.SIGNAL(u'pressed()'), self.onAddButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
         QtCore.QObject.connect(self.editButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEditButtonClicked)
         QtCore.QObject.connect(self.editAllButton,
-            QtCore.SIGNAL(u'pressed()'), self.onEditAllButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onEditAllButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onEditButtonPressed)
+            self.onEditButtonClicked)
 
     def loadThemes(self, themelist):
         self.themeComboBox.clear()
@@ -93,7 +94,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setText(u'')
             self.creditEdit.setText(u'')
             self.themeComboBox.setCurrentIndex(0)
-            self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         else:
             self.customSlide = self.manager.get_object(CustomSlide, id)
             self.titleEdit.setText(self.customSlide.title)
@@ -104,10 +104,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
             find_and_set_in_combo_box(self.themeComboBox, theme)
+        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
         # If not preview hide the preview button.
-        self.previewButton.setVisible(False)
-        if preview:
-            self.previewButton.setVisible(True)
+        self.previewButton.setVisible(preview)
 
     def reject(self):
         Receiver.send_message(u'custom_edit_clear')
@@ -128,7 +127,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
-        for i in range(0, self.slideListView.count()):
+        for i in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.slideListView.item(i).text()))
             count += 1
@@ -137,7 +136,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.credits = unicode(self.creditEdit.text())
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         success = self.manager.save_object(self.customSlide)
-        self.mediaitem.auto_select_id = self.customSlide.id
+        self.mediaitem.autoSelectId = self.customSlide.id
         return success
 
     def onUpButtonClicked(self):
@@ -155,23 +154,23 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.slideListView.insertItem(selectedRow + 1, qw)
             self.slideListView.setCurrentRow(selectedRow + 1)
 
-    def onAddButtonPressed(self):
+    def onAddButtonClicked(self):
         self.editSlideForm.setText(u'')
         if self.editSlideForm.exec_():
             for slide in self.editSlideForm.getText():
                 self.slideListView.addItem(slide)
 
-    def onEditButtonPressed(self):
+    def onEditButtonClicked(self):
         self.editSlideForm.setText(self.slideListView.currentItem().text())
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText())
 
-    def onEditAllButtonPressed(self):
+    def onEditAllButtonClicked(self):
         """
         Edits all slides.
         """
         slide_list = u''
-        for row in range(0, self.slideListView.count()):
+        for row in range(self.slideListView.count()):
             item = self.slideListView.item(row)
             slide_list += item.text()
             if row != self.slideListView.count() - 1:
@@ -180,7 +179,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText(), True)
 
-    def onPreviewButtonPressed(self):
+    def onPreviewButtonClicked(self):
         """
         Save the custom item and preview it.
         """
@@ -207,7 +206,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             old_row = self.slideListView.currentRow()
             # Create a list with all (old/unedited) slides.
             old_slides = [self.slideListView.item(row).text() for row in \
-                range(0, self.slideListView.count())]
+                range(self.slideListView.count())]
             self.slideListView.clear()
             old_slides.pop(old_row)
             # Insert all slides to make the old_slides list complete.
@@ -255,7 +254,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Checks whether a custom is valid or not.
         """
         # We must have a title.
-        if len(self.titleEdit.displayText()) == 0:
+        if not self.titleEdit.displayText():
             self.titleEdit.setFocus()
             critical_error_message_box(
                 message=translate('CustomPlugin.EditCustomForm',

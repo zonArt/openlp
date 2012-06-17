@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -33,8 +33,8 @@ from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_item_selected, translate
-from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -58,7 +58,7 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_custom_form = EditCustomForm(self, self.plugin.formparent,
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent,
             self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
@@ -69,41 +69,14 @@ class CustomMediaItem(MediaManagerItem):
         self.manager = plugin.manager
 
     def addEndHeaderBar(self):
-        self.addToolbarSeparator()
-        self.searchWidget = QtGui.QWidget(self)
-        self.searchWidget.setObjectName(u'searchWidget')
-        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
-        self.searchLayout.setObjectName(u'searchLayout')
-        self.searchTextLayout = QtGui.QFormLayout()
-        self.searchTextLayout.setObjectName(u'searchTextLayout')
-        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
-        self.searchTextLabel.setObjectName(u'searchTextLabel')
-        self.searchTextEdit = SearchEdit(self.searchWidget)
-        self.searchTextEdit.setObjectName(u'searchTextEdit')
-        self.searchTextLabel.setBuddy(self.searchTextEdit)
-        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
-        self.searchLayout.addLayout(self.searchTextLayout)
-        self.searchButtonLayout = QtGui.QHBoxLayout()
-        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
-        self.searchButtonLayout.addStretch()
-        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
-        self.searchTextButton.setObjectName(u'searchTextButton')
-        self.searchButtonLayout.addWidget(self.searchTextButton)
-        self.searchLayout.addLayout(self.searchButtonLayout)
-        self.pageLayout.addWidget(self.searchWidget)
+        self.toolbar.addSeparator()
+        self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onSearchTextEditChanged)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self.onSearchTextButtonClick)
+            self.onSearchTextButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -120,19 +93,20 @@ class CustomMediaItem(MediaManagerItem):
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
             (CustomSearch.Titles, u':/songs/song_search_title.png',
-                translate('SongsPlugin.MediaItem', 'Titles')),
+            translate('SongsPlugin.MediaItem', 'Titles'),
+            translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png',
-                UiStrings().Themes)
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
-        self.save_auto_select_id()
+        self.saveAutoSelectId()
         self.listView.clear()
         # Sort the customs by its title considering language specific
         # characters. lower() is needed for windows!
@@ -144,9 +118,9 @@ class CustomMediaItem(MediaManagerItem):
                 QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
             self.listView.addItem(custom_name)
             # Auto-select the custom.
-            if custom_slide.id == self.auto_select_id:
+            if custom_slide.id == self.autoSelectId:
                 self.listView.setCurrentItem(custom_name)
-        self.auto_select_id = -1
+        self.autoSelectId = -1
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
@@ -180,8 +154,8 @@ class CustomMediaItem(MediaManagerItem):
             self.remoteTriggered = remote_type
             self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
             self.edit_custom_form.exec_()
-            self.auto_select_id = -1
-            self.onSearchTextButtonClick()
+            self.autoSelectId = -1
+            self.onSearchTextButtonClicked()
 
     def onEditClick(self):
         """
@@ -192,8 +166,8 @@ class CustomMediaItem(MediaManagerItem):
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
-            self.auto_select_id = -1
-            self.onSearchTextButtonClick()
+            self.autoSelectId = -1
+            self.onSearchTextButtonClicked()
 
     def onDeleteClick(self):
         """
@@ -205,7 +179,7 @@ class CustomMediaItem(MediaManagerItem):
                 UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected custom'
-                ' slides(s)?', '',
+                ' slide(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -217,21 +191,18 @@ class CustomMediaItem(MediaManagerItem):
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
-            for row in row_list:
-                self.listView.takeItem(row)
+            self.onSearchTextButtonClicked()
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False):
-        raw_footer = []
-        slide = None
-        theme = None
+    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+        remote=False):
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
-        service_item.add_capability(ItemCapabilities.AllowsEdit)
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsVirtualSplit)
+        service_item.add_capability(ItemCapabilities.CanEdit)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanSoftBreak)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
@@ -239,23 +210,22 @@ class CustomMediaItem(MediaManagerItem):
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme
-        customXML = CustomXMLParser(customSlide.text)
-        verseList = customXML.get_verses()
-        raw_slides = [verse[1] for verse in verseList]
+        custom_xml = CustomXMLParser(customSlide.text)
+        verse_list = custom_xml.get_verses()
+        raw_slides = [verse[1] for verse in verse_list]
         service_item.title = title
         for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
-        if QtCore.QSettings().value(self.settingsSection + u'/display footer',
+            service_item.add_from_text(slide)
+        if Settings().value(self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool() or credit:
-            raw_footer.append(title + u' ' + credit)
+            service_item.raw_footer.append(u' '.join([title, credit]))
         else:
-            raw_footer.append(u'')
-        service_item.raw_footer = raw_footer
+            service_item.raw_footer.append(u'')
         return True
 
-    def onSearchTextButtonClick(self):
+    def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
+        Settings().setValue(u'%s/last search type' %
             self.settingsSection,
             QtCore.QVariant(self.searchTextEdit.currentSearchType()))
         # Reload the list considering the new search type.
@@ -274,7 +244,7 @@ class CustomMediaItem(MediaManagerItem):
                 CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords) + u'%'), order_by_ref=CustomSlide.title)
             self.loadList(search_results)
-        self.check_search_result()
+        self.checkSearchResult()
 
     def onSearchTextEditChanged(self, text):
         """
@@ -284,8 +254,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         search_length = 2
         if len(text) > search_length:
-            self.onSearchTextButtonClick()
-        elif len(text) == 0:
+            self.onSearchTextButtonClicked()
+        elif not text:
             self.onClearTextButtonClick()
 
     def onClearTextButtonClick(self):
@@ -293,9 +263,9 @@ class CustomMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.searchTextEdit.clear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
 
-    def search(self, string):
+    def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
             or_(func.lower(CustomSlide.title).like(u'%' +
             string.lower() + u'%'),

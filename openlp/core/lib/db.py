@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -29,14 +29,19 @@ The :mod:`db` module provides the core database functionality for OpenLP
 """
 import logging
 import os
+from urllib import quote_plus as urlquote
 
 from PyQt4 import QtCore
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import Table, MetaData, Column, types, create_engine
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
+    OperationalError
+from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
+from openlp.core.lib import translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +64,64 @@ def init_db(url, auto_flush=True, auto_commit=False):
         autocommit=auto_commit, bind=engine))
     return session, metadata
 
+
+def upgrade_db(url, upgrade):
+    """
+    Upgrade a database.
+
+    ``url``
+        The url of the database to upgrade.
+
+    ``upgrade``
+        The python module that contains the upgrade instructions.
+    """
+    session, metadata = init_db(url)
+
+    class Metadata(BaseModel):
+        """
+        Provides a class for the metadata table.
+        """
+        pass
+    load_changes = True
+    try:
+        tables = upgrade.upgrade_setup(metadata)
+    except (SQLAlchemyError, DBAPIError):
+        load_changes = False
+    metadata_table = Table(u'metadata', metadata,
+        Column(u'key', types.Unicode(64), primary_key=True),
+        Column(u'value', types.UnicodeText(), default=None)
+    )
+    metadata_table.create(checkfirst=True)
+    mapper(Metadata, metadata_table)
+    version_meta = session.query(Metadata).get(u'version')
+    if version_meta is None:
+        version_meta = Metadata.populate(key=u'version', value=u'0')
+        version = 0
+    else:
+        version = int(version_meta.value)
+    if version > upgrade.__version__:
+        return version, upgrade.__version__
+    version += 1
+    if load_changes:
+        while hasattr(upgrade, u'upgrade_%d' % version):
+            log.debug(u'Running upgrade_%d', version)
+            try:
+                getattr(upgrade, u'upgrade_%d' % version) \
+                    (session, metadata, tables)
+                version_meta.value = unicode(version)
+            except (SQLAlchemyError, DBAPIError):
+                log.exception(u'Could not run database upgrade script '
+                    '"upgrade_%s", upgrade process has been halted.', version)
+                break
+            version += 1
+    else:
+        version_meta = Metadata.populate(key=u'version',
+            value=int(upgrade.__version__))
+    session.add(version_meta)
+    session.commit()
+    return int(version_meta.value), upgrade.__version__
+
+
 def delete_database(plugin_name, db_file_name=None):
     """
     Remove a database file from the system.
@@ -79,6 +142,7 @@ def delete_database(plugin_name, db_file_name=None):
             AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
 
+
 class BaseModel(object):
     """
     BaseModel provides a base object with a set of generic functions
@@ -93,12 +157,12 @@ class BaseModel(object):
             instance.__setattr__(key, value)
         return instance
 
-
 class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None,
+                 upgrade_mod=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
@@ -109,14 +173,18 @@ class Manager(object):
         ``init_schema``
             The init_schema function for this database
 
+        ``upgrade_schema``
+            The upgrade_schema function for this database
+
         ``db_file_name``
             The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
+        self.session = None
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
@@ -129,12 +197,37 @@ class Manager(object):
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'db username').toString()),
-                unicode(settings.value(u'db password').toString()),
-                unicode(settings.value(u'db hostname').toString()),
-                unicode(settings.value(u'db database').toString()))
+                urlquote(unicode(settings.value(u'db username').toString())),
+                urlquote(unicode(settings.value(u'db password').toString())),
+                urlquote(unicode(settings.value(u'db hostname').toString())),
+                urlquote(unicode(settings.value(u'db database').toString())))
+            if db_type == u'mysql':
+                db_encoding = unicode(
+                    settings.value(u'db encoding', u'utf8').toString())
+                self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
-        self.session = init_schema(self.db_url)
+        if upgrade_mod:
+            db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
+            if db_ver > up_ver:
+                critical_error_message_box(
+                    translate('OpenLP.Manager', 'Database Error'),
+                    unicode(translate('OpenLP.Manager', 'The database being '
+                        'loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP '
+                        'expects version %d. The database will not be loaded.'
+                        '\n\nDatabase: %s')) % \
+                        (db_ver, up_ver, self.db_url)
+                )
+                return
+        try:
+            self.session = init_schema(self.db_url)
+        except (SQLAlchemyError, DBAPIError):
+            log.exception(u'Error loading database: %s', self.db_url)
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
+                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s')) % self.db_url
+            )
 
     def save_object(self, object_instance, commit=True):
         """
@@ -146,16 +239,30 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        try:
-            self.session.add(object_instance)
-            if commit:
-                self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Object save failed')
-            return False
+        for try_count in range(3):
+            try:
+                self.session.add(object_instance)
+                if commit:
+                    self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Object list save failed')
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def save_objects(self, object_list, commit=True):
         """
@@ -167,16 +274,30 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        try:
-            self.session.add_all(object_list)
-            if commit:
-                self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Object list save failed')
-            return False
+        for try_count in range(3):
+            try:
+                self.session.add_all(object_list)
+                if commit:
+                    self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Object list save failed')
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def get_object(self, object_class, key=None):
         """
@@ -191,7 +312,18 @@ class Manager(object):
         if not key:
             return object_class()
         else:
-            return self.session.query(object_class).get(key)
+            for try_count in range(3):
+                try:
+                    return self.session.query(object_class).get(key)
+                except OperationalError:
+                    # This exception clause is for users running MySQL which likes
+                    # to terminate connections on its own without telling anyone.
+                    # See bug #927473
+                    # However, other dbms can raise it, usually in a non-recoverable
+                    # way. So we only retry 3 times.
+                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    if try_count >= 2:
+                        raise
 
     def get_object_filtered(self, object_class, filter_clause):
         """
@@ -203,7 +335,18 @@ class Manager(object):
         ``filter_clause``
             The criteria to select the object by
         """
-        return self.session.query(object_class).filter(filter_clause).first()
+        for try_count in range(3):
+            try:
+                return self.session.query(object_class).filter(filter_clause).first()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def get_all_objects(self, object_class, filter_clause=None,
         order_by_ref=None):
@@ -223,9 +366,22 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        if order_by_ref is not None:
-            return query.order_by(order_by_ref).all()
-        return query.all()
+        if isinstance(order_by_ref, list):
+            query = query.order_by(*order_by_ref)
+        elif order_by_ref is not None:
+            query = query.order_by(order_by_ref)
+        for try_count in range(3):
+            try:
+                return query.all()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def get_object_count(self, object_class, filter_clause=None):
         """
@@ -241,7 +397,18 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        return query.count()
+        for try_count in range(3):
+            try:
+                return query.count()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def delete_object(self, object_class, key):
         """
@@ -255,37 +422,72 @@ class Manager(object):
         """
         if key != 0:
             object_instance = self.get_object(object_class, key)
-            try:
-                self.session.delete(object_instance)
-                self.session.commit()
-                self.is_dirty = True
-                return True
-            except InvalidRequestError:
-                self.session.rollback()
-                log.exception(u'Failed to delete object')
-                return False
+            for try_count in range(3):
+                try:
+                    self.session.delete(object_instance)
+                    self.session.commit()
+                    self.is_dirty = True
+                    return True
+                except OperationalError:
+                    # This exception clause is for users running MySQL which likes
+                    # to terminate connections on its own without telling anyone.
+                    # See bug #927473
+                    # However, other dbms can raise it, usually in a non-recoverable
+                    # way. So we only retry 3 times.
+                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    self.session.rollback()
+                    if try_count >= 2:
+                        raise
+                except InvalidRequestError:
+                    self.session.rollback()
+                    log.exception(u'Failed to delete object')
+                    return False
+                except:
+                    self.session.rollback()
+                    raise
         else:
             return True
 
     def delete_all_objects(self, object_class, filter_clause=None):
         """
-        Delete all object records
+        Delete all object records.
+        This method should only be used for simple tables and not ones with
+        relationships.  The relationships are not deleted from the database and
+        this will lead to database corruptions.
 
         ``object_class``
             The type of object to delete
+
+        ``filter_clause``
+            The filter governing selection of objects to return. Defaults to
+            None.
         """
-        try:
-            query = self.session.query(object_class)
-            if filter_clause is not None:
-                query = query.filter(filter_clause)
-            query.delete(synchronize_session=False)
-            self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Failed to delete %s records', object_class.__name__)
-            return False
+        for try_count in range(3):
+            try:
+                query = self.session.query(object_class)
+                if filter_clause is not None:
+                    query = query.filter(filter_clause)
+                query.delete(synchronize_session=False)
+                self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Failed to delete %s records', object_class.__name__)
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def finalise(self):
         """

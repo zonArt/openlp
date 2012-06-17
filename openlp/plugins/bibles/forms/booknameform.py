@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
 # Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
 # Tibble, Carsten Tinggaard, Frode Woldsund                                   #
@@ -28,6 +28,7 @@
 Module implementing BookNameForm.
 """
 import logging
+import re
 
 from PyQt4.QtGui import QDialog
 from PyQt4 import QtCore
@@ -36,17 +37,18 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.forms.booknamedialog import \
     Ui_BookNameDialog
+from openlp.plugins.bibles.lib import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
 class BookNameForm(QDialog, Ui_BookNameDialog):
     """
-    Class to manage a dialog which help the user to refer a book name a 
+    Class to manage a dialog which help the user to refer a book name a
     to a english book name
     """
     log.info(u'BookNameForm loaded')
-    
+
     def __init__(self, parent = None):
         """
         Constructor
@@ -54,6 +56,8 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.customSignals()
+        self.book_names = BibleStrings().BookNames
+        self.book_id = False
 
     def customSignals(self):
         """
@@ -97,7 +101,8 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
                 and item[u'testament_id'] == 3:
                 addBook = False
             if addBook:
-                self.correspondingComboBox.addItem(item[u'name'])
+                self.correspondingComboBox.addItem(
+                    self.book_names[item[u'abbreviation']])
 
     def exec_(self, name, books, maxbooks):
         self.books = books
@@ -111,7 +116,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         self.currentBookLabel.setText(unicode(name))
         self.correspondingComboBox.setFocus()
         return QDialog.exec_(self)
-    
+
     def accept(self):
         if self.correspondingComboBox.currentText() == u'':
             critical_error_message_box(
@@ -120,4 +125,13 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.correspondingComboBox.setFocus()
             return False
         else:
+            cor_book = unicode(self.correspondingComboBox.currentText())
+            for character in u'\\.^$*+?{}[]()':
+                cor_book = cor_book.replace(character, u'\\' + character)
+            books = filter(lambda key:
+                re.match(cor_book, unicode(self.book_names[key]), re.UNICODE),
+                self.book_names.keys())
+            books = filter(None, map(BiblesResourcesDB.get_book, books))
+            if books:
+                self.book_id = books[0][u'id']
             return QDialog.accept(self)

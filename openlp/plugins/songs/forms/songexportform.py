@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -28,11 +28,13 @@
 The :mod:`songexportform` module provides the wizard for exporting songs to the
 OpenLyrics format.
 """
+import locale
 import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
+    create_separated_list
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
@@ -88,7 +90,7 @@ class SongExportForm(OpenLPWizard):
         """
         QtCore.QObject.connect(self.availableListWidget,
             QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
-            self.onItemPressed)
+            self.onItemActivated)
         QtCore.QObject.connect(self.searchLineEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
@@ -169,8 +171,8 @@ class SongExportForm(OpenLPWizard):
             translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
-            ' export your songs to the open and free OpenLyrics worship song '
-            'format.'))
+            ' export your songs to the open and free <strong>OpenLyrics'
+            '</strong> worship song format.'))
         self.availableSongsPage.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(
@@ -249,8 +251,12 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
+        songs.sort(cmp=locale.strcoll, key=lambda song: song.title.lower())
         for song in songs:
-            authors = u', '.join([author.display_name
+            # No need to export temporary songs.
+            if song.temporary:
+                continue
+            authors = create_separated_list([author.display_name
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)
@@ -283,7 +289,9 @@ class SongExportForm(OpenLPWizard):
             self, songs, unicode(self.directoryLineEdit.text()))
         if exporter.do_export():
             self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm', 'Finished export.'))
+                translate('SongsPlugin.SongExportForm', 'Finished export. To '
+                'import these files use the <strong>OpenLyrics</strong> '
+                'importer.'))
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',
@@ -304,14 +312,14 @@ class SongExportForm(OpenLPWizard):
             QtCore.QString(unicode(text)), QtCore.Qt.MatchContains)
         ]
 
-    def onItemPressed(self, item):
+    def onItemActivated(self, item):
         """
-        Called, when an item in the *availableListWidget* has been pressed. Thes
-        item is check if it was not checked, whereas it is unchecked when it was
-        checked.
+        Called, when an item in the *availableListWidget* has been triggered.
+        The item is check if it was not checked, whereas it is unchecked when it
+        was checked.
 
         ``item``
-            The *QListWidgetItem* which was pressed.
+            The *QListWidgetItem* which was triggered.
         """
         item.setCheckState(
             QtCore.Qt.Unchecked if item.checkState() else QtCore.Qt.Checked)
@@ -355,11 +363,5 @@ class SongExportForm(OpenLPWizard):
         Called when the *directoryButton* was clicked. Opens a dialog and writes
         the path to *directoryLineEdit*.
         """
-        path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
-            translate('SongsPlugin.ExportWizardForm',
-            'Select Destination Folder'),
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
-            options=QtGui.QFileDialog.ShowDirsOnly))
-        SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
-        self.directoryLineEdit.setText(path)
-
+        self.getFolder(translate('SongsPlugin.ExportWizardForm',
+            'Select Destination Folder'), self.directoryLineEdit)

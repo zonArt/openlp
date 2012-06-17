@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -24,14 +24,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import cgi
 import datetime
 import os
 
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string
+from openlp.core.lib import translate, get_text_file_string, Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -119,7 +121,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
@@ -183,7 +185,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'style', custom_css, html_data.head,
             attribute=(u'type', u'text/css'))
         self._addElement(u'body', parent=html_data)
-        self._addElement(u'h1', unicode(self.titleLineEdit.text()),
+        self._addElement(u'h1', cgi.escape(unicode(self.titleLineEdit.text())),
             html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.serviceManager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
@@ -193,8 +195,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 classId=u'customNotes')
             self._addElement(u'span', translate('OpenLP.ServiceManager',
                 'Custom Service Notes: '), div, classId=u'customNotesTitle')
-            self._addElement(u'span', self.footerTextEdit.toPlainText(), div,
-                classId=u'customNotesText')
+            self._addElement(u'span',
+                cgi.escape(self.footerTextEdit.toPlainText()),
+                div, classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
 
@@ -204,8 +207,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
         self._addElement(u'img', parent=item_title,
             attribute=(u'src', item.icon))
-        self._addElement(u'span', u'&nbsp;' + item.get_display_title(),
-            item_title)
+        self._addElement(u'span',
+            u'&nbsp;' + cgi.escape(item.get_display_title()), item_title)
         if self.slideTextCheckBox.isChecked():
             # Add the text of the service item.
             if item.is_text():
@@ -230,8 +233,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             foot_text = item.foot_text
             foot_text = foot_text.partition(u'<br>')[2]
             if foot_text:
-                foot = self._addElement(u'div', foot_text, parent=div,
-                    classId=u'itemFooter')
+                foot_text = cgi.escape(foot_text.replace(u'<br>', u'\n'))
+                self._addElement(u'div', foot_text.replace(u'\n', u'<br>'),
+                    parent=div, classId=u'itemFooter')
         # Add service items' notes.
         if self.notesCheckBox.isChecked():
             if item.notes:
@@ -239,8 +243,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                 self._addElement(u'span',
                     translate('OpenLP.ServiceManager', 'Notes: '), p,
                     classId=u'itemNotesTitle')
-                notes = self._addElement(u'span',
-                    item.notes.replace(u'\n', u'<br />'), p,
+                self._addElement(u'span',
+                    cgi.escape(unicode(item.notes)).replace(u'\n', u'<br>'), p,
                     classId=u'itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.metaDataCheckBox.isChecked():
@@ -315,7 +319,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         elif display == ZoomSize.TwentyFive:
             self.previewWidget.fitToWidth()
             self.previewWidget.zoomIn(0.25)
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'display size', QtCore.QVariant(display))
         settings.endGroup()
@@ -324,12 +328,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
+        self.update_song_usage()
         self.mainWindow.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
@@ -338,6 +344,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         if not self.printDialog.exec_():
             return
+        self.update_song_usage()
         # Print the document.
         self.document.print_(self.printer)
 
@@ -383,7 +390,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Save the settings and close the dialog.
         """
         # Save the settings for this dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
             QtCore.QVariant(self.slideTextCheckBox.isChecked()))
@@ -394,3 +401,12 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.setValue(u'print notes',
             QtCore.QVariant(self.notesCheckBox.isChecked()))
         settings.endGroup()
+
+    def update_song_usage(self):
+        # Only continue when we include the song's text.
+        if not self.slideTextCheckBox.isChecked():
+            return
+        for item in self.serviceManager.serviceItems:
+            # Trigger Audit requests
+            Receiver.send_message(u'print_service_started',
+                [item[u'service_item']])

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
 # Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
 # Tibble, Carsten Tinggaard, Frode Woldsund                                   #
@@ -24,9 +24,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 class Ui_LanguageDialog(object):
     def setupUi(self, languageDialog):
@@ -60,25 +61,18 @@ class Ui_LanguageDialog(object):
         self.languageComboBox.setObjectName(u'languageComboBox')
         self.languageHBoxLayout.addWidget(self.languageComboBox)
         self.languageLayout.addLayout(self.languageHBoxLayout)
-        self.buttonBox = QtGui.QDialogButtonBox(languageDialog)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.languageLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'), 
-            languageDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), 
-            languageDialog.reject)
 
     def retranslateUi(self, languageDialog):
         languageDialog.setWindowTitle(
             translate('BiblesPlugin.LanguageDialog', 'Select Language'))
         self.bibleLabel.setText(translate('BiblesPlugin.LanguageDialog', ''))
-        self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+        self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog',
             'OpenLP is unable to determine the language of this translation '
             'of the Bible. Please select the language from the list below.'))
-        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog', 
+        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog',
             'Language:'))

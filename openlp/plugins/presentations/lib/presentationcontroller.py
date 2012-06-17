@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2012 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
 # Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
 # Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
@@ -31,7 +31,9 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, resize_image
+from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
+    validate_thumb
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -97,8 +99,7 @@ class PresentationDocument(object):
         self.slidenumber = 0
         self.controller = controller
         self.filepath = name
-        if not os.path.isdir(self.get_thumbnail_folder()):
-            os.mkdir(self.get_thumbnail_folder())
+        check_directory_exists(self.get_thumbnail_folder())
 
     def load_presentation(self):
         """
@@ -145,15 +146,13 @@ class PresentationDocument(object):
 
     def check_thumbnails(self):
         """
-        Returns true if the thumbnail images look to exist and are more
-        recent than the powerpoint
+        Returns ``True`` if the thumbnail images exist and are more recent than
+        the powerpoint file.
         """
         lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
         if not (lastimage and os.path.isfile(lastimage)):
             return False
-        imgdate = os.stat(lastimage).st_mtime
-        pptdate = os.stat(self.filepath).st_mtime
-        return imgdate >= pptdate
+        return validate_thumb(self.filepath, lastimage)
 
     def close_presentation(self):
         """
@@ -246,8 +245,8 @@ class PresentationDocument(object):
         if self.check_thumbnails():
             return
         if os.path.isfile(file):
-            img = resize_image(file, 320, 240)
-            img.save(self.get_thumbnail_path(idx, False))
+            thumb_path = self.get_thumbnail_path(idx, False)
+            create_thumb(file, thumb_path, False, QtCore.QSize(320, 240))
 
     def get_thumbnail_path(self, slide_no, check_exists):
         """
@@ -380,29 +379,32 @@ class PresentationController(object):
         self.name = name
         self.document_class = document_class
         self.settings_section = self.plugin.settingsSection
-        self.available = self.check_available()
+        self.available = None
         self.temp_folder = os.path.join(
             AppLocation.get_section_data_path(self.settings_section), name)
         self.thumbnail_folder = os.path.join(
             AppLocation.get_section_data_path(self.settings_section),
             u'thumbnails')
         self.thumbnail_prefix = u'slide'
-        if not os.path.isdir(self.thumbnail_folder):
-            os.makedirs(self.thumbnail_folder)
-        if not os.path.isdir(self.temp_folder):
-            os.makedirs(self.temp_folder)
+        check_directory_exists(self.thumbnail_folder)
+        check_directory_exists(self.temp_folder)
 
     def enabled(self):
         """
         Return whether the controller is currently enabled
         """
-        if self.available:
-            return QtCore.QSettings().value(
-                self.settings_section + u'/' + self.name,
-                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
-                    QtCore.Qt.Checked
+        if Settings().value(
+            self.settings_section + u'/' + self.name,
+            QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
+                QtCore.Qt.Checked:
+            return self.is_available()
         else:
             return False
+
+    def is_available(self):
+        if self.available is None:
+            self.available = self.check_available()
+        return self.available
 
     def check_available(self):
         """
