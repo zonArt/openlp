@@ -26,7 +26,7 @@
 ###############################################################################
 
 import logging
-from lxml import objectify
+from lxml import objectify, etree
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
@@ -45,6 +45,17 @@ class OpenSongBible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
+
+    def get_text(self, element):
+        verse_text = u''
+        if element.text:
+            verse_text = element.text
+        for sub_element in element.iterchildren():
+            verse_text += self.get_text(sub_element)
+        if element.tail:
+            verse_text += element.tail
+        return verse_text
+            
 
     def do_import(self, bible_name=None):
         """
@@ -89,7 +100,7 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
-                            unicode(verse.text))
+                            unicode(self.get_text(verse)))
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) %
