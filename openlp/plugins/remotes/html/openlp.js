@@ -245,6 +245,9 @@ window.OpenLP = {
         }
         else {
             $.each(data.results.items, function (idx, value) {
+              if (typeof value[0] !== "number"){
+                value[0] = OpenLP.escapeString(value[0])
+              }
               ul.append($("<li>").append($("<a>").attr("href", "#options")
                   .attr("data-rel", "dialog").attr("value", value[0])
                   .click(OpenLP.showOptions).text(value[1])));

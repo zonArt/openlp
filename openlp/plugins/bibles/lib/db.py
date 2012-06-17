@@ -63,6 +63,7 @@ class Verse(BaseModel):
     """
     pass
 
+
 def init_schema(url):
     """
     Setup a bible database connection and initialise the database schema.
