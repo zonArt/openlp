@@ -43,6 +43,15 @@ from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
     Book
 
+UGLY_CHARS = {
+    u'\u2014': u' - ',
+    u'\u2018': u'\'',
+    u'\u2019': u'\'',
+    u'\u201c': u'"',
+    u'\u201d': u'"',
+    u'&nbsp;': u' '
+}
+
 log = logging.getLogger(__name__)
 
 class BGExtract(object):
@@ -53,6 +62,103 @@ class BGExtract(object):
         log.debug(u'BGExtract.init("%s")', proxy_url)
         self.proxy_url = proxy_url
         socket.setdefaulttimeout(30)
+
+    def _remove_elements(self, parent, tag, class_=None):
+        """
+        Remove a particular element from the BeautifulSoup tree.
+
+        ``parent``
+            The element from which items need to be removed.
+
+        ``tag``
+            A string of the tab type, e.g. "div"
+
+        ``class_``
+            An HTML class attribute for further qualification.
+        """
+        if class_:
+            all_tags = parent.findAll(tag, class_)
+        else:
+            all_tags = parent.findAll(tag)
+        for element in all_tags:
+            element.extract()
+
+    def _extract_verse(self, tag):
+        """
+        Extract a verse (or part of a verse) from a tag.
+
+        ``tag``
+            The BeautifulSoup Tag element with the stuff we want.
+        """
+        if isinstance(tag, NavigableString):
+            return None, unicode(tag)
+        elif tag.get('class') == 'versenum':
+            verse = unicode(tag.string)\
+                .replace('[', '').replace(']', '').strip()
+            return verse, None
+        elif tag.get('class') == 'chapternum':
+            verse = '1'
+            return verse, None
+        else:
+            verse, text = None, ''
+            for child in tag.contents:
+                c_verse, c_text = self._extract_verse(child)
+                if c_verse:
+                    verse = c_verse
+                if text and c_text:
+                    text += c_text
+                elif c_text is not None:
+                    text = c_text
+            return verse, text
+
+    def _clean_soup(self, tag):
+        """
+        Remove all the rubbish from the HTML page.
+
+        ``tag``
+            The base tag within which we want to remove stuff.
+        """
+        self._remove_elements(tag, 'sup', 'crossreference')
+        self._remove_elements(tag, 'sup', 'footnote')
+        self._remove_elements(tag, 'div', 'footnotes')
+        self._remove_elements(tag, 'div', 'crossrefs')
+        self._remove_elements(tag, 'h3')
+
+    def _extract_verses(self, tags):
+        """
+        Extract all the verses from a pre-prepared list of HTML tags.
+
+        ``tags``
+            A list of BeautifulSoup Tag elements.
+        """
+        verses = []
+        tags = tags[::-1]
+        current_text = ''
+        for tag in tags:
+            verse, text = None, ''
+            for child in tag.contents:
+                c_verse, c_text = self._extract_verse(child)
+                if c_verse:
+                    verse = c_verse
+                if text and c_text:
+                    text += c_text
+                elif c_text is not None:
+                    text = c_text
+            if not verse:
+                current_text = text + ' ' + current_text
+            else:
+                text += ' ' + current_text
+                current_text = ''
+            if text:
+                for old, new in UGLY_CHARS.iteritems():
+                    text = text.replace(old, new)
+                text = u' '.join(text.split())
+            if verse and text:
+                verses.append((int(verse.strip()), text))
+        verse_list = {}
+        for verse, text in verses[::-1]:
+            verse_list[verse] = text
+        return verse_list
 
     def get_bible_chapter(self, version, book_name, chapter):
         """
@@ -80,60 +186,9 @@ class BGExtract(object):
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
-        footnotes = soup.findAll(u'sup', u'footnote')
-        if footnotes:
-            for footnote in footnotes:
-                footnote.extract()
-        crossrefs = soup.findAll(u'sup', u'xref')
-        if crossrefs:
-            for crossref in crossrefs:
-                crossref.extract()
-        headings = soup.findAll(u'h5')
-        if headings:
-            for heading in headings:
-                heading.extract()
-        chapter_notes = soup.findAll('div', 'footnotes')
-        if chapter_notes:
-            log.debug('Found chapter notes')
-            for note in chapter_notes:
-                note.extract()
-        note_comments = soup.findAll(text=u'end of footnotes')
-        if note_comments:
-            for comment in note_comments:
-                comment.extract()
-        cleanup = [(re.compile('\s+'), lambda match: ' ')]
-        verses = BeautifulSoup(str(soup), markupMassage=cleanup)
-        verse_list = {}
-        # Cater for inconsistent mark up in the first verse of a chapter.
-        first_verse = verses.find(u'versenum')
-        if first_verse and first_verse.contents:
-            verse_list[1] = unicode(first_verse.contents[0])
-        for verse in verses(u'sup', u'versenum'):
-            raw_verse_num = verse.next
-            clean_verse_num = 0
-            # Not all verses exist in all translations and may or may not be
-            # represented by a verse number. If they are not fine, if they are
-            # it will probably be in a format that breaks int(). We will then
-            # have no idea what garbage may be sucked in to the verse text so
-            # if we do not get a clean int() then ignore the verse completely.
-            try:
-                clean_verse_num = int(str(raw_verse_num))
-            except ValueError:
-                log.warn(u'Illegal verse number in %s %s %s:%s',
-                    version, book_name, chapter, unicode(raw_verse_num))
-            if clean_verse_num:
-                verse_text = raw_verse_num.next
-                part = raw_verse_num.next.next
-                while not (isinstance(part, Tag) and part.attrMap and
-                    part.attrMap[u'class'] == u'versenum'):
-                    # While we are still in the same verse grab all the text.
-                    if isinstance(part, NavigableString):
-                        verse_text = verse_text + part
-                    if isinstance(part.next, Tag) and part.next.name == u'div':
-                        # Run out of verses so stop.
-                        break
-                    part = part.next
-                verse_list[clean_verse_num] = unicode(verse_text)
+        div = soup.find('div', 'result-text-style-normal')
+        self._clean_soup(div)
+        verse_list = self._extract_verses(div.findAll('span', 'text'))
         if not verse_list:
             log.debug(u'No content found in the BibleGateway response.')
             send_error_message(u'parse')

@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib.settings import Settings
 
 class CustomTab(SettingsTab):
     """
@@ -66,11 +67,11 @@ class CustomTab(SettingsTab):
             self.displayFooter = True
 
     def load(self):
-        self.displayFooter = QtCore.QSettings().value(
+        self.displayFooter = Settings().value(
             self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool()
         self.displayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
-        QtCore.QSettings().setValue(self.settingsSection + u'/display footer',
+        Settings().setValue(self.settingsSection + u'/display footer',
             QtCore.QVariant(self.displayFooter))

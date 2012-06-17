@@ -73,7 +73,7 @@ class CSVBible(BibleDB):
 
     def __init__(self, parent, **kwargs):
         """
-        Loads a Bible from a set of CVS files.
+        Loads a Bible from a set of CSV files.
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """

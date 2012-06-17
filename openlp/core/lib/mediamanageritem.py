@@ -38,6 +38,7 @@ from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -462,7 +463,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
+        if Settings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
             self.onLiveClick()
         else:
@@ -472,7 +473,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if QtCore.QSettings().value(u'advanced/single click preview',
+        if Settings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() \
             and self.autoSelectId == -1:

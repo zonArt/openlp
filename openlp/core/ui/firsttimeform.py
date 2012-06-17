@@ -39,6 +39,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
     check_directory_exists
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -116,7 +117,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         check_directory_exists(os.path.join(gettempdir(), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = QtCore.QSettings().value(
+        self.hasRunWizard = Settings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
         # Sort out internet access for downloads
         if self.webAccess:
@@ -209,7 +210,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
-                default_theme = unicode(QtCore.QSettings().value(
+                default_theme = unicode(Settings().value(
                     u'themes/global theme',
                     QtCore.QVariant(u'')).toString())
                 # Pre-select the current default theme.
@@ -261,7 +262,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._performWizard()
         Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_normal')
-        QtCore.QSettings().setValue(u'general/has run wizard',
+        Settings().setValue(u'general/has run wizard',
             QtCore.QVariant(True))
         self.close()
 
@@ -460,16 +461,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'General/monitor',
+            Settings().setValue(u'General/monitor',
                 QtCore.QVariant(self.displayComboBox.currentIndex()))
             self.screens.set_current_display(
                  self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'themes/global theme',
+            Settings().setValue(u'themes/global theme',
                 QtCore.QVariant(self.themeComboBox.currentText()))
 
     def _setPluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
-        QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
+        Settings().setValue(tag, QtCore.QVariant(status))

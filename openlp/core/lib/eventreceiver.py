@@ -268,7 +268,7 @@ class Receiver(object):
             <<ACTION>>
         )``
     """
-    eventreceiver = EventReceiver()
+    __eventreceiver__ = EventReceiver()
 
     @staticmethod
     def send_message(event, msg=None):
@@ -281,11 +281,11 @@ class Receiver(object):
         ``msg``
             Defaults to *None*. The message to send with the event.
         """
-        Receiver.eventreceiver.send_message(event, msg)
+        Receiver.__eventreceiver__.send_message(event, msg)
 
     @staticmethod
     def get_receiver():
         """
-        Get the global ``eventreceiver`` instance.
+        Get the global ``__eventreceiver__`` instance.
         """
-        return Receiver.eventreceiver
+        return Receiver.__eventreceiver__

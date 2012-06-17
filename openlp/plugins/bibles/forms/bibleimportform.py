@@ -36,6 +36,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -590,7 +591,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.plugin.settingsSection)
         self.restart()
         self.finishButton.setVisible(False)

@@ -40,6 +40,7 @@ from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
@@ -164,7 +165,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
+        self.global_theme = unicode(Settings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
 
@@ -244,7 +245,7 @@ class ThemeManager(QtGui.QWidget):
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % self.global_theme
                 self.themeListWidget.item(count).setText(name)
-                QtCore.QSettings().setValue(
+                Settings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global', self.global_theme)
@@ -451,7 +452,7 @@ class ThemeManager(QtGui.QWidget):
                 theme = ThemeXML()
                 theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
-                QtCore.QSettings().setValue(
+                Settings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(theme.theme_name))
                 self.configUpdated()
@@ -534,6 +535,7 @@ class ThemeManager(QtGui.QWidget):
         zip = None
         out_file = None
         file_xml = None
+        abort_import = True
         try:
             zip = zipfile.ZipFile(file_name)
             xml_file = filter(lambda name:
@@ -770,7 +772,7 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
+        self.global_theme = unicode(Settings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         if check_item_selected(self.themeListWidget, select_text):

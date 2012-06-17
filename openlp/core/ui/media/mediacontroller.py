@@ -30,6 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
@@ -333,10 +334,9 @@ class MediaController(object):
             "setBackBoard", null, null, null,"visible");')
         # now start playing
         if controller.isLive and \
-            (QtCore.QSettings().value(u'general/auto unblank',
+            (Settings().value(u'general/auto unblank',
             QtCore.QVariant(False)).toBool() or \
-            controller.media_info.is_background == True) or \
-            controller.isLive == False:
+            controller.media_info.is_background) or not controller.isLive:
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
@@ -495,7 +495,7 @@ class MediaController(object):
             return
         controller = self.parent.liveController
         for display in self.curDisplayMediaPlayer.keys():
-            if display.controller != controller or  \
+            if display.controller != controller or \
                 self.curDisplayMediaPlayer[display].state != MediaState.Playing:
                 continue
             self.curDisplayMediaPlayer[display].pause(display)

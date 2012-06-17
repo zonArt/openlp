@@ -220,12 +220,9 @@ class ServiceItem(object):
             self.image_border)
         self._new_item()
 
-    def add_from_text(self, title, raw_slide, verse_tag=None):
+    def add_from_text(self, raw_slide, verse_tag=None):
         """
         Add a text slide to the service item.
-
-        ``frame_title``
-            The title of the slide in the service item.
 
         ``raw_slide``
             The raw text of the slide.
@@ -233,7 +230,7 @@ class ServiceItem(object):
         if verse_tag:
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
-        title = title.split(u'\n')[0]
+        title = raw_slide[:30].split(u'\n')[0]
         self._raw_frames.append(
             {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
