@@ -35,6 +35,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
     Receiver, create_thumb, validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -151,7 +152,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False):
-        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+        background = QtGui.QColor(Settings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
         if item:
             items = [item]
@@ -220,7 +221,7 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
-            background = QtGui.QColor(QtCore.QSettings().value(
+            background = QtGui.QColor(Settings().value(
                 self.settingsSection + u'/background color',
                 QtCore.QVariant(u'#000000')))
             item = self.listView.selectedIndexes()[0]

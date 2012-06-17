@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -101,7 +102,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         language = unicode(settings.value(
             u'general/language', QtCore.QVariant(u'[en]')).toString())
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
@@ -133,7 +134,7 @@ class LanguageManager(object):
                 language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        QtCore.QSettings().setValue(
+        Settings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:

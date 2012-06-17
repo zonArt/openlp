@@ -26,6 +26,8 @@
 ###############################################################################
 import logging
 
+from openlp.core.lib.settings import Settings
+
 from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
@@ -78,11 +80,11 @@ def get_media_players():
         Here an special media player is chosen for all media actions.
     """
     log.debug(u'get_media_players')
-    players = unicode(QtCore.QSettings().value(u'media/players').toString())
+    players = unicode(Settings().value(u'media/players').toString())
     if not players:
         players = u'webkit'
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
-    if QtCore.QSettings().value(u'media/override player',
+    if Settings().value(u'media/override player',
         QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
         if reg_ex.exactMatch(players):
             overridden_player = u'%s' % reg_ex.cap(1)
@@ -107,10 +109,10 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    if QtCore.QSettings().value(u'media/override player',
+    if Settings().value(u'media/override player',
         QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
         QtCore.Qt.Checked and overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
-    QtCore.QSettings().setValue(u'media/players', QtCore.QVariant(players))
+    Settings().setValue(u'media/players', QtCore.QVariant(players))
 
 from mediacontroller import MediaController

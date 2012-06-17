@@ -34,6 +34,7 @@ from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
     translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
+from openlp.core.lib.settings import Settings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -125,7 +126,7 @@ class SongUsagePlugin(Plugin):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
-        self.songUsageActive = QtCore.QSettings().value(
+        self.songUsageActive = Settings().value(
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         # Set the button and checkbox state
@@ -168,7 +169,7 @@ class SongUsagePlugin(Plugin):
         the UI when necessary,
         """
         self.songUsageActive = not self.songUsageActive
-        QtCore.QSettings().setValue(self.settingsSection + u'/active',
+        Settings().setValue(self.settingsSection + u'/active',
             QtCore.QVariant(self.songUsageActive))
         self.setButtonState()
 

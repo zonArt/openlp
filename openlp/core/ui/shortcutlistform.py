@@ -31,6 +31,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -337,7 +338,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Save the shortcuts. **Note**, that we do not have to load the shortcuts,
         as they are loaded in :class:`~openlp.core.utils.ActionList`.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'shortcuts')
         for category in self.action_list.categories:
             # Check if the category is for internal use only.

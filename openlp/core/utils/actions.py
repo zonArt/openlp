@@ -30,6 +30,8 @@ by the shortcuts system.
 """
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib.settings import Settings
+
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
@@ -226,7 +228,7 @@ class ActionList(object):
         else:
             self.categories[category].actions.add(action, weight)
         # Load the shortcut from the config.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'shortcuts')
         shortcuts = settings.value(action.objectName(),
             QtCore.QVariant(action.shortcuts())).toStringList()
