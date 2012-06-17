@@ -54,6 +54,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             The QWidget-derived parent of the wizard.
         """
         QtGui.QWizard.__init__(self, parent)
+        #FIXME: remove self.thememanager and use self.parent() instead.
         self.thememanager = parent
         self.setupUi(self)
         self.registerFields()

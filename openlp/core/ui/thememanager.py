@@ -138,13 +138,17 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Variables
+        #FIXME: convert to camelCase.
         self.theme_list = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)
         check_directory_exists(self.path)
+        #FIXME: convert to camelCase.
         self.thumb_path = os.path.join(self.path, u'thumbnails')
         check_directory_exists(self.thumb_path)
         self.themeForm.path = self.path
+        #FIXME: convert to camelCase.
         self.old_background_image = None
+        #FIXME: convert to camelCase.
         self.bad_v1_name_chars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
         self.configUpdated()
