@@ -210,12 +210,12 @@ class CustomMediaItem(MediaManagerItem):
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme
-        customXML = CustomXMLParser(customSlide.text)
-        verseList = customXML.get_verses()
-        raw_slides = [verse[1] for verse in verseList]
+        custom_xml = CustomXMLParser(customSlide.text)
+        verse_list = custom_xml.get_verses()
+        raw_slides = [verse[1] for verse in verse_list]
         service_item.title = title
         for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
+            service_item.add_from_text(slide)
         if Settings().value(self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool() or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))

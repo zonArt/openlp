@@ -193,6 +193,7 @@ class VerseType(object):
             return default
         return verse_index
 
+
 def retrieve_windows_encoding(recommendation=None):
     """
     Determines which encoding to use on an information source. The process uses
@@ -252,11 +253,13 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
+
 def clean_string(string):
     """
     Strips punctuation from the passed string to assist searching
     """
     return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
+
 
 def clean_title(title):
     """
@@ -264,6 +267,7 @@ def clean_title(title):
     as well as any trailing spaces
     """
     return CONTROL_CHARS.sub(u'', title).rstrip()
+
 
 def clean_song(manager, song):
     """
