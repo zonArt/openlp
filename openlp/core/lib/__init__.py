@@ -264,6 +264,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
     if image_ratio == resize_ratio:
         # We neither need to centre the image nor add "bars" to the image.
         return preview
+    #FIXME: change variables to real_width and real_height
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space

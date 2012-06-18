@@ -31,6 +31,7 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
+import os
 import time
 import Queue
 
@@ -96,19 +97,39 @@ class Priority(object):
 
 class Image(object):
     """
-    This class represents an image. To mark an image as *dirty* set the instance
-    variables ``image`` and ``image_bytes`` to ``None`` and add the image object
-    to the queue of images to process.
+    This class represents an image. To mark an image as *dirty* call the
+    :class:`ImageManager`'s ``_resetImage`` method with the Image instance as
+    argument.
     """
     secondary_priority = 0
+    
     def __init__(self, name, path, source, background):
+        """
+        Create an image for the :class:`ImageManager`'s cache.
+        
+        ``name``
+            The image name. This does not have to be part of the ``path``. It
+            can be of any value. It can be considered an ID.
+            
+        ``path``
+            The image's file path. This should be an existing file path.
+            
+        ``source``
+            The source describes the image's origin. Possible values are
+            ``image`` and ``theme``.
+            
+        ``background``
+            A ``QtGui.QColor`` object specifying the colour to be used to fill
+            the gabs if the image's ratio does not match with the display ratio.
+        """
         self.name = name
         self.path = path
         self.image = None
         self.image_bytes = None
-        self.priority = Priority.Normal
         self.source = source
         self.background = background
+        self.timestamp = os.stat(path).st_mtime
+        self.priority = Priority.Normal
         self.secondary_priority = Image.secondary_priority
         Image.secondary_priority += 1
 
@@ -117,7 +138,7 @@ class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
 
-    Each item in the queue must be tuple with three values. The first value
+    Each item in the queue must be a tuple with three values. The first value
     is the :class:`Image`'s ``priority`` attribute, the second value
     the :class:`Image`'s ``secondary_priority`` attribute. The last value the
     :class:`Image` instance itself::
@@ -186,7 +207,7 @@ class ImageManager(QtCore.QObject):
         for image in self._cache.values():
             self._resetImage(image)
 
-    def updateImages(self, imageType, background):
+    def updateImagesBorder(self, source, background):
         """
         Border has changed so update all the images affected.
         """
@@ -194,23 +215,27 @@ class ImageManager(QtCore.QObject):
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
         for image in self._cache.values():
-            if image.source == imageType:
+            if image.source == source:
                 image.background = background
                 self._resetImage(image)
 
-    def updateImage(self, name, imageType, background):
+    def updateImageBorder(self, name, source, background):
         """
         Border has changed so update the image affected.
         """
         log.debug(u'updateImage')
-        # Mark the images as dirty for a rebuild by setting the image and byte
+        # Mark the image as dirty for a rebuild by setting the image and byte
         # stream to None.
-        for image in self._cache.values():
-            if image.source == imageType and image.name == name:
-                image.background = background
-                self._resetImage(image)
+        image = self._cache[name]
+        if image.source == source:
+            image.background = background
+            self._resetImage(image)
 
     def _resetImage(self, image):
+        """
+        Mark the given :class:`Image` instance as dirt by setting its ``image``
+        and ``image_bytes`` attributes to None.
+        """
         image.image = None
         image.image_bytes = None
         self._conversionQueue.modify_priority(image, Priority.Normal)
@@ -281,6 +306,12 @@ class ImageManager(QtCore.QObject):
             self._conversionQueue.put(
                 (image.priority, image.secondary_priority, image))
         else:
+            image = self._cache[name]
+            if os.path.isfile(path) and \
+                image.timestamp != os.stat(path).st_mtime:
+                image.path = path
+                image.timestamp = os.stat(path).st_mtime
+                self._resetImage(image)
             log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
         if not self.imageThread.isRunning():
