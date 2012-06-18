@@ -286,15 +286,6 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return image.image_bytes
 
-    def deleteImage(self, name):
-        """
-        Delete the Image from the cache.
-        """
-        log.debug(u'deleteImage %s' % name)
-        if name in self._cache:
-            self._conversionQueue.remove(self._cache[name])
-            del self._cache[name]
-
     def addImage(self, name, path, source, background):
         """
         Add image to cache if it is not already there.

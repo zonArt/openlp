@@ -134,6 +134,7 @@ class Renderer(object):
         else:
             theme_data, main_rect, footer_rect = \
                 self._theme_dimensions[theme_name]
+        #FIXME: REMOVE deleteImage() call which will be added soon.
         # if No file do not update cache
         if theme_data.background_filename:
             self.image_manager.addImage(theme_data.theme_name,
@@ -236,7 +237,6 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            self.image_manager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
