@@ -26,7 +26,7 @@
 ###############################################################################
 
 import logging
-from lxml import objectify, etree
+from lxml import objectify
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
@@ -47,6 +47,12 @@ class OpenSongBible(BibleDB):
         self.filename = kwargs['filename']
 
     def get_text(self, element):
+        """
+        Recursively get all text in an objectify element and its child elements.
+
+        ``element``
+            An objectify element to get the text from
+        """
         verse_text = u''
         if element.text:
             verse_text = element.text
@@ -54,8 +60,7 @@ class OpenSongBible(BibleDB):
             verse_text += self.get_text(sub_element)
         if element.tail:
             verse_text += element.tail
-        return verse_text
-            
+        return verse_text   
 
     def do_import(self, bible_name=None):
         """
