@@ -114,7 +114,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(gettempdir(), u'openlp'))
+        check_directory_exists(os.path.join(uniocde(gettempdir()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.hasRunWizard = Settings().value(
