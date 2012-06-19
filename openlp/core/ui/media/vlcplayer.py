@@ -44,7 +44,7 @@ VLC_AVAILABLE = False
 try:
     import vlc
     VLC_AVAILABLE = bool(vlc.get_default_instance())
-except (ImportError, NameError):
+except (ImportError, NameError, NotImplementedError):
     pass
 except OSError, e:
     if sys.platform.startswith('win'):
