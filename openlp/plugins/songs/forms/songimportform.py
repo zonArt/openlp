@@ -159,6 +159,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.songShowPlusRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongShowPlusRemoveButtonClicked)
+        QtCore.QObject.connect(self.sundayPlusAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSundayPlusAddButtonClicked)
+        QtCore.QObject.connect(self.sundayPlusRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSundayPlusRemoveButtonClicked)
         QtCore.QObject.connect(self.foilPresenterAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onFoilPresenterAddButtonClicked)
@@ -215,6 +221,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'songShowPlus')
         # Songs of Fellowship
         self.addFileSelectItem(u'songsOfFellowship', None, True)
+        # Sunday Plus
+        self.addFileSelectItem(u'sundayPlus')
         # Words of Worship
         self.addFileSelectItem(u'wordsOfWorship')
 #        Commented out for future use.
@@ -258,6 +266,8 @@ class SongImportForm(OpenLPWizard):
             SongFormat.SongBeamer, WizardStrings.SB)
         self.formatComboBox.setItemText(
             SongFormat.SongShowPlus, WizardStrings.SSP)
+        self.formatComboBox.setItemText(
+            SongFormat.SundayPlus, WizardStrings.SP)
         self.formatComboBox.setItemText(
             SongFormat.SongsOfFellowship, WizardStrings.SoF)
         self.formatComboBox.setItemText(
@@ -320,6 +330,10 @@ class SongImportForm(OpenLPWizard):
         self.songShowPlusAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songShowPlusRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.sundayPlusAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.sundayPlusRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
         self.foilPresenterAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
@@ -636,6 +650,22 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.songShowPlusFileListWidget)
 
+    def onSundayPlusAddButtonClicked(self):
+        """
+        Get Sunday Plus song database files
+        """
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.SP,
+            self.sundayPlusFileListWidget, u'%s (*.ptf)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'Sunday Plus Song Files')
+        )
+
+    def onSundayPlusRemoveButtonClicked(self):
+        """
+        Remove selected Sunday Plus files from the import list
+        """
+        self.removeSelectedItems(self.sundayPlusFileListWidget)
+
     def onFoilPresenterAddButtonClicked(self):
         """
         Get FoilPresenter song database files
@@ -677,6 +707,7 @@ class SongImportForm(OpenLPWizard):
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
         self.songShowPlusFileListWidget.clear()
+        self.sundayPlusFileListWidget.clear()
         self.foilPresenterFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
         self.errorReportTextEdit.clear()
@@ -762,6 +793,11 @@ class SongImportForm(OpenLPWizard):
             # Import ShongShow Plus songs
             importer = self.plugin.importSongs(SongFormat.SongShowPlus,
                 filenames=self.getListOfFiles(self.songShowPlusFileListWidget)
+            )
+        elif source_format == SongFormat.SundayPlus:
+            # Import Sunday Plus songs
+            importer = self.plugin.importSongs(SongFormat.SundayPlus,
+                filenames=self.getListOfFiles(self.sundayPlusFileListWidget)
             )
         elif source_format == SongFormat.FoilPresenter:
             # Import Foilpresenter songs

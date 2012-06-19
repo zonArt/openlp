@@ -55,6 +55,7 @@ class WizardStrings(object):
     SB = u'SongBeamer'
     SoF = u'Songs of Fellowship'
     SSP = u'SongShow Plus'
+    SP = u'Sunday Plus'
     WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')

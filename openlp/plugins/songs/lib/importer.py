@@ -29,16 +29,17 @@ The :mod:`importer` modules provides the general song import functionality.
 """
 import logging
 
-from opensongimport import OpenSongImport
+from cclifileimport import CCLIFileImport
 from easyslidesimport import EasySlidesImport
+from foilpresenterimport import FoilPresenterImport
+from ewimport import EasyWorshipSongImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
-from wowimport import WowImport
-from cclifileimport import CCLIFileImport
-from ewimport import EasyWorshipSongImport
+from opensongimport import OpenSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
-from foilpresenterimport import FoilPresenterImport
+from sundayplusimport import SundayPlusImport
+from wowimport import WowImport
 # Imports that might fail
 log = logging.getLogger(__name__)
 try:
@@ -80,7 +81,8 @@ class SongFormat(object):
     SongBeamer = 9
     SongShowPlus = 10
     SongsOfFellowship = 11
-    WordsOfWorship = 12
+    SundayPlus = 12
+    WordsOfWorship = 13
     #CSV = 13
 
     @staticmethod
@@ -91,18 +93,12 @@ class SongFormat(object):
         ``format``
             The song format.
         """
-        if format == SongFormat.OpenLP2:
+        if format == SongFormat.OpenLyrics:
+            return OpenLyricsImport
+        elif format == SongFormat.OpenLP2:
             return OpenLPSongImport
         elif format == SongFormat.OpenLP1:
             return OpenLP1SongImport
-        elif format == SongFormat.OpenLyrics:
-            return OpenLyricsImport
-        elif format == SongFormat.OpenSong:
-            return OpenSongImport
-        elif format == SongFormat.SongsOfFellowship:
-            return SofImport
-        elif format == SongFormat.WordsOfWorship:
-            return WowImport
         elif format == SongFormat.Generic:
             return OooImport
         elif format == SongFormat.CCLI:
@@ -111,12 +107,20 @@ class SongFormat(object):
             return EasySlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
+        elif format == SongFormat.FoilPresenter:
+            return FoilPresenterImport
+        elif format == SongFormat.OpenSong:
+            return OpenSongImport
         elif format == SongFormat.SongBeamer:
             return SongBeamerImport
         elif format == SongFormat.SongShowPlus:
             return SongShowPlusImport
-        elif format == SongFormat.FoilPresenter:
-            return FoilPresenterImport
+        elif format == SongFormat.SongsOfFellowship:
+            return SofImport
+        elif format == SongFormat.SundayPlus:
+            return SundayPlusImport
+        elif format == SongFormat.WordsOfWorship:
+            return WowImport
         return None
 
     @staticmethod
@@ -137,6 +141,7 @@ class SongFormat(object):
             SongFormat.SongBeamer,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
+            SongFormat.SundayPlus,
             SongFormat.WordsOfWorship
         ]
 
