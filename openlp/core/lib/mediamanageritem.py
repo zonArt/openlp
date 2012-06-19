@@ -349,8 +349,9 @@ class MediaManagerItem(QtGui.QWidget):
         can run it.
 
         ``files``
-        The list of files to be loaded
+            The list of files to be loaded
         """
+        #FIXME: change local variables to words_separated_by_underscores.
         newFiles = []
         errorShown = False
         for file in files:
@@ -366,7 +367,7 @@ class MediaManagerItem(QtGui.QWidget):
                     errorShown = True
             else:
                 newFiles.append(file)
-        if file:
+        if files:
             self.validateAndLoad(newFiles)
 
     def validateAndLoad(self, files):
@@ -377,6 +378,7 @@ class MediaManagerItem(QtGui.QWidget):
         ``files``
             The files to be loaded.
         """
+        #FIXME: change local variables to words_separated_by_underscores.
         names = []
         fullList = []
         for count in range(self.listView.count()):
