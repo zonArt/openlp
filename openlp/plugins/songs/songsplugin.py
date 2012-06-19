@@ -233,7 +233,7 @@ class SongsPlugin(Plugin):
         new songs into the database.
         """
         self.onToolsReindexItemTriggered()
-        db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        db_dir = unicode(os.path.join(unicode(gettempdir()), u'openlp'))
         if not os.path.exists(db_dir):
             return
         song_dbs = []

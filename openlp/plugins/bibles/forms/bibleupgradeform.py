@@ -71,7 +71,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.temp_dir = os.path.join(gettempdir(), u'openlp')
+        self.temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
