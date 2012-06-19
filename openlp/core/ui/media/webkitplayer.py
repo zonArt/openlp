@@ -126,7 +126,7 @@ VIDEO_JS = u"""
                 vid.src = '';
                 vid2.src = '';
                 break;
-             case 'length':
+            case 'length':
                 return vid.duration;
             case 'currentTime':
                 return vid.currentTime;
@@ -134,6 +134,8 @@ VIDEO_JS = u"""
                 // doesnt work currently
                 vid.currentTime = varVal;
                 break;
+            case 'isEnded':
+                return vid.ended;
             case 'setVisible':
                 vid.style.visibility = varVal;
                 break;
@@ -211,6 +213,8 @@ FLASH_JS = u"""
             case 'seek':
 //                flashMovie.GotoFrame(varVal);
                 break;
+            case 'isEnded':
+                return false;//TODO check flash end
             case 'setVisible':
                 text.style.visibility = varVal;
                 break;
@@ -223,43 +227,45 @@ FLASH_HTML = u"""
 """
 
 VIDEO_EXT = [
-             u'*.3gp'
-            , u'*.3gpp'
-            , u'*.3g2'
-            , u'*.3gpp2'
-            , u'*.aac'
-            , u'*.flv'
-            , u'*.f4a'
-            , u'*.f4b'
-            , u'*.f4p'
-            , u'*.f4v'
-            , u'*.mov'
-            , u'*.m4a'
-            , u'*.m4b'
-            , u'*.m4p'
-            , u'*.m4v'
-            , u'*.mkv'
-            , u'*.mp4'
-            , u'*.ogv'
-            , u'*.webm'
-            , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
-            , u'*.swf'
-        ]
+        u'*.3gp'
+        , u'*.3gpp'
+        , u'*.3g2'
+        , u'*.3gpp2'
+        , u'*.aac'
+        , u'*.flv'
+        , u'*.f4a'
+        , u'*.f4b'
+        , u'*.f4p'
+        , u'*.f4v'
+        , u'*.mov'
+        , u'*.m4a'
+        , u'*.m4b'
+        , u'*.m4p'
+        , u'*.m4v'
+        , u'*.mkv'
+        , u'*.mp4'
+        , u'*.ogv'
+        , u'*.webm'
+        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+        , u'*.swf'
+    ]
 
-AUDIO_EXT =  [
-              u'*.mp3'
-            , u'*.ogg'
-        ]
+AUDIO_EXT = [
+        u'*.mp3'
+        , u'*.ogg'
+    ]
 
 
 class WebkitPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a QtWebKit 
+    A specialised version of the MediaPlayer class, which provides a QtWebKit
     display.
     """
 
     def __init__(self, parent):
         MediaPlayer.__init__(self, parent, u'webkit')
+        self.original_name = u'WebKit'
+        self.display_name = u'&WebKit'
         self.parent = parent
         self.canBackground = True
         self.audio_extensions_list = AUDIO_EXT
@@ -333,7 +339,7 @@ class WebkitPlayer(MediaPlayer):
         else:
             display.frame.evaluateJavaScript(u'show_video("play");')
         if start_time > 0:
-            self.seek(display, controller.media_info.start_time*1000)
+            self.seek(display, controller.media_info.start_time * 1000)
         # TODO add playing check and get the correct media length
         controller.media_info.length = length
         self.state = MediaState.Playing
@@ -354,7 +360,6 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_flash("stop");')
         else:
             display.frame.evaluateJavaScript(u'show_video("stop");')
-        controller.seekSlider.setSliderPosition(0)
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
@@ -370,11 +375,11 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seekVal
-            display.frame.evaluateJavaScript( \
+            display.frame.evaluateJavaScript(
                 u'show_flash("seek", null, null, "%s");' % (seek))
         else:
-            seek = float(seekVal)/1000
-            display.frame.evaluateJavaScript( \
+            seek = float(seekVal) / 1000
+            display.frame.evaluateJavaScript(
                 u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
@@ -401,21 +406,24 @@ class WebkitPlayer(MediaPlayer):
     def update_ui(self, display):
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript( \
+            currentTime = display.frame.evaluateJavaScript(
                 u'show_flash("currentTime");').toInt()[0]
-            length = display.frame.evaluateJavaScript( \
+            length = display.frame.evaluateJavaScript(
                 u'show_flash("length");').toInt()[0]
         else:
-            (currentTime, ok) = display.frame.evaluateJavaScript( \
+            if display.frame.evaluateJavaScript(
+                u'show_video("isEnded");').toString() == 'true':
+                self.stop(display)
+            (currentTime, ok) = display.frame.evaluateJavaScript(
                 u'show_video("currentTime");').toFloat()
             # check if conversion was ok and value is not 'NaN'
             if ok and currentTime != float('inf'):
-                currentTime = int(currentTime*1000)
-            (length, ok) = display.frame.evaluateJavaScript( \
+                currentTime = int(currentTime * 1000)
+            (length, ok) = display.frame.evaluateJavaScript(
                 u'show_video("length");').toFloat()
             # check if conversion was ok and value is not 'NaN'
             if ok and length != float('inf'):
-                length = int(length*1000)
+                length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length
             controller.seekSlider.setMaximum(length)

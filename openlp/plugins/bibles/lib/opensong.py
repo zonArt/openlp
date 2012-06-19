@@ -46,6 +46,22 @@ class OpenSongBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
 
+    def get_text(self, element):
+        """
+        Recursively get all text in an objectify element and its child elements.
+
+        ``element``
+            An objectify element to get the text from
+        """
+        verse_text = u''
+        if element.text:
+            verse_text = element.text
+        for sub_element in element.iterchildren():
+            verse_text += self.get_text(sub_element)
+        if element.tail:
+            verse_text += element.tail
+        return verse_text   
+
     def do_import(self, bible_name=None):
         """
         Loads a Bible from file.
@@ -77,7 +93,7 @@ class OpenSongBible(BibleDB):
                         'failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(unicode(book.attrib[u'n']), 
+                db_book = self.create_book(unicode(book.attrib[u'n']),
                     book_ref_id, book_details[u'testament_id'])
                 for chapter in book.c:
                     if self.stop_import_flag:
@@ -89,7 +105,7 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
-                            unicode(verse.text))
+                            unicode(self.get_text(verse)))
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) %

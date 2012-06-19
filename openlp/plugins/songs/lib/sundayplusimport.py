@@ -150,7 +150,7 @@ class SundayPlusImport(SongImport):
                             verse_type = self.hotkey_to_verse_type[value]
                     if name == 'rtf':
                         value = self.unescape(value)
-                        verse = strip_rtf(value, self.encoding).strip()
+                        verse = self.strip_rtf(value, self.encoding).strip()
                         lines = verse.split('\n')
                         for i in xrange(len(lines)):
                             lines[i] = lines[i].strip()

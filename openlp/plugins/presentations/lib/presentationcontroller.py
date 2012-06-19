@@ -33,6 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
     validate_thumb
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -392,7 +393,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if QtCore.QSettings().value(
+        if Settings().value(
             self.settings_section + u'/' + self.name,
             QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
                 QtCore.Qt.Checked:

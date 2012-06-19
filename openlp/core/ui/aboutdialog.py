@@ -25,10 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, create_button, create_button_box
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -71,21 +71,13 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.buttonBox = QtGui.QDialogButtonBox(aboutDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.contributeButton = QtGui.QPushButton()
-        self.contributeButton.setIcon(
-            build_icon(u':/system/system_contribute.png'))
-        self.contributeButton.setObjectName(u'contributeButton')
-        self.buttonBox.addButton(self.contributeButton,
-            QtGui.QDialogButtonBox.ActionRole)
+        self.contributeButton = create_button(None, u'contributeButton',
+            icon=u':/system/system_contribute.png')
+        self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
+            [u'close'], [self.contributeButton])
         self.aboutDialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            aboutDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
         aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)

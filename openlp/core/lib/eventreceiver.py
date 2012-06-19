@@ -111,7 +111,7 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay.
-        
+
     ``slidecontroller_update_slide_limits``
         Updates the slide_limits variable from the saved settings.
 
@@ -217,6 +217,9 @@ class EventReceiver(QtCore.QObject):
         Ask the plugin to process an individual service item after it has been
         loaded.
 
+    ``{plugin}_config_updated``
+        The config has changed so tell the plugin about it.
+
     ``alerts_text``
         Displays an alert message.
 
@@ -265,7 +268,7 @@ class Receiver(object):
             <<ACTION>>
         )``
     """
-    eventreceiver = EventReceiver()
+    __eventreceiver__ = EventReceiver()
 
     @staticmethod
     def send_message(event, msg=None):
@@ -278,11 +281,11 @@ class Receiver(object):
         ``msg``
             Defaults to *None*. The message to send with the event.
         """
-        Receiver.eventreceiver.send_message(event, msg)
+        Receiver.__eventreceiver__.send_message(event, msg)
 
     @staticmethod
     def get_receiver():
         """
-        Get the global ``eventreceiver`` instance.
+        Get the global ``__eventreceiver__`` instance.
         """
-        return Receiver.eventreceiver
+        return Receiver.__eventreceiver__

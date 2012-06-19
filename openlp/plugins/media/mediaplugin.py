@@ -30,6 +30,7 @@ import logging
 from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.settings import Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -41,8 +42,8 @@ class MediaPlugin(Plugin):
         Plugin.__init__(self, u'media', plugin_helpers,
             MediaMediaItem)
         self.weight = -6
-        self.icon_path = u':/plugins/plugin_media.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.iconPath)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.audio_extensions_list = \
@@ -59,8 +60,8 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'],
-            self.mediaController.mediaPlayers, self.icon_path)
+        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
+            self.mediaController.mediaPlayers, self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -126,7 +127,7 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')
@@ -142,6 +143,6 @@ class MediaPlugin(Plugin):
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
                 settings.setValue(u'players', \
                     QtCore.QVariant(u','.join(new_players)))
-                self.settings_tab.load()
+                self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

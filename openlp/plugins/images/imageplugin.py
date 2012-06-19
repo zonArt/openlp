@@ -31,6 +31,7 @@ import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
+from openlp.core.lib.settings import Settings
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -42,8 +43,8 @@ class ImagePlugin(Plugin):
         Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
             ImageTab)
         self.weight = -7
-        self.icon_path = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.icon_path)
+        self.iconPath = u':/plugins/plugin_images.png'
+        self.icon = build_icon(self.iconPath)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'image_updated'), self.image_updated)
 
@@ -94,6 +95,6 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+        background = QtGui.QColor(Settings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
-        self.liveController.imageManager.update_images(u'image', background)
+        self.liveController.imageManager.updateImages(u'image', background)

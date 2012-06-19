@@ -28,6 +28,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib.settings import Settings
 
 class ImageTab(SettingsTab):
     """
@@ -53,6 +54,7 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.colorLayout)
         self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
         self.informationLabel.setObjectName(u'InformationLabel')
+        self.informationLabel.setWordWrap(True)
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
@@ -61,7 +63,7 @@ class ImageTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onbackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(
@@ -69,8 +71,8 @@ class ImageTab(SettingsTab):
         self.backgroundColorLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Provides border where image '
-            'is not the correct dimensions for the screen when resized.'))
+            translate('ImagesPlugin.ImageTab', 'Visible background for images '
+            'with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -81,7 +83,7 @@ class ImageTab(SettingsTab):
                 u'background-color: %s' % self.bg_color)
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.bg_color = unicode(settings.value(
             u'background color', QtCore.QVariant(u'#000000')).toString())
@@ -91,7 +93,7 @@ class ImageTab(SettingsTab):
             u'background-color: %s' % self.bg_color)
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.endGroup()

@@ -41,6 +41,7 @@ from traceback import format_exception
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -49,7 +50,7 @@ from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
-    get_application_version, DelayStartThread
+    get_application_version
 
 
 __all__ = [u'OpenLP', u'main']
@@ -91,6 +92,7 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
+        self.eventLoopIsActive = True
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
@@ -98,6 +100,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
+        self.eventLoopIsActive = False
         # On Windows, the args passed into the constructor are
         # ignored. Not very handy, so set the ones we want to use.
         self.args.extend(args)
@@ -109,17 +112,17 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
-        screens = ScreenList(self.desktop())
+        screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = QtCore.QSettings().value(
+        has_run_wizard = Settings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                QtCore.QSettings().setValue(u'general/has run wizard',
+                Settings().setValue(u'general/has run wizard',
                     QtCore.QVariant(True))
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        show_splash = QtCore.QSettings().value(
+        show_splash = Settings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
             self.splash = SplashScreen()
@@ -127,7 +130,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow = MainWindow(self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -139,13 +142,12 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.mainWindow.firstTime()
-        update_check = QtCore.QSettings().value(
+        update_check = Settings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
         self.mainWindow.appStartup()
-        DelayStartThread(self.mainWindow).start()
         # Skip exec_() for gui tests
         if not testing:
             return self.exec_()
@@ -257,7 +259,28 @@ def main(args=None):
     app = OpenLP(qt_args)
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
-    app.setApplicationName(u'OpenLP')
+    if options.portable:
+        log.info(u'Running portable')
+        app.setApplicationName(u'OpenLPPortable')
+        Settings.setDefaultFormat(Settings.IniFormat)
+        # Get location OpenLPPortable.ini
+        app_path = AppLocation.get_directory(AppLocation.AppDir)
+        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Data', u'OpenLP.ini'))
+        # Make this our settings file
+        log.info(u'INI file: %s', portable_settings_file)
+        Settings.setFilename(portable_settings_file)
+        portable_settings = Settings()
+        # Set our data path
+        data_path = os.path.abspath(os.path.join(app_path,
+            u'..', u'..', u'Data',))
+        log.info(u'Data path: %s', data_path)
+        # Point to our data path
+        portable_settings.setValue(u'advanced/data path', data_path)
+        portable_settings.setValue(u'advanced/is portable', True)
+        portable_settings.sync()
+    else:
+        app.setApplicationName(u'OpenLP')
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:
@@ -265,7 +288,7 @@ def main(args=None):
         if app.isAlreadyRunning():
             sys.exit()
     # First time checks in settings
-    if not QtCore.QSettings().value(u'general/has run wizard',
+    if not Settings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing

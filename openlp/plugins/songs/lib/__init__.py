@@ -29,6 +29,7 @@ import re
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
+from openlp.core.utils import CONTROL_CHARS
 from db import Author
 from ui import SongStrings
 
@@ -192,6 +193,7 @@ class VerseType(object):
             return default
         return verse_index
 
+
 def retrieve_windows_encoding(recommendation=None):
     """
     Determines which encoding to use on an information source. The process uses
@@ -251,11 +253,21 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
+
 def clean_string(string):
     """
     Strips punctuation from the passed string to assist searching
     """
     return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
+
+
+def clean_title(title):
+    """
+    Cleans the song title by removing Unicode control chars groups C0 & C1,
+    as well as any trailing spaces
+    """
+    return CONTROL_CHARS.sub(u'', title).rstrip()
+
 
 def clean_song(manager, song):
     """
@@ -275,10 +287,14 @@ def clean_song(manager, song):
         song.alternate_title = unicode(song.alternate_title)
     if isinstance(song.lyrics, buffer):
         song.lyrics = unicode(song.lyrics)
-    song.title = song.title.rstrip() if song.title else u''
-    if song.alternate_title is None:
+    if song.title:
+        song.title = clean_title(song.title)
+    else:
+        song.title = u''
+    if song.alternate_title:
+        song.alternate_title = clean_title(song.alternate_title)
+    else:
         song.alternate_title = u''
-    song.alternate_title = song.alternate_title.strip()
     song.search_title = clean_string(song.title) + u'@' + \
         clean_string(song.alternate_title)
     # Only do this, if we the song is a 1.9.4 song (or older).
@@ -304,7 +320,7 @@ def clean_song(manager, song):
                 verse_type,
                 verse[0][u'label'],
                 verse[1],
-                verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+                verse[0].get(u'lang')
             )
             compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
                 ).upper())
@@ -314,7 +330,7 @@ def clean_song(manager, song):
         # Rebuild the verse order, to convert translated verse tags, which might
         # have been added prior to 1.9.5.
         if song.verse_order:
-            order = song.verse_order.strip().split()
+            order = CONTROL_CHARS.sub(u'', song.verse_order).strip().split()
         else:
             order = []
         new_order = []
@@ -346,6 +362,8 @@ def clean_song(manager, song):
             author = Author.populate(
                 display_name=name, last_name=u'', first_name=u'')
         song.authors.append(author)
+    if song.copyright:
+        song.copyright = CONTROL_CHARS.sub(u'', song.copyright).strip()
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab

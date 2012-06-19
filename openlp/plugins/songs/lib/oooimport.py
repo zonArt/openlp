@@ -142,7 +142,6 @@ class OooImport(SongImport):
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
-                process.waitForStarted()
             self.processStarted = True
         except:
             log.exception("startOooProcess failed")

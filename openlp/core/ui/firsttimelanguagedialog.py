@@ -25,10 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_FirstTimeLanguageDialog(object):
     def setupUi(self, languageDialog):
@@ -52,12 +52,12 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)
-        self.buttonBox = create_accept_reject_button_box(languageDialog, True)
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
+            [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)
         self.setMaximumHeight(self.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(languageDialog)
 
     def retranslateUi(self, languageDialog):
         self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm',

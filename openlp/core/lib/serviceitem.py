@@ -158,19 +158,24 @@ class ServiceItem(object):
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self, use_override=False):
+    def render(self, provides_own_theme_data=False):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderer. At this point all
         slides are built for the given display size.
+
+        ``provides_own_theme_data``
+            This switch disables the usage of the item's theme. However, this is
+            disabled by default. If this is used, it has to be taken care, that
+            the renderer knows the correct theme data. However, this is needed
+            for the theme manager.
         """
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        theme = self.theme if self.theme else None
-        self.main, self.footer = \
-            self.renderer.set_override_theme(theme, use_override)
-        self.themedata = self.renderer.theme_data
+        if not provides_own_theme_data:
+            self.renderer.set_item_theme(self.theme)
+            self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
@@ -195,8 +200,7 @@ class ServiceItem(object):
         # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
-        self.foot_text = \
-            u'<br>'.join([footer for footer in self.raw_footer if footer])
+        self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
 
     def add_from_image(self, path, title, background=None):
         """
@@ -212,16 +216,13 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.imageManager.add_image(title, path, u'image',
+        self.renderer.image_manager.addImage(title, path, u'image',
             self.image_border)
         self._new_item()
 
-    def add_from_text(self, title, raw_slide, verse_tag=None):
+    def add_from_text(self, raw_slide, verse_tag=None):
         """
         Add a text slide to the service item.
-
-        ``frame_title``
-            The title of the slide in the service item.
 
         ``raw_slide``
             The raw text of the slide.
@@ -229,7 +230,7 @@ class ServiceItem(object):
         if verse_tag:
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
-        title = title.split(u'\n')[0]
+        title = raw_slide[:30].split(u'\n')[0]
         self._raw_frames.append(
             {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
@@ -300,6 +301,7 @@ class ServiceItem(object):
         ``path``
             Defaults to *None*. Any path data, usually for images.
         """
+        log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
         self.title = header[u'title']
         self.name = header[u'name']
@@ -313,19 +315,17 @@ class ServiceItem(object):
         self.from_plugin = header[u'from_plugin']
         self.capabilities = header[u'capabilities']
         # Added later so may not be present in older services.
-        if u'search' in header:
-            self.search_string = header[u'search']
-            self.data_string = header[u'data']
-        if u'xml_version' in header:
-            self.xml_version = header[u'xml_version']
-        if u'start_time' in header:
-            self.start_time = header[u'start_time']
-        if u'end_time' in header:
-            self.end_time = header[u'end_time']
-        if u'media_length' in header:
-            self.media_length = header[u'media_length']
+        self.search_string = header.get(u'search', u'')
+        self.data_string = header.get(u'data', u'')
+        self.xml_version = header.get(u'xml_version')
+        self.start_time = header.get(u'start_time', 0)
+        self.end_time = header.get(u'end_time', 0)
+        self.media_length = header.get(u'media_length', 0)
         if u'background_audio' in header:
-            self.background_audio = header[u'background_audio']
+            self.background_audio = []
+            for filename in header[u'background_audio']:
+                # Give them real file paths
+                self.background_audio.append(os.path.join(path, filename))
         self.theme_overwritten = header.get(u'theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:

@@ -33,13 +33,15 @@ from urllib import quote_plus as urlquote
 
 from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
-from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
+    OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -178,7 +180,7 @@ class Manager(object):
             The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
@@ -199,6 +201,10 @@ class Manager(object):
                 urlquote(unicode(settings.value(u'db password').toString())),
                 urlquote(unicode(settings.value(u'db hostname').toString())),
                 urlquote(unicode(settings.value(u'db database').toString())))
+            if db_type == u'mysql':
+                db_encoding = unicode(
+                    settings.value(u'db encoding', u'utf8').toString())
+                self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
@@ -233,16 +239,30 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        try:
-            self.session.add(object_instance)
-            if commit:
-                self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Object save failed')
-            return False
+        for try_count in range(3):
+            try:
+                self.session.add(object_instance)
+                if commit:
+                    self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Object list save failed')
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def save_objects(self, object_list, commit=True):
         """
@@ -254,16 +274,30 @@ class Manager(object):
         ``commit``
             Commit the session with this object
         """
-        try:
-            self.session.add_all(object_list)
-            if commit:
-                self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Object list save failed')
-            return False
+        for try_count in range(3):
+            try:
+                self.session.add_all(object_list)
+                if commit:
+                    self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Object list save failed')
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def get_object(self, object_class, key=None):
         """
@@ -278,7 +312,18 @@ class Manager(object):
         if not key:
             return object_class()
         else:
-            return self.session.query(object_class).get(key)
+            for try_count in range(3):
+                try:
+                    return self.session.query(object_class).get(key)
+                except OperationalError:
+                    # This exception clause is for users running MySQL which likes
+                    # to terminate connections on its own without telling anyone.
+                    # See bug #927473
+                    # However, other dbms can raise it, usually in a non-recoverable
+                    # way. So we only retry 3 times.
+                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    if try_count >= 2:
+                        raise
 
     def get_object_filtered(self, object_class, filter_clause):
         """
@@ -290,7 +335,18 @@ class Manager(object):
         ``filter_clause``
             The criteria to select the object by
         """
-        return self.session.query(object_class).filter(filter_clause).first()
+        for try_count in range(3):
+            try:
+                return self.session.query(object_class).filter(filter_clause).first()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def get_all_objects(self, object_class, filter_clause=None,
         order_by_ref=None):
@@ -311,10 +367,21 @@ class Manager(object):
         if filter_clause is not None:
             query = query.filter(filter_clause)
         if isinstance(order_by_ref, list):
-            return query.order_by(*order_by_ref).all()
+            query = query.order_by(*order_by_ref)
         elif order_by_ref is not None:
-            return query.order_by(order_by_ref).all()
-        return query.all()
+            query = query.order_by(order_by_ref)
+        for try_count in range(3):
+            try:
+                return query.all()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def get_object_count(self, object_class, filter_clause=None):
         """
@@ -330,7 +397,18 @@ class Manager(object):
         query = self.session.query(object_class)
         if filter_clause is not None:
             query = query.filter(filter_clause)
-        return query.count()
+        for try_count in range(3):
+            try:
+                return query.count()
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                if try_count >= 2:
+                    raise
 
     def delete_object(self, object_class, key):
         """
@@ -344,15 +422,29 @@ class Manager(object):
         """
         if key != 0:
             object_instance = self.get_object(object_class, key)
-            try:
-                self.session.delete(object_instance)
-                self.session.commit()
-                self.is_dirty = True
-                return True
-            except InvalidRequestError:
-                self.session.rollback()
-                log.exception(u'Failed to delete object')
-                return False
+            for try_count in range(3):
+                try:
+                    self.session.delete(object_instance)
+                    self.session.commit()
+                    self.is_dirty = True
+                    return True
+                except OperationalError:
+                    # This exception clause is for users running MySQL which likes
+                    # to terminate connections on its own without telling anyone.
+                    # See bug #927473
+                    # However, other dbms can raise it, usually in a non-recoverable
+                    # way. So we only retry 3 times.
+                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    self.session.rollback()
+                    if try_count >= 2:
+                        raise
+                except InvalidRequestError:
+                    self.session.rollback()
+                    log.exception(u'Failed to delete object')
+                    return False
+                except:
+                    self.session.rollback()
+                    raise
         else:
             return True
 
@@ -370,18 +462,32 @@ class Manager(object):
             The filter governing selection of objects to return. Defaults to
             None.
         """
-        try:
-            query = self.session.query(object_class)
-            if filter_clause is not None:
-                query = query.filter(filter_clause)
-            query.delete(synchronize_session=False)
-            self.session.commit()
-            self.is_dirty = True
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Failed to delete %s records', object_class.__name__)
-            return False
+        for try_count in range(3):
+            try:
+                query = self.session.query(object_class)
+                if filter_clause is not None:
+                    query = query.filter(filter_clause)
+                query.delete(synchronize_session=False)
+                self.session.commit()
+                self.is_dirty = True
+                return True
+            except OperationalError:
+                # This exception clause is for users running MySQL which likes
+                # to terminate connections on its own without telling anyone.
+                # See bug #927473
+                # However, other dbms can raise it, usually in a non-recoverable
+                # way. So we only retry 3 times.
+                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                self.session.rollback()
+                if try_count >= 2:
+                    raise
+            except InvalidRequestError:
+                self.session.rollback()
+                log.exception(u'Failed to delete %s records', object_class.__name__)
+                return False
+            except:
+                self.session.rollback()
+                raise
 
     def finalise(self):
         """

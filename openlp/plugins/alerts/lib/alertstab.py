@@ -29,7 +29,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.ui import AlertLocation
-from openlp.core.lib.ui import UiStrings, create_valign_combo
+from openlp.core.lib.ui import UiStrings, create_valign_selection_widgets
+from openlp.core.lib.settings import Settings
 
 class AlertsTab(SettingsTab):
     """
@@ -76,7 +77,11 @@ class AlertsTab(SettingsTab):
         self.timeoutSpinBox.setMaximum(180)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.fontLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
-        create_valign_combo(self, self.fontGroupBox, self.fontLayout)
+        self.verticalLabel, self.verticalComboBox = \
+            create_valign_selection_widgets(self.fontGroupBox)
+        self.verticalLabel.setObjectName(u'verticalLabel')
+        self.verticalComboBox.setObjectName(u'verticalComboBox')
+        self.fontLayout.addRow(self.verticalLabel, self.verticalComboBox)
         self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
         self.previewGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -90,9 +95,9 @@ class AlertsTab(SettingsTab):
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.fontColorButton,
-            QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.fontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
         QtCore.QObject.connect(self.timeoutSpinBox,
@@ -148,7 +153,7 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
         self.font_color = unicode(settings.value(
@@ -176,7 +181,7 @@ class AlertsTab(SettingsTab):
         self.changed = False
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         # Check value has changed as no event handles this field
         if settings.value(u'location', QtCore.QVariant(1)).toInt()[0] != \

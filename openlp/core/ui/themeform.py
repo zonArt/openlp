@@ -136,16 +136,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.backgroundPage.registerField(
             u'background_type', self.backgroundComboBox)
-        self.backgroundPage.registerField(
-            u'color', self.colorButton)
+        self.backgroundPage.registerField(u'color', self.colorButton)
         self.backgroundPage.registerField(
             u'grandient_start', self.gradientStartButton)
         self.backgroundPage.registerField(
             u'grandient_end', self.gradientEndButton)
         self.backgroundPage.registerField(
             u'background_image', self.imageFileEdit)
-        self.backgroundPage.registerField(
-            u'gradient', self.gradientComboBox)
+        self.backgroundPage.registerField(u'gradient', self.gradientComboBox)
         self.mainAreaPage.registerField(
             u'mainColorButton', self.mainColorButton)
         self.mainAreaPage.registerField(
@@ -158,8 +156,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'outlineColorButton', self.outlineColorButton)
         self.mainAreaPage.registerField(
             u'outlineSizeSpinBox', self.outlineSizeSpinBox)
-        self.mainAreaPage.registerField(
-            u'shadowCheckBox', self.shadowCheckBox)
+        self.mainAreaPage.registerField(u'shadowCheckBox', self.shadowCheckBox)
         self.mainAreaPage.registerField(
             u'mainBoldCheckBox', self.mainBoldCheckBox)
         self.mainAreaPage.registerField(
@@ -170,10 +167,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'shadowSizeSpinBox', self.shadowSizeSpinBox)
         self.mainAreaPage.registerField(
             u'footerSizeSpinBox', self.footerSizeSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionX', self.mainXSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionY', self.mainYSpinBox)
+        self.areaPositionPage.registerField(u'mainPositionX', self.mainXSpinBox)
+        self.areaPositionPage.registerField(u'mainPositionY', self.mainYSpinBox)
         self.areaPositionPage.registerField(
             u'mainPositionWidth', self.mainWidthSpinBox)
         self.areaPositionPage.registerField(
@@ -188,12 +183,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'footerPositionHeight', self.footerHeightSpinBox)
         self.backgroundPage.registerField(
             u'horizontal', self.horizontalComboBox)
-        self.backgroundPage.registerField(
-            u'vertical', self.verticalComboBox)
+        self.backgroundPage.registerField(u'vertical', self.verticalComboBox)
         self.backgroundPage.registerField(
             u'slideTransition', self.transitionsCheckBox)
-        self.backgroundPage.registerField(
-            u'name', self.themeNameEdit)
+        self.backgroundPage.registerField(u'name', self.themeNameEdit)
 
     def calculateLines(self):
         """
@@ -269,10 +262,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Change state as Outline check box changed
         """
         if self.updateThemeAllowed:
-            if state == QtCore.Qt.Checked:
-                self.theme.font_main_outline = True
-            else:
-                self.theme.font_main_outline = False
+            self.theme.font_main_outline = state == QtCore.Qt.Checked
             self.outlineColorButton.setEnabled(self.theme.font_main_outline)
             self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
             self.calculateLines()
@@ -350,19 +340,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
             self.colorButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_color)
+                self.theme.background_color)
             self.setField(u'background_type', QtCore.QVariant(0))
         elif self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Gradient):
             self.gradientStartButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_start_color)
+                self.theme.background_start_color)
             self.gradientEndButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_end_color)
+                self.theme.background_end_color)
             self.setField(u'background_type', QtCore.QVariant(1))
         elif self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
             self.imageColorButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_border_color)
+                self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
             self.setField(u'background_type', QtCore.QVariant(2))
         elif self.theme.background_type == \
@@ -608,7 +598,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def accept(self):
         """
-        Lets save the theme as Finish has been pressed
+        Lets save the theme as Finish has been triggered
         """
         # Save the theme name
         self.theme.theme_name = unicode(self.field(u'name').toString())
@@ -642,8 +632,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Handle Color buttons
         """
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(field), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(field), self)
         if new_color.isValid():
             field = new_color.name()
         return field

@@ -44,19 +44,9 @@ class WizardStrings(object):
     # Applications/Formats we import from or export to. These get used in
     # multiple places but do not need translating unless you find evidence of
     # the writers translating their own product name.
-    CCLI = u'CCLI/SongSelect'
     CSV = u'CSV'
-    EW = u'EasyWorship'
-    ES = u'EasySlides'
-    FP = u'Foilpresenter'
-    OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
-    SB = u'SongBeamer'
-    SoF = u'Songs of Fellowship'
-    SSP = u'SongShow Plus'
-    SP = u'Sunday Plus'
-    WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
@@ -71,11 +61,16 @@ class WizardStrings(object):
         'importer, you will need to install the "python-sqlite" '
         'module.')
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    OpenTypeFolder = unicode(translate('OpenLP.Ui', 'Open %s Folder'))
     PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
+    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify one '
+        '%s file to import from.', 'A file type e.g. OpenSong'))
+    YouSpecifyFiles = unicode(translate('OpenLP.Ui', 'You need to specify at '
         'least one %s file to import from.', 'A file type e.g. OpenSong'))
+    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify one '
+        '%s folder to import from.', 'A song format e.g. PowerSong'))
 
 
 class OpenLPWizard(QtGui.QWizard):
@@ -104,7 +99,7 @@ class OpenLPWizard(QtGui.QWizard):
 
     def setupUi(self, image):
         """
-        Set up the wizard UI
+        Set up the wizard UI.
         """
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
@@ -115,7 +110,6 @@ class OpenLPWizard(QtGui.QWizard):
         self.addCustomPages()
         self.addProgressPage()
         self.retranslateUi()
-        QtCore.QMetaObject.connectSlotsByName(self)
 
     def registerFields(self):
         """
@@ -254,7 +248,7 @@ class OpenLPWizard(QtGui.QWizard):
             The title of the dialog (unicode).
 
         ``editbox``
-            A editbox (QLineEdit).
+            An editbox (QLineEdit).
 
         ``filters``
             The file extension filters. It should contain the file description
@@ -265,11 +259,28 @@ class OpenLPWizard(QtGui.QWizard):
         if filters:
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+        filename = unicode(QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            self.plugin.settingsSection, 1)), filters))
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
                 filename, 1)
 
+    def getFolder(self, title, editbox):
+        """
+        Opens a QFileDialog and saves the selected folder to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            An editbox (QLineEdit).
+        """
+        folder = unicode(QtGui.QFileDialog.getExistingDirectory(self, title,
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)), QtGui.QFileDialog.ShowDirsOnly))
+        if folder:
+            editbox.setText(folder)
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
+                folder, 1)

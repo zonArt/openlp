@@ -25,10 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import create_button_box
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, authorsDialog):
@@ -57,11 +57,11 @@ class Ui_AuthorsDialog(object):
         self.displayLabel.setBuddy(self.displayEdit)
         self.authorLayout.addRow(self.displayLabel, self.displayEdit)
         self.dialogLayout.addLayout(self.authorLayout)
-        self.dialogLayout.addWidget(
-            create_accept_reject_button_box(authorsDialog))
+        self.buttonBox = create_button_box(authorsDialog, u'buttonBox',
+            [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(authorsDialog)
         authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(authorsDialog)
 
     def retranslateUi(self, authorsDialog):
         authorsDialog.setWindowTitle(

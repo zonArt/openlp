@@ -32,6 +32,7 @@ import logging
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -155,9 +156,9 @@ class Plugin(QtCore.QObject):
             self.version = get_application_version()[u'version']
         self.settingsSection = self.name
         self.icon = None
-        self.media_item_class = media_item_class
-        self.settings_tab_class = settings_tab_class
-        self.settings_tab = None
+        self.mediaItemClass = media_item_class
+        self.settingsTabClass = settings_tab_class
+        self.settingsTab = None
         self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
@@ -166,13 +167,16 @@ class Plugin(QtCore.QObject):
         self.renderer = plugin_helpers[u'renderer']
         self.serviceManager = plugin_helpers[u'service']
         self.settingsForm = plugin_helpers[u'settings form']
-        self.mediadock = plugin_helpers[u'toolbox']
+        self.mediaDock = plugin_helpers[u'toolbox']
         self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formparent = plugin_helpers[u'formparent']
+        self.formParent = plugin_helpers[u'formparent']
         self.mediaController = plugin_helpers[u'mediacontroller']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_config_updated' % self.name),
+            self.configUpdated)
 
     def checkPreConditions(self):
         """
@@ -187,7 +191,7 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = QtCore.QSettings().value(
+        self.status = Settings().value(
             self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
@@ -196,7 +200,7 @@ class Plugin(QtCore.QObject):
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        QtCore.QSettings().setValue(
+        Settings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
         if new_status == PluginStatus.Active:
             self.initialise()
@@ -216,8 +220,8 @@ class Plugin(QtCore.QObject):
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into OpenLP.
         """
-        if self.media_item_class:
-            self.mediaItem = self.media_item_class(self.mediadock.media_dock,
+        if self.mediaItemClass:
+            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock,
                 self, self.icon)
 
     def addImportMenuItem(self, importMenu):
@@ -252,10 +256,10 @@ class Plugin(QtCore.QObject):
         Create a tab for the settings window to display the configurable options
         for this plugin to the user.
         """
-        if self.settings_tab_class:
-            self.settings_tab = self.settings_tab_class(parent, self.name,
+        if self.settingsTabClass:
+            self.settingsTab = self.settingsTabClass(parent, self.name,
                 self.getString(StringContent.VisibleName)[u'title'],
-                self.icon_path)
+                self.iconPath)
 
     def addToMenu(self, menubar):
         """
@@ -291,14 +295,14 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
+            self.mediaDock.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
         if self.mediaItem:
-            self.mediadock.remove_dock(self.mediaItem)
+            self.mediaDock.remove_dock(self.mediaItem)
 
     def appStartup(self):
         """
@@ -395,3 +399,9 @@ class Plugin(QtCore.QObject):
         Add html code to htmlbuilder.
         """
         return u''
+
+    def configUpdated(self):
+        """
+        The plugin's config has changed
+        """
+        pass

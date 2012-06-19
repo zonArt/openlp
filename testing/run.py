@@ -34,7 +34,7 @@ simply run this script::
 
 """
 
-import os.path
+import os
 import sys
 
 TESTS_PATH = os.path.dirname(os.path.abspath(__file__))

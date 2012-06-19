@@ -35,15 +35,15 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus
-from openlp.core.lib.ui import UiStrings, context_menu_action, \
-    context_menu_separator
+    translate, check_item_selected, PluginStatus, create_separated_list
+from openlp.core.lib.ui import UiStrings, create_widget_action
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
     clean_string
-from openlp.plugins.songs.lib.db import Author, Song, MediaFile
+from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
@@ -56,7 +56,8 @@ class SongSearch(object):
     Titles = 2
     Lyrics = 3
     Authors = 4
-    Themes = 5
+    Books = 5
+    Themes = 6
 
 
 class SongMediaItem(MediaManagerItem):
@@ -68,7 +69,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.editSongForm = EditSongForm(self, self.plugin.formparent,
+        self.editSongForm = EditSongForm(self, self.plugin.formParent,
             self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
@@ -98,10 +99,11 @@ class SongMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(song, True)
 
     def addEndHeaderBar(self):
-        self.addToolbarSeparator()
+        self.toolbar.addSeparator()
         ## Song Maintenance Button ##
-        self.maintenanceAction = self.addToolbarButton(u'', u'',
-            ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
+        self.maintenanceAction = self.toolbar.addToolbarAction(
+            u'maintenanceAction', icon=':/songs/song_maintenance.png',
+            triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -118,26 +120,25 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self.onSearchTextButtonClick)
+            self.onSearchTextButtonClicked)
 
     def addCustomContextActions(self):
-        context_menu_separator(self.listView)
-        context_menu_action(
-            self.listView, u':/general/general_clone.png',
-            translate('OpenLP.MediaManagerItem',
-            '&Clone'), self.onCloneClick)
+        create_widget_action(self.listView, separator=True)
+        create_widget_action(self.listView,
+            text=translate('OpenLP.MediaManagerItem', '&Clone'),
+            icon=u':/general/general_clone.png', triggers=self.onCloneClick)
 
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = QtCore.QSettings().value(
+        self.searchAsYouType = Settings().value(
             self.settingsSection + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
-        self.updateServiceOnEdit = QtCore.QSettings().value(
+        self.updateServiceOnEdit = Settings().value(
             self.settingsSection + u'/update service on edit',
             QtCore.QVariant(u'False')).toBool()
-        self.addSongFromService = QtCore.QSettings().value(
+        self.addSongFromService = Settings().value(
             self.settingsSection + u'/add song from service',
             QtCore.QVariant(u'True')).toBool()
 
@@ -151,23 +152,31 @@ class SongMediaItem(MediaManagerItem):
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
             (SongSearch.Entire, u':/songs/song_search_all.png',
-                translate('SongsPlugin.MediaItem', 'Entire Song')),
+                translate('SongsPlugin.MediaItem', 'Entire Song'),
+                translate('SongsPlugin.MediaItem', 'Search Entire Song...')),
             (SongSearch.Titles, u':/songs/song_search_title.png',
-                translate('SongsPlugin.MediaItem', 'Titles')),
+                translate('SongsPlugin.MediaItem', 'Titles'),
+                translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (SongSearch.Lyrics, u':/songs/song_search_lyrics.png',
-                translate('SongsPlugin.MediaItem', 'Lyrics')),
+                translate('SongsPlugin.MediaItem', 'Lyrics'),
+                translate('SongsPlugin.MediaItem', 'Search Lyrics...')),
             (SongSearch.Authors, u':/songs/song_search_author.png',
-                SongStrings.Authors),
-            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes)
+                SongStrings.Authors,
+                translate('SongsPlugin.MediaItem', 'Search Authors...')),
+            (SongSearch.Books, u':/songs/song_book_edit.png',
+                SongStrings.SongBooks,
+                translate('SongsPlugin.MediaItem', 'Search Song Books...')),
+            (SongSearch.Themes, u':/slides/slide_theme.png',
+            UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
-    def onSearchTextButtonClick(self):
+    def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
+        Settings().setValue(u'%s/last search type' %
             self.settingsSection,
             QtCore.QVariant(self.searchTextEdit.currentSearchType()))
         # Reload the list considering the new search type.
@@ -196,6 +205,19 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == SongSearch.Books:
+            log.debug(u'Books Search')
+            search_results = self.plugin.manager.get_all_objects(Book,
+                Book.name.like(u'%' + search_keywords + u'%'),
+                Book.name.asc())
+            song_number = False
+            if not search_results:
+                search_keywords = search_keywords.rpartition(' ')
+                search_results = self.plugin.manager.get_all_objects(Book,
+                    Book.name.like(u'%' + search_keywords[0] + u'%'),
+                    Book.name.asc())
+                song_number = re.sub(r'[^0-9]', u'', search_keywords[2])
+            self.displayResultsBook(search_results, song_number)
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(Song,
@@ -230,7 +252,7 @@ class SongMediaItem(MediaManagerItem):
             item = self.buildServiceItem(self.editItem)
             self.plugin.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
         log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
@@ -247,7 +269,8 @@ class SongMediaItem(MediaManagerItem):
                 continue
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
-            song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
+            song_detail = u'%s (%s)' % (song_title,
+                create_separated_list(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
@@ -269,12 +292,30 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
 
+    def displayResultsBook(self, searchresults, song_number=False):
+        log.debug(u'display results Book')
+        self.listView.clear()
+        for book in searchresults:
+            songs = sorted(book.songs, key=lambda song:
+                int(re.match(r'[0-9]+', u'0' + song.song_number).group()))
+            for song in songs:
+                # Do not display temporary songs
+                if song.temporary:
+                    continue
+                if song_number and not song_number in song.song_number:
+                    continue
+                song_detail = u'%s - %s (%s)' % (book.name, song.song_number,
+                    song.title)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                self.listView.addItem(song_name)
+
     def onClearTextButtonClick(self):
         """
         Clear the search text.
         """
         self.searchTextEdit.clear()
-        self.onSearchTextButtonClick()
+        self.onSearchTextButtonClicked()
 
     def onSearchTextEditChanged(self, text):
         """
@@ -289,8 +330,8 @@ class SongMediaItem(MediaManagerItem):
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
                 search_length = 3
             if len(text) > search_length:
-                self.onSearchTextButtonClick()
-            elif len(text) == 0:
+                self.onSearchTextButtonClicked()
+            elif not text:
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
@@ -367,6 +408,8 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
+            Receiver.send_message(u'cursor_busy')
+            self.plugin.formParent.displayProgressBar(len(items))
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
                 media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -385,7 +428,10 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-            self.onSearchTextButtonClick()
+                self.plugin.formParent.incrementProgressBar()
+            self.plugin.formParent.finishedProgressBar()
+            Receiver.send_message(u'cursor_normal')
+            self.onSearchTextButtonClicked()
 
     def onCloneClick(self):
         """
@@ -419,14 +465,14 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            verseList = SongXML().get_verses(song.lyrics)
+            verse_list = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             verse_tags_translated = False
             if VerseType.from_translated_string(unicode(
-                verseList[0][0][u'type'])) is not None:
+                verse_list[0][0][u'type'])) is not None:
                 verse_tags_translated = True
             if not song.verse_order.strip():
-                for verse in verseList:
+                for verse in verse_list:
                     # We cannot use from_loose_input() here, because database
                     # is supposed to contain English lowercase singlechar tags.
                     verse_tag = verse[0][u'type']
@@ -440,14 +486,13 @@ class SongMediaItem(MediaManagerItem):
                         verse_index = VerseType.from_tag(verse_tag)
                     verse_tag = VerseType.TranslatedTags[verse_index].upper()
                     verse_def = u'%s%s' % (verse_tag, verse[0][u'label'])
-                    service_item.add_from_text(
-                        verse[1][:30], unicode(verse[1]), verse_def)
+                    service_item.add_from_text(unicode(verse[1]), verse_def)
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
-                    if len(order) == 0:
+                    if not order:
                         break
-                    for verse in verseList:
+                    for verse in verse_list:
                         if verse[0][u'type'][0].lower() == order[0] and \
                             (verse[0][u'label'].lower() == order[1:] or \
                             not order[1:]):
@@ -460,22 +505,21 @@ class SongMediaItem(MediaManagerItem):
                             verse_tag = VerseType.TranslatedTags[verse_index]
                             verse_def = u'%s%s' % (verse_tag,
                                 verse[0][u'label'])
-                            service_item.add_from_text(
-                                verse[1][:30], verse[1], verse_def)
+                            service_item.add_from_text(verse[1], verse_def)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
-                service_item.add_from_text(slide[:30], unicode(slide))
+                service_item.add_from_text(unicode(slide))
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
         service_item.raw_footer.append(song.title)
-        service_item.raw_footer.append(u', '.join(author_list))
+        service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if QtCore.QSettings().value(u'general/ccli number',
+        if Settings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
             service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                QtCore.QSettings().value(u'general/ccli number',
+                Settings().value(u'general/ccli number',
                 QtCore.QVariant(u'')).toString()))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
@@ -484,7 +528,7 @@ class SongMediaItem(MediaManagerItem):
             u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         # Add the audio file to the service item.
-        if len(song.media_files) > 0:
+        if song.media_files:
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
             service_item.background_audio = \
                 [m.file_name for m in song.media_files]
@@ -529,20 +573,20 @@ class SongMediaItem(MediaManagerItem):
                     editId = song.id
                     break
                 # If there's any backing tracks, copy them over.
-                if len(item.background_audio) > 0:
+                if item.background_audio:
                     self._updateBackgroundAudio(song, item)
         if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
-            self.onSearchTextButtonClick()
+            self.onSearchTextButtonClicked()
         elif add_song and not self.addSongFromService:
             # Make sure we temporary import formatting tags.
             song = self.openLyrics.xml_to_song(item.xml_version, True)
             # If there's any backing tracks, copy them over.
-            if len(item.background_audio) > 0:
+            if item.background_audio:
                 self._updateBackgroundAudio(song, item)
             editId = song.id
             temporary = True
@@ -551,7 +595,7 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'service_item_update',
                 u'%s:%s:%s' % (editId, item._uuid, temporary))
 
-    def search(self, string):
+    def search(self, string, showError):
         """
         Search for some songs
         """

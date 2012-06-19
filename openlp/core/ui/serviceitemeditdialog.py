@@ -25,11 +25,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box, \
-    create_delete_push_button, create_up_down_push_button_set
+from openlp.core.lib.ui import create_button_box, create_button
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
@@ -44,18 +43,22 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addWidget(self.listWidget, 0, 0)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = create_delete_push_button(serviceItemEditDialog)
+        self.deleteButton = create_button(serviceItemEditDialog,
+            u'deleteButton', role=u'delete',
+            click=serviceItemEditDialog.onDeleteButtonClicked)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton, self.downButton = create_up_down_push_button_set(
-            serviceItemEditDialog)
+        self.upButton = create_button(serviceItemEditDialog, u'upButton',
+            role=u'up', click=serviceItemEditDialog.onUpButtonClicked)
+        self.downButton = create_button(serviceItemEditDialog, u'downButton',
+            role=u'down', click=serviceItemEditDialog.onDownButtonClicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.dialogLayout.addWidget(
-            create_accept_reject_button_box(serviceItemEditDialog), 1, 0, 1, 2)
+        self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox',
+            [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setWindowTitle(
