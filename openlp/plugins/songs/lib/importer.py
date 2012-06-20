@@ -280,10 +280,10 @@ class SongFormat(object):
         },
         SundayPlus: {
             u'class': SundayPlusImport,
-            u'name': u'Sunday Plus',
+            u'name': u'SundayPlus',
             u'prefix': u'sundayPlus',
             u'filter': u'%s (*.ptf)' % translate(
-                'SongsPlugin.ImportWizardForm', 'Sunday Plus Song Files')
+                'SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
             u'class': WowImport,
