@@ -34,8 +34,6 @@ from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.wizard import WizardStrings
 from opensongimport import OpenSongImport
 from easyslidesimport import EasySlidesImport
-from foilpresenterimport import FoilPresenterImport
-from ewimport import EasyWorshipSongImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
