@@ -28,13 +28,10 @@
 import logging
 import re
 
-from lxml import objectify
-from lxml.etree import Error, LxmlError
 from os.path import split
 
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
