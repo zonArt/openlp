@@ -304,15 +304,15 @@ class SundayPlusImport(SongImport):
             'ansicpg1258': u'cp1258'}
         charsets = charset_mapping.keys()
         # Character encoding is defined together with fonts.
-        # font_table could contain eg 'f0': 'cp1252'
-        font_table = {'default': encoding}
+        # font_table could contain eg '0': 'cp1252'
+        font_table = {}
         stack = []
         # Whether this group (and all inside it) are "ignorable".
         ignorable = False
-        # Inside font table
+        # Whether we are inside the font table.
         inside_font_table = False
         current_font = ''
-        # Number of ASCII characters to skip after a unicode character.
+        # Number of ASCII characters to skip after an unicode character.
         ucskip = 1
         # Number of ASCII characters left to skip.
         curskip = 0
@@ -324,10 +324,10 @@ class SundayPlusImport(SongImport):
                 curskip = 0
                 if brace == u'{':
                     # Push state
-                    stack.append((ucskip, ignorable))
+                    stack.append((ucskip, ignorable, inside_font_table))
                 elif brace == u'}':
                     # Pop state
-                    ucskip, ignorable = stack.pop()
+                    ucskip, ignorable, inside_font_table = stack.pop()
             # \x (not a letter)
             elif char:
                 curskip = 0
@@ -356,20 +356,16 @@ class SundayPlusImport(SongImport):
                     curskip = ucskip
                 elif word == 'fonttbl':
                     inside_font_table = True
+                    ignorable = True
                 elif word == 'f':
-                    if inside_font_table:
-                        font_table[current_font] = font_table['default']
-                    else:
+                    current_font = arg
+                    if not inside_font_table:
                         encoding = font_table[arg]
-                elif word in charsets:
+                elif word in ('ansicpg', 'fcharset'):
                     if inside_font_table:
-                        font_table[current_font] = charset_mapping[word]
+                        font_table[current_font] = charset_mapping[word + arg]
                     else:
-                        font_table['default'] = charset_mapping[word]
-                elif inside_font_table:
-                    pass
-                elif ignorable:
-                    pass
+                        encoding = charset_mapping[word + arg]
             # \'xx
             elif hex:
                 if curskip > 0:
