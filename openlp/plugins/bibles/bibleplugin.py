@@ -63,8 +63,7 @@ class BiblePlugin(Plugin):
         #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        if self.manager.old_bible_databases:
-            self.toolsUpgradeItem.setVisible(True)
+        self.toolsUpgradeItem.setVisible(bool(self.manager.old_bible_databases))
 
     def finalise(self):
         """

@@ -418,7 +418,7 @@ class BibleMediaItem(MediaManagerItem):
 
         ``bible``
             The bible to initialise (unicode).
-        
+
         ``last_book_id``
             The "book reference id" of the book which is choosen at the moment.
             (int)
@@ -976,7 +976,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.theme = self.settings.bible_theme
         for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
+            service_item.add_from_text(slide)
         return True
 
     def formatTitle(self, start_bitem, old_bitem):

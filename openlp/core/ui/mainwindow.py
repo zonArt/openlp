@@ -1216,6 +1216,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display:
             self.liveController.display.close()
             self.liveController.display = None
+        # Allow the main process to exit
+        self.application = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
