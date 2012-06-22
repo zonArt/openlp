@@ -40,7 +40,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
     check_directory_exists
 from openlp.core.lib.settings import Settings
-from openlp.core.utils import get_web_page, AppLocation
+from openlp.core.utils import get_web_page, AppLocation, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
-                os.path.join(unicode(gettempdir()), u'openlp', screenshot))
+                os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -114,7 +114,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(unicode(gettempdir()), u'openlp'))
+        check_directory_exists(os.path.join(
+            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.hasRunWizard = Settings().value(
@@ -303,8 +304,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(index)
                 if item.data(QtCore.Qt.UserRole) == QtCore.QVariant(filename):
                     break
-            item.setIcon(build_icon(
-                os.path.join(unicode(gettempdir()), u'openlp', screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
+                get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
@@ -425,7 +426,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         if self.webAccess:
             # Build directories for downloads
-            songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
+            songs_destination = os.path.join(
+                unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
             bibles_destination = AppLocation.get_section_data_path(u'bibles')
             themes_destination = AppLocation.get_section_data_path(u'themes')
             # Download songs
