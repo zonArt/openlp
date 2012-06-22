@@ -64,7 +64,8 @@ class ThemeScreenshotThread(QtCore.QThread):
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
-                os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', screenshot))
+                os.path.join(unicode(gettempdir(), get_filesystem_encoding()),
+                u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
             item.setCheckState(QtCore.Qt.Unchecked)
