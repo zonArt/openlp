@@ -44,6 +44,7 @@ from powersongimport import PowerSongImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
+from songproimport import SongProImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
 # Imports that might fail
@@ -143,11 +144,11 @@ class SongFormat(object):
     OpenSong = 9
     PowerSong = 10
     SongBeamer = 11
-    SongShowPlus = 12
-    SongsOfFellowship = 13
-    WordsOfWorship = 14
-    ZionWorx = 15
-    #CSV = 16
+    SongPro = 12
+    SongShowPlus = 13
+    SongsOfFellowship = 14
+    WordsOfWorship = 15
+    ZionWorx = 16
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -258,6 +259,18 @@ class SongFormat(object):
             u'filter': u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
                 'SongBeamer Files')
         },
+        SongPro: {
+            u'class': SongProImport,
+            u'name': u'SongPro',
+            u'prefix': u'songPro',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm',
+                'SongPro Text Files'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
+                'SongPro (Export File)'),
+            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
+                'In SongPro, export your songs using the File -> Export menu')
+        },
         SongShowPlus: {
             u'class': SongShowPlusImport,
             u'name': u'SongShow Plus',
@@ -293,12 +306,6 @@ class SongFormat(object):
                 'First convert your ZionWorx database to a CSV text file, as '
                 'explained in the <a href="http://manual.openlp.org/songs.html'
                 '#importing-from-zionworx">User Manual</a>.')
-#        },
-#        CSV: {
-#            u'class': CSVImport,
-#            u'name': WizardStrings.CSV,
-#            u'prefix': u'csv',
-#            u'selectMode': SongFormatSelect.SingleFile
         }
     }
 
@@ -320,6 +327,7 @@ class SongFormat(object):
             SongFormat.OpenSong,
             SongFormat.PowerSong,
             SongFormat.SongBeamer,
+            SongFormat.SongPro,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
             SongFormat.WordsOfWorship,
