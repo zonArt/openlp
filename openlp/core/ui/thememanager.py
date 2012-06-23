@@ -197,6 +197,11 @@ class ThemeManager(QtGui.QWidget):
             return
         real_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
         theme_name = unicode(item.text())
+        # FIXME: Shorten code.
+#        visible = real_theme_name == theme_name:
+#        self.deleteAction.setVisible(visible)
+#        self.renameAction.setVisible(visible)
+#        self.globalAction.setVisible(visible)
         self.deleteAction.setVisible(False)
         self.renameAction.setVisible(False)
         self.globalAction.setVisible(False)
@@ -336,6 +341,7 @@ class ThemeManager(QtGui.QWidget):
                 self.old_background_image = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
+            self.mainwindow.imageManager.deleteImage(theme.theme_name)
             self.old_background_image = None
             self.mainwindow.renderer.update_theme(theme.theme_name)
 
@@ -483,7 +489,8 @@ class ThemeManager(QtGui.QWidget):
                 else:
                     icon = create_thumb(theme, thumb)
                 item_name.setIcon(icon)
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(text_name))
+                item_name.setData(
+                    QtCore.Qt.UserRole, QtCore.QVariant(text_name))
                 self.themeListWidget.addItem(item_name)
                 self.theme_list.append(text_name)
         self._pushThemes()
@@ -512,7 +519,7 @@ class ThemeManager(QtGui.QWidget):
             unicode(theme_name) + u'.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
-            log.debug("No theme data - using default theme")
+            log.debug(u'No theme data - using default theme')
             return ThemeXML()
         else:
             return self._createThemeFromXml(xml, self.path)
@@ -550,8 +557,9 @@ class ThemeManager(QtGui.QWidget):
             xml_tree = ElementTree(element=XML(zip.read(xml_file[0]))).getroot()
             v1_background = xml_tree.find(u'BackgroundType')
             if v1_background is not None:
-                theme_name, file_xml, out_file, abort_import = self.unzipVersion122(dir, zip,
-                    xml_file[0], xml_tree, v1_background, out_file)
+                theme_name, file_xml, out_file, abort_import = \
+                    self.unzipVersion122(
+                    dir, zip, xml_file[0], xml_tree, v1_background, out_file)
             else:
                 theme_name = xml_tree.find(u'name').text.strip()
                 theme_folder = os.path.join(dir, theme_name)
@@ -604,8 +612,8 @@ class ThemeManager(QtGui.QWidget):
                 if file_xml:
                     theme = self._createThemeFromXml(file_xml, self.path)
                     self.generateAndSaveImage(dir, theme_name, theme)
-                # Only show the error message, when IOError was not raised (in this
-                # case the error message has already been shown).
+                # Only show the error message, when IOError was not raised (in
+                # this case the error message has already been shown).
                 elif zip is not None:
                     critical_error_message_box(
                         translate('OpenLP.ThemeManager', 'Validation Error'),
@@ -614,7 +622,8 @@ class ThemeManager(QtGui.QWidget):
                     log.exception(u'Theme file does not contain XML data %s' %
                         file_name)
 
-    def unzipVersion122(self, dir, zip, xml_file, xml_tree, background, out_file):
+    def unzipVersion122(self, dir, zip, xml_file, xml_tree, background,
+        out_file):
         """
         Unzip openlp.org 1.2x theme file and upgrade the theme xml. When calling
         this method, please keep in mind, that some parameters are redundant.

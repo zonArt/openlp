@@ -134,7 +134,6 @@ class Renderer(object):
         else:
             theme_data, main_rect, footer_rect = \
                 self._theme_dimensions[theme_name]
-        self.image_manager.deleteImage(theme_data.theme_name)
         # if No file do not update cache
         if theme_data.background_filename:
             self.image_manager.addImage(theme_data.theme_name,
