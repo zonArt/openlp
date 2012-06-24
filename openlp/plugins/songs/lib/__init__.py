@@ -378,10 +378,10 @@ class StripRtf():
     Thanks to Markus Jarderot (MizardX) for this code, used by permission.
     http://stackoverflow.com/questions/188545
     """
-    pattern = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
+    PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
         r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
     # Control words which specify a "destination" to be ignored.
-    destinations = frozenset((
+    DESTINATIONS = frozenset((
         u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor', 
         u'atndate', u'atnicn', u'atnid', u'atnparent', u'atnref', u'atntime',
         u'atrfend', u'atrfstart', u'author', u'background', u'bkmkend',
@@ -438,7 +438,7 @@ class StripRtf():
         u'writereservhash', u'xe', u'xform', u'xmlattrname', u'xmlattrvalue',
         u'xmlclose', u'xmlname', u'xmlnstbl', u'xmlopen'))
     # Translation of some special characters.
-    specialchars = {
+    SPECIALCHARS = {
         u'par': u'\n',
         u'sect': u'\n\n',
         u'page': u'\n\n',
@@ -454,7 +454,7 @@ class StripRtf():
         u'rquote': u'\u2019',
         u'ldblquote': u'\u201C',
         u'rdblquote': u'\u201D'}
-    charset_mapping = {
+    CHARSET_MAPPING = {
         u'fcharset0': u'cp1252',
         u'fcharset1': None,
         u'fcharset2': None,
@@ -492,7 +492,7 @@ class StripRtf():
         curskip = 0
         # Output buffer.
         out = []
-        for match in self.pattern.finditer(text):
+        for match in self.PATTERN.finditer(text):
             word, arg, hex, char, brace, tchar = match.groups()
             if brace:
                 curskip = 0
@@ -516,10 +516,10 @@ class StripRtf():
             # \command
             elif word:
                 curskip = 0
-                if word in self.destinations:
+                if word in self.DESTINATIONS:
                     ignorable = True
-                elif word in self.specialchars:
-                    out.append(self.specialchars[word])
+                elif word in self.SPECIALCHARS:
+                    out.append(self.SPECIALCHARS[word])
                 elif word == u'uc':
                     ucskip = int(arg)
                 elif word == u' ':
@@ -540,23 +540,21 @@ class StripRtf():
                             encoding = default_encoding
                 elif word == u'ansicpg':
                     if font == u'':
-                        print "JEEEPASOIDFIJAD"
                     if inside_font_table or font == u'':
                         font_table[font] = 'cp' + arg
                 elif word == u'fcharset':
                     charset_reference = word + arg
-                    if charset_reference in self.charset_mapping:
-                        charset = self.charset_mapping[charset_reference]
+                    if charset_reference in self.CHARSET_MAPPING:
+                        charset = self.CHARSET_MAPPING[charset_reference]
                         if not charset:
                             charset = default_encoding
                     else:
-                        log.error(u"Charset '%s' not in charset_mapping "
+                        log.error(u"Charset '%s' not in CHARSET_MAPPING "
                             u"dictionary in "
                             u"openlp/plugins/songs/lib/__init__.py"
                             % charset_reference)
                         charset = default_encoding
                     if font == u'':
-                        print "JEEEPASOIDFIadsfJAD"
                     if inside_font_table or font == u'':
                         font_table[font] = charset
             # \'xx
