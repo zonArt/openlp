@@ -61,11 +61,11 @@ class SundayPlusImport(SongImport):
         Initialise the class.
         """
         SongImport.__init__(self, manager, **kwargs)
+        self.encoding = u'us-ascii'
         self.rtf = StripRtf()
 
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
-        self.encoding = 'us-ascii'
         for filename in self.importSource:
             if self.stopImportFlag:
                 return
@@ -81,12 +81,12 @@ class SundayPlusImport(SongImport):
         if not self.parse(file.read()):
             self.logError(file.name)
             return
-        if self.title == '':
+        if not self.title:
             self.title = self.titleFromFilename(file.name)
         if not self.finish():
             self.logError(file.name)
 
-    def parse(self, data, cell = False):
+    def parse(self, data, cell=False):
         if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
             self.logError(u'File is malformed')
             return False
@@ -94,7 +94,7 @@ class SundayPlusImport(SongImport):
         verse_type = VerseType.Tags[VerseType.Verse]
         while i < len(data):
             # Data is held as #name: value pairs inside groups marked as [].
-            # Now we are looking for name.
+            # Now we are looking for the name.
             if data[i:i+1] == '#':
                 name_end = data.find(':', i+1)
                 name = data[i+1:name_end]
@@ -179,7 +179,7 @@ class SundayPlusImport(SongImport):
         if title.endswith(u'.ptf'):
             title = title[:-4]
         # For some strange reason all example files names ended with 1-7.
-        if title.endswith('1-7'):
+        if title.endswith(u'1-7'):
             title = title[:-3]
         return title.replace(u'_', u' ')
 
@@ -189,8 +189,13 @@ class SundayPlusImport(SongImport):
                 return unicode(blob, self.encoding)
             except:
                 # This is asked again every time the previously chosen
-                # encoding does not work.
-                self.encoding = retrieve_windows_encoding()
+                # encoding does not work. Integrated with StripRtf encoding.
+                if len(self.rtf.user_encoding) and \
+                    self.encoding != self.rtf.user_encoding[-1]:
+                    self.encoding = self.rtf.user_encoding[-1]
+                else:
+                    self.encoding = retrieve_windows_encoding()
+                    self.rtf.user_encoding.append(self.encoding)
 
     def unescape(self, text):
         text = text.replace('^^', '"')
