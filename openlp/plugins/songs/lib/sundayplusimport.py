@@ -42,7 +42,7 @@ class SundayPlusImport(SongImport):
     The format examples can be found attached to bug report at
     <http://support.openlp.org/issues/395>
     """
-    HOTKEYTOVERSETYPE = {
+    HOTKEY_TO_VERSE_TYPE = {
         u'1': u'v1',
         u'2': u'v2',
         u'3': u'v3',
@@ -147,8 +147,8 @@ class SundayPlusImport(SongImport):
                         # Hotkey always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
                         if len(value) and \
-                            value in self.HOTKEYTOVERSETYPE.keys():
-                            verse_type = self.HOTKEYTOVERSETYPE[value]
+                            value in self.HOTKEY_TO_VERSE_TYPE.keys():
+                            verse_type = self.HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
                         verse = self.rtf.strip_rtf(value, self.encoding)

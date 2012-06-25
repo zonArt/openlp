@@ -435,7 +435,7 @@ class StripRtf():
         u'writereservhash', u'xe', u'xform', u'xmlattrname', u'xmlattrvalue',
         u'xmlclose', u'xmlname', u'xmlnstbl', u'xmlopen'))
     # Translation of some special characters.
-    SPECIALCHARS = {
+    SPECIAL_CHARS = {
         u'par': u'\n',
         u'sect': u'\n\n',
         # Required page and column break.
@@ -520,8 +520,8 @@ class StripRtf():
                 curskip = 0
                 if word in self.DESTINATIONS:
                     ignorable = True
-                elif word in self.SPECIALCHARS:
-                    out.append(self.SPECIALCHARS[word])
+                elif word in self.SPECIAL_CHARS:
+                    out.append(self.SPECIAL_CHARS[word])
                 elif word == u'uc':
                     ucskip = int(arg)
                 elif word == u' ':
