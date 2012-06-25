@@ -463,14 +463,6 @@ class StripRtf():
         u'zwnj': u'\u200C'}
     CHARSET_MAPPING = {
         u'fcharset0': u'cp1252',
-        u'fcharset1': None,
-        u'fcharset2': None,
-        u'fcharset77': None,
-        u'fcharset128': None,
-        u'fcharset129': None,
-        u'fcharset130': None,
-        u'fcharset134': None,
-        u'fcharset136': None,
         u'fcharset161': u'cp1253',
         u'fcharset162': u'cp1254',
         u'fcharset163': u'cp1258',
@@ -545,19 +537,10 @@ class StripRtf():
                     font = arg
                 elif word == u'ansicpg':
                     font_table[font] = 'cp' + arg
-                elif word == u'fcharset':
-                    charset_reference = word + arg
-                    if charset_reference in self.CHARSET_MAPPING:
-                        charset = self.CHARSET_MAPPING[charset_reference]
-                    else:
-                        charset = None
-                        log.error(u"Charset '%s' not in CHARSET_MAPPING "
-                            u"dictionary in "
-                            u"openlp/plugins/songs/lib/__init__.py"
-                            % charset_reference)
-                    # This makes ansicpg always override fcharset if present.
-                    if font not in font_table:
-                        font_table[font] = charset
+                elif word == u'fcharset' and font not in font_table and \
+                    word + arg in self.CHARSET_MAPPING:
+                    # \ansicpg overrides \fcharset, if present.
+                    font_table[font] = self.CHARSET_MAPPING[word + arg]
             # \'xx
             elif hex:
                 if curskip > 0:
