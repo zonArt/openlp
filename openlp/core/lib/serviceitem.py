@@ -178,7 +178,7 @@ class ServiceItem(object):
             self.renderer.set_item_theme(self.theme)
             self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
-            log.debug(u'Formatting slides')
+            log.debug(u'Formatting slides: ' + self.title)
             for slide in self._raw_frames:
                 pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                 for page in pages:

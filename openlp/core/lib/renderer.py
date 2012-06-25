@@ -82,6 +82,7 @@ class Renderer(object):
         self._calculate_default()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        self.web = None
 
     def update_display(self):
         """
@@ -397,6 +398,10 @@ class Renderer(object):
             The footer text block.
         """
         log.debug(u'_set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        if not self.web:
+            self.web = QtWebKit.QWebView()
+            self.web.setVisible(False)
+            self.web_frame = self.web.page().mainFrame()
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -404,10 +409,7 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
-        self.web = QtWebKit.QWebView()
-        self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
-        self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
