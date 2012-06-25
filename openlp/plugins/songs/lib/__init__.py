@@ -473,15 +473,16 @@ class StripRtf():
         u'fcharset204': u'cp1251',
         u'fcharset222': u'cp874',
         u'fcharset238': u'cp1250'}
+    # If user is asked for an encoding, it is used since then.
+    user_encoding = []
 
     def strip_rtf(self, text, default_encoding=None):
+        self.default_encoding = default_encoding
         # Current font is the font tag we last met.
         font = u''
         # Character encoding is defined inside fonttable.
         # font_table could contain eg u'0': u'cp1252'
         font_table = {u'': default_encoding}
-        # Whether we are inside the font table.
-        inside_font_table = False
         # Stack of things to keep track of when entering/leaving groups.
         stack = []
         # Whether this group (and all inside it) are "ignorable".
@@ -498,10 +499,10 @@ class StripRtf():
                 curskip = 0
                 if brace == u'{':
                     # Push state
-                    stack.append((ucskip, ignorable, font, inside_font_table))
+                    stack.append((ucskip, ignorable, font))
                 elif brace == u'}':
                     # Pop state
-                    ucskip, ignorable, font, inside_font_table = stack.pop()
+                    ucskip, ignorable, font = stack.pop()
             # \x (not a letter)
             elif char:
                 curskip = 0
@@ -533,29 +534,19 @@ class StripRtf():
                     ignorable = True
                 elif word == u'f':
                     font = arg
-                    if not inside_font_table:
-                        if arg in font_table.keys():
-                            encoding = font_table[arg]
-                        else:
-                            encoding = default_encoding
                 elif word == u'ansicpg':
-                    if font == u'':
-                    if inside_font_table or font == u'':
-                        font_table[font] = 'cp' + arg
+                    font_table[font] = 'cp' + arg
                 elif word == u'fcharset':
                     charset_reference = word + arg
                     if charset_reference in self.CHARSET_MAPPING:
                         charset = self.CHARSET_MAPPING[charset_reference]
-                        if not charset:
-                            charset = default_encoding
                     else:
+                        charset = None
                         log.error(u"Charset '%s' not in CHARSET_MAPPING "
                             u"dictionary in "
                             u"openlp/plugins/songs/lib/__init__.py"
                             % charset_reference)
-                        charset = default_encoding
-                    if font == u'':
-                    if inside_font_table or font == u'':
+                    if font not in font_table:
                         font_table[font] = charset
             # \'xx
             elif hex:
@@ -563,14 +554,13 @@ class StripRtf():
                     curskip -= 1
                 elif not ignorable:
                     charcode = int(hex, 16)
+                    encoding = self.get_encoding(font, font_table)
                     while True:
                         try:
                             out.append(chr(charcode).decode(encoding))
                         except UnicodeDecodeError:
-                            encoding = \
-                                retrieve_windows_encoding(default_encoding)
-                            if font:
-                                font_table[font] = encoding
+                            encoding = self.get_encoding(font, font_table,
+                                failed=True)
                         else:
                             break
             elif tchar:
@@ -579,6 +569,23 @@ class StripRtf():
                 elif not ignorable:
                     out.append(tchar)
         return u''.join(out)
+
+    def get_encoding(self, font, font_table, failed=False):
+        encoding = None
+        if font in font_table:
+            encoding = font_table[font]
+        if not encoding and len(self.user_encoding):
+            encoding = self.user_encoding[-1]
+        if not encoding and self.default_encoding:
+            encoding = self.default_encoding
+        if not encoding or (failed and self.user_encoding == encoding):
+            encoding = retrieve_windows_encoding(self.default_encoding)
+            if encoding not in self.user_encoding:
+                self.user_encoding.append(encoding)
+        elif failed:
+            encoding = self.user_encoding
+        font_table[font] = encoding
+        return encoding
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
