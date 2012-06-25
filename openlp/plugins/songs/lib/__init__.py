@@ -441,7 +441,13 @@ class StripRtf():
     SPECIALCHARS = {
         u'par': u'\n',
         u'sect': u'\n\n',
+        # Required page and column break.
+        # Would be good if we could split verse into subverses here.
         u'page': u'\n\n',
+        u'column': u'\n\n',
+        # Soft breaks.
+        u'softpage': u'[---]',
+        u'softcol': u'[---]',
         u'line': u'\n',
         u'tab': u'\t',
         u'emdash': u'\u2014',
@@ -453,7 +459,11 @@ class StripRtf():
         u'lquote': u'\u2018',
         u'rquote': u'\u2019',
         u'ldblquote': u'\u201C',
-        u'rdblquote': u'\u201D'}
+        u'rdblquote': u'\u201D',
+        u'ltrmark': u'\u200E',
+        u'rtlmark': u'\u200F',
+        u'zwj': u'\u200D',
+        u'zwnj': u'\u200C'}
     CHARSET_MAPPING = {
         u'fcharset0': u'cp1252',
         u'fcharset1': None,
@@ -506,12 +516,14 @@ class StripRtf():
             # \x (not a letter)
             elif char:
                 curskip = 0
-                if char == u'~':
-                    if not ignorable:
-                        out.append(u'\xA0')
-                elif char in u'{}\\':
-                    if not ignorable:
-                        out.append(char)
+                if char == u'~' and not ignorable:
+                    out.append(u'\xA0')
+                elif char in u'{}\\' and not ignorable:
+                    out.append(char)
+                elif char == u'-' and not ignorable:
+                    out.append(u'\u00AD')
+                elif char == u'_' and not ignorable:
+                    out.append(u'\u2011')
                 elif char == u'*':
                     ignorable = True
             # \command
@@ -546,6 +558,7 @@ class StripRtf():
                             u"dictionary in "
                             u"openlp/plugins/songs/lib/__init__.py"
                             % charset_reference)
+                    # This makes ansicpg always override fcharset if present.
                     if font not in font_table:
                         font_table[font] = charset
             # \'xx
