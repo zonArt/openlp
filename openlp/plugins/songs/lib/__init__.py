@@ -197,7 +197,7 @@ class VerseType(object):
         return verse_index
 
 
-def retrieve_windows_encoding(recommendation=None, example_text=None):
+def retrieve_windows_encoding(recommendation=None):
     """
     Determines which encoding to use on an information source. The process uses
     both automated detection, which is passed to this method as a
@@ -206,9 +206,6 @@ def retrieve_windows_encoding(recommendation=None, example_text=None):
     ``recommendation``
         A recommended encoding discovered programmatically for the user to
         confirm.
-
-    ``example_text``
-        Still not decoded text to show to users to help them decide.
     """
     # map chardet result to compatible windows standard code page
     codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
