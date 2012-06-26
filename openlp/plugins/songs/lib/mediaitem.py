@@ -338,8 +338,9 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'importWizard'):
             self.importWizard = SongImportForm(self, self.plugin)
-        if self.importWizard.exec_() == QtGui.QDialog.Accepted:
-            Receiver.send_message(u'songs_load_list')
+        self.importWizard.exec_()
+        # Run song load as list may have been cancelled but some songs loaded
+        Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
         if not hasattr(self, u'exportWizard'):
