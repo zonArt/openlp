@@ -138,18 +138,14 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         # Variables
-        #FIXME: convert to camelCase.
-        self.theme_list = []
+        self.themeList = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)
         check_directory_exists(self.path)
-        #FIXME: convert to camelCase.
-        self.thumb_path = os.path.join(self.path, u'thumbnails')
-        check_directory_exists(self.thumb_path)
+        self.thumbPath = os.path.join(self.path, u'thumbnails')
+        check_directory_exists(self.thumbPath)
         self.themeForm.path = self.path
-        #FIXME: convert to camelCase.
-        self.old_background_image = None
-        #FIXME: convert to camelCase.
-        self.bad_v1_name_chars = re.compile(r'[%+\[\]]')
+        self.oldBackgroundImage = None
+        self.badV1NameChars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
         self.configUpdated()
 
@@ -197,19 +193,10 @@ class ThemeManager(QtGui.QWidget):
             return
         real_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
         theme_name = unicode(item.text())
-        # FIXME: Shorten code.
-#        visible = real_theme_name == theme_name:
-#        self.deleteAction.setVisible(visible)
-#        self.renameAction.setVisible(visible)
-#        self.globalAction.setVisible(visible)
-        self.deleteAction.setVisible(False)
-        self.renameAction.setVisible(False)
-        self.globalAction.setVisible(False)
-        # If default theme restrict actions
-        if real_theme_name == theme_name:
-            self.deleteAction.setVisible(True)
-            self.renameAction.setVisible(True)
-            self.globalAction.setVisible(True)
+        visible = real_theme_name == theme_name
+        self.deleteAction.setVisible(visible)
+        self.renameAction.setVisible(visible)
+        self.globalAction.setVisible(visible)
         self.menu.exec_(self.themeListWidget.mapToGlobal(point))
 
     def changeGlobalFromTab(self, theme_name):
@@ -338,11 +325,11 @@ class ThemeManager(QtGui.QWidget):
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             if theme.background_type == u'image':
-                self.old_background_image = theme.background_filename
+                self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
             self.mainwindow.imageManager.deleteImage(theme.theme_name)
-            self.old_background_image = None
+            self.oldBackgroundImage = None
             self.mainwindow.renderer.update_theme(theme.theme_name)
 
     def onDeleteTheme(self):
@@ -370,10 +357,10 @@ class ThemeManager(QtGui.QWidget):
         ``theme``
             The theme to delete.
         """
-        self.theme_list.remove(theme)
+        self.themeList.remove(theme)
         thumb = u'%s.png' % theme
         delete_file(os.path.join(self.path, thumb))
-        delete_file(os.path.join(self.thumb_path, thumb))
+        delete_file(os.path.join(self.thumbPath, thumb))
         try:
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
@@ -451,7 +438,7 @@ class ThemeManager(QtGui.QWidget):
         The plugins will call back in to get the real list if they want it.
         """
         log.debug(u'Load themes from dir')
-        self.theme_list = []
+        self.themeList = []
         self.themeListWidget.clear()
         files = SettingsManager.get_files(self.settingsSection, u'.png')
         if firstTime:
@@ -482,7 +469,7 @@ class ThemeManager(QtGui.QWidget):
                         '%s (default)')) % text_name
                 else:
                     name = text_name
-                thumb = os.path.join(self.thumb_path, u'%s.png' % text_name)
+                thumb = os.path.join(self.thumbPath, u'%s.png' % text_name)
                 item_name = QtGui.QListWidgetItem(name)
                 if validate_thumb(theme, thumb):
                     icon = build_icon(thumb)
@@ -492,7 +479,7 @@ class ThemeManager(QtGui.QWidget):
                 item_name.setData(
                     QtCore.Qt.UserRole, QtCore.QVariant(text_name))
                 self.themeListWidget.addItem(item_name)
-                self.theme_list.append(text_name)
+                self.themeList.append(text_name)
         self._pushThemes()
 
     def _pushThemes(self):
@@ -505,7 +492,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Return the list of loaded themes
         """
-        return self.theme_list
+        return self.themeList
 
     def getThemeData(self, theme_name):
         """
@@ -629,7 +616,7 @@ class ThemeManager(QtGui.QWidget):
         this method, please keep in mind, that some parameters are redundant.
         """
         theme_name = xml_tree.find(u'Name').text.strip()
-        theme_name = self.bad_v1_name_chars.sub(u'', theme_name)
+        theme_name = self.badV1NameChars.sub(u'', theme_name)
         theme_folder = os.path.join(dir, theme_name)
         theme_exists = os.path.exists(theme_folder)
         if theme_exists and not self.overWriteMessageBox(theme_name):
@@ -644,12 +631,12 @@ class ThemeManager(QtGui.QWidget):
         if background.text.strip() == u'2':
             image_name = xml_tree.find(u'BackgroundParameter1').text.strip()
             # image file has same extension and is in subfolder
-            imagefile = filter(lambda name: os.path.splitext(name)[1].lower()
+            image_file = filter(lambda name: os.path.splitext(name)[1].lower()
                 == os.path.splitext(image_name)[1].lower() and name.find(r'/'),
                 zip.namelist())
-            if len(imagefile) >= 1:
+            if len(image_file) >= 1:
                 out_file = open(os.path.join(themedir, image_name), u'wb')
-                out_file.write(zip.read(imagefile[0]))
+                out_file.write(zip.read(image_file[0]))
                 out_file.close()
             else:
                 log.exception(u'Theme file does not contain image file "%s"' %
@@ -697,9 +684,8 @@ class ThemeManager(QtGui.QWidget):
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
-        if self.old_background_image and \
-            image_to != self.old_background_image:
-            delete_file(self.old_background_image)
+        if self.oldBackgroundImage and image_to != self.oldBackgroundImage:
+            delete_file(self.oldBackgroundImage)
         out_file = None
         try:
             out_file = open(theme_file, u'w')
@@ -726,7 +712,7 @@ class ThemeManager(QtGui.QWidget):
         if os.path.exists(sample_path_name):
             os.unlink(sample_path_name)
         frame.save(sample_path_name, u'png')
-        thumb = os.path.join(self.thumb_path, u'%s.png' % name)
+        thumb = os.path.join(self.thumbPath, u'%s.png' % name)
         create_thumb(sample_path_name, thumb, False)
         log.debug(u'Theme image written to %s', sample_path_name)
 
@@ -734,8 +720,8 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
-        self.mainwindow.displayProgressBar(len(self.theme_list))
-        for theme in self.theme_list:
+        self.mainwindow.displayProgressBar(len(self.themeList))
+        for theme in self.themeList:
             self.mainwindow.incrementProgressBar()
             self.generateAndSaveImage(
                 self.path, theme, self.getThemeData(theme))
@@ -831,7 +817,7 @@ class ThemeManager(QtGui.QWidget):
         """
         theme = Theme(xml_data)
         new_theme = ThemeXML()
-        new_theme.theme_name = self.bad_v1_name_chars.sub(u'', theme.Name)
+        new_theme.theme_name = self.badV1NameChars.sub(u'', theme.Name)
         if theme.BackgroundType == 0:
             new_theme.background_type = \
                 BackgroundType.to_string(BackgroundType.Solid)
