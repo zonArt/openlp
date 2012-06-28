@@ -60,7 +60,7 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 }
 
 .itemText {
-   margin-top: 10px;
+   margin-top: 5px;
 }
 
 .itemFooter {
@@ -218,6 +218,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                     if not verse_def or verse_def != slide[u'verseTag']:
                         text_div = self._addElement(u'div', parent=div,
                             classId=u'itemText')
+                        self._addElement(u'br', parent=text_div)
                     else:
                         self._addElement(u'br', parent=text_div)
                     self._addElement(u'span', slide[u'html'], text_div)
