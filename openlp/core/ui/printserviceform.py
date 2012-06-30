@@ -332,7 +332,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.update_song_usage()
         cursor = QtGui.QTextCursor(self.document)
         cursor.select(3)
-        clipboard_text = cursor.selectedText ()
+        clipboard_text = cursor.selectedText()
         # We now have the unprocessed unicode service text in the cursor
         # So we replace u2028 with \n and u2029 with \n\n and a few others
         clipboard_text = clipboard_text.replace(u'\u2028', u'\n')
