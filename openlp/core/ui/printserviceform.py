@@ -347,7 +347,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # remove the icon from the text
         clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
         # and put it all on the clipboard
-        self.mainWindow.clipboard.setText(clipboard_text)
+        xrange.mainWindow.clipboard.setText(clipboard_text)
 
     def copyHtmlText(self):
         """
