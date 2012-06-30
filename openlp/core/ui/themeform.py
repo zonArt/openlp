@@ -226,8 +226,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Detects Page changes and updates as approprate.
         """
-        self.setOption(QtGui.QWizard.HaveCustomButton1,
-            self.page(pageId) == self.areaPositionPage)
+        enabled = self.page(pageId) == self.areaPositionPage
+        self.setOption(QtGui.QWizard.HaveCustomButton1, enabled)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.parent().generateImage(self.theme)
