@@ -96,6 +96,15 @@ class Priority(object):
     Urgent = 0
 
 
+class ImageSource(object):
+    """
+    This enumeration class represents different image sources. An image sources
+    states where an image is used.
+    """
+    ImagePlugin = 1
+    Theme = 2
+
+
 class Image(object):
     """
     This class represents an image. To mark an image as *dirty* call the
@@ -103,27 +112,22 @@ class Image(object):
     argument.
     """
     secondary_priority = 0
-    
-    def __init__(self, name, path, source, background):
+
+    def __init__(self, path, source, background):
         """
         Create an image for the :class:`ImageManager`'s cache.
-        
-        ``name``
-            The image name. This does not have to be part of the ``path``. It
-            can be of any value. It can be considered an ID.
-            
+
         ``path``
             The image's file path. This should be an existing file path.
-            
+
         ``source``
             The source describes the image's origin. Possible values are
             ``image`` and ``theme``.
-            
+
         ``background``
             A ``QtGui.QColor`` object specifying the colour to be used to fill
             the gabs if the image's ratio does not match with the display ratio.
         """
-        self.name = name
         self.path = path
         self.image = None
         self.image_bytes = None
@@ -192,6 +196,7 @@ class ImageManager(QtCore.QObject):
         self.imageThread = ImageThread(self)
         self._conversionQueue = PriorityQueue()
         self.stopManager = False
+        self.imageSource = ImageSource()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.processUpdates)
 
@@ -220,14 +225,14 @@ class ImageManager(QtCore.QObject):
                 image.background = background
                 self._resetImage(image)
 
-    def updateImageBorder(self, name, source, background):
+    def updateImageBorder(self, path, source, background):
         """
         Border has changed so update the image affected.
         """
         log.debug(u'updateImage')
         # Mark the image as dirty for a rebuild by setting the image and byte
         # stream to None.
-        image = self._cache[name]
+        image = self._cache[(path, source)]
         if image.source == source:
             image.background = background
             self._resetImage(image)
@@ -249,13 +254,13 @@ class ImageManager(QtCore.QObject):
         if not self.imageThread.isRunning():
             self.imageThread.start()
 
-    def getImage(self, name):
+    def getImage(self, path, source):
         """
         Return the ``QImage`` from the cache. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'getImage %s' % name)
-        image = self._cache[name]
+        log.debug(u'getImage %s' % path)
+        image = self._cache[(path, source)]
         if image.image is None:
             self._conversionQueue.modify_priority(image, Priority.High)
             # make sure we are running and if not give it a kick
@@ -271,13 +276,13 @@ class ImageManager(QtCore.QObject):
             self._conversionQueue.modify_priority(image, Priority.Low)
         return image.image
 
-    def getImageBytes(self, name):
+    def getImageBytes(self, path, source):
         """
         Returns the byte string for an image. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'getImageBytes %s' % name)
-        image = self._cache[name]
+        log.debug(u'getImageBytes %s' % path)
+        image = self._cache[(path, source)]
         if image.image_bytes is None:
             self._conversionQueue.modify_priority(image, Priority.Urgent)
             # make sure we are running and if not give it a kick
@@ -287,24 +292,22 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return image.image_bytes
 
-    def addImage(self, name, path, source, background):
+    def addImage(self, path, source, background):
         """
         Add image to cache if it is not already there.
         """
-        log.debug(u'addImage %s:%s' % (name, path))
-        if not name in self._cache:
-            image = Image(name, path, source, background)
-            self._cache[name] = image
+        log.debug(u'addImage %s' % path)
+        if not (path, source) in self._cache:
+            image = Image(path, source, background)
+            self._cache[(path, source)] = image
             self._conversionQueue.put(
                 (image.priority, image.secondary_priority, image))
-        else:
-            image = self._cache[name]
-            if os.path.isfile(path) and \
-                image.timestamp != os.stat(path).st_mtime:
-                image.path = path
+        # Check if the there are any images with the same path and check if the
+        # timestamp has changed.
+        for image in self._cache.values():
+            if image.path == path and image.timestamp != os.stat(path).st_mtime:
                 image.timestamp = os.stat(path).st_mtime
                 self._resetImage(image)
-            log.debug(u'Image in cache %s:%s' % (name, path))
         # We want only one thread.
         if not self.imageThread.isRunning():
             self.imageThread.start()

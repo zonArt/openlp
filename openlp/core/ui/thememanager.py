@@ -669,8 +669,9 @@ class ThemeManager(QtGui.QWidget):
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
-            self.mainwindow.imageManager.updateImageBorder(theme.theme_name,
-                u'theme', QtGui.QColor(theme.background_border_color))
+            self.mainwindow.imageManager.updateImageBorder(
+                theme.background_filename,
+                self.mainwindow.imageManager.imageSource.Theme, QtGui.QColor(theme.background_border_color))
             self.mainwindow.imageManager.processUpdates()
         self.loadThemes()
 

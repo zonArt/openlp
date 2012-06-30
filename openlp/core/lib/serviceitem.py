@@ -217,7 +217,8 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(title, path, u'image',
+        self.renderer.image_manager.addImage(path,
+            self.renderer.image_manager.imageSource.ImagePlugin,
             self.image_border)
         self._new_item()
 
@@ -432,13 +433,12 @@ class ServiceItem(object):
 
     def get_rendered_frame(self, row):
         """
-        Returns the correct frame for a given list and
-        renders it if required.
+        Returns the correct frame for a given list and renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]
         elif self.service_item_type == ServiceItemType.Image:
-            return self._raw_frames[row][u'title']
+            return self._raw_frames[row][u'path']
         else:
             return self._raw_frames[row][u'image']
 

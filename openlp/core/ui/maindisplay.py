@@ -274,31 +274,33 @@ class MainDisplay(Display):
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, name, path, background):
+    def directImage(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.addImage(name, path, u'image', background)
-        if hasattr(self, u'serviceItem'):
-            self.override[u'image'] = name
-            self.override[u'theme'] = self.serviceItem.themedata.theme_name
-            self.image(name)
-            # Update the preview frame.
-            if self.isLive:
-                self.parent().updatePreview()
-            return True
-        return False
+        self.imageManager.addImage(path, self.imageManager.imageSource.ImagePlugin, background)
+        if not hasattr(self, u'serviceItem'):
+            return False
+        self.override[u'image'] = path
+        self.override[u'theme'] = self.serviceItem.themedata.background_filename
+        self.image(path)
+        # Update the preview frame.
+        if self.isLive:
+            self.parent().updatePreview()
+        return True
 
-    def image(self, name):
+    def image(self, path):
         """
         Add an image as the background. The image has already been added to the
         cache.
 
-        ``name``
-            The name of the image to be displayed.
+        ``path``
+            The path to the image to be displayed. **Note**, the path is only
+            passed to identify the image. If the image has changed it has to be
+            re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.getImageBytes(name)
+        image = self.imageManager.getImageBytes(path, self.imageManager.imageSource.ImagePlugin)
         self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
 
@@ -360,7 +362,7 @@ class MainDisplay(Display):
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def buildHtml(self, serviceItem, image=None):
+    def buildHtml(self, serviceItem, image_path=u''):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
@@ -377,20 +379,20 @@ class MainDisplay(Display):
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
+            elif self.override[u'theme'] != serviceItem.themedata.background_filename:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
                 background = self.imageManager. \
-                    getImageBytes(self.override[u'image'])
+                    getImageBytes(self.override[u'image'], self.imageManager.imageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
-                getImageBytes(self.serviceItem.themedata.theme_name)
-        if image:
-            image_bytes = self.imageManager.getImageBytes(image)
+                getImageBytes(self.serviceItem.themedata.background_filename,  self.imageManager.imageSource.Theme)
+        if image_path:
+            image_bytes = self.imageManager.getImageBytes(image_path, self.imageManager.imageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,
