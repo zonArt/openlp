@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -1034,8 +1035,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
             export_file_name = export_file_name + u'.conf'
-        temp_file = os.path.join(unicode(gettempdir()),
-            u'openlp', u'exportConf.tmp')
+        temp_file = os.path.join(unicode(gettempdir(),
+            get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()
         setting_sections = []
         # Add main sections.
@@ -1216,6 +1217,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display:
             self.liveController.display.close()
             self.liveController.display = None
+        # Allow the main process to exit
+        self.application = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
