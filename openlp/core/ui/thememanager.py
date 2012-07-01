@@ -328,7 +328,6 @@ class ThemeManager(QtGui.QWidget):
                 self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
-            self.mainwindow.imageManager.deleteImage(theme.theme_name)
             self.oldBackgroundImage = None
             self.mainwindow.renderer.update_theme(theme.theme_name)
 
