@@ -40,7 +40,14 @@ log = logging.getLogger(__name__)
 class ImageSource(object):
     """
     This enumeration class represents different image sources. An image sources
-    states where an image is used.
+    states where an image is used. This enumeration class is need in the context
+    of the :class:~openlp.core.lib.imagemanager`.
+
+    ``ImagePlugin``
+        This states that an image is being used by the image plugin.
+
+    ``Theme``
+        This says, that the image is used by a theme.
     """
     ImagePlugin = 1
     Theme = 2
