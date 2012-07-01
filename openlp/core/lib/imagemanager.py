@@ -96,15 +96,6 @@ class Priority(object):
     Urgent = 0
 
 
-class ImageSource(object):
-    """
-    This enumeration class represents different image sources. An image sources
-    states where an image is used.
-    """
-    ImagePlugin = 1
-    Theme = 2
-
-
 class Image(object):
     """
     This class represents an image. To mark an image as *dirty* call the
@@ -131,10 +122,10 @@ class Image(object):
         self.path = path
         self.image = None
         self.image_bytes = None
+        self.priority = Priority.Normal
         self.source = source
         self.background = background
         self.timestamp = os.stat(path).st_mtime
-        self.priority = Priority.Normal
         self.secondary_priority = Image.secondary_priority
         Image.secondary_priority += 1
 
@@ -196,7 +187,6 @@ class ImageManager(QtCore.QObject):
         self.imageThread = ImageThread(self)
         self._conversionQueue = PriorityQueue()
         self.stopManager = False
-        self.imageSource = ImageSource()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.processUpdates)
 

@@ -34,7 +34,7 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem
+    translate, build_icon, build_html, PluginManager, ServiceItem, ImageSource
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
@@ -862,9 +862,9 @@ class SlideController(Controller):
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
                             self.imageManager.getImageBytes(frame[u'path'],
-                            self.imageManager.imageSource.ImagePlugin)
+                            ImageSource.ImagePlugin)
                     image = self.imageManager.getImage(frame[u'path'],
-                        self.imageManager.imageSource.ImagePlugin)
+                        ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * (1 / self.ratio)

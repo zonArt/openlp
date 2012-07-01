@@ -37,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager, expand_tags
+    translate, PluginManager, expand_tags, ImageSource
 from openlp.core.lib.theme import BackgroundType
 from openlp.core.lib.settings import Settings
 
@@ -278,7 +278,7 @@ class MainDisplay(Display):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.addImage(path, self.imageManager.imageSource.ImagePlugin, background)
+        self.imageManager.addImage(path, ImageSource.ImagePlugin, background)
         if not hasattr(self, u'serviceItem'):
             return False
         self.override[u'image'] = path
@@ -300,7 +300,7 @@ class MainDisplay(Display):
             re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.getImageBytes(path, self.imageManager.imageSource.ImagePlugin)
+        image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
         self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
 
@@ -379,20 +379,23 @@ class MainDisplay(Display):
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != serviceItem.themedata.background_filename:
+            elif self.override[u'theme'] != \
+                serviceItem.themedata.background_filename:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager. \
-                    getImageBytes(self.override[u'image'], self.imageManager.imageSource.ImagePlugin)
+                background = self.imageManager.getImageBytes(
+                    self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager. \
-                getImageBytes(self.serviceItem.themedata.background_filename,  self.imageManager.imageSource.Theme)
+            self.serviceItem.bg_image_bytes = self.imageManager.getImageBytes(
+                self.serviceItem.themedata.background_filename,
+                ImageSource.Theme)
         if image_path:
-            image_bytes = self.imageManager.getImageBytes(image_path, self.imageManager.imageSource.ImagePlugin)
+            image_bytes = self.imageManager.getImageBytes(
+                image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,

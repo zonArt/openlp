@@ -36,7 +36,8 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, \
+    ImageSource
 
 log = logging.getLogger(__name__)
 
@@ -217,9 +218,8 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(path,
-            self.renderer.image_manager.imageSource.ImagePlugin,
-            self.image_border)
+        self.renderer.image_manager.addImage(
+            path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):

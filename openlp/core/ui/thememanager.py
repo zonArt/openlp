@@ -38,7 +38,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     Receiver, SettingsManager, translate, check_item_selected, \
-    check_directory_exists, create_thumb, validate_thumb
+    check_directory_exists, create_thumb, validate_thumb, ImageSource
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
 from openlp.core.lib.settings import Settings
@@ -671,7 +671,7 @@ class ThemeManager(QtGui.QWidget):
             BackgroundType.to_string(BackgroundType.Image):
             self.mainwindow.imageManager.updateImageBorder(
                 theme.background_filename,
-                self.mainwindow.imageManager.imageSource.Theme, QtGui.QColor(theme.background_border_color))
+                ImageSource.Theme, QtGui.QColor(theme.background_border_color))
             self.mainwindow.imageManager.processUpdates()
         self.loadThemes()
 
