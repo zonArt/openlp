@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,6 +51,13 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
+    @staticmethod
+    def isValidSource(import_source):
+        """
+        Override this method to validate the source prior to import.
+        """
+        return True
+
     def __init__(self, manager, **kwargs):
         """
         Initialise and create defaults for properties
@@ -61,18 +69,20 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         QtCore.QObject.__init__(self)
-        if kwargs.has_key(u'filename'):
+        if u'filename' in kwargs:
             self.importSource = kwargs[u'filename']
-        elif kwargs.has_key(u'filenames'):
+        elif u'filenames' in kwargs:
             self.importSource = kwargs[u'filenames']
+        elif u'folder' in kwargs:
+            self.importSource = kwargs[u'folder']
         else:
-            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+            raise KeyError(
+                u'Keyword arguments "filename[s]" or "folder" not supplied.')
         log.debug(self.importSource)
         self.importWizard = None
         self.song = None
         self.stopImportFlag = False
         self.setDefaults()
-        self.errorLog = []
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stopImport)
 
@@ -107,11 +117,11 @@ class SongImport(QtCore.QObject):
 
         ``filepath``
             This should be the file path if ``self.importSource`` is a list
-            with different files. If it is not a list, but a  single file (for
+            with different files. If it is not a list, but a single file (for
             instance a database), then this should be the song's title.
 
         ``reason``
-            The reason, why the import failed. The string should be as
+            The reason why the import failed. The string should be as
             informative as possible.
         """
         self.setDefaults()
@@ -273,7 +283,7 @@ class SongImport(QtCore.QObject):
         Author not checked here, if no author then "Author unknown" is
         automatically added
         """
-        if not self.title or not len(self.verses):
+        if not self.title or not self.verses:
             return False
         else:
             return True
@@ -314,13 +324,10 @@ class SongImport(QtCore.QObject):
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-        if not len(self.verseOrderList) and \
-            self.verseOrderListGeneratedUseful:
+        if not self.verseOrderList and self.verseOrderListGeneratedUseful:
             self.verseOrderList = self.verseOrderListGenerated
-        for i, current_verse_def in enumerate(self.verseOrderList):
-            if verses_changed_to_other.has_key(current_verse_def):
-                self.verseOrderList[i] = \
-                    verses_changed_to_other[current_verse_def]
+        self.verseOrderList = map(lambda v: verses_changed_to_other.get(v, v),
+            self.verseOrderList)
         song.verse_order = u' '.join(self.verseOrderList)
         song.copyright = self.copyright
         song.comments = self.comments

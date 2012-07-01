@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
+from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     update_reference_separators, get_reference_separator, LanguageSelection
 
@@ -414,7 +416,7 @@ class BiblesTab(SettingsTab):
                     self.getGreyTextPalette(True))
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.show_new_chapters = settings.value(
             u'display new chapter', QtCore.QVariant(False)).toBool()
@@ -488,7 +490,7 @@ class BiblesTab(SettingsTab):
         settings.endGroup()
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'display new chapter',
             QtCore.QVariant(self.show_new_chapters))

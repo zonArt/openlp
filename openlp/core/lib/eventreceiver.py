@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -268,7 +269,7 @@ class Receiver(object):
             <<ACTION>>
         )``
     """
-    eventreceiver = EventReceiver()
+    __eventreceiver__ = EventReceiver()
 
     @staticmethod
     def send_message(event, msg=None):
@@ -281,11 +282,11 @@ class Receiver(object):
         ``msg``
             Defaults to *None*. The message to send with the event.
         """
-        Receiver.eventreceiver.send_message(event, msg)
+        Receiver.__eventreceiver__.send_message(event, msg)
 
     @staticmethod
     def get_receiver():
         """
-        Get the global ``eventreceiver`` instance.
+        Get the global ``__eventreceiver__`` instance.
         """
-        return Receiver.eventreceiver
+        return Receiver.__eventreceiver__

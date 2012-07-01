@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,6 +32,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -151,7 +153,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             if action is None:
                 continue
             shortcuts = self._actionShortcuts(action)
-            if len(shortcuts) == 0:
+            if not shortcuts:
                 item.setText(1, u'')
                 item.setText(2, u'')
             elif len(shortcuts) == 1:
@@ -195,7 +197,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         shortcuts = self._actionShortcuts(action)
         new_shortcuts = []
-        if len(shortcuts) != 0:
+        if shortcuts:
             new_shortcuts.append(shortcuts[0])
         new_shortcuts.append(
             QtGui.QKeySequence(self.alternatePushButton.text()))
@@ -241,7 +243,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.primaryPushButton.setChecked(False)
             self.alternatePushButton.setChecked(False)
         else:
-            if len(action.defaultShortcuts) != 0:
+            if action.defaultShortcuts:
                 primary_label_text = action.defaultShortcuts[0].toString()
                 if len(action.defaultShortcuts) == 2:
                     alternate_label_text = action.defaultShortcuts[1].toString()
@@ -313,7 +315,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.refreshShortcutList()
         primary_button_text = u''
         alternate_button_text = u''
-        if len(temp_shortcuts) != 0:
+        if temp_shortcuts:
             primary_button_text = temp_shortcuts[0].toString()
         if len(temp_shortcuts) == 2:
             alternate_button_text = temp_shortcuts[1].toString()
@@ -337,7 +339,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Save the shortcuts. **Note**, that we do not have to load the shortcuts,
         as they are loaded in :class:`~openlp.core.utils.ActionList`.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'shortcuts')
         for category in self.action_list.categories:
             # Check if the category is for internal use only.
@@ -363,7 +365,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         shortcuts = self._actionShortcuts(action)
         new_shortcuts = []
-        if len(action.defaultShortcuts) != 0:
+        if action.defaultShortcuts:
             new_shortcuts.append(action.defaultShortcuts[0])
             # We have to check if the primary default shortcut is available. But
             # we only have to check, if the action has a default primary
@@ -391,7 +393,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         shortcuts = self._actionShortcuts(action)
         new_shortcuts = []
-        if len(shortcuts) != 0:
+        if shortcuts:
             new_shortcuts.append(shortcuts[0])
         if len(action.defaultShortcuts) == 2:
             new_shortcuts.append(action.defaultShortcuts[1])

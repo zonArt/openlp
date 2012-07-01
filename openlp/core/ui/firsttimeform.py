@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,7 +40,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
     check_directory_exists
-from openlp.core.utils import get_web_page, AppLocation
+from openlp.core.lib.settings import Settings
+from openlp.core.utils import get_web_page, AppLocation, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
@@ -56,11 +58,15 @@ class ThemeScreenshotThread(QtCore.QThread):
         themes = themes.split(u',')
         config = self.parent().config
         for theme in themes:
+            # Stop if the wizard has been cancelled.
+            if self.parent().downloadCancelled:
+                return
             title = config.get(u'theme_%s' % theme, u'title')
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
-                os.path.join(gettempdir(), u'openlp', screenshot))
+                os.path.join(unicode(gettempdir(), get_filesystem_encoding()),
+                u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -86,7 +92,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
-        self.downloadCanceled = False
+        self.downloadCancelled = False
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
@@ -110,10 +116,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(gettempdir(), u'openlp'))
+        check_directory_exists(os.path.join(
+            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = QtCore.QSettings().value(
+        self.hasRunWizard = Settings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
         # Sort out internet access for downloads
         if self.webAccess:
@@ -206,7 +213,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
-                default_theme = unicode(QtCore.QSettings().value(
+                default_theme = unicode(Settings().value(
                     u'themes/global theme',
                     QtCore.QVariant(u'')).toString())
                 # Pre-select the current default theme.
@@ -242,11 +249,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Process the triggering of the cancel button.
         """
         if self.lastId == FirstTimePage.NoInternet or \
-            (self.lastId <= FirstTimePage.Plugins and \
-            not self.hasRunWizard):
+            (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.downloadCanceled = True
+        self.downloadCancelled = True
+        while self.themeScreenshotThread.isRunning():
+            time.sleep(0.1)
         Receiver.send_message(u'cursor_normal')
 
     def onNoInternetFinishButtonClicked(self):
@@ -257,7 +265,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._performWizard()
         Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_normal')
-        QtCore.QSettings().setValue(u'general/has run wizard',
+        Settings().setValue(u'general/has run wizard',
             QtCore.QVariant(True))
         self.close()
 
@@ -272,7 +280,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         filesize = urlfile.headers["Content-Length"]
         filename = open(fpath, "wb")
         # Download until finished or canceled.
-        while not self.downloadCanceled:
+        while not self.downloadCancelled:
             data = urlfile.read(block_size)
             if not data:
                 break
@@ -280,8 +288,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             block_count += 1
             self._downloadProgress(block_count, block_size, filesize)
         filename.close()
-        # Delete file if canceled, it may be a partial file.
-        if self.downloadCanceled:
+        # Delete file if cancelled, it may be a partial file.
+        if self.downloadCancelled:
             os.remove(fpath)
 
     def _buildThemeScreenshots(self):
@@ -298,8 +306,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(index)
                 if item.data(QtCore.Qt.UserRole) == QtCore.QVariant(filename):
                     break
-            item.setIcon(build_icon(
-                os.path.join(gettempdir(), u'openlp', screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
+                get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
@@ -420,7 +428,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         if self.webAccess:
             # Build directories for downloads
-            songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
+            songs_destination = os.path.join(
+                unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
             bibles_destination = AppLocation.get_section_data_path(u'bibles')
             themes_destination = AppLocation.get_section_data_path(u'themes')
             # Download songs
@@ -456,16 +465,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'General/monitor',
+            Settings().setValue(u'General/monitor',
                 QtCore.QVariant(self.displayComboBox.currentIndex()))
             self.screens.set_current_display(
                  self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
-            QtCore.QSettings().setValue(u'themes/global theme',
+            Settings().setValue(u'themes/global theme',
                 QtCore.QVariant(self.themeComboBox.currentText()))
 
     def _setPluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
-        QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
+        Settings().setValue(tag, QtCore.QVariant(status))

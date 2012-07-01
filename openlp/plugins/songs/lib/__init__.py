@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -193,6 +194,7 @@ class VerseType(object):
             return default
         return verse_index
 
+
 def retrieve_windows_encoding(recommendation=None):
     """
     Determines which encoding to use on an information source. The process uses
@@ -252,11 +254,13 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
+
 def clean_string(string):
     """
     Strips punctuation from the passed string to assist searching
     """
     return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
+
 
 def clean_title(title):
     """
@@ -264,6 +268,7 @@ def clean_title(title):
     as well as any trailing spaces
     """
     return CONTROL_CHARS.sub(u'', title).rstrip()
+
 
 def clean_song(manager, song):
     """
@@ -316,7 +321,7 @@ def clean_song(manager, song):
                 verse_type,
                 verse[0][u'label'],
                 verse[1],
-                verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+                verse[0].get(u'lang')
             )
             compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
                 ).upper())

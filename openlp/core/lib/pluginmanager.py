@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,13 +42,13 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     log.info(u'Plugin manager loaded')
-
+    __instance__ = None
     @staticmethod
     def get_instance():
         """
         Obtain a single instance of class.
         """
-        return PluginManager.instance
+        return PluginManager.__instance__
 
     def __init__(self, plugin_dir):
         """
@@ -58,7 +59,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
-        PluginManager.instance = self
+        PluginManager.__instance__ = self
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)

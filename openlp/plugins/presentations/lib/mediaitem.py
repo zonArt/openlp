@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,6 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     validate_thumb
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
+from openlp.core.lib.settings import Settings
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -149,7 +151,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override app',
+        if Settings().value(self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:

@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,6 +34,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import SettingsManager, translate, Receiver, \
     check_directory_exists
+from openlp.core.lib.settings import Settings
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -59,10 +61,10 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
-        toDate = QtCore.QSettings().value(
+        toDate = Settings().value(
             u'songusage/to date',
             QtCore.QVariant(QtCore.QDate(year, 8, 31))).toDate()
-        fromDate = QtCore.QSettings().value(
+        fromDate = Settings().value(
             u'songusage/from date',
             QtCore.QVariant(QtCore.QDate(year - 1, 9, 1))).toDate()
         self.fromDate.setSelectedDate(fromDate)
@@ -103,9 +105,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             'usage_detail_%s_%s.txt')) % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        QtCore.QSettings().setValue(u'songusage/from date',
+        Settings().setValue(u'songusage/from date',
             QtCore.QVariant(self.fromDate.selectedDate()))
-        QtCore.QSettings().setValue(u'songusage/to date',
+        Settings().setValue(u'songusage/to date',
             QtCore.QVariant(self.toDate.selectedDate()))
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(

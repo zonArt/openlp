@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,7 @@ from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -348,8 +350,9 @@ class MediaManagerItem(QtGui.QWidget):
         can run it.
 
         ``files``
-        The list of files to be loaded
+            The list of files to be loaded
         """
+        #FIXME: change local variables to words_separated_by_underscores.
         newFiles = []
         errorShown = False
         for file in files:
@@ -365,7 +368,7 @@ class MediaManagerItem(QtGui.QWidget):
                     errorShown = True
             else:
                 newFiles.append(file)
-        if file:
+        if files:
             self.validateAndLoad(newFiles)
 
     def validateAndLoad(self, files):
@@ -376,6 +379,7 @@ class MediaManagerItem(QtGui.QWidget):
         ``files``
             The files to be loaded.
         """
+        #FIXME: change local variables to words_separated_by_underscores.
         names = []
         fullList = []
         for count in range(self.listView.count()):
@@ -462,7 +466,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
+        if Settings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
             self.onLiveClick()
         else:
@@ -472,7 +476,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if QtCore.QSettings().value(u'advanced/single click preview',
+        if Settings().value(u'advanced/single click preview',
             QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() \
             and self.autoSelectId == -1:

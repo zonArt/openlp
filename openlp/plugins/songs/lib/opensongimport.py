@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -174,7 +175,7 @@ class OpenSongImport(SongImport):
             if semicolon >= 0:
                 this_line = this_line[:semicolon]
             this_line = this_line.strip()
-            if not len(this_line):
+            if not this_line:
                 continue
             # skip guitar chords and page and column breaks
             if this_line.startswith(u'.') or this_line.startswith(u'---') \
@@ -187,8 +188,9 @@ class OpenSongImport(SongImport):
                 content = this_line[1:right_bracket].lower()
                 # have we got any digits?
                 # If so, verse number is everything from the digits
-                # to the end (even if there are some alpha chars on the end)
-                match = re.match(u'(\D*)(\d+.*)', content)
+                # to the end (openlp does not have concept of part verses, so
+                # just ignore any non integers on the end (including floats))
+                match = re.match(u'(\D*)(\d+)', content)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
@@ -197,15 +199,12 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                if len(verse_tag) == 0:
-                    verse_index = 0
-                else:
-                    verse_index = VerseType.from_loose_input(verse_tag)
+                verse_index = VerseType.from_loose_input(verse_tag) \
+                    if verse_tag else 0
                 verse_tag = VerseType.Tags[verse_index]
                 inst = 1
                 if [verse_tag, verse_num, inst] in our_verse_order \
-                    and verses.has_key(verse_tag) \
-                    and verses[verse_tag].has_key(verse_num):
+                    and verse_num in verses.get(verse_tag, {}):
                     inst = len(verses[verse_tag][verse_num]) + 1
                 continue
             # number at start of line.. it's verse number
@@ -213,11 +212,9 @@ class OpenSongImport(SongImport):
                 verse_num = this_line[0]
                 this_line = this_line[1:].strip()
                 our_verse_order.append([verse_tag, verse_num, inst])
-            if not verses.has_key(verse_tag):
-                verses[verse_tag] = {}
-            if not verses[verse_tag].has_key(verse_num):
-                verses[verse_tag][verse_num] = {}
-            if not verses[verse_tag][verse_num].has_key(inst):
+            verses.setdefault(verse_tag, {})
+            verses[verse_tag].setdefault(verse_num, {})
+            if inst not in verses[verse_tag][verse_num]:
                 verses[verse_tag][verse_num][inst] = []
                 our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
@@ -252,15 +249,14 @@ class OpenSongImport(SongImport):
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
-                    if not len(verse_tag):
+                    if not verse_tag:
                         verse_tag = VerseType.Tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def
                     verse_num = u'1'
                 verse_def = u'%s%s' % (verse_tag, verse_num)
-                if verses.has_key(verse_tag) and \
-                    verses[verse_tag].has_key(verse_num):
+                if verse_num in verses.get(verse_tag, {}):
                     self.verseOrderList.append(verse_def)
                 else:
                     log.info(u'Got order %s but not in verse tags, dropping'

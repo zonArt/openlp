@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,9 +32,8 @@ plugin.
 import logging
 import re
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import translate
+from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -185,7 +185,7 @@ def update_reference_separators():
         ':|v|V|verse|verses;;-|to;;,|and;;end',
         'Double-semicolon delimited separators for parsing references. '
         'Consult the developers for further information.')).split(u';;')
-    settings = QtCore.QSettings()
+    settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [
         unicode(settings.value(u'verse separator').toString()),
@@ -236,7 +236,7 @@ def get_reference_separator(separator_type):
     ``separator_type``
         The role and format of the separator.
     """
-    if len(REFERENCE_SEPARATORS) == 0:
+    if not REFERENCE_SEPARATORS:
         update_reference_separators()
     return REFERENCE_SEPARATORS[separator_type]
 
@@ -247,7 +247,7 @@ def get_reference_match(match_type):
     ``match_type``
         The type of match is ``range_separator``, ``range`` or ``full``.
     """
-    if len(REFERENCE_MATCHES) == 0:
+    if not REFERENCE_MATCHES:
         update_reference_separators()
     return REFERENCE_MATCHES[match_type]
 

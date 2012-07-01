@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,6 +34,7 @@ from lxml import html
 
 from openlp.core.lib import translate, get_text_file_string, Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -120,7 +122,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
@@ -318,7 +320,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         elif display == ZoomSize.TwentyFive:
             self.previewWidget.fitToWidth()
             self.previewWidget.zoomIn(0.25)
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'display size', QtCore.QVariant(display))
         settings.endGroup()
@@ -328,7 +330,24 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Copies the display text to the clipboard as plain text
         """
         self.update_song_usage()
-        self.mainWindow.clipboard.setText(self.document.toPlainText())
+        cursor = QtGui.QTextCursor(self.document)
+        cursor.select(QtGui.QTextCursor.Document)
+        clipboard_text = cursor.selectedText()
+        # We now have the unprocessed unicode service text in the cursor
+        # So we replace u2028 with \n and u2029 with \n\n and a few others
+        clipboard_text = clipboard_text.replace(u'\u2028', u'\n')
+        clipboard_text = clipboard_text.replace(u'\u2029', u'\n\n')
+        clipboard_text = clipboard_text.replace(u'\u2018', u'\'')
+        clipboard_text = clipboard_text.replace(u'\u2019', u'\'')
+        clipboard_text = clipboard_text.replace(u'\u201c', u'"')
+        clipboard_text = clipboard_text.replace(u'\u201d', u'"')
+        clipboard_text = clipboard_text.replace(u'\u2026', u'...')
+        clipboard_text = clipboard_text.replace(u'\u2013', u'-')
+        clipboard_text = clipboard_text.replace(u'\u2014', u'-')
+        # remove the icon from the text
+        clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
+        # and put it all on the clipboard
+        self.mainWindow.clipboard.setText(clipboard_text)
 
     def copyHtmlText(self):
         """
@@ -389,7 +408,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Save the settings and close the dialog.
         """
         # Save the settings for this dialog.
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
             QtCore.QVariant(self.slideTextCheckBox.isChecked()))

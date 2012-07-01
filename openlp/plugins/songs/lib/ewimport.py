@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -62,15 +63,15 @@ def strip_rtf(blob, encoding):
         if control:
             # for delimiters, set control to False
             if c == '{':
-                if len(control_word) > 0:
+                if control_word:
                     depth += 1
                 control = False
             elif c == '}':
-                if len(control_word) > 0:
+                if control_word:
                     depth -= 1
                 control = False
             elif c == '\\':
-                new_control = (len(control_word) > 0)
+                new_control = bool(control_word)
                 control = False
             elif c.isspace():
                 control = False
@@ -79,7 +80,7 @@ def strip_rtf(blob, encoding):
                 if len(control_word) == 3 and control_word[0] == '\'':
                     control = False
             if not control:
-                if len(control_word) == 0:
+                if not control_word:
                     if c == '{' or c == '}' or c == '\\':
                         clear_text.append(c)
                 else:
@@ -360,7 +361,7 @@ class EasyWorshipSongImport(SongImport):
         field_desc = self.fieldDescs[field_desc_index]
         # Return None in case of 'blank' entries
         if isinstance(field, str):
-            if len(field.rstrip('\0')) == 0:
+            if not field.rstrip('\0'):
                 return None
         elif field == 0:
             return None

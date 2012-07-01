@@ -7,10 +7,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,12 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-# Import uuid now, to avoid the rare bug described in the support system:
-# http://support.openlp.org/issues/102
-# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
-# removed.
-import uuid
-
+import sys
 from openlp.core import main
 
 
@@ -39,4 +35,10 @@ if __name__ == u'__main__':
     """
     Instantiate and run the application.
     """
+    # Mac OS X passes arguments like '-psn_XXXX' to gui application.
+    # This argument is process serial number. However, this causes
+    # conflict with other OpenLP arguments. Since we do not use this
+    # argument we can delete it to avoid any potential conflicts.
+    if sys.platform.startswith('darwin'):
+        sys.argv = filter(lambda x: not x.startswith('-psn'), sys.argv)
     main()

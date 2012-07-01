@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -80,6 +81,10 @@ class UiStrings(object):
         self.Help = translate('OpenLP.Ui', 'Help')
         self.Hours = translate('OpenLP.Ui', 'h',
             'The abbreviated unit for hours')
+        self.IFdSs = translate('OpenLP.Ui', 'Invalid Folder Selected',
+            'Singular')
+        self.IFSs = translate('OpenLP.Ui', 'Invalid File Selected', 'Singular')
+        self.IFSp = translate('OpenLP.Ui', 'Invalid Files Selected', 'Plural')
         self.Image = translate('OpenLP.Ui', 'Image')
         self.Import = translate('OpenLP.Ui', 'Import')
         self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
@@ -94,6 +99,7 @@ class UiStrings(object):
         self.NewService = translate('OpenLP.Ui', 'New Service')
         self.NewTheme = translate('OpenLP.Ui', 'New Theme')
         self.NextTrack = translate('OpenLP.Ui', 'Next Track')
+        self.NFdSs = translate('OpenLP.Ui', 'No Folder Selected', 'Singular')
         self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
