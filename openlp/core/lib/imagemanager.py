@@ -113,7 +113,7 @@ class Image(object):
 
         ``source``
             The source describes the image's origin. Possible values are
-            ``image`` and ``theme``.
+            described in the :class:`~openlp.core.lib.ImageSource` class.
 
         ``background``
             A ``QtGui.QColor`` object specifying the colour to be used to fill
