@@ -265,14 +265,15 @@ def resize_image(image_path, width, height, background=u'#000000'):
     if image_ratio == resize_ratio:
         # We neither need to centre the image nor add "bars" to the image.
         return preview
-    realw = preview.width()
-    realh = preview.height()
+    real_width = preview.width()
+    real_height = preview.height()
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
     painter.fillRect(new_image.rect(), QtGui.QColor(background))
-    painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
+    painter.drawImage(
+        (width - real_width) / 2, (height - real_height) / 2, preview)
     return new_image
 
 
