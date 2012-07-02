@@ -229,7 +229,7 @@ class ImageManager(QtCore.QObject):
 
     def _resetImage(self, image):
         """
-        Mark the given :class:`Image` instance as dirt by setting its ``image``
+        Mark the given :class:`Image` instance as dirty by setting its ``image``
         and ``image_bytes`` attributes to None.
         """
         image.image = None
