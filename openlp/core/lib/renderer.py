@@ -32,7 +32,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags
+    ItemCapabilities, FormattingTags, ImageSource
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -140,8 +140,8 @@ class Renderer(object):
                 self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
@@ -240,14 +240,13 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            self.image_manager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
         serviceItem.themedata = theme_data
