@@ -30,7 +30,7 @@ import os
 import re
 
 from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
-from openlp.plugins.songs.lib import StripRtf
+from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -62,7 +62,6 @@ class SundayPlusImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
         self.encoding = u'us-ascii'
-        self.rtf = StripRtf()
 
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
@@ -151,7 +150,7 @@ class SundayPlusImport(SongImport):
                             verse_type = self.HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
-                        verse = self.rtf.strip_rtf(value, self.encoding)
+                        verse, self.encoding = strip_rtf(value, self.encoding)
                         lines = verse.strip().split('\n')
                         # If any line inside any verse contains CCLI or
                         # only Public Domain, we treat this as special data:
@@ -188,14 +187,7 @@ class SundayPlusImport(SongImport):
             try:
                 return unicode(blob, self.encoding)
             except:
-                # This is asked again every time the previously chosen
-                # encoding does not work. Integrated with StripRtf encoding.
-                if len(self.rtf.user_encoding) and \
-                    self.encoding != self.rtf.user_encoding[-1]:
-                    self.encoding = self.rtf.user_encoding[-1]
-                else:
-                    self.encoding = retrieve_windows_encoding()
-                    self.rtf.user_encoding.append(self.encoding)
+                self.encoding = retrieve_windows_encoding()
 
     def unescape(self, text):
         text = text.replace('^^', '"')

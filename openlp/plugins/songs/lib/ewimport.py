@@ -35,7 +35,7 @@ import re
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib import retrieve_windows_encoding, StripRtf
+from openlp.plugins.songs.lib import retrieve_windows_encoding, strip_rtf
 from songimport import SongImport
 
 RTF_STRIPPING_REGEX = re.compile(r'\{\\tx[^}]*\}')
@@ -59,7 +59,6 @@ class EasyWorshipSongImport(SongImport):
     """
     def __init__(self, manager, **kwargs):
         SongImport.__init__(self, manager, **kwargs)
-        self.rtf = StripRtf()
 
     def doImport(self):
         # Open the DB and MB files if they exist
@@ -179,7 +178,7 @@ class EasyWorshipSongImport(SongImport):
                         self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words = self.rtf.strip_rtf(words, self.encoding)
+                    words, self.encoding = strip_rtf(words, self.encoding)
                     verse_type = VerseType.Tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
