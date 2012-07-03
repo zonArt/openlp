@@ -559,7 +559,6 @@ def strip_rtf(text, default_encoding=None):
                 out.append(unichr(c))
                 curskip = ucskip
             elif word == u'fonttbl':
-                inside_font_table = True
                 ignorable = True
             elif word == u'f':
                 font = arg
@@ -575,14 +574,14 @@ def strip_rtf(text, default_encoding=None):
                 curskip -= 1
             elif not ignorable:
                 charcode = int(hex, 16)
-                encoding, default_encoding = get_encoding(font, font_table,
-                    default_encoding)
+                failed = False
                 while True:
                     try:
+                        encoding, default_encoding = get_encoding(font, 
+                            font_table, default_encoding, failed=failed)
                         out.append(chr(charcode).decode(encoding))
                     except UnicodeDecodeError:
-                        encoding, default_encoding = get_encoding(font,
-                            font_table, default_encoding, failed=True)
+                        failed = True
                     else:
                         break
         elif tchar:
