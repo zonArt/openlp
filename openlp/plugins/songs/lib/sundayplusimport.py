@@ -93,20 +93,20 @@ class SundayPlusImport(SongImport):
         while i < len(data):
             # Data is held as #name: value pairs inside groups marked as [].
             # Now we are looking for the name.
-            if data[i:i+1] == '#':
-                name_end = data.find(':', i+1)
-                name = data[i+1:name_end]
+            if data[i:i + 1] == '#':
+                name_end = data.find(':', i + 1)
+                name = data[i + 1:name_end]
                 i = name_end + 1
-                while data[i:i+1] == ' ':
+                while data[i:i + 1] == ' ':
                     i += 1
-                if data[i:i+1] == '"':
-                    end = data.find('"', i+1)
-                    value = data[i+1:end]
-                elif data[i:i+1] == '[':
+                if data[i:i + 1] == '"':
+                    end = data.find('"', i + 1)
+                    value = data[i + 1:end]
+                elif data[i:i + 1] == '[':
                     j = i
                     inside_quotes = False
                     while j < len(data):
-                        char = data[j:j+1]
+                        char = data[j:j + 1]
                         if char == '"':
                             inside_quotes = not inside_quotes
                         elif not inside_quotes and char == ']':
@@ -115,7 +115,7 @@ class SundayPlusImport(SongImport):
                         j += 1
                     value = data[i:end]
                 else:
-                    end = data.find(',', i+1)
+                    end = data.find(',', i + 1)
                     if data.find('(', i, end) != -1:
                         end = data.find(')', i) + 1
                     value = data[i:end]
