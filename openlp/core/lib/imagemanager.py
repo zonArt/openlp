@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,6 +32,7 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
+import os
 import time
 import Queue
 
@@ -96,19 +98,34 @@ class Priority(object):
 
 class Image(object):
     """
-    This class represents an image. To mark an image as *dirty* set the instance
-    variables ``image`` and ``image_bytes`` to ``None`` and add the image object
-    to the queue of images to process.
+    This class represents an image. To mark an image as *dirty* call the
+    :class:`ImageManager`'s ``_resetImage`` method with the Image instance as
+    argument.
     """
     secondary_priority = 0
-    def __init__(self, name, path, source, background):
-        self.name = name
+
+    def __init__(self, path, source, background):
+        """
+        Create an image for the :class:`ImageManager`'s cache.
+
+        ``path``
+            The image's file path. This should be an existing file path.
+
+        ``source``
+            The source describes the image's origin. Possible values are
+            described in the :class:`~openlp.core.lib.ImageSource` class.
+
+        ``background``
+            A ``QtGui.QColor`` object specifying the colour to be used to fill
+            the gabs if the image's ratio does not match with the display ratio.
+        """
         self.path = path
         self.image = None
         self.image_bytes = None
         self.priority = Priority.Normal
         self.source = source
         self.background = background
+        self.timestamp = os.stat(path).st_mtime
         self.secondary_priority = Image.secondary_priority
         Image.secondary_priority += 1
 
@@ -117,7 +134,7 @@ class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
 
-    Each item in the queue must be tuple with three values. The first value
+    Each item in the queue must be a tuple with three values. The first value
     is the :class:`Image`'s ``priority`` attribute, the second value
     the :class:`Image`'s ``secondary_priority`` attribute. The last value the
     :class:`Image` instance itself::
@@ -186,7 +203,7 @@ class ImageManager(QtCore.QObject):
         for image in self._cache.values():
             self._resetImage(image)
 
-    def updateImages(self, imageType, background):
+    def updateImagesBorder(self, source, background):
         """
         Border has changed so update all the images affected.
         """
@@ -194,23 +211,27 @@ class ImageManager(QtCore.QObject):
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
         for image in self._cache.values():
-            if image.source == imageType:
+            if image.source == source:
                 image.background = background
                 self._resetImage(image)
 
-    def updateImage(self, name, imageType, background):
+    def updateImageBorder(self, path, source, background):
         """
         Border has changed so update the image affected.
         """
         log.debug(u'updateImage')
-        # Mark the images as dirty for a rebuild by setting the image and byte
+        # Mark the image as dirty for a rebuild by setting the image and byte
         # stream to None.
-        for image in self._cache.values():
-            if image.source == imageType and image.name == name:
-                image.background = background
-                self._resetImage(image)
+        image = self._cache[(path, source)]
+        if image.source == source:
+            image.background = background
+            self._resetImage(image)
 
     def _resetImage(self, image):
+        """
+        Mark the given :class:`Image` instance as dirty by setting its ``image``
+        and ``image_bytes`` attributes to None.
+        """
         image.image = None
         image.image_bytes = None
         self._conversionQueue.modify_priority(image, Priority.Normal)
@@ -223,13 +244,13 @@ class ImageManager(QtCore.QObject):
         if not self.imageThread.isRunning():
             self.imageThread.start()
 
-    def getImage(self, name):
+    def getImage(self, path, source):
         """
         Return the ``QImage`` from the cache. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'getImage %s' % name)
-        image = self._cache[name]
+        log.debug(u'getImage %s' % path)
+        image = self._cache[(path, source)]
         if image.image is None:
             self._conversionQueue.modify_priority(image, Priority.High)
             # make sure we are running and if not give it a kick
@@ -245,13 +266,13 @@ class ImageManager(QtCore.QObject):
             self._conversionQueue.modify_priority(image, Priority.Low)
         return image.image
 
-    def getImageBytes(self, name):
+    def getImageBytes(self, path, source):
         """
         Returns the byte string for an image. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'getImageBytes %s' % name)
-        image = self._cache[name]
+        log.debug(u'getImageBytes %s' % path)
+        image = self._cache[(path, source)]
         if image.image_bytes is None:
             self._conversionQueue.modify_priority(image, Priority.Urgent)
             # make sure we are running and if not give it a kick
@@ -261,27 +282,22 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return image.image_bytes
 
-    def deleteImage(self, name):
-        """
-        Delete the Image from the cache.
-        """
-        log.debug(u'deleteImage %s' % name)
-        if name in self._cache:
-            self._conversionQueue.remove(self._cache[name])
-            del self._cache[name]
-
-    def addImage(self, name, path, source, background):
+    def addImage(self, path, source, background):
         """
         Add image to cache if it is not already there.
         """
-        log.debug(u'addImage %s:%s' % (name, path))
-        if not name in self._cache:
-            image = Image(name, path, source, background)
-            self._cache[name] = image
+        log.debug(u'addImage %s' % path)
+        if not (path, source) in self._cache:
+            image = Image(path, source, background)
+            self._cache[(path, source)] = image
             self._conversionQueue.put(
                 (image.priority, image.secondary_priority, image))
-        else:
-            log.debug(u'Image in cache %s:%s' % (name, path))
+        # Check if the there are any images with the same path and check if the
+        # timestamp has changed.
+        for image in self._cache.values():
+            if image.path == path and image.timestamp != os.stat(path).st_mtime:
+                image.timestamp = os.stat(path).st_mtime
+                self._resetImage(image)
         # We want only one thread.
         if not self.imageThread.isRunning():
             self.imageThread.start()

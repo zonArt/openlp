@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,6 +35,23 @@ import os
 from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
+
+
+class ImageSource(object):
+    """
+    This enumeration class represents different image sources. An image sources
+    states where an image is used. This enumeration class is need in the context
+    of the :class:~openlp.core.lib.imagemanager`.
+
+    ``ImagePlugin``
+        This states that an image is being used by the image plugin.
+
+    ``Theme``
+        This says, that the image is used by a theme.
+    """
+    ImagePlugin = 1
+    Theme = 2
+
 
 class MediaType(object):
     """
@@ -264,14 +282,15 @@ def resize_image(image_path, width, height, background=u'#000000'):
     if image_ratio == resize_ratio:
         # We neither need to centre the image nor add "bars" to the image.
         return preview
-    realw = preview.width()
-    realh = preview.height()
+    real_width = preview.width()
+    real_height = preview.height()
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
     painter.fillRect(new_image.rect(), QtGui.QColor(background))
-    painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
+    painter.drawImage(
+        (width - real_width) / 2, (height - real_height) / 2, preview)
     return new_image
 
 

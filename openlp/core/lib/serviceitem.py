@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +36,8 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, \
+    ImageSource
 
 log = logging.getLogger(__name__)
 
@@ -177,7 +179,7 @@ class ServiceItem(object):
             self.renderer.set_item_theme(self.theme)
             self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
-            log.debug(u'Formatting slides')
+            log.debug(u'Formatting slides: %s' % self.title)
             for slide in self._raw_frames:
                 pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                 for page in pages:
@@ -216,8 +218,8 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(title, path, u'image',
-            self.image_border)
+        self.renderer.image_manager.addImage(
+            path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -431,13 +433,12 @@ class ServiceItem(object):
 
     def get_rendered_frame(self, row):
         """
-        Returns the correct frame for a given list and
-        renders it if required.
+        Returns the correct frame for a given list and renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]
         elif self.service_item_type == ServiceItemType.Image:
-            return self._raw_frames[row][u'title']
+            return self._raw_frames[row][u'path']
         else:
             return self._raw_frames[row][u'image']
 
