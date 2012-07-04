@@ -25,7 +25,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 import os
 import re
 
@@ -33,7 +32,19 @@ from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
-log = logging.getLogger(__name__)
+HOTKEY_TO_VERSE_TYPE = {
+    u'1': u'v1',
+    u'2': u'v2',
+    u'3': u'v3',
+    u'4': u'v4',
+    u'5': u'v5',
+    u'6': u'v6',
+    u'7': u'v7',
+    u'8': u'v8',
+    u'9': u'v9',
+    u'C': u'c',
+    u'+': u'b',
+    u'Z': u'o'}
 
 class SundayPlusImport(SongImport):
     """
@@ -42,19 +53,6 @@ class SundayPlusImport(SongImport):
     The format examples can be found attached to bug report at
     <http://support.openlp.org/issues/395>
     """
-    HOTKEY_TO_VERSE_TYPE = {
-        u'1': u'v1',
-        u'2': u'v2',
-        u'3': u'v3',
-        u'4': u'v4',
-        u'5': u'v5',
-        u'6': u'v6',
-        u'7': u'v7',
-        u'8': u'v8',
-        u'9': u'v9',
-        u'C': u'c',
-        u'+': u'b',
-        u'Z': u'o'}
 
     def __init__(self, manager, **kwargs):
         """
@@ -146,8 +144,8 @@ class SundayPlusImport(SongImport):
                         # Hotkey always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
                         if len(value) and \
-                            value in self.HOTKEY_TO_VERSE_TYPE.keys():
-                            verse_type = self.HOTKEY_TO_VERSE_TYPE[value]
+                            value in HOTKEY_TO_VERSE_TYPE.keys():
+                            verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
                         verse, self.encoding = strip_rtf(value, self.encoding)
