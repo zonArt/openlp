@@ -47,7 +47,6 @@ from songshowplusimport import SongShowPlusImport
 from songproimport import SongProImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
-from mediashoutimport import MediaShoutImport
 # Imports that might fail
 log = logging.getLogger(__name__)
 try:
@@ -68,7 +67,13 @@ try:
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
-
+HAS_MEDIASHOUT = False
+if os.name == u'nt':
+    try:
+        from mediashoutimport import MediaShoutImport
+        HAS_MEDIASHOUT = True
+    except ImportError:
+        log.exception('Error importing %s', 'MediaShoutImport')
 
 class SongFormatSelect(object):
     """
@@ -242,9 +247,9 @@ class SongFormat(object):
                 'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
         MediaShout: {
-            u'class': MediaShoutImport,
             u'name': u'MediaShout',
             u'prefix': u'mediaShout',
+            u'canDisable': True,
             u'selectMode': SongFormatSelect.SingleFile,
             u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
                 'MediaShout Database')
@@ -392,5 +397,8 @@ if HAS_SOF:
 SongFormat.set(SongFormat.Generic, u'availability', HAS_OOO)
 if HAS_OOO:
     SongFormat.set(SongFormat.Generic, u'class', OooImport)
+SongFormat.set(SongFormat.MediaShout, u'availability', HAS_MEDIASHOUT)
+if HAS_MEDIASHOUT:
+    SongFormat.set(SongFormat.MediaShout, u'class', MediaShoutImport)
 
 __all__ = [u'SongFormat', u'SongFormatSelect']
