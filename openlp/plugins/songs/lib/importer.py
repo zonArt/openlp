@@ -47,6 +47,7 @@ from songshowplusimport import SongShowPlusImport
 from songproimport import SongProImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
+from mediashoutimport import MediaShoutImport
 # Imports that might fail
 log = logging.getLogger(__name__)
 try:
@@ -141,14 +142,15 @@ class SongFormat(object):
     EasySlides = 6
     EasyWorship = 7
     FoilPresenter = 8
-    OpenSong = 9
-    PowerSong = 10
-    SongBeamer = 11
-    SongPro = 12
-    SongShowPlus = 13
-    SongsOfFellowship = 14
-    WordsOfWorship = 15
-    ZionWorx = 16
+    MediaShout = 9
+    OpenSong = 10
+    PowerSong = 11
+    SongBeamer = 12
+    SongPro = 13
+    SongShowPlus = 14
+    SongsOfFellowship = 15
+    WordsOfWorship = 16
+    ZionWorx = 17
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -239,6 +241,14 @@ class SongFormat(object):
             u'filter': u'%s (*.foil)' % translate(
                 'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
+        MediaShout: {
+            u'class': MediaShoutImport,
+            u'name': u'MediaShout',
+            u'prefix': u'mediaShout',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
+                'MediaShout Database')
+        },
         OpenSong: {
             u'class': OpenSongImport,
             u'name': WizardStrings.OS,
@@ -324,6 +334,7 @@ class SongFormat(object):
             SongFormat.EasySlides,
             SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
+            SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
             SongFormat.SongBeamer,
