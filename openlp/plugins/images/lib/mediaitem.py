@@ -229,8 +229,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                name = os.path.split(filename)[1]
-                if self.plugin.liveController.display.directImage(name,
+                if self.plugin.liveController.display.directImage(
                     filename, background):
                     self.resetAction.setVisible(True)
                 else:

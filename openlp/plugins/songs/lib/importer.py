@@ -45,6 +45,7 @@ from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
 from songproimport import SongProImport
+from sundayplusimport import SundayPlusImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
 # Imports that might fail
@@ -74,6 +75,7 @@ if os.name == u'nt':
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
+
 
 class SongFormatSelect(object):
     """
@@ -154,8 +156,9 @@ class SongFormat(object):
     SongPro = 13
     SongShowPlus = 14
     SongsOfFellowship = 15
-    WordsOfWorship = 16
-    ZionWorx = 17
+    SundayPlus = 16
+    WordsOfWorship = 17
+    ZionWorx = 18
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -303,6 +306,13 @@ class SongFormat(object):
                 'The Songs of Fellowship importer has been disabled because '
                 'OpenLP cannot access OpenOffice or LibreOffice.')
         },
+        SundayPlus: {
+            u'class': SundayPlusImport,
+            u'name': u'SundayPlus',
+            u'prefix': u'sundayPlus',
+            u'filter': u'%s (*.ptf)' % translate(
+                'SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
+        },
         WordsOfWorship: {
             u'class': WowImport,
             u'name': u'Words of Worship',
@@ -346,6 +356,7 @@ class SongFormat(object):
             SongFormat.SongPro,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
+            SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
             SongFormat.ZionWorx
         ]
