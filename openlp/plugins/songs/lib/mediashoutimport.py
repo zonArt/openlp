@@ -56,8 +56,14 @@ class MediaShoutImport(SongImport):
         """
         Receive a single file to import.
         """
-        conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};'
+        try:
+           conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};'
             u'DBQ=%s;PWD=6NOZ4eHK7k' % self.importSource)
+        except: # Unfortunately no specific exception type
+            self.logError(self.importSource,
+                translate('SongsPlugin.MediaShoutImport',
+                    'Unable to open the MediaShout database.'))
+            return
         cursor = conn.cursor()
         cursor.execute(u'SELECT Record, Title, Author, Copyright, '
                        u'SongID, CCLI, Notes FROM Songs ORDER BY Title')

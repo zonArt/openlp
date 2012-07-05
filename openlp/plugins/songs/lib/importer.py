@@ -28,6 +28,7 @@
 """
 The :mod:`importer` modules provides the general song import functionality.
 """
+import os
 import logging
 
 from openlp.core.lib import translate

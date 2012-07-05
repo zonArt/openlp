@@ -81,6 +81,7 @@ class SongProImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
+        self.encoding = None
         with open(self.importSource, 'r') as songs_file:
             self.importWizard.progressBar.setMaximum(0)
             tag = u''
@@ -112,7 +113,8 @@ class SongProImport(SongImport):
             self.finish()
             return
         if u'rtf1' in text:
-            text = strip_rtf(text, u'cp1252').rstrip()
+            text, self.encoding = strip_rtf(text, self.encoding)
+            text = text.rstrip()
         if not text:
             return
         if tag == u'A':
